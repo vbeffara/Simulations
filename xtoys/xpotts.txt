@@ -1,0 +1,135 @@
+                       XPotts
+ 
+                    Michael Creutz   
+                    creutz@bnl.gov 
+
+WHAT IT IS:
+
+This is an Xwindow program to illustrate a Monte Carlo simulation of
+the Potts model.  This grew from my earlier program XIsing.  If you
+have trouble understanding what is going on here, look at XIsing first.
+This program allows dynamical observation of the Potts system under a 
+simple microcanonical Monte Carlo algorithms.
+
+The system is a two dimensional array of spins, each of which is 
+represented by one of q possible states.  The states are represented
+by various colors displayed on the screen.  The energy is determined 
+by nearest neighbor pairs as well as the value of an applied field.  
+If two neighbors are the same, then the energy has one value, and if 
+they differ, it is higher by one unit.  The applied field acts only 
+on color 0, which is red, and gives it a slightly different energy.
+
+The source is freely distributable.  
+
+COMPILING:
+
+The program should run on anything supporting Xwindows with color.  
+If you find an exception, please let me know.  It will not
+run on a monochrome system.
+
+To compile, try the xtoys Makefile.  Otherwise, "cc -O xpotts.c -lm
+-lX11" should work.  If not, possibly the X11 includes are not being
+found.  Then you need to compile with a -I option to where they are
+and possibly change the -lX11 to help the linker.  Remember, as with
+any Xwindow program, you need to have "xhost" and "DISPLAY" set up
+properly.
+
+WHAT THE SCREEN SHOWS:
+
+The spins are displayed in a box surrounded by various gadgets
+to control the evolution.  Every 20 sweeps, various quantities
+are calculated and displayed to the right of the lattice.  These 
+include the inverse temperature, beta, the applied field h, the 
+system energy E, and the magnitization as defined from state 0. 
+The normalization is such that at h=0 the energy E runs from 1
+to 0 as beta runs from 0 to infinity.  At beta=0, the magnetization
+M runs from 0 to 1 as h runs from zero to infinity.  
+The critical value for beta at h=0 is exactly known to be
+log(1+sqrt(q)).  This value is displayed on the screen below
+the measured quantities.
+
+One set of four buttons, labeled "conserve E," "heat," "cool,"
+and "free E" are for adjusting the temperature.  Normal running 
+is with the energy conserved, but to heat or cool the system 
+press the appropriate button.  The "free E" button is similar to the
+heater; the difference is that the heat button will not stop at infinite
+temperature but will continue to negative beta.  
+
+Another set of buttons controls the magnetization, defined as the 
+number of sites with spins having value 0.  A conventional simulation
+would have this unconstrained, and is represented by the "free M"
+button.  Constraining M is the way this program implements a magnetic
+field.
+
+The basic algorithm is a microcanonical approach described in some 
+detail in my paper Phys. Rev. Letters 50, 1411 (1983).  A set of "demons"
+circulates around the lattice trying to flip spins.  Each carries a 
+sack of energy.  Any energy change associated with a spin flip is 
+compensated by a change in this sack.  If the demon's sack cannot 
+accommodate the change, the flip is rejected.  For the control of the 
+magnitization, a second sack contains a limited supply of state 0 spins
+from which any changes to of from such state must be taken. 
+The behavior under this algorithm is quite close to that of a conventional 
+Metropolis et al. simulation.  This program is substantially slower
+than XIsing, which did all computations in parallel using multi-spin 
+coding.
+
+The "quit" button and the "pause" "run" toggle are self explanatory.  
+The number of states allowed per site, q, can be adjusted via
+the box just below them.  The allowed range is from 2 to 255, although
+only 18 different colors are used. As q is decreased, the highest spins
+are replaced by the next value down.  
+
+The program can be run with one or two arguments.  The first argument
+is the initial value of q, which defaults to 8.  The second is used
+to make the display bigger.  Its value is the size of the blocks
+of pixels used.  The best way to see what this argument does is to try
+it, i.e. enter xpotts 2 4 to get the Ising model with big blocks.
+It defaults to 1, but can be as large as 4.  The larger
+sizes slow things down a lot on a SUN, but may work better on other
+machines.  
+
+SUGGESTED EXPERIMENTS:
+
+The system starts at infinite temperature with the cooler on.
+At large q, including the default of 8, there is a first order
+transition.  Note how as the system cools, blocks of fixed color
+appear.  The high temperature phase appears in more random regions
+between them.  As it cools, the system tends to spend a lot of 
+time near the critical temperature as the transition to the 
+nucleating low temperature phase releases latent heat.
+
+If you switch to the conserve E mode before the low temperature phase 
+has completely taken over, the system will be phase separated
+and the temperature should fluctuate around the critical value.
+With the magnetism buttons you can use the spin zero magnetized 
+state dominated to compress the other phases.  Note how this raises
+the temperature at constant energy.  Releasing the magnetic
+pressure, you can watch the other states bounce back.
+
+At q<=4 the transition is second order; observe how the fluctuations 
+in the domains are much larger near the critical temperature.  The case
+q=5 is supposed to be first order with a small latent heat.  Can
+you tell?
+
+The heat button allows one to go to negative temperature.
+Going down to q=2 gives the Ising model.  It is hard to
+see, but in this case leaving the heat button on will lead to
+antiferromagnetic domains in a checkerboard pattern.  Note how 
+resiliant this state is to an applied field.  At higher q the 
+negative temperature system has lots of degeneracy and looks 
+like a mess.
+
+Turning on the increase M button will favor color zero.  At low
+temperature alternate use of this and the decrease M button
+allows one to pass through a first order transition from one 
+magnitization state to another.  Leaving on the decrease M button
+will freeze out color zero, giving the model effectively at 
+q-1.  Try this for the q=3 model and watch the Ising model appear. 
+
+ 
+
+
+
+
+

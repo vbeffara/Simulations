@@ -1,0 +1,31 @@
+#!/bin/sh
+
+usage="\
+Usage: $0 [--version] [--prefix] [--cflags] [--libs]"
+
+if test $# -eq 0; then
+      echo "${usage}" 1>&2
+      exit 1
+fi
+
+while test $# -gt 0; do
+  case $1 in
+    --prefix)
+      echo @prefix@
+      ;;
+    --version)
+      echo @VERSION@
+      ;;
+    --cflags)
+      echo @VB_CFLAGS@ -I@prefix@/include
+      ;;
+    --libs)
+      echo @VB_LIBS@ -L@prefix@/lib -lvb
+      ;;
+    *)
+      echo "${usage}" 1>&2
+      exit 1
+      ;;
+  esac
+  shift
+done

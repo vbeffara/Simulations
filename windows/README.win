@@ -1,0 +1,92 @@
+
+COMPILING ALL THIS STUFF UNDER WINDOWS
+
+! THIS WILL  NOT WORK AS-IS, SINCE  I REDID MOST OF  THIS PACKAGE (SPLIT
+! INTO SEVERAL  FILES, USED C++ ...)  BUT I AM SURE  EVERYTHING IS STILL
+! WORKABLE. I DON'T HAVE A WINDOWS MACHINE THOUGH, SO I CANNOT TEST THIS
+! MYSELF. LET ME KNOW IF YOU DO.
+
+Well I  don't have access to  a Windows machine  most of the time,  so I
+only  tested what  I  am describing  here  once. It  worked very  easily
+though, so I believe it willwork for you. Here is what I did, based on a
+tutorial found on the SDL website.  The relevant page of the tutorial is
+at http://sol.gfxile.net/gp/ch01_devcpp.html .
+
+If  something or  other does  not work,  please let  me know,  my e-mail
+address is vbeffara@ens-lyon.fr .
+
+
+1) Download Bloodshed Dev-C++
+-----------------------------
+
+The link for this is
+
+  http://www.bloodshed.net/dev/devcpp.html
+
+and be  sure to  get the 5.0  beta version  with Mingw/gcc (that  is the
+first link on the page). Install it, everything is straightforward. 
+
+
+2) Download the SDL development libraries
+-----------------------------------------
+
+This  is done  from  within Dev-C++  :  select the  menu  item (in  menu
+"Tools")  called  "Check  for  updates/packages", select  your  favorite
+mirror, press "check  for updates"; find the SDL-DevPack  package in the
+list, check it, and press "download selected". You are done. 
+
+
+3) Create a project
+-------------------
+
+First, create a directory somewhere  on your hard drive, say C:\simu. In
+Dev-C++, click "File/New Project", and give C:\simu as the directory. Be
+sure to  choose "Windows application"  as project type. In  the project,
+remove the file called main.cxx, you won't need it. Create a header file
+called  "config.h"  in  the  project,  containing  the  following  lines
+(without the BEGIN and END lines of course):
+
+BEGIN config.h
+#define HAVE_SDL 1
+#define X_DISPLAY_MISSING 1
+#define VERSION "1.0 (using Dev-C++)"
+#define srand48 srand
+#define lrand48 rand
+END config.h
+
+Save the file in C:\simu. Then, you need to customize the project, so go
+to "Project/Project  Options". In the "Parameters" tab,  in the "Linker"
+pane, add  the following  options, in separate  lines and in  this order
+(without  the   quotes):  "-lmingw32",  "-lSDLmain",   "-lSDL".  In  the
+"Directories" pane,  add two header  directories : C:\main  (or wherever
+you  put  config.h),  and   the  directory  containing  printout.h  (the
+subdirectory  called 'libprintout'  of  wherever you  found the  current
+README.win file). 
+
+
+4) Populate the project
+-----------------------
+
+As a test,  add the following files to the project,  which you will find
+in  the   'libprintout'  subdirectory  together   with  printout.h:  add
+'display-x11.c',   'image.c',   'math.c',   'misc.c',   'output.c'   and
+'sample.c'.  Compile the program and run it.  It should display a square
+window,  fill it  with concentric  circles,  and exit.   Then, the  file
+C:\simu\stdout.txt will  really by an  EPS file containing  the picture;
+you can rename it 'sample.eps', open it with ghostview, print it, use it
+as you see fit.
+
+Now for a real simulation:  remove the file 'sample.c' from the project,
+and  instead add  the  file 'Schramm-trace-2.c'  (found in  subdirectory
+'2D'). In  the menu "Execute",  choose "Parameters", and as  comand line
+parameters enter  "3 500" (without  the quotes).  Compile and  run, this
+time it should compute an SLE_3 process; as usual the end result will be
+an EPS  file named  stdout.txt, which you  can rename  something.eps and
+use. 
+
+
+5) That's it
+------------
+
+Now ou can play around with the various programs in the directory called
+'2D', modify them, make your own. Have fun!

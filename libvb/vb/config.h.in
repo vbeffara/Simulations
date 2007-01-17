@@ -1,0 +1,11 @@
+
+/* Version number of package */
+#undef VERSION
+
+#define LIBVB_VERSION VERSION
+
+/* Do we have SDL? */
+#undef HAVE_SDL
+
+/* Define to 1 if the X Window System is missing or not being used. */
+#undef X_DISPLAY_MISSING

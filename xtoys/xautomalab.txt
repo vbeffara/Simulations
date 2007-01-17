@@ -1,0 +1,133 @@
+                             XAutomaLab         
+ 
+                                 by            
+ 
+                            Michael Creutz      
+                          Physics Department
+                    Brookhaven National Laboratory
+                           Upton, NY 11973
+
+                            creutz@bnl.gov         
+
+Play God over your own universe.  With AutomaLab you control the
+microphysics of a discrete world of cellular automata.  This
+two-dimensional land is an array of cells (initially 198 by 198)
+displayed as pixels on an X-window screen.  Each cell can be alive or
+empty, with evolution occurring in discrete time steps.  Empty cells
+are grey, newborn ones are red, older living ones are blue, and cells
+that have just died are green.  When the tracer is turned on, old life
+leaves a legacy by shading the background color.
+
+In one time step, the fate of each cell depends on the number of its
+living neighbors.  Using Boolean gadgets, you control when a new live
+cell will be born on an empty site and when a living one will survive.
+Another gadget lets you pick which neighbors, up to the eight nearest
+neighbors, are counted.
+
+To be more precise, if a particular birth gadget is set and if that
+number of selected neighbors to a dead cell are alive, then that cell
+will become alive on the next time step.  If a survivor gadget is set,
+then a living cell with that number of live neighbors will survive the
+updating.
+
+With mouse selections you determine whether the boundary of your
+universe is dead, alive, or periodic.  A final boundary choice, called
+"flow," is alive on the top and dead on the sides and bottom.
+
+The quit, pause and clear gadgets should be self explanatory.  When
+the system is paused, a click outside the playfield or any specific
+gadget will update the system a single step.  Finally, you can toggle
+individual cells on and off by pressing a mouse button and sketching
+over your world.
+
+The save button saves the current configuration as "xautomalab.gif," a
+standard gif file that you can print or manipulate with any graphics
+program that likes gif files.  The restore gadget will reload a
+previously stored configuration.  The rule used to create a stored
+configuration is not itself stored or restored.  Note that for the
+save feature to work you need write permission on the directory from
+which you are running.
+
+Since sketching when the cells are small is rather imprecise, the
+save/restore buttons can be useful for creating special initial
+configurations.  Using the big block size, sketch your desired
+configuration while the system is paused.  Save it, and then switch to
+a smaller block size.  Finally reload the picture at this new
+resolution.  When your fancy spaceship works, be sure to save a copy
+of the image.
+
+The restore function will take any valid gif picture.  Try copying
+some unrelated picture to xautomalab.gif and then hit the restore
+button.  You can then watch your favorite rule dissolve the picture.
+
+The cell size buttons determine how many screen pixels are used per
+cell.  This defaults to one.  The window can also be resized to give
+different lattice sizes.
+
+With the eight neighborhood there are 18 birth/survivor buttons.  This
+means there are 2^18=262,144 possible rules in this case.  Other
+neighborhoods give many more, all selectable with the mouse.  Indeed,
+it is unlikely that you will be able to try them all.
+
+In addition, the number of possible universes is further doubled using
+the "xor past" gadget, which probably needs some explanation.  When
+this is activated, the new state is finally XOR'ed with the history
+one time step back.  Thus if a cell was alive in the past, the new
+state is the opposite of what the birth and survivor gadgets want.
+The reason for doing this is to produce reversible rules.  If the
+history and current states are interchanged, the system will go
+backwards through the sequence of configurations from which it came.
+An analogy is reversing all the momenta of a bunch of atoms.  This
+interchange is accomplished by the "reverse" gadget, which
+interchanges young and moribund cells.  Without the Xpast gadget set,
+the reverse gadget does not appear.
+
+If this seems confusing, try this: With the Xpast gadget set, clear
+the screen, draw some small picture, select a random rule from the
+birth and survivor gadgets, and let the system evolve until the screen
+becomes a mess.  Then hit the reverse button and watch the initial
+picture reappear.  Try repeating this experiment, but alter a single
+pixel with the mouse at the time of the reversal.
+
+The starting rule is one I particularly liked at the time I last
+updated the program.  It may change with further updates.  Watch it
+for a while and then try other things.
+
+A particularly well known rule is Conway's classic cellular automaton
+model "life."  This uses the eight cell neighborhood and a new cell is
+born for exactly three live neighbors, while a living cell dies with
+less than 2 (lonely) or more than 4 (overcrowding) neighbors.
+
+Another well-known rule is Fredkin's modulo two model which uses the 4
+cell neighborhood.  Here a state flips if it has an odd number of
+active neighbors and is unchanged otherwise.  Start with some small
+picture and observe how the initial state is replicated.
+
+If you want to try a rule running from a random start, run for a while
+with some chaotic rule (i.e. most rules with births on one neighbor)
+and then switch to your rule of choice.
+
+Xautomalab is based on my earlier Amiga program Automalab, which
+appeared on the May 1991 issue of Jumpdisk.  That version used direct
+access the Amiga graphics chips for speed.  Comparing this X version
+to the previous illustrates the awesome power of the Amiga Blitter.
+If you have an Amiga and want a copy of Automalab, check in the www
+site mentioned below.
+
+The program is written in C and should compile on anything supporting
+xwindows.  It is best on a color display.  With monochrome, only the
+living cells show.
+
+To compile "cc -O -o xautomalab xautomalab.c -lX11" should do it,
+unless your X11 libraries are in a peculiar place.
+
+This program and some related things are available via
+"http://thy.phy.bnl.gov/www/xtoys.html" on the World Wide Web.  It
+is still evolving, and the latest version can be found there.
+
+The colors are defined in the subroutine openwindow.  An easy way to
+change them is to use the chart of X11 color names, which should be in
+any Xwindow programming guide.
+
+This program with source is freely distributable.  
+

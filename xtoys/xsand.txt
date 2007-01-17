@@ -1,0 +1,147 @@
+                              XSand 
+
+                               by
+                         Michael Creutz
+                         creutz@bnl.gov
+
+This program simulates the sandpile automaton of Bak, Tang, and
+Wiesenfeld.  This is a simple model originally presented to illustrate
+the concept of self organized criticality.  This program generated the
+pictures on page 46 of Briggs' book "Fractals -- The Patterns of
+Chaos."  Additonal pictures from this program appear in my article
+with Per Bak appearing in "Fractals and Disordered Systems"
+(Springer-Verlag, 1994).
+
+The updating rule is extremely simple.  On each cell of an initially
+198 by 198 lattice is an integer amount of sand between 0 to 7,
+inclusive.  If this value exceeds 3, that cell is regarded as
+"unstable" and for the next time step it takes four of its grains of
+sand and places one on each of its neighbors.  The updating is
+simultaneous for all cells.  The total amount of sand is conserved
+except at the boundary.
+
+The basic idea of self organized criticality is that after lots of
+random addition of sand followed by relaxation, the system will
+automatically enter a critical state where the size of an avalanche
+created by additional sand addition is unpredictable without actually
+running the process.  The sizes of the ensuing avalanches
+statistically have a power law distribution without any characteristic
+scale.
+
+Feel free to distribute these files to anyone interested.  The latest
+version can be found at
+
+   "http://thy.phy.bnl.gov/www/xtoys/xtoys.html".
+
+A version for the Amiga can also be found there.
+
+GADGETS
+
+The screen opened by the program has lots of gadgets on it.  They are:
+ 
+Pause: Does the obvious.  When paused, a click in the main window
+outside any other gadget does a single updating step.
+
+Cell size: Makes bigger "pixels".  The overall lattice size can be
+adjusted by resizing the window.  The size in the x direction is
+rounded to two less than a multiple of the number of bytes in a long
+word.  The initial 198 by 198 is the minimum allowed so the buttons
+will fit nicely.  Resizing fills the lattice with the selected pen
+color.
+
+Fill: Fills the lattice with the current pen color (height).
+
+Tracer: When this is active those sites which "tumble" by being stable
+are flagged and colored "cornflower blue" when they become stable.  In
+this way you can trace where an avalanche has gone.
+
+Clear Trace:  This clears the flagged sites to their normal color.
+
+Double: This doubles all heights modulo 8.  This is a convenient way 
+to quickly add lots of sand.
+
+Auto-D: When this is active, the system will automatically double in
+height whenever all sites become stable.
+
+A color bar.  This shows the colors by which the various heights are
+shown.  These squares are also gadgets, and by clicking on one of them
+the corresponding color becomes the current pen color, shown in the
+small box near the color bar.  If any mouse button is pressed
+while over the lattice, you can sketch with this color.  To start an
+avalanche, just select a color larger than 3.
+
+The save button saves the current configuration as "xsand.gif," a
+standard gif file that you can print or manipulate with any graphics
+program that likes gif files.  The restore gadget will reload a
+previously stored configuration.  Note that for the save feature to
+work you need write permission on the directory from which you are
+running.  The "+ saved" button adds the saved configuration to the
+presently displayed one, modulo 8 on each cell.
+
+The other gadgets let you change the boundary conditions.  The program
+starts with open boundaries and sand is lost for any tumbling on the
+edge.  Periodic boundaries connect the left and right sides as well as
+the top and bottom.  In this case sand is never lost and it may be
+that avalanches never end.  Sandy boundaries represent an infinite
+source of sand just outside the lattice.  Every step a grain is tossed
+on each edge site and two on each corner site.  Try the flow boundary
+condition to see what it does.
+
+SOME EXPERIMENTS
+
+1. With the mouse, scribble some sand randomly on the system.  Then
+repeatedly hit the "d" key to fill the lattice with a random mess.
+Wait a few minutes until the system stabilizes and activity ceases.
+Now you should be in the critical ensemble.  Make the active color 4,
+and click the mouse over the lattice.  This will start an avalanche,
+which unpredictably might be large or small.
+
+After a few avalanches, turn on the trace button and make some more.
+Now you can follow where the avalanche has passed.
+
+Note that the avalanche regions always wind up simply connected, with
+no untumbled islands left over.  This is a theorem, and is true for
+any state in the critical ensemble, but not an arbitrary state.
+Select height 0 or 1 for the pen, scribble over a small region, and
+then go back to making some more avalanches.  Now it should be easy to
+make islands, because by removing some sand you have left the critical
+ensemble.
+
+2. Select height 0 and clear the system.  Then make the boundaries
+sandy until the system fills up and nothing changes any more.  Switch
+back to open boundaries to let the excess sand run off.  Try doubling
+the final state and letting it relax back.  Note that it returns
+exactly to itself.  This state is the unique one in the critical
+ensemble with this property.  Indeed, group theoretically this state
+represents the identity.
+
+3. Clear the system.  Run one or two steps with sandy boundaries, and
+then go back to open boundaries.  Toggle the autodouble button on and
+watch the show.  This also yields the identity state.
+
+4. Fill the system with height 2.  Now draw a picture with height 3.
+Put the boundaries sandy for a few moments, and then open them up
+again.  Note how the picture is restored after the avalanche ends.
+This is a property of any state in the critical ensemble.  Indeed,
+this is a way to test that a state is critical.  Try drawing some more
+with height 0 or 1.  Depending on the picture, the above experiment
+may or may not mess up your picture.
+ 
+5. Save the identity from experiment 2.  Draw a picture using only
+heights 2 and 3, as in the previous experiment.  Use the "+ saved"
+button to add in the identity.  After a while your picture should
+magically reappear.
+
+6. Fill the system with height 2 and go to periodic boundaries.
+Sketch a bit with height 4.  With enough sketching, the avalanches
+will no longer stop.  The resulting dynamics can be hypnotic.
+
+
+REFERENCES
+
+P. Bak, C. Tang and K. Wiesenfeld, Phys. Rev. Lett. 59, 381 (1987).
+
+D. Dhar, Phys. Rev. Lett. 64, 1613 (1990).
+
+M. Creutz, Computers in Physics 5, 198 (1991).
+
