@@ -38,7 +38,6 @@ int main(int argc, char *argv[])
   // Fill it according to some function, here f
 
   img.tesselate (f, 0,0, n-1,n-1);
-  img.update();
 
   // Then produce an EPS file
 

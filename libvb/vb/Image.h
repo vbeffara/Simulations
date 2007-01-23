@@ -130,6 +130,8 @@ namespace vb {
      * component of the target image touches the boundary - e.g. if
      * the image represents the 2 sides of a Jordan curve, such as in
      * SLE.cpp.
+     *
+     * @bug tesselate is spelled tessellate !
      */
 
     void tesselate (coloring *f, int xmin, int ymin, int xmax, int ymax);
