@@ -21,7 +21,7 @@
 
 namespace vb {
 
-  /** Helper type for use in vb::Image::tesselate and
+  /** Helper type for use in vb::Image::tessellate and
    * vb::Image::lazy_eval.
    */
 
@@ -130,11 +130,9 @@ namespace vb {
      * component of the target image touches the boundary - e.g. if
      * the image represents the 2 sides of a Jordan curve, such as in
      * SLE.cpp.
-     *
-     * @bug tesselate is spelled tessellate !
      */
 
-    void tesselate (coloring *f, int xmin, int ymin, int xmax, int ymax);
+    void tessellate (coloring *f, int xmin, int ymin, int xmax, int ymax);
 
     /** Return the color of the image at point (x,y).
      *

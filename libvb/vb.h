@@ -52,10 +52,9 @@ namespace vb {
  *   time is roughly the same for all the points displayed. This is
  *   extremely practical.
  *
- * - vb::Image::tesselate(): a quick way to fill an image according to a
+ * - vb::Image::tessellate(): a quick way to fill an image according to a
  *   coloring function (which gives the gray level as a function of
- *   coordinates) by a dyadic decomposition. Yes, I know it should be
- *   spelled tessellate.
+ *   coordinates) by a dyadic decomposition.
  *
  * - A helper class vb::CL_Parser to access a simple but often
  *   sufficient subset of getopt. Supports default values for parameters
@@ -79,8 +78,8 @@ namespace vb {
  * Once you have it, it is a simple matter of the usual ./configure;
  * make; make install.
  *
- * The main dependency is on the SDL library (http://www.sdl.org). While
- * technically libvb will work with it, in the sense that the programs
+ * The main dependency is on the SDL library (http://www.libsdl.org). While
+ * technically libvb will work without it, in the sense that the programs
  * will run, either the display will use the standard X11 libraries, if
  * available and with less features, or you will get no display at all.
  * The EPS output of course works in all cases.

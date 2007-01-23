@@ -2,7 +2,7 @@
 /** A simple example of how to use the libvb library.
  *
  * It does nothing interesting, but demonstrates the vb::Image class,
- * with the tesselate() method and EPS creation.
+ * with the tessellate() method and EPS creation.
  *
  * @file sample.cpp
  */
@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
 
   // Fill it according to some function, here f
 
-  img.tesselate (f, 0,0, n-1,n-1);
+  img.tessellate (f, 0,0, n-1,n-1);
 
   // Then produce an EPS file
 

@@ -168,7 +168,7 @@ namespace vb {
     return tmp;
   }
 
-  void Image::tesselate (coloring *f, int xmin, int ymin, int xmax, int ymax)
+  void Image::tessellate (coloring *f, int xmin, int ymin, int xmax, int ymax)
   {
     int left,right,top,down;
     int i,j,xmed,ymed;
@@ -195,12 +195,12 @@ namespace vb {
         }
       } else if ((xmax-xmin)>(ymax-ymin)) {
         xmed = (xmin+xmax)>>1;
-        this->tesselate (f,xmin,ymin,xmed,ymax);
-        this->tesselate (f,xmed,ymin,xmax,ymax);
+        this->tessellate (f,xmin,ymin,xmed,ymax);
+        this->tessellate (f,xmed,ymin,xmax,ymax);
       } else {
         ymed = (ymin+ymax)>>1;
-        this->tesselate (f,xmin,ymin,xmax,ymed);
-        this->tesselate (f,xmin,ymed,xmax,ymax);
+        this->tessellate (f,xmin,ymin,xmax,ymed);
+        this->tessellate (f,xmin,ymed,xmax,ymax);
       }
     }
   }

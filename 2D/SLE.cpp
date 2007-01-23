@@ -136,7 +136,7 @@ int main(int argc, char ** argv)
 
   fprintf (stderr, "Doing the hard work ...\n");
   
-  img->tesselate (color,0,1,2*wd-1,ht-1);
+  img->tessellate (color,0,1,2*wd-1,ht-1);
 
   fprintf (stderr, "Good bye, have a nice day.\n");
   
