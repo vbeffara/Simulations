@@ -27,7 +27,7 @@ namespace vb {
 
   typedef char coloring (int,int);
   
-  /** The main image class, use for all displays.
+  /** The main image class, used for all displays.
    *
    * It is a basic 2D canvas, greyscale (1, 2 or 4 bpp), with methods to
    * color individual points and to export the contents of an EPS file

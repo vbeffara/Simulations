@@ -66,8 +66,8 @@ namespace vb {
  *   first-passage percolation clusters).
  *
  * And once again: this is all supposed to be very easy to use. If it
- * isn't, please let me know (vbeffara@ens-lyon.fr) ! A simple example
- * to convince you and get you started is in the file sample.cpp.
+ * isn't, please let me know (vbeffara@ens-lyon.fr) ! See the sample
+ * code included in the documentation for an easy way to get started.
  *
  * @section sec_install Installation
  *
