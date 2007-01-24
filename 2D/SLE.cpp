@@ -66,34 +66,20 @@ int main(int argc, char ** argv)
   int i; 
   char s[80];
   double d, cd;
-  char ch;
   
   /* lecture des arguments */
 
-  n = time(0);
-  nn = 300;
-  kappa = 8.0/3.0;
-
-  while ((ch = getopt(argc,argv,"n:k:r:h")) != -1) {
-    switch (ch) {
-    case 'n':
-      nn = atoi (optarg);
-      break;
-    case 'k':
-      kappa = atof (optarg);
-      break;
-    case 'r':
-      n = atoi (optarg);
-      break;
-    case 'h':
-      fprintf (stderr, "Syntax: %s [-n size] [-k kappa] [-r random_seed]\n", argv[0]);
-      exit (1);
-      break;
-    }
-  }
+  CL_Parser CLP (argc,argv,"n=300,k=2.666666666667,r=0",
+      "Syntax: SLE [-n size] [-k kappa] [-r random_seed]");
+  nn = CLP.as_int('n');
+  kappa = CLP.as_double('k');
+  int r = CLP.as_int('r');
 
   sprintf(s,"Schramm's SLE Process (kappa=%f)",kappa);
-  srand48(n);
+
+  if (r) srand48(r);
+  else srand48(time(0));
+
   n=nn*nn; kappa=2/kappa;
 
   /* Brownien qui conduit le SLE - kappa n'apparait pas ici*/

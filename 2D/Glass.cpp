@@ -6,17 +6,14 @@
 
 #include <vb.h>
 #include <unistd.h>
-#include <string.h>
+#include <string>
 
 using namespace vb;
-
-int n;
-double p;
+using namespace std;
 
 char ok[256];
 
 char title[100];
-char *c;
 
 void init_ok_none (void) {
   /*
@@ -27,7 +24,6 @@ void init_ok_none (void) {
 
   for (i=0;i<256;i++)
     ok[i]=1;
-  c="none";
 }
 
 void init_ok_glass (void) {
@@ -47,7 +43,6 @@ void init_ok_glass (void) {
     if (tmp<=2) ok[i]=1;
     else ok[i]=0;
   }
-  c="glass";
 }
 
 void init_ok_connect4 (void) {
@@ -85,7 +80,6 @@ void init_ok_connect4 (void) {
     if ((nb1>1)||(nb2>1)) ok[i]=0;
     else ok[i]=1;
   }
-  c="connect4";
 }
 
 void init_ok_connect6 (void) {
@@ -115,45 +109,31 @@ void init_ok_connect6 (void) {
     if (nb<=2) ok[i]=1;
     else ok[i]=0;
   }
-  c="connect6";
 }
 
 int main (int argc, char **argv) {
-  long ch,x,y,i,nb;
+  long x,y,i,nb;
 
   srand48(time(0));
 
-  n = 300;
-  p = 0.5;
-  init_ok_none();
+  CL_Parser CLP (argc,argv,"n=300,p=.5,c=none",
+      "Syntax: Glass [-n size] [-p p] [-c conditioning]\n\
+      conditioning is one of: none (default), glass, connect4, connect6");
+
+  int n = CLP.as_int('n');
+  double p = CLP.as_double('p');
+  string c = CLP.as_string('c');
   
-  while ((ch = getopt(argc,argv,"hn:p:c:")) != -1) {
-    switch (ch) {
-    case 'n':
-      n = atoi (optarg);
-      break;
-    case 'p':
-      p = atof (optarg);
-      break;
-    case 'h':
-      fprintf (stderr, "Syntax: %s [-n size] [-p p] [-c conditioning]\n", argv[0]);
-      fprintf (stderr, "  type is one of: none (default), glass, connect4, connect6\n");
-      exit (1);
-      break;
-    case 'c':
-      if (!strcmp(optarg,"none")) init_ok_none();
-      else if (!strcmp(optarg,"glass")) init_ok_glass();
-      else if (!strcmp(optarg,"connect4")) init_ok_connect4();
-      else if (!strcmp(optarg,"connect6")) init_ok_connect6();
-      else {
-	fprintf (stderr, "Eror: conditioning '%s' unknown!\n",optarg);
-	exit (1);
-      }
-      break;
-    }
+  if (c == "none") init_ok_none();
+  else if (c == "glass") init_ok_glass();
+  else if (c == "connect4") init_ok_connect4();
+  else if (c == "connect6") init_ok_connect6();
+  else {
+    cerr << "Error: conditioning '" << c << "' unknown!" << endl;
+    exit (1);
   }
 
-  snprintf (title,99, "A glass process of parameter %g (conditioning: '%s')", p, c);
+  snprintf (title,99, "A glass process of parameter %g (conditioning: '%s')", p, c.c_str());
   Image img (n,n,1,title);
 
   for (x=0;x<n;x++)

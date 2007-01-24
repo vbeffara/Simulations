@@ -16,30 +16,14 @@ double cost (void) {
 }
 
 int main (int argc, char **argv) {
-  char ch;
   char title[100];
   double curtime;
 
   srand48(time(0));
 
-  int n = 200;
-  int invasion = 0;
-
-  while ((ch = getopt(argc,argv,"hn:i")) != -1) {
-    switch (ch) {
-    case 'n':
-      n = atoi (optarg);
-      break;
-    case 'i':
-      invasion = 1;
-      break;
-    case 'h':
-      std::cerr << "Syntax: " << argv[0] << " [-n size] [-i]\n";
-      std::cerr << "  -i : do invasion percolation instead.\n";
-      exit (1);
-      break;
-    }
-  }
+  CL_Parser CLP (argc,argv,"n=200,i");
+  int n = CLP.as_int('n');
+  bool invasion = CLP.as_bool('i');
 
   snprintf (title,99,"A First-Passage Percolation cluster of radius %d", n);
 
