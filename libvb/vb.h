@@ -1,8 +1,7 @@
 
-/// @file vb.h
-/// Include everything from the libvb library.
-
-#include <vb/config.h>
+/** @file vb.h
+ * Include everything from the libvb library.
+ */
 
 #include <vb/Image.h>
 #include <vb/CoarseImage.h>

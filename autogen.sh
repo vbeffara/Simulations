@@ -5,5 +5,6 @@ test -d ${HOME}/local/share/aclocal && ACDIRS="$ACDIRS -I ${HOME}/local/share/ac
 
 aclocal $ACDIRS
 libtoolize
+autoheader
 automake -a
 autoconf

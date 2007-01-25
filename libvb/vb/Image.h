@@ -1,6 +1,8 @@
 
-/// @file Image.h
-/// Definitions for the vb::Image class
+/** @file Image.h
+ * Definitions for the vb::Image class
+ * @todo Remove the dependency on vb/config.h
+ */
 
 #ifndef __VB_IMAGE_H
 #define __VB_IMAGE_H

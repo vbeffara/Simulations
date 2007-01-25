@@ -1,7 +1,6 @@
 
 AC_INIT(simulations, 2006-12-27)
 AC_CONFIG_SRCDIR(libvb/Image.cpp)
-AC_CONFIG_HEADERS(libvb/vb/config.h)
 AC_CANONICAL_TARGET
 
 AM_INIT_AUTOMAKE
@@ -36,7 +35,16 @@ AS_IF([test "x$with_sdl" = xyes],
       [AC_SUBST(VB_CFLAGS, "")
        AC_SUBST(VB_LIBS, "")])
 
-AC_OUTPUT([Makefile libvb/libvb-config \
-		    trucs/Makefile xtoys/Makefile \
-		    windows/Makefile 1D/Makefile libvb/Makefile \
-		    2D/Makefile])
+AC_CONFIG_HEADERS(libvb/vb/config.h)
+
+AC_CONFIG_FILES(libvb/libvb-config)
+
+AC_CONFIG_FILES(Makefile)
+AC_CONFIG_FILES(trucs/Makefile)
+AC_CONFIG_FILES(xtoys/Makefile)
+AC_CONFIG_FILES(windows/Makefile)
+AC_CONFIG_FILES(1D/Makefile)
+AC_CONFIG_FILES(2D/Makefile)
+AC_CONFIG_FILES(libvb/Makefile)
+
+AC_OUTPUT
