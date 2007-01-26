@@ -47,7 +47,7 @@ called  "config.h"  in  the  project,  containing  the  following  lines
 (without the BEGIN and END lines of course):
 
 BEGIN config.h
-#define HAVE_SDL 1
+#define LIBVB_HAVE_SDL 1
 #define X_DISPLAY_MISSING 1
 #define VERSION "1.0 (using Dev-C++)"
 #define srand48 srand

@@ -117,7 +117,7 @@ namespace vb {
     os << "%%\n";
     os << "%%Title: " << img.title << "\n";
     os << "%%\n";
-    os << "%%Creator: libvb - v" << VERSION
+    os << "%%Creator: libvb - v" << LIBVB_VERSION
       << " - © 2001-2006 VB - GPL\n";
     os << "%%Creator:   Mail: Vincent.Beffara@ens-lyon.fr\n";
     os << "%%Creator:   Web:  <http://www.umpa.ens-lyon.fr/~vbeffara/>\n";

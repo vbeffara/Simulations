@@ -1,18 +1,17 @@
 
 /** @file Image.h
  * Definitions for the vb::Image class
- * @todo Remove the dependency on vb/config.h
  */
 
 #ifndef __VB_IMAGE_H
 #define __VB_IMAGE_H
 
-#include <vb/config.h>
+#include <vb/vb_config.h>
 
 #include <iostream>
 #include <string>
 
-#ifdef HAVE_SDL
+#ifdef LIBVB_HAVE_SDL
 #include <SDL.h>
 #else
 #ifndef X_WINDOW_MISSING
@@ -191,7 +190,7 @@ namespace vb {
     unsigned long long nb_clock;
     int paused;
 
-#ifdef HAVE_SDL
+#ifdef LIBVB_HAVE_SDL
     SDL_Surface *screen;
 
     SDL_Event event;

@@ -1,5 +1,7 @@
 
-AC_INIT(simulations, 2006-12-27)
+AC_INIT(simulations, current)
+AC_DEFINE(LIBVB_VERSION,["2007-01-26"],[The version of the libvb library])
+
 AC_CONFIG_SRCDIR(libvb/Image.cpp)
 AC_CANONICAL_TARGET
 
@@ -20,7 +22,7 @@ AC_ARG_WITH([sdl],
 
 AS_IF([test "x$with_sdl" != xno],
       [AM_PATH_SDL(1.2.0,
-                   AC_DEFINE(HAVE_SDL,1,[Do we have SDL?]),
+                   AC_DEFINE(LIBVB_HAVE_SDL,1,[Do we have SDL?]),
                    with_sdl=no)])
 
 AM_CONDITIONAL(DISPLAY_SDL, test "x$with_sdl" = xyes)
@@ -35,7 +37,8 @@ AS_IF([test "x$with_sdl" = xyes],
       [AC_SUBST(VB_CFLAGS, "")
        AC_SUBST(VB_LIBS, "")])
 
-AC_CONFIG_HEADERS(libvb/vb/config.h)
+AC_CONFIG_HEADERS(config.h)
+AC_CONFIG_HEADERS(libvb/vb/vb_config.h)
 
 AC_CONFIG_FILES(libvb/libvb-config)
 

@@ -1,6 +1,6 @@
 
-nodist_nobase_include_HEADERS = vb/config.h
-nobase_include_HEADERS = vb.h vb/Image.h vb/CoarseImage.h vb/CL_Parser.h vb/PRNG.h
+nobase_nodist_include_HEADERS = vb/vb_config.h
+nobase_include_HEADERS = vb.h vb/Image.h vb/CoarseImage.h vb/CL_Parser.h vb/PRNG.h vb/Point.h
 
 lib_LTLIBRARIES = libvb.la
 libvb_la_SOURCES = Image.cpp CoarseImage.cpp PRNG.cpp CL_Parser.cpp \
@@ -35,4 +35,4 @@ sample_SOURCES = sample.cpp
 sample_LDADD = libvb.la
 
 bin_SCRIPTS = libvb-config
-EXTRA_DIST = libvb-config.in vb/config.h.in
+EXTRA_DIST = libvb-config.in
