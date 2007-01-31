@@ -85,3 +85,6 @@ RPNG_SOURCES = RPNG.cpp
 
 bin_PROGRAMS += Gacs5
 Gacs5_SOURCES = Gacs5.cpp
+
+bin_PROGRAMS += LPP
+LPP_SOURCES = LPP.cpp
