@@ -5,10 +5,11 @@ using namespace std;
 using namespace vb;
 
 int main (int argc, char **argv) {
-  CL_Parser CLP (argc,argv, "n=500,r=.1,l=.01");
+  CL_Parser CLP (argc,argv, "n=500,r=.1,l=.01,d=0");
   int n = CLP.as_int('n');
   double r = CLP.as_double('r');
   double l = CLP.as_double('l');
+  double d = CLP.as_double('d');
 
   srand48(time(0));
 
@@ -27,7 +28,8 @@ int main (int argc, char **argv) {
 
   for (int y=1; y<n; ++y) {
     for (int x=0; x<n; ++x)
-      if (drand48() < l) {
+      if  ( (drand48() < l) ||
+            ((x==y)&&(drand48() < d)) ) {
         img.putpoint(x,y,1);
         field[x]++;
         int xx=(x+1)%n;
