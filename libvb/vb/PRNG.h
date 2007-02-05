@@ -5,6 +5,8 @@
 #ifndef __VB_PRNG_H
 #define __VB_PRNG_H
 
+#include <math.h>
+
 namespace vb {
 
   /** A rewindable pseudo-random number generator.
@@ -17,6 +19,9 @@ namespace vb {
    *
    * This is very useful to program coupling from the past without
    * having to store the random numbers.
+   *
+   * Several classical distributions are implemented, see the
+   * documentation for a complete list (I add them as I need them ...)
    */
 
   class PRNG {
@@ -59,6 +64,40 @@ namespace vb {
     long rand (void) {
       rdmbuf = (a*rdmbuf+b)%max;
       return (long)rdmbuf;
+    }
+
+    /** Return a bernoulli variable in {0,1} */
+
+    int bernoulli (double p=0.5) {
+      return rand() < p*(double)max ? 1 : 0;
+    }
+
+    /** Return a uniformly distributed real between 0 and range */
+
+    double uniform (double range=1.0) {
+      return range * ( (double)(this->rand()) / (double)max );
+    }
+
+    /** Return an exponential random variable of parameter lambda */
+
+    double exponential (double lambda=1.0) {
+      return -log(this->uniform())/lambda;
+    }
+
+    /** Return a Gaussian variable.
+     * Caution : it calls rand() twice, if you rewind you should know it.
+     */
+
+    double gaussian (double m=0.0, double sigma2=1.0) {
+      double modulus = this->exponential();
+      double angle = this->uniform(1000.0*3.14159265358979);
+      return m + sqrt(sigma2)*modulus*cos(angle);
+    }
+
+    /** Return a geometric variable (in {0,1,2,...}) of parameter p. */
+
+    int geometric (double p) {
+      return floor(this->exponential(-log(1-p)));
     }
 
   private:
