@@ -94,10 +94,22 @@ namespace vb {
       return m + sqrt(sigma2)*modulus*cos(angle);
     }
 
-    /** Return a geometric variable (in {0,1,2,...}) of parameter p. */
+    /** Return a geometric variable (in Z_+) of parameter p. */
 
     int geometric (double p) {
-      return floor(this->exponential(-log(1-p)));
+      return (int) floor(this->exponential(-log(1-p)));
+    }
+
+    /** Return a Poisson variable of parameter lambda. */
+
+    int poisson (double lambda) {
+      double u = this->uniform(exp(lambda));
+      int k=0, fk=1;
+      while (u>0) {
+        u -= pow(lambda,k)/fk;
+        ++k; fk *= k;
+      }
+      return k-1;
     }
 
   private:
