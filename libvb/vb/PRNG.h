@@ -104,10 +104,12 @@ namespace vb {
 
     int poisson (double lambda) {
       double u = this->uniform(exp(lambda));
-      int k=0, fk=1;
+      int k=0;
+      double fk=1;
       while (u>0) {
         u -= pow(lambda,k)/fk;
-        ++k; fk *= k;
+        ++k;
+        fk *= k;
       }
       return k-1;
     }
