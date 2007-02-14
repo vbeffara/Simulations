@@ -11,15 +11,15 @@ using namespace vb;
 
 PointQueue queue;
 
+PRNG PR;
+
 double cost (void) {
-  return -log(drand48());
+  return PR.exponential();
 }
 
 int main (int argc, char **argv) {
   char title[100];
   double curtime;
-
-  srand48(time(0));
 
   CL_Parser CLP (argc,argv,"n=200,i");
   int n = CLP.as_int('n');
