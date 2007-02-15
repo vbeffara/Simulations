@@ -163,7 +163,7 @@ namespace vb {
     char tmp = (*this)(x,y);
 
     if (tmp==0) 
-      this->putpoint (x,y,tmp=f(x,y));
+      putpoint (x,y,tmp=f(x,y));
 
     return tmp;
   }
@@ -173,34 +173,34 @@ namespace vb {
     int left,right,top,down;
     int i,j,xmed,ymed;
 
-    left = this->lazy_eval (f,xmin,ymin); down=left;
-    right = this->lazy_eval (f,xmax,ymax); top=right;
+    left = lazy_eval (f,xmin,ymin); down=left;
+    right = lazy_eval (f,xmax,ymax); top=right;
 
     for (i=xmin;i<=xmax;i++) {
-      if (this->lazy_eval (f,i,ymin) != down) down=0;
-      if (this->lazy_eval (f,i,ymax) != top) top=0;
+      if (lazy_eval (f,i,ymin) != down) down=0;
+      if (lazy_eval (f,i,ymax) != top) top=0;
     }
 
     for (i=ymin;i<=ymax;i++) {
-      if (this->lazy_eval (f,xmin,i) != left) left=0;
-      if (this->lazy_eval (f,xmax,i) != right) right=0;
+      if (lazy_eval (f,xmin,i) != left) left=0;
+      if (lazy_eval (f,xmax,i) != right) right=0;
     }
 
     if ((xmax-xmin>1)&&(ymax-ymin>1)) {
       if (left&&right&&top&&down) {
         for (i=xmin+1;i<xmax;i++) {
           for (j=ymin+1;j<ymax;j++) {
-            this->putpoint (i,j,left,0);
+            putpoint (i,j,left,0);
           }
         }
       } else if ((xmax-xmin)>(ymax-ymin)) {
         xmed = (xmin+xmax)>>1;
-        this->tessellate (f,xmin,ymin,xmed,ymax);
-        this->tessellate (f,xmed,ymin,xmax,ymax);
+        tessellate (f,xmin,ymin,xmed,ymax);
+        tessellate (f,xmed,ymin,xmax,ymax);
       } else {
         ymed = (ymin+ymax)>>1;
-        this->tessellate (f,xmin,ymin,xmax,ymed);
-        this->tessellate (f,xmin,ymed,xmax,ymax);
+        tessellate (f,xmin,ymin,xmax,ymed);
+        tessellate (f,xmin,ymed,xmax,ymax);
       }
     }
   }

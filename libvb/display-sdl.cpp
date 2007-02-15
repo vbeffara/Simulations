@@ -68,7 +68,7 @@ namespace vb {
     pic_is_original = 0;
     pitch = screen->pitch;
 
-    this->update();  
+    update();  
     
     return 1;
   }
@@ -76,7 +76,7 @@ namespace vb {
   void Image::update () {
     if (is_onscreen) {
       SDL_UpdateRect(screen,0,0,0,0);
-      this->events();
+      events();
     }
   }  
 }

@@ -9,7 +9,7 @@
 
 namespace vb {
 
-  /** A rewindable pseudo-random number generator.
+  /** A rewindable pseudo-random number generator engine.
    *
    * The point is to have a bad, but rewindable random number source.
    * The algorithm is just linear congruence, so it iterates a*x+b
@@ -68,7 +68,13 @@ namespace vb {
       long long rdmbuf;
   };
 
-  /** Mersenne Twister pseudo-random number generator.
+#define PRNG_MT_N 624                   ///< Size of the buffer
+#define PRNG_MT_M 397                   ///< Size of the shift (?)
+#define PRNG_MT_MATRIX_A 0x9908b0dfUL	///< Constant vector a
+#define PRNG_MT_UPPER_MASK 0x80000000UL	///< Most significant w-r bits
+#define PRNG_MT_LOWER_MASK 0x7fffffffUL	///< Least significant r bits
+
+  /** Mersenne Twister pseudo-random number generator engine.
    *
    * Original version : mt19937ar.c by Takuji Nishimura and Makoto
    * Matsumoto - see original copyright notice below.
@@ -119,16 +125,18 @@ namespace vb {
    *     email: m-mat @ math.sci.hiroshima-u.ac.jp (remove space)
    */
 
-#define PRNG_MT_N 624
-#define PRNG_MT_M 397
-#define PRNG_MT_MATRIX_A 0x9908b0dfUL	/* constant vector a */
-#define PRNG_MT_UPPER_MASK 0x80000000UL	/* most significant w-r bits */
-#define PRNG_MT_LOWER_MASK 0x7fffffffUL	/* least significant r bits */
-
   class PRNG_Engine_MT {
     public:
+
+      /** The maximum integer that this PRNG can return. */
+
       static const unsigned long max = 0xffffffffUL;
+      
+      /** The standard constructor. */
+
       PRNG_Engine_MT () { mti = PRNG_MT_N+1; }
+
+      /** Initialize the PRNG from an integer seed. */
 
       void srand (unsigned long seed) {
         mt[0] = seed & 0xffffffffUL;
@@ -138,6 +146,8 @@ namespace vb {
         }
       }
 
+      /** Return an integer between 0 and max. */
+
       unsigned long rand () {
         unsigned long y;
         static unsigned long mag01[2] = { 0x0UL, PRNG_MT_MATRIX_A };
@@ -145,7 +155,7 @@ namespace vb {
         if (mti >= PRNG_MT_N) {
           int kk;
 
-          if (mti == PRNG_MT_N + 1) this->srand (5489UL);
+          if (mti == PRNG_MT_N + 1) srand (5489UL);
 
           for (kk = 0; kk < PRNG_MT_N - PRNG_MT_M; kk++) {
             y = (mt[kk] & PRNG_MT_UPPER_MASK) | (mt[kk + 1] & PRNG_MT_LOWER_MASK);
@@ -197,9 +207,41 @@ namespace vb {
 
   template <class Engine> class PRNG_template {
     public:
+
+      /** The engine of the PRNG.
+       *
+       * It is a class that has to implement three things:
+       *
+       * - Have an integer member engine::max which is the largest
+       *   number that the engine can provide;
+       *
+       * - Have a method void engine::srand(unsigned long) to initialize
+       *   it from an integer;
+       *
+       * - Have a method unsigned long engine::rand() which returns an
+       *   integer between 0 and engine::max.
+       *
+       * The methods rand() and srand() are propagated to the
+       * PRNG_template object; the value of max (which might change as
+       * the program runs) and any additional methods (such as
+       * PRNG_Engine_Rewindable::rewind()) are not, and should be
+       * accessed as PRNG_template::engine::whatever().
+       */
+
       Engine engine;
 
+      /** Initialize the engine from an integer seed.
+       *
+       * This simply calls PRNG_template::engine::srand().
+       */
+
       void srand (long seed) { engine.srand(seed); }
+
+      /** Return a pseudo-random number generator.
+       *
+       * This simply calls PRNG_template::engine::rand().
+       */
+
       unsigned long rand (void) { return engine.rand(); }
 
       /** Return a bernoulli variable in {0,1} */
@@ -211,13 +253,13 @@ namespace vb {
       /** Return a uniformly distributed real between 0 and range */
 
       double uniform (double range=1.0) {
-        return range * ( (double)(this->rand()) / (double)engine.max );
+        return range * ( (double)rand() / (double)engine.max );
       }
 
       /** Return an exponential random variable of parameter lambda */
 
       double exponential (double lambda=1.0) {
-        return -log(this->uniform())/lambda;
+        return -log(uniform())/lambda;
       }
 
       /** Return a Gaussian variable.
@@ -225,21 +267,21 @@ namespace vb {
        */
 
       double gaussian (double m=0.0, double sigma2=1.0) {
-        double modulus = this->exponential();
-        double angle = this->uniform(1000.0*3.14159265358979);
+        double modulus = exponential();
+        double angle = uniform(1000.0*3.14159265358979);
         return m + sqrt(sigma2)*modulus*cos(angle);
       }
 
       /** Return a geometric variable (in Z_+) of parameter p. */
 
       int geometric (double p) {
-        return (int) floor(this->exponential(-log(1-p)));
+        return (int) floor(exponential(-log(1-p)));
       }
 
       /** Return a Poisson variable of parameter lambda. */
 
       int poisson (double lambda) {
-        double u = this->uniform(exp(lambda));
+        double u = uniform(exp(lambda));
         int k=0;
         double fk=1;
         while (u>0) {
@@ -251,7 +293,27 @@ namespace vb {
       }
   };
 
+  /** The default pseudo-random number generator.
+   *
+   * It uses the Mersenne twister engine and implements all the
+   * distributions provided by PRNG_template.
+   *
+   * If you can, use this one. On my system (PPC G4), it is faster than
+   * the standard rand() and lrand48() system functions, in addition to
+   * being a better random number generator.
+   */
+
   typedef PRNG_template<PRNG_Engine_MT> PRNG;
+
+  /** The rewindable pseudo-random number generator.
+   *
+   * It uses the 'rewindable' engine (which is a terribly bad linear
+   * congruence iterator), and implements everything that PRNG_template
+   * provides.
+   *
+   * To rewind, use PRGN_Rewindable::engine::rewind(...).
+   */
+
   typedef PRNG_template<PRNG_Engine_Rewindable> PRNG_Rewindable;
 }
 

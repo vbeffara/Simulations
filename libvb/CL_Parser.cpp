@@ -18,13 +18,13 @@ namespace vb {
 
     int cut;
     while ((cut=syntax.find_first_of(",")) != (int) syntax.npos) {
-      this->newparam (syntax.substr(0,cut));
+      newparam (syntax.substr(0,cut));
       syntax = syntax.substr(cut+1);
     }
     if (syntax.length())
       newparam (syntax);
     
-    this->parse(argc,argv);
+    parse(argc,argv);
   }
   
   void CL_Parser::newparam (std::string s) {

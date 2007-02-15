@@ -33,6 +33,11 @@ namespace vb {
    * It is a basic 2D canvas, greyscale (1, 2 or 4 bpp), with methods to
    * color individual points and to export the contents of an EPS file
    * to an ostream such as std::cout.
+   *
+   * @todo Provide for movie creation (by outputting the image to a
+   * different file on prescribed intervals).
+   *
+   * @todo Add an 8 bpp mode.
    */
 
   class Image {
@@ -53,8 +58,6 @@ namespace vb {
      * @param ht The height in pixels.
      * @param dp The depth of the created bitmap (1, 2 or 4, in bpp).
      * @param tit The title of the image.
-     *
-     * @todo Add an 8 bpp mode.
      */
 
     Image (int wd, int ht, int dp, std::string tit);
