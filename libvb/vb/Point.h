@@ -10,17 +10,7 @@
 #include <vb/CoarseImage.h>
 
 namespace vb {
-  class Point;
-
-  /** A wrapper around a priority_queue of Point elements. */
-
-  class PointQueue {
-    protected:
-      std::priority_queue<Point> q;   ///< The std::priority_queue itself.
-
-      friend inline PointQueue &operator>> (PointQueue &, Point &);
-      friend inline PointQueue &operator<< (PointQueue &pq, Point p);
-  };
+  class PointQueue;
 
   /** A stupid class for a point with a clock. 
    *
@@ -47,7 +37,7 @@ namespace vb {
 
       /** Another constructor that takes the first point out of a queue. */
 
-      Point (PointQueue &pq) { pq >> *this; };
+      Point (PointQueue &pq);
 
       /** Ordering of the points for the queue.
        *
@@ -56,6 +46,16 @@ namespace vb {
        */
 
       bool operator< (const Point &pt) const { return t > pt.t; };
+  };
+
+  /** A wrapper around a priority_queue of Point elements. */
+
+  class PointQueue {
+    protected:
+      std::priority_queue<Point> q;   ///< The std::priority_queue itself.
+
+      friend inline PointQueue &operator>> (PointQueue &, Point &);
+      friend inline PointQueue &operator<< (PointQueue &pq, Point p);
   };
 
   /** Put a Point in a PointQueue. */
@@ -72,6 +72,10 @@ namespace vb {
     pq.q.pop();
     return pq;
   }
+
+  Point::Point (PointQueue &pq) { 
+    pq >> *this; 
+  };
 
   /** Put a Point in an Image.
    *
