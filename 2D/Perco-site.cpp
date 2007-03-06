@@ -1,6 +1,5 @@
 
 #include <math.h>
-#include <time.h>
 #include <vb.h>
 
 using namespace vb;
@@ -64,12 +63,13 @@ int main(int argc, char ** argv)
   sprintf(title,"Site-percolation cluster (p=%f)",p);
   img=new Image(2*n,2*n,2,title);
   t=img->give_me_the_pic(); //FIXME
-  srand48(time(0));
+
+  PRNG prng;
 
   /* Site-percolation --- 1=dedans, 2=dehors */
 
   for (i=0;i<4*n*n;i++) {
-    if ( drand48() < p ) 
+    if ( prng.bernoulli(p) ) 
       t[i]=1;
     else
       t[i]=2;

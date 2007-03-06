@@ -4,7 +4,6 @@
 
 #include <vb.h>
 #include <unistd.h>
-#include <time.h>
 #include <math.h>
 
 using namespace vb;

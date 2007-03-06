@@ -18,15 +18,17 @@ int main (int argc, char **argv) {
     img.putpoint(i,0,1);
   }
 
+  vb::PRNG prng;
+
   bool running = true;
   while (running) {
-    int x = 1 + lrand48()%(n-2);
+    int x = 1 + prng.rand()%(n-2);
     int h = height[x];
-    int d = lrand48()&(1<<14);
+    int d = prng.rand()&(1<<14);
 
     if (d) { // If trying to grow
-      if ( (height[x-1]>h) || (height[x+1]>h)  || (drand48()<e) ||
-	   ((c>0)&&(x==n/2)&&(drand48()<c)) )
+      if ( (height[x-1]>h) || (height[x+1]>h)  || (prng.bernoulli(e)) ||
+	   ((c>0)&&(x==n/2)&&(prng.bernoulli(c))) )
 	++ height[x];
     } else { // If trying to shrink
       if ( (height[x-1]<h) || (height[x+1]<h) )

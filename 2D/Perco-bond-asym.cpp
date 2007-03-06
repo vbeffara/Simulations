@@ -1,6 +1,5 @@
 
 #include <math.h>
-#include <time.h>
 #include <vb.h>
 
 using namespace vb;
@@ -102,13 +101,14 @@ int main(int argc, char ** argv)
   sprintf(title,"Bond-percolation cluster (p1=%f, p2=%f)",p1,p2);
   img = new Image(2*n,2*n,1,title);
   t=img->give_me_the_pic();
-  srand48(time(0));
+
+  PRNG prng;
 
   /* Bond-percolation --- 16->est, 32->nord */
 
   for (i=0;i<4*n*n;i++) {
-    if ( drand48() < p1 ) t[i]=17; else t[i]=1;
-    if ( drand48() < p2 ) t[i]+=32;
+    if ( prng.bernoulli(p1) ) t[i]=17; else t[i]=1;
+    if ( prng.bernoulli(p2) ) t[i]+=32;
   }
 
   /* 3=cluster de l'origine */

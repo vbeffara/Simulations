@@ -1,6 +1,5 @@
 
 #include <math.h>
-#include <time.h>
 #include <vb.h>
 
 using namespace vb;
@@ -25,6 +24,8 @@ int main(int argc, char *argv[])
   sprintf(title,"An Ising configuration (beta=%6f)",beta);
   Image img(n,n,1,title);
 
+  PRNG prng;
+
   /* conditions initiales / au bord */
 
 #define LEFT 0
@@ -39,7 +40,7 @@ int main(int argc, char *argv[])
   } else { /* Haute temp. */
     for (x=1;x<n-1;x++) {
       for (y=1;y<n-1;y++) {
-	img(x,y) = lrand48()%2;
+	img(x,y) = prng.bernoulli(.5);
       }
     }
   }
@@ -53,7 +54,6 @@ int main(int argc, char *argv[])
 
   /* Initialisations */
 
-  srand48(time(0));
   p[0]=0;
   p[1]=(long)(exp(-beta) * (double)RAND_MAX);
   p[2]=(long)(exp(-2*beta) * (double)RAND_MAX);
@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
 	if (img(xy) == img(xy+1)) { f2++; } else { f1++; } 
 	if (img(xy) == img(xy+n)) { f2++; } else { f1++; } 
 	
-	if ( (f2<=f1) || ((lrand48()%RAND_MAX) < p[f2-f1]) ) {
+	if ( (f2<=f1) || ((prng.rand()%RAND_MAX) < p[f2-f1]) ) {
 	  img.putpoint(x,y,(1-img(xy)));
 	}
       }

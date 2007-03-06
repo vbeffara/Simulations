@@ -1,6 +1,5 @@
 
 #include <math.h>
-#include <time.h>
 #include <vb.h>
 
 using namespace vb;
@@ -176,8 +175,6 @@ int main(int argc, char ** argv)
   n=1<<n; /* BIG !!! */
 
   /* Initialisations */
-
-  srand(time(0));
 
   sprintf(title,"A DLA cluster of size %ld",n);
   img = new Image(n,n,1,title);

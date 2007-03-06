@@ -1,6 +1,5 @@
 
 #include <math.h>
-#include <time.h>
 #include <vb.h>
 
 using namespace vb;
@@ -48,7 +47,7 @@ void cnx (Image *img, long ox, long oy, long in, long out)
 int main(int argc, char ** argv)
 {
   Image *img;
-  long n,i,k;
+  long n,i;
   char title[80];
   double p1,p2;
 
@@ -65,13 +64,13 @@ int main(int argc, char ** argv)
   sprintf(title,"Gradient percolation cluster");
   img=new Image(n,n,2,title);
   t=img->give_me_the_pic();
-  srand48(time(0));
+
+  PRNG prng;
 
   /* Site-percolation --- 1=dedans, 2=dehors */
 
   for (i=0;i<n*n;i++) {
-    k = (int)(drand48()*n*n);
-    if ( k < p1*n*n + (p2-p1)*i ) 
+    if ( prng.bernoulli( p1 + (p2-p1)*((double)i / (n*n)) )) 
       t[i]=1;
     else
       t[i]=2;

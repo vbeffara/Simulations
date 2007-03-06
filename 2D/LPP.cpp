@@ -11,7 +11,7 @@ int main (int argc, char **argv) {
   double l = CLP.as_double('l');
   double d = CLP.as_double('d');
 
-  srand48(time(0));
+  PRNG prng;
 
   Image img (n,n,1,"Broken line process");
   img.onscreen();
@@ -19,7 +19,7 @@ int main (int argc, char **argv) {
   int field[n];
 
   for (int x=0; x<n; ++x)
-    if (drand48() < r) {
+    if (prng.bernoulli(r)) {
       img.putpoint(x,0,1,0);
       field[x]=1;
     } else {
@@ -30,8 +30,8 @@ int main (int argc, char **argv) {
 
   for (int y=1; y<n; ++y) {
     for (int x=0; x<n; ++x)
-      if  ( (drand48() < l) ||
-            ((x==y)&&(drand48() < d)) ) {
+      if  ( (prng.bernoulli(l)) ||
+            ((x==y)&&(prng.bernoulli(d))) ) {
         img.putpoint(x,y,1,0);
         field[x]++;
         int xx=(x+1)%n;

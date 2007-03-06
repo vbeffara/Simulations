@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <time.h>
 #include <vb.h>
 
 #define EC fprintf(stderr,"<%d>\n",__LINE__);
@@ -35,7 +34,7 @@ int main(int argc, char ** argv)
 
   /* Initialisations */
 
-  srand48(time(0));
+  PRNG prng;
 
   sprintf(title,"A Brownian path of size %d",n);
   img = new Image(2*n,2*n,1,title);
@@ -44,7 +43,7 @@ int main(int argc, char ** argv)
 
   i=0; done=0; x=n; y=n;
   while (!done) {
-    d = ((lrand48()%49583)>>3)&3;
+    d = prng.rand()&3;
     img->putpoint (x,y,1);
     x += dx[(int)d];
     y += dy[(int)d];

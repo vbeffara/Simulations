@@ -4,7 +4,6 @@
 
 #include <vb.h>
 #include <iostream>
-#include <time.h>
 #include <cmath>
 
 using namespace vb;
@@ -12,6 +11,8 @@ using namespace vb;
 CoarseImage *img;
 int *shape;
 int n,maxx,maxy;
+
+PRNG prng;
 
 void addapoint (int x, int y) {
   img->putpoint(x,y,1);
@@ -33,7 +34,7 @@ void reshape (int x, int y) {
 bool ddla (int x, int y) {
   int xx=x, yy=y;
   while (1) {
-    if (lrand48()&128) ++xx;
+    if (prng.rand()&128) ++xx;
     else ++yy;
     if ((xx>=n) || (yy>=shape[xx])) return 1;
     if ((*img)(xx,yy) == 1) return 0;
@@ -52,6 +53,7 @@ bool corner_plus_top (int x, int y) {
 }
 
 bool ok (int x, int y) {
+  return ddla(x,y);
   return corner_plus_top(x,y);
 }
 
@@ -69,10 +71,8 @@ int main (int argc, char **argv) {
   img->onscreen();
 
   img->putpoint(0,0,1);
-  queue << Point(1,0,log(drand48()))
-        << Point(0,1,log(drand48()));
-
-  srand48(time(0));
+  queue << Point(1,0,prng.exponential())
+        << Point(0,1,prng.exponential());
 
   int running=1;
   while (running) {
@@ -85,11 +85,11 @@ int main (int argc, char **argv) {
 	addapoint (pt.x,pt.y);
 	reshape (pt.x,pt.y);
 	if ( (pt.x<n-1) && ((*img)(pt.x+1,pt.y)==0) )
-	  queue << Point(pt.x+1,pt.y,curtime-log(drand48()));
+	  queue << Point(pt.x+1,pt.y,curtime+prng.exponential());
 	if ( (pt.y<n-1) && ((*img)(pt.x,pt.y+1)==0) )
-	  queue << Point(pt.x,pt.y+1,curtime-log(drand48()));
+	  queue << Point(pt.x,pt.y+1,curtime+prng.exponential());
       } else {
-	queue << Point(pt.x,pt.y,curtime-log(drand48()));
+	queue << Point(pt.x,pt.y,curtime+prng.exponential());
       }
     }
   }

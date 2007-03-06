@@ -1,6 +1,5 @@
 
 #include <math.h>
-#include <time.h>
 #include <vb.h>
 
 using namespace vb;
@@ -52,7 +51,6 @@ int main(int argc, char ** argv)
 
   cont=1;
   while(cont) {
-    srand(time(0));
     x[0]=0; y[0]=0; i=0; j=0;
     for(k=1;k<n;k++) {
       if (rand()&16) {

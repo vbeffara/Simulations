@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <time.h>
 #include <vb.h>
 
 int dx[4] = {1,0,-1,0};  /* 0=est, 1=nord ... */
@@ -16,9 +15,7 @@ using namespace vb;
 int main(int argc, char ** argv)
 {
   char title[80];          /* Titre ... */
-  int n;                   /* Taille du carré */
   char d;                  /* La chaine */
-  double a;                /* Renforcement a 1+a */
 
   int L;                /* Coarse grain, right now it is n^(1/3) */
   
@@ -28,17 +25,14 @@ int main(int argc, char ** argv)
 
   /* arguments -> taille du terrain */
 
-  if (argc != 3) {
-    fprintf(stderr, "Syntaxe : Once <n> <a>\n");
-    exit(1);
-  }
-  n=atoi(argv[1]);
-  a=atof(argv[2]);
+  CL_Parser CLP (argc,argv,"n=1000,a=2");
+  int n = CLP.as_int('n');
+  double a = CLP.as_double('a');
   a=1/(1+a);
 
   /* Initialisations */
 
-  srand48(time(0));
+  PRNG prng;
 
   sprintf(title,"A vertex once-reinforced random walk (size=%d, a=%.2f)",n,1/a-1);
 
@@ -57,12 +51,12 @@ int main(int argc, char ** argv)
   while ((x>0)&&(y>0)&&(x<n-1)&&(y<n-1)) {
     img.putpoint (x,y,1);
 
-    d = (lrand48()>>10)&3;
+    d = prng.rand()&3;
     nx = x + dx[(int)d];
     ny = y + dy[(int)d];
     newcol = img(nx,ny);
 
-    if (newcol||(drand48()<a)) {
+    if (newcol || prng.bernoulli(a)) {
        x=nx; y=ny;
     }
   }

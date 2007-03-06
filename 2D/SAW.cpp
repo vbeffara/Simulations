@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include <strings.h>
-#include <time.h>
 #include <vb.h>
 
 using namespace vb;
@@ -82,7 +81,8 @@ int main(int argc, char ** argv)
 
   /* Initialisations */
 
-  srand48(time(0));
+  PRNG prng;
+
   d = new char[n];
   for (int i=0; i<n; i++)
     d[i]=0;
@@ -91,8 +91,8 @@ int main(int argc, char ** argv)
   /* Simulation par Monte-Carlo */
 
   for (i=0;i<t;) {
-    j = lrand48()%n;         /*  Position du pivot */
-    k = 1+(lrand48()%3);     /*  Rotation = 1, 2 ou 3 mod 4 */
+    j = prng.rand()%n;         /*  Position du pivot */
+    k = 1+(prng.rand()%3);     /*  Rotation = 1, 2 ou 3 mod 4 */
     l = d[j]; d[j]=(d[j]+k)%4;
     
     if (is_self_avoiding(d,n)) i++;

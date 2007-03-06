@@ -3,7 +3,6 @@
  */
 
 #include <math.h>
-#include <time.h>
 #include <vb.h>
 #include <unistd.h>
 
@@ -77,8 +76,8 @@ int main(int argc, char ** argv)
 
   sprintf(s,"Schramm's SLE Process (kappa=%f)",kappa);
 
-  if (r) srand48(r);
-  else srand48(time(0));
+  PRNG prng;
+  if (r) prng.srand(r);
 
   n=nn*nn; kappa=2/kappa;
 
@@ -87,7 +86,7 @@ int main(int argc, char ** argv)
   c = new double[n];
   c[0]=0; cd=0;
   for (i=1;i<n;i++) {
-    d = 2*sqrt(3.0)*drand48() - sqrt(3.0); /*  E=0, Var=1 */
+    d = prng.gaussian();
     c[i] = c[i-1] + d;
   }
 

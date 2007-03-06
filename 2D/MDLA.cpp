@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <time.h>
 #include <vb.h>
 
 #define EC fprintf(stderr,"<%d>\n",__LINE__);
@@ -36,7 +35,7 @@ int main(int argc, char ** argv)
 
   /* Initialisations */
 
-  srand48(time(0));
+  PRNG prng;
 
   sprintf(title,"A MDLA in density %.2f",p);
   img = new Image(2*n,2*n,2,title);
@@ -46,7 +45,7 @@ int main(int argc, char ** argv)
   ngrey=0;
   for (x=0;x<2*n;x++) {
     for (y=0;y<2*n;y++) {
-      if (drand48()<p) { 
+      if (prng.bernoulli(p)) { 
 	img->putpoint (x,y,1);
 	ngrey++;
       }
@@ -59,10 +58,10 @@ int main(int argc, char ** argv)
   done=0; ndraw=0;
   
   while (!done) {
-    x = rand() % (2*n);
-    y = rand() % (2*n);
+    x = prng.rand() % (2*n);
+    y = prng.rand() % (2*n);
     if ((*img)(x,y) == 1) {
-      d = rand() % 4;
+      d = prng.rand() &3;
       nx = x + dx[(int)d];
       ny = y + dy[(int)d];
       if ((nx>=0)&&(ny>=0)&&(nx<2*n)&&(ny<2*n)) {

@@ -101,8 +101,6 @@ int main (int argc, char **argv) {
 
   Automaton a(n);
 
-  srand(time(0));
-
   for (int x=0; x<n; ++x)
     a.main[x] = rand()&31;
 

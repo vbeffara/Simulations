@@ -113,8 +113,7 @@ void init_ok_connect6 (void) {
 
 int main (int argc, char **argv) {
   long x,y,i,nb;
-
-  srand48(time(0));
+  PRNG prng;
 
   CL_Parser CLP (argc,argv,"n=300,p=.5,c=none",
       "Syntax: Glass [-n size] [-p p] [-c conditioning]\n\
@@ -138,7 +137,7 @@ int main (int argc, char **argv) {
 
   for (x=0;x<n;x++)
     for (y=0;y<n;y++)
-      if (drand48()>p)
+      if (prng.bernoulli(1-p))
 	img.putpoint (x,y,1);
 
   for (i=0;i<n;i++) {
@@ -151,14 +150,14 @@ int main (int argc, char **argv) {
   img.onscreen ();
 
   for (i=2000*n*n; i>0; i--) {
-    x = 1 + lrand48()%(n-2);
-    y = 1 + lrand48()%(n-2);
+    x = 1 + (prng.rand()%(n-2));
+    y = 1 + (prng.rand()%(n-2));
 
     nb = img(x+1,y) + 2*img(x+1,y+1) + 4*img(x,y+1) + 8*img(x-1,y+1)
       + 16*img(x-1,y) + 32*img(x-1,y-1) + 64*img(x,y-1) + 128*img(x+1,y-1);
 
     if (ok[nb]) {
-      if (drand48()<p) {
+      if (prng.bernoulli(p)) {
 	if (img(x,y)==0) img.putpoint (x,y,1);
       } else {
 	if (img(x,y)==1) img.putpoint (x,y,0);

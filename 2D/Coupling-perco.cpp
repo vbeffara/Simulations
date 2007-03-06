@@ -14,11 +14,12 @@
 #include <vb.h>
 #include <stdlib.h>
 #include <math.h>
-#include <time.h>
 
 typedef int testfunction (char*);
 
 using namespace vb;
+
+PRNG prng;
 
 int compute_diff (char *c1, char *c2, Image *d) {
   int i,j,n;
@@ -173,9 +174,9 @@ void monte_carlo (char *c1, char *c2, Image *diff, int duration) {
   for (t=0;t<duration;t++) {
     good=0;
     while (good==0) {
-      x = lrand48()%N;
-      y = lrand48()%N;
-      z = lrand48()%2;
+      x = prng.rand()%N;
+      y = prng.rand()%N;
+      z = prng.rand()%2;
       if ((x<(N>>1)-RAD1) || (x>=(N>>1)+RAD1) || (y<(N>>1)-RAD1) || (y>=(N>>1)+RAD1)) good=1;
     }
 
@@ -209,7 +210,7 @@ void pick (Image *c, testfunction test) {
     fprintf (stderr,"%d \r",++n);
     for (x=0;x<N;x++)
       for (y=0;y<N;y++)
-	c->putpoint (x,y,(lrand48()%2));
+	c->putpoint (x,y,(prng.rand()%2));
 
     for (x=-RAD1+1;x<RAD1-1;x++) {
       for (y=-RAD1+1;y<RAD1-1;y++) {
@@ -230,8 +231,6 @@ int main (int argc, char ** argv) {
   img1 = new Image (N,N,1,"The first configuration");
   img2 = new Image (N,N,1,"The second configuration");
   img = new Image(N,N,2,"The difference");
-
-  srand48(time(0));
 
   pick (img1,test2);
   for (i=0;i<N*N;i++) (*img2)(i) = (*img1)(i);

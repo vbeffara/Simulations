@@ -1,6 +1,5 @@
 
 #include <math.h>
-#include <time.h>
 #include <vb.h>
 
 using namespace vb;
@@ -98,7 +97,7 @@ int main(int argc, char ** argv)
   n=atoi(argv[1]);
   epsilon=atof(argv[2]);
 
-  srand48(time(0));
+  PRNG prng;
 
   /* Percolation ... */
 
@@ -106,8 +105,8 @@ int main(int argc, char ** argv)
   down = new char[n*n];
 
   for (i=0;i<n*n;i++) {
-    if (drand48() < .5+epsilon) right[i]=1;
-    if (drand48() < .5-epsilon) down[i]=1;
+    if (prng.bernoulli(.5+epsilon)) right[i]=1;
+    if (prng.bernoulli(.5-epsilon)) down[i]=1;
   }
 
   sprintf(title,"Asymmetric bond-percolation cluster (epsilon=%f)",epsilon);

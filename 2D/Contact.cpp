@@ -1,5 +1,4 @@
 
-#include <time.h>
 #include <vb.h>
 
 using namespace vb;
@@ -7,7 +6,7 @@ using namespace vb;
 int main(int argc, char *argv[])
 {
   double p;
-  long i,nstep,x,y,pp,total,n;
+  long i,nstep,x,y,total,n;
   char title[80];
 
   /* arguments -> p et n */
@@ -22,6 +21,7 @@ int main(int argc, char *argv[])
   sprintf(title,"Discrete-time contact process on Z^2 (p=%f)",p);
 
   Image img (n,n,1,title);
+  PRNG prng;
 
   /* conditions initiales */
 
@@ -33,12 +33,9 @@ int main(int argc, char *argv[])
 
   img.onscreen();
 
-  srand48(time(0));
-
   /* Simulation */
 
   nstep = 3*n;
-  pp = (long)(p * (double)RAND_MAX);
 
   for (i=0;i<nstep;i++) {
     total=0;
@@ -46,7 +43,7 @@ int main(int argc, char *argv[])
       for (y=1;y<n-1;y++) {
 	if ((x+y+i)%2) {
 	  if ((img(x-1,y)||img(x+1,y)||img(x,y-1)||img(x,y+1)) &&
-	      (lrand48()%RAND_MAX)<pp) {
+	      (prng.bernoulli(p))) {
 	    img.putpoint(x,y,1);
 	    total++;
 	  } else {
