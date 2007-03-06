@@ -6,6 +6,7 @@
 #define __VB_PRNG_H
 
 #include <math.h>
+#include <time.h>
 
 namespace vb {
 
@@ -205,55 +206,27 @@ namespace vb {
    * documentation for a complete list (I add them as I need them ...)
    */
 
-  template <class Engine> class PRNG_template {
+  template <class Engine> class PRNG_template : public Engine {
     public:
 
-      /** The engine of the PRNG.
-       *
-       * It is a class that has to implement three things:
-       *
-       * - Have an integer member engine::max which is the largest
-       *   number that the engine can provide;
-       *
-       * - Have a method void engine::srand(unsigned long) to initialize
-       *   it from an integer;
-       *
-       * - Have a method unsigned long engine::rand() which returns an
-       *   integer between 0 and engine::max.
-       *
-       * The methods rand() and srand() are propagated to the
-       * PRNG_template object; the value of max (which might change as
-       * the program runs) and any additional methods (such as
-       * PRNG_Engine_Rewindable::rewind()) are not, and should be
-       * accessed as PRNG_template::engine::whatever().
-       */
+      /** The standard constructor, initializes using time(0). */
 
-      Engine engine;
+      PRNG_template () { srand(time(0)); }
 
-      /** Initialize the engine from an integer seed.
-       *
-       * This simply calls PRNG_template::engine::srand().
-       */
+      /** A constructor taking a random seed to initialize the engine. */
 
-      void srand (long seed) { engine.srand(seed); }
-
-      /** Return a pseudo-random number generator.
-       *
-       * This simply calls PRNG_template::engine::rand().
-       */
-
-      unsigned long rand (void) { return engine.rand(); }
+      PRNG_template (long seed) { srand(seed); }
 
       /** Return a bernoulli variable in {0,1} */
 
       int bernoulli (double p=0.5) {
-        return rand() < p*(double)engine.max ? 1 : 0;
+        return rand() < p*(double)max ? 1 : 0;
       }
 
       /** Return a uniformly distributed real between 0 and range */
 
       double uniform (double range=1.0) {
-        return range * ( (double)rand() / (double)engine.max );
+        return range * ( (double)rand() / (double)max );
       }
 
       /** Return an exponential random variable of parameter lambda */
@@ -311,7 +284,7 @@ namespace vb {
    * congruence iterator), and implements everything that PRNG_template
    * provides.
    *
-   * To rewind, use PRGN_Rewindable::engine::rewind(...).
+   * To rewind, use PRGN_Rewindable::rewind(...).
    */
 
   typedef PRNG_template<PRNG_Engine_Rewindable> PRNG_Rewindable;
