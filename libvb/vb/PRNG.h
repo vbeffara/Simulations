@@ -193,9 +193,9 @@ namespace vb {
 
   /** A general-purpose pseudo-random number generator template.
    *
-   * It encapsulates one of the PRNG_Engine_* engines - though you can
-   * use your own class, all it needs is one unsigned long member called
-   * max and two methods,
+   * It inherits one of the PRNG_Engine_* engines - though you can use
+   * your own class, all it needs is one unsigned long member called max
+   * and two methods,
    *
    * - unsigned long rand () 
    * - void srand (unsigned long)
@@ -211,22 +211,22 @@ namespace vb {
 
       /** The standard constructor, initializes using time(0). */
 
-      PRNG_template () { srand(time(0)); }
+      PRNG_template () { Engine::srand (time(0)); }
 
       /** A constructor taking a random seed to initialize the engine. */
 
-      PRNG_template (long seed) { srand(seed); }
+      PRNG_template (long seed) { Engine::srand(seed); }
 
       /** Return a bernoulli variable in {0,1} */
 
       int bernoulli (double p=0.5) {
-        return rand() < p*(double)max ? 1 : 0;
+        return Engine::rand() < p*(double)Engine::max ? 1 : 0;
       }
 
       /** Return a uniformly distributed real between 0 and range */
 
       double uniform (double range=1.0) {
-        return range * ( (double)rand() / (double)max );
+        return range * ( (double)Engine::rand() / (double)Engine::max );
       }
 
       /** Return an exponential random variable of parameter lambda */
