@@ -36,8 +36,6 @@ namespace vb {
    *
    * @todo Provide for movie creation (by outputting the image to a
    * different file on prescribed intervals).
-   *
-   * @todo Add an 8 bpp mode.
    */
 
   class Image {
@@ -56,7 +54,7 @@ namespace vb {
      *
      * @param wd The width in pixels.
      * @param ht The height in pixels.
-     * @param dp The depth of the created bitmap (1, 2 or 4, in bpp).
+     * @param dp The depth of the created bitmap (1, 2, 4 or 8, in bpp).
      * @param tit The title of the image.
      */
 

@@ -4,7 +4,7 @@
 namespace vb {
 
   CoarseImage::CoarseImage (int wd, int ht, int l, std::string title) 
-    : Image (1+(wd-1)/l,1+(ht-1)/l,4,title), 
+    : Image (1+(wd-1)/l,1+(ht-1)/l,8,title),
       true_width(wd), true_height(ht), L(l), LL(l*l),
       fill(new int [width*height]), sub(new char* [width*height])
   {
@@ -43,7 +43,7 @@ namespace vb {
       fill[coarse_xy] += 2*c-1;
     }
 
-    this->Image::putpoint (coarse_x,coarse_y,fill[coarse_xy]*15/LL,dt);
+    this->Image::putpoint (coarse_x,coarse_y,fill[coarse_xy]*255/LL,dt);
 
     if ((fill[coarse_xy]==0)||(fill[coarse_xy]==LL)) {
       delete[] sub[coarse_xy];

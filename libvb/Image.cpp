@@ -9,9 +9,9 @@ namespace vb {
     npts(0), delay(1), timer(1), saved_clock(clock()), nb_clock(0),
     paused(0) { 
 
-      if ((depth!=1)&&(depth!=2)&&(depth!=4)) {
+      if ((depth!=1)&&(depth!=2)&&(depth!=4)&&(depth!=8)) {
         std::cerr << "libvb : error : invalid depth"
-          << " (only 1, 2 and 4 bpp allowed).\n";
+          << " (only 1, 2, 4 and 8 bpp allowed).\n";
         exit(1);
       }
 

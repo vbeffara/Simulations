@@ -10,7 +10,7 @@ int n; // The size of the image.
 
 char f (int x, int y) {
   int d = (x-n/2)*(x-n/2) + (y-n/2)*(y-n/2);
-  return 1+(2*d*((1<<4)-1))/(n*n);
+  return 1+(2*d*((1<<8)-1))/(n*n);
 }
 
 // The main function:
@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 
   // Create an image and put it on the screen
 
-  vb::Image img (n,n,4,"Sample");
+  vb::Image img (n,n,8,"Sample");
   img.onscreen();
 
   // Fill it according to some function, here f

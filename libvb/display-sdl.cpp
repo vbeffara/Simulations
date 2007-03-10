@@ -45,7 +45,7 @@ namespace vb {
     
     SDL_WM_SetCaption (title.c_str(),"Simulation");
     
-    SDL_Color sdl_palette[16];
+    SDL_Color sdl_palette[256];
     
     int pstep = 255 / ((1<<depth)-1);
     for (int i=0;i<(1<<depth);i++) {
