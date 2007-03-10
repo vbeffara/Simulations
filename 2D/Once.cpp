@@ -25,9 +25,10 @@ int main(int argc, char ** argv)
 
   /* arguments -> taille du terrain */
 
-  CL_Parser CLP (argc,argv,"n=1000,a=2");
+  CL_Parser CLP (argc,argv,"n=1000,a=2,t=0");
   int n = CLP.as_int('n');
   double a = CLP.as_double('a');
+  int t = CLP.as_int('t');
   a=1/(1+a);
 
   /* Initialisations */
@@ -41,6 +42,7 @@ int main(int argc, char ** argv)
 
   CoarseImage img(n,n,L,title);
   img.outputsize = 15;
+  img.snapshot_period = t;
 
   img.onscreen();
 
