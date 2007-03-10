@@ -5,9 +5,9 @@ namespace vb {
 
   Image::Image (int wd, int ht, int dp, std::string tit)
     : width(wd), height(ht), pitch(wd), depth(dp), outputsize(0.0),
-    is_onscreen(0), cropped(0), pic_is_original(1), title(tit), 
-    npts(0), delay(1), timer(1), saved_clock(clock()), nb_clock(0),
-    paused(0) { 
+    is_onscreen(0), cropped(0), snapshot_period(0), snapshot_number(0),
+    snapshot_next(0), pic_is_original(1), title(tit), npts(0), delay(1),
+    timer(1), saved_clock(clock()), nb_clock(0), paused(0) { 
 
       if ((depth!=1)&&(depth!=2)&&(depth!=4)&&(depth!=8)) {
         std::cerr << "libvb : error : invalid depth"

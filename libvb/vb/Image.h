@@ -33,9 +33,6 @@ namespace vb {
    * It is a basic 2D canvas, greyscale (1, 2 or 4 bpp), with methods to
    * color individual points and to export the contents of an EPS file
    * to an ostream such as std::cout.
-   *
-   * @todo Provide for movie creation (by outputting the image to a
-   * different file on prescribed intervals).
    */
 
   class Image {
@@ -49,6 +46,10 @@ namespace vb {
     
     int is_onscreen;     ///< 1 if the image is displayed, 0 if not.
     int cropped;         ///< 1 if the output routine should crop the picture.
+
+    int snapshot_period; ///< The number of seconds between BMP snapshots.
+    int snapshot_number; ///< The order number of the next snapshot.
+    int snapshot_next;   ///< The time() of the next snapshot.
     
     /** The standard constructor of the Image class.
      *

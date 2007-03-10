@@ -76,6 +76,12 @@ namespace vb {
   void Image::update () {
     if (is_onscreen) {
       SDL_UpdateRect(screen,0,0,0,0);
+      if ( (snapshot_period>0) && (time(0)>=snapshot_next) ) {
+        char buffer[100];
+        sprintf (buffer,"snapshot%06d.bmp",snapshot_number++);
+        SDL_SaveBMP (screen,buffer);
+        snapshot_next = time(0) + snapshot_period;
+      }
       events();
     }
   }  
