@@ -1,6 +1,0 @@
-
-/* Do we have SDL? */
-#undef LIBVB_HAVE_SDL
-
-/* The version of the libvb library */
-#undef LIBVB_VERSION

@@ -3,7 +3,7 @@
  * What needs to be removed eventually
  */
 
-#include <vb/vb_config.h>
+#include <vb/config.h>
 
 #include <iostream>
 #include <string>

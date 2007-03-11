@@ -6,7 +6,7 @@
 #ifndef __VB_IMAGE_H
 #define __VB_IMAGE_H
 
-#include <vb/vb_config.h>
+#include <vb/config.h>
 
 #include <iostream>
 #include <string>
