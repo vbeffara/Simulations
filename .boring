@@ -46,7 +46,6 @@ Makefile$
 \.eps
 /\.libs
 /out$
-config\.h$
 config\.log$
 config\.status$
 /printout-config$
