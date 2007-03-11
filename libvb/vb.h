@@ -51,8 +51,8 @@ namespace vb {
  *   time is roughly the same for all the points displayed. This is
  *   extremely practical.
  *
- * - vb::Image::tessellate(): a quick way to fill an image according to a
- *   coloring function (which gives the gray level as a function of
+ * - vb::Image::tessellate(): a quick way to fill an image according to
+ *   a coloring function (which gives the gray level as a function of
  *   coordinates) by a dyadic decomposition.
  *
  * - A helper class vb::CL_Parser to access a simple but often
@@ -74,12 +74,8 @@ namespace vb {
  * one at some point), so you will have to download all my simulations.
  * On the other hand, it will give you some sample code, which cannot
  * hurt. See http://www.umpa.ens-lyon.fr/~vbeffara/simu.php for details.
- * Once you have it, it is a simple matter of the usual ./configure;
- * make; make install.
  *
- * The main dependency is on the SDL library (http://www.libsdl.org). While
- * technically libvb will work without it, in the sense that the programs
- * will run, either the display will use the standard X11 libraries, if
- * available and with less features, or you will get no display at all.
- * The EPS output of course works in all cases.
+ * The main dependency is on the SDL library (http://www.libsdl.org) -
+ * together with SCons as a build framework, though it is very easy to
+ * compile without it.
  */

@@ -51,7 +51,7 @@ x11.Append (
 # LibVB and the 2D simulations.
 
 libvb = sdl.SharedLibrary ('vb',
-    Split('libvb/CL_Parser.cpp libvb/CoarseImage.cpp libvb/Image.cpp libvb/PRNG.cpp libvb/cruft.cpp libvb/display-sdl.cpp')
+    Split('libvb/CL_Parser.cpp libvb/CoarseImage.cpp libvb/Image.cpp libvb/PRNG.cpp libvb/cruft.cpp')
     )
 sdl.Install("$prefix/lib",libvb)
 

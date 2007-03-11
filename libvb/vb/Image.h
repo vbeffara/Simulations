@@ -6,19 +6,10 @@
 #ifndef __VB_IMAGE_H
 #define __VB_IMAGE_H
 
-#include <vb/config.h>
-
 #include <iostream>
 #include <string>
 
-#ifdef LIBVB_HAVE_SDL
 #include <SDL.h>
-#else
-#ifndef X_WINDOW_MISSING
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#endif
-#endif
 
 namespace vb {
 
@@ -192,23 +183,10 @@ namespace vb {
     unsigned long long nb_clock;
     int paused;
 
-#ifdef LIBVB_HAVE_SDL
     SDL_Surface *screen;
 
     SDL_Event event;
     void events();
-#else
-#ifndef X_WINDOW_MISSING
-    Display *display; 
-    int screen;
-    Window window;
-    GC gc;
-    int black,white;
-    XImage *ximage;
-
-    unsigned long palette[256];
-#endif
-#endif
 
     void cycle();
   };

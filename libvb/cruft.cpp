@@ -3,8 +3,6 @@
  * What needs to be removed eventually
  */
 
-#include <vb/config.h>
-
 #include <iostream>
 #include <string>
 
@@ -36,7 +34,7 @@ namespace vb {
 
     std::cout << "%!PS-Adobe-2.0 EPSF-2.0\n";
     std::cout << "%%Title: " << title << "\n";
-    std::cout << "%%Creator: libvb - v" << LIBVB_VERSION << " - © 2001-2006 VB - GPL\n";
+    std::cout << "%%Creator: libvb - © 2001-2007 VB - GPL\n";
     std::cout << "%%Creator:   Mail: Vincent.Beffara@ens-lyon.fr\n";
     std::cout << "%%Creator:   Web:  <http://www.umpa.ens-lyon.fr/~vbeffara/>\n";
     std::cout << "%%BoundingBox: 0 0 " 
