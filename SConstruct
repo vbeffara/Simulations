@@ -1,3 +1,4 @@
+# SConstruct file for everything in libvb, 1D, 2D, xtoys.
 
 import sys
 import os
@@ -9,46 +10,42 @@ CacheDir('.scons_cache')
 
 env = Environment(
     ENV = os.environ,
-    CC = os.environ['CC'],
-    CXX = os.environ['CXX'],
-    CCFLAGS = Split(os.environ['CFLAGS']),
-    LINKFLAGS = Split(os.environ['LDFLAGS']),
+    CC = os.environ.get ('CC', 'gcc'),
+    CXX = os.environ.get ('CXX', 'g++'),
+    CCFLAGS = Split(os.environ.get ('CFLAGS', "-O2")),
+    LINKFLAGS = Split(os.environ.get ('LDFLAGS', "")),
     )
 
-# Hack to make installation in a new directory possible ...
+# Get the installation prefix - with a hack to make installation in a
+# new directory possible ...
 
 if "install" in sys.argv:
-  prefix = "/usr/local"
-  for i in sys.argv:
-    if i[:7] == "prefix=":
-      prefix = i[7:]
-  os.makedirs(prefix)
+  os.makedirs(ARGUMENTS.get('prefix',"/usr/local"))
 
 opts = Options()
 opts.Add(PathOption("prefix", "installation prefix", "/usr/local"))
 opts.Update(env)
 
+Help(opts.GenerateHelpText(env))
+
 # Environment with SDL.
 
 sdl = env.Copy()
 sdl.ParseConfig('sdl-config --cflags --libs')
-sdl.Append ( CPPPATH = Split('./libvb') )
+sdl.Append ( CPPPATH = ['./libvb'] )
 
 # Environment with libvb.
 
 vb = sdl.Copy()
-vb.Append (
-    LIBPATH = Split('.'),
-    LIBS = Split('vb'),
-    )
+vb.Append ( LIBPATH = ['.'], LIBS = ['vb'] )
 
 # Environment with X11.
 
 x11 = env.Copy()
 x11.Append (
-    CPPPATH = Split('/usr/include/sys'),
-    LIBPATH = Split('/usr/X11R6/lib'),
-    LIBS = Split('X11 m'),
+    CPPPATH = ['/usr/include/sys'],
+    LIBPATH = ['/usr/X11R6/lib'],
+    LIBS = ['X11','m'],
     )
 
 # LibVB and the 2D simulations.
