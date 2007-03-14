@@ -1,7 +1,6 @@
 # SConstruct file for everything in libvb, 1D, 2D, xtoys.
 
-import sys
-import os
+from os import environ
 from glob import glob
 
 CacheDir('.scons_cache')
@@ -9,21 +8,17 @@ CacheDir('.scons_cache')
 # Base environment.
 
 env = Environment(
-    ENV = os.environ,
-    CC = os.environ.get ('CC', 'gcc'),
-    CXX = os.environ.get ('CXX', 'g++'),
-    CCFLAGS = Split(os.environ.get ('CFLAGS', "-O2")),
-    LINKFLAGS = Split(os.environ.get ('LDFLAGS', "")),
+    ENV = environ,
+    CC = environ.get ('CC', 'gcc'),
+    CXX = environ.get ('CXX', 'g++'),
+    CCFLAGS = Split(environ.get ('CFLAGS', "-O2")),
+    LINKFLAGS = Split(environ.get ('LDFLAGS', "")),
     )
 
-# Get the installation prefix - with a hack to make installation in a
-# new directory possible ...
-
-if "install" in sys.argv:
-  os.makedirs(ARGUMENTS.get('prefix',"/usr/local"))
+# Get the installation prefix
 
 opts = Options()
-opts.Add(PathOption("prefix", "installation prefix", "/usr/local"))
+opts.Add(PathOption("prefix", "installation prefix", "/usr/local", PathOption.PathAccept))
 opts.Update(env)
 
 Help(opts.GenerateHelpText(env))
@@ -32,7 +27,7 @@ Help(opts.GenerateHelpText(env))
 
 sdl = env.Copy()
 sdl.ParseConfig('sdl-config --cflags --libs')
-sdl.Append ( CPPPATH = ['./libvb'] )
+sdl.Append ( CPPPATH = ['libvb'] )
 
 # Environment with libvb.
 
@@ -55,22 +50,18 @@ libvb = sdl.SharedLibrary ('vb',
     )
 sdl.Install("$prefix/lib",libvb)
 
-sample = vb.Program('libvb/sample.cpp')
-vb.Install ("$prefix/bin",sample)
+vb.Install ("$prefix/bin",vb.Program('libvb/sample.cpp'))
 
 for i in glob('2D/*.cpp'):
-  j = vb.Program (i)
-  vb.Install ("$prefix/bin",j)
+  vb.Install ("$prefix/bin",vb.Program (i))
 
 # The rest.
 
 for i in glob('1D/*.c'):
-  j = env.Program (i)
-  vb.Install ("$prefix/bin",j)
+  env.Install ("$prefix/bin",env.Program (i))
 
 for i in glob('xtoys/*.c'):
-  j = x11.Program (i)
-  x11.Install ("$prefix/bin",j)
+  x11.Install ("$prefix/bin",x11.Program (i))
 
 # Installation target
 
