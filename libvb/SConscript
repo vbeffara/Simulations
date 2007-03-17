@@ -1,0 +1,14 @@
+from glob import glob
+from sys import platform
+Import ('*')
+
+e = sdl.Clone()
+e.Append ( CPPPATH = ['.'] )
+
+libvb = e.SharedLibrary ("vb", glob("*.cpp"))
+libvb_i = e.Install ("$prefix/lib", libvb)
+
+if platform == "darwin":
+  e.AddPostAction (libvb_i, "install_name_tool -id $TARGET $TARGET")
+
+Return ('libvb libvb_i')

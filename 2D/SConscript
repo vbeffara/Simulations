@@ -1,0 +1,10 @@
+from sys import platform
+from glob import glob
+Import('*')
+
+for i in glob("*.cpp"):
+  o = vb.Program(i)
+  o_i = vb.Install("$prefix/bin", o)
+  if platform == "darwin":
+    vb.AddPostAction (o_i, "install_name_tool -change %s %s $TARGET"
+        % ( libvb[0].path, libvb_i[0].path ))

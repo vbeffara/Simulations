@@ -1,0 +1,6 @@
+from glob import glob
+Import('*')
+
+for i in glob("*.c"):
+  o = env.Program(i)
+  o_i = env.Install ("$prefix/bin", o)

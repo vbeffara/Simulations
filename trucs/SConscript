@@ -1,0 +1,9 @@
+from glob import glob
+Import('*')
+
+gmp = env.Clone()
+gmp.Append ( LIBS = ['gmp', 'gmpxx'] )
+
+for i in glob("*.cc"):
+  o = gmp.Program(i)
+  o_i = gmp.Install ("$prefix/bin", o)
