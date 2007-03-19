@@ -9,5 +9,4 @@ x11.Append (
     )
 
 for i in glob("*.c"):
-  o = x11.Program(i)
-  o_i = x11.Install ("$prefix/bin", o)
+  x11.MyProgram(i)

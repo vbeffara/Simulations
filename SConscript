@@ -1,22 +1,21 @@
 # SConscript for my simulations.
 
-from glob import glob
 Import('*')
 
 # First, build libvb
 
-sdl = env.Copy()
+sdl = env.Clone()
 sdl.ParseConfig('sdl-config --cflags --libs')
 
 Export ('sdl')
-(libvb, libvb_i) = SConscript ("libvb/SConscript")
+SConscript ("libvb/SConscript")
 
 # Then, the 2D stuff
 
-vb = sdl.Copy()
-vb.Append ( CPPPATH = ['#libvb'], LIBS = [libvb] )
+vb = sdl.Clone()
+vb.Append ( CPPPATH = ['#libvb'], LIBPATH = ['#libvb'], LIBS = ['vb'] )
 
-Export('vb libvb libvb_i')
+Export('vb')
 SConscript ("2D/SConscript")
 
 # The rest
