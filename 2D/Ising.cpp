@@ -7,7 +7,7 @@ using namespace vb;
 int main(int argc, char *argv[])
 {
   long i,x,y,xy,f1,f2,nstep;
-  long p[5];
+  unsigned long p[5];
   char title[80];
 
   /* arguments -> beta et n */
