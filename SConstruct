@@ -41,9 +41,12 @@ def MyProgram (env, target=None, source=_null, **kw):
     p_i = env.Install ("$prefix/bin", p,**kw)
 
     if platform == 'darwin':
-      for l in env['BUILT_SHLIBS']:
-        env.AddPostAction (p_i, "install_name_tool -change %s %s %s"
-            % ( l[0], l[1], p_i[0].path ))
+      try:
+        for l in env['BUILT_SHLIBS']:
+          env.AddPostAction (p_i, "install_name_tool -change %s %s %s"
+              % ( l[0], l[1], p_i[0].path ))
+      except KeyError:
+        pass
 
     return p
 
@@ -63,7 +66,6 @@ env = Environment(
     CCFLAGS = Split(environ.get ('CFLAGS', "-O2")),
     CXXFLAGS = Split(environ.get ('CXXFLAGS', "-O2")),
     LINKFLAGS = Split(environ.get ('LDFLAGS', "")),
-    BUILT_SHLIBS = [],
     )
 
 # Get the installation prefix
