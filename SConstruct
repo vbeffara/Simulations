@@ -7,6 +7,14 @@ CacheDir('.scons_cache')
 # Two "builders" (well, not quite) which keep track of built shared
 # libraries, take care of the installing, and do black magic with
 # install_name_tool to make everything work.
+#
+# TODO : add the equivalent on Solaris etc via RPATH. Command-line that
+# works on Solaris :
+#
+# g++ -o Voter -Wl,-R,/home/vbeffara/Boulot/Simulations/libvb Voter.o
+# -L../libvb -lvb
+#
+# (no need to use -lSDL ???)
 
 from sys import platform
 
