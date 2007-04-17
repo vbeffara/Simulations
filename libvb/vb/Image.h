@@ -87,6 +87,18 @@ namespace vb {
       return c;
     }
 
+    /** Set the color of a point - with range-checking.
+     *
+     * dt=0 does not really make sense here - if you want speed, you
+     * better range-check yourself and debug your code.
+     */
+
+    int putpoint_safe (int x, int y, int c) {
+      if ( (x>=0) && (y>=0) && (x<width) && (y<height) )
+        return putpoint (x,y,c);
+      return -1;
+    }
+
     /** Forcefully update the screen representation of the image.
      *
      * Bypass the auto-update feature (e.g. before a long computation).
