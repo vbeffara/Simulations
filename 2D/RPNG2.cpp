@@ -33,8 +33,11 @@ int main (int argc, char **argv) {
     if (prng.bernoulli(l)) { // nucleation
       img.putpoint_safe (x,(n>>1) - h[x],0);
       img.putpoint_safe (x,(n>>1) - h[x]+1,1);
+      img.putpoint_safe (x,n>>1,1);
+
       img.putpoint_safe (xd,(n>>1) - h[xd],0);
       img.putpoint_safe (xd,(n>>1) - h[xd]-1,1);
+      img.putpoint_safe (xd,n>>1,1);
 
       e = e - (h[x]*h[x]) - (h[xd]*h[xd]);
       h[x]--; h[xd]++;
@@ -45,8 +48,11 @@ int main (int argc, char **argv) {
 
       img.putpoint_safe (x,(n>>1) - h[x],0);
       img.putpoint_safe (x,(n>>1) - h[x]+delta,1);
+      img.putpoint_safe (x,n>>1,1);
+
       img.putpoint_safe (nx,(n>>1) - h[nx],0);
       img.putpoint_safe (nx,(n>>1) - h[nx]-delta,1);
+      img.putpoint_safe (nx,n>>1,1);
 
       e = e - (h[x]*h[x]) - (h[nx]*h[nx]);
       h[x] -= delta; h[nx] += delta;
