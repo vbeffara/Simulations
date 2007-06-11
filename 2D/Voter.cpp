@@ -14,7 +14,8 @@ int main (int argc, char **argv) {
 
   for (int i=0;i<n;++i) {
     for (int j=0;j<n;++j) {
-      img.putpoint(i,j,(int)prng.uniform((1<<d)));
+      if (d>1) img.putpoint(i,j,(int)prng.uniform((1<<d)));
+      else img.putpoint(i,j,prng.bernoulli(p));
     }
   }
 
