@@ -6,6 +6,7 @@
 #include <iostream>
 #include <vb/CL_Parser.h>
 #include <vb/PRNG.h>
+#include <vb/ProgressBar.h>
 
 using namespace boost;
 using namespace std;
@@ -42,8 +43,11 @@ int main(int argc, char **argv) {
   for (int i=0;i<5;++i) stats[i]=0;
 
   vb::PRNG prng;
+  vb::ProgressBar PB (n_iter);
 
-  for (int iter=0;iter<n_iter;++iter) {
+  for (int iter=1;iter<=n_iter;++iter) {
+    PB.update (iter);
+
     g = new Graph (n*n+1);
     cap = get(edge_capacity, *g);
     rev = get(edge_reverse, *g);
@@ -72,14 +76,12 @@ int main(int argc, char **argv) {
     long flow = edmunds_karp_max_flow (*g,(n>>1)*(n+1),n*n);
     stats[flow]++;
 
-    cerr << ".";
-    if ( (iter>0) && ((iter%50)==0) ) cerr << endl;
-
     delete g;
     delete[] adj;
   }
 
-  cerr << endl;
+  PB.die();
+
   cout << n;
   for (int i=1; i<=4; ++i) {
     int bla=0;

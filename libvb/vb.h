@@ -8,6 +8,7 @@
 #include <vb/CL_Parser.h>
 #include <vb/PRNG.h>
 #include <vb/Point.h>
+#include <vb/ProgressBar.h>
 
 #include <string>
 
