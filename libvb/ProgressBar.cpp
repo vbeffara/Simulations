@@ -2,6 +2,7 @@
 #include <vb/ProgressBar.h>
 #include <time.h>
 #include <iostream>
+#include <iomanip>
 
 namespace vb {
 
@@ -43,6 +44,26 @@ namespace vb {
       std::cerr << "=";
     for (int i=nchar; i<50; ++i)
       std::cerr << " ";
-    std::cerr << "] (" << current << "/" << final << ")";
+    std::cerr << "]";
+    
+    // std::cerr << " (" << current << "/" << final << ")";
+
+    if (last_time > start_time) {
+      double steps_per_sec = (double)current / (double)(last_time-start_time);
+      int eta = (int)((double)(final-current)/steps_per_sec);
+
+      int sec = eta%60; eta = (eta-sec)/60;    // in minutes
+      int min = eta%60; eta = (eta-min)/60;    // in hours
+      int hour = eta%24; eta = (eta-hour)/24;  // in days
+
+      std::cerr << " ETA: ";
+      if (eta>0)
+        std::cerr << eta << "d ";
+      if ((eta>0)||(hour>0))
+        std::cerr << hour << "h ";
+      std::cerr << min << ":" << std::setw(2) << std::setfill('0') << sec;
+
+      std::cerr << "     ";
+    }
   }
 }
