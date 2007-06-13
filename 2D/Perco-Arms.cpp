@@ -26,9 +26,6 @@ void add_one (Graph &g, int i, int j) {
   tie(e1,t) = add_edge(i,j,g);
   tie(e2,t) = add_edge(j,i,g);
 
-  put (edge_capacity, g, e1, 1);
-  put (edge_capacity, g, e2, 1);
-
   put (edge_reverse, g, e1, e2);
   put (edge_reverse, g, e2, e1);
 }
@@ -45,28 +42,43 @@ int main(int argc, char **argv) {
   vb::PRNG prng;
   vb::ProgressBar PB (n_iter);
 
+  // Create the graph once and for all
+
   Graph g (n*n+1);
 
-  for (int iter=1;iter<=n_iter;++iter) {
-    for (int x=0; x<n; ++x) {
-      for (int y=0; y<n; ++y) {
-        int i=x+n*y;
-        if ((x<n-1)&&(prng.bernoulli(p))) add_one(g,i,i+1);
-        if ((y<n-1)&&(prng.bernoulli(p))) add_one(g,i,i+n);
-      }
+  for (int x=0; x<n; ++x) {
+    for (int y=0; y<n; ++y) {
+      int i=x+n*y;
+      if (x<n-1) add_one (g,i,i+1);
+      if (y<n-1) add_one (g,i,i+n);
     }
+  }
 
-    for (int i=0; i<n; ++i) {
-      add_one(g,i,n*n);
-      add_one(g,n*i,n*n);
-      add_one(g,(n-1)+n*i,n*n);
-      add_one(g,(n-1)*n+i,n*n);
+  // Wired boundary conditions
+
+  for (int i=0; i<n; ++i) {
+    add_one(g,i,n*n);
+    add_one(g,n*i,n*n);
+    add_one(g,(n-1)+n*i,n*n);
+    add_one(g,(n-1)*n+i,n*n);
+  }
+
+  // Then simulate
+
+  property_map<Graph,edge_capacity_t>::type cap = get (edge_capacity,g);
+  Graph::edge_iterator e,e_final;
+
+  for (int iter=1;iter<=n_iter;++iter) {
+    for (tie(e,e_final)=edges(g); e!=e_final; ++e) {
+      edge_descriptor e_r = get (edge_reverse,g,*e);
+      int o = prng.bernoulli(p);
+      cap[*e] = o;
+      cap[e_r] = o;
     }
 
     long flow = edmunds_karp_max_flow (g,(n>>1)*(n+1),n*n);
     stats[flow]++;
 
-    g.clear();
     PB.update (iter);
   }
 
