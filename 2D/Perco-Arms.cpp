@@ -63,17 +63,41 @@ int main(int argc, char **argv) {
     add_one(g,(n-1)*n+i,n*n);
   }
 
-  // Then simulate
+  // Prepare for quick edge access
 
   property_map<Graph,edge_capacity_t>::type cap = get (edge_capacity,g);
   Graph::edge_iterator e,e_final;
 
-  for (int iter=1;iter<=n_iter;++iter) {
+  for (tie(e,e_final)=edges(g); e!=e_final; ++e) {
+    cap[*e]=0;
+    cap[get(edge_reverse,g,*e)]=0;
+  }
+
+  edge_descriptor *all_edges = new edge_descriptor[2*(n+1)*n];
+  edge_descriptor *rev_edges = new edge_descriptor[2*(n+1)*n];
+
+  {
+    int i=0;
     for (tie(e,e_final)=edges(g); e!=e_final; ++e) {
-      edge_descriptor e_r = get (edge_reverse,g,*e);
+      if (cap[*e]==0) {
+        all_edges[i] = *e;
+        cap[all_edges[i]] = 1;
+
+        rev_edges[i] = get (edge_reverse,g,*e);
+        cap[rev_edges[i]] = 1;
+        
+        ++i;
+      }
+    }
+  }
+
+  // Then simulate
+
+  for (int iter=1;iter<=n_iter;++iter) {
+    for (int i=0; i<2*n*(n+1); ++i) {
       int o = prng.bernoulli(p);
-      cap[*e] = o;
-      cap[e_r] = o;
+      cap[all_edges[i]] = o;
+      cap[rev_edges[i]] = o;
     }
 
     long flow = edmunds_karp_max_flow (g,(n>>1)*(n+1),n*n);
