@@ -2,18 +2,11 @@
 
 Import('*')
 
-# First, build libvb
+# The libvb stuff
 
-sdl = env.Clone()
-sdl.ParseConfig('sdl-config --cflags --libs')
-
-Export ('sdl')
-SConscript ("libvb/SConscript")
-
-# Then, the 2D stuff
-
-vb = sdl.Clone()
-vb.Append ( CPPPATH = ['#libvb'], LIBPATH = ['#libvb'], LIBS = ['vb'] )
+vb = env.Clone()
+vb.ParseConfig('sdl-config --cflags --libs')
+vb.Append ( CPPPATH = ['#libvb'] )
 
 Export('vb')
 SConscript ("2D/SConscript")

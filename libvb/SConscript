@@ -1,6 +1,0 @@
-from glob import glob
-Import ('*')
-
-tmp = sdl.Clone()
-tmp.Append (CPPPATH = ["."])
-tmp.MyLibrary ("vb", glob("*.cpp"))
