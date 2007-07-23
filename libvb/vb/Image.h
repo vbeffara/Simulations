@@ -335,9 +335,10 @@ namespace vb {
     /* Image */
 
     int step = 8/img.depth;
-
+    
     for (int j=0; j<dy; ++j) {
-      for (int i=0; i<dx; i+=step) {
+      int i;
+      for (i=0; i<dx; i+=step) {
         int acc = 0;
         for (int k=0; k<step; ++k) {
           acc <<= img.depth;
@@ -347,7 +348,7 @@ namespace vb {
         os << trans(acc>>4) << trans(acc&15);
         if ((i/step)%32==31) os << std::endl;
       }
-      if ((dx/step)%32!=0) os << std::endl;
+      if ((i/step)%32!=0) os << std::endl;
     }
 
     /* End of file */
