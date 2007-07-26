@@ -1,4 +1,4 @@
-Import('*')
+Import('env')
 
 x11 = env.Clone()
 x11.Append (

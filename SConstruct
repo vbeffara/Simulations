@@ -105,5 +105,4 @@ env.Alias ('install',"$prefix")
 
 # Now for the specific stuff.
 
-Export('env')
-SConscript("SConscript", build_dir='build')
+SConscript("SConscript", build_dir='build', exports='env')

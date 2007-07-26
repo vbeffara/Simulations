@@ -1,4 +1,4 @@
-Import('*')
+Import('env')
 
 gmp = env.Clone()
 gmp.Append ( LIBS = ['gmp', 'gmpxx'] )

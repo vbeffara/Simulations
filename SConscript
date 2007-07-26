@@ -1,6 +1,6 @@
 # SConscript for my simulations.
 
-Import('*')
+Import('env')
 
 # The libvb stuff
 
@@ -8,11 +8,15 @@ vb = env.Clone()
 vb.ParseConfig('sdl-config --cflags --libs')
 vb.Append ( CPPPATH = ['#libvb'] )
 
-Export('vb')
-SConscript ("2D/SConscript")
+SConscript ("2D/SConscript", exports="vb")
 
 # The rest
 
-Export('env')
 for i in ['1D', 'trucs', 'xtoys']:
-  SConscript ("%s/SConscript" % i)
+  SConscript ("%s/SConscript" % i, exports="env")
+
+# Install the headers
+
+env.Install ("$prefix/include", "libvb/vb.h")
+for i in env.MyGlob("libvb/vb/*.h"):
+    env.Install ("$prefix/include/vb", i)
