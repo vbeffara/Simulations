@@ -1,6 +1,4 @@
-from sys import platform
-from glob import glob
 Import('*')
 
-for i in glob("*.cpp"):
+for i in vb.MyGlob("*.cpp"):
   vb.MyProgram(i)

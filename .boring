@@ -54,3 +54,5 @@ stamp-
 libtool
 doc
 \.scons
+^build
+^simulations.conf

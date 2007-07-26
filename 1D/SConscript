@@ -1,5 +1,4 @@
-from glob import glob
 Import('*')
 
-for i in glob("*.c"):
+for i in env.MyGlob("*.c"):
   env.MyProgram(i)

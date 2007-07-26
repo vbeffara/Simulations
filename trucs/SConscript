@@ -1,8 +1,7 @@
-from glob import glob
 Import('*')
 
 gmp = env.Clone()
 gmp.Append ( LIBS = ['gmp', 'gmpxx'] )
 
-for i in glob("*.cc"):
+for i in gmp.MyGlob("*.cc"):
   gmp.MyProgram(i)

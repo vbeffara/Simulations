@@ -1,12 +1,11 @@
-from glob import glob
 Import('*')
 
-x11 = env.Copy()
+x11 = env.Clone()
 x11.Append (
     CPPPATH = ['/usr/include/sys'],
     LIBPATH = ['/usr/X11R6/lib'],
     LIBS = ['X11','m'],
     )
 
-for i in glob("*.c"):
+for i in x11.MyGlob("*.c"):
   x11.MyProgram(i)

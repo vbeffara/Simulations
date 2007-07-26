@@ -1,6 +1,9 @@
 # General SConstruct file - fit for any project.
 
-from os import environ
+import glob
+import os
+import string
+import sys
 
 CacheDir('.scons_cache')
 
@@ -16,8 +19,6 @@ CacheDir('.scons_cache')
 #
 # (no need to use -lSDL ???)
 
-from sys import platform
-
 class _Null:
     pass
 _null = _Null
@@ -32,7 +33,7 @@ def MyLibrary (env, target=None, source=_null, **kw):
 
     env.Append ( BUILT_SHLIBS = [[ l[0].abspath, l_i[0].abspath ]] )
 
-    if platform == 'darwin':
+    if sys.platform == 'darwin':
       env.AddPostAction (l, "install_name_tool -id %s %s"
           % (l[0].abspath, l[0].path))
       env.AddPostAction (l_i, "install_name_tool -id %s %s"
@@ -48,7 +49,7 @@ def MyProgram (env, target=None, source=_null, **kw):
     p   = env.Program (target,source,**kw)
     p_i = env.Install ("$prefix/bin", p,**kw)
 
-    if platform == 'darwin':
+    if sys.platform == 'darwin':
       try:
         for l in env['BUILT_SHLIBS']:
           env.AddPostAction (p_i, "install_name_tool -change %s %s %s"
@@ -58,29 +59,43 @@ def MyProgram (env, target=None, source=_null, **kw):
 
     return p
 
+# A very useful globbing function, that searches in the _sourse_
+# directory - glob.glob() breaks with a build_dir ...
+
+def MyGlob (env,pattern):
+    here = Dir('.').srcnode().abspath
+    output = []
+
+    for i in glob.glob(os.path.join(here,pattern)):
+        output += [ string.replace(i, here + os.path.sep, '') ]
+
+    return output
+
 # Just remains to install them into the default environment, and we can
 # use them.
 
 from SCons.Script.SConscript import SConsEnvironment
 SConsEnvironment.MyLibrary = MyLibrary
 SConsEnvironment.MyProgram = MyProgram
+SConsEnvironment.MyGlob = MyGlob
 
 # Base environment.
 
 env = Environment(
-    ENV = environ,
-    CC = environ.get ('CC', 'gcc'),
-    CXX = environ.get ('CXX', 'g++'),
-    CCFLAGS = Split(environ.get ('CFLAGS', "-O2")),
-    CXXFLAGS = Split(environ.get ('CXXFLAGS', "-O2")),
-    LINKFLAGS = Split(environ.get ('LDFLAGS', "")),
+    ENV = os.environ,
+    CC = os.environ.get ('CC', 'gcc'),
+    CXX = os.environ.get ('CXX', 'g++'),
+    CCFLAGS = Split(os.environ.get ('CFLAGS', "-O2")),
+    CXXFLAGS = Split(os.environ.get ('CXXFLAGS', "-O2")),
+    LINKFLAGS = Split(os.environ.get ('LDFLAGS', "")),
     )
 
 # Get the installation prefix
 
-opts = Options()
+opts = Options('simulations.conf')
 opts.Add(PathOption("prefix", "installation prefix", "/usr/local", PathOption.PathAccept))
 opts.Update(env)
+opts.Save('simulations.conf', env)
 
 Help(opts.GenerateHelpText(env))
 
@@ -89,9 +104,6 @@ Help(opts.GenerateHelpText(env))
 env.Alias ('install',"$prefix")
 
 # Now for the specific stuff.
-#
-# CAREFUL ! Putting a build_dir here makes the glob("*.cpp") shortcuts
-# fail whenever the build_dir already exists ...
 
 Export('env')
-SConscript("SConscript")
+SConscript("SConscript", build_dir='build')
