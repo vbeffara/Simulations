@@ -2,48 +2,48 @@
 Simulations and stuff - Vincent Beffara <vbeffara@ens-lyon.fr>
 
 
-For info about compiling and running the programs, see the INSTALL file.
+1. Compilation
 
-For  info about  running everything  under MS  Windows, see  the windows
-directory.
+I am using the very nice SCons framework for my simulations, because
+it has a lot of cool features (such as object file cache, automatic
+dependency tracking, and most of all portability). It is very easy to
+install, if you already have Python; once it is done, just type 'scons'
+in the main directory.
 
-Some notes about the 'libvb' library:
--------------------------------------------
+If you can't or won't install SCons, you can still compile everything by
+hand: for instance, by saying (in the top directory where this README
+file is, and assuming you have SDL installed):
 
-The  directory 'libvb'  contains a  very  simple library  to display  2D
-graphics on the screen  and to export EPS files. It is  very easy to use
-(cf. the documentation that will appear "soon").
-
-To have  it actually display  stuff on the  screen, you need  either SDL
-development libraries, or X11 development libraries. You can disable any
-(or both) at configure time; by  default, libvb uses SDL if present, and
-X11 if SDL is  absent -- or none if none is  present, which disables the
-display but not the EPS output.
-
-A  note about  performance:  The  choice of  driver  will influence  the
-running time, and depending on your  platform the one you should use can
-be different.   Some tests (dummy =  no driver), time in  seconds to run
-"Ising .88  300" (this is  "user" time, total  running time seems  to be
-even more in favor of SDL):
-
-Computer                   SDL    X11    dummy
-----------------------------------------------
-Athlon XP 1700+ (linux)    21.6   24.1   17.0
-Powerbook G4 1GHz (OSX)    25.0   30.0   20.0
-iMac G5 2GHz (OSX)         17.0   16.7   11.7
+      g++ -Ilibvb/ -O3 $(sdl-config --cflags --libs) -o 2D/SLE 2D/SLE.cpp
 
 
-About the 'xtoys' directory:
-----------------------------
+2. Some notes about the 'libvb' library
 
-These programs are not mine at  all, they were written by Michael Creutz
-(see  the  webpage  at  http://thy.phy.bnl.gov/www/xtoys/xtoys.html).  I
+The directory libvb/ contains a small library providing very easy
+display and EPS output for 2D simulations (in greyscale). It is entirely
+composed of header files, so compilation should be very easy. The only
+dependency is on SDL (though that might change - but the interface
+itself will not).
+
+At some point I will implement a way of compiling without SDL (while
+keeping all the convenient helper functions and EPS generation) through
+CPP defines; this will help especially on Windows.
+
+Up-to-date documentation on the library is at the following webpage:
+
+      http://www.umpa.ens-lyon.fr/~vbeffara/libvb/
+
+
+3. About the 'xtoys' directory:
+
+These programs are not mine at all, they were written by Michael Creutz
+(see the webpage at http://thy.phy.bnl.gov/www/xtoys/xtoys.html). I
 include them because they are somehow related to the others, and because
-I had  to rewrite the  Makefile to  compile them on  Mac OS X,  now they
+I had to rewrite the Makefile to compile them on Mac OS X, now they
 should compile everywhere (as long as the X11 include files are present,
 of course).
 
-If there is  any legal problem about their presence  here, I will remove
+If there is any legal problem about their presence here, I will remove
 them at once.
 
 
