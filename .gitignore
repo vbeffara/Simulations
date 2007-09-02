@@ -1,3 +1,6 @@
 .scons*
 build
 simulations.conf
+*.eps
+*.pdf
+doc

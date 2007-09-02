@@ -34,6 +34,29 @@ char color(int x, int y)
   else return RIGHTSIDE;
 }
 
+char color_smooth(int x, int y)
+{
+  double a,b,d;
+  int k;
+
+  a=x-wd; b=y; d=0;
+
+  for (k=0;(k<n)&&(b>0);k++) {
+    d=kappa / ((a-c[k])*(a-c[k]) + b*b);
+    a += (a-c[k])*d;
+    b -= b*d;
+  }
+
+  a -= c[k-1];
+  if (a<-b) return 1;
+  if (a>b) return 255;
+  
+  double t = (a+b)/(2*b);
+  t = t*t*(3-2*t);
+
+  return 1 + 254*t;
+} 
+
 void edge_detect(void)
 {
   int x,y;
@@ -68,11 +91,12 @@ int main(int argc, char ** argv)
   
   /* lecture des arguments */
 
-  CL_Parser CLP (argc,argv,"n=300,k=2.666666666667,r=0",
-      "Syntax: SLE [-n size] [-k kappa] [-r random_seed]");
+  CL_Parser CLP (argc,argv,"n=300,k=2.666666666667,r=0,s",
+      "Syntax: SLE [-n size] [-k kappa] [-r random_seed] [-s]");
   nn = CLP.as_int('n');
   kappa = CLP.as_double('k');
   int r = CLP.as_int('r');
+  int smooth = CLP.as_int('s');
 
   sprintf(s,"Schramm's SLE Process (kappa=%f)",kappa);
 
@@ -111,9 +135,9 @@ int main(int argc, char ** argv)
 
   /* Image */
   
-  img = new Image (2*wd,ht,2,s);
+  img = new Image (2*wd,ht,(smooth?8:2),s);
 
-  for (i=0;i<2*wd;i++) (*img)(i) = INSIDE;
+  for (i=0;i<2*wd;i++) (*img)(i) = (smooth?255:INSIDE);
 
   img->onscreen ();
 
@@ -121,11 +145,18 @@ int main(int argc, char ** argv)
 
   fprintf (stderr, "Doing the hard work ...\n");
   
-  img->tessellate (color,0,1,2*wd-1,ht-1);
+  img->tessellate ((smooth?color_smooth:color),0,1,2*wd-1,ht-1);
 
   fprintf (stderr, "Good bye, have a nice day.\n");
   
-  edge_detect();
+  if (smooth) {
+    for (int x=0; x<2*wd; ++x) {
+      for (int y=1; y<ht; ++y) {
+        if ((*img)(x,y)==1)
+          (*img)(x,y)=0;
+      }
+    }
+  } else edge_detect();
 
   std::cout << (*img);
 
