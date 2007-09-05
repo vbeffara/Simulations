@@ -23,16 +23,19 @@ namespace vb {
   /** The displacements for the various lattice shifts.
    */
 
-  const std::complex<double> PG_SHIFT[9] = {
-    std::complex<double>(0,0),
-    std::complex<double>(1,0),
-    std::complex<double>(1,1),
-    std::complex<double>(0,1),
-    std::complex<double>(-1,1),
-    std::complex<double>(-1,0),
-    std::complex<double>(-1,-1),
-    std::complex<double>(0,-1),
-    std::complex<double>(1,-1)
+  typedef long double cpx_base;
+  typedef std::complex<cpx_base> cpx;
+
+  const cpx PG_SHIFT[9] = {
+    cpx(0,0),
+    cpx(1,0),
+    cpx(1,1),
+    cpx(0,1),
+    cpx(-1,1),
+    cpx(-1,0),
+    cpx(-1,-1),
+    cpx(0,-1),
+    cpx(1,-1)
   };
 
   class PerioCell {
@@ -49,8 +52,8 @@ namespace vb {
       int n;                    ///< The number of points in the cell.
       int d;                    ///< Whether the graph is directed or not.
       unsigned short *A;        ///< The adjacency matrix.
-      std::complex<double> *Z;  ///< The embedding.
-      std::complex<double> tau; ///< The modulus of the embedding.
+      cpx *Z;  ///< The embedding.
+      cpx tau; ///< The modulus of the embedding.
 
       /** The standard constructor, builds a completely disconnected cell.
        *
@@ -58,11 +61,11 @@ namespace vb {
        * @param dd Whether the graph is directed or not.
        */
 
-      PerioCell (int nn, int dd = PG_UNDIRECTED) : n(nn), d(dd), tau(std::complex<double>(0.0,1.0)) {
+      PerioCell (int nn, int dd = PG_UNDIRECTED) : n(nn), d(dd), tau(cpx(0.0,1.0)) {
         A = new unsigned short [n*n];
         for (int i=0; i<n*n; ++i) A[i]=0;
 
-        Z = new std::complex<double> [n];
+        Z = new cpx [n];
         for (int i=0; i<n; ++i) Z[i]=0.0;
       };
 
@@ -74,36 +77,37 @@ namespace vb {
        */
 
       void add_edge (int i, int j, int z = PG_HERE) {
-        if (z <= 8) {
+        if ((z <= 8) && (i<n) && (j<n)) {
           A[n*i+j] |= (1<<z); 
           if (d==PG_UNDIRECTED) {
             int zz = z;
             if (z>0) zz = 1 + ((z+3)%8);
             A[n*j+i] |= (1<<zz);
           }
-        } else std::cerr << "libvb: no such cell" << std::endl;
+        } else std::cerr << "libvb: no such edge!" << std::endl;
       }
 
       /** The L^2 energy, as embedded
        */
 
-      double energy (void) {
-        double t = 0;
+      cpx_base energy (void) {
+        cpx_base t = 0;
         for (int i=0; i<n; ++i)
           for (int j=0; j<n; ++j)
             for (int k=0; k<=8; ++k)
               if (A[i*n+j] & (1<<k))
-                t += abs((Z[j]+PG_SHIFT[k]-Z[i])*(Z[j]+PG_SHIFT[k]-Z[i]));
+                t += norm (Z[j]+PG_SHIFT[k]-Z[i]);
         return t/2;
       }
 
       /** One relaxation step
        */
 
-      double relax_once (void) {
+      cpx_base relax_once (void) {
+        cpx_base diff=0;
         for (int i=1; i<n; ++i) { // Z[0] is pinned for uniqueness
-          std::complex<double> z(0,0);
-          double degree=0;
+          cpx z(0,0);
+          cpx_base degree=0;
           for (int j=0; j<n; ++j)
             //if (i!=j)
               for (int k=0; k<=8; ++k)
@@ -111,21 +115,57 @@ namespace vb {
                   z += Z[j]+PG_SHIFT[k];
                   degree += 1;
                 }
-          if (degree>0) Z[i] = z/degree;
+          if (degree>0) {
+            diff += abs(Z[i]*degree - z);
+            Z[i] = z/degree;
+          }
         }
+        return diff;
       }
 
       /** Full relaxation to the balanced embedding
        */
 
-      double relax (double eps=0) {
-        double s = energy();
-        double t = s + eps + 1;
-        while (t-s>eps) {
-          t = s;
-          relax_once();
-          s = energy();
-        }
+      void relax (cpx_base eps=0) {
+        while (relax_once()>eps) { }
+      }
+
+      /** Random-walk shear = sum of e^2
+       */
+
+      cpx rw_shear () {
+        cpx t=0;
+        for (int i=0; i<n; ++i)
+          for (int j=0; j<n; ++j)
+            for (int k=0; k<=8; ++k)
+              if (A[i*n+j] & (1<<k)) {
+                cpx u = Z[j]+PG_SHIFT[k]-Z[i];
+                cpx e = u.real() + tau*u.imag();
+                t += e*e;
+              }
+        return t/(cpx_base)2;
+      }
+
+      /** Compute tau_RW (semi-numericly)
+       */
+
+      cpx rw_tau () {
+        cpx_base a=0, b=0, c=0;
+        for (int i=0; i<n; ++i)
+          for (int j=0; j<n; ++j)
+            for (int k=0; k<=8; ++k)
+              if (A[i*n+j] & (1<<k)) {
+                cpx u = Z[j]+PG_SHIFT[k]-Z[i];
+                a += u.imag()*u.imag();
+                b += 2*u.real()*u.imag();
+                c += u.real()*u.real();
+              }
+        if (a==(cpx_base)0.0) return cpx(0,0);
+        cpx delta = b*b - 4*a*c;
+        cpx t = (-b + sqrt(delta))/(a*(cpx_base)2);
+        if (t.imag()<0) t = conj(t);
+        tau = t;
+        return t;
       }
 
     protected:
