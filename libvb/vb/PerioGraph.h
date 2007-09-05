@@ -4,6 +4,8 @@
 #ifndef __VB_PERIOGRAPH_H
 #define __VB_PERIOGRAPH_H
 
+#include <complex>
+
 #define PG_HERE         0
 #define PG_EAST         1
 #define PG_NORTHEAST    2
@@ -32,6 +34,7 @@ namespace vb {
       int n;                   ///< The number of points in the cell.
       int d;                   ///< Whether the graph is directed or not.
       unsigned short *A;       ///< The adjacency matrix.
+      std::complex<double> *Z; ///< The embedding.
 
       /** The standard constructor, builds a completely disconnected cell.
        *
@@ -42,6 +45,9 @@ namespace vb {
       PerioCell (int nn, int dd = PG_UNDIRECTED) : n(nn), d(dd) {
         A = new unsigned short [n*n];
         for (int i=0; i<n*n; ++i) A[i]=0;
+
+        Z = new std::complex<double> [n];
+        for (int i=0; i<n; ++i) Z[i]=0.0;
       };
 
       /** Add an edge to the cell.
@@ -72,6 +78,11 @@ namespace vb {
       os << "<" << C.A[i*C.n];
       for (int j=1; j<C.n; ++j) os << "," << C.A[i*C.n+j];
       os << ">";
+      if (i<C.n-1) os << ",";
+    }
+    os << "],[";
+    for (int i=0; i<C.n; ++i) {
+      os << C.Z[i];
       if (i<C.n-1) os << ",";
     }
     os << "])";
