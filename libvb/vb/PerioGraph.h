@@ -20,6 +20,21 @@
 #define PG_DIRECTED     1
 
 namespace vb {
+  /** The displacements for the various lattice shifts.
+   */
+
+  const std::complex<double> PG_SHIFT[9] = {
+    std::complex<double>(0,0),
+    std::complex<double>(1,0),
+    std::complex<double>(1,1),
+    std::complex<double>(0,1),
+    std::complex<double>(-1,1),
+    std::complex<double>(-1,0),
+    std::complex<double>(-1,-1),
+    std::complex<double>(0,-1),
+    std::complex<double>(1,-1)
+  };
+
   class PerioCell {
 
   /** Description of one period of a periodic planar graph.
@@ -67,6 +82,50 @@ namespace vb {
             A[n*j+i] |= (1<<zz);
           }
         } else std::cerr << "libvb: no such cell" << std::endl;
+      }
+
+      /** The L^2 energy, as embedded
+       */
+
+      double energy (void) {
+        double t = 0;
+        for (int i=0; i<n; ++i)
+          for (int j=0; j<n; ++j)
+            for (int k=0; k<=8; ++k)
+              if (A[i*n+j] & (1<<k))
+                t += abs((Z[j]+PG_SHIFT[k]-Z[i])*(Z[j]+PG_SHIFT[k]-Z[i]));
+        return t/2;
+      }
+
+      /** One relaxation step
+       */
+
+      double relax_once (void) {
+        for (int i=1; i<n; ++i) { // Z[0] is pinned for uniqueness
+          std::complex<double> z(0,0);
+          double degree=0;
+          for (int j=0; j<n; ++j)
+            //if (i!=j)
+              for (int k=0; k<=8; ++k)
+                if (A[i*n+j] & (1<<k)) {
+                  z += Z[j]+PG_SHIFT[k];
+                  degree += 1;
+                }
+          if (degree>0) Z[i] = z/degree;
+        }
+      }
+
+      /** Full relaxation to the balanced embedding
+       */
+
+      double relax (double eps=0) {
+        double s = energy();
+        double t = s + eps + 1;
+        while (t-s>eps) {
+          t = s;
+          relax_once();
+          s = energy();
+        }
       }
 
     protected:

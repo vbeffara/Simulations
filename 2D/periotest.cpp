@@ -20,4 +20,8 @@ int main (int argc, char **argv) {
   C.add_edge(0,1,PG_SOUTH);
 
   std::cout << C << std::endl;
+  std::cout << "Energy: " << C.energy() << std::endl;
+  C.relax();
+  std::cout << C << std::endl;
+  std::cout << "Energy: " << C.energy() << std::endl;
 }
