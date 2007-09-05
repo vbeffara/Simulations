@@ -31,10 +31,11 @@ namespace vb {
    */
 
     public:
-      int n;                   ///< The number of points in the cell.
-      int d;                   ///< Whether the graph is directed or not.
-      unsigned short *A;       ///< The adjacency matrix.
-      std::complex<double> *Z; ///< The embedding.
+      int n;                    ///< The number of points in the cell.
+      int d;                    ///< Whether the graph is directed or not.
+      unsigned short *A;        ///< The adjacency matrix.
+      std::complex<double> *Z;  ///< The embedding.
+      std::complex<double> tau; ///< The modulus of the embedding.
 
       /** The standard constructor, builds a completely disconnected cell.
        *
@@ -42,7 +43,7 @@ namespace vb {
        * @param dd Whether the graph is directed or not.
        */
 
-      PerioCell (int nn, int dd = PG_UNDIRECTED) : n(nn), d(dd) {
+      PerioCell (int nn, int dd = PG_UNDIRECTED) : n(nn), d(dd), tau(std::complex<double>(0.0,1.0)) {
         A = new unsigned short [n*n];
         for (int i=0; i<n*n; ++i) A[i]=0;
 
@@ -85,7 +86,7 @@ namespace vb {
       os << C.Z[i];
       if (i<C.n-1) os << ",";
     }
-    os << "])";
+    os << "]," << C.tau << ")";
     return os;
   };
 }
