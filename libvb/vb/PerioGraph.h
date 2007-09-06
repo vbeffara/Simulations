@@ -38,6 +38,13 @@ namespace vb {
     cpx(1,-1)
   };
 
+  /** Translate square to actual embedding
+   */
+
+  cpx actual (cpx z, cpx tau = cpx(0,1)) {
+    return z.real() + tau * z.imag();
+  }
+
   class PerioCell {
 
   /** Description of one period of a periodic planar graph.
@@ -52,8 +59,9 @@ namespace vb {
       int n;                    ///< The number of points in the cell.
       int d;                    ///< Whether the graph is directed or not.
       unsigned short *A;        ///< The adjacency matrix.
-      cpx *Z;  ///< The embedding.
-      cpx tau; ///< The modulus of the embedding.
+      cpx *Z;                   ///< The embedding.
+      cpx_base *R;              ///< The radii (for circle packing).
+      cpx tau;                  ///< The modulus of the embedding.
 
       /** The standard constructor, builds a completely disconnected cell.
        *
@@ -67,6 +75,9 @@ namespace vb {
 
         Z = new cpx [n];
         for (int i=0; i<n; ++i) Z[i]=0.0;
+
+        R = new cpx_base [n];
+        for (int i=0; i<n; ++i) R[i]=1.0;
       };
 
       /** Add an edge to the cell.
@@ -168,25 +179,48 @@ namespace vb {
         return t;
       }
 
+      /** Difference from being a circle packing
+       */
+
+      cpx_base cp_cost () {
+        cpx_base t=0;
+        for (int i=0; i<n; ++i)
+          for (int j=0; j<n; ++j)
+            if (i != j)
+              for (int k=0; k<=8; ++k)
+                if (A[i*n+j] & (1<<k)) {
+                  cpx u = Z[j]+PG_SHIFT[k]-Z[i];
+                  cpx e = u.real() + tau*u.imag();
+                  cpx_base r = abs(e);
+                  t += abs(e-R[i]-R[j]);
+                }
+        return t/(cpx_base)2;
+      }
+
     protected:
       friend std::ostream &operator<< (std::ostream &os, PerioCell &C);    
   };
 
+  void draw_segment (std::ostream &os, cpx z1, cpx z2, cpx tau=cpx(0,1)) {
+    z1 = actual (z1,tau);
+    z2 = actual (z2,tau);
+
+    os << "2 1 0 1 0 7 50 0 -1 0.000 0 0 -1 0 0 2" << std::endl
+       << floor(1000*z1.real()) << " " << floor(-1000*z1.imag()) << " "
+       << floor(1000*z2.real()) << " " << floor(-1000*z2.imag()) << std::endl;
+  }
+
   std::ostream &operator<< (std::ostream &os, PerioCell &C) {
-    os << "PerioCell(" << C.n << ",[";
-    for (int i=0; i<C.n; ++i) {
-      os << "<" << C.A[i*C.n];
-      for (int j=1; j<C.n; ++j) os << "," << C.A[i*C.n+j];
-      os << ">";
-      if (i<C.n-1) os << ",";
-    }
-    os << "],[";
-    for (int i=0; i<C.n; ++i) {
-      os << C.Z[i];
-      if (i<C.n-1) os << ",";
-    }
-    os << "]," << C.tau << ")";
-    return os;
+    os << "#FIG 3.2\nLandscape\nCenter\nMetric\nA4\n100.00\nSingle\n-2\n1200 2\n";
+    for (int i=0; i<C.n; ++i)
+      for (int j=0; j<C.n; ++j)
+        for (int k=0; k<=8; ++k)
+          if (C.A[i*C.n+j] & (1<<k)) {
+            for (int l=0; l<=8; ++l)
+              draw_segment (os,C.Z[i] + PG_SHIFT[l],
+                               C.Z[j] + PG_SHIFT[l] + PG_SHIFT[k],
+                               C.tau);
+          }
   };
 }
 

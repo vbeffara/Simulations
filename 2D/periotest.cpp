@@ -47,16 +47,7 @@ int main (int argc, char **argv) {
 
   cout << setprecision(10);
 
-  cout << C4 << endl;
-  cout << "Shear: " << C4.rw_shear() << endl;
-
-  cout << "-- Relaxing to the square embedding --" << endl;
-  C4.relax();
-  cout << C4 << endl;
-  cout << "Shear: " << C4.rw_shear() << endl;
-
-  cout << "-- Setting modulus to the RW embedding --" << endl;
-  C4.rw_tau();
-  cout << C4 << endl;
-  cout << "Shear: " << C4.rw_shear() << endl;
+  C.relax();
+  C.rw_tau();
+  cout << C;
 }
