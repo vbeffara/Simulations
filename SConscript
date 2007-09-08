@@ -9,6 +9,7 @@ vb.ParseConfig('sdl-config --cflags --libs')
 vb.Append ( CPPPATH = ['#libvb'] )
 
 SConscript ("2D/SConscript", exports="vb")
+SConscript ("tests/SConscript", exports="vb")
 
 # The rest
 
