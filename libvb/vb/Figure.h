@@ -27,10 +27,7 @@ namespace vb {
       /** This writes Asymptote code for the shape.
        */
 
-      virtual std::ostream &printASY (std::ostream &os) {
-        os << "This shouldn't happen!\n";
-        return os;
-      };
+      virtual std::ostream &printASY (std::ostream &os) = 0;
   };
 
   /** Line segment.
@@ -50,6 +47,24 @@ namespace vb {
 
       virtual std::ostream &printASY (std::ostream &os) {
         return os << "draw (" << z1 << "--" << z2 << ");" << std::endl;
+      }
+  };
+
+  /// Circle.
+
+  class Circle : public Shape {
+    public:
+      std::complex<double> z;
+      double r;
+
+      /// Constructor from center and radius.
+      
+      Circle (std::complex<double> zz, double rr) : z(zz), r(rr) {}
+
+      /// Implementation of ASY output.
+      
+      virtual std::ostream &printASY (std::ostream &os) {
+        return os << "draw (circle(" << z << "," << r << "));" << std::endl;
       }
   };
 
