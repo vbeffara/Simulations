@@ -5,6 +5,7 @@
 #define __VB_PERIOGRAPH_H
 
 #include <complex>
+#include <vb/Figure.h>
 
 #define PG_HERE         0
 #define PG_EAST         1
@@ -263,22 +264,6 @@ namespace vb {
 
     os << "draw (" << z1 << "--" << z2 << ");" << std::endl;
   }
-
-  std::ostream &operator<< (std::ostream &os, PerioCell &C) {
-    os << "unitsize(100);" << std::endl;
-    for (int i=0; i<C.n; ++i)
-      for (int j=0; j<C.n; ++j)
-        for (int k=0; k<=8; ++k)
-          if (C.A[i*C.n+j] & (1<<k)) {
-            for (int l=0; l<=8; ++l) {
-              draw_segment (os,C.Z[i] + PG_SHIFT[l],
-                               C.Z[j] + PG_SHIFT[l] + PG_SHIFT[k],
-                               C.tau);
-              os << "draw (circle(" << actual(C.Z[i]+PG_SHIFT[l],C.tau) << "," << C.R[i] << "));" << std::endl;
-            }
-          }
-    return os;
-  };
 }
 
 #endif

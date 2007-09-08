@@ -47,5 +47,4 @@ int main (int argc, char **argv) {
 
   C4.relax();
   cerr << C4.cp_tau() << endl;
-  cout << C4;
 }
