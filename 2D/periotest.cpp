@@ -46,6 +46,6 @@ int main (int argc, char **argv) {
   C4.add_edge(2,0,PG_NORTH);
 
   C4.relax();
-  cerr << C4.rw_tau() << endl;
+  cerr << C4.cp_tau() << endl;
   cout << C4;
 }

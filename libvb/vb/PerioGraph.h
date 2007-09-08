@@ -77,7 +77,7 @@ namespace vb {
         for (int i=0; i<n; ++i) Z[i]=0.0;
 
         R = new cpx_base [n];
-        for (int i=0; i<n; ++i) R[i]=1.0;
+        for (int i=0; i<n; ++i) R[i]=0.5;
       };
 
       /** Add an edge to the cell.
@@ -186,15 +186,71 @@ namespace vb {
         cpx_base t=0;
         for (int i=0; i<n; ++i)
           for (int j=0; j<n; ++j)
-            if (i != j)
-              for (int k=0; k<=8; ++k)
-                if (A[i*n+j] & (1<<k)) {
-                  cpx u = Z[j]+PG_SHIFT[k]-Z[i];
-                  cpx e = u.real() + tau*u.imag();
-                  cpx_base r = abs(e);
-                  t += abs(r-R[i]-R[j]);
-                }
-        return t/(cpx_base)2;
+            for (int k=0; k<=8; ++k)
+              if (A[i*n+j] & (1<<k)) {
+                cpx e = actual ( Z[j]+PG_SHIFT[k]-Z[i], tau );
+                cpx_base d = sqrt ( e.real()*e.real() + e.imag()*e.imag() );
+                cpx_base r = R[i]+R[j];
+                t += (d-r)*(d-r);
+              }
+        return t/2.0;
+      }
+
+      /** Relax to a circle packing
+       */
+
+      cpx cp_tau (cpx_base eps = 0) {
+        cpx_base cost = cp_cost();
+        cpx_base old_cost = cost + eps + 1;
+        cpx_base tmp_cost = cost;
+        while (old_cost - cost > eps) {
+          old_cost = cost;
+          cpx_base delta = sqrt(cost)/10;
+
+          tau += cpx(delta,0); tmp_cost = cp_cost();
+          if (tmp_cost < cost) cost = tmp_cost;
+          else {
+            tau -= cpx(2*delta,0); tmp_cost = cp_cost();
+            if (tmp_cost < cost) cost = tmp_cost;
+            else tau += cpx(delta,0);
+          }
+
+          tau += cpx(0,delta); tmp_cost = cp_cost();
+          if (tmp_cost < cost) cost = tmp_cost;
+          else {
+            tau -= cpx(0,2*delta); tmp_cost = cp_cost();
+            if (tmp_cost < cost) cost = tmp_cost;
+            else tau += cpx(0,delta);
+          }
+
+          for (int i=0; i<n; ++i) {
+            Z[i] += cpx(delta,0); tmp_cost = cp_cost();
+            if (tmp_cost < cost) cost = tmp_cost;
+            else {
+              Z[i] -= cpx(2*delta,0); tmp_cost = cp_cost();
+              if (tmp_cost < cost) cost = tmp_cost;
+              else Z[i] += cpx(delta,0);
+            }
+
+            Z[i] += cpx(0,delta); tmp_cost = cp_cost();
+            if (tmp_cost < cost) cost = tmp_cost;
+            else {
+              Z[i] -= cpx(0,2*delta); tmp_cost = cp_cost();
+              if (tmp_cost < cost) cost = tmp_cost;
+              else Z[i] += cpx(0,delta);
+            }
+
+            R[i] += delta; tmp_cost = cp_cost();
+            if (tmp_cost < cost) cost = tmp_cost;
+            else {
+              R[i] -= 2*delta; tmp_cost = cp_cost();
+              if (tmp_cost < cost) cost = tmp_cost;
+              else R[i] += delta;
+            }
+          }
+        }
+
+        return tau;
       }
 
     protected:
@@ -209,15 +265,17 @@ namespace vb {
   }
 
   std::ostream &operator<< (std::ostream &os, PerioCell &C) {
-    os << "unitsize(72);" << std::endl;
+    os << "unitsize(100);" << std::endl;
     for (int i=0; i<C.n; ++i)
       for (int j=0; j<C.n; ++j)
         for (int k=0; k<=8; ++k)
           if (C.A[i*C.n+j] & (1<<k)) {
-            for (int l=0; l<=8; ++l)
+            for (int l=0; l<=8; ++l) {
               draw_segment (os,C.Z[i] + PG_SHIFT[l],
                                C.Z[j] + PG_SHIFT[l] + PG_SHIFT[k],
                                C.tau);
+              os << "draw (circle(" << actual(C.Z[i]+PG_SHIFT[l],C.tau) << "," << C.R[i] << "));" << std::endl;
+            }
           }
     return os;
   };
