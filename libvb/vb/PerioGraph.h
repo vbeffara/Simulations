@@ -23,7 +23,7 @@ namespace vb {
   /** The displacements for the various lattice shifts.
    */
 
-  typedef long double cpx_base;
+  typedef double cpx_base;
   typedef std::complex<cpx_base> cpx;
 
   const cpx PG_SHIFT[9] = {
@@ -192,7 +192,7 @@ namespace vb {
                   cpx u = Z[j]+PG_SHIFT[k]-Z[i];
                   cpx e = u.real() + tau*u.imag();
                   cpx_base r = abs(e);
-                  t += abs(e-R[i]-R[j]);
+                  t += abs(r-R[i]-R[j]);
                 }
         return t/(cpx_base)2;
       }
@@ -205,13 +205,11 @@ namespace vb {
     z1 = actual (z1,tau);
     z2 = actual (z2,tau);
 
-    os << "2 1 0 1 0 7 50 0 -1 0.000 0 0 -1 0 0 2" << std::endl
-       << floor(1000*z1.real()) << " " << floor(-1000*z1.imag()) << " "
-       << floor(1000*z2.real()) << " " << floor(-1000*z2.imag()) << std::endl;
+    os << "draw (" << z1 << "--" << z2 << ");" << std::endl;
   }
 
   std::ostream &operator<< (std::ostream &os, PerioCell &C) {
-    os << "#FIG 3.2\nLandscape\nCenter\nMetric\nA4\n100.00\nSingle\n-2\n1200 2\n";
+    os << "unitsize(72);" << std::endl;
     for (int i=0; i<C.n; ++i)
       for (int j=0; j<C.n; ++j)
         for (int k=0; k<=8; ++k)
@@ -221,6 +219,7 @@ namespace vb {
                                C.Z[j] + PG_SHIFT[l] + PG_SHIFT[k],
                                C.tau);
           }
+    return os;
   };
 }
 

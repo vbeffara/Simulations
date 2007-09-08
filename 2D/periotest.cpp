@@ -45,9 +45,7 @@ int main (int argc, char **argv) {
   C4.add_edge(2,1,PG_HERE);
   C4.add_edge(2,0,PG_NORTH);
 
-  cout << setprecision(10);
-
-  C.relax();
-  C.rw_tau();
-  cout << C;
+  C4.relax();
+  cerr << C4.rw_tau() << endl;
+  cout << C4;
 }
