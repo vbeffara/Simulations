@@ -4,3 +4,7 @@ simulations.conf
 *.eps
 *.pdf
 doc
+*.fig
+*.asy
+*.swp
+tags
