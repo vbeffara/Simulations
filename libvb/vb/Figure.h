@@ -11,6 +11,8 @@
 #include <complex>
 #include <list>
 
+#include <vb/types.h>
+
 namespace vb {
 
   /** Base class for the elements of a figure.
@@ -35,12 +37,12 @@ namespace vb {
 
   class Segment : public Shape {
     public:
-      std::complex<double> z1, z2;
+      cpx z1, z2;
 
       /** Constructor from two complex numbers.
        */
 
-      Segment (std::complex<double> zz1, std::complex<double> zz2) : z1(zz1), z2(zz2) {}
+      Segment (cpx zz1, cpx zz2) : z1(zz1), z2(zz2) {}
 
       /** Implementation of ASY output.
        */
@@ -54,12 +56,12 @@ namespace vb {
 
   class Circle : public Shape {
     public:
-      std::complex<double> z;
-      double r;
+      cpx z;
+      real r;
 
       /// Constructor from center and radius.
       
-      Circle (std::complex<double> zz, double rr) : z(zz), r(rr) {}
+      Circle (cpx zz, real rr) : z(zz), r(rr) {}
 
       /// Implementation of ASY output.
       
@@ -92,13 +94,13 @@ namespace vb {
 
       /// Add a segment to the figure.
 
-      Figure &segment (std::complex<double> z1, std::complex<double> z2) {
+      Figure &segment (cpx z1, cpx z2) {
         return add (new Segment (z1,z2));
       }
 
       /// Add a circle to the figure.
 
-      Figure &circle (std::complex<double> z, double r) {
+      Figure &circle (cpx z, real r) {
         return add (new Circle (z,r));
       }
 
