@@ -21,11 +21,11 @@
 #define PG_DIRECTED     1
 
 namespace vb {
-  /** The displacements for the various lattice shifts.
-   */
-
   typedef double cpx_base;
   typedef std::complex<cpx_base> cpx;
+
+  /** The displacements for the various lattice shifts.
+   */
 
   const cpx PG_SHIFT[9] = {
     cpx(0,0),
