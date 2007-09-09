@@ -11,12 +11,13 @@ int main (int argc, char **argv) {
   
   for (int i=0; i<=10; ++i) {
     F.segment (cpx(0,0.1*i), cpx(1,0.1*i))
-     .segment (cpx(0.1*i,0), cpx(0.1*i,1));
+     .segment (cpx(0.1*i,0), cpx(0.1*i,1))
+     .dot (cpx(.1*i,.1*i));
   }
 
   for (int i=1; i<=5; ++i)
     F.circle (cpx(.5,.5),.1*i);
 
-  F.printASY(cout);
+  F.printASY("toto.asy");
   return 0;
 }

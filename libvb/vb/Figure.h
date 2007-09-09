@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <fstream>
 #include <complex>
 #include <list>
 #include <stdexcept>
@@ -65,6 +66,22 @@ namespace vb {
       cpx z2; ///< Second endpoint.
   };
 
+  /// Dot.
+
+  class Dot : public Shape {
+    public:
+      /// Constructor.
+      Dot (cpx zz) : z(zz) {}
+
+      /// Implementation of ASY output.
+      virtual std::ostream &printASY (std::ostream &os) {
+        return os << "dot(" << z << ");" << std::endl;
+      }
+
+    private:
+      cpx z;  ///< The location.
+  };
+
   /// Circle.
 
   class Circle : public Shape {
@@ -94,12 +111,24 @@ namespace vb {
         return add (new Segment (z1,z2));
       }
 
+      /// Add a dot to the figure.
+      Figure &dot (cpx z) {
+        return add (new Dot (z));
+      }
+
       /// Add a circle to the figure.
       Figure &circle (cpx z, real r) {
         return add (new Circle (z,r));
       }
 
       /// Output as an ASY file.
+      void printASY (const char *s) {
+        std::ofstream f(s);
+        printASY(f);
+        f.close();
+      }
+
+      /// Output as ASY to a stream.
       std::ostream &printASY (std::ostream &os) {
         os << "unitsize(100);" << std::endl;
 
