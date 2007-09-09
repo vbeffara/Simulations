@@ -8,66 +8,78 @@
 #define __VB_FIGURE_H
 
 #include <iostream>
+#include <sstream>
 #include <complex>
 #include <list>
+#include <stdexcept>
 
 #include <vb/types.h>
 
 namespace vb {
 
-  /** Base class for the elements of a figure.
-   */
+  /// Base class for the elements of a figure.
 
   class Shape {
     public:
-
-      /** Empty destructor to make the compiler happy.
-       */
-
+      /// Empty destructor to make the compiler happy.
       virtual ~Shape() {}
 
-      /** This writes Asymptote code for the shape.
-       */
+      /// Write ASY code for the shape.
+      virtual std::ostream &printASY (std::ostream &os) {
+        not_impl ("Asymptote"); return os;
+      }
 
-      virtual std::ostream &printASY (std::ostream &os) = 0;
+      /// Write EPS code for the shape.
+      virtual std::ostream &printEPS (std::ostream &os) {
+        not_impl ("EPS"); return os;
+      }
+
+      /// Write MP code for the shape.
+      virtual std::ostream &printMP (std::ostream &os) {
+        not_impl ("MetaPost"); return os;
+      }
+
+    private:
+      /// Complain that some output is not implemented.
+      void not_impl (std::string s) {
+        std::ostringstream os;
+        os << s << " output not implemented by class " << typeid(*this).name() << std::flush;
+        throw (std::runtime_error(os.str()));
+      }
   };
 
-  /** Line segment.
-   */
+  /// Line segment.
 
   class Segment : public Shape {
     public:
-      cpx z1, z2;
-
-      /** Constructor from two complex numbers.
-       */
-
+      /// Constructor from two complex numbers.
       Segment (cpx zz1, cpx zz2) : z1(zz1), z2(zz2) {}
 
-      /** Implementation of ASY output.
-       */
-
+      /// Implementation of ASY output.
       virtual std::ostream &printASY (std::ostream &os) {
         return os << "draw (" << z1 << "--" << z2 << ");" << std::endl;
       }
+
+    private:
+      cpx z1; ///< First endpoint.
+      cpx z2; ///< Second endpoint.
   };
 
   /// Circle.
 
   class Circle : public Shape {
     public:
-      cpx z;
-      real r;
-
       /// Constructor from center and radius.
-      
       Circle (cpx zz, real rr) : z(zz), r(rr) {}
 
       /// Implementation of ASY output.
-      
       virtual std::ostream &printASY (std::ostream &os) {
         return os << "draw (circle(" << z << "," << r << "));" << std::endl;
       }
+
+    private:
+      cpx z;  ///< The center.
+      real r; ///< The radius.
   };
 
   /** The main Figure class.
@@ -77,35 +89,17 @@ namespace vb {
 
   class Figure {
     public:
-
-      /// The contents as a list of vb::Sahpe objects.
-
-      std::list<Shape*> contents;
-
-      /** Add an element to the figure.
-       *
-       * It transfers ownership to the Figure object.
-       */
-      
-      Figure &add (Shape *S) {
-        contents.push_back(S);
-        return (*this);
-      }
-
       /// Add a segment to the figure.
-
       Figure &segment (cpx z1, cpx z2) {
         return add (new Segment (z1,z2));
       }
 
       /// Add a circle to the figure.
-
       Figure &circle (cpx z, real r) {
         return add (new Circle (z,r));
       }
 
       /// Output as an ASY file.
-
       std::ostream &printASY (std::ostream &os) {
         os << "unitsize(100);" << std::endl;
 
@@ -113,8 +107,16 @@ namespace vb {
         for (i = contents.begin(); i != contents.end(); ++i) {
           (*i)->printASY(os);
         }
-
         return os;
+      }
+
+    private:
+      std::list<Shape*> contents;  ///< The elements of the figure.
+
+      /// Add an element to the figure.
+      Figure &add (Shape *S) {
+        contents.push_back(S);
+        return (*this);
       }
   };
 }
