@@ -90,6 +90,18 @@ namespace vb {
         return (*this);
       }
 
+      /// Add a segment to the figure.
+
+      Figure &segment (std::complex<double> z1, std::complex<double> z2) {
+        return add (new Segment (z1,z2));
+      }
+
+      /// Add a circle to the figure.
+
+      Figure &circle (std::complex<double> z, double r) {
+        return add (new Circle (z,r));
+      }
+
       /// Output as an ASY file.
 
       std::ostream &printASY (std::ostream &os) {
