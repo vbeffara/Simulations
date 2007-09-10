@@ -78,7 +78,7 @@ namespace vb {
         for (int i=0; i<n; ++i) Z[i]=0.0;
 
         R = new cpx_base [n];
-        for (int i=0; i<n; ++i) R[i]=0.5;
+        for (int i=0; i<n; ++i) R[i]=0.0;
       };
 
       /** Add an edge to the cell.
