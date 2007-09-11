@@ -257,13 +257,6 @@ namespace vb {
     protected:
       friend std::ostream &operator<< (std::ostream &os, PerioCell &C);    
   };
-
-  void draw_segment (std::ostream &os, cpx z1, cpx z2, cpx tau=cpx(0,1)) {
-    z1 = actual (z1,tau);
-    z2 = actual (z2,tau);
-
-    os << "draw (" << z1 << "--" << z2 << ");" << std::endl;
-  }
 }
 
 #endif
