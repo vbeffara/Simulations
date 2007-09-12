@@ -4,7 +4,6 @@
 #ifndef __VB_PERIOGRAPH_H
 #define __VB_PERIOGRAPH_H
 
-#include <complex>
 #include <vb/Figure.h>
 
 #define PG_HERE         0
@@ -21,9 +20,6 @@
 #define PG_DIRECTED     1
 
 namespace vb {
-  typedef double cpx_base;
-  typedef std::complex<cpx_base> cpx;
-
   /** The displacements for the various lattice shifts.
    */
 
@@ -46,7 +42,8 @@ namespace vb {
     return z.real() + tau * z.imag();
   }
 
-  class PerioCell {
+  class PerioCell;
+  double cost_cp (PerioCell);
 
   /** Description of one period of a periodic planar graph.
    *
@@ -56,12 +53,14 @@ namespace vb {
    * be taken into account by taking a larger cell.
    */
 
+  class PerioCell {
+
     public:
       int n;                    ///< The number of points in the cell.
       int d;                    ///< Whether the graph is directed or not.
       unsigned short *A;        ///< The adjacency matrix.
       cpx *Z;                   ///< The embedding.
-      cpx_base *R;              ///< The radii (for circle packing).
+      double *R;                  ///< The radii (for circle packing).
       cpx tau;                  ///< The modulus of the embedding.
 
       /** The standard constructor, builds a completely disconnected cell.
@@ -77,7 +76,7 @@ namespace vb {
         Z = new cpx [n];
         for (int i=0; i<n; ++i) Z[i]=0.0;
 
-        R = new cpx_base [n];
+        R = new double [n];
         for (int i=0; i<n; ++i) R[i]=0.0;
       };
 
@@ -102,8 +101,8 @@ namespace vb {
       /** The L^2 energy, as embedded
        */
 
-      cpx_base energy (void) {
-        cpx_base t = 0;
+      double energy (void) {
+        double t = 0;
         for (int i=0; i<n; ++i)
           for (int j=0; j<n; ++j)
             for (int k=0; k<=8; ++k)
@@ -115,11 +114,11 @@ namespace vb {
       /** One relaxation step
        */
 
-      cpx_base relax_once (void) {
-        cpx_base diff=0;
+      double relax_once (void) {
+        double diff=0;
         for (int i=1; i<n; ++i) { // Z[0] is pinned for uniqueness
           cpx z(0,0);
-          cpx_base degree=0;
+          double degree=0;
           for (int j=0; j<n; ++j)
             //if (i!=j)
               for (int k=0; k<=8; ++k)
@@ -138,7 +137,7 @@ namespace vb {
       /** Full relaxation to the balanced embedding
        */
 
-      void relax (cpx_base eps=0) {
+      void relax (double eps=0) {
         while (relax_once()>eps) { }
       }
 
@@ -155,14 +154,14 @@ namespace vb {
                 cpx e = u.real() + tau*u.imag();
                 t += e*e;
               }
-        return t/(cpx_base)2;
+        return t/(double)2;
       }
 
       /** Compute tau_RW (semi-numericly)
        */
 
       cpx rw_tau () {
-        cpx_base a=0, b=0, c=0;
+        double a=0, b=0, c=0;
         for (int i=0; i<n; ++i)
           for (int j=0; j<n; ++j)
             for (int k=0; k<=8; ++k)
@@ -172,81 +171,74 @@ namespace vb {
                 b += 2*u.real()*u.imag();
                 c += u.real()*u.real();
               }
-        if (a==(cpx_base)0.0) return cpx(0,0);
+        if (a==(double)0.0) return cpx(0,0);
         cpx delta = b*b - 4*a*c;
-        cpx t = (-b + sqrt(delta))/(a*(cpx_base)2);
+        cpx t = (-b + sqrt(delta))/(a*(double)2);
         if (t.imag()<0) t = conj(t);
         tau = t;
         return t;
       }
 
-      /** Difference from being a circle packing
+      /** Relax to a circle packing.
        */
 
-      cpx_base cp_cost () {
-        cpx_base t=0;
-        for (int i=0; i<n; ++i)
-          for (int j=0; j<n; ++j)
-            for (int k=0; k<=8; ++k)
-              if (A[i*n+j] & (1<<k)) {
-                cpx e = actual ( Z[j]+PG_SHIFT[k]-Z[i], tau );
-                cpx_base d = sqrt ( e.real()*e.real() + e.imag()*e.imag() );
-                cpx_base r = R[i]+R[j];
-                t += (d-r)*(d-r);
-              }
-        return t/2.0;
+      cpx cp_tau (double eps = 0) {
+        return optimize(cost_cp);
       }
 
-      /** Relax to a circle packing
+      /** Find the minimum of a function over embeddings.
+       *
+       * @param func The function that should be minimized.
+       * @param eps Stop when making steps less than this.
        */
 
-      cpx cp_tau (cpx_base eps = 0) {
-        cpx_base cost = cp_cost();
-        cpx_base old_cost = cost + eps + 1;
-        cpx_base tmp_cost = cost;
+      cpx optimize (double func(PerioCell), double eps = 0) {
+        double cost = func(*this);
+        double old_cost = cost + eps + 1;
+        double tmp_cost = cost;
         while (old_cost - cost > eps) {
           old_cost = cost;
-          cpx_base delta = sqrt(cost)/10;
+          double delta = sqrt(cost)/10;
 
-          tau += cpx(delta,0); tmp_cost = cp_cost();
+          tau += cpx(delta,0); tmp_cost = func(*this);
           if (tmp_cost < cost) cost = tmp_cost;
           else {
-            tau -= cpx(2*delta,0); tmp_cost = cp_cost();
+            tau -= cpx(2*delta,0); tmp_cost = func(*this);
             if (tmp_cost < cost) cost = tmp_cost;
             else tau += cpx(delta,0);
           }
 
-          tau += cpx(0,delta); tmp_cost = cp_cost();
+          tau += cpx(0,delta); tmp_cost = func(*this);
           if (tmp_cost < cost) cost = tmp_cost;
           else {
-            tau -= cpx(0,2*delta); tmp_cost = cp_cost();
+            tau -= cpx(0,2*delta); tmp_cost = func(*this);
             if (tmp_cost < cost) cost = tmp_cost;
             else tau += cpx(0,delta);
           }
 
           for (int i=0; i<n; ++i) {
             if (i>0) {
-              Z[i] += cpx(delta,0); tmp_cost = cp_cost();
+              Z[i] += cpx(delta,0); tmp_cost = func(*this);
               if (tmp_cost < cost) cost = tmp_cost;
               else {
-                Z[i] -= cpx(2*delta,0); tmp_cost = cp_cost();
+                Z[i] -= cpx(2*delta,0); tmp_cost = func(*this);
                 if (tmp_cost < cost) cost = tmp_cost;
                 else Z[i] += cpx(delta,0);
               }
 
-              Z[i] += cpx(0,delta); tmp_cost = cp_cost();
+              Z[i] += cpx(0,delta); tmp_cost = func(*this);
               if (tmp_cost < cost) cost = tmp_cost;
               else {
-                Z[i] -= cpx(0,2*delta); tmp_cost = cp_cost();
+                Z[i] -= cpx(0,2*delta); tmp_cost = func(*this);
                 if (tmp_cost < cost) cost = tmp_cost;
                 else Z[i] += cpx(0,delta);
               }
             }
 
-            R[i] += delta; tmp_cost = cp_cost();
+            R[i] += delta; tmp_cost = func(*this);
             if (tmp_cost < cost) cost = tmp_cost;
             else {
-              R[i] -= 2*delta; tmp_cost = cp_cost();
+              R[i] -= 2*delta; tmp_cost = func(*this);
               if (tmp_cost < cost) cost = tmp_cost;
               else R[i] += delta;
             }
@@ -259,6 +251,23 @@ namespace vb {
     protected:
       friend std::ostream &operator<< (std::ostream &os, PerioCell &C);    
   };
+
+  /** Difference from being a circle packing
+  */
+
+  double cost_cp (PerioCell C) {
+    double t=0;
+    for (int i=0; i<C.n; ++i)
+      for (int j=0; j<C.n; ++j)
+        for (int k=0; k<=8; ++k)
+          if (C.A[i*C.n+j] & (1<<k)) {
+            cpx e = actual ( C.Z[j]+PG_SHIFT[k]-C.Z[i], C.tau );
+            double d = sqrt ( e.real()*e.real() + e.imag()*e.imag() );
+            double r = C.R[i]+C.R[j];
+            t += (d-r)*(d-r);
+          }
+    return t/2.0;
+  }
 }
 
 #endif
