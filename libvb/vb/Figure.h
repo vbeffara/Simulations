@@ -26,7 +26,9 @@ namespace vb {
       virtual ~Shape() {}
 
       /// Equality testing.
-      virtual bool operator== (const Shape&) const =0;
+      virtual bool operator== (const Shape&) const {
+        return false;
+      }
 
       /// Write ASY code for the shape.
       virtual std::ostream &printASY (std::ostream &os) {
@@ -140,6 +142,19 @@ namespace vb {
 
   class Figure {
     public:
+      /// Destructor also destroys the contents nodes.
+      ~Figure () {
+        std::list<Shape*>::iterator i;
+        for (i=contents.begin(); i!=contents.end(); ++i)
+          delete *i;
+      }
+
+      /// Add an element to the figure.
+      Figure &add (Shape *S) {
+        contents.push_back(S);
+        return (*this);
+      }
+
       /// Add a segment to the figure.
       Figure &segment (cpx z1, cpx z2) {
         return add (new Segment (z1,z2));
@@ -173,14 +188,22 @@ namespace vb {
         return os;
       }
 
+      /** Remove duplicate entries.
+       *
+       * That's using an ugly n^2 algorithm for now.
+       */
+
+      void unique() {
+        std::list<Shape*>::iterator i,j;
+
+        for (i = contents.begin(); i != contents.end(); ++i)
+          for (j = i, ++j; j != contents.end(); ++j)
+            while ((j != contents.end()) && ((**i) == (**j)))
+              j = contents.erase(j);
+      }
+
     private:
       std::list<Shape*> contents;  ///< The elements of the figure.
-
-      /// Add an element to the figure.
-      Figure &add (Shape *S) {
-        contents.push_back(S);
-        return (*this);
-      }
   };
 }
 
