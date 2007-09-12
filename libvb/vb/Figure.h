@@ -25,6 +25,9 @@ namespace vb {
       /// Empty destructor to make the compiler happy.
       virtual ~Shape() {}
 
+      /// Equality testing.
+      virtual bool operator== (const Shape&) const =0;
+
       /// Write ASY code for the shape.
       virtual std::ostream &printASY (std::ostream &os) {
         not_impl ("Asymptote"); return os;
@@ -53,25 +56,47 @@ namespace vb {
 
   class Segment : public Shape {
     public:
+      cpx z1; ///< First endpoint.
+      cpx z2; ///< Second endpoint.
+
       /// Constructor from two complex numbers.
       Segment (cpx zz1, cpx zz2) : z1(zz1), z2(zz2) {}
+
+      /// Equality testing.
+      virtual bool operator== (const Shape &other) const {
+        if (typeid(*this) != typeid(other)) return false;
+
+        Segment *o = (Segment*)(&other);
+        if (z1 != o->z1) return false;
+        if (z2 != o->z2) return false;
+
+        return true;
+      }
 
       /// Implementation of ASY output.
       virtual std::ostream &printASY (std::ostream &os) {
         return os << "draw (" << z1 << "--" << z2 << ");" << std::endl;
       }
-
-    private:
-      cpx z1; ///< First endpoint.
-      cpx z2; ///< Second endpoint.
   };
 
   /// Dot.
 
   class Dot : public Shape {
     public:
+      cpx z;  ///< The location.
+
       /// Constructor.
       Dot (cpx zz) : z(zz) {}
+
+      /// Equality testing.
+      virtual bool operator== (const Shape &other) const {
+        if (typeid(*this) != typeid(other)) return false;
+
+        Dot *o = (Dot*)(&other);
+        if (z != o->z) return false;
+
+        return true;
+      }
 
       /// Implementation of ASY output.
       virtual std::ostream &printASY (std::ostream &os) {
@@ -79,24 +104,33 @@ namespace vb {
       }
 
     private:
-      cpx z;  ///< The location.
   };
 
   /// Circle.
 
   class Circle : public Shape {
     public:
+      cpx z;  ///< The center.
+      real r; ///< The radius.
+
       /// Constructor from center and radius.
       Circle (cpx zz, real rr) : z(zz), r(rr) {}
+
+      /// Equality testing.
+      virtual bool operator== (const Shape &other) const {
+        if (typeid(*this) != typeid(other)) return false;
+
+        Circle *o = (Circle*)(&other);
+        if (z != o->z) return false;
+        if (r != o->r) return false;
+
+        return true;
+      }
 
       /// Implementation of ASY output.
       virtual std::ostream &printASY (std::ostream &os) {
         return os << "draw (circle(" << z << "," << r << "));" << std::endl;
       }
-
-    private:
-      cpx z;  ///< The center.
-      real r; ///< The radius.
   };
 
   /** The main Figure class.
