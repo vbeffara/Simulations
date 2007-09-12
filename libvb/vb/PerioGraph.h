@@ -225,20 +225,22 @@ namespace vb {
           }
 
           for (int i=0; i<n; ++i) {
-            Z[i] += cpx(delta,0); tmp_cost = cp_cost();
-            if (tmp_cost < cost) cost = tmp_cost;
-            else {
-              Z[i] -= cpx(2*delta,0); tmp_cost = cp_cost();
+            if (i>0) {
+              Z[i] += cpx(delta,0); tmp_cost = cp_cost();
               if (tmp_cost < cost) cost = tmp_cost;
-              else Z[i] += cpx(delta,0);
-            }
+              else {
+                Z[i] -= cpx(2*delta,0); tmp_cost = cp_cost();
+                if (tmp_cost < cost) cost = tmp_cost;
+                else Z[i] += cpx(delta,0);
+              }
 
-            Z[i] += cpx(0,delta); tmp_cost = cp_cost();
-            if (tmp_cost < cost) cost = tmp_cost;
-            else {
-              Z[i] -= cpx(0,2*delta); tmp_cost = cp_cost();
+              Z[i] += cpx(0,delta); tmp_cost = cp_cost();
               if (tmp_cost < cost) cost = tmp_cost;
-              else Z[i] += cpx(0,delta);
+              else {
+                Z[i] -= cpx(0,2*delta); tmp_cost = cp_cost();
+                if (tmp_cost < cost) cost = tmp_cost;
+                else Z[i] += cpx(0,delta);
+              }
             }
 
             R[i] += delta; tmp_cost = cp_cost();
