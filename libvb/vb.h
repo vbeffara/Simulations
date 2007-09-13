@@ -114,7 +114,7 @@ namespace vb {
  *   first-passage percolation clusters).
  *
  * - vb::PRNG: a pseudo-random number generator (and yet another
- *   implementation of the "Mersenne twisted algorithm"), very fast
+ *   implementation of the "Mersenne twister algorithm"), very fast
  *   and much better than the standard rand(). Implements various
  *   standard distributions.
  *
