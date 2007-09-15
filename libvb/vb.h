@@ -115,6 +115,10 @@ namespace vb {
  *   and much better than the standard rand(). Implements various
  *   standard distributions.
  *
+ * - vb::Figure: a class for building figures from a program, and 
+ *   exporting it as an Asymptote file. Right now it is embryonic (only 
+ *   dots, line segments and circles) but already functional.
+ *
  * And once again: this is all supposed to be very easy to use:
  * everything resides in header files for easy inclusion. If it
  * isn't, please let me know (vbeffara@ens-lyon.fr) ! See the sample
