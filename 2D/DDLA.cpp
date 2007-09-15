@@ -3,6 +3,7 @@
  */
 
 #include <vb.h>
+#include <vb/Point.h>
 #include <iostream>
 #include <cmath>
 

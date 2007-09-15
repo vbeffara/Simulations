@@ -1,3 +1,4 @@
+/// @file types.h
 /// Convenience types for the rest of the library.
 
 #ifndef __VB_TYPES_H

@@ -38,6 +38,7 @@ int main(int argc, char *argv[])
 }
 
 /** A simple example of how to use the libvb library.
+ * @file sample.cpp
  *
  * It does nothing interesting, but demonstrates the vb::Image class,
  * with the vb::Image::tessellate() method and EPS creation. Here is a

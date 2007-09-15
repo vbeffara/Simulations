@@ -1,20 +1,16 @@
-/** Classes to build nice figures.
- *
- * The main output is a .asy file (Asymptote format), later there might
- * be others, especially EPS would be nice.
- */
+/// @file Figure.h
+/// Classes to build nice figures.
 
 #ifndef __VB_FIGURE_H
 #define __VB_FIGURE_H
 
+#include <vb/types.h>
+
 #include <iostream>
 #include <sstream>
 #include <fstream>
-#include <complex>
 #include <list>
 #include <stdexcept>
-
-#include <vb/types.h>
 
 namespace vb {
 
@@ -140,7 +136,9 @@ namespace vb {
 
   /** The main Figure class.
    *
-   * Right now it's a list of shapes with an output routine.
+   * Right now it's a list of shapes with an output routine. The only 
+   * output format implemented is .asy (Asymptote), but eventually there 
+   * will be .eps (postscript) and .mp (metapost).
    */
 
   class Figure {

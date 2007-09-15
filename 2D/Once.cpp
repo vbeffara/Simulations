@@ -2,10 +2,12 @@
  * Vertex-Once-Reinforced Random Walk in Z^2
  */
 
+#include <vb.h>
+#include <vb/CoarseImage.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <vb.h>
 
 int dx[4] = {1,0,-1,0};  /* 0=est, 1=nord ... */
 int dy[4] = {0,1,0,-1};

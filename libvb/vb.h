@@ -1,14 +1,11 @@
+/// @file vb.h
+/// Include a standard subset of the libvb library.
 
-/** @file vb.h
- * Include everything from the libvb library.
- */
+#include <vb/types.h>
 
 #include <vb/Image.h>
-#include <vb/CoarseImage.h>
 #include <vb/CL_Parser.h>
 #include <vb/PRNG.h>
-#include <vb/Point.h>
-#include <vb/ProgressBar.h>
 
 #include <string>
 

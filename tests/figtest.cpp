@@ -1,4 +1,5 @@
-/* Test for the vb::Figure class and associates. */
+/// @file
+/// Test for the vb::Figure class and associates.
 
 #include <iostream>
 #include <vb/Figure.h>

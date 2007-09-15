@@ -1,6 +1,7 @@
 
 #include <iostream>
 #include <vb.h>
+#include <vb/CoarseImage.h>
 
 int main (int argc, char **argv) {
   vb::CL_Parser CLP(argc,argv,"n=500,e=0.01,f,c=0");
