@@ -57,10 +57,11 @@ namespace vb {
   /// Line segment.
 
   class Segment : public Shape {
-    public:
+    private:
       cpx z1; ///< First endpoint.
       cpx z2; ///< Second endpoint.
 
+    public:
       /// Constructor from two complex numbers.
       Segment (cpx zz1, cpx zz2) : z1(zz1), z2(zz2) {}
 
@@ -84,9 +85,10 @@ namespace vb {
   /// Dot.
 
   class Dot : public Shape {
-    public:
+    private:
       cpx z;  ///< The location.
 
+    public:
       /// Constructor.
       Dot (cpx zz) : z(zz) {}
 
@@ -111,10 +113,11 @@ namespace vb {
   /// Circle.
 
   class Circle : public Shape {
-    public:
+    private:
       cpx z;  ///< The center.
       real r; ///< The radius.
 
+    public:
       /// Constructor from center and radius.
       Circle (cpx zz, real rr) : z(zz), r(rr) {}
 
