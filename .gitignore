@@ -8,3 +8,5 @@ doc
 *.asy
 *.swp
 tags
+*.aux
+*.log

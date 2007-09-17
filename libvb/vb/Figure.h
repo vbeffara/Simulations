@@ -11,6 +11,7 @@
 #include <fstream>
 #include <list>
 #include <stdexcept>
+#include <string>
 
 namespace vb {
 
@@ -82,11 +83,12 @@ namespace vb {
 
   class Dot : public Shape {
     private:
-      cpx z;  ///< The location.
+      cpx z;          ///< The location.
+      std::string l;  ///< The label of the dot, if any.
 
     public:
       /// Constructor.
-      Dot (cpx zz) : z(zz) {}
+      Dot (cpx zz, std::string ll = "") : z(zz), l(ll) {}
 
       /// Equality testing.
       virtual bool operator== (const Shape &other) const {
@@ -100,6 +102,7 @@ namespace vb {
 
       /// Implementation of ASY output.
       virtual std::ostream &printASY (std::ostream &os) {
+        if (l.length()) os << "label(\"" << l << "\"," << z << ",NE);";
         return os << "dot(" << z << ");" << std::endl;
       }
 
@@ -162,8 +165,8 @@ namespace vb {
       }
 
       /// Add a dot to the figure.
-      Figure &dot (cpx z) {
-        return add (new Dot (z));
+      Figure &dot (cpx z, std::string l="") {
+        return add (new Dot (z,l));
       }
 
       /// Add a circle to the figure.

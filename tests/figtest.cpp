@@ -17,6 +17,11 @@ int main (int argc, char **argv) {
      .dot (cpx(.1*i,.1*i));
   }
 
+  F.dot(0,"a");
+  F.dot(1,"b");
+  F.dot(cpx(1,1),"c");
+  F.dot(cpx(0,1),"d");
+
   for (int i=1; i<=5; ++i)
     F.circle (cpx(.5,.5),.1*i);
 
