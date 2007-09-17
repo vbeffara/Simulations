@@ -58,7 +58,7 @@ namespace vb {
     public:
       int n;                    ///< The number of points in the cell.
       int d;                    ///< Whether the graph is directed or not.
-      std::vector<short> A;     ///< The adjacency matrix.
+      std::vector<real> A;      ///< The adjacency matrix.
       std::vector<cpx> Z;       ///< The embedding.
       std::vector<double> R;    ///< The radii (for circle packing).
       cpx tau;                  ///< The modulus of the embedding.
@@ -70,7 +70,7 @@ namespace vb {
        */
 
       PerioCell (int nn, int dd = PG_UNDIRECTED) : n(nn), d(dd), tau(cpx(0.0,1.0)) {
-        for (int i=0; i<n*n; ++i) A.push_back(0);
+        for (int i=0; i<9*n*n; ++i) A.push_back(0.0);
         for (int i=0; i<n; ++i) Z.push_back(0.0);
         for (int i=0; i<n; ++i) R.push_back(0.0);
       };
@@ -82,18 +82,11 @@ namespace vb {
         return Z[i];
       }
 
-      /** Access the adjacency matrix via an operator.
-       */
-
-      short &operator() (int i, int j) {
-        return A[i*n+j];
-      }
-
       /** Access one particular adjacency matrix entry via an operator.
        */
 
-      bool operator() (int i, int j, int k) {
-        return (*this)(i,j) & (1<<k);
+      real &operator() (int i, int j, int k) {
+        return A[9*(n*i+j)+k];
       }
 
       /** Add an edge to the cell.
@@ -105,11 +98,11 @@ namespace vb {
 
       void add_edge (int i, int j, int z = PG_HERE) {
         if ((z <= 8) && (i<n) && (j<n)) {
-          (*this)(i,j) |= (1<<z); 
+          (*this)(i,j,z) = 1; 
           if (d==PG_UNDIRECTED) {
             int zz = z;
             if (z>0) zz = 1 + ((z+3)%8);
-            (*this)(j,i) |= (1<<zz);
+            (*this)(j,i,zz) = 1;
           }
         } else std::cerr << "libvb: no such edge!" << std::endl;
       }
