@@ -89,6 +89,13 @@ namespace vb {
         return A[i*n+j];
       }
 
+      /** Access one particular adjacency matrix entry via an operator.
+       */
+
+      bool operator() (int i, int j, int k) {
+        return (*this)(i,j) & (1<<k);
+      }
+
       /** Add an edge to the cell.
        *
        * @param i The origin of the edge.
@@ -115,7 +122,7 @@ namespace vb {
         for (int i=0; i<n; ++i)
           for (int j=0; j<n; ++j)
             for (int k=0; k<=8; ++k)
-              if ((*this)(i,j) & (1<<k))
+              if ((*this)(i,j,k))
                 t += norm ((*this)(j)+PG_SHIFT[k]-(*this)(i));
         return t/2;
       }
@@ -131,7 +138,7 @@ namespace vb {
           for (int j=0; j<n; ++j)
             //if (i!=j)
               for (int k=0; k<=8; ++k)
-                if ((*this)(i,j) & (1<<k)) {
+                if ((*this)(i,j,k)) {
                   z += (*this)(j)+PG_SHIFT[k];
                   degree += 1;
                 }
@@ -158,7 +165,7 @@ namespace vb {
         for (int i=0; i<n; ++i)
           for (int j=0; j<n; ++j)
             for (int k=0; k<=8; ++k)
-              if ((*this)(i,j) & (1<<k)) {
+              if ((*this)(i,j,k)) {
                 cpx u = (*this)(j)+PG_SHIFT[k]-(*this)(i);
                 cpx e = u.real() + tau*u.imag();
                 t += e*e;
@@ -174,7 +181,7 @@ namespace vb {
         for (int i=0; i<n; ++i)
           for (int j=0; j<n; ++j)
             for (int k=0; k<=8; ++k)
-              if ((*this)(i,j) & (1<<k)) {
+              if ((*this)(i,j,k)) {
                 cpx u = (*this)(j)+PG_SHIFT[k]-(*this)(i);
                 a += u.imag()*u.imag();
                 b += 2*u.real()*u.imag();
@@ -269,7 +276,7 @@ namespace vb {
     for (int i=0; i<C.n; ++i)
       for (int j=0; j<C.n; ++j)
         for (int k=0; k<=8; ++k)
-          if (C(i,j) & (1<<k)) {
+          if (C(i,j,k)) {
             cpx e = actual ( C(j)+PG_SHIFT[k]-C(i), C.tau );
             double d = sqrt ( e.real()*e.real() + e.imag()*e.imag() );
             double r = C.R[i]+C.R[j];
