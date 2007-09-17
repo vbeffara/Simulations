@@ -58,9 +58,9 @@ namespace vb {
     public:
       int n;                    ///< The number of points in the cell.
       int d;                    ///< Whether the graph is directed or not.
-      unsigned short *A;        ///< The adjacency matrix.
-      cpx *Z;                   ///< The embedding.
-      double *R;                  ///< The radii (for circle packing).
+      std::vector<short> A;     ///< The adjacency matrix.
+      std::vector<cpx> Z;       ///< The embedding.
+      std::vector<double> R;    ///< The radii (for circle packing).
       cpx tau;                  ///< The modulus of the embedding.
 
       /** The standard constructor, builds a completely disconnected cell.
@@ -70,14 +70,9 @@ namespace vb {
        */
 
       PerioCell (int nn, int dd = PG_UNDIRECTED) : n(nn), d(dd), tau(cpx(0.0,1.0)) {
-        A = new unsigned short [n*n];
-        for (int i=0; i<n*n; ++i) A[i]=0;
-
-        Z = new cpx [n];
-        for (int i=0; i<n; ++i) Z[i]=0.0;
-
-        R = new double [n];
-        for (int i=0; i<n; ++i) R[i]=0.0;
+        for (int i=0; i<n*n; ++i) A.push_back(0);
+        for (int i=0; i<n; ++i) Z.push_back(0.0);
+        for (int i=0; i<n; ++i) R.push_back(0.0);
       };
 
       /** Add an edge to the cell.
