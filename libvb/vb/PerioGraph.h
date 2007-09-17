@@ -75,6 +75,20 @@ namespace vb {
         for (int i=0; i<n; ++i) R.push_back(0.0);
       };
 
+      /** Access the point locations via an operator.
+       */
+
+      cpx &operator() (int i) {
+        return Z[i];
+      }
+
+      /** Access the adjacency matrix via an operator.
+       */
+
+      short &operator() (int i, int j) {
+        return A[i*n+j];
+      }
+
       /** Add an edge to the cell.
        *
        * @param i The origin of the edge.
@@ -84,11 +98,11 @@ namespace vb {
 
       void add_edge (int i, int j, int z = PG_HERE) {
         if ((z <= 8) && (i<n) && (j<n)) {
-          A[n*i+j] |= (1<<z); 
+          (*this)(i,j) |= (1<<z); 
           if (d==PG_UNDIRECTED) {
             int zz = z;
             if (z>0) zz = 1 + ((z+3)%8);
-            A[n*j+i] |= (1<<zz);
+            (*this)(j,i) |= (1<<zz);
           }
         } else std::cerr << "libvb: no such edge!" << std::endl;
       }
@@ -101,8 +115,8 @@ namespace vb {
         for (int i=0; i<n; ++i)
           for (int j=0; j<n; ++j)
             for (int k=0; k<=8; ++k)
-              if (A[i*n+j] & (1<<k))
-                t += norm (Z[j]+PG_SHIFT[k]-Z[i]);
+              if ((*this)(i,j) & (1<<k))
+                t += norm ((*this)(j)+PG_SHIFT[k]-(*this)(i));
         return t/2;
       }
 
@@ -117,13 +131,13 @@ namespace vb {
           for (int j=0; j<n; ++j)
             //if (i!=j)
               for (int k=0; k<=8; ++k)
-                if (A[i*n+j] & (1<<k)) {
-                  z += Z[j]+PG_SHIFT[k];
+                if ((*this)(i,j) & (1<<k)) {
+                  z += (*this)(j)+PG_SHIFT[k];
                   degree += 1;
                 }
           if (degree>0) {
-            diff += abs(Z[i]*degree - z);
-            Z[i] = z/degree;
+            diff += abs((*this)(i)*degree - z);
+            (*this)(i) = z/degree;
           }
         }
         return diff;
@@ -144,8 +158,8 @@ namespace vb {
         for (int i=0; i<n; ++i)
           for (int j=0; j<n; ++j)
             for (int k=0; k<=8; ++k)
-              if (A[i*n+j] & (1<<k)) {
-                cpx u = Z[j]+PG_SHIFT[k]-Z[i];
+              if ((*this)(i,j) & (1<<k)) {
+                cpx u = (*this)(j)+PG_SHIFT[k]-(*this)(i);
                 cpx e = u.real() + tau*u.imag();
                 t += e*e;
               }
@@ -160,8 +174,8 @@ namespace vb {
         for (int i=0; i<n; ++i)
           for (int j=0; j<n; ++j)
             for (int k=0; k<=8; ++k)
-              if (A[i*n+j] & (1<<k)) {
-                cpx u = Z[j]+PG_SHIFT[k]-Z[i];
+              if ((*this)(i,j) & (1<<k)) {
+                cpx u = (*this)(j)+PG_SHIFT[k]-(*this)(i);
                 a += u.imag()*u.imag();
                 b += 2*u.real()*u.imag();
                 c += u.real()*u.real();
@@ -213,20 +227,20 @@ namespace vb {
 
           for (int i=0; i<n; ++i) {
             if (i>0) {
-              Z[i] += cpx(delta,0); tmp_cost = func(*this);
+              (*this)(i) += cpx(delta,0); tmp_cost = func(*this);
               if (tmp_cost < cost) cost = tmp_cost;
               else {
-                Z[i] -= cpx(2*delta,0); tmp_cost = func(*this);
+                (*this)(i) -= cpx(2*delta,0); tmp_cost = func(*this);
                 if (tmp_cost < cost) cost = tmp_cost;
-                else Z[i] += cpx(delta,0);
+                else (*this)(i) += cpx(delta,0);
               }
 
-              Z[i] += cpx(0,delta); tmp_cost = func(*this);
+              (*this)(i) += cpx(0,delta); tmp_cost = func(*this);
               if (tmp_cost < cost) cost = tmp_cost;
               else {
-                Z[i] -= cpx(0,2*delta); tmp_cost = func(*this);
+                (*this)(i) -= cpx(0,2*delta); tmp_cost = func(*this);
                 if (tmp_cost < cost) cost = tmp_cost;
-                else Z[i] += cpx(0,delta);
+                else (*this)(i) += cpx(0,delta);
               }
             }
 
@@ -255,8 +269,8 @@ namespace vb {
     for (int i=0; i<C.n; ++i)
       for (int j=0; j<C.n; ++j)
         for (int k=0; k<=8; ++k)
-          if (C.A[i*C.n+j] & (1<<k)) {
-            cpx e = actual ( C.Z[j]+PG_SHIFT[k]-C.Z[i], C.tau );
+          if (C(i,j) & (1<<k)) {
+            cpx e = actual ( C(j)+PG_SHIFT[k]-C(i), C.tau );
             double d = sqrt ( e.real()*e.real() + e.imag()*e.imag() );
             double r = C.R[i]+C.R[j];
             t += (d-r)*(d-r);
