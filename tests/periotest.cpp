@@ -105,4 +105,7 @@ int main (int argc, char **argv) {
   C5.relax();
   cerr << setprecision(20);
   cerr << C5.cp_tau() << endl;
+
+  vb::DecoratedCell<string> D (C5,"");
+  D(0) = "a"; D(1) = "B"; D(2) = "$c$"; D(3) = "$D$"; D(4) = "\\textbf{e}";
 }

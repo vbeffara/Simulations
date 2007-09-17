@@ -58,7 +58,7 @@ namespace vb {
     public:
       int n;                    ///< The number of points in the cell.
       int d;                    ///< Whether the graph is directed or not.
-      std::vector<real> A;      ///< The adjacency matrix.
+      std::vector<double> A;    ///< The adjacency matrix.
       std::vector<cpx> Z;       ///< The embedding.
       std::vector<double> R;    ///< The radii (for circle packing).
       cpx tau;                  ///< The modulus of the embedding.
@@ -85,7 +85,7 @@ namespace vb {
       /** Access one particular adjacency matrix entry via an operator.
        */
 
-      real &operator() (int i, int j, int k) {
+      double &operator() (int i, int j, int k) {
         return A[9*(n*i+j)+k];
       }
 
@@ -277,6 +277,34 @@ namespace vb {
           }
     return t/2.0;
   }
+
+  /** Template for a decorated cell, to be used in vb::PerioGraph.
+   *
+   * It will only work if T implements a copy constructor and can be 
+   * output to a std::ostream via operator<< overload.
+   */
+
+  template <class T> class DecoratedCell {
+    private:
+      int n;                ///< The number of vertices.
+      PerioCell *C;         ///< The base pattern.
+      std::vector<T> D;     ///< The decorations.
+
+    public:
+      /** Constructor from a PerioCell and a default element.
+       */
+
+      DecoratedCell (PerioCell &CC, T t) : n(CC.n), C(&CC) {
+        for (int i=0; i<n; ++i) D.push_back(t);
+      }
+
+      /** Access the labels via an operator.
+       */
+
+      T &operator() (int i) {
+        return D[i];
+      }
+  };
 }
 
 #endif
