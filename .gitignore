@@ -18,3 +18,4 @@ out*
 *.avi
 .sconf_temp
 DATA
+*.ps.gz
