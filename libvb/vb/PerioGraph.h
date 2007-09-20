@@ -22,7 +22,6 @@
 namespace vb {
   /** The displacements for the various lattice shifts.
    */
-
   const cpx PG_SHIFT[9] = {
     cpx(0,0),
     cpx(1,0),
@@ -37,7 +36,6 @@ namespace vb {
 
   /** Translate square to actual embedding
    */
-
   cpx actual (cpx z, cpx tau = cpx(0,1)) {
     return z.real() + tau * z.imag();
   }
@@ -52,7 +50,6 @@ namespace vb {
    * has only 8 neighboring cells, excluding longer edges - but this can
    * be taken into account by taking a larger cell.
    */
-
   class PerioCell {
 
     public:
@@ -256,9 +253,6 @@ namespace vb {
 
         return tau;
       }
-
-    protected:
-      friend std::ostream &operator<< (std::ostream &os, PerioCell &C);    
   };
 
   /** Difference from being a circle packing
@@ -283,7 +277,6 @@ namespace vb {
    * It will only work if T implements a copy constructor and can be 
    * output to a std::ostream via operator<< overload.
    */
-
   template <class T> class DecoratedCell {
     private:
       int n;                ///< The number of vertices.
@@ -293,14 +286,12 @@ namespace vb {
     public:
       /** Constructor from a PerioCell and a default element.
        */
-
       DecoratedCell (PerioCell &CC, T t) : n(CC.n), C(&CC) {
         for (int i=0; i<n; ++i) D.push_back(t);
       }
 
       /** Access the labels via an operator.
        */
-
       T &operator() (int i) {
         return D[i];
       }
@@ -308,6 +299,37 @@ namespace vb {
 
   /** The main class template for a (decorated) periodic graph.
    */
+  template <class T> class PerioGraph {
+    private:
+      PerioCell C;                               ///< The repeated pattern.
+      std::vector < DecoratedCell<T> > field;    ///< The data.
+
+    public:
+      int wd;                                    ///< The number of periods in the horizontal direction.
+      int ht;                                    ///< The number of periods in the vertical direction.
+
+      /** The constructor from a PerioCell.
+       *
+       * @param width  The width (in periods) of the graph.
+       * @param height The height (in periods) of the graph.
+       * @param cell   The repeated cell.
+       * @param t      The default value of the label.
+       */
+      PerioGraph (int width, int height, PerioCell cell, T t) : C(cell), wd(width), ht(height) {
+        for (int i=0; i<wd; ++i)
+          for (int j=0; j<ht; ++j)
+            field.push_back(DecoratedCell<T> (C,t));
+      }
+
+      /** Nice output to a stream.
+       */
+      std::ostream &printOn (std::ostream &os) {
+        for (int i=0; i<wd; ++i)
+          for (int j=0; j<ht; ++j)
+            field[wd*i+j].printOn(os, actual(cpx(i,j),C.tau));
+        return os;
+      }
+  };
 }
 
 #endif
