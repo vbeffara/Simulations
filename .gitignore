@@ -19,3 +19,4 @@ out*
 .sconf_temp
 DATA
 *.ps.gz
+*.eps.gz

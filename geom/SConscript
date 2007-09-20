@@ -1,0 +1,4 @@
+Import('vb')
+
+for i in vb.MyGlob("*.cpp"):
+  vb.MyProgram(i)

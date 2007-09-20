@@ -34,7 +34,7 @@ vb.Append ( LIBPATH = [ libvb[0].dir ], LIBS = ["vb"] )
 
 # Now build the programs.
 
-for i in ['tests', '1D', '2D', 'trucs']:
+for i in ['tests', '1D', '2D', 'trucs', 'geom']:
   SConscript ("%s/SConscript" % i, exports="vb")
 
 SConscript ("xtoys/SConscript", exports="env")
