@@ -3,7 +3,7 @@
 #include <set>
 #include <vb/PRNG.h>
 
-#define N 10
+#define N 30
 #define PI 4*atan(1.0)
 
 using namespace std;
@@ -36,7 +36,7 @@ class pt {
     }
 
     void step (const vector<double> &o);
-    void reverse ();
+    pt reverse ();
 };
 ostream &operator<< (ostream &os, const pt p) {
   os << (double)p.i + p.x << " " << (double)p.j + p.y << endl;
@@ -108,20 +108,37 @@ void pt::step (const vector<double> &o) {
   x -= di; i += di;
   y -= dj; j += dj;
 }
-void pt::reverse () {
+pt pt::reverse () {
   if (x==0) { x=1; i--; }
   else if (x==1) { x=0; i++; }
   else if (y==0) { y=1; j--; }
   else if (y==1) { y=0; j++; }
+  return (*this);
 }
 pt nopoint (-1,-1,-1,-1);
+
+class ptpair {
+  public:
+    pt p1, p2;
+
+    ptpair (pt pp1, pt pp2) : p1(pp1), p2(pp2) { }
+
+    bool operator== (const ptpair o) {
+      return ( (p1==o.p1) && (p2==o.p2) );
+    }
+
+    bool operator< (const ptpair o) const {
+      if (p1<o.p1) return true; else if (o.p1<p1) return false;
+      if (p2<o.p2) return true; else return false;
+    }
+};
 
 pt geodesique (pt p, const vector<double> &o, bool tracing=false) {
   set<pt> S;
   while (true) {
+    if ( (p.i<0) || (p.i>=N) || (p.j<0) || (p.j>=N) ) break;
     if (tracing) cout << (double)p.i + p.x << " " << (double)p.j + p.y << endl;
     p.step(o);
-    if ( (p.i<0) || (p.i>=N) || (p.j<0) || (p.j>=N) ) break;
     if (S.count(p)) break;
     S.insert(p);
   }
@@ -163,15 +180,17 @@ void octopus (int i, int j, vector<double> &o, PRNG &prng) {
     hair (pt(i,j-1,1,x),trap,o);
   }
 }
-set<pt> fixpoints (const vector<double> &o) {
-  set<pt> S;
+
+set<ptpair> connections (const vector<double> &o) {
+  set<ptpair> S;
   for (int i=0; i<N; ++i) {
     for (int j=0; j<N; ++j) {
+      cerr << "(" << i << "," << j << ")    \r" << flush;
       for (double x=0; x<=1; x+=.01) {
-        S.insert ( geodesique (pt(i,j,x,0),o,false) );
-        S.insert ( geodesique (pt(i,j,x,1),o,false) );
-        S.insert ( geodesique (pt(i,j,0,x),o,false) );
-        S.insert ( geodesique (pt(i,j,1,x),o,false) );
+        pt p1 = geodesique (pt(i,j,x,0),o,false);
+        pt p2 = geodesique (pt(i,j,x,0).reverse(),o,false);
+        if (!((p1==nopoint)||(p2==nopoint)))
+          S.insert (ptpair(p1,p2));
       }
     }
   }
@@ -184,8 +203,10 @@ int main (int argc, char **argv) {
   vector<double> o (N*N);
   for (int i=0; i<N*N; ++i) o[i] = prng.uniform(2*PI);
 
-  set<pt> S = fixpoints(o);
-  for (set<pt>::iterator i = S.begin(); i != S.end(); ++i) {
-    if (!(*i == nopoint)) geodesique (pt(*i),o,true);
+  set<ptpair> S = connections(o);
+  for (set<ptpair>::iterator i = S.begin(); i != S.end(); ++i) {
+    geodesique (pt(i->p1),o,true);
+    geodesique (pt(i->p1),o,true);
+    cout << i->p1 << i->p2 << endl;
   }
 }
