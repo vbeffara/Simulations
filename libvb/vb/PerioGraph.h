@@ -65,7 +65,6 @@ namespace vb {
        * @param nn The number of vertices in the cell.
        * @param dd Whether the graph is directed or not.
        */
-
       PerioCell (int nn, int dd = PG_UNDIRECTED) : n(nn), d(dd), tau(cpx(0.0,1.0)) {
         for (int i=0; i<9*n*n; ++i) A.push_back(0.0);
         for (int i=0; i<n; ++i) Z.push_back(0.0);
@@ -73,8 +72,9 @@ namespace vb {
       };
 
       /** Access the point locations via an operator.
+       *
+       * It returns the square embedding location.
        */
-
       cpx &operator() (int i) {
         return Z[i];
       }
@@ -92,7 +92,6 @@ namespace vb {
        * @param j The target of the cell.
        * @param z The relative cell of the target.
        */
-
       void add_edge (int i, int j, int z = PG_HERE) {
         if ((z <= 8) && (i<n) && (j<n)) {
           (*this)(i,j,z) = 1; 
@@ -149,7 +148,6 @@ namespace vb {
 
       /** Random-walk shear = sum of e^2
        */
-
       cpx rw_shear () {
         cpx t=0;
         for (int i=0; i<n; ++i)
@@ -165,7 +163,6 @@ namespace vb {
 
       /** Compute tau_RW (semi-numericly)
        */
-
       cpx rw_tau () {
         double a=0, b=0, c=0;
         for (int i=0; i<n; ++i)
@@ -319,6 +316,12 @@ namespace vb {
         for (int i=0; i<wd; ++i)
           for (int j=0; j<ht; ++j)
             field.push_back(DecoratedCell<T> (C,t));
+      }
+
+      /** Access the labels via an operator.
+       */
+      T &operator() (int x, int y, int i) {
+        return field[wd*x+y](i);
       }
 
       /** Nice output to a stream.

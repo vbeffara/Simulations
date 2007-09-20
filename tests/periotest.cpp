@@ -108,4 +108,5 @@ int main (int argc, char **argv) {
   cerr << C5.cp_tau() << endl;
 
   PerioGraph<int> D (5,5,C5,0);
+  D(2,3,1) = 42;
 }
