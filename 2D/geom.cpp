@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <set>
 #include <vb/PRNG.h>
 
 #define N 10
@@ -19,6 +20,13 @@ class pt {
 
     bool operator== (const pt o) const {
       return ( (i==o.i) && (j==o.j) && (x==o.x) && (y==o.y) );
+    }
+
+    bool operator< (const pt o) const {
+      if (i<o.i) return true; else if (i>o.i) return false;
+      if (j<o.j) return true; else if (j>o.j) return false;
+      if (x<o.x) return true; else if (x>o.x) return false;
+      if (y<o.y) return true; else return false;
     }
 
     double dist2 (const pt o) {
@@ -98,11 +106,13 @@ void pt::step (const vector<double> &o) {
 }
 
 pt geodesique (pt p, const vector<double> &o, bool tracing=false) {
-  for (int step=0; step<300; ++step) {
-    if (tracing)
-      cout << (double)p.i + p.x << " " << (double)p.j + p.y << endl;
+  set<pt> S;
+  while (true) {
+    if (tracing) cout << (double)p.i + p.x << " " << (double)p.j + p.y << endl;
     p.step(o);
     if ( (p.i<0) || (p.i>=N) || (p.j<0) || (p.j>=N) ) break;
+    if (S.count(p)) break;
+    S.insert(p);
   }
 
   if (tracing) cout << endl;
@@ -119,10 +129,36 @@ pt reverse (pt p) {
 
 void hair (pt p, pt trap, const vector<double> &o) {
     pt p1 = geodesique (p,o,false);
-    if (p1.dist2(trap) < 1e-3) {
+    if (p1.dist2(trap) == 0) {
       geodesique (p,o,true);
       geodesique (reverse(p),o,true);
     }
+}
+
+void octopus (int i, int j, vector<double> &o, PRNG &prng) {
+  while (true) {
+    double o1 = o[(i)*N + (j)] = prng.uniform(2*PI);
+    double o2 = o[(i-1)*N + (j)] = prng.uniform(2*PI);
+    double o3 = o[(i-1)*N + (j-1)] = prng.uniform(2*PI);
+    double o4 = o[(i)*N + (j-1)] = prng.uniform(2*PI);
+
+    if ( (tan(o1)<0) && (tan(o2)>0) && (tan(o3)<0) && (tan(o4)>0) ) break;
+  } 
+
+  pt trap (i,j,0,0);
+  for (double x=0; x<1.0; x+=.01) {
+    hair (pt(i,j,1,x),trap,o);
+    hair (pt(i,j,x,1),trap,o);
+
+    hair (pt(i-1,j,x,1),trap,o);
+    hair (pt(i-1,j,0,x),trap,o);
+
+    hair (pt(i-1,j-1,0,x),trap,o);
+    hair (pt(i-1,j-1,x,0),trap,o);
+
+    hair (pt(i,j-1,x,0),trap,o);
+    hair (pt(i,j-1,1,x),trap,o);
+  }
 }
 
 int main (int argc, char **argv) {
@@ -130,27 +166,6 @@ int main (int argc, char **argv) {
 
   vector<double> o (N*N);
   for (int i=0; i<N*N; ++i) o[i] = prng.uniform(2*PI);
-  while (true) {
-    double o1 = o[(N/2)*N + (N/2)] = prng.uniform(2*PI);
-    double o2 = o[(N/2-1)*N + (N/2)] = prng.uniform(2*PI);
-    double o3 = o[(N/2-1)*N + (N/2-1)] = prng.uniform(2*PI);
-    double o4 = o[(N/2)*N + (N/2-1)] = prng.uniform(2*PI);
 
-    if ( (tan(o1)<0) && (tan(o2)>0) && (tan(o3)<0) && (tan(o4)>0) ) break;
-  } 
-
-  pt trap (N/2,N/2,0,0);
-  for (double x=0; x<1.0; x+=.01) {
-    hair (pt(N/2,N/2,1,x),trap,o);
-    hair (pt(N/2,N/2,x,1),trap,o);
-
-    hair (pt(N/2-1,N/2,x,1),trap,o);
-    hair (pt(N/2-1,N/2,0,x),trap,o);
-
-    hair (pt(N/2-1,N/2-1,0,x),trap,o);
-    hair (pt(N/2-1,N/2-1,x,0),trap,o);
-
-    hair (pt(N/2,N/2-1,x,0),trap,o);
-    hair (pt(N/2,N/2-1,1,x),trap,o);
-  }
+  octopus (N/2,N/2,o,prng);
 }
