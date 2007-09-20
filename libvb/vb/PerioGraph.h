@@ -305,6 +305,9 @@ namespace vb {
         return D[i];
       }
   };
+
+  /** The main class template for a (decorated) periodic graph.
+   */
 }
 
 #endif
