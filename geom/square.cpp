@@ -128,31 +128,43 @@ pt geodesique (pt p, const vector<double> &o, bool tracing=false) {
   if ( (p.xi()<0) || (p.xi()>=N) || (p.yi()<0) || (p.yi()>=N) ) return nopoint;
   else return p;
 }
-void leaf (pt p, const vector<double> &o, bool tracing=false) {
-  geodesique (pt(p), o, tracing);
+pair<pt,pt> leaf (pt p, const vector<double> &o, bool tracing=false) {
+  pt p1 = geodesique (pt(p), o, tracing);
   p.reverse();
-  geodesique (p, o, tracing);
+  pt p2 = geodesique (p, o, tracing);
+
+  if (p1<p2) return pair<pt,pt>(p1,p2);
+  else       return pair<pt,pt>(p2,p1);
 }
 
-set<ptpair> connections (const vector<double> &o) {
+set<pt> connections (const vector<double> &o) {
   set<ptpair> S;
+  set<pt> P;
+
   for (int i=0; i<N; ++i) {
     for (int j=0; j<N; ++j) {
       for (double x=0; x<=1; x+=.01) {
-        pt p1 = geodesique (pt(i,j,x,0),o,false);
-        pt p2 = geodesique (pt(i,j,x,0).reverse(),o,false);
-        if (!((p1==nopoint)||(p2==nopoint))) {
-          if ((S.count(ptpair(p1,p2)) == 0) && (S.count(ptpair(p2,p1)) == 0)) {
-            pt p1 = geodesique (pt(i,j,x,0),o,true);
-            pt p2 = geodesique (pt(i,j,x,0).reverse(),o,true);
-            S.insert (ptpair(p1,p2));
+        pair<pt,pt> pp = leaf (pt(i,j,x,0),o,false);
+
+        if ((pp.first != nopoint) && (pp.second != nopoint)) {
+          if (S.count(pp) == 0) {
+            S.insert (pp);
+            P.insert (pt(i,j,x,0));
+          }
+        }
+
+        pp = leaf (pt(i,j,0,x),o,false);
+
+        if ((pp.first != nopoint) && (pp.second != nopoint)) {
+          if (S.count(pp) == 0) {
+            S.insert (pp);
+            P.insert (pt(i,j,0,x));
           }
         }
       }
     }
   }
-  cerr << endl;
-  return S;
+  return P;
 }
 
 int main (int argc, char **argv) {
@@ -164,17 +176,10 @@ int main (int argc, char **argv) {
   cout << setprecision(10);
   cerr << setprecision(10);
 
-  set<ptpair> S = connections(o);
-  set<pt> E;
+  set<pt> P = connections(o);
 
-  for (set<ptpair>::iterator i = S.begin(); i != S.end(); ++i) {
-    geodesique (pt(i->first),o,true);
-    geodesique (pt(i->second),o,true);
-    E.insert(i->first);
-    E.insert(i->second);
-  }
-
-  for (set<pt>::iterator i = E.begin(); i != E.end(); ++i) {
-    cerr << (*i);
+  for (set<pt>::iterator i = P.begin(); i != P.end(); ++i) {
+    pair<pt,pt> pp = leaf(*i,o,true);
+    cerr << pp.first << pp.second;
   }
 }
