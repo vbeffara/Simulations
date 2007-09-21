@@ -1,9 +1,10 @@
 #include <iostream>
+#include <iomanip>
 #include <vector>
 #include <set>
 #include <vb/PRNG.h>
 
-#define N 30
+#define N 10
 #define PI 4*atan(1.0)
 
 using namespace std;
@@ -189,11 +190,17 @@ set<ptpair> connections (const vector<double> &o) {
       for (double x=0; x<=1; x+=.01) {
         pt p1 = geodesique (pt(i,j,x,0),o,false);
         pt p2 = geodesique (pt(i,j,x,0).reverse(),o,false);
-        if (!((p1==nopoint)||(p2==nopoint)))
-          S.insert (ptpair(p1,p2));
+        if (!((p1==nopoint)||(p2==nopoint))) {
+          if ((S.count(ptpair(p1,p2)) == 0) && (S.count(ptpair(p2,p1)) == 0)) {
+            pt p1 = geodesique (pt(i,j,x,0),o,true);
+            pt p2 = geodesique (pt(i,j,x,0).reverse(),o,true);
+            S.insert (ptpair(p1,p2));
+          }
+        }
       }
     }
   }
+  cerr << endl;
   return S;
 }
 
@@ -203,10 +210,12 @@ int main (int argc, char **argv) {
   vector<double> o (N*N);
   for (int i=0; i<N*N; ++i) o[i] = prng.uniform(2*PI);
 
+  cout << setprecision(10);
+
   set<ptpair> S = connections(o);
   for (set<ptpair>::iterator i = S.begin(); i != S.end(); ++i) {
     geodesique (pt(i->p1),o,true);
-    geodesique (pt(i->p1),o,true);
-    cout << i->p1 << i->p2 << endl;
+    geodesique (pt(i->p2),o,true);
+    cerr << i->p1 << endl << i->p2 << endl;
   }
 }
