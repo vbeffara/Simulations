@@ -17,7 +17,12 @@ class pt : public ptt {
   public:
     pt (int i, int j, double x, double y) : ptt(coo(i,x), coo(j,y)) {};
 
+    int &xi() { return first.first; }
+    double &xf() { return first.second; }
     double x() const { return (double)first.first + first.second; }
+
+    int &yi() { return second.first; }
+    double &yf() { return second.second; }
     double y() const { return (double)second.first + second.second; }
 
     double dist2 (const pt o) {
@@ -34,24 +39,24 @@ ostream &operator<< (ostream &os, const pt p) {
   return os;
 }
 void pt::step (const vector<double> &o) {
-  int ij = N*first.first + second.first;
+  int ij = N*xi() + yi();
   int r=0;
   double oo = o[ij];
 
-  if (second.second==1) {
+  if (yf()==1) {
     r = 1;
     oo += PI/2;
-    second.second = first.second;
-    first.second = 0;
-  } else if (first.second==1) {
+    yf() = xf();
+    xf() = 0;
+  } else if (xf()==1) {
     r = 2;
-    second.second = 1-second.second;
-    first.second = 0;
-  } else if (second.second==0) {
+    yf() = 1-yf();
+    xf() = 0;
+  } else if (yf()==0) {
     r = 3;
     oo -= PI/2;
-    second.second = 1-first.second;
-    first.second = 0;
+    yf() = 1-xf();
+    xf() = 0;
   }
 
   // Avance
@@ -59,17 +64,17 @@ void pt::step (const vector<double> &o) {
   int di=0, dj=0;
   double t = tan (oo);
 
-  if (t < -second.second) {           // Vers le bas
-    first.second = -second.second/t;
-    second.second = 0;
+  if (t < -yf()) {           // Vers le bas
+    xf() = -yf()/t;
+    yf() = 0;
     dj = -1;
-  } else if (t < 1-second.second) {
-    first.second = 1;
-    second.second = second.second + t;
+  } else if (t < 1-yf()) {
+    xf() = 1;
+    yf() = yf() + t;
     di = 1;
   } else {
-    first.second = (1-second.second)/t;
-    second.second = 1;
+    xf() = (1-yf())/t;
+    yf() = 1;
     dj = 1;
   }
 
@@ -79,63 +84,49 @@ void pt::step (const vector<double> &o) {
     int ti = di;
     di = dj;
     dj = -ti;
-    double tx = first.second;
-    first.second = second.second;
-    second.second = 1-tx;
+    double tx = xf();
+    xf() = yf();
+    yf() = 1-tx;
   } else if (r==2) {
     di = -di;
     dj = -dj;
-    first.second = 1-first.second;
-    second.second = 1-second.second;
+    xf() = 1-xf();
+    yf() = 1-yf();
   } else if (r==3) {
     int ti = di;
     di = -dj;
     dj = ti;
-    double tx = first.second;
-    first.second = 1-second.second;
-    second.second = tx;
+    double tx = xf();
+    xf() = 1-yf();
+    yf() = tx;
   }
 
-  first.second -= di; first.first += di;
-  second.second -= dj; second.first += dj;
+  xf() -= di; xi() += di;
+  yf() -= dj; yi() += dj;
 }
 pt pt::reverse () {
-  if (first.second==0) { first.second=1; first.first--; }
-  else if (first.second==1) { first.second=0; first.first++; }
-  else if (second.second==0) { second.second=1; second.first--; }
-  else if (second.second==1) { second.second=0; second.first++; }
+  if (xf()==0) { xf()=1; xi()--; }
+  else if (xf()==1) { xf()=0; xi()++; }
+  else if (yf()==0) { yf()=1; yi()--; }
+  else if (yf()==1) { yf()=0; yi()++; }
   return (*this);
 }
 pt nopoint (-1,-1,-1,-1);
 
-class ptpair {
-  public:
-    pt p1, p2;
-
-    ptpair (pt pp1, pt pp2) : p1(pp1), p2(pp2) { }
-
-    bool operator== (const ptpair o) {
-      return ( (p1==o.p1) && (p2==o.p2) );
-    }
-
-    bool operator< (const ptpair o) const {
-      if (p1<o.p1) return true; else if (o.p1<p1) return false;
-      if (p2<o.p2) return true; else return false;
-    }
-};
+typedef pair<pt,pt> ptpair;
 
 pt geodesique (pt p, const vector<double> &o, bool tracing=false) {
   set<pt> S;
   while (true) {
-    if ( (p.first.first<0) || (p.first.first>=N) || (p.second.first<0) || (p.second.first>=N) ) break;
-    if (tracing) cout << (double)p.first.first + p.first.second << " " << (double)p.second.first + p.second.second << endl;
+    if ( (p.xi()<0) || (p.xi()>=N) || (p.yi()<0) || (p.yi()>=N) ) break;
+    if (tracing) cout << p;
     p.step(o);
     if (S.count(p)) break;
     S.insert(p);
   }
   if (tracing) cout << endl;
 
-  if ( (p.first.first<0) || (p.first.first>=N) || (p.second.first<0) || (p.second.first>=N) ) return nopoint;
+  if ( (p.xi()<0) || (p.xi()>=N) || (p.yi()<0) || (p.yi()>=N) ) return nopoint;
   else return p;
 }
 void hair (pt p, pt trap, const vector<double> &o) {
@@ -203,9 +194,16 @@ int main (int argc, char **argv) {
   cout << setprecision(10);
 
   set<ptpair> S = connections(o);
+  set<pt> E;
+
   for (set<ptpair>::iterator i = S.begin(); i != S.end(); ++i) {
-    geodesique (pt(i->p1),o,true);
-    geodesique (pt(i->p2),o,true);
-    cerr << i->p1 << endl << i->p2 << endl;
+    geodesique (pt(i->first),o,true);
+    geodesique (pt(i->second),o,true);
+    E.insert(i->first);
+    E.insert(i->second);
+  }
+
+  for (set<pt>::iterator i = E.begin(); i != E.end(); ++i) {
+    cerr << (*i);
   }
 }
