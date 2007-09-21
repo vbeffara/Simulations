@@ -114,24 +114,24 @@ pt nopoint (-1,-1,-1,-1);
 
 typedef pair<pt,pt> ptpair;
 
-pt geodesique (pt p, const vector<double> &o, bool tracing=false) {
+pt geodesique (pt p, const vector<double> &o, ostream *os = NULL) {
   set<pt> S;
   while (true) {
     if ( (p.xi()<0) || (p.xi()>=N) || (p.yi()<0) || (p.yi()>=N) ) break;
-    if (tracing) cout << p;
+    if (os) (*os) << p;
     p.step(o);
     if (S.count(p)) break;
     S.insert(p);
   }
-  if (tracing) cout << endl;
+  if (os) (*os) << endl;
 
   if ( (p.xi()<0) || (p.xi()>=N) || (p.yi()<0) || (p.yi()>=N) ) return nopoint;
   else return p;
 }
-pair<pt,pt> leaf (pt p, const vector<double> &o, bool tracing=false) {
-  pt p1 = geodesique (pt(p), o, tracing);
+pair<pt,pt> leaf (pt p, const vector<double> &o, ostream *os = NULL) {
+  pt p1 = geodesique (pt(p), o, os);
   p.reverse();
-  pt p2 = geodesique (p, o, tracing);
+  pt p2 = geodesique (p, o, os);
 
   if (p1<p2) return pair<pt,pt>(p1,p2);
   else       return pair<pt,pt>(p2,p1);
@@ -143,8 +143,8 @@ set<pt> connections (const vector<double> &o) {
 
   for (int i=0; i<N; ++i) {
     for (int j=0; j<N; ++j) {
-      for (double x=0; x<=1; x+=.01) {
-        pair<pt,pt> pp = leaf (pt(i,j,x,0),o,false);
+      for (double x=0.01; x<1; x+=.01) {
+        pair<pt,pt> pp = leaf (pt(i,j,x,0),o);
 
         if ((pp.first != nopoint) && (pp.second != nopoint)) {
           if (S.count(pp) == 0) {
@@ -153,7 +153,7 @@ set<pt> connections (const vector<double> &o) {
           }
         }
 
-        pp = leaf (pt(i,j,0,x),o,false);
+        pp = leaf (pt(i,j,0,x),o);
 
         if ((pp.first != nopoint) && (pp.second != nopoint)) {
           if (S.count(pp) == 0) {
@@ -177,9 +177,15 @@ int main (int argc, char **argv) {
   cerr << setprecision(10);
 
   set<pt> P = connections(o);
+  set<pt> E;
 
   for (set<pt>::iterator i = P.begin(); i != P.end(); ++i) {
-    pair<pt,pt> pp = leaf(*i,o,true);
-    cerr << pp.first << pp.second;
+    pair<pt,pt> pp = leaf(*i,o,&cout);
+    E.insert (pp.first); E.insert (pp.second);
+  }
+
+  for (set<pt>::iterator i = E.begin(); i != E.end(); ++i) {
+    geodesique (*i,o,&cerr);
+    cerr << *i << endl;
   }
 }
