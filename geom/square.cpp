@@ -3,8 +3,10 @@
 #include <vector>
 #include <set>
 #include <vb/PRNG.h>
+#include <vb/CL_Parser.h>
 
-#define N 10
+int N;
+
 #define PI 4*atan(1.0)
 
 using namespace std;
@@ -126,12 +128,26 @@ pt geodesique (pt p, const vector<double> &o, ostream *os = NULL) {
   if (os) (*os) << endl;
 
   if ( (p.xi()<0) || (p.xi()>=N) || (p.yi()<0) || (p.yi()>=N) ) return nopoint;
-  else return p;
+
+  pt p_min = p; p.step(o);
+  while (p != p_min) {
+    if (p < p_min) p_min = p;
+    p.step(o);
+  }
+
+  return p_min;
 }
+
 pair<pt,pt> leaf (pt p, const vector<double> &o, ostream *os = NULL) {
-  pt p1 = geodesique (pt(p), o, os);
+  pt p1 = geodesique (pt(p), o);
   p.reverse();
-  pt p2 = geodesique (p, o, os);
+  pt p2 = geodesique (pt(p), o);
+
+  if ((os != NULL) && (p1 != p2)) {
+    pt p1 = geodesique (pt(p), o, os);
+    p.reverse();
+    pt p2 = geodesique (p, o, os);
+  }
 
   if (p1<p2) return pair<pt,pt>(p1,p2);
   else       return pair<pt,pt>(p2,p1);
@@ -169,6 +185,9 @@ set<pt> connections (const vector<double> &o) {
 
 int main (int argc, char **argv) {
   PRNG prng;
+
+  CL_Parser CLP (argc, argv, "n=20");
+  N = CLP.as_int('n');
 
   vector<double> o (N*N);
   for (int i=0; i<N*N; ++i) o[i] = tan(prng.uniform(PI));
