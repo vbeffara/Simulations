@@ -59,6 +59,7 @@ int main (int argc, char **argv) {
 
   //
   // This is a less symmetric graph
+  // (cf. Shabat-Voevodsky.)
   //
   // +-+-+
   // |/|\|
@@ -103,9 +104,9 @@ int main (int argc, char **argv) {
   C5.add_edge(3,1,PG_NORTH);
   C5.add_edge(4,1,PG_NORTH);
 
-  C5.relax();
+  C7.relax();
   cerr << setprecision(20);
-  cerr << C5.cp_tau() << endl;
+  cerr << C7.rw_tau() << endl;
 
   PerioGraph<int> D (5,5,C5,0);
   D(2,3,1) = 42;
