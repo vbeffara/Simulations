@@ -153,14 +153,14 @@ pair<pt,pt> leaf (pt p, const vector<double> &o, ostream *os = NULL) {
   else       return pair<pt,pt>(p2,p1);
 }
 
-set<pt> connections (const vector<double> &o) {
+set<pt> connections (const vector<double> &o, ostream *os = NULL) {
   set<ptpair> S;
   set<pt> P;
 
   for (int i=0; i<N; ++i) {
     for (int j=0; j<N; ++j) {
       for (double x=0.01; x<1; x+=.01) {
-        pair<pt,pt> pp = leaf (pt(i,j,x,0),o);
+        pair<pt,pt> pp = leaf (pt(i,j,x,0),o,os);
 
         if ((pp.first != nopoint) && (pp.second != nopoint)) {
           if (S.count(pp) == 0) {
@@ -169,7 +169,7 @@ set<pt> connections (const vector<double> &o) {
           }
         }
 
-        pp = leaf (pt(i,j,0,x),o);
+        pp = leaf (pt(i,j,0,x),o,os);
 
         if ((pp.first != nopoint) && (pp.second != nopoint)) {
           if (S.count(pp) == 0) {
@@ -195,16 +195,27 @@ int main (int argc, char **argv) {
   cout << setprecision(10);
   cerr << setprecision(10);
 
-  set<pt> P = connections(o);
+  for (int i=0; i<N; ++i) {
+    for (int j=0; j<N; ++j) {
+      geodesique (pt(i,j,0,0),o,&cout);
+      geodesique (pt(i,j,1,0),o,&cout);
+      geodesique (pt(i,j,0,1),o,&cout);
+      geodesique (pt(i,j,1,1),o,&cout);
+    }
+  }
+
+  /*
+  set<pt> P = connections(o,&cout);
   set<pt> E;
 
   for (set<pt>::iterator i = P.begin(); i != P.end(); ++i) {
-    pair<pt,pt> pp = leaf(*i,o,&cout);
+    pair<pt,pt> pp = leaf(*i,o,NULL);
     E.insert (pp.first); E.insert (pp.second);
   }
 
   for (set<pt>::iterator i = E.begin(); i != E.end(); ++i) {
-    geodesique (*i,o,&cerr);
+    geodesique (*i,o,NULL);
     cerr << *i << endl;
   }
+  */
 }
