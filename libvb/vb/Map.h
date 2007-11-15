@@ -23,6 +23,24 @@ namespace vb {
         }
       }
 
+      bool contains (Edge e) {
+        if (e.first >= n) return false;
+        for (std::list<int>::iterator i = adj[e.first].begin(); i != adj[e.first].end(); ++i)
+          if (*i == e.second) return true;
+        return false;
+      }
+
+      void print_as_dot (std::ostream &os) {
+        os << "digraph G {" << std::endl;
+        for (int i=0; i<n; ++i)
+          for (std::list<int>::iterator j = adj[i].begin(); j != adj[i].end(); ++j) {
+            if (!contains(Edge(*j,i)))
+              os << "  " << i << " -> " << *j << ";" << std::endl;
+            else if (i<=*j)
+              os << "  " << i << " -> " << *j << " [arrowhead = none]" << std::endl;
+          }
+        os << "}" << std::endl;
+      }
   };
 
   std::ostream &operator<< (std::ostream &os, Map m) {

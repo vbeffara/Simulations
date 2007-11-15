@@ -10,13 +10,15 @@ template <typename T1, typename T2> ostream &operator<< (ostream &os, pair<T1,T2
 }
 
 int main () {
-  Map m (4);
+  Map m (5);
 
-  m << Edge(0,1) << Edge(0,3) << Edge(0,2)
-    << Edge(1,2) << Edge(1,3) << Edge(1,0)
-    << Edge(2,0) << Edge(2,3) << Edge(2,1)
-    << Edge(3,0) << Edge(3,1) << Edge(3,2);
+  m << Edge(0,1) << Edge(0,2) << Edge(0,3) << Edge(0,4)
+    << Edge(1,2) << Edge(1,0) << Edge(1,4)
+    << Edge(2,3) << Edge(2,0) << Edge(2,1)
+    << Edge(3,4) << Edge(3,0) << Edge(3,2)
+    << Edge(4,1) << Edge(4,0) << Edge(4,3);
 
-  cout << m;
+  m.print_as_dot (cout);
+
   return 0;
 }
