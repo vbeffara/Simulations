@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <vector>
+#include <list>
 #include <vb/types.h>
 #include <vb/Figure.h>
 
@@ -31,6 +32,54 @@ namespace vb {
         for (std::vector<int>::iterator i = adj[e.first].begin(); i != adj[e.first].end(); ++i)
           if (*i == e.second) return true;
         return false;
+      }
+
+      Edge after (Edge e) {
+        int cur=-1, prev=-1;
+        for (std::vector<int>::iterator i = adj[e.second].begin(); i != adj[e.second].end(); ++i) {
+          prev = cur; cur = *i;
+          if ((cur == e.first) && (prev >= 0)) return Edge (e.second,prev);
+        }
+        return Edge (e.second,cur);
+      }
+
+      std::list<int> face (Edge e) {
+        std::list<int> l;
+        int first = e.first; l.push_back(first);
+        e = after(e);
+        while (e.first != first) {
+          l.push_back(e.first);
+          e = after(e);
+        }
+        return l;
+      }
+
+      void inscribe (Edge e) {
+        std::list<int> face_ext = face(Edge(e.second,e.first));
+        int n_ext = face_ext.size();
+
+        for (int i=0; i<n; ++i) pos[i] = 0.0;
+
+        int k=1;
+        for (std::list<int>::iterator i = face_ext.begin(); i != face_ext.end(); ++i, --k)
+          pos[*i] = cpx(cos(2.0*3.1415927*k/n_ext), sin(2.0*3.1415927*k/n_ext));
+
+        std::list<int> inner;
+        for (int i=0; i<n; ++i)
+          if (pos[i]==cpx(0.0,0.0)) inner.push_back(i);
+
+        bool dirty=true;
+
+        while (dirty) {
+          dirty = 0;
+          for (std::list<int>::iterator i = inner.begin(); i != inner.end(); ++i) {
+            cpx old = pos[*i]; pos[*i] = 0.0;
+            for (std::vector<int>::iterator j = adj[*i].begin(); j != adj[*i].end(); ++j)
+              pos[*i] += pos[*j];
+            pos[*i] /= adj[*i].size();
+            if (pos[*i] != old) dirty = true;
+          }
+        }
       }
 
       void print_as_dot (std::ostream &os) {
