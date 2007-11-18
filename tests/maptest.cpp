@@ -18,7 +18,10 @@ int main () {
     << Edge(3,4) << Edge(3,0) << Edge(3,2)
     << Edge(4,1) << Edge(4,0) << Edge(4,3);
 
-  m.print_as_dot (cout);
+  for (int i=0; i<m.n; ++i)
+    m.pos[i] = cpx (cos(2.0*3.14159*i/m.n),sin(2.0*3.14159*i/m.n));
+
+  m.output_as_figure().printASY(cout);
 
   return 0;
 }
