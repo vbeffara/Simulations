@@ -104,6 +104,32 @@ namespace vb {
         }
         return F;
       }
+
+      int nb_sommets () {
+        return n;
+      }
+
+      int nb_aretes () {
+        int tmp = 0;
+        for (int i=0; i<n; ++i) tmp += adj[i].size();
+        return (tmp/2);
+      }
+
+      int nb_faces () {
+        double tmp = 0.0;
+        for (int i=0; i<n; ++i)
+          for (std::vector<int>::iterator j = adj[i].begin(); j != adj[i].end(); ++j)
+            tmp += 1.0/((double) face(Edge(i,*j)).size());
+        return (int) floor (tmp + .1);
+      }
+
+      int euler () {
+        return nb_sommets() - nb_aretes() + nb_faces();
+      }
+
+      int genre () {
+        return 1 - (euler()/2);
+      }
   };
 
   std::ostream &operator<< (std::ostream &os, Map m) {
