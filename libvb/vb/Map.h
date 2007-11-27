@@ -12,16 +12,17 @@
 
 namespace vb {
   typedef std::pair<int,int> Edge;
+  typedef std::list<int>     adj_list;
 
   class Map {
     public:
-      int n;                                ///< The number of vertices.
-      std::vector < std::vector<int> > adj; ///< The adjacency list.
-      std::vector <cpx> pos;                ///< The location of the points.
+      int n;                       ///< The number of vertices.
+      std::vector<adj_list> adj;   ///< The adjacency list.
+      std::vector<cpx> pos;        ///< The location of the points.
 
       Map (int nn) : n(nn) {
         for (int i=0; i<n; ++i) {
-          std::vector<int> l;
+          adj_list l;
           adj.push_back(l);
           pos.push_back(0.0);
         }
@@ -29,14 +30,14 @@ namespace vb {
 
       bool contains (Edge e) {
         if (e.first >= n) return false;
-        for (std::vector<int>::iterator i = adj[e.first].begin(); i != adj[e.first].end(); ++i)
+        for (adj_list::iterator i = adj[e.first].begin(); i != adj[e.first].end(); ++i)
           if (*i == e.second) return true;
         return false;
       }
 
       Edge after (Edge e) {
         int cur=-1, prev=-1;
-        for (std::vector<int>::iterator i = adj[e.second].begin(); i != adj[e.second].end(); ++i) {
+        for (adj_list::iterator i = adj[e.second].begin(); i != adj[e.second].end(); ++i) {
           prev = cur; cur = *i;
           if ((cur == e.first) && (prev >= 0)) return Edge (e.second,prev);
         }
@@ -74,7 +75,7 @@ namespace vb {
           dirty = 0;
           for (std::list<int>::iterator i = inner.begin(); i != inner.end(); ++i) {
             cpx old = pos[*i]; pos[*i] = 0.0;
-            for (std::vector<int>::iterator j = adj[*i].begin(); j != adj[*i].end(); ++j)
+            for (adj_list::iterator j = adj[*i].begin(); j != adj[*i].end(); ++j)
               pos[*i] += pos[*j];
             pos[*i] /= adj[*i].size();
             if (pos[*i] != old) dirty = true;
@@ -84,31 +85,33 @@ namespace vb {
 
       std::list<int> split_edges () {
         std::vector<int> tmp;
-        int orig_size = adj.size();
-
-        for (int i=0; i<orig_size*orig_size; ++i) tmp.push_back(-1);
+        for (int i=0; i<n*n; ++i) tmp.push_back(-1);
 
         std::list<int> output;
+        std::vector<adj_list> new_vertices;
 
-        for (int v1=0; v1<orig_size; ++v1) {
-          for (int j=0; j<adj[v1].size(); ++j) {
-            int v2 = adj[v1][j];
-            int v3 = tmp[v1 + orig_size*(v2)];
-            if (v3 >= 0) {                 // If the reverse is already filled
-              adj[v1][j] = v3;             // Then point to it
-            } else {                       // If it is not
-              std::vector<int> l;          // Create it,
-              l.push_back(v1);             // Populate it,
-              l.push_back(v2);             // With its two neighbors,
-              adj.push_back(l);            // Add it to the graph,
-              pos.push_back(0.0);          // Nowhere in particular,
-              ++n;                         // Count it,
-              v3 = adj.size()-1;           // Get its number,
-              output.push_back(v3);        // Add it to the return list,
-              adj[v1][j] = v3;             // Point to it,
-              tmp[v2 + orig_size*v1] = v3; // And mark it for the second way.
+        for (int v1=0; v1<n; ++v1) {
+          for (adj_list::iterator v2 = adj[v1].begin(); v2 != adj[v1].end(); ++v2) {
+            int v3 = tmp[v1 + n*(*v2)];
+            if (v3 >= 0) {                    // If the reverse is already filled
+              (*v2) = v3;                     // Then point to it
+            } else {                          // If it is not
+              adj_list l;                     // Create it,
+              l.push_back(v1);                // Populate it,
+              l.push_back(*v2);               // With its two neighbors,
+              new_vertices.push_back(l);      // Add it to the new vertices,
+              v3 = n+new_vertices.size()-1;   // Get its number,
+              tmp[(*v2) + n*v1] = v3;         // And mark it for the second way,
+              output.push_back(v3);           // Add it to the return list,
+              (*v2) = v3;                     // Point to it.
             }
           }
+        }
+
+        for (std::vector<adj_list>::iterator i = new_vertices.begin(); i != new_vertices.end(); ++i) {
+          ++n;
+          adj.push_back(*i);
+          pos.push_back(0.0);
         }
 
         return output;
@@ -117,7 +120,7 @@ namespace vb {
       void print_as_dot (std::ostream &os) {
         os << "digraph G {" << std::endl;
         for (int i=0; i<n; ++i)
-          for (std::vector<int>::iterator j = adj[i].begin(); j != adj[i].end(); ++j) {
+          for (adj_list::iterator j = adj[i].begin(); j != adj[i].end(); ++j) {
             if (!contains(Edge(*j,i)))
               os << "  " << i << " -> " << *j << ";" << std::endl;
             else if (i<=*j)
@@ -131,7 +134,7 @@ namespace vb {
 
         for (int i=0; i<n; ++i) {
           F.dot(pos[i]);
-          for (std::vector<int>::iterator j = adj[i].begin(); j != adj[i].end(); ++j)
+          for (adj_list::iterator j = adj[i].begin(); j != adj[i].end(); ++j)
             F.segment(pos[i],pos[*j]);
         }
         return F;
@@ -150,7 +153,7 @@ namespace vb {
       int nb_faces () {
         double tmp = 0.0;
         for (int i=0; i<n; ++i)
-          for (std::vector<int>::iterator j = adj[i].begin(); j != adj[i].end(); ++j)
+          for (adj_list::iterator j = adj[i].begin(); j != adj[i].end(); ++j)
             tmp += 1.0/((double) face(Edge(i,*j)).size());
         return (int) floor (tmp + .1);
       }
@@ -168,7 +171,7 @@ namespace vb {
     os << m.n << " vertices:" << std::endl;
     for (int i=0; i<m.n; ++i) {
       os << "  " << i << " ->";
-      for (std::vector<int>::iterator j = m.adj[i].begin(); j != m.adj[i].end(); ++j)
+      for (adj_list::iterator j = m.adj[i].begin(); j != m.adj[i].end(); ++j)
         os << " " << *j;
       os << std::endl;
     }

@@ -20,7 +20,9 @@ int main () {
 
   m.split_edges();
   m.inscribe(Edge(1,*(m.adj[1].begin())));
-  m.output_as_figure().printASY(cout);
+  Figure F = m.output_as_figure();
+  F.circle(0,1);
+  F.printASY(cout);
 
   cerr << "Sommets : " << m.nb_sommets() << endl;
   cerr << "Aretes  : " << m.nb_aretes() << endl;

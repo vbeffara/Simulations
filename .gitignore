@@ -10,3 +10,5 @@ doc
 tags
 *.aux
 *.log
+.DS_Store
+out*
