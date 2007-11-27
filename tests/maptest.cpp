@@ -18,15 +18,16 @@ int main () {
     << Edge(3,4) << Edge(3,0) << Edge(3,2)
     << Edge(4,1) << Edge(4,0) << Edge(4,3);
 
-  //m.inscribe(Edge(1,2));
-  //m.output_as_figure().printASY(cout);
+  m.split_edges();
+  m.inscribe(Edge(1,*(m.adj[1].begin())));
+  m.output_as_figure().printASY(cout);
 
-  cout << "Sommets : " << m.nb_sommets() << endl;
-  cout << "Aretes  : " << m.nb_aretes() << endl;
-  cout << "Faces   : " << m.nb_faces() << endl;
-  cout << endl;
-  cout << "Euler   : " << m.euler() << endl;
-  cout << "Genre   : " << m.genre() << endl;
+  cerr << "Sommets : " << m.nb_sommets() << endl;
+  cerr << "Aretes  : " << m.nb_aretes() << endl;
+  cerr << "Faces   : " << m.nb_faces() << endl;
+  cerr << endl;
+  cerr << "Euler   : " << m.euler() << endl;
+  cerr << "Genre   : " << m.genre() << endl;
 
   return 0;
 }

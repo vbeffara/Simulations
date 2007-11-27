@@ -82,6 +82,38 @@ namespace vb {
         }
       }
 
+      std::list<int> split_edges () {
+        std::vector<int> tmp;
+        int orig_size = adj.size();
+
+        for (int i=0; i<orig_size*orig_size; ++i) tmp.push_back(-1);
+
+        std::list<int> output;
+
+        for (int v1=0; v1<orig_size; ++v1) {
+          for (int j=0; j<adj[v1].size(); ++j) {
+            int v2 = adj[v1][j];
+            int v3 = tmp[v1 + orig_size*(v2)];
+            if (v3 >= 0) {                 // If the reverse is already filled
+              adj[v1][j] = v3;             // Then point to it
+            } else {                       // If it is not
+              std::vector<int> l;          // Create it,
+              l.push_back(v1);             // Populate it,
+              l.push_back(v2);             // With its two neighbors,
+              adj.push_back(l);            // Add it to the graph,
+              pos.push_back(0.0);          // Nowhere in particular,
+              ++n;                         // Count it,
+              v3 = adj.size()-1;           // Get its number,
+              output.push_back(v3);        // Add it to the return list,
+              adj[v1][j] = v3;             // Point to it,
+              tmp[v2 + orig_size*v1] = v3; // And mark it for the second way.
+            }
+          }
+        }
+
+        return output;
+      }
+
       void print_as_dot (std::ostream &os) {
         os << "digraph G {" << std::endl;
         for (int i=0; i<n; ++i)
