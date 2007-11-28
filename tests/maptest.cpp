@@ -18,16 +18,17 @@ int main () {
     << Edge(3,4) << Edge(3,0) << Edge(3,2)
     << Edge(4,1) << Edge(4,0) << Edge(4,3);
 
-  m.split_edges();
-  m.inscribe(Edge(1,*(m.adj[1].begin())));
-  Figure F = m.output_as_figure();
-  F.circle(0,1);
+  m.barycentric();
+  m.barycentric();
+  m.barycentric();
+  m.barycentric();
+  m.inscribe(m.face(Edge(1,m.adj[1].back())));
+  Figure F = m.output_as_figure(false);
   F.printASY(cout);
 
   cerr << "Sommets : " << m.nb_sommets() << endl;
   cerr << "Aretes  : " << m.nb_aretes() << endl;
   cerr << "Faces   : " << m.nb_faces() << endl;
-  cerr << endl;
   cerr << "Euler   : " << m.euler() << endl;
   cerr << "Genre   : " << m.genre() << endl;
 

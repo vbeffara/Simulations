@@ -28,40 +28,55 @@ namespace vb {
         }
       }
 
-      bool contains (Edge e) {
-        if (e.first >= n) return false;
+      adj_list::iterator find_edge (Edge e) {
+        if (e.first >= n) return NULL;
         for (adj_list::iterator i = adj[e.first].begin(); i != adj[e.first].end(); ++i)
-          if (*i == e.second) return true;
-        return false;
+          if (*i == e.second) return i;
+        return NULL;
       }
 
-      Edge after (Edge e) {
-        int cur=-1, prev=-1;
-        for (adj_list::iterator i = adj[e.second].begin(); i != adj[e.second].end(); ++i) {
-          prev = cur; cur = *i;
-          if ((cur == e.first) && (prev >= 0)) return Edge (e.second,prev);
-        }
-        return Edge (e.second,cur);
+      Edge turn_left (Edge e) {
+        adj_list::iterator ee = find_edge (Edge(e.second,e.first));
+        if (ee == adj[e.second].begin()) ee = adj[e.second].end();
+        --ee;
+        return Edge(e.second,*ee);
+      }
+
+      Edge turn_right (Edge e) {
+        adj_list::iterator ee = find_edge (Edge(e.second,e.first));
+        ++ee;
+        if (ee == adj[e.second].end()) ee = adj[e.second].begin();
+        return Edge(e.second,*ee);
+      }
+
+      void add_before (Edge e, int v) {
+        adj_list::iterator ee = find_edge(e);
+        adj[e.first].insert (ee,v);
+      }
+
+      void add_after (Edge e, int v) {
+        adj_list::iterator ee = find_edge(e);
+        ++ee;
+        adj[e.first].insert (ee,v);
       }
 
       std::list<int> face (Edge e) {
         std::list<int> l;
         int first = e.first; l.push_back(first);
-        e = after(e);
+        e = turn_left(e);
         while (e.first != first) {
           l.push_back(e.first);
-          e = after(e);
+          e = turn_left(e);
         }
         return l;
       }
 
-      void inscribe (Edge e) {
-        std::list<int> face_ext = face(Edge(e.second,e.first));
+      void inscribe (std::list<int> face_ext) {
         int n_ext = face_ext.size();
 
         for (int i=0; i<n; ++i) pos[i] = 0.0;
 
-        int k=1;
+        int k=0;
         for (std::list<int>::iterator i = face_ext.begin(); i != face_ext.end(); ++i, --k)
           pos[*i] = cpx(cos(2.0*3.1415927*k/n_ext), sin(2.0*3.1415927*k/n_ext));
 
@@ -117,11 +132,40 @@ namespace vb {
         return output;
       }
 
+      void hex_to_triangle (std::list<int> f) {
+        std::list<int>::iterator i = f.begin();
+        int x = *i; ++i;
+        int b = *i; ++i;
+        int y = *i; ++i;
+        int c = *i; ++i;
+        int z = *i; ++i;
+        int a = *i; ++i;
+
+        add_after (Edge(x,b),y);
+        add_after (Edge(y,c),z);
+        add_after (Edge(z,a),x);
+
+        add_before (Edge(x,a),z);
+        add_before (Edge(y,b),x);
+        add_before (Edge(z,c),y);
+      }
+
+      void barycentric () {
+        std::list<int> l = split_edges();
+        for (std::list<int>::iterator i = l.begin(); i != l.end(); ++i) {
+          std::list<int> f = face(Edge(*i,adj[*i].front()));
+          if (f.size() == 6) hex_to_triangle(f);
+
+          f = face(Edge(*i,adj[*i].back()));
+          if (f.size() == 6) hex_to_triangle(f);
+        }
+      }
+
       void print_as_dot (std::ostream &os) {
         os << "digraph G {" << std::endl;
         for (int i=0; i<n; ++i)
           for (adj_list::iterator j = adj[i].begin(); j != adj[i].end(); ++j) {
-            if (!contains(Edge(*j,i)))
+            if (find_edge(Edge(*j,i)) == NULL)
               os << "  " << i << " -> " << *j << ";" << std::endl;
             else if (i<=*j)
               os << "  " << i << " -> " << *j << " [arrowhead = none]" << std::endl;
@@ -129,13 +173,13 @@ namespace vb {
         os << "}" << std::endl;
       }
 
-      Figure output_as_figure () {
+      Figure output_as_figure (bool do_dots = true) {
         Figure F;
 
         for (int i=0; i<n; ++i) {
-          F.dot(pos[i]);
+          if(do_dots) F.dot(pos[i]);
           for (adj_list::iterator j = adj[i].begin(); j != adj[i].end(); ++j)
-            F.segment(pos[i],pos[*j]);
+            if ((i<*j) || (find_edge(Edge(*j,i))==NULL)) F.segment(pos[i],pos[*j]);
         }
         return F;
       }
