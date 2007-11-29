@@ -14,17 +14,25 @@ namespace vb {
   typedef std::pair<int,int> Edge;
   typedef std::list<int>     adj_list;
 
+  class Map;
+  real cost_cp (Map);
+
   class Map {
     public:
       int n;                       ///< The number of vertices.
       std::vector<adj_list> adj;   ///< The adjacency list.
       std::vector<cpx> pos;        ///< The location of the points.
+      std::vector<real> rad;       ///< Radii (for circle packings and such).
 
-      Map (int nn) : n(nn) {
+      std::list<int> bord;         ///< The boundary (if needed for e.g. circle packing).
+      int zero,one,infinity;       ///< As the names say.
+
+      Map (int nn) : n(nn), zero(-1), one(-1), infinity(-1) {
         for (int i=0; i<n; ++i) {
           adj_list l;
           adj.push_back(l);
           pos.push_back(0.0);
+          rad.push_back(0.0);
         }
       }
 
@@ -127,6 +135,7 @@ namespace vb {
           ++n;
           adj.push_back(*i);
           pos.push_back(0.0);
+          rad.push_back(0.0);
         }
 
         return output;
@@ -173,15 +182,26 @@ namespace vb {
         os << "}" << std::endl;
       }
 
-      Figure output_as_figure (bool do_dots = true) {
-        Figure F;
-
+      Map plot_vertices (Figure &F) {
         for (int i=0; i<n; ++i) {
-          if(do_dots) F.dot(pos[i]);
+          F.dot(pos[i]);
+        }
+        return (*this);
+      }
+
+      Map plot_edges (Figure &F) {
+        for (int i=0; i<n; ++i) {
           for (adj_list::iterator j = adj[i].begin(); j != adj[i].end(); ++j)
             if ((i<*j) || (find_edge(Edge(*j,i))==NULL)) F.segment(pos[i],pos[*j]);
         }
-        return F;
+        return (*this);
+      }
+
+      Map plot_circles (Figure &F) {
+        for (int i=0; i<n; ++i) {
+          if (rad[i]>0) F.circle(pos[i],rad[i]);
+        }
+        return (*this);
       }
 
       int nb_sommets () {
@@ -209,7 +229,89 @@ namespace vb {
       int genre () {
         return 1 - (euler()/2);
       }
+
+      void mobius (cpx w, real theta) {
+        for (int i=0; i<n; ++i) {
+          cpx z = pos[i];
+          pos[i] = (z-w)*exp(cpx(0,theta))/(cpx(1,0)-z*conj(w));
+        }
+      }
+
+      real optimize (real func(Map), real eps = 0) {
+        real cost = func(*this);
+        real old_cost = cost + eps + 1;
+        real tmp_cost = cost;
+        while (old_cost - cost > eps) {
+          std::cerr << cost << "\r";
+          old_cost = cost;
+          real delta = sqrt(cost/n/10.0);
+
+          for (int i=0; i<n; ++i) {
+            if (i != zero) {
+              pos[i] += cpx(delta,0); tmp_cost = func(*this);
+              if (tmp_cost < cost) cost = tmp_cost;
+              else {
+                pos[i] -= cpx(2*delta,0); tmp_cost = func(*this);
+                if (tmp_cost < cost) cost = tmp_cost;
+                else pos[i] += cpx(delta,0);
+              }
+            }
+
+            if ((i != zero) && (i != one)) {
+              pos[i] += cpx(0,delta); tmp_cost = func(*this);
+              if (tmp_cost < cost) cost = tmp_cost;
+              else {
+                pos[i] -= cpx(0,2*delta); tmp_cost = func(*this);
+                if (tmp_cost < cost) cost = tmp_cost;
+                else pos[i] += cpx(0,delta);
+              }
+            }
+
+            rad[i] += delta; tmp_cost = func(*this);
+            if (tmp_cost < cost) cost = tmp_cost;
+            else {
+              rad[i] -= 2*delta; tmp_cost = func(*this);
+              if (tmp_cost < cost) cost = tmp_cost;
+              else rad[i] += delta;
+            }
+          }
+        }
+
+        return cost;
+      }
+
+      void circlepack (int _zero, int _one, std::list<int> _bord) {
+        bord = _bord;
+        zero = _zero;
+        one = _one;
+
+        inscribe (bord);
+        mobius (pos[zero],0);
+        mobius (0,-arg(pos[one]));
+        optimize (cost_cp);
+      }
   };
+
+  real cost_cp (Map m) {
+    real t=0;
+
+    for (int i=0; i<m.n; ++i)
+      for (adj_list::iterator j = m.adj[i].begin(); j != m.adj[i].end(); ++j) {
+        cpx e = m.pos[*j] - m.pos[i];
+        real d = sqrt ( e.real()*e.real() + e.imag()*e.imag() );
+        real r = m.rad[i] + m.rad[*j];
+        t += (d-r)*(d-r);
+      }
+
+    t /= 2.0;
+
+    for (std::list<int>::iterator j = m.bord.begin(); j != m.bord.end(); ++j) {
+      real d = 1.0 - abs(m.pos[*j]) - m.rad[*j];
+      t += d*d;
+    }
+
+    return t;
+  }
 
   std::ostream &operator<< (std::ostream &os, Map m) {
     os << m.n << " vertices:" << std::endl;
