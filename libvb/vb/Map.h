@@ -14,38 +14,42 @@ namespace vb {
   typedef std::pair<int,int> Edge;
   typedef std::list<int>     adj_list;
 
+  class Vertex {
+    public:
+      cpx pos;
+      adj_list adj;
+      real rad;
+
+      Vertex (cpx z, real r=0.0) : pos(z), rad(r) {};
+  };
+
   class Map;
   real cost_cp (Map);
 
   class Map {
     public:
       int n;                       ///< The number of vertices.
-      std::vector<adj_list> adj;   ///< The adjacency list.
-      std::vector<cpx> pos;        ///< The location of the points.
-      std::vector<real> rad;       ///< Radii (for circle packings and such).
+      std::vector<Vertex> v;       ///< The graph structure.
 
       std::list<int> bord;         ///< The boundary (if needed for e.g. circle packing).
       int zero,one,infinity;       ///< As the names say.
 
       Map (int nn) : n(nn), zero(-1), one(-1), infinity(-1) {
         for (int i=0; i<n; ++i) {
-          adj_list l;
-          adj.push_back(l);
-          pos.push_back(0.0);
-          rad.push_back(0.0);
+          v.push_back(Vertex(0.0));
         }
       }
 
       adj_list::iterator find_edge (Edge e) {
         if (e.first >= n) return NULL;
-        for (adj_list::iterator i = adj[e.first].begin(); i != adj[e.first].end(); ++i)
+        for (adj_list::iterator i = v[e.first].adj.begin(); i != v[e.first].adj.end(); ++i)
           if (*i == e.second) return i;
         return NULL;
       }
 
       Edge turn_left (Edge e) {
         adj_list::iterator ee = find_edge (Edge(e.second,e.first));
-        if (ee == adj[e.second].begin()) ee = adj[e.second].end();
+        if (ee == v[e.second].adj.begin()) ee = v[e.second].adj.end();
         --ee;
         return Edge(e.second,*ee);
       }
@@ -53,19 +57,19 @@ namespace vb {
       Edge turn_right (Edge e) {
         adj_list::iterator ee = find_edge (Edge(e.second,e.first));
         ++ee;
-        if (ee == adj[e.second].end()) ee = adj[e.second].begin();
+        if (ee == v[e.second].adj.end()) ee = v[e.second].adj.begin();
         return Edge(e.second,*ee);
       }
 
-      void add_before (Edge e, int v) {
+      void add_before (Edge e, int vv) {
         adj_list::iterator ee = find_edge(e);
-        adj[e.first].insert (ee,v);
+        v[e.first].adj.insert (ee,vv);
       }
 
-      void add_after (Edge e, int v) {
+      void add_after (Edge e, int vv) {
         adj_list::iterator ee = find_edge(e);
         ++ee;
-        adj[e.first].insert (ee,v);
+        v[e.first].adj.insert (ee,vv);
       }
 
       std::list<int> face (Edge e) {
@@ -82,26 +86,26 @@ namespace vb {
       void inscribe (std::list<int> face_ext) {
         int n_ext = face_ext.size();
 
-        for (int i=0; i<n; ++i) pos[i] = 0.0;
+        for (int i=0; i<n; ++i) v[i].pos = 0.0;
 
         int k=0;
         for (std::list<int>::iterator i = face_ext.begin(); i != face_ext.end(); ++i, --k)
-          pos[*i] = cpx(cos(2.0*3.1415927*k/n_ext), sin(2.0*3.1415927*k/n_ext));
+          v[*i].pos = cpx(cos(2.0*3.1415927*k/n_ext), sin(2.0*3.1415927*k/n_ext));
 
         std::list<int> inner;
         for (int i=0; i<n; ++i)
-          if (pos[i]==cpx(0.0,0.0)) inner.push_back(i);
+          if (v[i].pos==cpx(0.0,0.0)) inner.push_back(i);
 
         bool dirty=true;
 
         while (dirty) {
           dirty = 0;
           for (std::list<int>::iterator i = inner.begin(); i != inner.end(); ++i) {
-            cpx old = pos[*i]; pos[*i] = 0.0;
-            for (adj_list::iterator j = adj[*i].begin(); j != adj[*i].end(); ++j)
-              pos[*i] += pos[*j];
-            pos[*i] /= adj[*i].size();
-            if (pos[*i] != old) dirty = true;
+            cpx old = v[*i].pos; v[*i].pos = 0.0;
+            for (adj_list::iterator j = v[*i].adj.begin(); j != v[*i].adj.end(); ++j)
+              v[*i].pos += v[*j].pos;
+            v[*i].pos /= v[*i].adj.size();
+            if (v[*i].pos != old) dirty = true;
           }
         }
       }
@@ -114,7 +118,7 @@ namespace vb {
         std::vector<adj_list> new_vertices;
 
         for (int v1=0; v1<n; ++v1) {
-          for (adj_list::iterator v2 = adj[v1].begin(); v2 != adj[v1].end(); ++v2) {
+          for (adj_list::iterator v2 = v[v1].adj.begin(); v2 != v[v1].adj.end(); ++v2) {
             int v3 = tmp[v1 + n*(*v2)];
             if (v3 >= 0) {                    // If the reverse is already filled
               (*v2) = v3;                     // Then point to it
@@ -132,10 +136,9 @@ namespace vb {
         }
 
         for (std::vector<adj_list>::iterator i = new_vertices.begin(); i != new_vertices.end(); ++i) {
+          v.push_back(Vertex(0.0));
+          v.back().adj = (*i);
           ++n;
-          adj.push_back(*i);
-          pos.push_back(0.0);
-          rad.push_back(0.0);
         }
 
         return output;
@@ -162,10 +165,10 @@ namespace vb {
       void barycentric () {
         std::list<int> l = split_edges();
         for (std::list<int>::iterator i = l.begin(); i != l.end(); ++i) {
-          std::list<int> f = face(Edge(*i,adj[*i].front()));
+          std::list<int> f = face(Edge(*i,v[*i].adj.front()));
           if (f.size() == 6) hex_to_triangle(f);
 
-          f = face(Edge(*i,adj[*i].back()));
+          f = face(Edge(*i,v[*i].adj.back()));
           if (f.size() == 6) hex_to_triangle(f);
         }
       }
@@ -173,7 +176,7 @@ namespace vb {
       void print_as_dot (std::ostream &os) {
         os << "digraph G {" << std::endl;
         for (int i=0; i<n; ++i)
-          for (adj_list::iterator j = adj[i].begin(); j != adj[i].end(); ++j) {
+          for (adj_list::iterator j = v[i].adj.begin(); j != v[i].adj.end(); ++j) {
             if (find_edge(Edge(*j,i)) == NULL)
               os << "  " << i << " -> " << *j << ";" << std::endl;
             else if (i<=*j)
@@ -184,22 +187,22 @@ namespace vb {
 
       Map plot_vertices (Figure &F) {
         for (int i=0; i<n; ++i) {
-          F.dot(pos[i]);
+          F.dot(v[i].pos);
         }
         return (*this);
       }
 
       Map plot_edges (Figure &F) {
         for (int i=0; i<n; ++i) {
-          for (adj_list::iterator j = adj[i].begin(); j != adj[i].end(); ++j)
-            if ((i<*j) || (find_edge(Edge(*j,i))==NULL)) F.segment(pos[i],pos[*j]);
+          for (adj_list::iterator j = v[i].adj.begin(); j != v[i].adj.end(); ++j)
+            if ((i<*j) || (find_edge(Edge(*j,i))==NULL)) F.segment(v[i].pos,v[*j].pos);
         }
         return (*this);
       }
 
       Map plot_circles (Figure &F) {
         for (int i=0; i<n; ++i) {
-          if (rad[i]>0) F.circle(pos[i],rad[i]);
+          if (v[i].rad>0) F.circle(v[i].pos,v[i].rad);
         }
         return (*this);
       }
@@ -210,14 +213,14 @@ namespace vb {
 
       int nb_aretes () {
         int tmp = 0;
-        for (int i=0; i<n; ++i) tmp += adj[i].size();
+        for (int i=0; i<n; ++i) tmp += v[i].adj.size();
         return (tmp/2);
       }
 
       int nb_faces () {
         double tmp = 0.0;
         for (int i=0; i<n; ++i)
-          for (adj_list::iterator j = adj[i].begin(); j != adj[i].end(); ++j)
+          for (adj_list::iterator j = v[i].adj.begin(); j != v[i].adj.end(); ++j)
             tmp += 1.0/((double) face(Edge(i,*j)).size());
         return (int) floor (tmp + .1);
       }
@@ -232,8 +235,8 @@ namespace vb {
 
       void mobius (cpx w, real theta) {
         for (int i=0; i<n; ++i) {
-          cpx z = pos[i];
-          pos[i] = (z-w)*exp(cpx(0,theta))/(cpx(1,0)-z*conj(w));
+          cpx z = v[i].pos;
+          v[i].pos = (z-w)*exp(cpx(0,theta))/(cpx(1,0)-z*conj(w));
         }
       }
 
@@ -248,31 +251,31 @@ namespace vb {
 
           for (int i=0; i<n; ++i) {
             if (i != zero) {
-              pos[i] += cpx(delta,0); tmp_cost = func(*this);
+              v[i].pos += cpx(delta,0); tmp_cost = func(*this);
               if (tmp_cost < cost) cost = tmp_cost;
               else {
-                pos[i] -= cpx(2*delta,0); tmp_cost = func(*this);
+                v[i].pos -= cpx(2*delta,0); tmp_cost = func(*this);
                 if (tmp_cost < cost) cost = tmp_cost;
-                else pos[i] += cpx(delta,0);
+                else v[i].pos += cpx(delta,0);
               }
             }
 
             if ((i != zero) && (i != one)) {
-              pos[i] += cpx(0,delta); tmp_cost = func(*this);
+              v[i].pos += cpx(0,delta); tmp_cost = func(*this);
               if (tmp_cost < cost) cost = tmp_cost;
               else {
-                pos[i] -= cpx(0,2*delta); tmp_cost = func(*this);
+                v[i].pos -= cpx(0,2*delta); tmp_cost = func(*this);
                 if (tmp_cost < cost) cost = tmp_cost;
-                else pos[i] += cpx(0,delta);
+                else v[i].pos += cpx(0,delta);
               }
             }
 
-            rad[i] += delta; tmp_cost = func(*this);
+            v[i].rad += delta; tmp_cost = func(*this);
             if (tmp_cost < cost) cost = tmp_cost;
             else {
-              rad[i] -= 2*delta; tmp_cost = func(*this);
+              v[i].rad -= 2*delta; tmp_cost = func(*this);
               if (tmp_cost < cost) cost = tmp_cost;
-              else rad[i] += delta;
+              else v[i].rad += delta;
             }
           }
         }
@@ -286,8 +289,8 @@ namespace vb {
         one = _one;
 
         inscribe (bord);
-        mobius (pos[zero],0);
-        mobius (0,-arg(pos[one]));
+        mobius (v[zero].pos,0);
+        mobius (0,-arg(v[one].pos));
         optimize (cost_cp);
       }
   };
@@ -296,17 +299,17 @@ namespace vb {
     real t=0;
 
     for (int i=0; i<m.n; ++i)
-      for (adj_list::iterator j = m.adj[i].begin(); j != m.adj[i].end(); ++j) {
-        cpx e = m.pos[*j] - m.pos[i];
+      for (adj_list::iterator j = m.v[i].adj.begin(); j != m.v[i].adj.end(); ++j) {
+        cpx e = m.v[*j].pos - m.v[i].pos;
         real d = sqrt ( e.real()*e.real() + e.imag()*e.imag() );
-        real r = m.rad[i] + m.rad[*j];
+        real r = m.v[i].rad + m.v[*j].rad;
         t += (d-r)*(d-r);
       }
 
     t /= 2.0;
 
     for (std::list<int>::iterator j = m.bord.begin(); j != m.bord.end(); ++j) {
-      real d = 1.0 - abs(m.pos[*j]) - m.rad[*j];
+      real d = 1.0 - abs(m.v[*j].pos) - m.v[*j].rad;
       t += d*d;
     }
 
@@ -317,7 +320,7 @@ namespace vb {
     os << m.n << " vertices:" << std::endl;
     for (int i=0; i<m.n; ++i) {
       os << "  " << i << " ->";
-      for (adj_list::iterator j = m.adj[i].begin(); j != m.adj[i].end(); ++j)
+      for (adj_list::iterator j = m.v[i].adj.begin(); j != m.v[i].adj.end(); ++j)
         os << " " << *j;
       os << std::endl;
     }
@@ -325,7 +328,7 @@ namespace vb {
   }
 
   Map &operator<< (Map &m, Edge e) {
-    m.adj[e.first].push_back(e.second);
+    m.v[e.first].adj.push_back(e.second);
     return m;
   }
 }
