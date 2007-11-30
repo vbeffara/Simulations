@@ -20,11 +20,12 @@ namespace vb {
       adj_list adj;
       real rad;
 
-      Vertex (cpx z, real r=0.0) : pos(z), rad(r) {};
+      Vertex (cpx z=cpx(0.0,0.0), real r=0.0) : pos(z), rad(r) {};
   };
 
   class Map;
-  real cost_cp (Map);
+  real cost_cp (const Map&);
+  real delta_cost_cp (const Map&,int,cpx,real);
 
   class Map {
     public:
@@ -32,11 +33,14 @@ namespace vb {
       std::vector<Vertex> v;       ///< The graph structure.
 
       std::list<int> bord;         ///< The boundary (if needed for e.g. circle packing).
+      std::vector<bool> bd;        ///< The boundary - other representation.
+
       int zero,one,infinity;       ///< As the names say.
 
       Map (int nn) : n(nn), zero(-1), one(-1), infinity(-1) {
         for (int i=0; i<n; ++i) {
           v.push_back(Vertex(0.0));
+          bd.push_back(false);
         }
       }
 
@@ -86,11 +90,13 @@ namespace vb {
       void inscribe (std::list<int> face_ext) {
         int n_ext = face_ext.size();
 
-        for (int i=0; i<n; ++i) v[i].pos = 0.0;
+        for (int i=0; i<n; ++i) { v[i].pos = 0.0; bd[i] = false; }
 
         int k=0;
-        for (std::list<int>::iterator i = face_ext.begin(); i != face_ext.end(); ++i, --k)
+        for (std::list<int>::iterator i = face_ext.begin(); i != face_ext.end(); ++i, --k) {
+          bd[*i] = true;
           v[*i].pos = cpx(cos(2.0*3.1415927*k/n_ext), sin(2.0*3.1415927*k/n_ext));
+        }
 
         std::list<int> inner;
         for (int i=0; i<n; ++i)
@@ -138,6 +144,7 @@ namespace vb {
         for (std::vector<adj_list>::iterator i = new_vertices.begin(); i != new_vertices.end(); ++i) {
           v.push_back(Vertex(0.0));
           v.back().adj = (*i);
+          bd.push_back(false);
           ++n;
         }
 
@@ -240,44 +247,30 @@ namespace vb {
         }
       }
 
-      real optimize (real func(Map), real eps = 0) {
+      real optimize (real func(const Map&), real delta_func(const Map&,int,cpx,real), real eps = 0) {
         real cost = func(*this);
         real old_cost = cost + eps + 1;
         real tmp_cost = cost;
         while (old_cost - cost > eps) {
-          std::cerr << cost << "\r";
           old_cost = cost;
           real delta = sqrt(cost/n/10.0);
 
           for (int i=0; i<n; ++i) {
             if (i != zero) {
-              v[i].pos += cpx(delta,0); tmp_cost = func(*this);
-              if (tmp_cost < cost) cost = tmp_cost;
-              else {
-                v[i].pos -= cpx(2*delta,0); tmp_cost = func(*this);
-                if (tmp_cost < cost) cost = tmp_cost;
-                else v[i].pos += cpx(delta,0);
-              }
+              if (delta_func(*this,i,v[i].pos-cpx(delta,0),v[i].rad)<0) v[i].pos -= cpx(delta,0);
+              else if (delta_func(*this,i,v[i].pos+cpx(delta,0),v[i].rad)<0) v[i].pos += cpx(delta,0);
             }
 
             if ((i != zero) && (i != one)) {
-              v[i].pos += cpx(0,delta); tmp_cost = func(*this);
-              if (tmp_cost < cost) cost = tmp_cost;
-              else {
-                v[i].pos -= cpx(0,2*delta); tmp_cost = func(*this);
-                if (tmp_cost < cost) cost = tmp_cost;
-                else v[i].pos += cpx(0,delta);
-              }
+              if (delta_func(*this,i,v[i].pos-cpx(0,delta),v[i].rad)<0) v[i].pos -= cpx(0,delta);
+              else if (delta_func(*this,i,v[i].pos+cpx(0,delta),v[i].rad)<0) v[i].pos += cpx(0,delta);
             }
 
-            v[i].rad += delta; tmp_cost = func(*this);
-            if (tmp_cost < cost) cost = tmp_cost;
-            else {
-              v[i].rad -= 2*delta; tmp_cost = func(*this);
-              if (tmp_cost < cost) cost = tmp_cost;
-              else v[i].rad += delta;
-            }
+            if (delta_func(*this,i,v[i].pos,v[i].rad-delta)<0) v[i].rad -= delta;
+            else if (delta_func(*this,i,v[i].pos,v[i].rad+delta)<0) v[i].rad += delta;
           }
+
+          cost = func(*this);
         }
 
         return cost;
@@ -291,15 +284,15 @@ namespace vb {
         inscribe (bord);
         mobius (v[zero].pos,0);
         mobius (0,-arg(v[one].pos));
-        optimize (cost_cp);
+        optimize (cost_cp,delta_cost_cp);
       }
   };
 
-  real cost_cp (Map m) {
+  real cost_cp (const Map &m) {
     real t=0;
 
     for (int i=0; i<m.n; ++i)
-      for (adj_list::iterator j = m.v[i].adj.begin(); j != m.v[i].adj.end(); ++j) {
+      for (adj_list::const_iterator j = m.v[i].adj.begin(); j != m.v[i].adj.end(); ++j) {
         cpx e = m.v[*j].pos - m.v[i].pos;
         real d = sqrt ( e.real()*e.real() + e.imag()*e.imag() );
         real r = m.v[i].rad + m.v[*j].rad;
@@ -308,8 +301,34 @@ namespace vb {
 
     t /= 2.0;
 
-    for (std::list<int>::iterator j = m.bord.begin(); j != m.bord.end(); ++j) {
+    for (std::list<int>::const_iterator j = m.bord.begin(); j != m.bord.end(); ++j) {
       real d = 1.0 - abs(m.v[*j].pos) - m.v[*j].rad;
+      t += d*d;
+    }
+
+    return t;
+  }
+
+  real delta_cost_cp (const Map &m, int i, cpx z, real _r) {
+    real t = 0.0;
+
+    for (adj_list::const_iterator j = m.v[i].adj.begin(); j != m.v[i].adj.end(); ++j) {
+      cpx e = m.v[*j].pos - m.v[i].pos;
+      real d = sqrt ( e.real()*e.real() + e.imag()*e.imag() );
+      real r = m.v[i].rad + m.v[*j].rad;
+      t -= (d-r)*(d-r);
+
+      e = m.v[*j].pos - z;
+      d = sqrt ( e.real()*e.real() + e.imag()*e.imag() );
+      r = _r + m.v[*j].rad;
+      t += (d-r)*(d-r);
+    }
+    
+    if (m.bd[i]) {
+      real d = 1.0 - abs(m.v[i].pos) - m.v[i].rad;
+      t -= d*d;
+
+      d = 1.0 - abs(z) - _r;
       t += d*d;
     }
 

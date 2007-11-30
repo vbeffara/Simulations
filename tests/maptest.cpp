@@ -21,7 +21,8 @@ int main () {
   m.barycentric();
   m.barycentric();
   m.barycentric();
-  //m.barycentric();
+  m.barycentric();
+  m.barycentric();
   m.circlepack(0,m.v[0].adj.front(),m.face(Edge(1,m.v[1].adj.back())));
 
   Figure F;
