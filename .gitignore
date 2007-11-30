@@ -12,3 +12,4 @@ tags
 *.log
 .DS_Store
 out*
+*.ps

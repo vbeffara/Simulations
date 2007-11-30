@@ -41,10 +41,10 @@ namespace vb {
       }
 
       adj_list::iterator find_edge (Edge e) {
-        if (e.first >= n) return NULL;
+        if (e.first >= n) return (adj_list::iterator) NULL;
         for (adj_list::iterator i = v[e.first].adj.begin(); i != v[e.first].adj.end(); ++i)
           if (*i == e.second) return i;
-        return NULL;
+        return (adj_list::iterator) NULL;
       }
 
       Edge turn_left (Edge e) {
@@ -177,7 +177,7 @@ namespace vb {
         os << "digraph G {" << std::endl;
         for (int i=0; i<n; ++i)
           for (adj_list::iterator j = v[i].adj.begin(); j != v[i].adj.end(); ++j) {
-            if (find_edge(Edge(*j,i)) == NULL)
+            if (find_edge(Edge(*j,i)) == (adj_list::iterator) NULL)
               os << "  " << i << " -> " << *j << ";" << std::endl;
             else if (i<=*j)
               os << "  " << i << " -> " << *j << " [arrowhead = none]" << std::endl;
@@ -195,7 +195,7 @@ namespace vb {
       Map plot_edges (Figure &F) {
         for (int i=0; i<n; ++i) {
           for (adj_list::iterator j = v[i].adj.begin(); j != v[i].adj.end(); ++j)
-            if ((i<*j) || (find_edge(Edge(*j,i))==NULL)) F.segment(v[i].pos,v[*j].pos);
+            if ((i<*j) || (find_edge(Edge(*j,i)) == (adj_list::iterator) NULL)) F.segment(v[i].pos,v[*j].pos);
         }
         return (*this);
       }
