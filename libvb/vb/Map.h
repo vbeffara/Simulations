@@ -226,10 +226,10 @@ namespace vb {
       }
 
       int nb_faces () {
-        double tmp = 0.0;
+        real tmp = 0.0;
         for (int i=0; i<n; ++i)
           for (adj_list::iterator j = v[i].adj.begin(); j != v[i].adj.end(); ++j)
-            tmp += 1.0/((double) face(Edge(i,*j)).size());
+            tmp += 1.0/((real) face(Edge(i,*j)).size());
         return (int) floor (tmp + .1);
       }
 
@@ -283,7 +283,7 @@ namespace vb {
         zero = _zero;
         one = _one;
 
-        inscribe (_bord, sqrt((double)n)-0.5);
+        inscribe (_bord, sqrt((real)n)-0.5);
         balance ();
 
         scale = sqrt((real)n);
@@ -307,7 +307,10 @@ namespace vb {
       }
 
       if (m.bd[i]) {
-        real d = m.scale - abs(m.v[i].pos) - m.v[i].rad;
+        cpx e = m.v[i].pos;
+        real r = abs(e);
+        real dr = (m.scale - m.v[i].rad);
+        real d = dr - r;
         t += d*d;
       }
     }
@@ -331,10 +334,14 @@ namespace vb {
     }
     
     if (m.bd[i]) {
-      real d = m.scale - abs(m.v[i].pos) - m.v[i].rad;
+      cpx e = m.v[i].pos;
+      real r = abs(e);
+      real dr = (m.scale - m.v[i].rad);
+      real d = dr - r;
       t -= d*d;
 
-      d = m.scale - abs(z) - _r;
+      dr = (m.scale - _r);
+      d = dr - abs(z);
       t += d*d;
     }
 
