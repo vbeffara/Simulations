@@ -293,6 +293,87 @@ namespace vb {
         for (int i=0; i<n; ++i) v[i].rad = 1.0;
         return optimize (cost_cp,delta_cost_cp);
       }
+
+      real ACPA (std::list<int> _bord) {
+        for (int i=0; i<n; ++i) { v[i].rad = 1.0; bd[i]=false; }
+        for (std::list<int>::iterator i = _bord.begin(); i != _bord.end(); ++i) {
+          bd[*i] = true;
+        }
+
+        real E = 8*n;
+        real old_E = E + 1.0;
+
+        while (E < old_E) {
+          old_E = E;
+          E = 0.0;
+
+          for (int i=0; i<n; ++i) {
+            if (bd[i]) continue;
+            if (v[i].adj.size() == 0) continue;
+
+            int k = v[i].adj.size();
+
+            real x = v[i].rad;
+            real y = v[v[i].adj.back()].rad, z;
+            real theta = 0.0;
+            for (adj_list::iterator j = v[i].adj.begin(); j != v[i].adj.end(); ++j) {
+              z = y; y = v[*j].rad;
+              real alpha = acos (((x+y)*(x+y) + (x+z)*(x+z) - (y+z)*(y+z)) / (2*(x+y)*(x+z)));
+              theta += alpha;
+            }
+            E += fabs(theta - 8*atan(1));
+
+            real beta = sin (theta/(2*k));
+            real delta = sin (4*atan(1)/k);
+
+            v[i].rad *= ((1-delta)/delta) * (beta/(1-beta));
+          }
+
+          std::cerr << E << "       \r";
+        }
+
+        return E;
+      }
+
+      void rad_to_pos (int _zero, int _one) {
+        zero = _zero;
+        one = _one;
+
+        double R_max = 0.0;
+        for (int i=0; i<n; ++i) if (v[i].rad > R_max) R_max = v[i].rad;
+
+        cpx nowhere (-2*n*R_max, 0.0);
+        for (int i=0; i<n; ++i) v[i].pos = nowhere;
+
+        v[zero].pos = cpx(0.0,0.0);
+        v[one].pos = cpx (v[zero].rad + v[one].rad, 0.0);
+
+        bool dirty = true; while (dirty) {
+          dirty = false;
+
+          for (int i=0; i<n; ++i) {
+            if (v[i].pos == nowhere) continue;
+            if (v[i].adj.size() == 0) continue;
+
+            cpx prev_z = v[v[i].adj.back()].pos;
+            real prev_r = v[v[i].adj.back()].rad;
+
+            for (adj_list::iterator j = v[i].adj.begin(); j != v[i].adj.end(); ++j) {
+              cpx z = v[*j].pos;
+              if ((prev_z != nowhere) && (z == nowhere) && ((!bd[i])||(!bd[*j]))) {
+                real x = v[i].rad;
+                real y = v[*j].rad;
+                real alpha = acos (((x+y)*(x+y) + (x+prev_r)*(x+prev_r) - (y+prev_r)*(y+prev_r)) / (2*(x+y)*(x+prev_r)));
+                v[*j].pos = v[i].pos + (x+y) * exp(cpx(0.0,alpha + arg(prev_z-v[i].pos)));
+                z = v[*j].pos;
+                dirty = true;
+              }
+
+              prev_z = z; prev_r = v[*j].rad;
+            }
+          }
+        }
+      }
   };
 
   real cost_cp (const Map &m) {
