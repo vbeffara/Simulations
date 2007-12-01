@@ -252,9 +252,11 @@ namespace vb {
       real optimize (real func(const Map&), real delta_func(const Map&,int,cpx,real)) {
         real cost = func(*this);
         real old_cost = cost + 1;
+        real delta = 1.0;
 
         while (old_cost - cost > 0) {
-          real delta = sqrt(cost/n/100.0);
+          std::cerr << cost << "         \r";
+          delta = sqrt(cost)/n;
 
           for (int i=0; i<n; ++i) {
             if (i != zero) {
@@ -299,9 +301,9 @@ namespace vb {
     for (int i=0; i<m.n; ++i) {
       for (adj_list::const_iterator j = m.v[i].adj.begin(); j != m.v[i].adj.end(); ++j) {
         cpx e = m.v[*j].pos - m.v[i].pos;
-        real d = sqrt ( e.real()*e.real() + e.imag()*e.imag() );
+        real d = ( e.real()*e.real() + e.imag()*e.imag() );
         real r = m.v[i].rad + m.v[*j].rad;
-        t += (d-r)*(d-r)/2;
+        t += (d-r*r)*(d-r*r)/2;
       }
 
       if (m.bd[i]) {
@@ -318,14 +320,14 @@ namespace vb {
 
     for (adj_list::const_iterator j = m.v[i].adj.begin(); j != m.v[i].adj.end(); ++j) {
       cpx e = m.v[*j].pos - m.v[i].pos;
-      real d = sqrt ( e.real()*e.real() + e.imag()*e.imag() );
+      real d = ( e.real()*e.real() + e.imag()*e.imag() );
       real r = m.v[i].rad + m.v[*j].rad;
-      t -= (d-r)*(d-r);
+      t -= (d-r*r)*(d-r*r);
 
       e = m.v[*j].pos - z;
-      d = sqrt ( e.real()*e.real() + e.imag()*e.imag() );
+      d = ( e.real()*e.real() + e.imag()*e.imag() );
       r = _r + m.v[*j].rad;
-      t += (d-r)*(d-r);
+      t += (d-r*r)*(d-r*r);
     }
     
     if (m.bd[i]) {
