@@ -243,8 +243,9 @@ namespace vb {
 
       void mobius (cpx w, real theta) {
         for (int i=0; i<n; ++i) {
-          cpx z = v[i].pos;
-          v[i].pos = (z-w)*exp(cpx(0,theta))/(cpx(1,0)-z*conj(w));
+          cpx z = v[i].pos / scale;
+          w /= scale;
+          v[i].pos = scale * (z-w)*exp(cpx(0,theta))/(cpx(1,0)-z*conj(w));
         }
       }
 
@@ -280,8 +281,10 @@ namespace vb {
         zero = _zero;
         one = _one;
 
-        inscribe (_bord, sqrt(n));
+        inscribe (_bord, sqrt((double)n)-0.5);
         balance ();
+
+        scale = sqrt((real)n);
         mobius (v[zero].pos,0);
         mobius (0,-arg(v[one].pos));
 
