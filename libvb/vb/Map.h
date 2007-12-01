@@ -31,11 +31,10 @@ namespace vb {
     public:
       int n;                       ///< The number of vertices.
       std::vector<Vertex> v;       ///< The graph structure.
-
-      std::list<int> bord;         ///< The boundary (if needed for e.g. circle packing).
-      std::vector<bool> bd;        ///< The boundary - other representation.
+      std::vector<bool> bd;        ///< The boundary vertices.
 
       int zero,one,infinity;       ///< As the names say.
+      real scale;                  ///< Default scale of the embedding.
 
       Map (int nn) : n(nn), zero(-1), one(-1), infinity(-1) {
         for (int i=0; i<n; ++i) {
@@ -87,31 +86,33 @@ namespace vb {
         return l;
       }
 
-      void inscribe (std::list<int> face_ext) {
+      void inscribe (std::list<int> face_ext, real radius = 1.0, bool reverse = false) {
         int n_ext = face_ext.size();
 
         for (int i=0; i<n; ++i) { v[i].pos = 0.0; bd[i] = false; }
+        scale = radius;
 
         int k=0;
         for (std::list<int>::iterator i = face_ext.begin(); i != face_ext.end(); ++i, --k) {
           bd[*i] = true;
-          v[*i].pos = cpx(cos(2.0*3.1415927*k/n_ext), sin(2.0*3.1415927*k/n_ext));
+          v[*i].pos = radius * exp(cpx(0,(reverse?-2.0:2.0)*3.1415927*k/n_ext));
         }
+      }
 
-        std::list<int> inner;
-        for (int i=0; i<n; ++i)
-          if (v[i].pos==cpx(0.0,0.0)) inner.push_back(i);
-
+      void balance () {
         bool dirty=true;
 
         while (dirty) {
           dirty = 0;
-          for (std::list<int>::iterator i = inner.begin(); i != inner.end(); ++i) {
-            cpx old = v[*i].pos; v[*i].pos = 0.0;
-            for (adj_list::iterator j = v[*i].adj.begin(); j != v[*i].adj.end(); ++j)
-              v[*i].pos += v[*j].pos;
-            v[*i].pos /= v[*i].adj.size();
-            if (v[*i].pos != old) dirty = true;
+          for (int i=0; i<n; ++i) {
+            if (bd[i]) continue;
+            if (v[i].adj.size() == 0) continue;
+
+            cpx old = v[i].pos; v[i].pos = 0.0;
+            for (adj_list::iterator j = v[i].adj.begin(); j != v[i].adj.end(); ++j)
+              v[i].pos += v[*j].pos;
+            v[i].pos /= v[i].adj.size();
+            if (v[i].pos != old) dirty = true;
           }
         }
       }
@@ -247,13 +248,12 @@ namespace vb {
         }
       }
 
-      real optimize (real func(const Map&), real delta_func(const Map&,int,cpx,real), real eps = 0) {
+      real optimize (real func(const Map&), real delta_func(const Map&,int,cpx,real)) {
         real cost = func(*this);
-        real old_cost = cost + eps + 1;
-        real tmp_cost = cost;
-        while (old_cost - cost > eps) {
-          old_cost = cost;
-          real delta = sqrt(cost/n/10.0);
+        real old_cost = cost + 1;
+
+        while (old_cost - cost > 0) {
+          real delta = sqrt(cost/n/100.0);
 
           for (int i=0; i<n; ++i) {
             if (i != zero) {
@@ -270,40 +270,41 @@ namespace vb {
             else if (delta_func(*this,i,v[i].pos,v[i].rad+delta)<0) v[i].rad += delta;
           }
 
-          cost = func(*this);
+          old_cost = cost; cost = func(*this);
         }
 
         return cost;
       }
 
-      void circlepack (int _zero, int _one, std::list<int> _bord) {
-        bord = _bord;
+      real circlepack (int _zero, int _one, std::list<int> _bord) {
         zero = _zero;
         one = _one;
 
-        inscribe (bord);
+        inscribe (_bord, sqrt(n));
+        balance ();
         mobius (v[zero].pos,0);
         mobius (0,-arg(v[one].pos));
-        optimize (cost_cp,delta_cost_cp);
+
+        for (int i=0; i<n; ++i) v[i].rad = 1.0;
+        return optimize (cost_cp,delta_cost_cp);
       }
   };
 
   real cost_cp (const Map &m) {
     real t=0;
 
-    for (int i=0; i<m.n; ++i)
+    for (int i=0; i<m.n; ++i) {
       for (adj_list::const_iterator j = m.v[i].adj.begin(); j != m.v[i].adj.end(); ++j) {
         cpx e = m.v[*j].pos - m.v[i].pos;
         real d = sqrt ( e.real()*e.real() + e.imag()*e.imag() );
         real r = m.v[i].rad + m.v[*j].rad;
-        t += (d-r)*(d-r);
+        t += (d-r)*(d-r)/2;
       }
 
-    t /= 2.0;
-
-    for (std::list<int>::const_iterator j = m.bord.begin(); j != m.bord.end(); ++j) {
-      real d = 1.0 - abs(m.v[*j].pos) - m.v[*j].rad;
-      t += d*d;
+      if (m.bd[i]) {
+        real d = m.scale - abs(m.v[i].pos) - m.v[i].rad;
+        t += d*d;
+      }
     }
 
     return t;
@@ -325,10 +326,10 @@ namespace vb {
     }
     
     if (m.bd[i]) {
-      real d = 1.0 - abs(m.v[i].pos) - m.v[i].rad;
+      real d = m.scale - abs(m.v[i].pos) - m.v[i].rad;
       t -= d*d;
 
-      d = 1.0 - abs(z) - _r;
+      d = m.scale - abs(z) - _r;
       t += d*d;
     }
 

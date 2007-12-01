@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <vb/Map.h>
 
 using namespace std;
@@ -23,12 +24,13 @@ int main () {
   m.barycentric();
   m.barycentric();
   m.barycentric();
-  m.circlepack(0,m.v[0].adj.front(),m.face(Edge(1,m.v[1].adj.back())));
+  cerr << m.circlepack(0,m.v[0].adj.front(),m.face(Edge(1,m.v[1].adj.back()))) << endl;
 
   Figure F;
   m.plot_circles (F);
   F.dot(m.v[0].pos).dot(m.v[m.v[0].adj.front()].pos);
-  F.circle(0.0,1.0);
+  F.circle(0.0,m.scale);
+  cout << setprecision(15);
   F.printASY(cout);
 
   //cerr << "Sommets : " << m.nb_sommets() << endl;
