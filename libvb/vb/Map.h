@@ -294,11 +294,8 @@ namespace vb {
         return optimize (cost_cp,delta_cost_cp);
       }
 
-      real ACPA (std::list<int> _bord) {
-        for (int i=0; i<n; ++i) { v[i].rad = 1.0; bd[i]=false; }
-        for (std::list<int>::iterator i = _bord.begin(); i != _bord.end(); ++i) {
-          bd[*i] = true;
-        }
+      real ACPA () {
+        for (int i=0; i<n; ++i) if (v[i].rad == 0.0) v[i].rad = 1.0;
 
         real E = 8*n;
         real old_E = E + 1.0;
@@ -318,8 +315,7 @@ namespace vb {
             real theta = 0.0;
             for (adj_list::iterator j = v[i].adj.begin(); j != v[i].adj.end(); ++j) {
               z = y; y = v[*j].rad;
-              real alpha = acos (((x+y)*(x+y) + (x+z)*(x+z) - (y+z)*(y+z)) / (2*(x+y)*(x+z)));
-              theta += alpha;
+              theta += acos (((x+y)*(x+y) + (x+z)*(x+z) - (y+z)*(y+z)) / (2*(x+y)*(x+z)));
             }
             E += fabs(theta - 8*atan(1));
 
@@ -328,8 +324,6 @@ namespace vb {
 
             v[i].rad *= ((1-delta)/delta) * (beta/(1-beta));
           }
-
-          std::cerr << E << "       \r";
         }
 
         return E;

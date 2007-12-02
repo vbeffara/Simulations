@@ -20,14 +20,19 @@ int main () {
     << Edge(4,1) << Edge(4,0) << Edge(4,3);
 
   m.barycentric();
-  m.barycentric();
-  m.barycentric();
-  m.barycentric();
-  m.barycentric();
+  //m.barycentric();
+  //m.barycentric();
+  //m.barycentric();
+  //m.barycentric();
   //cerr << m.circlepack(0,m.v[0].adj.front(),m.face(Edge(1,m.v[1].adj.back()))) << endl; 
 
-  double E = m.ACPA(m.face(Edge(1,m.v[1].adj.back())));
-  cerr << m.n << " -> " << E << endl;
+  list<int> bord = m.face(Edge(1,m.v[1].adj.back()));
+  for (list<int>::iterator i = bord.begin(); i != bord.end(); ++i) {
+    m.bd[*i] = true;
+    m.v[*i].rad = 1.0;
+  }
+
+  cerr << m.ACPA() << endl;
 
   m.rad_to_pos(0, m.v[0].adj.front());
 
