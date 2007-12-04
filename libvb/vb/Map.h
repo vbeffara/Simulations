@@ -310,6 +310,7 @@ namespace vb {
         real old_E = E + 1.0;
 
         while (E < old_E) {
+          //std::cerr << E << "   " << (old_E-E)/E << "        \r";
           old_E = E;
           E = 0.0;
 
@@ -376,6 +377,31 @@ namespace vb {
             }
           }
         }
+      }
+
+      real circlepack2 (int _zero, int _one, const adj_list _bord) {
+        //std::cerr << "First, add the outer vertex.\n";
+
+        v.push_back (Vertex(cpx(0.0),sqrt((real)n)));
+        v[n].adj = _bord;
+        ++n;
+
+        int prev_i = _bord.back();
+        for (adj_list::const_iterator i = _bord.begin(); i != _bord.end(); ++i) {
+          add_before (Edge(*i,prev_i),n-1);
+          prev_i = *i;
+        }
+
+        //std::cerr << "Circle-pack this using ACPA.\n";
+
+        for (int i=0; i<n; ++i) bd[i]=false;
+
+        bd[n-1] = true; v[n-1].rad = sqrt((real)n);
+        bd[_bord.front()] = true; v[_bord.front()].rad = sqrt((real)n);
+        bd[_bord.back()] = true; v[_bord.back()].rad = sqrt((real)n);
+        real output = ACPA();
+        rad_to_pos (_bord.front(), _bord.back());
+        return output;
       }
   };
 
