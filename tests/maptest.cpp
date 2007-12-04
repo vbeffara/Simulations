@@ -20,26 +20,30 @@ int main () {
     << Edge(4,1) << Edge(4,0) << Edge(4,3);
 
   m.barycentric();
-  //m.barycentric();
-  //m.barycentric();
-  //m.barycentric();
-  //m.barycentric();
-  //cerr << m.circlepack(0,m.v[0].adj.front(),m.face(Edge(1,m.v[1].adj.back()))) << endl; 
+  cerr << m.circlepack(0,m.v[0].adj.front(),m.face(Edge(1,m.v[1].adj.back()))) << endl; 
+  m.barycentric();
+  cerr << m.circlepack(0,m.v[0].adj.front(),m.face(Edge(1,m.v[1].adj.back()))) << endl; 
+  m.barycentric();
+  cerr << m.circlepack(0,m.v[0].adj.front(),m.face(Edge(1,m.v[1].adj.back()))) << endl; 
+  m.barycentric();
+  cerr << m.circlepack(0,m.v[0].adj.front(),m.face(Edge(1,m.v[1].adj.back()))) << endl; 
+  m.barycentric();
+  cerr << m.circlepack(0,m.v[0].adj.front(),m.face(Edge(1,m.v[1].adj.back()))) << endl; 
 
-  list<int> bord = m.face(Edge(1,m.v[1].adj.back()));
-  for (list<int>::iterator i = bord.begin(); i != bord.end(); ++i) {
-    m.bd[*i] = true;
-    m.v[*i].rad = 1.0;
-  }
+  //list<int> bord = m.face(Edge(1,m.v[1].adj.back()));
+  //for (list<int>::iterator i = bord.begin(); i != bord.end(); ++i) {
+    //m.bd[*i] = true;
+    //m.v[*i].rad = 1.0;
+  //}
 
-  cerr << m.ACPA() << endl;
+  //cerr << m.ACPA() << endl;
 
-  m.rad_to_pos(0, m.v[0].adj.front());
+  //m.rad_to_pos(0, m.v[0].adj.front());
 
   Figure F;
   m.plot_circles (F);
   F.dot(m.v[0].pos).dot(m.v[m.v[0].adj.front()].pos);
-  //F.circle(0.0,m.scale);
+  F.circle(0.0,m.scale);
   cout << setprecision(15);
   F.printASY(cout);
 

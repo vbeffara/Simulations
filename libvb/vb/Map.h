@@ -251,29 +251,38 @@ namespace vb {
 
       real optimize (real func(const Map&), real delta_func(const Map&,int,cpx,real)) {
         real cost = func(*this);
-        real old_cost = cost + 1;
+        real delta_cost = 1;
         real delta = 1.0;
+        real dv;
 
-        while (old_cost - cost > 0) {
+        while (delta_cost > 0) {
           std::cerr << cost << "         \r";
-          delta = sqrt(cost)/n;
+          delta_cost = 0.0;
+          delta = sqrt(cost/n/10000);
 
           for (int i=0; i<n; ++i) {
             if (i != zero) {
-              if (delta_func(*this,i,v[i].pos-cpx(delta,0),v[i].rad)<0) v[i].pos -= cpx(delta,0);
-              else if (delta_func(*this,i,v[i].pos+cpx(delta,0),v[i].rad)<0) v[i].pos += cpx(delta,0);
+              dv = delta_func(*this,i,v[i].pos-cpx(delta,0),v[i].rad); if (dv<0) { v[i].pos -= cpx(delta,0); delta_cost -= dv; }
+              else {
+                dv = delta_func(*this,i,v[i].pos+cpx(delta,0),v[i].rad); if (dv<0) { v[i].pos += cpx(delta,0); delta_cost -= dv; }
+              }
             }
 
             if ((i != zero) && (i != one)) {
-              if (delta_func(*this,i,v[i].pos-cpx(0,delta),v[i].rad)<0) v[i].pos -= cpx(0,delta);
-              else if (delta_func(*this,i,v[i].pos+cpx(0,delta),v[i].rad)<0) v[i].pos += cpx(0,delta);
+              dv = delta_func(*this,i,v[i].pos-cpx(0,delta),v[i].rad); if(dv<0) { v[i].pos -= cpx(0,delta); delta_cost -= dv; }
+              else {
+                dv = delta_func(*this,i,v[i].pos+cpx(0,delta),v[i].rad); if(dv<0) { v[i].pos += cpx(0,delta); delta_cost -= dv; }
+              }
             }
 
-            if (delta_func(*this,i,v[i].pos,v[i].rad-delta)<0) v[i].rad -= delta;
-            else if (delta_func(*this,i,v[i].pos,v[i].rad+delta)<0) v[i].rad += delta;
+            dv = delta_func(*this,i,v[i].pos,v[i].rad-delta); if(dv<0) { v[i].rad -= delta; delta_cost -= dv; }
+            else {
+              dv = delta_func(*this,i,v[i].pos,v[i].rad+delta); if(dv<0) { v[i].rad += delta; delta_cost -= dv; }
+            }
           }
 
-          old_cost = cost; cost = func(*this);
+          //delta_cost = cost - func(*this);
+          cost -= delta_cost;
         }
 
         return cost;
