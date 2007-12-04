@@ -20,15 +20,11 @@ int main () {
     << Edge(4,1) << Edge(4,0) << Edge(4,3);
 
   m.barycentric();
-  //cerr << m.circlepack2(0,m.v[0].adj.front(),m.face(Edge(1,m.v[1].adj.back()))) << endl; 
   m.barycentric();
-  //cerr << m.circlepack2(0,m.v[0].adj.front(),m.face(Edge(1,m.v[1].adj.back()))) << endl; 
   m.barycentric();
-  //cerr << m.circlepack2(0,m.v[0].adj.front(),m.face(Edge(1,m.v[1].adj.back()))) << endl; 
   m.barycentric();
-  cerr << m.circlepack2(0,m.v[0].adj.front(),m.face(Edge(1,m.v[1].adj.back()))) << endl; 
   //m.barycentric();
-  //cerr << m.circlepack(0,m.v[0].adj.front(),m.face(Edge(1,m.v[1].adj.back()))) << endl; 
+  cerr << m.circlepack2(0,m.v[0].adj.front(),m.face(Edge(1,m.v[1].adj.back()))) << "                               " << endl; 
 
   //list<int> bord = m.face(Edge(1,m.v[1].adj.back()));
   //for (list<int>::iterator i = bord.begin(); i != bord.end(); ++i) {

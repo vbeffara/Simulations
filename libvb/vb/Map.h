@@ -308,11 +308,13 @@ namespace vb {
 
         real E = 8*n;
         real old_E = E + 1.0;
+        int steps = 0;
 
         while (E < old_E) {
-          //std::cerr << E << "   " << (old_E-E)/E << "        \r";
+          if (!(steps%100)) std::cerr << E << "   " << (old_E-E)/E << "        \r";
           old_E = E;
           E = 0.0;
+          ++steps;
 
           for (int i=0; i<n; ++i) {
             if (bd[i]) continue;
@@ -379,11 +381,38 @@ namespace vb {
         }
       }
 
+      void rotate (real theta) {
+        for (int i=0; i<n; ++i) v[i].pos *= exp(cpx(0.0,theta));
+      }
+
+      void mobius_circle (cpx w, real r) {
+        w /= scale;
+        r /= scale;
+
+        cpx Delta = (1.0+norm(w)-r*r)*(1.0+norm(w)-r*r) - 4.0*norm(w);
+        cpx x = ( (1.0+norm(w)-r*r) + sqrt(Delta) ) / (2.0*conj(w));
+        if (norm(x)>1.0)
+          x = ( (1.0+norm(w)-r*r) - sqrt(Delta) ) / (2.0*conj(w));
+
+        for (int i=0; i<n; ++i) {
+          cpx W = v[i].pos/scale;
+          real R = v[i].rad/scale;
+
+          cpx A = norm(1.0-W*conj(x)) - R*R*norm(x);
+          cpx B = (1.0-W*conj(x))*(conj(x)-conj(W)) - R*R*conj(x);
+          cpx C = (x-W)*(conj(x)-conj(W)) - R*R;
+
+          v[i].pos = scale * conj(-B/A);
+          v[i].rad = scale * sqrt(abs(norm(v[i].pos/scale) - C/A));
+        }
+      }
+
       real circlepack2 (int _zero, int _one, const adj_list _bord) {
-        //std::cerr << "First, add the outer vertex.\n";
+        // First, add the outer vertex.
 
         v.push_back (Vertex(cpx(0.0),sqrt((real)n)));
         v[n].adj = _bord;
+        scale = sqrt((real)n);
         ++n;
 
         int prev_i = _bord.back();
@@ -392,15 +421,42 @@ namespace vb {
           prev_i = *i;
         }
 
-        //std::cerr << "Circle-pack this using ACPA.\n";
+        // Circle-pack this using ACPA
 
         for (int i=0; i<n; ++i) bd[i]=false;
 
-        bd[n-1] = true; v[n-1].rad = sqrt((real)n);
-        bd[_bord.front()] = true; v[_bord.front()].rad = sqrt((real)n);
-        bd[_bord.back()] = true; v[_bord.back()].rad = sqrt((real)n);
+        bd[n-1] = true; v[n-1].rad = sqrt((real)(n-1));
+        bd[_bord.front()] = true; v[_bord.front()].rad = sqrt((real)(n-1));
+        bd[_bord.back()] = true; v[_bord.back()].rad = sqrt((real)(n-1));
         real output = ACPA();
         rad_to_pos (_bord.front(), _bord.back());
+
+        // Remove the added vertex
+        
+        cpx center = v[n-1].pos;
+        v.pop_back(); --n;
+        for (int i=0; i<n; ++i) v[i].adj.remove(n);
+
+        // Recenter and invert
+        
+        for (int i=0; i<n; ++i) {
+          v[i].pos -= center;
+          
+          real module = abs(v[i].pos);
+          real argument = arg(v[i].pos);
+          real rayon = v[i].rad;
+
+          real new_module = n*module/(module*module-rayon*rayon);
+
+          v[i].rad = n*rayon/(module*module-rayon*rayon);
+          v[i].pos = new_module * exp(cpx(0,-argument));
+        }
+
+        // Map _zero to 0
+        
+        mobius_circle (v[_zero].pos,v[_zero].rad);
+        rotate (-arg(v[_one].pos));
+
         return output;
       }
   };
