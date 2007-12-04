@@ -30,7 +30,7 @@ int main () {
   m.barycentric();
   m.barycentric();
   m.barycentric();
-  m.barycentric();
+  //m.barycentric();
   //m.barycentric();
   cerr << m.circlepack2(6,7,m.face(Edge(0,m.v[0].adj.back()))) << "                               " << endl; 
 

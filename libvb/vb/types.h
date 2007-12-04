@@ -15,6 +15,9 @@ namespace vb {
 
   /// Return the larger of two real numbers.
   inline real max (real x, real y) { return (x>y?x:y); }
+
+#define ONE_PI ((real)3.14159265358979)
+#define TWO_PI ((real)6.28318530717958)
 }
 
 #endif

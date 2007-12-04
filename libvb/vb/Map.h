@@ -310,8 +310,21 @@ namespace vb {
         real old_E = E + 1.0;
         int steps = 0;
 
+        std::vector<real> pre_delta;
+        pre_delta.push_back(0.0);
+
+        int max_degree = 0;
+        for (int i=0; i<n; ++i) {
+          int degree = v[i].adj.size();
+          if (degree > max_degree) max_degree = degree;
+        }
+        for (int k=1; k<=max_degree; ++k) {
+          real delta = sin (4*atan(1)/k);
+          pre_delta.push_back((1-delta)/delta);
+        }
+
         while (E < old_E) {
-          if (!(steps%100)) std::cerr << E << "   " << (old_E-E)/E << "        \r";
+          if (!(steps%1000)) std::cerr << E << "   " << (old_E-E)/E << "        \r";
           old_E = E;
           E = 0.0;
           ++steps;
@@ -325,16 +338,16 @@ namespace vb {
             real x = v[i].rad;
             real y = v[v[i].adj.back()].rad, z;
             real theta = 0.0;
+
             for (adj_list::iterator j = v[i].adj.begin(); j != v[i].adj.end(); ++j) {
               z = y; y = v[*j].rad;
               theta += acos (((x+y)*(x+y) + (x+z)*(x+z) - (y+z)*(y+z)) / (2*(x+y)*(x+z)));
             }
-            E += fabs(theta - 8*atan(1));
+            E += fabs(theta - TWO_PI);
 
             real beta = sin (theta/(2*k));
-            real delta = sin (4*atan(1)/k);
 
-            v[i].rad *= ((1-delta)/delta) * (beta/(1-beta));
+            v[i].rad *= pre_delta[k] * (beta/(1-beta));
           }
         }
 
