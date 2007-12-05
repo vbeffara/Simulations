@@ -306,10 +306,6 @@ namespace vb {
       real ACPA () {
         for (int i=0; i<n; ++i) if (v[i].rad == 0.0) v[i].rad = 1.0;
 
-        real E = 8*n;
-        real old_E = E + 1.0;
-        int steps = 0;
-
         std::vector<real> pre_delta;
         pre_delta.push_back(0.0);
 
@@ -323,11 +319,22 @@ namespace vb {
           pre_delta.push_back((1-delta)/delta);
         }
 
+        std::vector<real> old_rad;
+        for (int i=0; i<n; ++i) old_rad.push_back(v[i].rad);
+
+        real old_lambda = 0.0;
+        real lambda = 0.0;
+
+        real old_E = 8.0*n + 1;
+        real E = 8.0*n;
+
+        int steps = 0;
+
         while (E < old_E) {
-          if (!(steps%1000)) std::cerr << E << "   " << (old_E-E)/E << "        \r";
-          old_E = E;
-          E = 0.0;
+          if (!(steps%100)) std::cerr << E << "           \r";
           ++steps;
+
+          old_E = E; E = 0.0;
 
           for (int i=0; i<n; ++i) {
             if (bd[i]) continue;
@@ -343,12 +350,26 @@ namespace vb {
               z = y; y = v[*j].rad;
               theta += acos (((x+y)*(x+y) + (x+z)*(x+z) - (y+z)*(y+z)) / (2*(x+y)*(x+z)));
             }
-            E += fabs(theta - TWO_PI);
+            E += (theta - TWO_PI)*(theta - TWO_PI);
 
             real beta = sin (theta/(2*k));
 
+            old_rad[i] = v[i].rad;
             v[i].rad *= pre_delta[k] * (beta/(1-beta));
           }
+
+          old_lambda = lambda; lambda = (old_E-E)/E;
+
+          real dlambda = (old_lambda-lambda)/lambda;
+          if (fabs(dlambda) < .01) {
+            real sqrtlambda = sqrt(lambda);
+            for (int i=0; i<n; ++i) {
+              real nr = v[i].rad + (v[i].rad-old_rad[i])/sqrtlambda;
+              if (nr>0) v[i].rad = nr;
+            }
+            old_lambda = 0.0;
+          }
+
         }
 
         return E;
