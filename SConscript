@@ -6,6 +6,7 @@ Import('env')
 
 vb = env.Clone()
 vb.ParseConfig('sdl-config --cflags --libs')
+vb.ParseConfig('fltk2-config --cxxflags --ldflags')
 vb.Append ( CPPPATH = ['#libvb'] )
 
 SConscript ("2D/SConscript", exports="vb")

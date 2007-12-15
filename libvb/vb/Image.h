@@ -11,6 +11,12 @@
 
 #include <SDL.h>
 
+#include <fltk/Window.H>
+#include <fltk/Rectangle.H>
+#include <fltk/PixelType.H>
+#include <fltk/draw.H>
+#include <fltk/run.H>
+
 namespace vb {
 
   /** Helper type for use in vb::Image::tessellate and
@@ -19,6 +25,28 @@ namespace vb {
 
   typedef char coloring (int,int);
   
+  /** This is a custom FLTK window fo displaying an Image.
+   */
+
+  class Window : public fltk::Window {
+    public:
+      Rectangle R;
+      char *S;
+      int P;
+
+      Window (int wd, int ht, const char *title, char *pic, int pitch) :
+            fltk::Window(wd,ht,title), S(pic), P(pitch) {
+        begin();
+          R = Rectangle (0,0,wd,ht);
+        end();
+        show();
+      }
+
+      void draw() {
+        drawimage ((unsigned char *)S,fltk::MONO,R,P);
+      }
+  };
+
   /** The main image class, used for all displays.
    *
    * It is a basic 2D canvas, greyscale (1, 2 or 4 bpp), with methods to
@@ -201,6 +229,8 @@ namespace vb {
     void events();
 
     void cycle();
+
+    Window *win;
   };
  
   Image::Image (int wd, int ht, int dp, std::string tit)
@@ -468,6 +498,8 @@ namespace vb {
     pic_is_original = 0;
     pitch = screen->pitch;
 
+    win = new Window (width,height,title.c_str(),pic,pitch);
+
     update();  
     
     return 1;
@@ -476,13 +508,17 @@ namespace vb {
   void Image::update () {
     if (is_onscreen) {
       SDL_UpdateRect(screen,0,0,0,0);
+      win->redraw();
+
       if ( (snapshot_period>0) && (time(0)>=snapshot_next) ) {
         char buffer[100];
         sprintf (buffer,"snapshot_%06d.bmp",snapshot_number++);
         SDL_SaveBMP (screen,buffer);
         snapshot_next = time(0) + snapshot_period;
       }
+
       events();
+      fltk::check();
     }
   }  
 }
