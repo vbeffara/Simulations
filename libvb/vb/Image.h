@@ -30,20 +30,26 @@ namespace vb {
 
   class Window : public fltk::Window {
     public:
+      int size;
       Rectangle R;
       char *S;
+      unsigned char *T;
+      int D;
       int P;
 
-      Window (int wd, int ht, const char *title, char *pic, int pitch) :
-            fltk::Window(wd,ht,title), S(pic), P(pitch) {
+      Window (int wd, int ht, const char *title, char *pic, int depth, int pitch) :
+            fltk::Window(wd,ht,title), size(wd*pitch), S(pic), D(255 / ((1<<depth)-1)), P(pitch) {
         begin();
           R = Rectangle (0,0,wd,ht);
         end();
+
+        T = (unsigned char *) malloc (size*sizeof(char));
         show();
       }
 
       void draw() {
-        drawimage ((unsigned char *)S,fltk::MONO,R,P);
+        for (int i=0; i<size; ++i) T[i] = D * S[i];
+        drawimage (T,fltk::MONO,R,P);
       }
   };
 
@@ -498,7 +504,7 @@ namespace vb {
     pic_is_original = 0;
     pitch = screen->pitch;
 
-    win = new Window (width,height,title.c_str(),pic,pitch);
+    win = new Window (width,height,title.c_str(),pic,depth,pitch);
 
     update();  
     
