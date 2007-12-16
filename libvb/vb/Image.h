@@ -15,7 +15,9 @@
 #include <fltk/Rectangle.H>
 #include <fltk/PixelType.H>
 #include <fltk/draw.H>
+#include <fltk/events.H>
 #include <fltk/run.H>
+#include <fltk/ask.H>
 
 namespace vb {
 
@@ -25,6 +27,11 @@ namespace vb {
 
   typedef char coloring (int,int);
   
+  void Close_Window_CB (fltk::Widget* widget, void*) {
+    if (fltk::ask("Do you really want to exit?"))
+      ((fltk::Window*)widget)->hide();
+  }
+
   /** This is a custom FLTK window fo displaying an Image.
    */
 
@@ -44,12 +51,37 @@ namespace vb {
         end();
 
         T = (unsigned char *) malloc (size*sizeof(char));
+
+        callback(Close_Window_CB);
         show();
       }
 
       void draw() {
         for (int i=0; i<size; ++i) T[i] = D * S[i];
         drawimage (T,fltk::MONO,R,P);
+      }
+
+      int handle(int event) {
+        switch (event) {
+          case fltk::KEY:
+            switch (fltk::event_key()) {
+              case fltk::EscapeKey:
+              case 0x61:             // this is a A (AZERTY for Q)
+              case 0x71:             // this is a Q
+                // TODO : output the image ...
+                exit (0);
+                break;
+              case 0x78:             // this is an X
+                exit (1);
+                break;
+              case fltk::SpaceKey:
+                // TODO : pause = 1-pause;
+                break;
+            }
+            break;
+        }
+
+        return 1;
       }
   };
 
@@ -523,7 +555,7 @@ namespace vb {
         snapshot_next = time(0) + snapshot_period;
       }
 
-      events();
+      //events();
       fltk::check();
     }
   }  
