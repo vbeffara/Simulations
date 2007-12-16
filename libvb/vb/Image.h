@@ -32,6 +32,8 @@ namespace vb {
       ((fltk::Window*)widget)->hide();
   }
 
+  class Image;
+
   /** This is a custom FLTK window fo displaying an Image.
    */
 
@@ -39,50 +41,14 @@ namespace vb {
     public:
       int size;
       Rectangle R;
-      char *S;
+      Image *img;
       unsigned char *T;
       int D;
       int P;
 
-      Window (int wd, int ht, const char *title, char *pic, int depth, int pitch) :
-            fltk::Window(wd,ht,title), size(wd*pitch), S(pic), D(255 / ((1<<depth)-1)), P(pitch) {
-        begin();
-          R = Rectangle (0,0,wd,ht);
-        end();
-
-        T = (unsigned char *) malloc (size*sizeof(char));
-
-        callback(Close_Window_CB);
-        show();
-      }
-
-      void draw() {
-        for (int i=0; i<size; ++i) T[i] = D * S[i];
-        drawimage (T,fltk::MONO,R,P);
-      }
-
-      int handle(int event) {
-        switch (event) {
-          case fltk::KEY:
-            switch (fltk::event_key()) {
-              case fltk::EscapeKey:
-              case 0x61:             // this is a A (AZERTY for Q)
-              case 0x71:             // this is a Q
-                // TODO : output the image ...
-                exit (0);
-                break;
-              case 0x78:             // this is an X
-                exit (1);
-                break;
-              case fltk::SpaceKey:
-                // TODO : pause = 1-pause;
-                break;
-            }
-            break;
-        }
-
-        return 1;
-      }
+      Window (int wd, int ht, const char *title, Image *image, int depth, int pitch);
+      void draw();
+      int handle(int event);
   };
 
   /** The main image class, used for all displays.
@@ -244,6 +210,8 @@ namespace vb {
     /** Output an EPS representation of the image to an ostream. */
 
     friend std::ostream &operator<< (std::ostream &os, vb::Image &img);    
+
+    friend class Window;
     
     /** The raw image data - should be private. */
 
@@ -536,7 +504,7 @@ namespace vb {
     pic_is_original = 0;
     pitch = screen->pitch;
 
-    win = new Window (width,height,title.c_str(),pic,depth,pitch);
+    win = new Window (width,height,title.c_str(),this,depth,pitch);
 
     update();  
     
@@ -556,9 +524,48 @@ namespace vb {
       }
 
       //events();
-      fltk::check();
+      if (paused) fltk::wait(); else fltk::check();
     }
   }  
+
+  Window::Window (int wd, int ht, const char *title, Image *image, int depth, int pitch) : fltk::Window(wd,ht,title), size(wd*pitch), img(image), D(255 / ((1<<depth)-1)), P(pitch) {
+    begin();
+      R = Rectangle (0,0,wd,ht);
+    end();
+
+    T = (unsigned char *) malloc (size*sizeof(char));
+
+    callback(Close_Window_CB);
+    show();
+  }
+
+  void Window::draw() {
+    for (int i=0; i<size; ++i) T[i] = D * img->pic[i];
+    drawimage (T,fltk::MONO,R,P);
+  }
+
+  int Window::handle(int event) {
+    switch (event) {
+      case fltk::KEY:
+        switch (fltk::event_key()) {
+          case fltk::EscapeKey:
+          case 0x61:             // this is a A (AZERTY for Q)
+          case 0x71:             // this is a Q
+            std::cout << (*img);
+            exit (0);
+            break;
+          case 0x78:             // this is an X
+            exit (1);
+            break;
+          case fltk::SpaceKey:
+            img->paused = 1-img->paused;
+            break;
+        }
+        break;
+    }
+
+    return 1;
+  }
 }
 
 #endif
