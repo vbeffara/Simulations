@@ -5,7 +5,6 @@ Import('env')
 # The libvb stuff
 
 vb = env.Clone()
-vb.ParseConfig('sdl-config --cflags --libs')
 vb.ParseConfig('fltk2-config --cxxflags --ldflags')
 vb.Append ( CPPPATH = ['#libvb'] )
 

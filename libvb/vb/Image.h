@@ -9,8 +9,6 @@
 #include <iostream>
 #include <string>
 
-#include <SDL.h>
-
 #include <fltk/Window.H>
 #include <fltk/Rectangle.H>
 #include <fltk/PixelType.H>
@@ -29,7 +27,7 @@ namespace vb {
   
   void Close_Window_CB (fltk::Widget* widget, void*) {
     if (fltk::ask("Do you really want to exit?"))
-      ((fltk::Window*)widget)->hide();
+      exit(1);
   }
 
   class Image;
@@ -46,7 +44,7 @@ namespace vb {
       int D;
       int P;
 
-      Window (int wd, int ht, const char *title, Image *image, int depth, int pitch);
+      Window (Image *image);
       void draw();
       int handle(int event);
   };
@@ -70,10 +68,6 @@ namespace vb {
     int is_onscreen;     ///< 1 if the image is displayed, 0 if not.
     int cropped;         ///< 1 if the output routine should crop the picture.
 
-    int snapshot_period; ///< The number of seconds between BMP snapshots.
-    int snapshot_number; ///< The order number of the next snapshot.
-    int snapshot_next;   ///< The time() of the next snapshot.
-    
     /** The standard constructor of the Image class.
      *
      * @param wd The width in pixels.
@@ -89,11 +83,6 @@ namespace vb {
     ~Image ();
 
     /** Put the image on the screen.
-     *
-     * If no display driver is set, it does nothing.
-     *
-     * If the display driver is SDL (default), it may change the value
-     * of Image::pitch (typically to the next multiple of 4).
      */
     
     int onscreen ();
@@ -137,8 +126,7 @@ namespace vb {
      * To do everything by hand, use this in combination with the dt=0
      * version of Image::putpoint.
      *
-     * When using the SDL display driver, also take care of keypresses,
-     * with the following meanings:
+     * This also take care of keypresses, with the following meanings:
      *
      * - 'q' outputs the image to std::cout and exits with exit code 0;
      * - 'x' outputs nothing and exits with exit code 1;
@@ -229,11 +217,6 @@ namespace vb {
     unsigned long long nb_clock;
     int paused;
 
-    SDL_Surface *screen;
-
-    SDL_Event event;
-    void events();
-
     void cycle();
 
     Window *win;
@@ -241,9 +224,8 @@ namespace vb {
  
   Image::Image (int wd, int ht, int dp, std::string tit)
     : width(wd), height(ht), pitch(wd), depth(dp), outputsize(0.0),
-    is_onscreen(0), cropped(0), snapshot_period(0), snapshot_number(0),
-    snapshot_next(0), pic_is_original(1), title(tit), npts(0), delay(1),
-    timer(1), saved_clock(clock()), nb_clock(0), paused(0) { 
+    is_onscreen(0), cropped(0), pic_is_original(1), title(tit), npts(0), 
+    delay(1), timer(1), saved_clock(clock()), nb_clock(0), paused(0) { 
 
       if ((depth!=1)&&(depth!=2)&&(depth!=4)&&(depth!=8)) {
         std::cerr << "libvb : error : invalid depth"
@@ -277,7 +259,7 @@ namespace vb {
     if (nb_clock < CLOCKS_PER_SEC/5)
       delay *= 2;
     else {
-      delay = 1 + npts * (CLOCKS_PER_SEC/25) / nb_clock;
+      delay = 1 + npts * (CLOCKS_PER_SEC/20) / nb_clock;
       update();
     }
     timer = delay;
@@ -441,96 +423,27 @@ namespace vb {
     }
   }
 
-  void Image::events () {
-    while (( (paused==0)&&SDL_PollEvent(&event) ) ||
-	   ( (paused==1)&&SDL_WaitEvent(&event) )) {
-      switch (event.type) {
-      case SDL_QUIT:
-	exit (1);
-	break;
-      case SDL_KEYDOWN:
-	switch (event.key.keysym.sym) {
-	case SDLK_ESCAPE:
-	case SDLK_q:
-	  std::cout << (*this);
-	  exit (0);
-	  break;
-        case SDLK_x:
-          exit (1);
-          break;
-	case SDLK_SPACE:
-	  paused = 1-paused;
-	  break;
-	default:
-	  break;
-	}
-	break;
-      }
-    }
-  }
-  
   int Image::onscreen () {
-    SDL_Init(SDL_INIT_VIDEO);
-    
-    screen=SDL_SetVideoMode(width,height,8,SDL_SWSURFACE);
-    if (!screen) {
-      std::cerr << "libvb : error : "
-		<< "Couldn't map it ! Continuing without.\n";
-      return 0;
-    }
-    
-    SDL_WM_SetCaption (title.c_str(),"Simulation");
-    
-    SDL_Color sdl_palette[256];
-    
-    int pstep = 255 / ((1<<depth)-1);
-    for (int i=0;i<(1<<depth);i++) {
-      sdl_palette[i].r = i*pstep;
-      sdl_palette[i].g = i*pstep;
-      sdl_palette[i].b = i*pstep;
-    }    
-
-    SDL_SetColors (screen,sdl_palette,0,1<<depth);
-
     is_onscreen = 1;
-    
-    char *bufp = (char*) screen->pixels;
-    for (int i=0;i<width;i++)
-      for (int j=0;j<height;j++)
-	bufp[i+screen->pitch*j] = pic[i+pitch*j];
-
-    delete[] pic;
-    pic = bufp;
-    pic_is_original = 0;
-    pitch = screen->pitch;
-
-    win = new Window (width,height,title.c_str(),this,depth,pitch);
-
+    win = new Window (this);
     update();  
-    
     return 1;
   }
   
   void Image::update () {
     if (is_onscreen) {
-      SDL_UpdateRect(screen,0,0,0,0);
       win->redraw();
-
-      if ( (snapshot_period>0) && (time(0)>=snapshot_next) ) {
-        char buffer[100];
-        sprintf (buffer,"snapshot_%06d.bmp",snapshot_number++);
-        SDL_SaveBMP (screen,buffer);
-        snapshot_next = time(0) + snapshot_period;
-      }
-
-      //events();
       if (paused) fltk::wait(); else fltk::check();
     }
   }  
 
-  Window::Window (int wd, int ht, const char *title, Image *image, int depth, int pitch) : fltk::Window(wd,ht,title), size(wd*pitch), img(image), D(255 / ((1<<depth)-1)), P(pitch) {
+  Window::Window (Image *image) : fltk::Window(image->width,image->height,(image->title).c_str()),
+                                  size(image->width*image->height),
+                                  img(image),
+                                  D(255 / ((1<<(image->depth))-1)),
+                                  P(image->pitch) {
     begin();
-      R = Rectangle (0,0,wd,ht);
+      R = Rectangle (0,0,img->width,img->height);
     end();
 
     T = (unsigned char *) malloc (size*sizeof(char));

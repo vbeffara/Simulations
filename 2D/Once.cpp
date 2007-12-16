@@ -44,7 +44,7 @@ int main(int argc, char ** argv)
 
   CoarseImage img(n,n,L,title);
   img.outputsize = 15;
-  img.snapshot_period = t;
+  //img.snapshot_period = t;
 
   img.onscreen();
 
