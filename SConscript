@@ -5,10 +5,15 @@ Import('env')
 # The libvb stuff
 
 fltk = env.Clone()
-try:
-    fltk.ParseConfig('fltk3-config --cxxflags --ldflags')
-except OSError:
-    print "FLTK2 not found, building without display support."
+
+if fltk['GUI'] == 'fltk':
+    try:
+        fltk.ParseConfig('fltk2-config --cxxflags --ldflags')
+    except OSError:
+        print "FLTK2 not found, building without display support."
+        fltk['GUI'] = None
+
+if fltk['GUI'] != 'fltk':
     fltk.Append (CXXFLAGS = ["-DVB_NO_GUI"])
 
 fltk.Append ( CPPPATH = [Dir('#libvb')] )

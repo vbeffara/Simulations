@@ -90,10 +90,11 @@ env = Environment(
     LINKFLAGS = Split(os.environ.get ('LDFLAGS', "")),
     )
 
-# Get the installation prefix
+# Get the installation prefix and stuff.
 
 opts = Options('simulations.conf')
 opts.Add(PathOption("prefix", "installation prefix", "/usr/local", PathOption.PathAccept))
+opts.Add('GUI','The GUI to use (fltk or none)','fltk')
 opts.Update(env)
 opts.Save('simulations.conf', env)
 

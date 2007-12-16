@@ -121,7 +121,6 @@ namespace vb {
       return -1;
     }
 
-#ifndef VB_NO_GUI
     /** Forcefully update the screen representation of the image.
      *
      * Bypass the auto-update feature (e.g. before a long computation).
@@ -138,7 +137,6 @@ namespace vb {
      */
 
     void update ();
-#endif
 
     /** Lazy evaluation of f at point (x,y).
      *

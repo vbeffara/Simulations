@@ -148,8 +148,10 @@ namespace vb {
   {
     char tmp = (*this)(x,y);
 
-    if (tmp==0) 
-      putpoint (x,y,tmp=f(x,y));
+    if (tmp==0) {
+      tmp = f(x,y);
+      putpoint (x,y,tmp);
+    }
 
     return tmp;
   }
@@ -200,14 +202,16 @@ namespace vb {
     return 1;
   }
   
-#ifndef VB_NO_GUI
   void Image::update () {
+#ifndef VB_NO_GUI
     if (is_onscreen) {
       win->redraw();
       if (paused) fltk::wait(); else fltk::check();
     }
+#endif
   }  
 
+#ifndef VB_NO_GUI
   Window::Window (Image *image) : fltk::Window(image->width,image->height,(image->title).c_str()),
                                   size(image->width*image->height),
                                   img(image),

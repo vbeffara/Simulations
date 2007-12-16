@@ -30,7 +30,10 @@ char color(int x, int y)
     a += (a-c[k])*d;
     b -= b*d;
   }
-  if (a<c[k-1]) return LEFTSIDE;
+
+  if (k>0) --k;
+
+  if (a<c[k]) return LEFTSIDE;
   else return RIGHTSIDE;
 }
 
