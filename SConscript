@@ -16,12 +16,12 @@ if fltk['GUI'] == 'fltk':
 if fltk['GUI'] != 'fltk':
     fltk.Append (CXXFLAGS = ["-DVB_NO_GUI"])
 
-fltk.Append ( CPPPATH = [Dir('#libvb')] )
+fltk.Append ( CPPPATH = ["#libvb"] )
 
 libvb = SConscript ("libvb/SConscript", exports="fltk")
 
 vb = fltk.Clone()
-vb.Append ( LIBS = [libvb] )
+vb.Append ( LIBPATH = [ libvb[0].dir ], LIBS = ["vb"] )
 
 SConscript ("2D/SConscript", exports="vb")
 SConscript ("tests/SConscript", exports="vb")

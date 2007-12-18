@@ -3,7 +3,7 @@
  * Implementation of the vb::ProgressBar class
  */
 
-#include <vb/Progressbar.h>
+#include <vb/ProgressBar.h>
 
 namespace vb {
   ProgressBar::ProgressBar (int length) : 
