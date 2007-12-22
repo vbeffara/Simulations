@@ -9,8 +9,88 @@
 #include <time.h>
 
 namespace vb {
+  /** A general-purpose pseudo-random number generator framework.
+   *
+   * Several classical distributions are implemented, see the
+   * documentation for a complete list (I add them as I need them ...). 
+   * Some of them are inlined for better performance.
+   */
 
-  /** A rewindable pseudo-random number generator engine.
+  class PRNG_base {
+    public:
+      unsigned long max; ///< The range of the rand() method.
+
+      virtual ~PRNG_base (); ///< The standard destructor.
+
+      /** Initialize the PRNG from a seed.
+       *
+       * @param seed The initialization seed.
+       */
+
+      virtual void srand (unsigned long seed) =0;
+
+      /** Produce a pseudo-random number generator.
+       *
+       * If possible, the implementation should be mostly inlined.
+       */
+
+      virtual unsigned long rand (void) =0;
+
+      /** Return a bernoulli variable in {0,1}
+       *
+       * @param p The parameter of the distribution.
+       */
+
+      int PRNG_base::bernoulli (double p) {
+        return rand() < p*(double)max ? 1 : 0;
+      }
+
+      /** Return a uniformly distributed real between 0 and range
+       *
+       * @param range The length of the range.
+       */
+
+      double uniform (double range=1.0) {
+        return range * ( (double)rand() / (double)max );
+      }
+
+      /** Return an exponential random variable of parameter lambda.
+       *
+       * @param lambda The parameter of the distribution.
+       */
+
+      double exponential (double lambda=1.0) {
+        return -log(uniform())/lambda;
+      }
+
+      /** Return a Gaussian variable.
+       *
+       * Caution : it calls rand() twice, if you rewind you should know it.
+       *
+       * @param m      The mean of the distribution.
+       * @param sigma2 The variance of the distribution.
+       */
+
+      double gaussian (double m=0.0, double sigma2=1.0);
+
+      /** Return a geometric variable (in Z_+).
+       *
+       * @param p The parameter of the distribution.
+       */
+
+      int geometric (double p) {
+        return (int) floor(exponential(-log(1-p)));
+      }
+
+      /** Return a Poisson variable of parameter lambda.
+       *
+       * @param lambda The parameter of the distribution.
+       */
+
+      int poisson (double lambda = 1.0);
+  };
+
+  /** A rewindable pseudo-random number generator.
    *
    * The point is to have a bad, but rewindable random number source.
    * The algorithm is just linear congruence, so it iterates a*x+b
@@ -22,11 +102,9 @@ namespace vb {
    * having to store the random numbers.
    */
 
-  class PRNG_Engine_Rewindable {
+  class PRNG_Rewindable : public PRNG_base {
     public:
-      long max;    ///< The modulo used in the computations.
-
-      /** The standard constructor of the vb::PRNG class.
+      /** The standard constructor.
        *
        * Default values of the parameters are the same as in standard Unix
        * rand(), i.e. a=13, b=257, modulo 2**31-1.
@@ -36,16 +114,23 @@ namespace vb {
        * @param mm The modulus.
        */
 
-      PRNG_Engine_Rewindable (long aa=13, long bb=257, long mm=2147483647);
+      PRNG_Rewindable (long aa=13, long bb=257, long mm=2147483647);
 
-      /** Seed the PRNG with an initial value. */
+      /** Seed the PRNG with an initial value.
+       *
+       * @param seed The initialization value to use.
+       */
 
-      void srand (long seed);
+      void srand (unsigned long seed = time(0));
 
       /** Iterate x -> a*x+b, n times.
        *
        * This is done using a dyadic algorithm, so it takes time
        * O(log(n)).
+       *
+       * @param a The multiplicator.
+       * @param b The shift.
+       * @param n The number of iterations to perform.
        */
 
       void iterate (long long a, long long b, long long n);
@@ -53,27 +138,24 @@ namespace vb {
       /** Rewind the renerator, time1*time2 times.
        *
        * Internally it just calls iterate(r_a,r_b,time1*time2).
+       *
+       * @param time1 The first factor of the number of iterations.
+       * @param time2 The second factor of the number of iterations.
        */
 
       void rewind (long time1, long time2);
 
       /** Return a pseudo-random number. */
 
-      long rand (void) {
+      unsigned long rand (void) {
         rdmbuf = (a*rdmbuf+b)%max;
-        return (long)rdmbuf;
+        return (unsigned long) rdmbuf;
       }
 
     private:
       long a,b, r_a,r_b;
       long long rdmbuf;
   };
-
-#define PRNG_MT_N 624                   ///< Size of the buffer
-#define PRNG_MT_M 397                   ///< Size of the shift (?)
-#define PRNG_MT_MATRIX_A 0x9908b0dfUL	///< Constant vector a
-#define PRNG_MT_UPPER_MASK 0x80000000UL	///< Most significant w-r bits
-#define PRNG_MT_LOWER_MASK 0x7fffffffUL	///< Least significant r bits
 
   /** Mersenne Twister pseudo-random number generator engine.
    *
@@ -126,57 +208,29 @@ namespace vb {
    *     email: m-mat @ math.sci.hiroshima-u.ac.jp (remove space)
    */
 
-  class PRNG_Engine_MT {
+#define PRNG_MT_N 624                   ///< Size of the buffer
+#define PRNG_MT_M 397                   ///< Size of the shift (?)
+#define PRNG_MT_MATRIX_A 0x9908b0dfUL	///< Constant vector a
+#define PRNG_MT_UPPER_MASK 0x80000000UL	///< Most significant w-r bits
+#define PRNG_MT_LOWER_MASK 0x7fffffffUL	///< Least significant r bits
+
+  class PRNG_MT : public PRNG_base {
     public:
+      PRNG_MT (unsigned long seed = time(0)); ///< The standard constructor.
 
-      /** The maximum integer that this PRNG can return. */
+      /** Initialize the PRNG from an integer seed.
+       * 
+       * @param seed The initialization seed.
+       */
 
-      static const unsigned long max = 0xffffffffUL;
-      
-      /** The standard constructor. */
+      void srand (unsigned long seed = time(0));
 
-      PRNG_Engine_MT () { mti = PRNG_MT_N+1; }
-
-      /** Initialize the PRNG from an integer seed. */
-
-      void srand (unsigned long seed) {
-        mt[0] = seed & 0xffffffffUL;
-        for (mti = 1; mti < PRNG_MT_N; mti++) {
-          mt[mti] = (1812433253UL * (mt[mti - 1] ^ (mt[mti - 1] >> 30)) + mti);
-          mt[mti] &= 0xffffffffUL;
-        }
-      }
-
-      /** Return an integer between 0 and max. */
+      /// Return an integer between 0 and max.
 
       unsigned long rand () {
-        unsigned long y;
-        static unsigned long mag01[2] = { 0x0UL, PRNG_MT_MATRIX_A };
+        if (mti >= PRNG_MT_N) twist();
 
-        if (mti >= PRNG_MT_N) {
-          int kk;
-
-          if (mti == PRNG_MT_N + 1) srand (5489UL);
-
-          for (kk = 0; kk < PRNG_MT_N - PRNG_MT_M; kk++) {
-            y = (mt[kk] & PRNG_MT_UPPER_MASK) | (mt[kk + 1] & PRNG_MT_LOWER_MASK);
-            mt[kk] = mt[kk + PRNG_MT_M] ^ (y >> 1) ^ mag01[y & 0x1UL];
-          }
-
-          for (; kk < PRNG_MT_N - 1; kk++) {
-            y = (mt[kk] & PRNG_MT_UPPER_MASK) | (mt[kk + 1] & PRNG_MT_LOWER_MASK);
-            mt[kk] = mt[kk + (PRNG_MT_M - PRNG_MT_N)] ^ (y >> 1) ^ mag01[y & 0x1UL];
-          }
-
-          y = (mt[PRNG_MT_N - 1] & PRNG_MT_UPPER_MASK) | (mt[0] & PRNG_MT_LOWER_MASK);
-          mt[PRNG_MT_N - 1] = mt[PRNG_MT_M - 1] ^ (y >> 1) ^ mag01[y & 0x1UL];
-
-          mti = 0;
-        }
-
-        y = mt[mti++];
-
-        /* Tempering */
+        unsigned long y = mt[mti++];
 
         y ^= (y >> 11);
         y ^= (y << 7) & 0x9d2c5680UL;
@@ -187,83 +241,10 @@ namespace vb {
       }
 
     private:
-      unsigned long mt[PRNG_MT_N];
+      unsigned long *mt;
       int mti;
-  };
 
-  /** A general-purpose pseudo-random number generator template.
-   *
-   * It inherits one of the PRNG_Engine_* engines - though you can use
-   * your own class, all it needs is one unsigned long member called max
-   * and two methods,
-   *
-   * - unsigned long rand () 
-   * - void srand (unsigned long)
-   *
-   * where rand() is expected to return a number between 0 and max.
-   *
-   * Several classical distributions are implemented, see the
-   * documentation for a complete list (I add them as I need them ...)
-   */
-
-  template <class Engine> class PRNG_template : public Engine {
-    public:
-
-      /** The standard constructor, initializes using time(0). */
-
-      PRNG_template () { Engine::srand (time(0)); }
-
-      /** A constructor taking a random seed to initialize the engine. */
-
-      PRNG_template (long seed) { Engine::srand(seed); }
-
-      /** Return a bernoulli variable in {0,1} */
-
-      int bernoulli (double p=0.5) {
-        return Engine::rand() < p*(double)Engine::max ? 1 : 0;
-      }
-
-      /** Return a uniformly distributed real between 0 and range */
-
-      double uniform (double range=1.0) {
-        return range * ( (double)Engine::rand() / (double)Engine::max );
-      }
-
-      /** Return an exponential random variable of parameter lambda */
-
-      double exponential (double lambda=1.0) {
-        return -log(uniform())/lambda;
-      }
-
-      /** Return a Gaussian variable.
-       * Caution : it calls rand() twice, if you rewind you should know it.
-       */
-
-      double gaussian (double m=0.0, double sigma2=1.0) {
-        double modulus = exponential();
-        double angle = uniform(1000.0*3.14159265358979);
-        return m + sqrt(sigma2)*modulus*cos(angle);
-      }
-
-      /** Return a geometric variable (in Z_+) of parameter p. */
-
-      int geometric (double p) {
-        return (int) floor(exponential(-log(1-p)));
-      }
-
-      /** Return a Poisson variable of parameter lambda. */
-
-      int poisson (double lambda) {
-        double u = uniform(exp(lambda));
-        int k=0;
-        double fk=1;
-        while (u>0) {
-          u -= pow(lambda,k)/fk;
-          ++k;
-          fk *= k;
-        }
-        return k-1;
-      }
+      void twist();  ///< Perform pseudo-random black magic.
   };
 
   /** The default pseudo-random number generator.
@@ -276,55 +257,7 @@ namespace vb {
    * being a better random number generator.
    */
 
-  typedef PRNG_template<PRNG_Engine_MT> PRNG;
-
-  /** The rewindable pseudo-random number generator.
-   *
-   * It uses the 'rewindable' engine (which is a terribly bad linear
-   * congruence iterator), and implements everything that PRNG_template
-   * provides.
-   *
-   * To rewind, use PRGN_Rewindable::rewind(...).
-   */
-
-  typedef PRNG_template<PRNG_Engine_Rewindable> PRNG_Rewindable;
-
-  PRNG_Engine_Rewindable::PRNG_Engine_Rewindable (long aa, long bb, long mm) :
-    max(mm), a(aa), b(bb) {
-    long long  t_a=a, t_b=max, t_u=1, t_v=0, t_s=0, t_t=1;
-
-    while (t_b != 0) {
-      long long  t_q = t_a/t_b;
-      long long  t_r = t_a - t_b*t_q;
-      t_a = t_b; t_b = t_r;
-
-      long long  r1 = t_u - t_q*t_s;
-      t_u = t_s; t_s = r1;
-
-      long long  r2 = t_v - t_q*t_t;
-      t_v = t_t; t_t = r2;
-    }
-
-    r_a = t_u;
-    r_b = (long) ( (- (long long)b * (long long)r_a ) % (long long)max );
-  }
-
-  void PRNG_Engine_Rewindable::iterate (long long aa, long long bb, long long n) {
-    while (n>0) {
-      if (n%2) rdmbuf = (aa*rdmbuf+bb)%max;
-      bb = ((aa+1)*bb)%max;
-      aa = (aa*aa)%max;
-      n >>= 1;
-    }
-  }
-
-  void PRNG_Engine_Rewindable::srand (long seed) {
-    rdmbuf = seed;
-  }
-
-  void PRNG_Engine_Rewindable::rewind (long time1, long time2) {
-    iterate (r_a, r_b, (long long)time1 * (long long)time2);
-  }
+  typedef PRNG_MT PRNG;
 }
 
 #endif

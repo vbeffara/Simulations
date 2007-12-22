@@ -55,8 +55,10 @@ namespace vb {
        * corresponding block becomes bi-color, free it if it becomes
        * uniform.
        *
-       * Note: contrary to the Image::putpoint version, this one is not
-       * inlined.
+       * @param x  The first coordinate of the point.
+       * @param y  The second coordinate of the point.
+       * @param c  The color to put there.
+       * @param dt Whether to increment the clock.
        */
 
       int putpoint (int x, int y, int c, int dt=1);
@@ -65,6 +67,9 @@ namespace vb {
        *
        * Note: contrary to the Image::operator() version, this one is
        * not inlined.
+       *
+       * @param x The first coordinate of the point.
+       * @param y The second coordinate of the point.
        */
 
       char operator() (int x, int y) const;

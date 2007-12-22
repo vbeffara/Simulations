@@ -6,9 +6,7 @@
 
 namespace vb {
 #ifndef VB_NO_GUI
-  /** Ask first before closing the window. */
-
-  void Close_Window_CB (fltk::Widget* widget, void*) {
+  void Close_Window_CB (fltk::Widget *widget, void *nothing) {
     if (fltk::ask("Do you really want to exit?"))
       exit(1);
   }

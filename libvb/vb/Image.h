@@ -28,7 +28,13 @@ namespace vb {
   typedef char coloring (int,int);
   
 #ifndef VB_NO_GUI
-  void Close_Window_CB (fltk::Widget* widget, void*);
+  /** A callback function to ask the user about closing a window.
+   *
+   * @param widget  The window itself.
+   * @param nothing Nothing.
+   */
+
+  void Close_Window_CB (fltk::Widget *widget, void *nothing);
 
   class Image;
 
@@ -91,6 +97,11 @@ namespace vb {
      * If the previous color was different and dt is set to 1 (default),
      * then it increments the clock and takes care of updating the
      * screen representation approximately 25 times per second.
+     *
+     * @param x  The first coordinate of the point.
+     * @param y  The second coordinate of the point.
+     * @param c  The color to put there.
+     * @param dt Whether to increment the clock.
      */
 
     int putpoint (int x, int y, int c, int dt=1) {
@@ -111,6 +122,10 @@ namespace vb {
      *
      * dt=0 does not really make sense here - if you want speed, you
      * better range-check yourself and debug your code.
+     *
+     * @param x  The first coordinate of the point.
+     * @param y  The second coordinate of the point.
+     * @param c  The color to put there.
      */
 
     int putpoint_safe (int x, int y, int c) {
@@ -141,6 +156,10 @@ namespace vb {
      * - If image(x,y) is 0: compute f(x,y), set image(x,y) to this and
      *   return it;
      * - If image(x,y) is not 0, return it instead.
+     *
+     * @param f The function to evaluate if needed.
+     * @param x The first coordinate of the point.
+     * @param y The second coordinate of the point.
      */
     
     char lazy_eval (coloring *f, int x, int y);
@@ -155,6 +174,12 @@ namespace vb {
      * component of the target image touches the boundary - e.g. if
      * the image represents the 2 sides of a Jordan curve, such as in
      * SLE.cpp.
+     *
+     * @param f    The coloring function.
+     * @param xmin The first coordinate of the top-left corner.
+     * @param ymin The second coordinate of the top-left corner.
+     * @param xmax The first coordinate of the bottom-right corner.
+     * @param ymax The second coordinate of the bottom-right corner.
      */
 
     void tessellate (coloring *f, int xmin, int ymin, int xmax, int ymax);
@@ -165,6 +190,9 @@ namespace vb {
      * should always use this - Image::pic[] is protected anyway.
      *
      * It can also be used as image(x,y)=c but be careful with that.
+     *
+     * @param x The first coordinate of the point.
+     * @param y The second coordinate of the point.
      */
     
     char &operator() (int x, int y) const {
@@ -175,6 +203,8 @@ namespace vb {
      *
      * This is slightly more efficient than using image(x,y) if the
      * value of x+width*y is already known.
+     *
+     * @param xy The coordinate of the point.
      */
 
     char &operator() (int xy) const {
@@ -183,7 +213,11 @@ namespace vb {
 
   protected:
 
-    /** Output an EPS representation of the image to an ostream. */
+    /** Output an EPS representation of the image to an ostream.
+     *
+     * @param os  The target stream.
+     * @param img The image.
+     */
 
     friend std::ostream &operator<< (std::ostream &os, vb::Image &img);    
 

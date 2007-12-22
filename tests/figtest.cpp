@@ -8,6 +8,7 @@
 using namespace std;
 using namespace vb;
 
+/// The main function.
 int main (int argc, char **argv) {
   Figure F;
   

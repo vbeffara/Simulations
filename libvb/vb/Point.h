@@ -35,7 +35,10 @@ namespace vb {
       Point (int xx, int yy, double tt, char cc=1) : 
         x(xx), y(yy), t(tt), c(cc) {};
 
-      /** Another constructor that takes the first point out of a queue. */
+      /** Another constructor that takes the first point out of a queue.
+       *
+       * @param pq The vb::PointQueue to use as a source.
+       */
 
       Point (PointQueue &pq);
 
@@ -43,6 +46,8 @@ namespace vb {
        *
        * CAUTION : the priority is the opposite of time, so pt1<pt2 means
        * pt1.t>pt2.t ...
+       *
+       * @param pt The vb::Point to compare to.
        */
 
       bool operator< (const Point &pt) const { return t > pt.t; };
@@ -58,14 +63,22 @@ namespace vb {
       friend inline PointQueue &operator<< (PointQueue &pq, Point p);
   };
 
-  /** Put a Point in a PointQueue. */
+  /** Put a Point in a PointQueue.
+   * 
+   * @param pq The vb::PointQueue in which to put the point.
+   * @param p  The vb::Point to insert.
+   */
 
   inline PointQueue &operator<< (PointQueue &pq, Point p) {
     pq.q.push(p);
     return pq;
   }
 
-  /** Take a Point from a PointQueue. */
+  /** Take a Point from a PointQueue.
+   *
+   * @param pq The vb::PointQueue from which to extract the point.
+   * @param p  The vb::Point to fill with the extractd point.
+   */
 
   inline PointQueue &operator>> (PointQueue &pq, Point &p) {
     p = pq.q.top();
@@ -81,6 +94,9 @@ namespace vb {
    *
    * This sets the point at coordinates (p.x,p.y) in img to color p.c,
    * and activates the auto-timing feature of the Image.
+   *
+   * @param img The vb::Image in which to put the point.
+   * @param p   The point to inset.
    */
 
   inline Image &operator<< (Image &img, Point p) {
@@ -92,6 +108,9 @@ namespace vb {
    *
    * This sets the point at coordinates (p.x,p.y) in img to color p.c,
    * and activates the auto-timing feature of the Image.
+   *
+   * @param img The vb::CoarseImage in which to put the point.
+   * @param p   The point to inset.
    */
 
   inline CoarseImage &operator<< (CoarseImage &img, Point p) {
