@@ -22,7 +22,7 @@ int main (int argc, char **argv) {
   }
   img.onscreen();
 
-  unsigned long e=0, r_e=0;
+  unsigned long e=0;
 
   for (unsigned long t=0;;++t) {
     int x = (int)prng.uniform(n);

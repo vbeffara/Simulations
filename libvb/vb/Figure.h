@@ -19,122 +19,57 @@ namespace vb {
 
   class Shape {
     public:
-      /// Empty destructor to make the compiler happy.
-      virtual ~Shape() {}
+      virtual ~Shape() {}                                  ///< Empty destructor to make the compiler happy.
 
-      /// Equality testing.
-      virtual bool operator== (const Shape&) const {
-        return false;
-      }
+      virtual bool operator== (const Shape&) const;        ///< Test for equality between two shapes.
 
-      /// Write ASY code for the shape.
-      virtual std::ostream &printASY (std::ostream &os) {
-        not_impl ("Asymptote"); return os;
-      }
-
-      /// Write EPS code for the shape.
-      virtual std::ostream &printEPS (std::ostream &os) {
-        not_impl ("EPS"); return os;
-      }
-
-      /// Write MP code for the shape.
-      virtual std::ostream &printMP (std::ostream &os) {
-        not_impl ("MetaPost"); return os;
-      }
-
+      virtual std::ostream &printASY (std::ostream &os);   ///< Write ASY code for the shape.
+      virtual std::ostream &printEPS (std::ostream &os);   ///< Write EPS code for the shape.
+      virtual std::ostream &printMP (std::ostream &os);    ///< Write MP code for the shape.
     private:
-      /// Complain that some output is not implemented.
-      void not_impl (std::string s) {
-        std::ostringstream os;
-        os << s << " output not implemented by class " << typeid(*this).name() << std::flush;
-        throw (std::runtime_error(os.str()));
-      }
+      void not_impl (std::string s);                       ///< Complain that some output is not implemented.
   };
 
-  /// Line segment.
+  /// Subclass of vb::Shape foe a line segment.
 
   class Segment : public Shape {
     private:
-      cpx z1; ///< First endpoint.
-      cpx z2; ///< Second endpoint.
-
+      cpx z1;                                              ///< First endpoint.
+      cpx z2;                                              ///< Second endpoint.
     public:
-      /// Constructor from two complex numbers.
-      Segment (cpx zz1, cpx zz2) : z1(zz1), z2(zz2) {}
+      Segment (cpx zz1, cpx zz2) : z1(zz1), z2(zz2) {}     ///< Constructor from two complex numbers.
 
-      /// Equality testing.
-      virtual bool operator== (const Shape &other) const {
-        if (typeid(*this) != typeid(other)) return false;
+      virtual bool operator== (const Shape&) const;        ///< Test for equality between two shapes.
 
-        Segment *o = (Segment*)(&other);
-        if (z1 != o->z1) return false;
-        if (z2 != o->z2) return false;
-
-        return true;
-      }
-
-      /// Implementation of ASY output.
-      virtual std::ostream &printASY (std::ostream &os) {
-        return os << "draw (" << z1 << "--" << z2 << ");" << std::endl;
-      }
+      virtual std::ostream &printASY (std::ostream &os);   ///< Write ASY code for the shape.
   };
 
-  /// Dot.
+  /// Subclass of vb::Shape for a dot.
 
   class Dot : public Shape {
     private:
-      cpx z;          ///< The location.
-      std::string l;  ///< The label of the dot, if any.
-
+      cpx z;                                               ///< The location.
+      std::string l;                                       ///< The label of the dot, if any.
     public:
-      /// Constructor.
-      Dot (cpx zz, std::string ll = "") : z(zz), l(ll) {}
+      Dot (cpx zz, std::string ll = "") : z(zz), l(ll) {}  ///< Constructor from a position and a label.
 
-      /// Equality testing.
-      virtual bool operator== (const Shape &other) const {
-        if (typeid(*this) != typeid(other)) return false;
+      virtual bool operator== (const Shape&) const;        ///< Test for equality between two shapes.
 
-        Dot *o = (Dot*)(&other);
-        if (z != o->z) return false;
-
-        return true;
-      }
-
-      /// Implementation of ASY output.
-      virtual std::ostream &printASY (std::ostream &os) {
-        if (l.length()) os << "label(\"" << l << "\"," << z << ",NE);";
-        return os << "dot(" << z << ");" << std::endl;
-      }
-
-    private:
+      virtual std::ostream &printASY (std::ostream &os);   ///< Write ASY code for the shape.
   };
 
-  /// Circle.
+  /// Subclass of vb::Shape for a circle.
 
   class Circle : public Shape {
     private:
-      cpx z;  ///< The center.
-      real r; ///< The radius.
-
+      cpx z;                                               ///< The center.
+      real r;                                              ///< The radius.
     public:
-      /// Constructor from center and radius.
-      Circle (cpx zz, real rr) : z(zz), r(rr) {}
+      Circle (cpx zz, real rr) : z(zz), r(rr) {}           ///< Constructor from a center and a radius.
 
-      /// Equality testing.
-      virtual bool operator== (const Shape &other) const {
-        if (typeid(*this) != typeid(other)) return false;
+      virtual bool operator== (const Shape&) const;        ///< Test for equality between two shapes.
 
-        Circle *o = (Circle*)(&other);
-        if (z != o->z) return false;
-        if (r != o->r) return false;
-
-        return true;
-      }
-
-      /// Implementation of ASY output.
-      virtual std::ostream &printASY (std::ostream &os) {
-        return os << "draw (circle(" << z << "," << r << "));" << std::endl;
-      }
+      virtual std::ostream &printASY (std::ostream &os);   ///< Write ASY code for the shape.
   };
 
   /** The main Figure class.
@@ -146,66 +81,23 @@ namespace vb {
 
   class Figure {
     public:
-      /// Destructor also destroys the contents nodes.
-      ~Figure () {
-        std::list<Shape*>::iterator i;
-        for (i=contents.begin(); i!=contents.end(); ++i)
-          delete *i;
-      }
+      ~Figure ();                                          ///< Destructor, also destroys the contents nodes.
 
-      /// Add an element to the figure.
-      Figure &add (Shape *S) {
-        contents.push_back(S);
-        return (*this);
-      }
+      Figure &add (Shape *S);                              ///< Add an element to the figure.
 
-      /// Add a segment to the figure.
-      Figure &segment (cpx z1, cpx z2) {
-        return add (new Segment (z1,z2));
-      }
+      Figure &segment (cpx z1, cpx z2);                    ///< Add a segment to the figure.
+      Figure &dot (cpx z, std::string l = "");             ///< Add a dot to the figure.
+      Figure &circle (cpx z, real r);                      ///< Add a circle to the figure.
 
-      /// Add a dot to the figure.
-      Figure &dot (cpx z, std::string l="") {
-        return add (new Dot (z,l));
-      }
-
-      /// Add a circle to the figure.
-      Figure &circle (cpx z, real r) {
-        return add (new Circle (z,r));
-      }
-
-      /// Output as an ASY file.
-      void printASY (const char *s) {
-        std::ofstream f(s);
-        printASY(f);
-        f.close();
-      }
-
-      /// Output as ASY to a stream.
-      std::ostream &printASY (std::ostream &os) {
-        os << "unitsize(100);" << std::endl;
-
-        std::list<Shape*>::iterator i;
-        for (i = contents.begin(); i != contents.end(); ++i) {
-          (*i)->printASY(os);
-        }
-        return os;
-      }
+      std::ostream &printASY (std::ostream &os);           ///< Output as ASY to a stream.
+      void printASY (const char *s);                       ///< Output as ASY to a file.
 
       /** Remove duplicate entries.
        *
        * That's using an ugly n^2 algorithm for now.
        */
 
-      void unique() {
-        std::list<Shape*>::iterator i,j;
-
-        for (i = contents.begin(); i != contents.end(); ++i)
-          for (j = i, ++j; j != contents.end(); ++j)
-            while ((j != contents.end()) && ((**i) == (**j)))
-              j = contents.erase(j);
-      }
-
+      void unique();
     private:
       std::list<Shape*> contents;  ///< The elements of the figure.
   };
