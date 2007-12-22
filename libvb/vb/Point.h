@@ -1,6 +1,6 @@
 
 /// @file Point.h
-/// Everything about the vb::Point and vb::PointQueue classes
+/// Definitions for the vb::Point and vb::PointQueue classes
 
 #ifndef __VB_POINT_H
 #define __VB_POINT_H

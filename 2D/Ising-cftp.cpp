@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
       high[i]=1;
     }
 
-    for (i=0;i<n*img.pitch;++i) img(i)=2;
+    for (i=0;i<n*img.width;++i) img(i)=2;
     
     for (i=0;i<n;i++) { img.putpoint(0,i,3*LEFT,0); img.putpoint(n-1,i,3*RIGHT,0); }
     for (i=0;i<(n>>1);i++) { img.putpoint(i,0,3*LEFT,0); img.putpoint(i,n-1,3*LEFT,0); }

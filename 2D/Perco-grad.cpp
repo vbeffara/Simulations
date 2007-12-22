@@ -6,7 +6,6 @@
 using namespace vb;
 
 int *fifox,*fifoy;
-char *t;
 
 void cnx (Image *img, long ox, long oy, long in, long out)
 {
@@ -20,24 +19,24 @@ void cnx (Image *img, long ox, long oy, long in, long out)
   while (imin<=imax) {
     i=fifox[imin];
     j=fifoy[imin];
-    k=i+j*img->pitch;
+    k=i+j*img->width;
     imin++;
-    if ((i<img->width-1)&&(t[k+1]!=in)&&(t[k+1]!=out)) {
+    if ((i<img->width-1)&&((*img)(k+1)!=in)&&((*img)(k+1)!=out)) {
       fifox[++imax]=i+1;
       fifoy[imax]=j;
       img->putpoint (i+1,j,in);
     }
-    if ((i>0)&&(t[k-1]!=in)&&(t[k-1]!=out)) {
+    if ((i>0)&&((*img)(k-1)!=in)&&((*img)(k-1)!=out)) {
       fifox[++imax]=i-1;
       fifoy[imax]=j;
       img->putpoint (i-1,j,in);
     }
-    if ((j<img->height-1)&&(t[k+img->pitch]!=in)&&(t[k+img->pitch]!=out)) {
+    if ((j<img->height-1)&&((*img)(k+img->width)!=in)&&((*img)(k+img->width)!=out)) {
       fifox[++imax]=i;
       fifoy[imax]=j+1;
       img->putpoint (i,j+1,in);
     }
-    if ((j>0)&&(t[k-img->pitch]!=in)&&(t[k-img->pitch]!=out)) {
+    if ((j>0)&&((*img)(k-img->width)!=in)&&((*img)(k-img->width)!=out)) {
       fifox[++imax]=i;
       fifoy[imax]=j-1;
       img->putpoint (i,j-1,in);
@@ -65,7 +64,6 @@ int main(int argc, char ** argv)
   sprintf(title,"Gradient percolation cluster");
 
   Image *img = new Image(w,h,2,title);
-  t=img->give_me_the_pic();
 
   PRNG prng;
 
@@ -74,17 +72,16 @@ int main(int argc, char ** argv)
   long i;
   for (i=0;i<w*h;i++) {
     if ( prng.bernoulli( p1 + (p2-p1)*((double)i / (w*h)) )) 
-      t[i]=1;
+      (*img)(i)=1;
     else
-      t[i]=2;
+      (*img)(i)=2;
   }
 
   for (i=w*h-w;i<w*h;i++) {
-    t[i]=1;
+    (*img)(i)=1;
   }
 
   img->onscreen();
-  t=img->give_me_the_pic();
 
   /* 3=cluster de l'origine */
 
@@ -96,12 +93,12 @@ int main(int argc, char ** argv)
 
   /* "Hull" du cluster */
 
-  /* for (i=0;i<2*n;i++) if (t[i]!=3)                     cnx(img,i,0,0,3); */
-  /* for (i=0;i<2*n;i++) if (t[img->width*i]!=3)             cnx(img,0,i,0,3); */
-  /* for (i=0;i<2*n;i++) if (t[img->width*(i+1)-1]!=3)       cnx(img,img->width-1,i,0,3); */
-  /* for (i=0;i<2*n;i++) if (t[img->width*(img->height-1)+i]!=3) cnx(img,i,img->height-1,0,3); */
+  /* for (i=0;i<2*n;i++) if ((*img)(i)!=3)                     cnx(img,i,0,0,3); */
+  /* for (i=0;i<2*n;i++) if ((*img)(img->width*i)!=3)             cnx(img,0,i,0,3); */
+  /* for (i=0;i<2*n;i++) if ((*img)(img->width*(i+1)-1)!=3)       cnx(img,img->width-1,i,0,3); */
+  /* for (i=0;i<2*n;i++) if ((*img)(img->width*(img->height-1)+i)!=3) cnx(img,i,img->height-1,0,3); */
 
-  for (i=0;i<w*h;i++) if (t[i]==2) t[i]=0;
+  for (i=0;i<w*h;i++) if ((*img)(i)==2) (*img)(i)=0;
 
   /* affichage du resultat */
 

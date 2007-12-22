@@ -37,16 +37,16 @@ namespace vb {
 
   class Window : public fltk::Window {
     public:
-      int size;
-      Rectangle R;
-      Image *img;
-      unsigned char *T;
-      int D;
-      int P;
+      int size;                  ///< The total number of pixels in the image.
+      Rectangle R;               ///< A rectangle filling the whole window, in which to draw.
+      Image *img;                ///< Pointer to the contained image.
+      unsigned char *T;          ///< Staging area for the image converted to greyscale.
+      int D;                     ///< Multiplicator associated to the depth of the image.
+      int P;                     ///< The width of the image.
 
-      Window (Image *image);
-      void draw();
-      int handle(int event);
+      Window (Image *image);     ///< Standard constructor, builds a window for an image and show it.
+      void draw();               ///< Fill the fltk::Rectangle R with the image contents.
+      int handle(int event);     ///< Handle keyboard events such as 'q', 'x' etc.
   };
 #endif
 
@@ -61,8 +61,6 @@ namespace vb {
   public:
     int width;           ///< The width of the image, in pixels.
     int height;          ///< The height of the image, in pixels.
-    int pitch;           ///< The size of a line in bytes. Should be protected - don't use.
-                         ///< @todo Make vb::Image::pitch protected.
     int depth;           ///< The depth of the image, in bits per pixel (1, 2 or 4).
     double outputsize;   ///< The size of the EPS output, in centimeters (0.0 to disable).
     
@@ -96,7 +94,7 @@ namespace vb {
      */
 
     int putpoint (int x, int y, int c, int dt=1) {
-      int xy = x+y*pitch;
+      int xy = x+y*width;
       if (pic[xy]!=c) {
 	pic[xy] = c;
     
@@ -170,30 +168,19 @@ namespace vb {
      */
     
     char &operator() (int x, int y) const {
-      return pic[x+pitch*y];
+      return pic[x+width*y];
     };
 
-    /** Return the color of the image at point (xy%pitch,xy/pitch).
+    /** Return the color of the image at point (xy%width,xy/width).
      *
      * This is slightly more efficient than using image(x,y) if the
-     * value of x+pitch*y is already known.
+     * value of x+width*y is already known.
      */
 
     char &operator() (int xy) const {
       return pic[xy];
     };
 
-    /** Return a pointer to the raw image data - don't use it.
-     *
-     * It returns a char* corresponding to the contents of the image, to
-     * be accessed at x+pitch*y for coordinates (x,y).
-     *
-     * CAUTION: the pointer gets invalidated if Image::onscreen() is
-     * called. Be careful.
-     */
-    
-    char * give_me_the_pic();
-    
   protected:
 
     /** Output an EPS representation of the image to an ostream. */
@@ -204,14 +191,9 @@ namespace vb {
     friend class Window;
 #endif
     
-    /** The raw image data - should be private. */
-
-    char * pic;
-
   private:
-    int pic_is_original;
-
-    std::string title;
+    char * pic;                       ///< The raw image data
+    std::string title;                ///< The title of the image
 
     unsigned long long npts;
     unsigned long delay;
@@ -220,10 +202,12 @@ namespace vb {
     unsigned long long nb_clock;
     int paused;
 
+    /** Do some bookkeeping related to the display window. */
+
     void cycle();
 
 #ifndef VB_NO_GUI
-    Window *win;
+    Window *win;        ///< The display window.
 #endif
   };
 
@@ -245,5 +229,31 @@ namespace vb {
     return trans[15-i];
   }
 }
+
+/** @example sample.cpp
+ * A simple example of how to use the libvb library.
+ *
+ * It does nothing interesting, but demonstrates the vb::Image class,
+ * with the vb::Image::tessellate() method and EPS creation. Here is a
+ * line-by-line description of the main() function:
+ *
+ * @dontinclude sample.cpp
+ * @skip int main
+ * @until {
+ * First, create an instance of vb::CL_Parser. Use it to get the value
+ * of n, the size of the image (the default is 500 here):
+ * @skip CLP
+ * @until as_int
+ * Then, create a vb::Image of this size, and display it on the screen:
+ * @skip Image
+ * @until onscreen
+ * Fill it using the coloring function f:
+ * @skipline tessellate
+ * And finally, export it to std::cout as an EPS file and exit:
+ * @skip <<
+ * @until }
+ *
+ * Full source code of sample.cpp:
+ */
 
 #endif

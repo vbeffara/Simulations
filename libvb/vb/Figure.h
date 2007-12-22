@@ -1,5 +1,5 @@
 /// @file Figure.h
-/// Classes to build nice figures.
+/// Definitions for the vb::Figure and related classes.
 
 #ifndef __VB_FIGURE_H
 #define __VB_FIGURE_H
@@ -210,5 +210,7 @@ namespace vb {
       std::list<Shape*> contents;  ///< The elements of the figure.
   };
 }
+
+/// @example figtest.cpp
 
 #endif

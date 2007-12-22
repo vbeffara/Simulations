@@ -1,12 +1,13 @@
 
-/** @file Image.h
- * Implementation of the vb::Image class
- */
+/// @file Image.cpp
+/// Implementation of the vb::Image and vb::Window classes.
 
 #include <vb/Image.h>
 
 namespace vb {
 #ifndef VB_NO_GUI
+  /** Ask first before closing the window. */
+
   void Close_Window_CB (fltk::Widget* widget, void*) {
     if (fltk::ask("Do you really want to exit?"))
       exit(1);
@@ -14,9 +15,9 @@ namespace vb {
 #endif
 
   Image::Image (int wd, int ht, int dp, std::string tit)
-    : width(wd), height(ht), pitch(wd), depth(dp), outputsize(0.0),
-    is_onscreen(0), cropped(0), pic_is_original(1), title(tit), npts(0), 
-    delay(1), timer(1), saved_clock(clock()), nb_clock(0), paused(0) { 
+    : width(wd), height(ht), depth(dp), outputsize(0.0), is_onscreen(0), 
+    cropped(0), title(tit), npts(0), delay(1), timer(1), 
+    saved_clock(clock()), nb_clock(0), paused(0) { 
 
       if ((depth!=1)&&(depth!=2)&&(depth!=4)&&(depth!=8)) {
         std::cerr << "libvb : error : invalid depth"
@@ -25,23 +26,18 @@ namespace vb {
       }
 
       pic = new char[width*ht];
-      for (int i=0; i<width*ht; i++)
-        pic[i]=0;
-
       if (!(pic)) {
         std::cerr << "libvb : error : image too large.\n";
         delete[] pic;
         exit (1);
       }
+
+      for (int i=0; i<width*ht; i++)
+        pic[i]=0;
     }
 
   Image::~Image () {
-    if (pic_is_original)
-      delete[] pic;
-  }
-
-  char * Image::give_me_the_pic() {
-    return pic;
+    delete[] pic;
   }
 
   void Image::cycle () {
@@ -206,7 +202,8 @@ namespace vb {
 #ifndef VB_NO_GUI
     if (is_onscreen) {
       win->redraw();
-      if (paused) fltk::wait(); else fltk::check();
+      fltk::check();
+      while (paused) fltk::wait();
     }
 #endif
   }  
@@ -216,19 +213,22 @@ namespace vb {
                                   size(image->width*image->height),
                                   img(image),
                                   D(255 / ((1<<(image->depth))-1)),
-                                  P(image->pitch) {
+                                  P(image->width) {
     begin();
       R = Rectangle (0,0,img->width,img->height);
     end();
 
-    T = (unsigned char *) malloc (size*sizeof(char));
+    if (D>1) T = (unsigned char *) malloc (size*sizeof(char));
+    else T = (unsigned char*) img->pic;
 
     callback(Close_Window_CB);
     show();
   }
 
   void Window::draw() {
-    for (int i=0; i<size; ++i) T[i] = D * img->pic[i];
+    if (D>1)
+      for (int i=0; i<size; ++i)
+        T[i] = D * (*img)(i);
     drawimage (T,fltk::MONO,R,P);
   }
 

@@ -18,7 +18,7 @@ void cnx (Image &img, int ox, int oy, char in, char out)
   while (imin<=imax) {
     i=fifox[imin];
     j=fifoy[imin];
-    k=i+j*img.pitch;
+    k=i+j*img.width;
     imin++;
     if ((i<img.width-1)&&(img(k+1)!=in)&&(img(k+1)!=out)) {
       fifox[++imax]=i+1;
@@ -30,15 +30,15 @@ void cnx (Image &img, int ox, int oy, char in, char out)
       fifoy[imax]=j;
       img(k-1)=in;
     }
-    if ((j<img.height-1)&&(img(k+img.pitch)!=in)&&(img(k+img.pitch)!=out)) {
+    if ((j<img.height-1)&&(img(k+img.width)!=in)&&(img(k+img.width)!=out)) {
       fifox[++imax]=i;
       fifoy[imax]=j+1;
-      img(k+img.pitch)=in;
+      img(k+img.width)=in;
     }
-    if ((j>0)&&(img(k-img.pitch)!=in)&&(img(k-img.pitch)!=out)) {
+    if ((j>0)&&(img(k-img.width)!=in)&&(img(k-img.width)!=out)) {
       fifox[++imax]=i;
       fifoy[imax]=j-1;
-      img(k-img.pitch)=in;
+      img(k-img.width)=in;
     }
   }  
 }
@@ -55,27 +55,27 @@ void bndcnx (Image &img, int ox, int oy)
   while (imin<=imax) {
     i=fifox[imin];
     j=fifoy[imin];
-    k=i+j*img.pitch;
+    k=i+j*img.width;
     imin++;
     if ((i<img.width-1)&&(img(k)&16)&&!(img(k+1)&2)) {
       fifox[++imax]=i+1;
       fifoy[imax]=j;
       img(k+1)|=3;
     }
-    if ((j<img.height-1)&&(img(k)&32)&&!(img(k+img.pitch)&2)) {
+    if ((j<img.height-1)&&(img(k)&32)&&!(img(k+img.width)&2)) {
       fifox[++imax]=i;
       fifoy[imax]=j+1;
-      img(k+img.pitch)|=3;
+      img(k+img.width)|=3;
     }
     if ((i>0)&&(img(k-1)&16)&&!(img(k-1)&2)) {
       fifox[++imax]=i-1;
       fifoy[imax]=j;
       img(k-1)|=3;
     }
-    if ((j>0)&&(img(k-img.pitch)&32)&&!(img(k-img.pitch)&2)) {
+    if ((j>0)&&(img(k-img.width)&32)&&!(img(k-img.width)&2)) {
       fifox[++imax]=i;
       fifoy[imax]=j-1;
-      img(k-img.pitch)|=3;
+      img(k-img.width)|=3;
     }
   }  
 }

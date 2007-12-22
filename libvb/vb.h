@@ -1,13 +1,9 @@
 /// @file vb.h
 /// Include a standard subset of the libvb library.
 
-#include <vb/types.h>
-
 #include <vb/Image.h>
 #include <vb/CL_Parser.h>
 #include <vb/PRNG.h>
-
-#include <string>
 
 /** The namespace where libvb puts everything it defines. */
 
@@ -131,7 +127,8 @@ namespace vb {
  * On the other hand, it will give you some sample code, which cannot
  * hurt. See http://www.umpa.ens-lyon.fr/~vbeffara/simu.php for details.
  *
- * The main dependency is on the SDL library (http://www.libsdl.org) -
- * together with SCons as a build framework, though it is very easy to
- * compile without it.
+ * The main dependency is on the FLTK2 toolkit (http://www.fltk.org) for 
+ * display - though everything will happily build without it. I a using
+ * SCons (http://www.scons.org/) as a build framework, it is very easy 
+ * to compile without it.
  */

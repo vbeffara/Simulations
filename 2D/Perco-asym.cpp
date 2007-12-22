@@ -8,7 +8,6 @@ char *right, *down;
 Image *img;
 long n;
 long pivv,pivh;
-char *t;
 
 void findpiv (long hcross) 
 {
@@ -18,21 +17,21 @@ void findpiv (long hcross)
   if (hcross==0) {
     for (x=0;x<n-1;x++)
       for (y=0;y<n;y++)
-	if (t[x+n*y]*t[x+1+n*y]==2)
+	if ((*img)(x+n*y)*(*img)(x+1+n*y)==2)
 	  pivh++;
     for (x=0;x<n;x++)
       for (y=0;y<n-1;y++)
-	if (t[x+n*y]*t[x+n+n*y]==2)
+	if ((*img)(x+n*y)*(*img)(x+n+n*y)==2)
 	  pivv++;
   } else {
     for (x=0;x<n-1;x++)
       for (y=0;y<n;y++)
-	if (t[x+n*y]*t[x+1+n*y]==9) {
+	if ((*img)(x+n*y)*(*img)(x+1+n*y)==9) {
 	  pivh++;
 	}
     for (x=0;x<n;x++)
       for (y=0;y<n-1;y++)
-	if (t[x+n*y]*t[x+n+n*y]==9) {
+	if ((*img)(x+n*y)*(*img)(x+n+n*y)==9) {
 	  pivv++;
 	}
   }
@@ -49,7 +48,7 @@ void explore (long x0, long y0, long d0, long xf, long yf, char c)
     case 0: /* Right */
       if ((x<n-1)&&(right[xy])) {
 	x++; xy++; d=3;
-	img->putpoint (x,y,(c|t[xy]));
+	img->putpoint (x,y,(c|(*img)(xy)));
       } else {
 	d=1;
       }
@@ -57,7 +56,7 @@ void explore (long x0, long y0, long d0, long xf, long yf, char c)
     case 1: /* Top */
       if ((y<n-1)&&(down[xy+n])) {
 	y++; xy+=n; d=0;
-	img->putpoint (x,y,(c|t[xy]));
+	img->putpoint (x,y,(c|(*img)(xy)));
       } else {
 	d=2;
       }
@@ -65,7 +64,7 @@ void explore (long x0, long y0, long d0, long xf, long yf, char c)
     case 2: /* Left */
       if ((x>0)&&(right[xy-1])) {
 	x--; xy--; d=1;
-	img->putpoint (x,y,(c|t[xy]));
+	img->putpoint (x,y,(c|(*img)(xy)));
       } else {
 	d=3;
       }
@@ -73,7 +72,7 @@ void explore (long x0, long y0, long d0, long xf, long yf, char c)
     case 3: /* Down */
       if ((y>0)&&(down[xy])) {
 	y--; xy-=n; d=2;
-	img->putpoint (x,y,(c|t[xy]));
+	img->putpoint (x,y,(c|(*img)(xy)));
       } else {
 	d=0;
       }
@@ -111,7 +110,6 @@ int main(int argc, char ** argv)
 
   sprintf(title,"Asymmetric bond-percolation cluster (epsilon=%f)",epsilon);
   img = new Image(n,n,2,title);
-  t = img->give_me_the_pic();
 
   /* OnScreen (img); */
 
@@ -125,7 +123,7 @@ int main(int argc, char ** argv)
 
   hcross=0;
   for (i=0;i<n;i++)
-    if (t[(n-1)+n*i]==1)
+    if ((*img)((n-1)+n*i)==1)
       hcross=1;
   
   if (hcross==0) {

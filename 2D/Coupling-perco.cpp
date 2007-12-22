@@ -15,21 +15,21 @@
 #include <stdlib.h>
 #include <math.h>
 
-typedef int testfunction (char*);
-
 using namespace vb;
+
+typedef int testfunction (Image*);
 
 PRNG prng;
 
-int compute_diff (char *c1, char *c2, Image *d) {
+int compute_diff (Image *c1, Image *c2, Image *d) {
   int i,j,n;
 
   n=0;
   for (i=0;i<N;i++) {
     for (j=0;j<N;j++) {
-      if (c1[i+N*j]==c2[i+N*j]) {
+      if ((*c1)(i,j)==(*c2)(i,j)) {
 	d->putpoint(i,j,0);
-      } else if (c1[i+N*j]>c2[i+N*j]) {
+      } else if ((*c1)(i,j)>(*c2)(i,j)) {
 	d->putpoint(i,j,2);
 	n++;
       } else {
@@ -41,7 +41,7 @@ int compute_diff (char *c1, char *c2, Image *d) {
   return n;
 }
 
-void compute_cpts (char *c, int *cpts, int r1, int r2) {
+void compute_cpts (Image *c, int *cpts, int r1, int r2) {
   /*
    * Determine the connected  components in the annulus of  radii r1<r2 around
    * the center of the square, and put that in *cpts. 
@@ -54,7 +54,7 @@ void compute_cpts (char *c, int *cpts, int r1, int r2) {
   t=0;
   for (x=0;x<N;x++) {
     for (y=0;y<N;y++) {
-      if (c[x+N*y]==1) {
+      if ((*c)(x,y)==1) {
 	cpts[x+N*y]=(++t);
       } else {
 	cpts[x+N*y]=-(++t);
@@ -93,7 +93,7 @@ void compute_cpts (char *c, int *cpts, int r1, int r2) {
   }
 }
 
-int nbarms (char *c, int r1, int r2, int sides) {
+int nbarms (Image *c, int r1, int r2, int sides) {
   /*
    * Compute the number of connected  components spanning from r1 to r2 inside
    * the annulus  (should be 0, 1  or even).
@@ -144,7 +144,7 @@ int nbarms (char *c, int r1, int r2, int sides) {
   return n;
 }
 
-int test1 (char *c) {
+int test1 (Image *c) {
   /*
    * 4 bras entre RAD1 et RAD3.
    * 4 entre RAD1 et RAD2 et entre RAD2 et RAD3 i.e. jamais 6.
@@ -156,7 +156,7 @@ int test1 (char *c) {
   return 1;
 }
 
-int test2 (char *c) {
+int test2 (Image *c) {
   /*
    * test 1 plus exactement un bras sur le cote 1 entre RAD2 et RAD3.
    */
@@ -165,7 +165,7 @@ int test2 (char *c) {
   return 0;
 }
 
-void monte_carlo (char *c1, char *c2, Image *diff, int duration) {
+void monte_carlo (Image *c1, Image *c2, Image *diff, int duration) {
   int t,x,y,good,err;
   char old,z;
 
@@ -182,15 +182,15 @@ void monte_carlo (char *c1, char *c2, Image *diff, int duration) {
 
     /*  config 1 : juste cond. a 4 bras entre r1 et r3=(N>>1)=N/2 */
 
-    old = c1[x+y*N];
-    c1[x+y*N]=z;
-    if (test1(c1)==0) c1[x+y*N]=old;
+    old = (*c1)(x,y);
+    (*c1)(x,y)=z;
+    if (test1(c1)==0) (*c1)(x,y)=old;
 
     /*  config 1 : juste cond. a 4 bras entre r1 et r3=(N>>1)=N/2 */
 
-    old = c2[x+y*N];
-    c2[x+y*N]=z;
-    if (test2(c2)==0) c2[x+y*N]=old;
+    old = (*c2)(x,y);
+    (*c2)(x+y)=z;
+    if (test2(c2)==0) (*c2)(x,y)=old;
 
     /*  affichage de la difference */
 
@@ -210,7 +210,7 @@ void pick (Image *c, testfunction test) {
     fprintf (stderr,"%d \r",++n);
     for (x=0;x<N;x++)
       for (y=0;y<N;y++)
-	c->putpoint (x,y,(prng.rand()%2));
+	c->putpoint (x,y,(prng.bernoulli(.5)));
 
     for (x=-RAD1+1;x<RAD1-1;x++) {
       for (y=-RAD1+1;y<RAD1-1;y++) {
@@ -219,7 +219,7 @@ void pick (Image *c, testfunction test) {
       }
     }
 
-    good = test (c->give_me_the_pic());
+    good = test (c);
   }
   fprintf (stderr,"\n");
 }
@@ -232,14 +232,14 @@ int main (int argc, char ** argv) {
   img2 = new Image (N,N,1,"The second configuration");
   img = new Image(N,N,2,"The difference");
 
-  pick (img1,test2);
+  pick (img1,test1);
   for (i=0;i<N*N;i++) (*img2)(i) = (*img1)(i);
 
   img->onscreen();
-  compute_diff(img1->give_me_the_pic(),img2->give_me_the_pic(),img);
+  compute_diff(img1,img2,img);
   img->update();
 
-  monte_carlo (img1->give_me_the_pic(),img2->give_me_the_pic(),img,N*N*N);
+  monte_carlo (img1,img2,img,N*N*N);
 
   return 0;
 }

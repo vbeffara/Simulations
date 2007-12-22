@@ -1,7 +1,6 @@
 
-/** @file ProgressBar.h
- * Implementation of the vb::ProgressBar class
- */
+/// @file ProgressBar.cpp
+/// Implementation of the vb::ProgressBar class
 
 #include <vb/ProgressBar.h>
 
