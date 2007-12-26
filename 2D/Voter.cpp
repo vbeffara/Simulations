@@ -19,7 +19,7 @@ int main (int argc, char **argv) {
     }
   }
 
-  img.onscreen();
+  img.show();
 
   for (long t=0;;++t) {
     int i = (int)prng.uniform(n);

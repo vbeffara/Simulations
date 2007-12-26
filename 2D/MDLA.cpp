@@ -60,7 +60,7 @@ int main(int argc, char ** argv)
   }
   img->putpoint (n,n,DEAD);
 
-  img->onscreen();
+  img->show();
 
   /* Simulation */
 

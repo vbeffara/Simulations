@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
   n = CLP.as_int('n');
 
   vb::Image img (n,n,8,"Sample");
-  img.onscreen();
+  img.show();
 
   img.tessellate (f, 0,0, n-1,n-1);
 

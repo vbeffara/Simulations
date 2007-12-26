@@ -142,7 +142,7 @@ int main(int argc, char ** argv)
 
   for (i=0;i<2*wd;i++) (*img)(i) = (smooth?255:INSIDE);
 
-  img->onscreen ();
+  img->show ();
 
   /*  C'est parti */
 

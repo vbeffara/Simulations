@@ -12,8 +12,11 @@ namespace vb {
   }
 #endif
 
-  Image::Image (int wd, int ht, int dp, std::string tit)
-    : width(wd), height(ht), depth(dp), outputsize(0.0), is_onscreen(0), 
+  Image::Image (int wd, int ht, int dp, std::string tit) :
+#ifndef VB_NO_GUI
+    fltk::Window(wd,ht,tit.c_str()), stage(NULL),
+#endif
+    width(wd), height(ht), depth(dp), outputsize(0.0),
     cropped(0), title(tit), npts(0), delay(1), timer(1), 
     saved_clock(clock()), nb_clock(0), paused(0) { 
 
@@ -36,6 +39,9 @@ namespace vb {
 
   Image::~Image () {
     delete[] pic;
+#ifndef VB_NO_GUI
+    if ((depth<8) && (stage != NULL)) delete[] stage;
+#endif
   }
 
   void Image::cycle () {
@@ -58,9 +64,7 @@ namespace vb {
     long xmin,xmax,ymin,ymax;
     long out_wd, out_ht, out_max;
 
-#ifndef VB_NO_GUI
     img.update();
-#endif
 
     int x=0,y=0,dx=img.width,dy=img.height;
 
@@ -187,19 +191,26 @@ namespace vb {
     }
   }
 
-  int Image::onscreen () {
-    is_onscreen = 1;
+  void Image::show () {
 #ifndef VB_NO_GUI
-    win = new Window (this);
+    if (stage == NULL) {
+      if (depth<8) stage = (unsigned char *) malloc (width*height*sizeof(unsigned char));
+      else stage = (unsigned char *) pic;
+      begin();
+        R = Rectangle (0,0,width,height);
+      end();
+      callback(Close_Window_CB);
+    }
+
+    Window::show();
     update();  
 #endif
-    return 1;
   }
   
   void Image::update () {
 #ifndef VB_NO_GUI
-    if (is_onscreen) {
-      win->redraw();
+    if (visible()) {
+      redraw();
       fltk::check();
       while (paused) fltk::wait();
     }
@@ -207,44 +218,29 @@ namespace vb {
   }  
 
 #ifndef VB_NO_GUI
-  Window::Window (Image *image) : fltk::Window(image->width,image->height,(image->title).c_str()),
-                                  size(image->width*image->height),
-                                  img(image),
-                                  D(255 / ((1<<(image->depth))-1)),
-                                  P(image->width) {
-    begin();
-      R = Rectangle (0,0,img->width,img->height);
-    end();
-
-    if (D>1) T = (unsigned char *) malloc (size*sizeof(char));
-    else T = (unsigned char*) img->pic;
-
-    callback(Close_Window_CB);
-    show();
+  void Image::draw() {
+    if (depth<8) {
+      char D = 255 / ((1<<depth)-1);
+      for (int i=0; i<width*height; ++i) stage[i] = D * pic[i];
+    }
+    drawimage (stage,fltk::MONO,R,width);
   }
 
-  void Window::draw() {
-    if (D>1)
-      for (int i=0; i<size; ++i)
-        T[i] = D * (*img)(i);
-    drawimage (T,fltk::MONO,R,P);
-  }
-
-  int Window::handle(int event) {
+  int Image::handle (int event) {
     switch (event) {
       case fltk::KEY:
         switch (fltk::event_key()) {
           case fltk::EscapeKey:
           case 0x61:             // this is a A (AZERTY for Q)
           case 0x71:             // this is a Q
-            std::cout << (*img);
+            std::cout << (*this);
             exit (0);
             break;
           case 0x78:             // this is an X
             exit (1);
             break;
           case fltk::SpaceKey:
-            img->paused = 1-img->paused;
+            paused = 1-paused;
             break;
         }
         break;

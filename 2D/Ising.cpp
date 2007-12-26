@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
   for (i=(n>>1);i<n;i++) { img(i,0)=RIGHT; img(i,n-1)=RIGHT; }
   for (i=0;i<n;i++) { img(n-1,i)=RIGHT; }
 
-  img.onscreen();
+  img.show();
 
   /* Initialisations */
 

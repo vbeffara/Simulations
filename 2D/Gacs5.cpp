@@ -97,7 +97,7 @@ int main (int argc, char **argv) {
   const double r = CLP.as_double('r');
 
   Image img (n,n,1,"Cellular automaton");
-  img.onscreen();
+  img.show();
 
   Automaton a(n);
 

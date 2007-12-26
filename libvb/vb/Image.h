@@ -35,25 +35,6 @@ namespace vb {
    */
 
   void Close_Window_CB (fltk::Widget *widget, void *nothing);
-
-  class Image;
-
-  /** This is a custom FLTK window fo displaying an Image.
-   */
-
-  class Window : public fltk::Window {
-    public:
-      int size;                  ///< The total number of pixels in the image.
-      Rectangle R;               ///< A rectangle filling the whole window, in which to draw.
-      Image *img;                ///< Pointer to the contained image.
-      unsigned char *T;          ///< Staging area for the image converted to greyscale.
-      int D;                     ///< Multiplicator associated to the depth of the image.
-      int P;                     ///< The width of the image.
-
-      Window (Image *image);     ///< Standard constructor, builds a window for an image and show it.
-      void draw();               ///< Fill the fltk::Rectangle R with the image contents.
-      int handle(int event);     ///< Handle keyboard events such as 'q', 'x' etc.
-  };
 #endif
 
   /** The main image class, used for all displays.
@@ -63,14 +44,23 @@ namespace vb {
    * to an ostream such as std::cout.
    */
 
+#ifndef VB_NO_GUI
+  class Image : public fltk::Window {
+  private:
+    unsigned char *stage;    ///< The temporary space for palette manipulation.
+    fltk::Rectangle R;       ///< A rectangle filling the whole window, in which to draw.
+    void draw();             ///< Fill the fltk::Rectangle R with the image contents.
+    int handle (int event);  ///< Handle keyboard events such as 'q', 'x' etc.
+#else
   class Image {
+#endif
+
   public:
     int width;           ///< The width of the image, in pixels.
     int height;          ///< The height of the image, in pixels.
     int depth;           ///< The depth of the image, in bits per pixel (1, 2 or 4).
     double outputsize;   ///< The size of the EPS output, in centimeters (0.0 to disable).
     
-    int is_onscreen;     ///< 1 if the image is displayed, 0 if not.
     int cropped;         ///< 1 if the output routine should crop the picture.
 
     /** The standard constructor of the Image class.
@@ -87,10 +77,9 @@ namespace vb {
 
     ~Image ();
 
-    /** Put the image on the screen.
-     */
+    /** Put the image on the screen. */
     
-    int onscreen ();
+    void show ();
 
     /** Set the color of a point in the image.
      *
@@ -109,11 +98,14 @@ namespace vb {
       if (pic[xy]!=c) {
 	pic[xy] = c;
     
-	if (dt && is_onscreen) {
+#ifndef VB_NO_GUI
+	if (dt && visible()) {
 	  ++npts;
 	  --timer;
 	  if (timer==0) cycle();
 	}
+#endif
+
       }
       return c;
     }
@@ -221,10 +213,6 @@ namespace vb {
 
     friend std::ostream &operator<< (std::ostream &os, vb::Image &img);    
 
-#ifndef VB_NO_GUI
-    friend class Window;
-#endif
-    
   private:
     char * pic;                       ///< The raw image data
     std::string title;                ///< The title of the image
@@ -239,10 +227,6 @@ namespace vb {
     /** Do some bookkeeping related to the display window. */
 
     void cycle();
-
-#ifndef VB_NO_GUI
-    Window *win;        ///< The display window.
-#endif
   };
 
   /** Return the parameter as a hexadecimal digit.
@@ -280,7 +264,7 @@ namespace vb {
  * @until as_int
  * Then, create a vb::Image of this size, and display it on the screen:
  * @skip Image
- * @until onscreen
+ * @until show
  * Fill it using the coloring function f:
  * @skipline tessellate
  * And finally, export it to std::cout as an EPS file and exit:

@@ -69,7 +69,7 @@ int main (int argc, char **argv) {
   maxx=1; maxy=1;
 
   img = new CoarseImage (n,n,(int)pow((double)n,.33),"A directed DLA cluster");
-  img->onscreen();
+  img->show();
 
   img->putpoint(0,0,1);
   queue << Point(1,0,prng.exponential())

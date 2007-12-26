@@ -81,7 +81,7 @@ int main(int argc, char ** argv)
     (*img)(i)=1;
   }
 
-  img->onscreen();
+  img->show();
 
   /* 3=cluster de l'origine */
 

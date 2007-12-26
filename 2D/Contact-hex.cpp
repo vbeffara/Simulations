@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
     for (int y=0;y<n/2;++y)
       img.putpoint(x,y,1,0);
 
-  img.onscreen();
+  img.show();
 
   /* Simulation */
 

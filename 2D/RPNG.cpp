@@ -11,7 +11,7 @@ int main (int argc, char **argv) {
   const double c = CLP.as_double('c');
 
   vb::CoarseImage img (n,n,10,"RPNG");
-  img.onscreen();
+  img.show();
 
   int *height = new int[n];
   for (int i=0; i<n; ++i) {

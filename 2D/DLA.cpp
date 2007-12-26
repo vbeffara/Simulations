@@ -184,7 +184,7 @@ int main(int argc, char ** argv)
 
   /* Simulation */
 
-  img->onscreen();
+  img->show();
   runDLA();
 
   /* Output the EPS file */

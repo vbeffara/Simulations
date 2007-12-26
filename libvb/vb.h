@@ -84,7 +84,7 @@ namespace vb {
  *
  * - vb::Image: the main class provided by the library. It centralizes
  *   most of the functionality, can be displayed on the screen by
- *   calling vb::Image::onscreen() and transformed into an EPS file via
+ *   calling vb::Image::show() and transformed into an EPS file via
  *   an output stream (std::cout << img).
  *
  * - Auto-update: the display routine (namely vb::Image::putpoint())

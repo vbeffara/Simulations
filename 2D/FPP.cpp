@@ -42,7 +42,7 @@ int main (int argc, char **argv) {
 
   CoarseImage img (n,n,(int)pow((double)n,.33),title);
 
-  img.onscreen();
+  img.show();
 
   Point pt(n>>1,n>>1,+cost());
   queue << pt;

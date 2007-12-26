@@ -147,7 +147,7 @@ int main (int argc, char **argv) {
     img.putpoint (i,n-1,0);
   }
 
-  img.onscreen ();
+  img.show ();
 
   for (i=2000*n*n; i>0; i--) {
     x = 1 + (prng.rand()%(n-2));

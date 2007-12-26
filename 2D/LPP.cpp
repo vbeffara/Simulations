@@ -14,7 +14,7 @@ int main (int argc, char **argv) {
   PRNG prng;
 
   Image img (n,n,1,"Broken line process");
-  img.onscreen();
+  img.show();
 
   int *field = new int[n];
 

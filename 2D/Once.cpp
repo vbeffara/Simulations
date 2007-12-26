@@ -45,7 +45,7 @@ int main(int argc, char ** argv)
   img.outputsize = 15;
   //img.snapshot_period = t;
 
-  img.onscreen();
+  img.show();
 
   /* Simulation */
 

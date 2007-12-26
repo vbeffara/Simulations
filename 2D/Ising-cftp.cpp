@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
   for (i=(n>>1);i<n;i++) { high[i]=RIGHT; high[i+(n-1)*n]=RIGHT; }
   for (i=0;i<n;i++) { high[i*n+n-1]=RIGHT; }
 
-  img.onscreen();
+  img.show();
 
   dist = paint(img);
 

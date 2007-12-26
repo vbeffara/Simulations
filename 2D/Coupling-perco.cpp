@@ -235,7 +235,7 @@ int main (int argc, char ** argv) {
   pick (img1,test1);
   for (i=0;i<N*N;i++) (*img2)(i) = (*img1)(i);
 
-  img->onscreen();
+  img->show();
   compute_diff(img1,img2,img);
   img->update();
 

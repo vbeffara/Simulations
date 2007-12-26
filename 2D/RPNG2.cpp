@@ -20,7 +20,7 @@ int main (int argc, char **argv) {
     h[i]=(i<(n>>1) ? a : b);
     img.putpoint_safe (i,(n>>1)-h[i],1);
   }
-  img.onscreen();
+  img.show();
 
   unsigned long e=0;
 

@@ -8,7 +8,7 @@ int main (int argc, char **argv) {
   const double p = CLP.as_double('p');
 
   vb::Image img (n,n,1,"Oriented site-percolation");
-  img.onscreen();
+  img.show();
 
   vb::PRNG prng;
 

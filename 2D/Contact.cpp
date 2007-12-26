@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
       img.putpoint(x,y,0,0);
   }
 
-  img.onscreen();
+  img.show();
 
   /* Simulation */
 
