@@ -1,9 +1,5 @@
 Import('fltk')
 
-sources = []
-for i in fltk.MyGlob("*.cpp"):
-    sources += [i]
-
-libvb = fltk.MyLibrary ('vb', sources)
+libvb = fltk.MyLibrary ('vb', fltk.MyGlob("*.cpp"))
 
 Return("libvb")
