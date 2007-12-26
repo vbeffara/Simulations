@@ -59,25 +59,12 @@ def MyProgram (env, target=None, source=_null, **kw):
 
     return p
 
-# A very useful globbing function, that searches in the _sourse_
-# directory - glob.glob() breaks with a build_dir ...
-
-def MyGlob (env,pattern):
-    here = Dir('.').srcnode().abspath
-    output = []
-
-    for i in glob.glob(os.path.join(here,pattern)):
-        output += [ string.replace(i, here + os.path.sep, '') ]
-
-    return output
-
 # Just remains to install them into the default environment, and we can
 # use them.
 
 from SCons.Script.SConscript import SConsEnvironment
 SConsEnvironment.MyLibrary = MyLibrary
 SConsEnvironment.MyProgram = MyProgram
-SConsEnvironment.MyGlob = MyGlob
 
 # Base environment.
 

@@ -1,5 +1,5 @@
 Import('fltk')
 
-libvb = fltk.MyLibrary ('vb', fltk.MyGlob("*.cpp"))
+libvb = fltk.MyLibrary ('vb', Glob("*.cpp"))
 
 Return("libvb")

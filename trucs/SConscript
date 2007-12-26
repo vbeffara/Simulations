@@ -3,5 +3,5 @@ Import('vb')
 gmp = vb.Clone()
 gmp.Append ( LIBS = ['gmp', 'gmpxx'] )
 
-for i in gmp.MyGlob("*.cc"):
+for i in Glob("*.cc"):
   gmp.MyProgram(i)

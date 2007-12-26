@@ -31,5 +31,4 @@ SConscript ("xtoys/SConscript", exports="env")
 # Install the headers
 
 env.Install ("$prefix/include", "libvb/vb.h")
-for i in env.MyGlob("libvb/vb/*.h"):
-    env.Install ("$prefix/include/vb", i)
+env.Install ("$prefix/include/vb", Glob("libvb/vb/*.h"))

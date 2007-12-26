@@ -7,5 +7,5 @@ x11.Append (
     LIBS = ['X11','m'],
     )
 
-for i in x11.MyGlob("*.c"):
+for i in Glob("*.c"):
   x11.MyProgram(i)

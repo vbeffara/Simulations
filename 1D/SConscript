@@ -1,4 +1,4 @@
 Import('vb')
 
-for i in vb.MyGlob("*.c"):
+for i in Glob("*.c"):
   vb.MyProgram(i)
