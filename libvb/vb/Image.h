@@ -9,7 +9,7 @@
 #include <iostream>
 #include <string>
 
-#ifndef VB_NO_GUI
+#ifdef LIBVB_FLTK
 #include <fltk/Window.h>
 #include <fltk/Rectangle.h>
 #include <fltk/PixelType.h>
@@ -27,7 +27,7 @@ namespace vb {
 
   typedef char coloring (int,int);
   
-#ifndef VB_NO_GUI
+#ifdef LIBVB_FLTK
   /** A callback function to ask the user about closing a window.
    *
    * @param widget  The window itself.
@@ -44,7 +44,7 @@ namespace vb {
    * to an ostream such as std::cout.
    */
 
-#ifndef VB_NO_GUI
+#ifdef LIBVB_FLTK
   class Image : public fltk::Window {
   private:
     unsigned char *stage;    ///< The temporary space for palette manipulation.
@@ -98,7 +98,7 @@ namespace vb {
       if (pic[xy]!=c) {
 	pic[xy] = c;
     
-#ifndef VB_NO_GUI
+#ifdef LIBVB_FLTK
 	if (dt && visible()) {
 	  ++npts;
 	  --timer;

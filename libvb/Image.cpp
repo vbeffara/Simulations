@@ -5,7 +5,7 @@
 #include <vb/Image.h>
 
 namespace vb {
-#ifndef VB_NO_GUI
+#ifdef LIBVB_FLTK
   void Close_Window_CB (fltk::Widget *widget, void *nothing) {
     if (fltk::ask("Do you really want to exit?"))
       exit(1);
@@ -13,7 +13,7 @@ namespace vb {
 #endif
 
   Image::Image (int wd, int ht, int dp, std::string tit) :
-#ifndef VB_NO_GUI
+#ifdef LIBVB_FLTK
     fltk::Window(wd,ht,tit.c_str()), stage(NULL),
 #endif
     width(wd), height(ht), depth(dp), outputsize(0.0),
@@ -39,13 +39,13 @@ namespace vb {
 
   Image::~Image () {
     delete[] pic;
-#ifndef VB_NO_GUI
+#ifdef LIBVB_FLTK
     if ((depth<8) && (stage != NULL)) delete[] stage;
 #endif
   }
 
   void Image::cycle () {
-#ifndef VB_NO_GUI
+#ifdef LIBVB_FLTK
     long tmp = clock() - saved_clock;
     if (tmp>=0) nb_clock += tmp+1;
     if (nb_clock < CLOCKS_PER_SEC/5)
@@ -192,7 +192,7 @@ namespace vb {
   }
 
   void Image::show () {
-#ifndef VB_NO_GUI
+#ifdef LIBVB_FLTK
     if (stage == NULL) {
       if (depth<8) stage = (unsigned char *) malloc (width*height*sizeof(unsigned char));
       else stage = (unsigned char *) pic;
@@ -208,7 +208,7 @@ namespace vb {
   }
   
   void Image::update () {
-#ifndef VB_NO_GUI
+#ifdef LIBVB_FLTK
     if (visible()) {
       redraw();
       fltk::check();
@@ -217,7 +217,7 @@ namespace vb {
 #endif
   }  
 
-#ifndef VB_NO_GUI
+#ifdef LIBVB_FLTK
   void Image::draw() {
     if (depth<8) {
       char D = 255 / ((1<<depth)-1);
