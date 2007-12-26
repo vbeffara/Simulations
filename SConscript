@@ -2,7 +2,7 @@
 
 Import('env')
 
-# The libvb stuff
+# Build libvb and the associated environment.
 
 fltk = env.Clone()
 
@@ -21,13 +21,12 @@ libvb = SConscript ("libvb/SConscript", exports="fltk")
 vb = fltk.Clone()
 vb.Append ( LIBPATH = [ libvb[0].dir ], LIBS = ["vb"] )
 
-SConscript ("2D/SConscript", exports="vb")
-SConscript ("tests/SConscript", exports="vb")
+# Now build the programs.
 
-# The rest
+for i in ['tests', '1D', '2D', 'trucs']:
+  SConscript ("%s/SConscript" % i, exports="vb")
 
-for i in ['1D', 'trucs', 'xtoys']:
-  SConscript ("%s/SConscript" % i, exports="env")
+SConscript ("xtoys/SConscript", exports="env")
 
 # Install the headers
 

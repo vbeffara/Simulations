@@ -1,4 +1,4 @@
-Import('env')
+Import('vb')
 
-for i in env.MyGlob("*.c"):
-  env.MyProgram(i)
+for i in vb.MyGlob("*.c"):
+  vb.MyProgram(i)

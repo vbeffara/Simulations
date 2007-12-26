@@ -1,6 +1,6 @@
-Import('env')
+Import('vb')
 
-gmp = env.Clone()
+gmp = vb.Clone()
 gmp.Append ( LIBS = ['gmp', 'gmpxx'] )
 
 for i in gmp.MyGlob("*.cc"):
