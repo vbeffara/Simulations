@@ -9,6 +9,7 @@
 #include <map>
 #include <iostream>
 #include <sstream>
+#include <unistd.h>
 
 namespace vb {
 
