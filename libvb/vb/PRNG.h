@@ -41,7 +41,7 @@ namespace vb {
        * @param p The parameter of the distribution.
        */
 
-      int PRNG_base::bernoulli (double p) {
+      int bernoulli (double p) {
         return rand() < p*(double)max ? 1 : 0;
       }
 
