@@ -31,14 +31,15 @@ int main () {
   m.barycentric();
   m.barycentric();
   m.barycentric();
+  m.barycentric();
 
   m.inscribe(m.face(Edge(0,m.v[0].adj.back())));
 
   Figure F;
-  m.plot_edges(F);
+  for (int i=0; i<m.n; ++i) m.v[i].r=.5/sqrt((double)m.n);
+  m.plot_circles(F);
 
   F.show();
-  F.fps = 2;
   m.balance(&F);
   cout << "Done." << endl;
   fltk::run();

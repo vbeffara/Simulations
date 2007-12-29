@@ -106,7 +106,7 @@ namespace vb {
   /// Subclass of vb::Shape for a circle.
 
   class Circle : public Shape {
-    private:
+    public:
       cpx z;                                               ///< The center.
       real r;                                              ///< The radius.
     public:

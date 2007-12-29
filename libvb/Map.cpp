@@ -57,13 +57,13 @@ namespace vb {
   void Map::inscribe (std::list<int> face_ext, real radius, bool reverse) {
     int n_ext = face_ext.size();
 
-    for (int i=0; i<n; ++i) { v[i].pos = 0.0; bd[i] = false; }
+    for (int i=0; i<n; ++i) { v[i].z = 0.0; bd[i] = false; }
     scale = radius;
 
     int k=0;
     for (std::list<int>::iterator i = face_ext.begin(); i != face_ext.end(); ++i, --k) {
       bd[*i] = true;
-      v[*i].pos = radius * exp(cpx(0,(reverse?-2.0:2.0)*3.1415927*k/n_ext));
+      v[*i].z = radius * exp(cpx(0,(reverse?-2.0:2.0)*3.1415927*k/n_ext));
     }
   }
 
@@ -76,16 +76,16 @@ namespace vb {
         if (bd[i]) continue;
         if (v[i].adj.size() == 0) continue;
 
-        cpx old = v[i].pos; v[i].pos = 0.0;
+        cpx old = v[i].z; v[i].z = 0.0;
         for (adj_list::iterator j = v[i].adj.begin(); j != v[i].adj.end(); ++j)
-          v[i].pos += v[*j].pos;
-        v[i].pos /= v[i].adj.size();
-        if (v[i].pos != old) dirty = true;
+          v[i].z += v[*j].z;
+        v[i].z /= v[i].adj.size();
+        if (v[i].z != old) dirty = true;
       }
 
       if (F) {
         F->clean();
-        plot_edges (*F);
+        plot_circles (*F);
         F->step();
       }
     }
@@ -169,20 +169,20 @@ namespace vb {
 
   void Map::plot_vertices (Figure &F) {
     for (int i=0; i<n; ++i) {
-      F.dot(v[i].pos);
+      F.dot(v[i].z);
     }
   }
 
   void Map::plot_edges (Figure &F) {
     for (int i=0; i<n; ++i) {
       for (adj_list::iterator j = v[i].adj.begin(); j != v[i].adj.end(); ++j)
-        if ((i<*j) || (find_edge(Edge(*j,i)) == (adj_list::iterator) NULL)) F.segment(v[i].pos,v[*j].pos);
+        if ((i<*j) || (find_edge(Edge(*j,i)) == (adj_list::iterator) NULL)) F.segment(v[i].z,v[*j].z);
     }
   }
 
   void Map::plot_circles (Figure &F) {
     for (int i=0; i<n; ++i) {
-      if (v[i].rad>0) F.circle(v[i].pos,v[i].rad);
+      if (v[i].r>0) F.circle(v[i].z,v[i].r);
     }
   }
 
@@ -210,9 +210,9 @@ namespace vb {
 
   void Map::mobius (cpx w, real theta) {
     for (int i=0; i<n; ++i) {
-      cpx z = v[i].pos / scale;
+      cpx z = v[i].z / scale;
       w /= scale;
-      v[i].pos = scale * (z-w)*exp(cpx(0,theta))/(cpx(1,0)-z*conj(w));
+      v[i].z = scale * (z-w)*exp(cpx(0,theta))/(cpx(1,0)-z*conj(w));
     }
   }
 
@@ -229,22 +229,22 @@ namespace vb {
 
       for (int i=0; i<n; ++i) {
         if (i != zero) {
-          dv = delta_func(*this,i,v[i].pos-cpx(delta,0),v[i].rad); if (dv<0) { v[i].pos -= cpx(delta,0); delta_cost -= dv; }
+          dv = delta_func(*this,i,v[i].z-cpx(delta,0),v[i].r); if (dv<0) { v[i].z -= cpx(delta,0); delta_cost -= dv; }
           else {
-            dv = delta_func(*this,i,v[i].pos+cpx(delta,0),v[i].rad); if (dv<0) { v[i].pos += cpx(delta,0); delta_cost -= dv; }
+            dv = delta_func(*this,i,v[i].z+cpx(delta,0),v[i].r); if (dv<0) { v[i].z += cpx(delta,0); delta_cost -= dv; }
           }
         }
 
         if ((i != zero) && (i != one)) {
-          dv = delta_func(*this,i,v[i].pos-cpx(0,delta),v[i].rad); if(dv<0) { v[i].pos -= cpx(0,delta); delta_cost -= dv; }
+          dv = delta_func(*this,i,v[i].z-cpx(0,delta),v[i].r); if(dv<0) { v[i].z -= cpx(0,delta); delta_cost -= dv; }
           else {
-            dv = delta_func(*this,i,v[i].pos+cpx(0,delta),v[i].rad); if(dv<0) { v[i].pos += cpx(0,delta); delta_cost -= dv; }
+            dv = delta_func(*this,i,v[i].z+cpx(0,delta),v[i].r); if(dv<0) { v[i].z += cpx(0,delta); delta_cost -= dv; }
           }
         }
 
-        dv = delta_func(*this,i,v[i].pos,v[i].rad-delta); if(dv<0) { v[i].rad -= delta; delta_cost -= dv; }
+        dv = delta_func(*this,i,v[i].z,v[i].r-delta); if(dv<0) { v[i].r -= delta; delta_cost -= dv; }
         else {
-          dv = delta_func(*this,i,v[i].pos,v[i].rad+delta); if(dv<0) { v[i].rad += delta; delta_cost -= dv; }
+          dv = delta_func(*this,i,v[i].z,v[i].r+delta); if(dv<0) { v[i].r += delta; delta_cost -= dv; }
         }
       }
 
@@ -255,23 +255,8 @@ namespace vb {
     return cost;
   }
 
-  real Map::circlepack (int _zero, int _one, std::list<int> _bord) {
-    zero = _zero;
-    one = _one;
-
-    inscribe (_bord, sqrt((real)n)-0.5);
-    balance ();
-
-    scale = sqrt((real)n);
-    mobius (v[zero].pos,0);
-    mobius (0,-arg(v[one].pos));
-
-    for (int i=0; i<n; ++i) v[i].rad = 1.0;
-    return optimize (cost_cp,delta_cost_cp);
-  }
-
   real Map::ACPA () {
-    for (int i=0; i<n; ++i) if (v[i].rad == 0.0) v[i].rad = 1.0;
+    for (int i=0; i<n; ++i) if (v[i].r == 0.0) v[i].r = 1.0;
 
     std::vector<real> pre_delta;
     pre_delta.push_back(0.0);
@@ -287,7 +272,7 @@ namespace vb {
     }
 
     std::vector<real> old_rad;
-    for (int i=0; i<n; ++i) old_rad.push_back(v[i].rad);
+    for (int i=0; i<n; ++i) old_rad.push_back(v[i].r);
 
     real old_lambda = 0.0;
     real lambda = 0.0;
@@ -309,20 +294,20 @@ namespace vb {
 
         int k = v[i].adj.size();
 
-        real x = v[i].rad;
-        real y = v[v[i].adj.back()].rad, z;
+        real x = v[i].r;
+        real y = v[v[i].adj.back()].r, z;
         real theta = 0.0;
 
         for (adj_list::iterator j = v[i].adj.begin(); j != v[i].adj.end(); ++j) {
-          z = y; y = v[*j].rad;
+          z = y; y = v[*j].r;
           theta += acos (((x+y)*(x+y) + (x+z)*(x+z) - (y+z)*(y+z)) / (2*(x+y)*(x+z)));
         }
         E += (theta - TWO_PI)*(theta - TWO_PI);
 
         real beta = sin (theta/(2*k));
 
-        old_rad[i] = v[i].rad;
-        v[i].rad *= pre_delta[k] * (beta/(1-beta));
+        old_rad[i] = v[i].r;
+        v[i].r *= pre_delta[k] * (beta/(1-beta));
       }
 
       old_lambda = lambda; lambda = (old_E-E)/E;
@@ -331,8 +316,8 @@ namespace vb {
       if (fabs(dlambda) < .01) {
         real sqrtlambda = sqrt(lambda);
         for (int i=0; i<n; ++i) {
-          real nr = v[i].rad + (v[i].rad-old_rad[i])/sqrtlambda;
-          if (nr>0) v[i].rad = nr;
+          real nr = v[i].r + (v[i].r-old_rad[i])/sqrtlambda;
+          if (nr>0) v[i].r = nr;
         }
         old_lambda = 0.0;
       }
@@ -347,43 +332,43 @@ namespace vb {
     one = _one;
 
     double R_max = 0.0;
-    for (int i=0; i<n; ++i) if (v[i].rad > R_max) R_max = v[i].rad;
+    for (int i=0; i<n; ++i) if (v[i].r > R_max) R_max = v[i].r;
 
     cpx nowhere (-2*n*R_max, 0.0);
-    for (int i=0; i<n; ++i) v[i].pos = nowhere;
+    for (int i=0; i<n; ++i) v[i].z = nowhere;
 
-    v[zero].pos = cpx(0.0,0.0);
-    v[one].pos = cpx (v[zero].rad + v[one].rad, 0.0);
+    v[zero].z = cpx(0.0,0.0);
+    v[one].z = cpx (v[zero].r + v[one].r, 0.0);
 
     bool dirty = true; while (dirty) {
       dirty = false;
 
       for (int i=0; i<n; ++i) {
-        if (v[i].pos == nowhere) continue;
+        if (v[i].z == nowhere) continue;
         if (v[i].adj.size() == 0) continue;
 
-        cpx prev_z = v[v[i].adj.back()].pos;
-        real prev_r = v[v[i].adj.back()].rad;
+        cpx prev_z = v[v[i].adj.back()].z;
+        real prev_r = v[v[i].adj.back()].r;
 
         for (adj_list::iterator j = v[i].adj.begin(); j != v[i].adj.end(); ++j) {
-          cpx z = v[*j].pos;
+          cpx z = v[*j].z;
           if ((prev_z != nowhere) && (z == nowhere) && ((!bd[i])||(!bd[*j]))) {
-            real x = v[i].rad;
-            real y = v[*j].rad;
+            real x = v[i].r;
+            real y = v[*j].r;
             real alpha = acos (((x+y)*(x+y) + (x+prev_r)*(x+prev_r) - (y+prev_r)*(y+prev_r)) / (2*(x+y)*(x+prev_r)));
-            v[*j].pos = v[i].pos + (x+y) * exp(cpx(0.0,alpha + arg(prev_z-v[i].pos)));
-            z = v[*j].pos;
+            v[*j].z = v[i].z + (x+y) * exp(cpx(0.0,alpha + arg(prev_z-v[i].z)));
+            z = v[*j].z;
             dirty = true;
           }
 
-          prev_z = z; prev_r = v[*j].rad;
+          prev_z = z; prev_r = v[*j].r;
         }
       }
     }
   }
 
   void Map::rotate (real theta) {
-    for (int i=0; i<n; ++i) v[i].pos *= exp(cpx(0.0,theta));
+    for (int i=0; i<n; ++i) v[i].z *= exp(cpx(0.0,theta));
   }
 
   void Map::mobius_circle (cpx w, real r) {
@@ -396,19 +381,19 @@ namespace vb {
       x = ( (1.0+norm(w)-r*r) - sqrt(Delta) ) / (2.0*conj(w));
 
     for (int i=0; i<n; ++i) {
-      cpx W = v[i].pos/scale;
-      real R = v[i].rad/scale;
+      cpx W = v[i].z/scale;
+      real R = v[i].r/scale;
 
       cpx A = norm(1.0-W*conj(x)) - R*R*norm(x);
       cpx B = (1.0-W*conj(x))*(conj(x)-conj(W)) - R*R*conj(x);
       cpx C = (x-W)*(conj(x)-conj(W)) - R*R;
 
-      v[i].pos = scale * conj(-B/A);
-      v[i].rad = scale * sqrt(abs(norm(v[i].pos/scale) - C/A));
+      v[i].z = scale * conj(-B/A);
+      v[i].r = scale * sqrt(abs(norm(v[i].z/scale) - C/A));
     }
   }
 
-  real Map::circlepack2 (int _zero, int _one, const adj_list _bord) {
+  real Map::circlepack (int _zero, int _one, const adj_list _bord) {
     // First, add the outer vertex.
 
     v.push_back (Vertex(cpx(0.0),sqrt((real)n)));
@@ -426,92 +411,39 @@ namespace vb {
 
     for (int i=0; i<n; ++i) bd[i]=false;
 
-    bd[n-1] = true; v[n-1].rad = sqrt((real)(n-1));
-    bd[_bord.front()] = true; v[_bord.front()].rad = sqrt((real)(n-1));
-    bd[_bord.back()] = true; v[_bord.back()].rad = sqrt((real)(n-1));
+    bd[n-1] = true; v[n-1].r = sqrt((real)(n-1));
+    bd[_bord.front()] = true; v[_bord.front()].r = sqrt((real)(n-1));
+    bd[_bord.back()] = true; v[_bord.back()].r = sqrt((real)(n-1));
     real output = ACPA();
     rad_to_pos (_bord.front(), _bord.back());
 
     // Remove the added vertex
 
-    cpx center = v[n-1].pos;
+    cpx center = v[n-1].z;
     v.pop_back(); --n;
     for (int i=0; i<n; ++i) v[i].adj.remove(n);
 
     // Recenter and invert
 
     for (int i=0; i<n; ++i) {
-      v[i].pos -= center;
+      v[i].z -= center;
 
-      real module = abs(v[i].pos);
-      real argument = arg(v[i].pos);
-      real rayon = v[i].rad;
+      real module = abs(v[i].z);
+      real argument = arg(v[i].z);
+      real rayon = v[i].r;
 
       real new_module = n*module/(module*module-rayon*rayon);
 
-      v[i].rad = n*rayon/(module*module-rayon*rayon);
-      v[i].pos = new_module * exp(cpx(0,-argument));
+      v[i].r = n*rayon/(module*module-rayon*rayon);
+      v[i].z = new_module * exp(cpx(0,-argument));
     }
 
     // Map _zero to 0
 
-    mobius_circle (v[_zero].pos,v[_zero].rad);
-    rotate (-arg(v[_one].pos));
+    mobius_circle (v[_zero].z,v[_zero].r);
+    rotate (-arg(v[_one].z));
 
     return output;
-  }
-
-  real cost_cp (const Map &m) {
-    real t=0;
-
-    for (int i=0; i<m.n; ++i) {
-      for (adj_list::const_iterator j = m.v[i].adj.begin(); j != m.v[i].adj.end(); ++j) {
-        cpx e = m.v[*j].pos - m.v[i].pos;
-        real d = ( e.real()*e.real() + e.imag()*e.imag() );
-        real r = m.v[i].rad + m.v[*j].rad;
-        t += (d-r*r)*(d-r*r)/2;
-      }
-
-      if (m.bd[i]) {
-        cpx e = m.v[i].pos;
-        real r = abs(e);
-        real dr = (m.scale - m.v[i].rad);
-        real d = dr - r;
-        t += d*d;
-      }
-    }
-
-    return t;
-  }
-
-  real delta_cost_cp (const Map &m, int i, cpx z, real _r) {
-    real t = 0.0;
-
-    for (adj_list::const_iterator j = m.v[i].adj.begin(); j != m.v[i].adj.end(); ++j) {
-      cpx e = m.v[*j].pos - m.v[i].pos;
-      real d = ( e.real()*e.real() + e.imag()*e.imag() );
-      real r = m.v[i].rad + m.v[*j].rad;
-      t -= (d-r*r)*(d-r*r);
-
-      e = m.v[*j].pos - z;
-      d = ( e.real()*e.real() + e.imag()*e.imag() );
-      r = _r + m.v[*j].rad;
-      t += (d-r*r)*(d-r*r);
-    }
-
-    if (m.bd[i]) {
-      cpx e = m.v[i].pos;
-      real r = abs(e);
-      real dr = (m.scale - m.v[i].rad);
-      real d = dr - r;
-      t -= d*d;
-
-      dr = (m.scale - _r);
-      d = dr - abs(z);
-      t += d*d;
-    }
-
-    return t;
   }
 
   std::ostream &operator<< (std::ostream &os, Map m) {

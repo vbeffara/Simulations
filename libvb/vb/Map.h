@@ -14,13 +14,11 @@ namespace vb {
   typedef std::pair<int,int> Edge;
   typedef std::list<int>     adj_list;
 
-  class Vertex {
+  class Vertex : public Circle {
     public:
-      cpx pos;
       adj_list adj;
-      real rad;
 
-      Vertex (cpx z=cpx(0.0,0.0), real r=0.0) : pos(z), rad(r) {};
+      Vertex (cpx z=cpx(0.0,0.0), real r=0.0) : Circle(z,r) {};
   };
 
   class Map;
@@ -85,12 +83,7 @@ namespace vb {
       void rotate (real theta);
 
       void mobius_circle (cpx w, real r);
-
-      real circlepack2 (int _zero, int _one, const adj_list _bord);
   };
-
-  real       cost_cp (const Map &m);
-  real delta_cost_cp (const Map &m, int i, cpx z, real _r);
 
   std::ostream &operator<< (std::ostream &os, Map m);
 
