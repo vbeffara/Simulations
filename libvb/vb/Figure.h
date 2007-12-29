@@ -26,10 +26,10 @@ namespace vb {
     public:
       virtual ~Shape() {}                                   ///< Empty destructor to make the compiler happy.
 
-      virtual real left () =0;
-      virtual real right () =0;
-      virtual real top () =0;
-      virtual real bottom () =0;
+      virtual real left () =0;                              ///< Get the left boundary of the Shape.
+      virtual real right () =0;                             ///< Get the right boundary of the Shape.
+      virtual real top () =0;                               ///< Get the top boundary of the Shape.
+      virtual real bottom () =0;                            ///< Get the bottom boundary of the Shape.
 
       virtual bool operator== (const Shape&) const =0;      ///< Test for equality between two shapes.
 
@@ -49,9 +49,16 @@ namespace vb {
     public:
       Segment (cpx zz1, cpx zz2) : z1(zz1), z2(zz2) {}     ///< Constructor from two complex numbers.
 
+      /// Get the left boundary of the Shape.
       virtual real left () { return min(z1.real(),z2.real()); }
+
+      /// Get the right boundary of the Shape.
       virtual real right () { return max(z1.real(),z2.real()); }
+
+      /// Get the top boundary of the Shape.
       virtual real top () { return max(z1.imag(),z2.imag()); }
+
+      /// Get the bottom boundary of the Shape.
       virtual real bottom () { return min(z1.imag(),z2.imag()); }
 
       virtual bool operator== (const Shape&) const;        ///< Test for equality between two shapes.
@@ -72,9 +79,16 @@ namespace vb {
     public:
       Dot (cpx zz, std::string ll = "") : z(zz), l(ll) {}  ///< Constructor from a position and a label.
 
+      /// Get the left boundary of the Shape.
       virtual real left () { return z.real(); };
+
+      /// Get the right boundary of the Shape.
       virtual real right () { return z.real(); };
+
+      /// Get the top boundary of the Shape.
       virtual real top () { return z.imag(); };
+
+      /// Get the bottom boundary of the Shape.
       virtual real bottom () { return z.imag(); };
 
       virtual bool operator== (const Shape&) const;        ///< Test for equality between two shapes.
@@ -95,9 +109,16 @@ namespace vb {
     public:
       Circle (cpx zz, real rr) : z(zz), r(rr) {}           ///< Constructor from a center and a radius.
 
+      /// Get the left boundary of the Shape.
       virtual real left () { return z.real() - r; };
+
+      /// Get the right boundary of the Shape.
       virtual real right () { return z.real() + r; };
+
+      /// Get the top boundary of the Shape.
       virtual real top () { return z.imag() + r; };
+
+      /// Get the bottom boundary of the Shape.
       virtual real bottom () { return z.imag() - r; };
 
       virtual bool operator== (const Shape&) const;        ///< Test for equality between two shapes.
@@ -128,10 +149,10 @@ namespace vb {
       Figure ();                                           ///< Constructor, reserves a window for display.
       ~Figure ();                                          ///< Destructor, also destroys the contents nodes.
 
-      real left ();
-      real right ();
-      real top ();
-      real bottom ();
+      real left ();                                        ///< Get the left boundary of the Figure.
+      real right ();                                       ///< Get the right boundary of the Figure.
+      real top ();                                         ///< Get the top boundary of the Figure.
+      real bottom ();                                      ///< Get the bottom boundary of the Figure.
 
       Figure &add (Shape *S);                              ///< Add an element to the figure.
 

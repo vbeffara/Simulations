@@ -9,6 +9,7 @@
 #include <fltk/run.h>
 
 namespace vb {
+  /// Forcefully exit the program if the used closes the window.
   void close_window (fltk::Widget *w) {
     exit(1);
   }
