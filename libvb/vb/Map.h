@@ -99,7 +99,7 @@ namespace vb {
         }
       }
 
-      void balance () {
+      void balance (Figure *F = NULL) {
         bool dirty=true;
 
         while (dirty) {
@@ -113,6 +113,12 @@ namespace vb {
               v[i].pos += v[*j].pos;
             v[i].pos /= v[i].adj.size();
             if (v[i].pos != old) dirty = true;
+          }
+
+          if (F) {
+            F->clean();
+            plot_edges (*F);
+            F->step();
           }
         }
       }
@@ -193,14 +199,14 @@ namespace vb {
         os << "}" << std::endl;
       }
 
-      Map plot_vertices (Figure &F) {
+      Map &plot_vertices (Figure &F) {
         for (int i=0; i<n; ++i) {
           F.dot(v[i].pos);
         }
         return (*this);
       }
 
-      Map plot_edges (Figure &F) {
+      Map &plot_edges (Figure &F) {
         for (int i=0; i<n; ++i) {
           for (adj_list::iterator j = v[i].adj.begin(); j != v[i].adj.end(); ++j)
             if ((i<*j) || (find_edge(Edge(*j,i)) == (adj_list::iterator) NULL)) F.segment(v[i].pos,v[*j].pos);
@@ -208,7 +214,7 @@ namespace vb {
         return (*this);
       }
 
-      Map plot_circles (Figure &F) {
+      Map &plot_circles (Figure &F) {
         for (int i=0; i<n; ++i) {
           if (v[i].rad>0) F.circle(v[i].pos,v[i].rad);
         }

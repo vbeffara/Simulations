@@ -58,6 +58,8 @@ namespace vb {
       /// Output the current image to a PNG file of specified name.
       void output_png (std::string s);
 
+      int fps; ///< The target FPS rate.
+
     private:
       unsigned long long npts;       ///< The number of actions done since the beginning of time.
       unsigned long delay;

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <vb/Map.h>
+#include <fltk/run.h>
 
 using namespace std;
 using namespace vb;
@@ -30,32 +31,16 @@ int main () {
   m.barycentric();
   m.barycentric();
   m.barycentric();
-  m.barycentric();
-  //m.barycentric();
-  cerr << m.circlepack2(6,7,m.face(Edge(0,m.v[0].adj.back()))) << "                               " << endl; 
 
-  //list<int> bord = m.face(Edge(1,m.v[1].adj.back()));
-  //for (list<int>::iterator i = bord.begin(); i != bord.end(); ++i) {
-    //m.bd[*i] = true;
-    //m.v[*i].rad = 1.0;
-  //}
-
-  //cerr << m.ACPA() << endl;
-
-  //m.rad_to_pos(0, m.v[0].adj.front());
+  m.inscribe(m.face(Edge(0,m.v[0].adj.back())));
 
   Figure F;
-  m.plot_circles (F);
-  F.dot(m.v[6].pos).dot(m.v[7].pos);
-  F.circle(0.0,m.scale);
-  cout << setprecision(15);
-  F.printASY(cout);
+  m.plot_edges(F);
 
-  //cerr << "Sommets : " << m.nb_sommets() << endl;
-  //cerr << "Aretes  : " << m.nb_aretes() << endl;
-  //cerr << "Faces   : " << m.nb_faces() << endl;
-  //cerr << "Euler   : " << m.euler() << endl;
-  //cerr << "Genre   : " << m.genre() << endl;
-
+  F.show();
+  F.fps = 2;
+  m.balance(&F);
+  cout << "Done." << endl;
+  fltk::run();
   return 0;
 }

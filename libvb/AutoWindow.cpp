@@ -12,7 +12,7 @@ namespace vb {
   }
 
   AutoWindow::AutoWindow (int wd, int ht, std::string t) : Fl_Window (wd, ht, t.c_str()),
-  npts(0), delay(1), timer(1), saved_clock(clock()), nb_clock(0), paused(false) {
+  fps(20), npts(0), delay(1), timer(1), saved_clock(clock()), nb_clock(0), paused(false) {
     callback(close_window);
   }
 
@@ -27,7 +27,7 @@ namespace vb {
     if (nb_clock < CLOCKS_PER_SEC/5)
       delay *= 2;
     else {
-      delay = 1 + npts * (CLOCKS_PER_SEC/20) / nb_clock;
+      delay = 1 + npts * (CLOCKS_PER_SEC/fps) / nb_clock;
       update();
     }
     timer = delay;

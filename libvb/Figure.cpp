@@ -65,16 +65,19 @@ namespace vb {
   }
 #endif
 
-#ifdef LIBVB_FLTK
-  Figure::Figure () : Fl_Window (400,400,"Figure") { }
-#else
-  Figure::Figure () { }
-#endif
+  Figure::Figure () : AutoWindow (400,400,"Figure") {
+    resizable (*this);
+  }
 
-  Figure::~Figure () {
+  void Figure::clean() {
     std::list<Shape*>::iterator i;
     for (i=contents.begin(); i!=contents.end(); ++i)
       delete *i;
+    contents.clear();
+  }
+
+  Figure::~Figure () {
+    clean();
   }
 
   real Figure::left () {

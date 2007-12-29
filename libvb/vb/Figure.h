@@ -5,6 +5,7 @@
 #define __VB_FIGURE_H
 
 #include <vb/types.h>
+#include <vb/AutoWindow.h>
 
 #include <iostream>
 #include <sstream>
@@ -139,17 +140,11 @@ namespace vb {
    * will be .eps (postscript) and .mp (metapost).
    */
 
-#ifdef LIBVB_FLTK
-  class Figure : public Fl_Window {
-    public:
-      void draw();             ///< Fill the fltk::Rectangle R with the image contents.
-      //int handle (int event);  ///< Handle keyboard events such as 'q', 'x' etc.
-#else
-  class Figure {
-#endif
+  class Figure : public AutoWindow {
     public:
       Figure ();                                           ///< Constructor, reserves a window for display.
       ~Figure ();                                          ///< Destructor, also destroys the contents nodes.
+      void clean ();                                       ///< Destroy all the contents nodes.
 
       real left ();                                        ///< Get the left boundary of the Figure.
       real right ();                                       ///< Get the right boundary of the Figure.
@@ -173,6 +168,10 @@ namespace vb {
       void unique();
 
       std::list<Shape*> contents;  ///< The elements of the figure.
+
+#ifdef LIBVB_FLTK
+      void draw (); ///< Draw it onto the screen.
+#endif
   };
 }
 
