@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <vb/Figure.h>
+#include <fltk/run.h>
 
 using namespace std;
 using namespace vb;
@@ -27,8 +28,8 @@ int main (int argc, char **argv) {
   for (int i=1; i<=5; ++i)
     F.circle (cpx(.5,.5),.1*i);
 
-  F.printASY("toto.asy");
-  F.unique();
-  F.printASY("toto.clean.asy");
-  return 0;
+  F.resizable(&F);
+  F.show();
+  fltk::run();
+  exit (0);
 }

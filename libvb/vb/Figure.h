@@ -13,21 +13,24 @@
 #include <stdexcept>
 #include <string>
 
+#ifdef LIBVB_FLTK
+#include <fltk/Window.h>
+#include <fltk/draw.h>
+#endif
+
 namespace vb {
 
   /// Base class for the elements of a figure.
 
   class Shape {
     public:
-      virtual ~Shape() {}                                  ///< Empty destructor to make the compiler happy.
+      virtual ~Shape() {}                                   ///< Empty destructor to make the compiler happy.
 
-      virtual bool operator== (const Shape&) const;        ///< Test for equality between two shapes.
+      virtual bool operator== (const Shape&) const =0;      ///< Test for equality between two shapes.
 
-      virtual std::ostream &printASY (std::ostream &os);   ///< Write ASY code for the shape.
-      virtual std::ostream &printEPS (std::ostream &os);   ///< Write EPS code for the shape.
-      virtual std::ostream &printMP (std::ostream &os);    ///< Write MP code for the shape.
-    private:
-      void not_impl (std::string s);                       ///< Complain that some output is not implemented.
+      virtual std::ostream &printASY (std::ostream &os) =0; ///< Write ASY code for the shape.
+
+      virtual void draw () =0;                              ///< Draw the shape in a window (FLTK).
   };
 
   /// Subclass of vb::Shape foe a line segment.
@@ -42,6 +45,8 @@ namespace vb {
       virtual bool operator== (const Shape&) const;        ///< Test for equality between two shapes.
 
       virtual std::ostream &printASY (std::ostream &os);   ///< Write ASY code for the shape.
+
+      virtual void draw ();                                ///< Draw the shape in a window (FLTK).
   };
 
   /// Subclass of vb::Shape for a dot.
@@ -56,6 +61,8 @@ namespace vb {
       virtual bool operator== (const Shape&) const;        ///< Test for equality between two shapes.
 
       virtual std::ostream &printASY (std::ostream &os);   ///< Write ASY code for the shape.
+
+      virtual void draw ();                                ///< Draw the shape in a window (FLTK).
   };
 
   /// Subclass of vb::Shape for a circle.
@@ -70,6 +77,8 @@ namespace vb {
       virtual bool operator== (const Shape&) const;        ///< Test for equality between two shapes.
 
       virtual std::ostream &printASY (std::ostream &os);   ///< Write ASY code for the shape.
+
+      virtual void draw ();                                ///< Draw the shape in a window (FLTK).
   };
 
   /** The main Figure class.
@@ -79,8 +88,16 @@ namespace vb {
    * will be .eps (postscript) and .mp (metapost).
    */
 
-  class Figure {
+#ifdef LIBVB_FLTK
+  class Figure : public fltk::Window {
     public:
+      void draw();             ///< Fill the fltk::Rectangle R with the image contents.
+      //int handle (int event);  ///< Handle keyboard events such as 'q', 'x' etc.
+#else
+  class Figure {
+#endif
+    public:
+      Figure ();                                           ///< Constructor, reserves a window for display.
       ~Figure ();                                          ///< Destructor, also destroys the contents nodes.
 
       Figure &add (Shape *S);                              ///< Add an element to the figure.
@@ -98,7 +115,7 @@ namespace vb {
        */
 
       void unique();
-    private:
+
       std::list<Shape*> contents;  ///< The elements of the figure.
   };
 }

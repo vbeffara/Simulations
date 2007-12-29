@@ -4,29 +4,6 @@
 #include <vb/Figure.h>
 
 namespace vb {
-
-  bool Shape::operator== (const Shape&) const {
-    return false;
-  }
-
-  std::ostream & Shape::printASY (std::ostream &os) {
-    not_impl ("Asymptote"); return os;
-  }
-
-  std::ostream & Shape::printEPS (std::ostream &os) {
-    not_impl ("EPS"); return os;
-  }
-
-  std::ostream & Shape::printMP (std::ostream &os) {
-    not_impl ("MetaPost"); return os;
-  }
-
-  void Shape::not_impl (std::string s) {
-    std::ostringstream os;
-    os << s << " output not implemented by class " << typeid(*this).name() << std::flush;
-    throw (std::runtime_error(os.str()));
-  }
-
   bool Segment::operator== (const Shape &other) const {
     if (typeid(*this) != typeid(other)) return false;
 
@@ -39,6 +16,10 @@ namespace vb {
 
   std::ostream & Segment::printASY (std::ostream &os) {
     return os << "draw (" << z1 << "--" << z2 << ");" << std::endl;
+  }
+
+  void Segment::draw () {
+    fltk::drawline ((float)z1.real(),(float)z1.imag(),(float)z2.real(),(float)z2.imag());
   }
 
   bool Dot::operator== (const Shape &other) const {
@@ -55,6 +36,8 @@ namespace vb {
     return os << "dot(" << z << ");" << std::endl;
   }
 
+  void Dot::draw () { }
+
   bool Circle::operator== (const Shape &other) const {
     if (typeid(*this) != typeid(other)) return false;
 
@@ -68,6 +51,15 @@ namespace vb {
   std::ostream & Circle::printASY (std::ostream &os) {
     return os << "draw (circle(" << z << "," << r << "));" << std::endl;
   }
+
+  void Circle::draw () {
+    float x = z.real();
+    float y = z.imag();
+    fltk::addarc (x-r,y-r,2*r,2*r,0,360);
+    fltk::strokepath();
+  }
+
+  Figure::Figure () : fltk::Window (400,400,"Figure") { }
 
   Figure::~Figure () {
     std::list<Shape*>::iterator i;
@@ -90,6 +82,21 @@ namespace vb {
 
   Figure & Figure::circle (cpx z, real r) {
     return add (new Circle (z,r));
+  }
+
+  void Figure::draw() {
+    fltk::setcolor (fltk::WHITE);
+    fltk::fillrect (0,0,w(),h());
+
+    fltk::push_matrix();
+    fltk::scale(w()/1.0f, h()/1.0f);
+    //fltk::translate(1,1);
+
+    fltk::setcolor (fltk::BLACK);
+    for (std::list<Shape*>::iterator i = contents.begin(); i != contents.end(); ++i)
+      (*i)->draw();
+
+    fltk::pop_matrix();
   }
 
   std::ostream & Figure::printASY (std::ostream &os) {
