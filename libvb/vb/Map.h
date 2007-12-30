@@ -21,20 +21,17 @@ namespace vb {
       Vertex (cpx z=cpx(0.0,0.0), real r=0.0) : Circle(z,r) {};
   };
 
-  class Map;
-  real cost_cp (const Map&);
-  real delta_cost_cp (const Map&,int,cpx,real);
-
-  class Map {
+  class Map : public Figure {
     public:
       int n;                       ///< The number of vertices.
-      std::vector<Vertex> v;       ///< The graph structure.
+      std::vector<Vertex*> v;      ///< The graph structure.
       std::vector<bool> bd;        ///< The boundary vertices.
 
       int zero,one,infinity;       ///< As the names say.
       real scale;                  ///< Default scale of the embedding.
 
       Map (int nn);
+      ~Map ();
 
       adj_list::iterator find_edge (Edge e);
 
@@ -48,7 +45,7 @@ namespace vb {
 
       void inscribe (std::list<int> face_ext, real radius = 1.0, bool reverse = false);
 
-      void balance (Figure *F = NULL);
+      void balance ();
 
       std::list<int> split_edges ();
 
