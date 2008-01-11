@@ -4,16 +4,57 @@
 #include <vb/Map.h>
 
 namespace vb {
-  Map::Map (int nn) : n(nn), zero(-1), one(-1), infinity(-1) {
+  Map::Map (int nn) : AutoWindow (400,400,"A planar map."), n(nn), zero(-1), one(-1), infinity(-1) {
     for (int i=0; i<n; ++i) {
       v.push_back(new Vertex(0.0));
-      Figure::add (v.back());
       bd.push_back(false);
     }
+    resizable (*this);
   }
 
   Map::~Map () {
-    //for (std::list<Shape*>::iterator i = contents.begin(); i != contents.end(); ++i) *i = NULL;
+  }
+
+  real Map::left () { 
+    real l = 0.0;
+    for (int i=0; i<n; ++i) l = min (l, v[i]->z.real());
+    return l;
+  }
+
+  real Map::right () { 
+    real l = 0.0;
+    for (int i=0; i<n; ++i) l = max (l, v[i]->z.real());
+    return l;
+  }
+
+  real Map::top () { 
+    real l = 0.0;
+    for (int i=0; i<n; ++i) l = max (l, v[i]->z.imag());
+    return l;
+  }
+
+  real Map::bottom () { 
+    real l = 0.0;
+    for (int i=0; i<n; ++i) l = min (l, v[i]->z.imag());
+    return l;
+  }
+
+  void Map::draw () {
+    fltk::setcolor (fltk::WHITE);
+    fltk::fillrect (0,0,w(),h());
+
+    fltk::push_matrix();
+    fltk::scale(w()/(float)(right()-left()), h()/(float)(top()-bottom()));
+    fltk::translate((float)(-left()),(float)(-bottom()));
+
+    fltk::setcolor (fltk::BLACK);
+
+    for (int i=0; i<n; ++i) {
+      for (adj_list::iterator j = v[i]->adj.begin(); j != v[i]->adj.end(); ++j)
+        fltk::drawline ((float)v[i]->z.real(),(float)v[i]->z.imag(),(float)v[*j]->z.real(),(float)v[*j]->z.imag());
+    }
+
+    fltk::pop_matrix();
   }
 
   adj_list::iterator Map::find_edge (Edge e) {
@@ -87,9 +128,9 @@ namespace vb {
         v[i]->z /= v[i]->adj.size();
         if (v[i]->z != old) dirty = true;
       }
-      Figure::step();
+      step();
     }
-    Figure::update();
+    update();
   }
 
   std::list<int> Map::split_edges () {
@@ -120,7 +161,6 @@ namespace vb {
     for (std::vector<adj_list>::iterator i = new_vertices.begin(); i != new_vertices.end(); ++i) {
       v.push_back(new Vertex(0.0));
       v.back()->adj = (*i);
-      Figure::add(v.back());
       bd.push_back(false);
       ++n;
     }

@@ -21,7 +21,7 @@ namespace vb {
       Vertex (cpx z=cpx(0.0,0.0), real r=0.0) : Circle(z,r) {};
   };
 
-  class Map : public Figure {
+  class Map : public AutoWindow {
     public:
       int n;                       ///< The number of vertices.
       std::vector<Vertex*> v;      ///< The graph structure.
@@ -80,6 +80,13 @@ namespace vb {
       void rotate (real theta);
 
       void mobius_circle (cpx w, real r);
+
+      double left ();
+      double right ();
+      double top ();
+      double bottom ();
+
+      void draw ();
   };
 
   std::ostream &operator<< (std::ostream &os, Map m);

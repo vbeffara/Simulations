@@ -17,7 +17,7 @@ int dy[4] = {0,1,0,-1};
 
 long l;
 
-char *TRANS = "ENWS";
+char TRANS[] = "ENWS";
 
 int main(int argc, char ** argv)
 {
