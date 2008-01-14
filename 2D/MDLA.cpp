@@ -29,10 +29,11 @@ int main(int argc, char ** argv)
   
   long x,y,nx,ny,done,ndraw,ngrey;
 
-  CL_Parser CLP (argc, argv, "n=250,p=.5,g");
+  CL_Parser CLP (argc, argv, "n=250,p=.5,g,a=1.0");
   int    n = CLP.as_int('n');
   double p = CLP.as_double('p');
   bool   g = CLP.as_bool('g');
+  double a = CLP.as_double('a');
 
   /* Initialisations */
 
@@ -67,6 +68,7 @@ int main(int argc, char ** argv)
   done=0; ndraw=0;
   
   while (true) {
+    bool flag = false;
     x = prng.rand() % (2*n);
     y = prng.rand() % (2*n);
 
@@ -76,16 +78,24 @@ int main(int argc, char ** argv)
 
     if ((*img)(x,y) == (*img)(nx,ny)) continue;
 
-    if ((*img)(x,y) == AWAY) img->putpoint (x,y,(prng.bernoulli(p)?ALIVE:EMPTY));
-    if ((*img)(nx,ny) == AWAY) img->putpoint (nx,ny,(prng.bernoulli(p)?ALIVE:EMPTY));
+    if ((*img)(x,y) == AWAY)  {
+      if (prng.bernoulli(a) || ((*img)(nx,ny) == DEAD)) { flag = true; img->putpoint (x,y,(prng.bernoulli(p)?ALIVE:EMPTY)); }
+      else continue;
+    }
+    if ((*img)(nx,ny) == AWAY)  {
+      if (prng.bernoulli(a) || ((*img)(x,y) == DEAD)) { flag = true; img->putpoint (nx,ny,(prng.bernoulli(p)?ALIVE:EMPTY)); }
+      else continue;
+    }
 
     if ((*img)(x,y) == (*img)(nx,ny)) continue;
     if ((*img)(x,y) != ALIVE) { int t=x; x=nx; nx=t;  t=y; y=ny; ny=t; }
     if ((*img)(x,y) != ALIVE) continue;
 
     if ((*img)(nx,ny) == EMPTY) {
-      img->putpoint (x,y,EMPTY);
-      img->putpoint (nx,ny,ALIVE);
+      if (prng.bernoulli(a) || flag) {
+        img->putpoint (x,y,EMPTY);
+        img->putpoint (nx,ny,ALIVE);
+      }
     } else if ((*img)(nx,ny) == DEAD) {
       img->putpoint (x,y,DEAD);
       --ngrey;
