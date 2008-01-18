@@ -10,6 +10,7 @@
 
 #ifdef LIBVB_FLTK
 #include <fltk/Window.h>
+#include <png.h>
 #endif
 
 namespace vb {

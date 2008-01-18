@@ -9,7 +9,7 @@ fltk = env.Clone()
 if fltk['GUI'] == 'fltk':
     try:
         fltk.ParseConfig('fltk2-config --cxxflags --ldflags')
-        fltk.Append (CXXFLAGS = ["-DLIBVB_FLTK"])
+        fltk.Append (CXXFLAGS = ["-DLIBVB_FLTK"], LIBS = ["png"])
     except OSError:
         print "FLTK2 not found, building without display support."
         fltk['GUI'] = None

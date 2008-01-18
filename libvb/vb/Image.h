@@ -150,6 +150,9 @@ namespace vb {
 
       void on_quit () { std::cout << (*this); }
 
+      /// Output the current image to a PNG file of specified name.
+      virtual void output_png (std::string s);
+
     protected:
 
       /** Output an EPS representation of the image to an ostream.

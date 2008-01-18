@@ -188,4 +188,44 @@ namespace vb {
   }
 
 #endif
+
+  void Image::output_png (std::string s) {
+    FILE *fp = fopen (s.c_str(),"wb");
+
+    png_structp png_ptr = png_create_write_struct
+      (PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    png_infop info_ptr = png_create_info_struct(png_ptr);
+
+    png_init_io (png_ptr, fp);
+
+    png_set_IHDR (png_ptr, info_ptr, w(), h(), 8, PNG_COLOR_TYPE_GRAY,
+        PNG_INTERLACE_NONE,PNG_COMPRESSION_TYPE_DEFAULT,PNG_FILTER_TYPE_DEFAULT);
+
+    png_text img_info[1];
+    img_info[0].compression = PNG_TEXT_COMPRESSION_NONE;
+    img_info[0].key = "Title";
+    img_info[0].text = (char*) label();
+    img_info[0].text_length = strlen(label());
+
+    png_set_text (png_ptr, info_ptr, img_info, 1);
+
+    uchar *p;
+    if (depth == 8) p = (uchar*) pic;
+    else {
+      p = (uchar*) malloc (width*height*sizeof(uchar));
+      char D = 255 / ((1<<depth)-1);
+      for (int i=0; i<width*height; ++i) stage[i] = D * pic[i];
+    }
+
+    for (int i=0; i<w()*h(); i += 1100) std::cerr << (int) (p[i]) << std::endl;
+
+    png_bytep *row_pointers = (png_bytep*) png_malloc (png_ptr, h()*sizeof(png_bytep));
+    for (int i=0; i<h(); ++i)
+      row_pointers[i] = p + i*w();
+    png_set_rows (png_ptr, info_ptr, row_pointers);
+
+    png_write_info (png_ptr, info_ptr);
+    png_write_image (png_ptr, row_pointers);
+    png_write_end (png_ptr, NULL);
+  }
 }
