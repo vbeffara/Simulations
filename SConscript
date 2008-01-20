@@ -14,7 +14,12 @@ if fltk['GUI'] == 'fltk':
         print "FLTK2 not found, building without display support."
         fltk['GUI'] = None
 
-fltk.Append ( CPPPATH = ["#libvb"], LIBS = ["png"] )
+conf = Configure(fltk)
+if conf.CheckCHeader ("png.h"):
+    fltk.Append ( LIBS = ["png"], CXXFLAGS = ["-DLIBVB_PNG"] )
+conf.Finish()
+
+fltk.Append ( CPPPATH = ["#libvb"] )
 
 libvb = SConscript ("libvb/SConscript", exports="fltk")
 

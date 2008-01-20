@@ -85,14 +85,6 @@ namespace vb {
     png_set_IHDR (png_ptr, info_ptr, w(), h(), 8, PNG_COLOR_TYPE_GRAY,
         PNG_INTERLACE_NONE,PNG_COMPRESSION_TYPE_DEFAULT,PNG_FILTER_TYPE_DEFAULT);
 
-    //png_text img_info[1];
-    //img_info[0].compression = PNG_TEXT_COMPRESSION_NONE;
-    //img_info[0].key = "Title";
-    //img_info[0].text = (char*) label();
-    //img_info[0].text_length = strlen(label());
-
-    //png_set_text (png_ptr, info_ptr, img_info, 1);
-
     png_bytep *row_pointers = (png_bytep*) png_malloc (png_ptr, h()*sizeof(png_bytep));
     for (int i=0; i<h(); ++i)
       row_pointers[i] = p + i*w();
