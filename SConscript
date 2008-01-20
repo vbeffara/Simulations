@@ -9,12 +9,12 @@ fltk = env.Clone()
 if fltk['GUI'] == 'fltk':
     try:
         fltk.ParseConfig('fltk2-config --cxxflags --ldflags')
-        fltk.Append (CXXFLAGS = ["-DLIBVB_FLTK"], LIBS = ["png"])
+        fltk.Append (CXXFLAGS = ["-DLIBVB_FLTK"])
     except OSError:
         print "FLTK2 not found, building without display support."
         fltk['GUI'] = None
 
-fltk.Append ( CPPPATH = ["#libvb"] )
+fltk.Append ( CPPPATH = ["#libvb"], LIBS = ["png"] )
 
 libvb = SConscript ("libvb/SConscript", exports="fltk")
 

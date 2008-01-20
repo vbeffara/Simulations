@@ -150,9 +150,6 @@ namespace vb {
 
       void on_quit () { std::cout << (*this); }
 
-      /// Output the current image to a PNG file of specified name.
-      virtual void output_png (std::string s);
-
     protected:
 
       /** Output an EPS representation of the image to an ostream.
@@ -166,9 +163,11 @@ namespace vb {
     private:
       char * pic;                       ///< The raw image data
       std::string title;                ///< The title of the image
+      unsigned char *stage;             ///< The temporary space for palette manipulation.
+      void compute_stage();             ///< Fills the stage field with 8bpp data.
+      unsigned char * image_data();     ///< Returns 8bpp raw image data (for PNG creation).
 
 #ifdef LIBVB_FLTK
-      unsigned char *stage;    ///< The temporary space for palette manipulation.
       void draw();             ///< Fill the fltk::Rectangle R with the image contents.
 #endif
   };

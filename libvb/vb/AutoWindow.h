@@ -10,8 +10,9 @@
 
 #ifdef LIBVB_FLTK
 #include <fltk/Window.h>
-#include <png.h>
 #endif
+
+#include <png.h>
 
 namespace vb {
 
@@ -52,6 +53,9 @@ namespace vb {
       /// The thing to do if the user presses 'q'.
       virtual void on_quit() { };
 
+      /// Output the current image to a PNG file of specified name.
+      void output_png (std::string s);
+
     private:
       unsigned long long npts;       ///< The number of actions done since the beginning of time.
       unsigned long delay;
@@ -66,17 +70,25 @@ namespace vb {
 
       /// Handle the events, in particular 'q' and 'x'.
       int handle (int event);
+
+      /// Return a pointer to 8bpp image data (for PNG output)
+      virtual unsigned char * image_data () { return (unsigned char*) NULL; };
   };
 #else
   class AutoWindow {
     public:
-      AutoWindow (int,int,std::string) { }
+      int _w,_h;
+      AutoWindow (int w, int h, std::string) : _w(w), _h(h) { }
+      int w() { return _w; }
+      int h() { return _h; }
       virtual ~AutoWindow () { }
       bool visible() { return false; }
       void show() { }
       void step() { }
       void update() { }
       virtual void on_quit() { };
+      virtual unsigned char * image_data () { return (unsigned char*) NULL; };
+      void output_png (std::string s);
   };
 #endif
 }
