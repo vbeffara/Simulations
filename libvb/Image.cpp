@@ -29,16 +29,12 @@ namespace vb {
       for (int i=0; i<width*ht; i++)
         pic[i]=0;
 
-#ifdef LIBVB_FLTK
       stage = NULL;
-#endif
     }
 
   Image::~Image () {
     delete[] pic;
-#ifdef LIBVB_FLTK
     if ((depth<8) && (stage != NULL)) delete[] stage;
-#endif
   }
 
   std::ostream &operator<< (std::ostream &os, Image &img) {
@@ -175,7 +171,7 @@ namespace vb {
 
   void Image::compute_stage () {
     if (stage == NULL) {
-      if (depth<8) stage = (unsigned char *) malloc (width*height*sizeof(unsigned char));
+      if (depth<8) stage = new unsigned char [width*height];
       else stage = (unsigned char *) pic;
     }
 

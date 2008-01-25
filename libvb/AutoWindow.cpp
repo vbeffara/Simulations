@@ -85,7 +85,8 @@ namespace vb {
     png_set_IHDR (png_ptr, info_ptr, w(), h(), 8, PNG_COLOR_TYPE_GRAY,
         PNG_INTERLACE_NONE,PNG_COMPRESSION_TYPE_DEFAULT,PNG_FILTER_TYPE_DEFAULT);
 
-    png_bytep *row_pointers = (png_bytep*) png_malloc (png_ptr, h()*sizeof(png_bytep));
+    png_bytep * row_pointers = new png_bytep [h()];
+
     for (int i=0; i<h(); ++i)
       row_pointers[i] = p + i*w();
     png_set_rows (png_ptr, info_ptr, row_pointers);
@@ -93,5 +94,8 @@ namespace vb {
     png_write_info (png_ptr, info_ptr);
     png_write_image (png_ptr, row_pointers);
     png_write_end (png_ptr, NULL);
+
+    fclose (fp);
+    delete[] row_pointers;
   }
 }
