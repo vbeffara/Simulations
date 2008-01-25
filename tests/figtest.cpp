@@ -5,7 +5,6 @@
 #include <iostream>
 #include <vb/Figure.h>
 #include <vb/PRNG.h>
-#include <fltk/run.h>
 
 using namespace std;
 using namespace vb;
@@ -26,7 +25,7 @@ int main (int argc, char **argv) {
 #ifdef LIBVB_FLTK
   F.resizable(&F);
   F.show();
-  fltk::run();
+  Fl::run();
 #endif
   exit (0);
 }

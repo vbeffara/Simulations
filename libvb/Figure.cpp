@@ -20,7 +20,10 @@ namespace vb {
 
 #ifdef LIBVB_FLTK
   void Segment::draw () {
-    fltk::drawline ((float)z1.real(),(float)z1.imag(),(float)z2.real(),(float)z2.imag());
+    fl_begin_line();
+    fl_vertex ((float) z1.real(), (float) z1.imag());
+    fl_vertex ((float) z2.real(), (float) z2.imag());
+    fl_end_line();
   }
 #endif
 
@@ -58,15 +61,12 @@ namespace vb {
 
 #ifdef LIBVB_FLTK
   void Circle::draw () {
-    float x = z.real();
-    float y = z.imag();
-    fltk::addarc (x-r,y-r,2*r,2*r,0,360);
-    fltk::strokepath();
+    fl_circle ((float) z.real(), (float) z.imag(), (float) r);
   }
 #endif
 
 #ifdef LIBVB_FLTK
-  Figure::Figure () : fltk::Window (400,400,"Figure") { }
+  Figure::Figure () : Fl_Window (400,400,"Figure") { }
 #else
   Figure::Figure () { }
 #endif
@@ -128,18 +128,18 @@ namespace vb {
 
 #ifdef LIBVB_FLTK
   void Figure::draw() {
-    fltk::setcolor (fltk::WHITE);
-    fltk::fillrect (0,0,w(),h());
+    fl_color (FL_WHITE);
+    fl_rectf (0,0,w(),h());
 
-    fltk::push_matrix();
-    fltk::scale(w()/(float)(right()-left()), h()/(float)(top()-bottom()));
-    fltk::translate((float)(-left()),(float)(-bottom()));
+    fl_push_matrix();
+    fl_scale(w()/(float)(right()-left()), h()/(float)(top()-bottom()));
+    fl_translate((float)(-left()),(float)(-bottom()));
 
-    fltk::setcolor (fltk::BLACK);
+    fl_color (FL_BLACK);
     for (std::list<Shape*>::iterator i = contents.begin(); i != contents.end(); ++i)
       (*i)->draw();
 
-    fltk::pop_matrix();
+    fl_pop_matrix();
   }
 #endif
 

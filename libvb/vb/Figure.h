@@ -14,8 +14,10 @@
 #include <string>
 
 #ifdef LIBVB_FLTK
-#include <fltk/Window.h>
-#include <fltk/draw.h>
+#include <FL/Fl.h>
+#include <FL/Fl_Window.h>
+#include <FL/fl_draw.h>
+#include <FL/Enumerations.h>
 #endif
 
 namespace vb {
@@ -138,7 +140,7 @@ namespace vb {
    */
 
 #ifdef LIBVB_FLTK
-  class Figure : public fltk::Window {
+  class Figure : public Fl_Window {
     public:
       void draw();             ///< Fill the fltk::Rectangle R with the image contents.
       //int handle (int event);  ///< Handle keyboard events such as 'q', 'x' etc.

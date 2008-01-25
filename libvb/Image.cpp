@@ -4,10 +4,6 @@
 
 #include <vb/Image.h>
 
-#ifdef LIBVB_FLTK
-#include <fltk/draw.h>
-#endif
-
 namespace vb {
   Image::Image (int wd, int ht, int dp, std::string tit) : 
     AutoWindow(wd,ht,tit), width(wd), height(ht), depth(dp), 
@@ -189,7 +185,7 @@ namespace vb {
 #ifdef LIBVB_FLTK
   void Image::draw() {
     compute_stage();
-    drawimage (stage,fltk::MONO,fltk::Rectangle(0,0,width,height),width);
+    fl_draw_image_mono (stage,0,0,width,height);
   }
 #endif
 

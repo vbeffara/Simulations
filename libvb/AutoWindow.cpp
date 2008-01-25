@@ -4,25 +4,20 @@
 
 #include <vb/AutoWindow.h>
 
-#ifdef LIBVB_FLTK
-#include <fltk/events.h>
-#include <fltk/run.h>
-#endif
-
 namespace vb {
 #ifdef LIBVB_FLTK
   /// Forcefully exit the program if the used closes the window.
-  void close_window (fltk::Widget *w) {
+  void close_window (Fl_Widget *w) {
     exit(1);
   }
 
-  AutoWindow::AutoWindow (int wd, int ht, std::string t) : fltk::Window (wd, ht, t.c_str()),
+  AutoWindow::AutoWindow (int wd, int ht, std::string t) : Fl_Window (wd, ht, t.c_str()),
   npts(0), delay(1), timer(1), saved_clock(clock()), nb_clock(0), paused(false) {
     callback(close_window);
   }
 
   void AutoWindow::show () {
-    Window::show();
+    Fl_Window::show();
     update();
   }
 
@@ -42,16 +37,16 @@ namespace vb {
   void AutoWindow::update () {
     if (visible()) {
       redraw();
-      fltk::check();
-      while (paused) fltk::wait();
+      Fl::check();
+      while (paused) Fl::wait();
     }
   }  
 
   int AutoWindow::handle (int event) {
     switch (event) {
-      case fltk::KEY:
-        switch (fltk::event_key()) {
-          case fltk::EscapeKey:
+      case FL_KEYDOWN:
+        switch (Fl::event_key()) {
+          case FL_Escape:
           case 0x61:             // this is a A (AZERTY for Q)
           case 0x71:             // this is a Q
             on_quit();
@@ -60,7 +55,7 @@ namespace vb {
           case 0x78:             // this is an X
             exit (1);
             break;
-          case fltk::SpaceKey:
+          case 0x20:             // space bar
             paused = !paused;
             break;
         }

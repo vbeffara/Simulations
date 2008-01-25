@@ -9,7 +9,9 @@
 #include <string>
 
 #ifdef LIBVB_FLTK
-#include <fltk/Window.h>
+#include <FL/Fl.h>
+#include <FL/Fl_Window.h>
+#include <FL/fl_draw.h>
 #endif
 
 #include <png.h>
@@ -25,7 +27,7 @@ namespace vb {
    */
 
 #ifdef LIBVB_FLTK
-  class AutoWindow : public fltk::Window {
+  class AutoWindow : public Fl_Window {
     public:
       
       /** The standard constructor
