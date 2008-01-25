@@ -40,21 +40,25 @@ namespace vb {
   }
 
   void Map::draw () {
-    fltk::setcolor (fltk::WHITE);
-    fltk::fillrect (0,0,w(),h());
+    fl_color (FL_WHITE);
+    fl_rectf (0,0,w(),h());
 
-    fltk::push_matrix();
-    fltk::scale(w()/(float)(right()-left()), h()/(float)(top()-bottom()));
-    fltk::translate((float)(-left()),(float)(-bottom()));
+    fl_push_matrix();
+    fl_scale(w()/(float)(right()-left()), h()/(float)(top()-bottom()));
+    fl_translate((float)(-left()),(float)(-bottom()));
 
-    fltk::setcolor (fltk::BLACK);
+    fl_color (FL_BLACK);
 
     for (int i=0; i<n; ++i) {
-      for (adj_list::iterator j = v[i]->adj.begin(); j != v[i]->adj.end(); ++j)
-        fltk::drawline ((float)v[i]->z.real(),(float)v[i]->z.imag(),(float)v[*j]->z.real(),(float)v[*j]->z.imag());
+      for (adj_list::iterator j = v[i]->adj.begin(); j != v[i]->adj.end(); ++j) {
+        fl_begin_line();
+        fl_vertex ((float) v[i]->z.real(), (float) v[i]->z.imag());
+        fl_vertex ((float) v[*j]->z.real(), (float) v[*j]->z.imag());
+        fl_end_line();
+      }
     }
 
-    fltk::pop_matrix();
+    fl_pop_matrix();
   }
 
   adj_list::iterator Map::find_edge (Edge e) {

@@ -1,7 +1,6 @@
 #include <iostream>
 #include <iomanip>
 #include <vb/Map.h>
-#include <fltk/run.h>
 
 using namespace std;
 using namespace vb;
@@ -42,5 +41,7 @@ int main () {
   m.fps = 3;
   m.balance();
   cerr << "Done.\n";
-  fltk::run();
+#ifdef LIBVB_FLTK
+  Fl::run();
+#endif
 }
