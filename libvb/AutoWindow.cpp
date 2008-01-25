@@ -11,7 +11,7 @@ namespace vb {
     exit(1);
   }
 
-  AutoWindow::AutoWindow (int wd, int ht, std::string t) : Fl_Window (wd, ht, t.c_str()),
+  AutoWindow::AutoWindow (int wd, int ht, std::string t) : Fl_Double_Window (wd, ht, t.c_str()),
   fps(20), npts(0), delay(1), timer(1), saved_clock(clock()), nb_clock(0), paused(false) {
     callback(close_window);
   }
