@@ -2,7 +2,6 @@
 /// @file figtest.cpp
 /// A simple example of how to use the vb::Figure class.
 
-#include <iostream>
 #include <vb/Figure.h>
 #include <vb/PRNG.h>
 

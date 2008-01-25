@@ -65,7 +65,7 @@ namespace vb {
   }
 #endif
 
-  adj_list::iterator Map::find_edge (Edge e) {
+  adj_list::iterator Map::find_edge (Edge e) const {
     if (e.first >= n) return (adj_list::iterator) NULL;
     for (adj_list::iterator i = v[e.first]->adj.begin(); i != v[e.first]->adj.end(); ++i)
       if (*i == e.second) return i;
@@ -443,7 +443,7 @@ namespace vb {
     }
   }
 
-  real Map::circlepack (int _zero, int _one, const adj_list _bord) {
+  real Map::circlepack (int _zero, int _one, const std::list<int> _bord) {
     // First, add the outer vertex.
 
     v.push_back (new Vertex(cpx(0.0),sqrt((real)n)));
@@ -496,6 +496,8 @@ namespace vb {
     return output;
   }
 
+  /// Export a vb::Map as text (kind of DOT-looking).
+
   std::ostream &operator<< (std::ostream &os, Map m) {
     os << m.n << " vertices:" << std::endl;
     for (int i=0; i<m.n; ++i) {
@@ -506,6 +508,8 @@ namespace vb {
     }
     return os;
   }
+
+  /// Add an vb::Edge to a vb::Map.
 
   Map &operator<< (Map &m, Edge e) {
     m.v[e.first]->adj.push_back(e.second);

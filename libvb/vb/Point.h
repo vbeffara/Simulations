@@ -6,7 +6,6 @@
 #define __VB_POINT_H
 
 #include <queue>
-#include <vb/Image.h>
 #include <vb/CoarseImage.h>
 
 namespace vb {

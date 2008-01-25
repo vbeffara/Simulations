@@ -79,8 +79,11 @@ namespace vb {
  * On the other hand, it will give you some sample code, which cannot
  * hurt. See http://www.umpa.ens-lyon.fr/~vbeffara/simu.php for details.
  *
- * The main dependency is on the FLTK2 toolkit (http://www.fltk.org) for 
- * display - though everything will happily build without it. I a using
- * SCons (http://www.scons.org/) as a build framework, it is very easy 
- * to compile without it.
+ * The main dependency is on the FLTK toolkit (http://www.fltk.org) for 
+ * display - though everything will happily build without it. If libpng 
+ * (http://www.libpng.org/pub/png/libpng.html) is installed, most of the 
+ * objects can create PNG versions of themselves, and soon movie 
+ * creation should be possible. I am using SCons (http://www.scons.org/) 
+ * as a build framework, but it should be very easy to compile without 
+ * it.
  */

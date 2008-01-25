@@ -5,8 +5,6 @@
 #include <vb/Image.h>
 #include <vb/CL_Parser.h>
 
-#include <iostream>
-
 int n; ///< The size of the image.
 
 /// A simple coloring function.

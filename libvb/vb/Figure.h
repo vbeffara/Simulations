@@ -8,18 +8,7 @@
 #include <vb/AutoWindow.h>
 
 #include <iostream>
-#include <sstream>
-#include <fstream>
 #include <list>
-#include <stdexcept>
-#include <string>
-
-#ifdef LIBVB_FLTK
-#include <FL/Fl.h>
-#include <FL/Fl_Window.h>
-#include <FL/fl_draw.h>
-#include <FL/Enumerations.h>
-#endif
 
 namespace vb {
 

@@ -7,7 +7,6 @@
 #define __VB_IMAGE_H
 
 #include <iostream>
-#include <string>
 
 #include <vb/AutoWindow.h>
 

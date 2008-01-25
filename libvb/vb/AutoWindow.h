@@ -12,6 +12,7 @@
 #include <FL/Fl.h>
 #include <FL/Fl_Double_Window.h>
 #include <FL/fl_draw.h>
+#include <FL/Enumerations.h>
 #endif
 
 #include <png.h>
