@@ -9,7 +9,9 @@ namespace vb {
       v.push_back(new Vertex(0.0));
       bd.push_back(false);
     }
+#ifdef LIBVB_FLTK
     resizable (*this);
+#endif
   }
 
   Map::~Map () {
@@ -39,6 +41,7 @@ namespace vb {
     return l;
   }
 
+#ifdef LIBVB_FLTK
   void Map::draw () {
     fl_color (FL_WHITE);
     fl_rectf (0,0,w(),h());
@@ -60,6 +63,7 @@ namespace vb {
 
     fl_pop_matrix();
   }
+#endif
 
   adj_list::iterator Map::find_edge (Edge e) {
     if (e.first >= n) return (adj_list::iterator) NULL;

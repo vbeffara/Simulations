@@ -82,6 +82,7 @@ namespace vb {
   class AutoWindow {
     public:
       int _w,_h;
+      int fps;
       AutoWindow (int w, int h, std::string) : _w(w), _h(h) { }
       int w() { return _w; }
       int h() { return _h; }

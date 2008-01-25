@@ -36,11 +36,11 @@ int main () {
   m.inscribe(m.face(Edge(0,m.v[0]->adj.back())));
 
   for (int i=0; i<m.n; ++i) m.v[i]->r=.5/sqrt((double)m.n);
-  m.show();
 
+  m.show();
   m.fps = 3;
   m.balance();
-  cerr << "Done.\n";
+
 #ifdef LIBVB_FLTK
   Fl::run();
 #endif

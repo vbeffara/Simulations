@@ -17,7 +17,7 @@ namespace vb {
   }
 
   void AutoWindow::show () {
-    Fl_Window::show();
+    Fl_Double_Window::show();
     update();
   }
 
