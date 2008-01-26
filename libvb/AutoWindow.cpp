@@ -4,6 +4,10 @@
 
 #include <vb/AutoWindow.h>
 
+#include <iostream>
+#include <sstream>
+#include <iomanip>
+
 namespace vb {
 #ifdef LIBVB_FLTK
   /// Forcefully exit the program if the used closes the window.
@@ -11,8 +15,11 @@ namespace vb {
     exit(1);
   }
 
-  AutoWindow::AutoWindow (int wd, int ht, std::string t) : Fl_Double_Window (wd, ht, t.c_str()),
-  fps(20), npts(0), delay(1), timer(1), saved_clock(clock()), nb_clock(0), paused(false) {
+  AutoWindow::AutoWindow (int wd, int ht, std::string t) : 
+    Fl_Double_Window (wd, ht, t.c_str()),
+    fps(20), npts(0), delay(1), timer(1), saved_clock(clock()), 
+    nb_clock(0), snapshot_prefix("snapshot"), snapshot_number(0), 
+    snapshot_period(0.0), snapshot_clock(clock()), paused(false) {
     callback(close_window);
   }
 
@@ -30,6 +37,10 @@ namespace vb {
       delay = 1 + npts * (CLOCKS_PER_SEC/fps) / nb_clock;
       update();
     }
+
+    if ((snapshot_period > 0.0) && (clock() - snapshot_clock > CLOCKS_PER_SEC * snapshot_period))
+      snapshot(true);
+
     timer = delay;
     saved_clock = clock();
   }
@@ -55,6 +66,9 @@ namespace vb {
           case 0x78:             // this is an X
             exit (1);
             break;
+          case 0x73:             // this is an S
+            snapshot();
+            break;
           case 0x20:             // space bar
             paused = !paused;
             break;
@@ -66,6 +80,7 @@ namespace vb {
 #endif
 
   void AutoWindow::output_png (std::string s) {
+#ifdef LIBVB_PNG
     unsigned char *p = image_data();
     if (!p) return;
 
@@ -92,5 +107,26 @@ namespace vb {
 
     fclose (fp);
     delete[] row_pointers;
+#else
+    std::cerr << "libvb: compiled without PNG support." << std::endl;
+#endif
+  }
+
+  void AutoWindow::snapshot (bool silent) {
+    std::ostringstream fn_s;
+    fn_s << snapshot_prefix << "_" << std::setw(4) << std::setfill('0') << snapshot_number++ << ".png";
+    std::string fn = fn_s.str();
+
+    if (!silent) std::cerr << "Taking a snapshot as " << fn << std::endl;
+    output_png (fn);
+
+    snapshot_clock = clock();
+  }
+
+  void AutoWindow::snapshot_setup (std::string prefix, double period) {
+    snapshot_period = period;
+    snapshot_prefix = prefix;
+    snapshot_number = 0;
+    if (period>0.0) snapshot (true);
   }
 }

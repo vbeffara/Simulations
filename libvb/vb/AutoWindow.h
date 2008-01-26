@@ -59,6 +59,12 @@ namespace vb {
       /// Output the current image to a PNG file of specified name.
       void output_png (std::string s);
 
+      /// Take a snapshot of the current window as a PNG file.
+      void snapshot (bool silent = false);
+
+      /// Initiate automatic snapshots.
+      void snapshot_setup (std::string prefix, double period = 0.0);
+
       int fps; ///< The target FPS rate.
 
     private:
@@ -67,6 +73,11 @@ namespace vb {
       unsigned long timer;
       unsigned long saved_clock;
       unsigned long long nb_clock;
+
+      std::string snapshot_prefix;   ///< The filename prefix for PNG snapshots.
+      unsigned int snapshot_number;  ///< The number of the current snapshot.
+      double snapshot_period;        ///< The time interval between automatic snapshots, in seconds.
+      unsigned long snapshot_clock;  ///< The instant of the last snapshot taken.
 
       bool paused;
 
@@ -95,6 +106,12 @@ namespace vb {
       virtual void on_quit() { };
       virtual unsigned char * image_data () { return (unsigned char*) NULL; };
       void output_png (std::string s);
+      void snapshot (bool silent = false);
+      void snapshot_setup (std::string prefix, double period = 0.0);
+      std::string snapshot_prefix;
+      unsigned int snapshot_number;
+      double snapshot_period;
+      unsigned long snapshot_clock;
   };
 #endif
 }

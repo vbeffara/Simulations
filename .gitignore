@@ -13,3 +13,7 @@ tags
 .DS_Store
 out*
 *.ps
+*.png
+*.gz
+*.avi
+.sconf_temp

@@ -6,6 +6,11 @@ Import('env')
 
 fltk = env.Clone()
 
+conf = Configure(fltk)
+if conf.CheckCHeader ("png.h"):
+    fltk.Append ( LIBS = ["png"], CXXFLAGS = ["-DLIBVB_PNG"] )
+conf.Finish()
+
 if fltk['GUI'] == 'fltk':
     try:
         fltk.ParseConfig('fltk-config --cxxflags --ldflags')
@@ -13,11 +18,6 @@ if fltk['GUI'] == 'fltk':
     except OSError:
         print "FLTK2 not found, building without display support."
         fltk['GUI'] = None
-
-conf = Configure(fltk)
-if conf.CheckCHeader ("png.h"):
-    fltk.Append ( LIBS = ["png"], CXXFLAGS = ["-DLIBVB_PNG"] )
-conf.Finish()
 
 fltk.Append ( CPPPATH = ["#libvb"] )
 
