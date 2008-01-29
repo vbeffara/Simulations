@@ -29,11 +29,13 @@ int main(int argc, char ** argv)
   
   long x,y,nx,ny,done,ndraw,ngrey;
 
-  CL_Parser CLP (argc, argv, "n=250,p=.5,g,a=1.0");
+  CL_Parser CLP (argc, argv, "n=250,p=.5,g,a=1.0,t=0.0,s");
   int    n = CLP.as_int('n');
   double p = CLP.as_double('p');
   bool   g = CLP.as_bool('g');
   double a = CLP.as_double('a');
+  double t = CLP.as_double('t');
+  bool   s = CLP.as_bool('s');
 
   /* Initialisations */
 
@@ -41,6 +43,7 @@ int main(int argc, char ** argv)
 
   sprintf(title,"A MDLA in density %.2f",p);
   img = new Image(2*n,2*n,2,title);
+  img->snapshot_setup ("MDLA",t);
 
   ngrey = 0;
 
@@ -67,7 +70,8 @@ int main(int argc, char ** argv)
 
   done=0; ndraw=0;
   
-  while (true) {
+  bool running = true;
+  while (running) {
     bool flag = false;
     x = prng.rand() % (2*n);
     y = prng.rand() % (2*n);
@@ -98,6 +102,7 @@ int main(int argc, char ** argv)
       }
     } else if ((*img)(nx,ny) == DEAD) {
       img->putpoint (x,y,DEAD);
+      if ((x==0)||(x==2*n-1)||(y==0)||(y==2*n-1)) running = false;
       --ngrey;
     }
   }
