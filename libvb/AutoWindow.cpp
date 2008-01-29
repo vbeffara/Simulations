@@ -15,43 +15,10 @@ namespace vb {
     exit(1);
   }
 
-  AutoWindow::AutoWindow (int wd, int ht, std::string t) : 
-    Fl_Double_Window (wd, ht, t.c_str()),
-    fps(20), npts(0), delay(1), timer(1), saved_clock(clock()), 
-    nb_clock(0), snapshot_prefix("snapshot"), snapshot_number(0), 
-    snapshot_period(0.0), snapshot_clock(clock()), paused(false) {
-    callback(close_window);
-  }
-
   void AutoWindow::show () {
     Fl_Double_Window::show();
     update();
   }
-
-  void AutoWindow::cycle () {
-    long tmp = clock() - saved_clock;
-    if (tmp>=0) nb_clock += tmp+1;
-    if (nb_clock < CLOCKS_PER_SEC/5)
-      delay *= 2;
-    else {
-      delay = 1 + npts * (CLOCKS_PER_SEC/fps) / nb_clock;
-      update();
-    }
-
-    if ((snapshot_period > 0.0) && (clock() - snapshot_clock > CLOCKS_PER_SEC * snapshot_period))
-      snapshot(true);
-
-    timer = delay;
-    saved_clock = clock();
-  }
-
-  void AutoWindow::update () {
-    if (visible()) {
-      redraw();
-      Fl::check();
-      while (paused) Fl::wait();
-    }
-  }  
 
   int AutoWindow::handle (int event) {
     switch (event) {
@@ -78,6 +45,47 @@ namespace vb {
     return 1;
   }
 #endif
+
+  void AutoWindow::update () {
+#ifdef LIBVB_FLTK
+    if (visible()) {
+      redraw();
+      Fl::check();
+      while (paused) Fl::wait();
+    }
+#endif
+  }  
+
+  AutoWindow::AutoWindow (int wd, int ht, std::string t) : 
+#ifdef LIBVB_FLTK
+    Fl_Double_Window (wd, ht, t.c_str()),
+#endif
+    fps(20), npts(0), delay(1), timer(1), saved_clock(clock()), 
+    nb_clock(0), snapshot_prefix("snapshot"), snapshot_number(0), 
+    snapshot_period(0.0), snapshot_clock(clock()), paused(false) {
+#ifdef LIBVB_FLTK
+    callback(close_window);
+#else
+    _w = wd; _h = ht; 
+#endif
+  }
+
+  void AutoWindow::cycle () {
+    long tmp = clock() - saved_clock;
+    if (tmp>=0) nb_clock += tmp+1;
+    if (nb_clock < CLOCKS_PER_SEC/5)
+      delay *= 2;
+    else {
+      delay = 1 + npts * (CLOCKS_PER_SEC/fps) / nb_clock;
+      update();
+    }
+
+    if ((snapshot_period > 0.0) && (clock() - snapshot_clock > CLOCKS_PER_SEC * snapshot_period))
+      snapshot(true);
+
+    timer = delay;
+    saved_clock = clock();
+  }
 
   void AutoWindow::output_png (std::string s) {
 #ifdef LIBVB_PNG

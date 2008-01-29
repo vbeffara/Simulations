@@ -64,7 +64,7 @@ namespace vb {
         int xy = x+y*width;
         if (pic[xy]!=c) {
           pic[xy] = c;
-          if (dt && visible()) step();
+          if (dt) step();
         }
         return c;
       }
