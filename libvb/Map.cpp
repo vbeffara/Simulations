@@ -4,7 +4,7 @@
 #include <vb/Map.h>
 
 namespace vb {
-  Map::Map (int nn) : AutoWindow (400,400,"A planar map."), n(nn), zero(-1), one(-1), infinity(-1) {
+  Map::Map (int nn) : AutoWindow (400,400,"A planar map"), n(nn), zero(-1), one(-1), infinity(-1) {
     for (int i=0; i<n; ++i) {
       v.push_back(new Vertex(0.0));
       bd.push_back(false);
@@ -111,7 +111,7 @@ namespace vb {
   void Map::inscribe (std::list<int> face_ext, real radius, bool reverse) {
     int n_ext = face_ext.size();
 
-    for (int i=0; i<n; ++i) { v[i]->z = 0.0; bd[i] = false; }
+    for (int i=0; i<n; ++i) { bd[i] = false; }
     scale = radius;
 
     int k=0;
@@ -169,6 +169,7 @@ namespace vb {
     for (std::vector<adj_list>::iterator i = new_vertices.begin(); i != new_vertices.end(); ++i) {
       v.push_back(new Vertex(0.0));
       v.back()->adj = (*i);
+      v.back()->z = ( v[(*i).front()]->z + v[(*i).back()]->z )/2.0;
       bd.push_back(false);
       ++n;
     }

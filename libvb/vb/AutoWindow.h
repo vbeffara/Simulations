@@ -75,6 +75,9 @@ namespace vb {
       /// Increment the clock and call cycle() as needed.
       void step() { ++npts; --timer; if (timer==0) cycle(); }
 
+      /// Put the image on pause, i.e. wait for user input.
+      void pause() { paused=true; update(); }
+
       /// Output the current image to a PNG file of specified name.
       void output_png (std::string s);
 
@@ -84,6 +87,9 @@ namespace vb {
       /// Initiate automatic snapshots.
       void snapshot_setup (std::string prefix, double period = 0.0);
 
+      std::string title;             ///< The title of the window.
+      int fps;                       ///< The target FPS rate.
+
     private:
 
       unsigned long long npts;       ///< The number of actions done since the beginning of time.
@@ -91,7 +97,6 @@ namespace vb {
       unsigned long timer;
       unsigned long saved_clock;
       unsigned long long nb_clock;
-      int fps;                       ///< The target FPS rate.
 
       std::string snapshot_prefix;   ///< The filename prefix for PNG snapshots.
       unsigned int snapshot_number;  ///< The number of the current snapshot.

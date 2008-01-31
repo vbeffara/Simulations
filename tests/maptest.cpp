@@ -27,19 +27,19 @@ int main () {
     << Edge(11,10) << Edge(11,8) << Edge(11,6) << Edge(11,9) << Edge(11,12)
     << Edge(12,11) << Edge(12,9) << Edge(12,7);
 
-  m.barycentric();
-  m.barycentric();
-  m.barycentric();
-  m.barycentric();
-  m.barycentric();
-
   m.inscribe(m.face(Edge(0,m.v[0]->adj.back())));
 
   for (int i=0; i<m.n; ++i) m.v[i]->r=.5/sqrt((double)m.n);
 
   m.show();
   m.fps = 3;
-  m.balance();
+
+  m.balance(); m.pause();
+  m.barycentric(); m.inscribe(m.face(Edge(0,m.v[0]->adj.back()))); m.balance(); m.pause();
+  m.barycentric(); m.inscribe(m.face(Edge(0,m.v[0]->adj.back()))); m.balance(); m.pause();
+  m.barycentric(); m.inscribe(m.face(Edge(0,m.v[0]->adj.back()))); m.balance(); m.pause();
+  m.barycentric(); m.inscribe(m.face(Edge(0,m.v[0]->adj.back()))); m.balance(); m.pause();
+  m.barycentric(); m.inscribe(m.face(Edge(0,m.v[0]->adj.back()))); m.balance(); m.pause();
 
 #ifdef LIBVB_FLTK
   Fl::run();

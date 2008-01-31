@@ -60,9 +60,10 @@ namespace vb {
 #ifdef LIBVB_FLTK
     Fl_Double_Window (wd, ht, t.c_str()),
 #endif
-    fps(20), npts(0), delay(1), timer(1), saved_clock(clock()), 
-    nb_clock(0), snapshot_prefix("snapshot"), snapshot_number(0), 
-    snapshot_period(0.0), snapshot_clock(clock()), paused(false) {
+    title(t), fps(20), npts(0), delay(1), timer(1),
+    saved_clock(clock()), nb_clock(0), snapshot_prefix("snapshot"),
+    snapshot_number(0), snapshot_period(0.0), snapshot_clock(clock()),
+    paused(false) {
 #ifdef LIBVB_FLTK
     callback(close_window);
 #else
