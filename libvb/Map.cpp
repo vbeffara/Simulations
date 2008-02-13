@@ -10,7 +10,7 @@ namespace vb {
       bd.push_back(false);
     }
 #ifdef LIBVB_FLTK
-    resizable (*this);
+    //resizable (*this);
 #endif
   }
 

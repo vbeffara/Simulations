@@ -63,12 +63,17 @@ namespace vb {
     title(t), fps(20), npts(0), delay(1), timer(1),
     saved_clock(clock()), nb_clock(0), snapshot_prefix("snapshot"),
     snapshot_number(0), snapshot_period(0.0), snapshot_clock(clock()),
-    paused(false) {
+    paused(false), raw_image_data(NULL), stage(NULL) {
 #ifdef LIBVB_FLTK
     callback(close_window);
 #else
     _w = wd; _h = ht; 
 #endif
+  }
+
+  AutoWindow::~AutoWindow() {
+    if (raw_image_data != NULL) delete[] raw_image_data;
+    if (stage != NULL) delete[] stage;
   }
 
   void AutoWindow::cycle () {
@@ -91,7 +96,10 @@ namespace vb {
   void AutoWindow::output_png (std::string s) {
 #ifdef LIBVB_PNG
     unsigned char *p = image_data();
-    if (!p) return;
+    if (!p) {
+      std::cerr << "libvb: don't know how to get image data!" << std::endl;
+      return;
+    }
 
     FILE *fp = fopen (s.c_str(),"wb");
 
@@ -137,5 +145,22 @@ namespace vb {
     snapshot_prefix = prefix;
     snapshot_number = 0;
     if (period>0.0) snapshot (true);
+  }
+
+  unsigned char * AutoWindow::image_data () {
+#ifdef LIBVB_FLTK
+    if (!raw_image_data) raw_image_data = new unsigned char [w()*h()*3];
+
+    make_current();
+    if (fl_read_image (raw_image_data, 0, 0, w(), h())) {
+      if (!stage) stage = new unsigned char [w()*h()];
+      for (int i=0; i<w()*h(); ++i) stage[i] = raw_image_data[3*i];
+      return stage;
+    } else {
+      return NULL;
+    }
+#else
+    return NULL;
+#endif
   }
 }

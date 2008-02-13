@@ -102,7 +102,7 @@ int main(int argc, char ** argv)
       }
     } else if ((*img)(nx,ny) == DEAD) {
       img->putpoint (x,y,DEAD);
-      if ((x==0)||(x==2*n-1)||(y==0)||(y==2*n-1)) running = false;
+      if ((s)&&((x==0)||(x==2*n-1)||(y==0)||(y==2*n-1))) running = false;
       --ngrey;
     }
   }

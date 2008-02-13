@@ -162,7 +162,6 @@ namespace vb {
     private:
       char * pic;                       ///< The raw image data
       std::string title;                ///< The title of the image
-      unsigned char *stage;             ///< The temporary space for palette manipulation.
       void compute_stage();             ///< Fills the stage field with 8bpp data.
       unsigned char * image_data();     ///< Returns 8bpp raw image data (for PNG creation).
 

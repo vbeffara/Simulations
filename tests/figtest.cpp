@@ -22,7 +22,7 @@ int main (int argc, char **argv) {
     F.circle (cpx(0,0),i);
 
 #ifdef LIBVB_FLTK
-  F.resizable(&F);
+  //F.resizable(&F);
   F.show();
   Fl::run();
 #endif

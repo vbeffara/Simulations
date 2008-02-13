@@ -24,13 +24,11 @@ namespace vb {
 
       for (int i=0; i<width*ht; i++)
         pic[i]=0;
-
-      stage = NULL;
     }
 
   Image::~Image () {
+    if (depth==8) stage=NULL; // to prevent double freeing.
     delete[] pic;
-    if ((depth<8) && (stage != NULL)) delete[] stage;
   }
 
   std::ostream &operator<< (std::ostream &os, Image &img) {

@@ -69,7 +69,7 @@ namespace vb {
 
   Figure::Figure () : AutoWindow (400,400,"Figure") {
 #ifdef LIBVB_FLTK
-    resizable (*this);
+    //resizable (*this);
 #endif
   }
 

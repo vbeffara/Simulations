@@ -68,6 +68,7 @@ namespace vb {
        */
 
       AutoWindow (int wd, int ht, std::string t);
+      virtual ~AutoWindow ();
 
       /// Update the screen, handle the events.
       void update ();
@@ -108,8 +109,13 @@ namespace vb {
       /// Estimate the refresh rate, then call update().
       void cycle();
 
+      unsigned char * raw_image_data;
+
+    protected:
+      unsigned char * stage;
+
       /// Return a pointer to 8bpp image data (for PNG output)
-      virtual unsigned char * image_data () { return (unsigned char*) NULL; };
+      virtual unsigned char * image_data ();
   };
 }
 
