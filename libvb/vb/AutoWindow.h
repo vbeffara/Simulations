@@ -68,6 +68,15 @@ namespace vb {
        */
 
       AutoWindow (int wd, int ht, std::string t);
+
+      /** The standard destructor.
+       *
+       * It will destroy raw_image_data and stage if they are not NULL, 
+       * so if you make them aliases to something else than the default 
+       * (such as in vb::Image), you should set them to NULL in your 
+       * destructor.
+       */
+
       virtual ~AutoWindow ();
 
       /// Update the screen, handle the events.
@@ -112,6 +121,7 @@ namespace vb {
       unsigned char * raw_image_data;
 
     protected:
+      /// A staging area intended to contain 8bpp grayscale data.
       unsigned char * stage;
 
       /// Return a pointer to 8bpp image data (for PNG output)
