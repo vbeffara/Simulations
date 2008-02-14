@@ -52,7 +52,6 @@ namespace vb {
       int _w,_h;
       int w() { return _w; }
       int h() { return _h; }
-      virtual ~AutoWindow () { }
       bool visible() { return false; }
       void show() { }
       virtual void on_quit() { };
