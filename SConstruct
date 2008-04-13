@@ -77,6 +77,8 @@ env = Environment(
     LINKFLAGS = Split(os.environ.get ('LDFLAGS', "")),
     )
 
+env.Decider ('MD5-timestamp')
+
 # Get the installation prefix and stuff.
 
 opts = Options('simulations.conf')
