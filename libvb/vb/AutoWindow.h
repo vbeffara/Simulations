@@ -38,7 +38,7 @@ namespace vb {
     public:
 
       /// Show the window on the screen.
-      void show ();
+      virtual void show ();
 
       /// The thing to do if the user presses 'q'.
       virtual void on_quit() { };
@@ -53,7 +53,7 @@ namespace vb {
       int w() { return _w; }
       int h() { return _h; }
       bool visible() { return false; }
-      void show() { }
+      void show() { };
       virtual void on_quit() { };
 #endif
 
