@@ -17,7 +17,7 @@ if fltk['GUI'] == 'fltk':
         fltk.ParseConfig ("fltk-config --cxxflags --ldflags")
         fltk.MergeFlags ("-DLIBVB_FLTK")
     except OSError:
-        print "FLTK2 not found, building without display support."
+        print "FLTK not found, building without display support."
         fltk['GUI'] = None
 
 fltk.Append ( CPPPATH = ["#libvb"] )
