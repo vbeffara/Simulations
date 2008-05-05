@@ -9,10 +9,10 @@
 #include <string>
 
 #ifdef LIBVB_FLTK
-#include <FL/Fl.h>
-#include <FL/Fl_Double_Window.h>
-#include <FL/fl_draw.h>
-#include <FL/Enumerations.h>
+#include <FL/Fl.H>
+#include <FL/Fl_Double_Window.H>
+#include <FL/fl_draw.H>
+#include <FL/Enumerations.H>
 #endif
 
 #ifdef LIBVB_PNG
