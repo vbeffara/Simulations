@@ -4,6 +4,7 @@
 #ifndef __VB_FIGURE_H
 #define __VB_FIGURE_H
 
+#include <vb/config.h>
 #include <vb/types.h>
 #include <vb/AutoWindow.h>
 
@@ -27,7 +28,7 @@ namespace vb {
 
       virtual std::ostream &printASY (std::ostream &os) =0; ///< Write ASY code for the shape.
 
-#ifdef LIBVB_FLTK
+#ifdef HAVE_FLTK
       virtual void draw () =0;                              ///< Draw the shape in a window (FLTK).
 #endif
   };
@@ -57,7 +58,7 @@ namespace vb {
 
       virtual std::ostream &printASY (std::ostream &os);   ///< Write ASY code for the shape.
 
-#ifdef LIBVB_FLTK
+#ifdef HAVE_FLTK
       virtual void draw ();                                ///< Draw the shape in a window (FLTK).
 #endif
   };
@@ -87,7 +88,7 @@ namespace vb {
 
       virtual std::ostream &printASY (std::ostream &os);   ///< Write ASY code for the shape.
 
-#ifdef LIBVB_FLTK
+#ifdef HAVE_FLTK
       virtual void draw ();                                ///< Draw the shape in a window (FLTK).
 #endif
   };
@@ -117,7 +118,7 @@ namespace vb {
 
       virtual std::ostream &printASY (std::ostream &os);   ///< Write ASY code for the shape.
 
-#ifdef LIBVB_FLTK
+#ifdef HAVE_FLTK
       virtual void draw ();                                ///< Draw the shape in a window (FLTK).
 #endif
   };
@@ -158,7 +159,7 @@ namespace vb {
 
       std::list<Shape*> contents;  ///< The elements of the figure.
 
-#ifdef LIBVB_FLTK
+#ifdef HAVE_FLTK
       void draw (); ///< Draw it onto the screen.
 #endif
   };

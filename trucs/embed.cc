@@ -19,8 +19,16 @@
 
 #include <iostream>
 #include <time.h>
+
+#include <vb/config.h>
+
+#ifdef HAVE_GMPXX
 #include <gmp.h>
 #include <gmpxx.h>
+#else
+#include <math.h>
+#define mpf_class double
+#endif
 
 using std::cout;
 using std::cerr;
@@ -263,9 +271,8 @@ mpf_class optimize (costfunction c) {
 }
 
 int main (void) {
+#ifdef HAVE_GMPXX
   mpf_set_default_prec (nb_bits);
-
-  init_lattice();
 
   for (int i=0;i<4;i++) {
     for (int j=0;j<n_total;j++) {
@@ -274,8 +281,11 @@ int main (void) {
     per[i][0].set_prec(nb_bits);
     per[i][1].set_prec(nb_bits);
   }
+#endif
   
+  init_lattice();
   init_coo();
+
   update_lattice();
 
   mpf_class opt_cost = optimize (cost_triangles);

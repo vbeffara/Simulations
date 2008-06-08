@@ -8,6 +8,7 @@
 
 #include <iostream>
 
+#include <vb/config.h>
 #include <vb/AutoWindow.h>
 
 namespace vb {
@@ -165,7 +166,7 @@ namespace vb {
       void compute_stage();             ///< Fills the stage field with 8bpp data.
       unsigned char * image_data();     ///< Returns 8bpp raw image data (for PNG creation).
 
-#ifdef LIBVB_FLTK
+#ifdef HAVE_FLTK
       void draw();             ///< Fill the fltk::Rectangle R with the image contents.
 #endif
   };

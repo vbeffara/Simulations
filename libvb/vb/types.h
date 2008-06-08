@@ -5,6 +5,7 @@
 #define __VB_TYPES_H
 
 #include <complex>
+#include <vb/config.h>
 
 namespace vb {
   typedef double real;              ///< Utility type for a real number, if I ever want to use GMP.

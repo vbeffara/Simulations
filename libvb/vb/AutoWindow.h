@@ -8,14 +8,16 @@
 #include <time.h>
 #include <string>
 
-#ifdef LIBVB_FLTK
+#include <vb/config.h>
+
+#ifdef HAVE_FLTK
 #include <FL/Fl.H>
 #include <FL/Fl_Double_Window.H>
 #include <FL/fl_draw.H>
 #include <FL/Enumerations.H>
 #endif
 
-#ifdef LIBVB_PNG
+#ifdef HAVE_PNG
 #include <png.h>
 #endif
 
@@ -30,11 +32,11 @@ namespace vb {
    */
 
   class AutoWindow
-#ifdef LIBVB_FLTK
+#ifdef HAVE_FLTK
     : public Fl_Double_Window
 #endif
     {
-#ifdef LIBVB_FLTK
+#ifdef HAVE_FLTK
     public:
 
       /// Show the window on the screen.

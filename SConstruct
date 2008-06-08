@@ -1,8 +1,6 @@
 # General SConstruct file - fit for any project.
 
-import glob
 import os
-import string
 import sys
 
 CacheDir('.scons_cache')

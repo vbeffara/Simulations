@@ -1,5 +1,5 @@
-Import('fltk')
+Import('env')
 
-libvb = fltk.MyLibrary ('vb', Glob("*.cpp"))
+libvb = env.MyLibrary ('vb', Glob("*.cpp"))
 
 Return("libvb")

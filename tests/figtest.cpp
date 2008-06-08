@@ -4,6 +4,7 @@
 
 #include <vb/Figure.h>
 #include <vb/PRNG.h>
+#include <vb/config.h>
 
 using namespace std;
 using namespace vb;
@@ -21,7 +22,7 @@ int main (int argc, char **argv) {
   for (int i=1; i<=5; ++i)
     F.circle (cpx(0,0),i);
 
-#ifdef LIBVB_FLTK
+#ifdef HAVE_FLTK
   //F.resizable(&F);
   F.show();
   Fl::run();

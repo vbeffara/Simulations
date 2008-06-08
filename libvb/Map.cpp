@@ -9,7 +9,7 @@ namespace vb {
       v.push_back(new Vertex(0.0));
       bd.push_back(false);
     }
-#ifdef LIBVB_FLTK
+#ifdef HAVE_FLTK
     //resizable (*this);
 #endif
   }
@@ -41,7 +41,7 @@ namespace vb {
     return l;
   }
 
-#ifdef LIBVB_FLTK
+#ifdef HAVE_FLTK
   void Map::draw () {
     fl_color (FL_WHITE);
     fl_rectf (0,0,w(),h());

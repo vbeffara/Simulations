@@ -1,8 +1,12 @@
+#include <iostream>
+#include <vb/config.h>
+
+#ifdef HAVE_BOOST
+
 #include <boost/config.hpp>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/edmunds_karp_max_flow.hpp>
 #include <boost/graph/graph_utility.hpp>
-#include <iostream>
 #include <vb/CL_Parser.h>
 #include <vb/PRNG.h>
 #include <vb/ProgressBar.h>
@@ -116,3 +120,10 @@ int main(int argc, char **argv) {
   }
   cout << " " << n_iter << endl;
 }
+
+#else
+int main() {
+  std::cerr << "Nothing I can do without Boost !" << std::endl;
+  return 1;
+}
+#endif

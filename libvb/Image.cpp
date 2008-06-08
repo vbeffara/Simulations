@@ -180,7 +180,7 @@ namespace vb {
     return stage;
   }
 
-#ifdef LIBVB_FLTK
+#ifdef HAVE_FLTK
   void Image::draw() {
     compute_stage();
     fl_draw_image_mono (stage,0,0,width,height);

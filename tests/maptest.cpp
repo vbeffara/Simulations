@@ -1,5 +1,7 @@
 #include <iostream>
 #include <iomanip>
+
+#include <vb/config.h>
 #include <vb/Map.h>
 
 using namespace std;
@@ -41,7 +43,7 @@ int main () {
   m.barycentric(); m.inscribe(m.face(Edge(0,m.v[0]->adj.back()))); m.balance(); m.pause();
   m.barycentric(); m.inscribe(m.face(Edge(0,m.v[0]->adj.back()))); m.balance(); m.pause();
 
-#ifdef LIBVB_FLTK
+#ifdef HAVE_FLTK
   Fl::run();
 #endif
 }

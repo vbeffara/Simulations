@@ -9,7 +9,7 @@
 #include <iomanip>
 
 namespace vb {
-#ifdef LIBVB_FLTK
+#ifdef HAVE_FLTK
   /// Forcefully exit the program if the used closes the window.
   void close_window (Fl_Widget *w) {
     exit(1);
@@ -47,7 +47,7 @@ namespace vb {
 #endif
 
   void AutoWindow::update () {
-#ifdef LIBVB_FLTK
+#ifdef HAVE_FLTK
     if (visible()) {
       redraw();
       Fl::check();
@@ -57,14 +57,14 @@ namespace vb {
   }  
 
   AutoWindow::AutoWindow (int wd, int ht, std::string t) : 
-#ifdef LIBVB_FLTK
+#ifdef HAVE_FLTK
     Fl_Double_Window (wd, ht, t.c_str()),
 #endif
     title(t), fps(20), npts(0), delay(1), timer(1),
     saved_clock(clock()), nb_clock(0), snapshot_prefix("snapshot"),
     snapshot_number(0), snapshot_period(0.0), snapshot_clock(clock()),
     paused(false), raw_image_data(NULL), stage(NULL) {
-#ifdef LIBVB_FLTK
+#ifdef HAVE_FLTK
     callback(close_window);
 #else
     _w = wd; _h = ht; 
@@ -94,7 +94,7 @@ namespace vb {
   }
 
   void AutoWindow::output_png (std::string s) {
-#ifdef LIBVB_PNG
+#ifdef HAVE_PNG
     unsigned char *p = image_data();
     if (!p) {
       std::cerr << "libvb: don't know how to get image data!" << std::endl;
@@ -148,7 +148,7 @@ namespace vb {
   }
 
   unsigned char * AutoWindow::image_data () {
-#ifdef LIBVB_FLTK
+#ifdef HAVE_FLTK
     if (!raw_image_data) raw_image_data = new unsigned char [w()*h()*3];
 
     make_current();

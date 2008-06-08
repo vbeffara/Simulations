@@ -2,29 +2,34 @@
 
 Import('env')
 
-# Build libvb and the associated environment.
+# Check the configuration
 
-fltk = env.Clone()
+conf = Configure(env, config_h='#build/libvb/vb/config.h')
 
-conf = Configure(fltk)
 if conf.CheckCHeader ("png.h"):
-    fltk.Append (LIBS = ["png"])
-    fltk.MergeFlags ("-DLIBVB_PNG")
+    conf.Define ('HAVE_PNG')
+    env.Append (LIBS = ["png"])
+
+if env['GUI'] == 'fltk' and conf.CheckCXXHeader ("FL/Fl.H"):
+    conf.Define ('HAVE_FLTK')
+    env.ParseConfig ("fltk-config --cxxflags --ldflags")
+
+if conf.CheckCXXHeader ("gmpxx.h"):
+    conf.Define ('HAVE_GMPXX')
+    env.Append ( LIBS = ['gmp', 'gmpxx'] )
+
+if conf.CheckCXXHeader ("boost/graph/graph_utility.hpp"):
+    conf.Define ('HAVE_BOOST')
+
 conf.Finish()
 
-if fltk['GUI'] == 'fltk':
-    try:
-        fltk.ParseConfig ("fltk-config --cxxflags --ldflags")
-        fltk.MergeFlags ("-DLIBVB_FLTK")
-    except OSError:
-        print "FLTK not found, building without display support."
-        fltk['GUI'] = None
+# Build libvb and the associated environment.
 
-fltk.Append ( CPPPATH = ["#libvb"] )
+env.Append ( CPPPATH = ["#build/libvb"] )
 
-libvb = SConscript ("libvb/SConscript", exports="fltk")
+libvb = SConscript ("libvb/SConscript", exports="env")
 
-vb = fltk.Clone()
+vb = env.Clone()
 vb.Append ( LIBPATH = [ libvb[0].dir ], LIBS = ["vb"] )
 
 # Now build the programs.
@@ -36,5 +41,5 @@ SConscript ("xtoys/SConscript", exports="env")
 
 # Install the headers
 
-env.Install ("$prefix/include", "libvb/vb.h")
-env.Install ("$prefix/include/vb", Glob("libvb/vb/*.h"))
+env.Install ("$prefix/include", "#libvb/vb.h")
+env.Install ("$prefix/include/vb", env.Glob("#build/libvb/vb/*.h"))

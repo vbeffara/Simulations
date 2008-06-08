@@ -20,7 +20,7 @@ namespace vb {
     return os << "draw (" << z1 << "--" << z2 << ");" << std::endl;
   }
 
-#ifdef LIBVB_FLTK
+#ifdef HAVE_FLTK
   void Segment::draw () {
     fl_begin_line();
     fl_vertex ((float) z1.real(), (float) z1.imag());
@@ -43,7 +43,7 @@ namespace vb {
     return os << "dot(" << z << ");" << std::endl;
   }
 
-#ifdef LIBVB_FLTK
+#ifdef HAVE_FLTK
   void Dot::draw () { }
 #endif
 
@@ -61,14 +61,14 @@ namespace vb {
     return os << "draw (circle(" << z << "," << r << "));" << std::endl;
   }
 
-#ifdef LIBVB_FLTK
+#ifdef HAVE_FLTK
   void Circle::draw () {
     fl_circle ((float) z.real(), (float) z.imag(), (float) r);
   }
 #endif
 
   Figure::Figure () : AutoWindow (400,400,"Figure") {
-#ifdef LIBVB_FLTK
+#ifdef HAVE_FLTK
     //resizable (*this);
 #endif
   }
@@ -133,7 +133,7 @@ namespace vb {
     return add (new Circle (z,r));
   }
 
-#ifdef LIBVB_FLTK
+#ifdef HAVE_FLTK
   void Figure::draw() {
     fl_color (FL_WHITE);
     fl_rectf (0,0,w(),h());
