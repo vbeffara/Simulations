@@ -1,8 +1,15 @@
 
 # This is a simple wrapper around SCons for convenience
+#
+# Change the lines below (or use the command line) accordingly : PREFIX 
+# is the installation prefix, GUI is either 'fltk' (try to use fltk if 
+# present) or 'none' (don't even try).
+
+PREFIX = /usr/local
+GUI = fltk
 
 all: tools/scons.py
-	python tools/scons.py
+	python tools/scons.py GUI=$(GUI) prefix=$(PREFIX)
 
 clean:
 	rm -rf build

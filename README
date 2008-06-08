@@ -3,6 +3,13 @@ Simulations and stuff - Vincent Beffara <vbeffara@ens-lyon.fr>
 
   http://www.umpa.ens-lyon.fr/~vbeffara/libvb/
 
+0. Executive simmary
+
+Compile typing either 'scons' (if you have it installed) or 'make' (if 
+you don't - it will use the bundled one). Don't forget to add 
+build/libvb to your LD_LIBRARY_PATH variable if necessary.
+
+
 1. Compilation
 
 I am using the very nice SCons framework for my simulations, because
@@ -15,6 +22,7 @@ If you don't have SCons installed, for convenience there is one in the
 tools/ directory. You can untar it there and then, from the top 
 directory, run it by typing 'python tools/scons.py'. This is what the 
 included Makefile does, so you can actually type 'make' instead.
+
 
 2. Some notes about the 'libvb' library
 
