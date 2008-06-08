@@ -4,7 +4,6 @@
 
 #include <vb/Figure.h>
 #include <vb/PRNG.h>
-#include <vb/config.h>
 
 using namespace std;
 using namespace vb;
