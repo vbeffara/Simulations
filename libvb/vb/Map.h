@@ -322,16 +322,16 @@ namespace vb {
       void mobius_circle (cpx w, real r);
 
       /// Returns the leftmost coordinate of anything on the map.
-      double left ();
+      real left ();
 
       /// Returns the rightmost coordinate of anything on the map.
-      double right ();
+      real right ();
 
       /// Returns the topmost coordinate of anything on the map.
-      double top ();
+      real top ();
 
       /// Returns the bottom-most coordinate of anything on the map.
-      double bottom ();
+      real bottom ();
 
       /// Draw the (planar) map on the current vb::AutoWindow.
       void draw ();

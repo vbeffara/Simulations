@@ -6,7 +6,7 @@
 namespace vb {
   Map::Map (int nn) : AutoWindow (400,400,"A planar map"), n(nn), zero(-1), one(-1), infinity(-1) {
     for (int i=0; i<n; ++i) {
-      v.push_back(new Vertex(0.0));
+      v.push_back(new Vertex((real)0.0));
       bd.push_back(false);
     }
 #ifdef HAVE_FLTK
@@ -47,8 +47,8 @@ namespace vb {
     fl_rectf (0,0,w(),h());
 
     fl_push_matrix();
-    fl_scale(w()/(float)(right()-left()), h()/(float)(top()-bottom()));
-    fl_translate((float)(-left()),(float)(-bottom()));
+    fl_scale( (real(w())/(right()-left())).get_d(), (real(h())/(top()-bottom())).get_d());
+    fl_translate((-left()),(-bottom()));
 
     fl_color (FL_BLACK);
 
@@ -117,7 +117,7 @@ namespace vb {
     int k=0;
     for (std::list<int>::iterator i = face_ext.begin(); i != face_ext.end(); ++i, --k) {
       bd[*i] = true;
-      v[*i]->z = radius * exp(cpx(0,(reverse?-2.0:2.0)*3.1415927*k/n_ext));
+      v[*i]->z = radius * exp(cpx(real(0.0),(reverse?-2.0:2.0)*3.1415927*k/n_ext));
     }
   }
 
@@ -167,9 +167,9 @@ namespace vb {
     }
 
     for (std::vector<adj_list>::iterator i = new_vertices.begin(); i != new_vertices.end(); ++i) {
-      v.push_back(new Vertex(0.0));
+      v.push_back(new Vertex(real(0.0)));
       v.back()->adj = (*i);
-      v.back()->z = ( v[(*i).front()]->z + v[(*i).back()]->z )/2.0;
+      v.back()->z = ( v[(*i).front()]->z + v[(*i).back()]->z )/real(2.0);
       bd.push_back(false);
       ++n;
     }
@@ -307,7 +307,7 @@ namespace vb {
   }
 
   real Map::ACPA () {
-    for (int i=0; i<n; ++i) if (v[i]->r == 0.0) v[i]->r = 1.0;
+    for (int i=0; i<n; ++i) if (v[i]->r == real(0.0)) v[i]->r = 1.0;
 
     std::vector<real> pre_delta;
     pre_delta.push_back(0.0);
@@ -426,17 +426,17 @@ namespace vb {
     w /= scale;
     r /= scale;
 
-    cpx Delta = (1.0+norm(w)-r*r)*(1.0+norm(w)-r*r) - 4.0*norm(w);
-    cpx x = ( (1.0+norm(w)-r*r) + sqrt(Delta) ) / (2.0*conj(w));
+    cpx Delta = (real(1.0) + norm(w) - r*r) * (real(1.0) + norm(w) - r*r) - real(4.0)*norm(w);
+    cpx x = ( (real(1.0) + norm(w) - r*r) + sqrt(Delta) ) / (real(2.0) * conj(w));
     if (norm(x)>1.0)
-      x = ( (1.0+norm(w)-r*r) - sqrt(Delta) ) / (2.0*conj(w));
+      x = ( (real(1.0) + norm(w) - r*r) - sqrt(Delta) ) / (real(2.0) * conj(w));
 
     for (int i=0; i<n; ++i) {
       cpx W = v[i]->z/scale;
       real R = v[i]->r/scale;
 
-      cpx A = norm(1.0-W*conj(x)) - R*R*norm(x);
-      cpx B = (1.0-W*conj(x))*(conj(x)-conj(W)) - R*R*conj(x);
+      cpx A = norm(real(1.0) - W*conj(x)) - R*R*norm(x);
+      cpx B = (real(1.0) - W*conj(x)) * (conj(x)-conj(W)) - R*R*conj(x);
       cpx C = (x-W)*(conj(x)-conj(W)) - R*R;
 
       v[i]->z = scale * conj(-B/A);
