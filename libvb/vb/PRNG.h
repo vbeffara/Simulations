@@ -157,6 +157,12 @@ namespace vb {
       long long rdmbuf;
   };
 
+#define PRNG_MT_N 624                   ///< Size of the buffer
+#define PRNG_MT_M 397                   ///< Size of the shift (?)
+#define PRNG_MT_MATRIX_A 0x9908b0dfUL	///< Constant vector a
+#define PRNG_MT_UPPER_MASK 0x80000000UL	///< Most significant w-r bits
+#define PRNG_MT_LOWER_MASK 0x7fffffffUL	///< Least significant r bits
+
   /** Mersenne Twister pseudo-random number generator engine.
    *
    * Original version : mt19937ar.c by Takuji Nishimura and Makoto
@@ -207,12 +213,6 @@ namespace vb {
    *     http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html
    *     email: m-mat @ math.sci.hiroshima-u.ac.jp (remove space)
    */
-
-#define PRNG_MT_N 624                   ///< Size of the buffer
-#define PRNG_MT_M 397                   ///< Size of the shift (?)
-#define PRNG_MT_MATRIX_A 0x9908b0dfUL	///< Constant vector a
-#define PRNG_MT_UPPER_MASK 0x80000000UL	///< Most significant w-r bits
-#define PRNG_MT_LOWER_MASK 0x7fffffffUL	///< Least significant r bits
 
   class PRNG_MT : public PRNG_base {
     public:
