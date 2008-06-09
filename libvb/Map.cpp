@@ -308,7 +308,11 @@ namespace vb {
   }
 
   real Map::ACPA () {
-    for (int i=0; i<n; ++i) if (v[i]->r == real(0.0)) v[i]->r = 1.0;
+    for (int i=0; i<n; ++i) {
+      if (v[i]->r == real(0.0)) {
+        v[i]->r = 1.0;
+      }
+    }
 
     std::vector<real> pre_delta;
     pre_delta.push_back(0.0);
@@ -334,6 +338,8 @@ namespace vb {
 
     int steps = 0;
 
+    real beta,x,y,z,theta,nr,dlambda,sqrtlambda;
+
     while (E < old_E) {
       if (!(steps%100)) std::cerr << E << "           \r";
       ++steps;
@@ -346,34 +352,37 @@ namespace vb {
 
         int k = v[i]->adj.size();
 
-        real x = v[i]->r;
-        real y = v[v[i]->adj.back()]->r, z;
-        real theta = 0.0;
+        x = v[i]->r;
+        y = v[v[i]->adj.back()]->r;
+        theta = 0.0;
 
         for (adj_list::iterator j = v[i]->adj.begin(); j != v[i]->adj.end(); ++j) {
           z = y; y = v[*j]->r;
-          theta += acos (((x+y)*(x+y) + (x+z)*(x+z) - (y+z)*(y+z)) / (2*(x+y)*(x+z)));
+          double t = (((x+y)*(x+y) + (x+z)*(x+z) - (y+z)*(y+z)) / (2*(x+y)*(x+z)));
+          if (t < -1.0) t = -1.0;
+          if (t > +1.0) t = +1.0;
+          theta += acos (t);
         }
         E += (theta - TWO_PI)*(theta - TWO_PI);
 
-        real beta = sin (theta/(2*k));
+        beta = sin (theta/(2*k));
 
         old_rad[i] = v[i]->r;
-        v[i]->r *= pre_delta[k] * (beta/(1-beta));
+        if (beta != real(1.0))
+          v[i]->r *= pre_delta[k] * (beta/(1-beta));
       }
 
       old_lambda = lambda; lambda = (old_E-E)/E;
 
-      real dlambda = (old_lambda-lambda)/lambda;
+      dlambda = (old_lambda-lambda)/lambda;
       if (fabs(dlambda) < .01) {
-        real sqrtlambda = sqrt(lambda);
+        sqrtlambda = sqrt(lambda);
         for (int i=0; i<n; ++i) {
-          real nr = v[i]->r + (v[i]->r-old_rad[i])/sqrtlambda;
+          nr = v[i]->r + (v[i]->r-old_rad[i])/sqrtlambda;
           if (nr>0) v[i]->r = nr;
         }
         old_lambda = 0.0;
       }
-
     }
 
     return E;
@@ -407,13 +416,15 @@ namespace vb {
           if ((prev_z != nowhere) && (z == nowhere) && ((!bd[i])||(!bd[*j]))) {
             real x = v[i]->r;
             real y = v[*j]->r;
-            real alpha = acos (((x+y)*(x+y) + (x+prev_r)*(x+prev_r) - (y+prev_r)*(y+prev_r)) / (2*(x+y)*(x+prev_r)));
+            double t = (((x+y)*(x+y) + (x+prev_r)*(x+prev_r) - (y+prev_r)*(y+prev_r)) / (2*(x+y)*(x+prev_r)));
+            if (t<-1.0) t=-1.0;
+            if (t>1.0) t=1.0;
+            real alpha = acos (t);
             alpha += arg(prev_z-v[i]->z);
             v[*j]->z = v[i]->z + (x+y) * cpx(cos(alpha),sin(alpha));
             z = v[*j]->z;
             dirty = true;
           }
-
           prev_z = z; prev_r = v[*j]->r;
         }
       }
@@ -447,6 +458,7 @@ namespace vb {
   }
 
   real Map::circlepack (int _zero, int _one, const std::list<int> _bord) {
+    balance();
     // First, add the outer vertex.
 
     v.push_back (new Vertex(cpx(0.0),sqrt((real)n)));
