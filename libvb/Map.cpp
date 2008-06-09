@@ -117,7 +117,8 @@ namespace vb {
     int k=0;
     for (std::list<int>::iterator i = face_ext.begin(); i != face_ext.end(); ++i, --k) {
       bd[*i] = true;
-      v[*i]->z = radius * exp(cpx(real(0.0),(reverse?-2.0:2.0)*3.1415927*k/n_ext));
+      real angle = (reverse?-2.0:2.0)*3.1415927*k/n_ext;
+      v[*i]->z = radius * cpx(cos(angle),sin(angle));
     }
   }
 
@@ -263,7 +264,7 @@ namespace vb {
     for (int i=0; i<n; ++i) {
       cpx z = v[i]->z / scale;
       w /= scale;
-      v[i]->z = scale * (z-w)*exp(cpx(0,theta))/(cpx(1,0)-z*conj(w));
+      v[i]->z = scale * (z-w)*cpx(cos(theta),sin(theta))/(cpx(1,0)-z*conj(w));
     }
   }
 
@@ -407,7 +408,8 @@ namespace vb {
             real x = v[i]->r;
             real y = v[*j]->r;
             real alpha = acos (((x+y)*(x+y) + (x+prev_r)*(x+prev_r) - (y+prev_r)*(y+prev_r)) / (2*(x+y)*(x+prev_r)));
-            v[*j]->z = v[i]->z + (x+y) * exp(cpx(0.0,alpha + arg(prev_z-v[i]->z)));
+            alpha += arg(prev_z-v[i]->z);
+            v[*j]->z = v[i]->z + (x+y) * cpx(cos(alpha),sin(alpha));
             z = v[*j]->z;
             dirty = true;
           }
@@ -419,7 +421,7 @@ namespace vb {
   }
 
   void Map::rotate (real theta) {
-    for (int i=0; i<n; ++i) v[i]->z *= exp(cpx(0.0,theta));
+    for (int i=0; i<n; ++i) v[i]->z *= cpx(cos(theta),sin(theta));
   }
 
   void Map::mobius_circle (cpx w, real r) {
@@ -486,7 +488,7 @@ namespace vb {
       real new_module = n*module/(module*module-rayon*rayon);
 
       v[i]->r = n*rayon/(module*module-rayon*rayon);
-      v[i]->z = new_module * exp(cpx(0,-argument));
+      v[i]->z = new_module * cpx(cos(argument),-sin(-argument));
     }
 
     // Map _zero to 0

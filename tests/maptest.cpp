@@ -35,10 +35,9 @@ int main () {
 
   m.show();
   m.fps = 3;
-  m.balance(); m.pause();
-  m.barycentric(); m.inscribe(m.face(Edge(0,m.v[0]->adj.back()))); m.balance(); m.pause();
-  m.barycentric(); m.inscribe(m.face(Edge(0,m.v[0]->adj.back()))); m.balance(); m.pause();
-  m.barycentric(); m.inscribe(m.face(Edge(0,m.v[0]->adj.back()))); m.balance(); m.pause();
+  m.balance(); //m.pause();
+  m.barycentric(); m.inscribe(m.face(Edge(0,m.v[0]->adj.back()))); m.balance(); //m.pause();
+  m.barycentric(); m.inscribe(m.face(Edge(0,m.v[0]->adj.back()))); m.balance(); //m.pause();
 
   m.circlepack (6,0,m.face(Edge(0,m.v[0]->adj.back())));
   Figure f; m.plot_circles (f); f.show(); f.pause();

@@ -4,6 +4,8 @@
 #ifndef __VB_TYPES_H
 #define __VB_TYPES_H
 
+#define DBG std::cerr << "Debug : " << __FILE__ << " - " << __LINE__ << std::endl
+
 #include <complex>
 #include <vb/config.h>
 
@@ -52,7 +54,7 @@ namespace vb {
       double get_d() { return _r.get_d(); }
   };
 
-  inline real exp (const real &r) { return real (exp(r)); }
+  //inline real exp (const real &r) { return real (exp(r)); }
   inline real sqrt (const real &r) { return real ((mpf_class) sqrt(r._r)); }
 #else
   typedef double real;              ///< Utility type for a real number, if I ever want to use GMP.
