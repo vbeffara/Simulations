@@ -7,6 +7,7 @@
 #include <complex>
 #include <iostream>
 #include <vb/config.h>
+#include <math.h>
 
 #ifdef HAVE_GMPXX
 #include <gmpxx.h>
@@ -37,7 +38,7 @@ namespace vb {
       Real operator*= (Real other) { _r *= other._r; return (*this); }
       Real operator/= (Real other) { _r /= other._r; return (*this); }
 
-      double get_d() { return _r.get_d(); }
+      double get_d() const { return _r.get_d(); }
   };
 
   inline bool operator== (const Real &x, const Real &y) { return x._r == y._r; }
@@ -55,13 +56,13 @@ namespace vb {
 
   inline std::ostream &operator<< (std::ostream &o, const Real &x) { return o << x._r; }
 
-  inline Real abs (const Real &r) { return Real (abs(r)); }
-  inline Real fabs (const Real &r) { return Real (fabs(r)); }
-  inline Real exp (const Real &r) { return Real (exp(r)); }
-  inline Real cos (const Real &r) { return Real (cos(r._r)); }
-  inline Real acos (const Real &r) { return Real (acos(r._r)); }
-  inline Real sin (const Real &r) { return Real (sin(r._r)); }
-  inline Real sqrt (const Real &r) { return Real (sqrt(r._r)); }
+  inline Real abs (const Real &r) { return std::abs(r.get_d()); }
+  inline Real fabs (const Real &r) { return std::fabs(r.get_d()); }
+  inline Real exp (const Real &r) { return std::exp(r.get_d()); }
+  inline Real cos (const Real &r) { return std::cos(r.get_d()); }
+  inline Real acos (const Real &r) { return std::acos(r.get_d()); }
+  inline Real sin (const Real &r) { return std::sin(r.get_d()); }
+  inline Real sqrt (const Real &r) { return std::sqrt(r.get_d()); }
 
   inline Real atan2 (const Real &x, const Real &y) { return Real (atan2(x._r,y._r)); }
 #else

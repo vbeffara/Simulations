@@ -10,7 +10,7 @@ using namespace vb;
 //namespace vb { typedef double Real; }
 
 Real f (Matrix<Real> x) {
-  return 2.0 - cos(x.data[0][0]) - cos(x.data[1][0]);
+  return 2 - cos(x.data[0][0]) - cos(x.data[1][0]);
 }
 
 Matrix<Real> g (Matrix<Real> x) {
