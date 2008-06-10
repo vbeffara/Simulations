@@ -6,7 +6,7 @@
 namespace vb {
   Map::Map (int nn) : AutoWindow (400,400,"A planar map"), n(nn), zero(-1), one(-1), infinity(-1) {
     for (int i=0; i<n; ++i) {
-      v.push_back(new Vertex((Real)0.0));
+      v.push_back(new Vertex(0.0));
       bd.push_back(false);
     }
 #ifdef HAVE_FLTK
@@ -47,7 +47,7 @@ namespace vb {
     fl_rectf (0,0,w(),h());
 
     fl_push_matrix();
-    fl_scale( (Real(w())/(right()-left())).get_d(), (Real(h())/(top()-bottom())).get_d());
+    fl_scale( (w()/(right()-left())).get_d(), (h()/(top()-bottom())).get_d());
     fl_translate((-left()).get_d(),(-bottom()).get_d());
 
     fl_color (FL_BLACK);
@@ -168,9 +168,9 @@ namespace vb {
     }
 
     for (std::vector<adj_list>::iterator i = new_vertices.begin(); i != new_vertices.end(); ++i) {
-      v.push_back(new Vertex(Real(0.0)));
+      v.push_back(new Vertex(0.0));
       v.back()->adj = (*i);
-      v.back()->z = ( v[(*i).front()]->z + v[(*i).back()]->z )/Real(2.0);
+      v.back()->z = (v[(*i).front()]->z + v[(*i).back()]->z)/Real(2.0);
       bd.push_back(false);
       ++n;
     }
@@ -248,7 +248,7 @@ namespace vb {
     Real tmp = 0.0;
     for (int i=0; i<n; ++i)
       for (adj_list::iterator j = v[i]->adj.begin(); j != v[i]->adj.end(); ++j)
-        tmp += 1.0/((Real) face(Edge(i,*j)).size());
+        tmp += 1.0/face(Edge(i,*j)).size();
     return floor ((tmp + .1).get_d());
   }
 
@@ -309,7 +309,7 @@ namespace vb {
 
   Real Map::ACPA () {
     for (int i=0; i<n; ++i) {
-      if (v[i]->r == Real(0.0)) {
+      if (v[i]->r == 0) {
         v[i]->r = 1.0;
       }
     }
@@ -368,7 +368,7 @@ namespace vb {
         beta = sin (theta/(2*k));
 
         old_rad[i] = v[i]->r;
-        if (beta != Real(1.0))
+        if (beta != 1)
           v[i]->r *= pre_delta[k] * (beta/(1-beta));
       }
 
@@ -439,17 +439,16 @@ namespace vb {
     w /= scale;
     r /= scale;
 
-    cpx Delta = (Real(1.0) + norm(w) - r*r) * (Real(1.0) + norm(w) - r*r) - Real(4.0)*norm(w);
-    cpx x = ( (Real(1.0) + norm(w) - r*r) + sqrt(Delta) ) / (Real(2.0) * conj(w));
-    if (norm(x)>1.0)
-      x = ( (Real(1.0) + norm(w) - r*r) - sqrt(Delta) ) / (Real(2.0) * conj(w));
+    cpx Delta = (1+norm(w)-r*r)*(1+norm(w)-r*r) - 4*norm(w);
+    cpx x = ((1+norm(w)-r*r) + sqrt(Delta)) / (Real(2)*conj(w));
+    if (norm(x)>1) x = ((1+norm(w)-r*r) - sqrt(Delta)) / (Real(2)*conj(w));
 
     for (int i=0; i<n; ++i) {
       cpx W = v[i]->z/scale;
       Real R = v[i]->r/scale;
 
-      cpx A = norm(Real(1.0) - W*conj(x)) - R*R*norm(x);
-      cpx B = (Real(1.0) - W*conj(x)) * (conj(x)-conj(W)) - R*R*conj(x);
+      cpx A = norm(Real(1) - W*conj(x)) - R*R*norm(x);
+      cpx B = (Real(1) - W*conj(x)) * (conj(x)-conj(W)) - R*R*conj(x);
       cpx C = (x-W)*(conj(x)-conj(W)) - R*R;
 
       v[i]->z = scale * conj(-B/A);
@@ -461,9 +460,9 @@ namespace vb {
     balance();
     // First, add the outer vertex.
 
-    v.push_back (new Vertex(cpx(0.0),sqrt((Real)n)));
+    v.push_back (new Vertex(0,sqrt(n)));
     v[n]->adj = _bord;
-    scale = sqrt((Real)n);
+    scale = sqrt(n);
     ++n;
 
     int prev_i = _bord.back();
@@ -476,9 +475,9 @@ namespace vb {
 
     for (int i=0; i<n; ++i) bd[i]=false;
 
-    bd[n-1] = true; v[n-1]->r = sqrt((Real)(n-1));
-    bd[_bord.front()] = true; v[_bord.front()]->r = sqrt((Real)(n-1));
-    bd[_bord.back()] = true; v[_bord.back()]->r = sqrt((Real)(n-1));
+    bd[n-1] = true; v[n-1]->r = sqrt(n-1);
+    bd[_bord.front()] = true; v[_bord.front()]->r = sqrt(n-1);
+    bd[_bord.back()] = true; v[_bord.back()]->r = sqrt(n-1);
     Real output = ACPA();
     rad_to_pos (_bord.front(), _bord.back());
 

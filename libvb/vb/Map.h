@@ -31,6 +31,9 @@ namespace vb {
 
       /// The default constructor.
       Vertex (cpx z=cpx(0.0,0.0), Real r=0.0) : Circle(z,r) {};
+
+      /// Shortcut for a point on the real line.
+      Vertex (Real z, Real r=0.0) : Circle(z,r) {};
   };
 
   /** The main class for a planar map.
