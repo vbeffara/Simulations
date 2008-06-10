@@ -84,32 +84,32 @@ namespace vb {
     clean();
   }
 
-  real Figure::left () {
-    real l = 0.0;
+  Real Figure::left () {
+    Real l = 0.0;
     std::list<Shape*>::iterator i;
     for (i=contents.begin(); i!=contents.end(); ++i)
       l = min (l,(*i)->left());
     return l;
   }
 
-  real Figure::right () {
-    real l = 0.0;
+  Real Figure::right () {
+    Real l = 0.0;
     std::list<Shape*>::iterator i;
     for (i=contents.begin(); i!=contents.end(); ++i)
       l = max (l,(*i)->right());
     return l;
   }
 
-  real Figure::top () {
-    real l = 0.0;
+  Real Figure::top () {
+    Real l = 0.0;
     std::list<Shape*>::iterator i;
     for (i=contents.begin(); i!=contents.end(); ++i)
       l = max (l,(*i)->top());
     return l;
   }
 
-  real Figure::bottom () {
-    real l = 0.0;
+  Real Figure::bottom () {
+    Real l = 0.0;
     std::list<Shape*>::iterator i;
     for (i=contents.begin(); i!=contents.end(); ++i)
       l = min (l,(*i)->bottom());
@@ -129,7 +129,7 @@ namespace vb {
     return add (new Dot (z,l));
   }
 
-  Figure & Figure::circle (cpx z, real r) {
+  Figure & Figure::circle (cpx z, Real r) {
     return add (new Circle (z,r));
   }
 

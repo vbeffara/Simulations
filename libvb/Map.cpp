@@ -6,7 +6,7 @@
 namespace vb {
   Map::Map (int nn) : AutoWindow (400,400,"A planar map"), n(nn), zero(-1), one(-1), infinity(-1) {
     for (int i=0; i<n; ++i) {
-      v.push_back(new Vertex((real)0.0));
+      v.push_back(new Vertex((Real)0.0));
       bd.push_back(false);
     }
 #ifdef HAVE_FLTK
@@ -17,26 +17,26 @@ namespace vb {
   Map::~Map () {
   }
 
-  real Map::left () { 
-    real l = 0.0;
+  Real Map::left () { 
+    Real l = 0.0;
     for (int i=0; i<n; ++i) l = min (l, v[i]->z.real());
     return l;
   }
 
-  real Map::right () { 
-    real l = 0.0;
+  Real Map::right () { 
+    Real l = 0.0;
     for (int i=0; i<n; ++i) l = max (l, v[i]->z.real());
     return l;
   }
 
-  real Map::top () { 
-    real l = 0.0;
+  Real Map::top () { 
+    Real l = 0.0;
     for (int i=0; i<n; ++i) l = max (l, v[i]->z.imag());
     return l;
   }
 
-  real Map::bottom () { 
-    real l = 0.0;
+  Real Map::bottom () { 
+    Real l = 0.0;
     for (int i=0; i<n; ++i) l = min (l, v[i]->z.imag());
     return l;
   }
@@ -47,7 +47,7 @@ namespace vb {
     fl_rectf (0,0,w(),h());
 
     fl_push_matrix();
-    fl_scale( (real(w())/(right()-left())).get_d(), (real(h())/(top()-bottom())).get_d());
+    fl_scale( (Real(w())/(right()-left())).get_d(), (Real(h())/(top()-bottom())).get_d());
     fl_translate((-left()),(-bottom()));
 
     fl_color (FL_BLACK);
@@ -108,7 +108,7 @@ namespace vb {
     return l;
   }
 
-  void Map::inscribe (std::list<int> face_ext, real radius, bool reverse) {
+  void Map::inscribe (std::list<int> face_ext, Real radius, bool reverse) {
     int n_ext = face_ext.size();
 
     for (int i=0; i<n; ++i) { bd[i] = false; }
@@ -117,7 +117,7 @@ namespace vb {
     int k=0;
     for (std::list<int>::iterator i = face_ext.begin(); i != face_ext.end(); ++i, --k) {
       bd[*i] = true;
-      real angle = (reverse?-2.0:2.0)*3.1415927*k/n_ext;
+      Real angle = (reverse?-2.0:2.0)*3.1415927*k/n_ext;
       v[*i]->z = radius * cpx(cos(angle),sin(angle));
     }
   }
@@ -168,9 +168,9 @@ namespace vb {
     }
 
     for (std::vector<adj_list>::iterator i = new_vertices.begin(); i != new_vertices.end(); ++i) {
-      v.push_back(new Vertex(real(0.0)));
+      v.push_back(new Vertex(Real(0.0)));
       v.back()->adj = (*i);
-      v.back()->z = ( v[(*i).front()]->z + v[(*i).back()]->z )/real(2.0);
+      v.back()->z = ( v[(*i).front()]->z + v[(*i).back()]->z )/Real(2.0);
       bd.push_back(false);
       ++n;
     }
@@ -245,10 +245,10 @@ namespace vb {
   }
 
   int Map::nb_faces () {
-    real tmp = 0.0;
+    Real tmp = 0.0;
     for (int i=0; i<n; ++i)
       for (adj_list::iterator j = v[i]->adj.begin(); j != v[i]->adj.end(); ++j)
-        tmp += 1.0/((real) face(Edge(i,*j)).size());
+        tmp += 1.0/((Real) face(Edge(i,*j)).size());
     return (int) floor (tmp + .1);
   }
 
@@ -260,7 +260,7 @@ namespace vb {
     return 1 - (euler()/2);
   }
 
-  void Map::mobius (cpx w, real theta) {
+  void Map::mobius (cpx w, Real theta) {
     for (int i=0; i<n; ++i) {
       cpx z = v[i]->z / scale;
       w /= scale;
@@ -268,11 +268,11 @@ namespace vb {
     }
   }
 
-  real Map::optimize (real func(const Map&), real delta_func(const Map&,int,cpx,real)) {
-    real cost = func(*this);
-    real delta_cost = 1;
-    real delta = 1.0;
-    real dv;
+  Real Map::optimize (Real func(const Map&), Real delta_func(const Map&,int,cpx,Real)) {
+    Real cost = func(*this);
+    Real delta_cost = 1;
+    Real delta = 1.0;
+    Real dv;
 
     while (delta_cost > 0) {
       std::cerr << cost << "         \r";
@@ -307,14 +307,14 @@ namespace vb {
     return cost;
   }
 
-  real Map::ACPA () {
+  Real Map::ACPA () {
     for (int i=0; i<n; ++i) {
-      if (v[i]->r == real(0.0)) {
+      if (v[i]->r == Real(0.0)) {
         v[i]->r = 1.0;
       }
     }
 
-    std::vector<real> pre_delta;
+    std::vector<Real> pre_delta;
     pre_delta.push_back(0.0);
 
     int max_degree = 0;
@@ -323,22 +323,22 @@ namespace vb {
       if (degree > max_degree) max_degree = degree;
     }
     for (int k=1; k<=max_degree; ++k) {
-      real delta = sin (4*atan(1)/k);
+      Real delta = sin (4*atan(1)/k);
       pre_delta.push_back((1-delta)/delta);
     }
 
-    std::vector<real> old_rad;
+    std::vector<Real> old_rad;
     for (int i=0; i<n; ++i) old_rad.push_back(v[i]->r);
 
-    real old_lambda = 0.0;
-    real lambda = 0.0;
+    Real old_lambda = 0.0;
+    Real lambda = 0.0;
 
-    real old_E = 8.0*n + 1;
-    real E = 8.0*n;
+    Real old_E = 8.0*n + 1;
+    Real E = 8.0*n;
 
     int steps = 0;
 
-    real beta,x,y,z,theta,nr,dlambda,sqrtlambda;
+    Real beta,x,y,z,theta,nr,dlambda,sqrtlambda;
 
     while (E < old_E) {
       if (!(steps%100)) std::cerr << E << "           \r";
@@ -368,7 +368,7 @@ namespace vb {
         beta = sin (theta/(2*k));
 
         old_rad[i] = v[i]->r;
-        if (beta != real(1.0))
+        if (beta != Real(1.0))
           v[i]->r *= pre_delta[k] * (beta/(1-beta));
       }
 
@@ -409,17 +409,17 @@ namespace vb {
         if (v[i]->adj.size() == 0) continue;
 
         cpx prev_z = v[v[i]->adj.back()]->z;
-        real prev_r = v[v[i]->adj.back()]->r;
+        Real prev_r = v[v[i]->adj.back()]->r;
 
         for (adj_list::iterator j = v[i]->adj.begin(); j != v[i]->adj.end(); ++j) {
           cpx z = v[*j]->z;
           if ((prev_z != nowhere) && (z == nowhere) && ((!bd[i])||(!bd[*j]))) {
-            real x = v[i]->r;
-            real y = v[*j]->r;
+            Real x = v[i]->r;
+            Real y = v[*j]->r;
             double t = (((x+y)*(x+y) + (x+prev_r)*(x+prev_r) - (y+prev_r)*(y+prev_r)) / (2*(x+y)*(x+prev_r)));
             if (t<-1.0) t=-1.0;
             if (t>1.0) t=1.0;
-            real alpha = acos (t);
+            Real alpha = acos (t);
             alpha += arg(prev_z-v[i]->z);
             v[*j]->z = v[i]->z + (x+y) * cpx(cos(alpha),sin(alpha));
             z = v[*j]->z;
@@ -431,25 +431,25 @@ namespace vb {
     }
   }
 
-  void Map::rotate (real theta) {
+  void Map::rotate (Real theta) {
     for (int i=0; i<n; ++i) v[i]->z *= cpx(cos(theta),sin(theta));
   }
 
-  void Map::mobius_circle (cpx w, real r) {
+  void Map::mobius_circle (cpx w, Real r) {
     w /= scale;
     r /= scale;
 
-    cpx Delta = (real(1.0) + norm(w) - r*r) * (real(1.0) + norm(w) - r*r) - real(4.0)*norm(w);
-    cpx x = ( (real(1.0) + norm(w) - r*r) + sqrt(Delta) ) / (real(2.0) * conj(w));
+    cpx Delta = (Real(1.0) + norm(w) - r*r) * (Real(1.0) + norm(w) - r*r) - Real(4.0)*norm(w);
+    cpx x = ( (Real(1.0) + norm(w) - r*r) + sqrt(Delta) ) / (Real(2.0) * conj(w));
     if (norm(x)>1.0)
-      x = ( (real(1.0) + norm(w) - r*r) - sqrt(Delta) ) / (real(2.0) * conj(w));
+      x = ( (Real(1.0) + norm(w) - r*r) - sqrt(Delta) ) / (Real(2.0) * conj(w));
 
     for (int i=0; i<n; ++i) {
       cpx W = v[i]->z/scale;
-      real R = v[i]->r/scale;
+      Real R = v[i]->r/scale;
 
-      cpx A = norm(real(1.0) - W*conj(x)) - R*R*norm(x);
-      cpx B = (real(1.0) - W*conj(x)) * (conj(x)-conj(W)) - R*R*conj(x);
+      cpx A = norm(Real(1.0) - W*conj(x)) - R*R*norm(x);
+      cpx B = (Real(1.0) - W*conj(x)) * (conj(x)-conj(W)) - R*R*conj(x);
       cpx C = (x-W)*(conj(x)-conj(W)) - R*R;
 
       v[i]->z = scale * conj(-B/A);
@@ -457,13 +457,13 @@ namespace vb {
     }
   }
 
-  real Map::circlepack (int _zero, int _one, const std::list<int> _bord) {
+  Real Map::circlepack (int _zero, int _one, const std::list<int> _bord) {
     balance();
     // First, add the outer vertex.
 
-    v.push_back (new Vertex(cpx(0.0),sqrt((real)n)));
+    v.push_back (new Vertex(cpx(0.0),sqrt((Real)n)));
     v[n]->adj = _bord;
-    scale = sqrt((real)n);
+    scale = sqrt((Real)n);
     ++n;
 
     int prev_i = _bord.back();
@@ -476,10 +476,10 @@ namespace vb {
 
     for (int i=0; i<n; ++i) bd[i]=false;
 
-    bd[n-1] = true; v[n-1]->r = sqrt((real)(n-1));
-    bd[_bord.front()] = true; v[_bord.front()]->r = sqrt((real)(n-1));
-    bd[_bord.back()] = true; v[_bord.back()]->r = sqrt((real)(n-1));
-    real output = ACPA();
+    bd[n-1] = true; v[n-1]->r = sqrt((Real)(n-1));
+    bd[_bord.front()] = true; v[_bord.front()]->r = sqrt((Real)(n-1));
+    bd[_bord.back()] = true; v[_bord.back()]->r = sqrt((Real)(n-1));
+    Real output = ACPA();
     rad_to_pos (_bord.front(), _bord.back());
 
     // Remove the added vertex
@@ -493,11 +493,11 @@ namespace vb {
     for (int i=0; i<n; ++i) {
       v[i]->z -= center;
 
-      real module = abs(v[i]->z);
-      real argument = arg(v[i]->z);
-      real rayon = v[i]->r;
+      Real module = abs(v[i]->z);
+      Real argument = arg(v[i]->z);
+      Real rayon = v[i]->r;
 
-      real new_module = n*module/(module*module-rayon*rayon);
+      Real new_module = n*module/(module*module-rayon*rayon);
 
       v[i]->r = n*rayon/(module*module-rayon*rayon);
       v[i]->z = new_module * cpx(cos(argument),-sin(-argument));

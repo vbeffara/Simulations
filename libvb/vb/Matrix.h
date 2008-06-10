@@ -146,7 +146,7 @@ namespace vb {
 
   template <class T> T scalar_product (const Matrix<T> &A, const Matrix<T> &B) {
     if ((A.lines != B.lines) || (A.columns != B.columns))
-          throw std::runtime_error("vb::Matrix : wrong dimension.");
+      throw std::runtime_error("vb::Matrix : wrong dimension.");
 
     T t = A.data[0][0] * B.data[0][0];
     for (int i=0; i<A.lines; ++i)
