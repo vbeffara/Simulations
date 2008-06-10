@@ -4,13 +4,16 @@
 #ifndef __VB_TYPES_H
 #define __VB_TYPES_H
 
-#define DBG std::cerr << "Debug : " << __FILE__ << " - " << __LINE__ << std::endl
-
 #include <complex>
 #include <vb/config.h>
 
 #ifdef HAVE_GMPXX
 #include <gmpxx.h>
+
+#ifndef REAL_PRECISION
+#define REAL_PRECISION 64
+#endif
+
 #endif
 
 namespace vb {
@@ -20,10 +23,10 @@ namespace vb {
     public:
       mpf_class _r;
 
-      real::real ()              : _r(mpf_class(0.0)) { };
-      real::real (const real &r) : _r(r._r)           { };
-      real::real (mpf_class r)   : _r(r)              { };
-      real::real (double r)      : _r(mpf_class(r))   { };
+      real::real ()              : _r(mpf_class(0.0,REAL_PRECISION)) { };
+      real::real (const real &r) : _r(r._r)                          { };
+      real::real (mpf_class r)   : _r(r)                             { };
+      real::real (double r)      : _r(mpf_class(r,REAL_PRECISION))   { };
 
       operator double () const { return _r.get_d(); }
 
