@@ -5,6 +5,7 @@
 #define __VB_TYPES_H
 
 #include <complex>
+#include <iostream>
 #include <vb/config.h>
 
 #ifdef HAVE_GMPXX
@@ -27,37 +28,42 @@ namespace vb {
       Real (mpf_class r)   : _r(r)                             { };
       Real (double r)      : _r(mpf_class(r,REAL_PRECISION))   { };
 
-      operator double () const { return _r.get_d(); }
+      // operator mpf_class () const { return _r; }
 
       Real operator- () const { return Real (-_r); }
-
-      bool operator== (const Real &other) const { return _r == other._r; }
-      bool operator!= (const Real &other) const { return _r != other._r; }
-
-      bool operator< (Real &other) { return _r < other._r; }
-      bool operator> (Real &other) { return _r > other._r; }
 
       Real operator+= (Real other) { _r += other._r; return (*this); }
       Real operator-= (Real other) { _r -= other._r; return (*this); }
       Real operator*= (Real other) { _r *= other._r; return (*this); }
       Real operator/= (Real other) { _r /= other._r; return (*this); }
 
-      Real operator+ (const Real &other) { return Real (_r + other._r); }
-      Real operator+ (double other)      { return Real (_r + other); }
-
-      Real operator- (const Real &other) { return Real (_r - other._r); }
-      Real operator* (const Real &other) { return Real (_r * other._r); }
-
-      Real operator/ (const Real &other) { return Real (_r / other._r); }
-      Real operator/ (double other)      { return Real (_r / other); }
-      Real operator/ (long other)        { return Real (_r / other); }
-      Real operator/ (int other)         { return Real (_r / other); }
-
       double get_d() { return _r.get_d(); }
   };
 
-  //inline Real exp (const Real &r) { return Real (exp(r)); }
-  inline Real sqrt (const Real &r) { return Real ((mpf_class) sqrt(r._r)); }
+  inline bool operator== (const Real &x, const Real &y) { return x._r == y._r; }
+  inline bool operator!= (const Real &x, const Real &y) { return x._r != y._r; }
+
+  inline bool operator< (const Real &x, const Real &y) { return x._r < y._r; }
+  inline bool operator> (const Real &x, const Real &y) { return x._r > y._r; }
+  inline bool operator<= (const Real &x, const Real &y) { return x._r <= y._r; }
+  inline bool operator>= (const Real &x, const Real &y) { return x._r >= y._r; }
+
+  inline Real operator+ (const Real &x, const Real &y) { return Real (x._r+y._r); }
+  inline Real operator- (const Real &x, const Real &y) { return Real (x._r-y._r); }
+  inline Real operator* (const Real &x, const Real &y) { return Real (x._r*y._r); }
+  inline Real operator/ (const Real &x, const Real &y) { return Real (x._r/y._r); }
+
+  inline std::ostream &operator<< (std::ostream &o, const Real &x) { return o << x._r; }
+
+  inline Real abs (const Real &r) { return Real (abs(r)); }
+  inline Real fabs (const Real &r) { return Real (fabs(r)); }
+  inline Real exp (const Real &r) { return Real (exp(r)); }
+  inline Real cos (const Real &r) { return Real (cos(r._r)); }
+  inline Real acos (const Real &r) { return Real (acos(r._r)); }
+  inline Real sin (const Real &r) { return Real (sin(r._r)); }
+  inline Real sqrt (const Real &r) { return Real (sqrt(r._r)); }
+
+  inline Real atan2 (const Real &x, const Real &y) { return Real (atan2(x._r,y._r)); }
 #else
   typedef double Real;              ///< Utility type for a real number, if I ever want to use GMP.
 #endif

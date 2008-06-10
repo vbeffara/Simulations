@@ -48,15 +48,15 @@ namespace vb {
 
     fl_push_matrix();
     fl_scale( (Real(w())/(right()-left())).get_d(), (Real(h())/(top()-bottom())).get_d());
-    fl_translate((-left()),(-bottom()));
+    fl_translate((-left()).get_d(),(-bottom()).get_d());
 
     fl_color (FL_BLACK);
 
     for (int i=0; i<n; ++i) {
       for (adj_list::iterator j = v[i]->adj.begin(); j != v[i]->adj.end(); ++j) {
         fl_begin_line();
-        fl_vertex ((float) v[i]->z.real(), (float) v[i]->z.imag());
-        fl_vertex ((float) v[*j]->z.real(), (float) v[*j]->z.imag());
+        fl_vertex (v[i]->z.real().get_d(), v[i]->z.imag().get_d());
+        fl_vertex (v[*j]->z.real().get_d(), v[*j]->z.imag().get_d());
         fl_end_line();
       }
     }
@@ -249,7 +249,7 @@ namespace vb {
     for (int i=0; i<n; ++i)
       for (adj_list::iterator j = v[i]->adj.begin(); j != v[i]->adj.end(); ++j)
         tmp += 1.0/((Real) face(Edge(i,*j)).size());
-    return (int) floor (tmp + .1);
+    return floor ((tmp + .1).get_d());
   }
 
   int Map::euler () {
@@ -358,7 +358,7 @@ namespace vb {
 
         for (adj_list::iterator j = v[i]->adj.begin(); j != v[i]->adj.end(); ++j) {
           z = y; y = v[*j]->r;
-          double t = (((x+y)*(x+y) + (x+z)*(x+z) - (y+z)*(y+z)) / (2*(x+y)*(x+z)));
+          Real t = (((x+y)*(x+y) + (x+z)*(x+z) - (y+z)*(y+z)) / (2*(x+y)*(x+z)));
           if (t < -1.0) t = -1.0;
           if (t > +1.0) t = +1.0;
           theta += acos (t);
@@ -392,7 +392,7 @@ namespace vb {
     zero = _zero;
     one = _one;
 
-    double R_max = 0.0;
+    Real R_max = 0.0;
     for (int i=0; i<n; ++i) if (v[i]->r > R_max) R_max = v[i]->r;
 
     cpx nowhere (-2*n*R_max, 0.0);
@@ -416,7 +416,7 @@ namespace vb {
           if ((prev_z != nowhere) && (z == nowhere) && ((!bd[i])||(!bd[*j]))) {
             Real x = v[i]->r;
             Real y = v[*j]->r;
-            double t = (((x+y)*(x+y) + (x+prev_r)*(x+prev_r) - (y+prev_r)*(y+prev_r)) / (2*(x+y)*(x+prev_r)));
+            Real t = (((x+y)*(x+y) + (x+prev_r)*(x+prev_r) - (y+prev_r)*(y+prev_r)) / (2*(x+y)*(x+prev_r)));
             if (t<-1.0) t=-1.0;
             if (t>1.0) t=1.0;
             Real alpha = acos (t);

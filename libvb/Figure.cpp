@@ -23,8 +23,8 @@ namespace vb {
 #ifdef HAVE_FLTK
   void Segment::draw () {
     fl_begin_line();
-    fl_vertex ((float) z1.real(), (float) z1.imag());
-    fl_vertex ((float) z2.real(), (float) z2.imag());
+    fl_vertex (z1.real().get_d(), z1.imag().get_d());
+    fl_vertex (z2.real().get_d(), z2.imag().get_d());
     fl_end_line();
   }
 #endif
@@ -63,7 +63,7 @@ namespace vb {
 
 #ifdef HAVE_FLTK
   void Circle::draw () {
-    fl_circle ((float) z.real(), (float) z.imag(), (float) r);
+    fl_circle (z.real().get_d(), z.imag().get_d(), r.get_d());
   }
 #endif
 
@@ -139,8 +139,8 @@ namespace vb {
     fl_rectf (0,0,w(),h());
 
     fl_push_matrix();
-    fl_scale(w()/(float)(right()-left()), h()/(float)(top()-bottom()));
-    fl_translate((float)(-left()),(float)(-bottom()));
+    fl_scale ((w()/(right()-left())).get_d(), (h()/(top()-bottom())).get_d());
+    fl_translate(-left().get_d(),-bottom().get_d());
 
     fl_color (FL_BLACK);
     for (std::list<Shape*>::iterator i = contents.begin(); i != contents.end(); ++i)
