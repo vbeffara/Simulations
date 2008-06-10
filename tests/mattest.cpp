@@ -1,6 +1,6 @@
 
 #include <vb/Matrix.h>
-#include <vb/types.h>
+#include <vb/Real.h>
 #include <iostream>
 #include <math.h>
 
@@ -9,21 +9,21 @@ using namespace vb;
 
 //namespace vb { typedef double Real; }
 
-Real f (Matrix<Real> x) {
-  return 2 - cos(x.data[0][0]) - cos(x.data[1][0]);
+Real f (Vector<Real> x) {
+  return 2 - cos(x[0]) - cos(x[1]);
 }
 
-Matrix<Real> g (Matrix<Real> x) {
-  Matrix<Real> out(2,1);
-  out.data[0][0] = sin(x.data[0][0]);
-  out.data[1][0] = sin(x.data[1][0]);
+Vector<Real> g (Vector<Real> x) {
+  Vector<Real> out(2);
+  out[0] = sin(x[0]);
+  out[1] = sin(x[1]);
   return out;
 }
 
 #define m1 .4
 #define m2 .8
 
-Real line_search (Matrix<Real> x, Matrix<Real> d) {
+Real line_search (Vector<Real> x, Vector<Real> d) {
   bool reverse = false;
   if (scalar_product(g(x),d)>0) { reverse = true; d = -d; }
   Real t_l = 0.0, t_r = 0.0, t(1.0);
@@ -47,12 +47,12 @@ Real line_search (Matrix<Real> x, Matrix<Real> d) {
 }
 
 int main() {
-  Matrix<Real> x(2,1);
-  x.data[0][0] = 1.0;
-  x.data[1][0] = .5;
+  Vector<Real> x(2);
+  x[0] = 1.0;
+  x[1] = .5;
 
   Real ff = f(x);
-  Matrix<Real> gg = g(x);
+  Vector<Real> gg = g(x);
 
   Matrix<Real> W(2,2);
   for (int i=0; i<2; ++i) W.data[i][i] = Real(1.0);
@@ -60,14 +60,14 @@ int main() {
   Real old_f = ff + Real(1.0);
 
   for (int i=0;;++i) {
-    cerr << i << " " << x << " -> " << ff << endl;
+    cerr << i << " " << transpose(x) << " -> " << ff << endl;
     old_f = ff;
 
-    Matrix<Real> dd = - W * gg;
-    Matrix<Real> ss = dd * line_search(x,dd) ; x += ss;
+    Vector<Real> dd = - W * gg;
+    Vector<Real> ss = dd * line_search(x,dd) ; x += ss;
     Real newff = f(x);
-    Matrix<Real> newgg = g(x);
-    Matrix<Real> yy = newgg - gg;
+    Vector<Real> newgg = g(x);
+    Vector<Real> yy = newgg - gg;
 
     if (newff >= ff) { x -= ss; break; }
     if (scalar_product(yy,ss) <= 0.0) { x -= ss; break; }
@@ -78,5 +78,5 @@ int main() {
 
     ff = newff; gg = newgg;
   }
-  cout << "Final value: " << x << " -> " << ff << endl;
+  cout << "Final value: " << transpose(x) << " -> " << ff << endl;
 }

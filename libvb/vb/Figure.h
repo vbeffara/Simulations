@@ -4,7 +4,7 @@
 #ifndef __VB_FIGURE_H
 #define __VB_FIGURE_H
 
-#include <vb/types.h>
+#include <vb/Real.h>
 #include <vb/AutoWindow.h>
 
 #include <iostream>
