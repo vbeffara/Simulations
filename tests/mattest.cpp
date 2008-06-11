@@ -93,8 +93,7 @@ Vector<Real> minimize (Real f (Vector<Real>), Vector<Real> g (Vector<Real>), Vec
   Real         ff = f(x);
   Vector<Real> gg = g(x);
 
-  Matrix<Real> W(DIM,DIM);
-  for (int i=0; i<DIM; ++i) W.data[i][i] = 1.0;
+  Matrix<Real> W(DIM,DIM); // this is actually W-I with the book's notation. It has small rank.
 
   Vector<Real> ss(DIM);
   Real newff,ys,u;
@@ -105,7 +104,7 @@ Vector<Real> minimize (Real f (Vector<Real>), Vector<Real> g (Vector<Real>), Vec
   for (int i=0;;++i) {
     // cerr << ".";
 
-    ss     = -(W*gg);
+    ss     = -gg - (W*gg);
     ss    *= line_search(f,g,x,ss);
     x     += ss;
     newff  = f(x);
@@ -117,7 +116,7 @@ Vector<Real> minimize (Real f (Vector<Real>), Vector<Real> g (Vector<Real>), Vec
     newgg = g(x);
     yy    = newgg - gg;
     ys    = scalar_product(yy,ss);
-    WW    = W*(yy/ys);
+    WW    = W*(yy/ys) + yy/ys;
     u     = 1.0 + scalar_product(yy,WW);
     W    += aTb((u/ys)*ss-WW,ss);
     W    -= aTb(ss,WW);

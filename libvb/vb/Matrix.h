@@ -196,9 +196,10 @@ namespace vb {
         return *this;
       }
 
-      Vector<T> &operator- () {
-        for (unsigned int i=0; i<this->size(); ++i) (*this)[i] = -(*this)[i];
-        return (*this);
+      Vector<T> operator- () const {
+        Vector O(this->size());
+        for (unsigned int i=0; i<this->size(); ++i) O[i] = -(*this)[i];
+        return O;
       }
   };
 
