@@ -27,6 +27,16 @@ Vector<Real> g (Vector<Real> x) {
 #define m1 .3
 #define m2 .8
 
+/** Line-search as a plug-in for a numerical optimization algorithm.
+ *
+ * It implements Wolfe's method. Reference : J.F. Bonnans et al., 
+ * "Numerical Optimization" (2ed, Springer, 2006), p. 43.
+ *
+ * @todo Improvr the choice of the new point using polynomial 
+ * interpolation instead of linear ? Not sure whether it actually 
+ * improves speed of convergence, but needs to be tried.
+ */
+
 Real line_search (Real f (Vector<Real>), Vector<Real> g (Vector<Real>), Vector<Real> x, Vector<Real> d) {
   bool reverse = false;
   if (scalar_product(g(x),d)>0) { reverse = true; d = -d; }
@@ -53,6 +63,30 @@ Real line_search (Real f (Vector<Real>), Vector<Real> g (Vector<Real>), Vector<R
   if (reverse) { t = -t; }
   return t;
 }
+
+/** A quasi-Newtonian minimization algorithm.
+ *
+ * It is the algorithm of Broyden, Fletcher, Goldfarb and Shanno (BFGS 
+ * method).  Reference : J.F. Bonnans et al., "Numerical Optimization" 
+ * (2ed, Springer, 2006), p. 54.
+ *
+ * In dimension N it has to maintain an N by N matrix, which limits it 
+ * to a few thousand dimensions.
+ *
+ * The iteration step attempts to minimize the number of vb::Real 
+ * multiplications while remaining readable. Maybe epsilon more 
+ * optimization is doable, but it is quite efficient already.
+ *
+ * @todo Find something that works in higher dimension, for circle 
+ * packings and such: this one is enough for small figures, but not for 
+ * scaling limits. Maybe using the fact that W-I has small rank (twice 
+ * the number of iterates at most) and hoping that the number of 
+ * iterates remains smaller that the dimension, which does seem to be 
+ * the case, and templating it.
+ *
+ * @todo Put it inside libvb (vb/Numerical.h) and actually use it for 
+ * circle packings.
+ */
 
 Vector<Real> minimize (Real f (Vector<Real>), Vector<Real> g (Vector<Real>), Vector<Real> x0) {
   Vector<Real>  x = x0;
