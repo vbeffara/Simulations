@@ -148,8 +148,8 @@ namespace vb {
 
   template <class T> Matrix<T> transpose (const Matrix<T> M) {
     Matrix<T> P (M.columns, M.lines);
-    for (int i=0; i<P.lines; ++i)
-      for (int j=0; j<P.columns; ++j)
+    for (unsigned int i=0; i<P.lines; ++i)
+      for (unsigned int j=0; j<P.columns; ++j)
         P.data[i][j] = M.data[j][i];
     return P;
   }
@@ -176,18 +176,23 @@ namespace vb {
     public:
       Vector (int size) : std::vector<T> (size) { };
 
-      Vector<T> &operator+= (const Vector<T> O) {
+      Vector<T> &operator+= (const Vector<T> &O) {
         for (unsigned int i=0; i<this->size(); ++i) (*this)[i] += O[i];
         return *this;
       }
 
-      Vector<T> &operator-= (const Vector<T> O) {
+      Vector<T> &operator-= (const Vector<T> &O) {
         for (unsigned int i=0; i<this->size(); ++i) (*this)[i] -= O[i];
         return *this;
       }
 
-      Vector<T> &operator*= (T l) {
+      Vector<T> &operator*= (const T &l) {
         for (unsigned int i=0; i<this->size(); ++i) (*this)[i] *= l;
+        return *this;
+      }
+
+      Vector<T> &operator/= (const T &l) {
+        for (unsigned int i=0; i<this->size(); ++i) (*this)[i] /= l;
         return *this;
       }
 
@@ -237,6 +242,12 @@ namespace vb {
     return l*X;
   }
 
+  template <class T> Vector<T> operator/ (const Vector<T> &X, const T &l) {
+    Vector<T> Y = X;
+    Y /= l;
+    return Y;
+  }
+
   template <class T> Matrix<T> transpose (const Vector<T> &X) {
     Matrix<T> Y(1,X.size());
     for (unsigned int i=0; i<X.size(); ++i) Y.data[0][i] = X[i];
@@ -253,6 +264,24 @@ namespace vb {
     Vector<T> Z = X;
     Z -= Y;
     return Z;
+  }
+
+  template <class T> std::ostream &operator<< (std::ostream &os, const Vector<T> &V) {
+    os << "[";
+    for (unsigned int i=0; i<V.size(); ++i) {
+      os << V[i];
+      if (i < V.size()-1) os << ",";
+    }
+    os << "]";
+    return os;
+  }
+
+  template <class T> Matrix<T> aTb (const Vector<T> &A, const Vector<T> &B) {
+    Matrix<T> M(A.size(), B.size());
+    for (unsigned int i=0; i<A.size(); ++i)
+      for (unsigned int j=0; j<B.size(); ++j)
+        M.data[i][j] = A[i]*B[j];
+    return M;
   }
 }
 

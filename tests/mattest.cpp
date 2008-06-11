@@ -1,82 +1,103 @@
 
 #include <vb/Matrix.h>
 #include <vb/Real.h>
+#include <vb/PRNG.h>
 #include <iostream>
 #include <math.h>
 
 using namespace std;
 using namespace vb;
 
+#define DIM 200
+
 //namespace vb { typedef double Real; }
 
 Real f (Vector<Real> x) {
-  return 2 - cos(x[0]) - cos(x[1]);
+  Real o = DIM;
+  for (unsigned int i=0; i<DIM; ++i) o -= cos(x[i]);
+  return o;
 }
 
 Vector<Real> g (Vector<Real> x) {
-  Vector<Real> out(2);
-  out[0] = sin(x[0]);
-  out[1] = sin(x[1]);
+  Vector<Real> out(DIM);
+  for (unsigned int i=0; i<DIM; ++i) out[i] = sin(x[i]);
   return out;
 }
 
-#define m1 .4
+#define m1 .3
 #define m2 .8
 
-Real line_search (Vector<Real> x, Vector<Real> d) {
+Real line_search (Real f (Vector<Real>), Vector<Real> g (Vector<Real>), Vector<Real> x, Vector<Real> d) {
   bool reverse = false;
   if (scalar_product(g(x),d)>0) { reverse = true; d = -d; }
-  Real t_l = 0.0, t_r = 0.0, t(1.0);
-  Real q_0 = f(x), qq_0 = m2 * scalar_product (g(x),d);
+
+  Real t_l = 0.0, t_r = 0.0, t = 1.0;
+  Real q_0 = f(x);
+  Real qq_0 = m2 * scalar_product (g(x),d);
+  Real q, qq, y;
+  Vector<Real> xx=x;
+  bool refining = false;
+
   while (true) {
-    Real q = f (x+t*d);
-    Real qq = scalar_product (g(x+t*d),d);
-    Real y = q_0 + m1 * t * qq_0;
+    xx=x+t*d;
+    q = f(xx);
+    qq = scalar_product (g(xx),d);
+    y = q_0 + m1 * t * qq_0;
 
     if ((q<=y) && (qq>=qq_0)) break;
-    if (q>y) t_r=t;
-    else t_l = t;
-
-    if (t_r>t_l) t = (t_r+t_l)/2.0;
-    else t = t_l * 2.0;
-
+    if (q>y) { t_r=t; refining = true; } else t_l = t;
+    if (refining) t = (t_r+t_l)/2.0; else t *= 2.0;
     if (t-t_l+1.0 == 1.0) break;
   }
+
   if (reverse) { t = -t; }
   return t;
 }
 
-int main() {
-  Vector<Real> x(2);
-  x[0] = 1.0;
-  x[1] = .5;
-
-  Real ff = f(x);
+Vector<Real> minimize (Real f (Vector<Real>), Vector<Real> g (Vector<Real>), Vector<Real> x0) {
+  Vector<Real>  x = x0;
+  Real         ff = f(x);
   Vector<Real> gg = g(x);
 
-  Matrix<Real> W(2,2);
-  for (int i=0; i<2; ++i) W.data[i][i] = Real(1.0);
+  Matrix<Real> W(DIM,DIM);
+  for (int i=0; i<DIM; ++i) W.data[i][i] = 1.0;
 
-  Real old_f = ff + Real(1.0);
+  Vector<Real> ss(DIM);
+  Real newff,ys,u;
+  Vector<Real> newgg(DIM);
+  Vector<Real> yy(DIM);
+  Vector<Real> WW(DIM);
 
   for (int i=0;;++i) {
-    cerr << i << " " << transpose(x) << " -> " << ff << endl;
-    old_f = ff;
+    // cerr << ".";
 
-    Vector<Real> dd = - W * gg;
-    Vector<Real> ss = dd * line_search(x,dd) ; x += ss;
-    Real newff = f(x);
-    Vector<Real> newgg = g(x);
-    Vector<Real> yy = newgg - gg;
+    ss     = -(W*gg);
+    ss    *= line_search(f,g,x,ss);
+    x     += ss;
+    newff  = f(x);
+
+    cerr << newff << endl;
 
     if (newff >= ff) { x -= ss; break; }
-    if (scalar_product(yy,ss) <= 0.0) { x -= ss; break; }
 
-    Real u = Real(1.0) + scalar_product(yy,W*yy) / scalar_product(yy,ss);
-    W += u * ss * transpose(ss) / scalar_product(yy,ss);
-    W -= (ss*transpose(yy)*W + W*yy*transpose(ss)) / scalar_product(yy,ss);
+    newgg = g(x);
+    yy    = newgg - gg;
+    ys    = scalar_product(yy,ss);
+    WW    = W*(yy/ys);
+    u     = 1.0 + scalar_product(yy,WW);
+    W    += aTb((u/ys)*ss-WW,ss);
+    W    -= aTb(ss,WW);
 
-    ff = newff; gg = newgg;
+    ff    = newff;
+    gg    = newgg;
   }
-  cout << "Final value: " << transpose(x) << " -> " << ff << endl;
+
+  return x;
+}
+
+int main () {
+  Vector<Real> x(DIM);
+  for (unsigned int i=0; i<DIM; ++i) x[i] = cos(i);
+  x = minimize (f,g,x);
+  cout << "Final value: " << x << " -> " << f(x) << endl;
 }
