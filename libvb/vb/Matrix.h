@@ -26,6 +26,7 @@ namespace vb {
       virtual MatrixStorage<T> *sub (MatrixStorage<T> *M) =0;
       virtual MatrixStorage<T> *mul (MatrixStorage<T> *M) =0;
       virtual MatrixStorage<T> *rank1update (const Vector<T> &A, const Vector<T> &B) =0;
+      virtual Vector<T> map_right (const Vector<T> &X) =0;
   };
 
   template <class T> class MatrixStorage_Plain : public MatrixStorage<T> {
@@ -72,6 +73,12 @@ namespace vb {
           for (unsigned int j=0; j<this->width; ++j)
             lines[i][j] += A[i]*B[j];
         return this;
+      }
+      virtual Vector<T> map_right (const Vector<T> &X) {
+        Vector<T> Y(this->height);
+        for (unsigned int i=0; i<this->height; ++i)
+          Y[i] = scalar_product (lines[i],X);
+        return Y;
       }
   };
 
@@ -131,7 +138,9 @@ namespace vb {
   template <class T> NewMatrix<T> operator- (const NewMatrix<T> &M, const NewMatrix<T> &N) { NewMatrix<T> O=M; O-=N; return O; }
   template <class T> NewMatrix<T> operator* (const NewMatrix<T> &M, const NewMatrix<T> &N) { NewMatrix<T> O=M; O*=N; return O; }
 
-  template <class T> Vector<T> operator* (const NewMatrix<T> &M, const Vector<T> &X) { // Generic - to be put in storage classes eventually TODO
+  template <class T> Vector<T> operator* (const NewMatrix<T> &M, const Vector<T> &X) { return M.data->map_right(X); }
+
+  template <class T> Vector<T> operatorr (const NewMatrix<T> &M, const Vector<T> &X) { // Generic - to be put in storage classes eventually TODO
     Vector<T> Y(M.height);
     for (unsigned int i=0; i<M.height; ++i) {
       Y[i] = M(i,0)*X[0];

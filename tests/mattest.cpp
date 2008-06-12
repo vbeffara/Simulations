@@ -10,7 +10,7 @@
 using namespace std;
 using namespace vb;
 
-#define DIM 1000
+#define DIM 1500
 
 //namespace vb { typedef double Real; }
 
@@ -135,5 +135,5 @@ int main () {
   Vector<Real> x(DIM);
   for (unsigned int i=0; i<DIM; ++i) x[i] = cos(i);
   x = minimize (f,g,x);
-  cout << "Final value: " << x << " -> " << f(x) << endl;
+  cout << "Final value: " << f(x) << endl;
 }
