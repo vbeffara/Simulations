@@ -11,6 +11,7 @@
 
 namespace vb {
   template <class T> class Vector;
+  template <class T> class MatrixStorage_Plain;
 
   template <class T> class MatrixStorage {
     public:
@@ -27,13 +28,21 @@ namespace vb {
       virtual MatrixStorage<T> *mul (MatrixStorage<T> *M) =0;
       virtual MatrixStorage<T> *rank1update (const Vector<T> &A, const Vector<T> &B) =0;
       virtual Vector<T> map_right (const Vector<T> &X) =0;
+
+      MatrixStorage<T> *compute () {
+        MatrixStorage_Plain<T> *tmp = new MatrixStorage_Plain<T> (this->height, this->width);
+        for (unsigned int i=0; i<this->height; ++i)
+          for (unsigned int j=0; j<this->width; ++j)
+            tmp->lines[i][j] = this->at(i,j);
+        return tmp;
+      }
   };
 
   template <class T> class MatrixStorage_Plain : public MatrixStorage<T> {
     public:
       std::vector< Vector<T> > lines;
 
-      MatrixStorage_Plain (unsigned int h, unsigned int w) : MatrixStorage<T> (w,h), lines (std::vector< Vector<T> > (h,Vector<T>(w))) { }
+      MatrixStorage_Plain (unsigned int h, unsigned int w) : MatrixStorage<T> (h,w), lines (std::vector< Vector<T> > (h,Vector<T>(w))) { }
       virtual ~MatrixStorage_Plain () {}
 
       virtual MatrixStorage<T> *copy () {
@@ -82,12 +91,66 @@ namespace vb {
       }
   };
 
+  template <class T> class MatrixStorage_DiagSmallRank : public MatrixStorage<T> {
+    public:
+      Vector<T> diag;
+      Vector< std::pair< Vector<T>,Vector<T> > > updates;
+
+      MatrixStorage_DiagSmallRank (unsigned int h, unsigned int w) : MatrixStorage<T> (h,w) {
+        diag = Vector<T> (h);
+        for (unsigned int i=0; i<h; ++i) diag[i]=0;
+      }
+      MatrixStorage_DiagSmallRank (unsigned int h, unsigned int w, const Vector<T> &d) : MatrixStorage<T> (h,w), diag(d) { }
+      virtual ~MatrixStorage_DiagSmallRank () {}
+
+      virtual MatrixStorage<T> *copy () {
+        return new MatrixStorage_DiagSmallRank (*this);
+      }
+      virtual T at (unsigned int i, unsigned int j) const {
+        T tmp = 0;
+        if (i==j) tmp += diag[i];
+        for (unsigned int k=0; k<updates.size(); ++k)
+          tmp += updates[k].first[i] * updates[k].second[j];
+        return tmp;
+      }
+      virtual MatrixStorage<T> *put (unsigned int i, unsigned int j, const T &t) {
+        MatrixStorage<T> *tmp = this->compute();
+        tmp->put (i,j,t);
+        return tmp;
+      }
+      virtual MatrixStorage<T> *add (MatrixStorage<T> *M) {
+        MatrixStorage<T> *tmp = this->compute();
+        tmp->add(M);
+        return tmp;
+      }
+      virtual MatrixStorage<T> *sub (MatrixStorage<T> *M) {
+        MatrixStorage<T> *tmp = this->compute();
+        tmp->sub(M);
+        return tmp;
+      }
+      virtual MatrixStorage<T> *mul (MatrixStorage<T> *M) {
+        MatrixStorage<T> *tmp = this->compute();
+        tmp->mul(M);
+        return tmp;
+      }
+      virtual MatrixStorage<T> *rank1update (const Vector<T> &A, const Vector<T> &B) {
+        updates.push_back (std::pair< Vector<T>,Vector<T> > (A,B));
+        return this;
+      }
+      virtual Vector<T> map_right (const Vector<T> &X) {
+        Vector<T> tmp(this->width);
+        for (int i=0; i<(this->width<this->height?this->width:this->height); ++i) tmp[i] = diag[i]*X[i];
+        for (int i=0; i<updates.size(); ++i) tmp += updates[i].first * scalar_product(updates[i].second,X);
+        return tmp;
+      }
+  };
+
   template <class T> class Matrix {
     public:
       unsigned int width, height;
       MatrixStorage<T> *data;
 
-      Matrix (unsigned int h, unsigned int w) : width(w), height(h), data (new MatrixStorage_Plain<T> (h,w)) {}
+      Matrix (unsigned int h, unsigned int w) : width(w), height(h), data (new MatrixStorage_DiagSmallRank<T> (h,w)) {}
       Matrix (const Matrix<T> &M) : width(M.width), height(M.height), data(M.data->copy()) {}
 
       Matrix operator= (const Matrix<T> &M) {
@@ -239,7 +302,7 @@ namespace vb {
 
   template <class T> class Vector : public std::vector<T> {
     public:
-      Vector (int size) : std::vector<T> (size) { };
+      Vector (int size = 0) : std::vector<T> (size) { };
 
       Vector<T> &operator+= (const Vector<T> &O) {
         for (unsigned int i=0; i<this->size(); ++i) (*this)[i] += O[i];
