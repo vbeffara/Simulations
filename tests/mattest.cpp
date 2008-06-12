@@ -120,8 +120,9 @@ Vector<Real> minimize (Real f (Vector<Real>), Vector<Real> g (Vector<Real>), Vec
     ys    = scalar_product(yy,ss);
     WW    = W*(yy/ys) + yy/ys;
     u     = 1.0 + scalar_product(yy,WW);
-    W    += NewaTb((u/ys)*ss-WW,ss);
-    W    -= NewaTb(ss,WW);
+
+    W.rank1update((u/ys)*ss-WW,ss);
+    W.rank1update(-ss,WW);
 
     ff    = newff;
     gg    = newgg;

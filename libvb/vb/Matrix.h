@@ -25,6 +25,7 @@ namespace vb {
       virtual MatrixStorage<T> *add (MatrixStorage<T> *M) =0;
       virtual MatrixStorage<T> *sub (MatrixStorage<T> *M) =0;
       virtual MatrixStorage<T> *mul (MatrixStorage<T> *M) =0;
+      virtual MatrixStorage<T> *rank1update (const Vector<T> &A, const Vector<T> &B) =0;
   };
 
   template <class T> class MatrixStorage_Plain : public MatrixStorage<T> {
@@ -65,6 +66,12 @@ namespace vb {
           }
         }
         return tmp;
+      }
+      virtual MatrixStorage<T> *rank1update (const Vector<T> &A, const Vector<T> &B) {
+        for (unsigned int i=0; i<this->height; ++i)
+          for (unsigned int j=0; j<this->width; ++j)
+            lines[i][j] += A[i]*B[j];
+        return this;
       }
   };
 
@@ -113,6 +120,11 @@ namespace vb {
         if (data != tmp) { delete data; data = tmp; }
         return (*this);
       }
+      NewMatrix &rank1update (const Vector<T> &A, const Vector<T> &B) {
+        MatrixStorage<T> *tmp = data->rank1update(A,B);
+        if (data != tmp) { delete data; data = tmp; }
+        return (*this);
+      }
   };
 
   template <class T> NewMatrix<T> operator+ (const NewMatrix<T> &M, const NewMatrix<T> &N) { NewMatrix<T> O=M; O+=N; return O; }
@@ -129,7 +141,7 @@ namespace vb {
     return Y;
   }
 
-  template <class T> NewMatrix<T> NewaTb (const Vector<T> &A, const Vector<T> &B) {
+  template <class T> NewMatrix<T> aTb (const Vector<T> &A, const Vector<T> &B) {
     NewMatrix<T> M(A.size(),B.size());
     for (unsigned int i=0; i<M.height; ++i)
       for (unsigned int j=0; j<M.width; ++j)
@@ -137,13 +149,20 @@ namespace vb {
     return M;
   }
 
-  template <class T> std::ostream &operator<< (std::ostream &o, NewMatrix<T> M) {
-   o << "<NewMatrix(" << M.height << "," << M.width << ")";
-    for (unsigned int i=0; i<M.height; ++i)
-      for (unsigned int j=0; j<M.width; ++j)
-        o << " " << M(i,j);
-    return o << ">";
+  template <class T> std::ostream &operator<< (std::ostream &os, const NewMatrix<T> &M) {
+    os << "[";
+    for (unsigned int i=0; i<M.height; ++i) {
+      os << "[";
+      for (unsigned int j=0; j<M.width; ++j) {
+        os << M(i,j);
+        if (j < M.width-1) os << ",";
+      }
+      os << "]";
+      if (i < M.height-1) os << ",";
+    }
+    return os << "]";
   }
+
 
   /*************** THE OLD MATRIX TYPE, NO STORAGE CHOICE **************/
 
@@ -162,45 +181,6 @@ namespace vb {
           t.push_back(V[i]);
           data.push_back(t);
         }
-      }
-
-      Matrix<T> &operator= (const Matrix<T> &M) {
-        if (this == &M) return *this;
-
-        if ((lines == M.lines) && (columns == M.columns)) {
-          for (unsigned int i=0; i<lines; ++i)
-            for (unsigned int j=0; j<columns; ++j)
-              data[i][j] = M.data[i][j];
-        } else {
-          lines = M.lines;
-          columns = M.columns;
-          data = M.data;
-        }
-
-        return *this;
-      }
-
-      Matrix<T> &operator+= (const Matrix<T> &M) {
-        if ((lines != M.lines) || (columns != M.columns))
-          throw std::runtime_error("vb::Matrix : wrong dimension.");
-        for (unsigned int i=0; i<lines; ++i)
-          for (unsigned int j=0; j<columns; ++j)
-            data[i][j] += M.data[i][j];
-        return *this;
-      }
-
-      Matrix<T> &operator-= (const Matrix<T> &M) {
-        if ((lines != M.lines) || (columns != M.columns))
-          throw std::runtime_error("vb::Matrix : wrong dimension.");
-        for (unsigned int i=0; i<lines; ++i)
-          for (unsigned int j=0; j<columns; ++j)
-            data[i][j] -= M.data[i][j];
-        return *this;
-      }
-
-      Matrix<T> &operator*= (const Matrix<T> &M) {
-        (*this) = (*this) * M;
-        return (*this);
       }
 
       Matrix<T> &operator*= (T l) {
@@ -224,47 +204,6 @@ namespace vb {
       for (unsigned int j=0; j<B.columns; ++j)
         B.data[i][j] = - B.data[i][j];
     return B;
-  }
-
-  template <class T> Matrix<T> operator+ (const Matrix<T> &A, const Matrix<T> &B) {
-    Matrix<T> S = A;
-    S += B;
-    return S;
-  }
-
-  template <class T> Matrix<T> operator- (const Matrix<T> &A, const Matrix<T> &B) {
-    Matrix<T> S = A;
-    S -= B;
-    return S;
-  }
-
-  template <class T> Matrix<T> operator* (const Matrix<T> &A, const Matrix<T> &B) {
-    if (A.columns != B.lines) throw std::runtime_error("vb::Matrix : wrong dimension.");
-
-    Matrix<T> P (A.lines, B.columns);
-    for (unsigned int i=0; i<A.lines; ++i) {
-      for (unsigned int j=0; j<B.columns; ++j) {
-        P.data[i][j] = A.data[i][0] * B.data[0][j];
-        for (unsigned int k=1; k<A.columns; ++k) {
-          P.data[i][j] += A.data[i][k] * B.data[k][j]; 
-        }
-      }
-    }
-    return P;
-  }
-
-  template <class T> std::ostream &operator<< (std::ostream &os, const Matrix<T> &M) {
-    os << "[";
-    for (unsigned int i=0; i<M.lines; ++i) {
-      os << "[";
-      for (unsigned int j=0; j<M.columns; ++j) {
-        os << M.data[i][j];
-        if (j < M.columns-1) os << ",";
-      }
-      os << "]";
-      if (i < M.lines-1) os << ",";
-    }
-    return os << "]";
   }
 
   template <class T> Matrix<T> operator* (T l, const Matrix<T> &M) {
@@ -410,14 +349,6 @@ namespace vb {
     }
     os << "]";
     return os;
-  }
-
-  template <class T> Matrix<T> aTb (const Vector<T> &A, const Vector<T> &B) {
-    Matrix<T> M(A.size(), B.size());
-    for (unsigned int i=0; i<A.size(); ++i)
-      for (unsigned int j=0; j<B.size(); ++j)
-        M.data[i][j] = A[i]*B[j];
-    return M;
   }
 }
 
