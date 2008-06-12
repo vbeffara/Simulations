@@ -10,19 +10,19 @@
 using namespace std;
 using namespace vb;
 
-#define DIM 1500
+#define DIM 30000
 
 //namespace vb { typedef double Real; }
 
 Real f (Vector<Real> x) {
-  Real o = DIM;
-  for (unsigned int i=0; i<DIM; ++i) o -= cos(x[i]);
+  Real o = 0;
+  for (unsigned int i=0; i<DIM; ++i) o += (1 - cos(x[i]/(i+1)));
   return o;
 }
 
 Vector<Real> g (Vector<Real> x) {
   Vector<Real> out(DIM);
-  for (unsigned int i=0; i<DIM; ++i) out[i] = sin(x[i]);
+  for (unsigned int i=0; i<DIM; ++i) out[i] = sin(x[i]/(i+1))/(i+1);
   return out;
 }
 
@@ -90,12 +90,14 @@ Real line_search (Real f (Vector<Real>), Vector<Real> g (Vector<Real>), Vector<R
  * circle packings.
  */
 
-Vector<Real> minimize (Real f (Vector<Real>), Vector<Real> g (Vector<Real>), Vector<Real> x0) {
+Vector<Real> minimize (Real f (Vector<Real>), Vector<Real> g (Vector<Real>), Vector<Real> x0, Vector<Real> W0 = Vector<Real>(0)) {
   Vector<Real>  x = x0;
   Real         ff = f(x);
   Vector<Real> gg = g(x);
 
-  Matrix<Real> W(DIM,DIM); // this is actually W-I with the book's notation. It has small rank.
+  if (W0.size() == 0)
+    W0 = Vector<Real> (x0.size(), Real(1.0));
+  Matrix<Real> W(DIM,DIM,W0);
 
   Vector<Real> ss(DIM);
   Real newff,ys,u;
@@ -106,7 +108,7 @@ Vector<Real> minimize (Real f (Vector<Real>), Vector<Real> g (Vector<Real>), Vec
   for (int i=0;;++i) {
     // cerr << ".";
 
-    ss     = -gg - (W*gg);
+    ss     = - (W*gg);
     ss    *= line_search(f,g,x,ss);
     x     += ss;
     newff  = f(x);
@@ -118,7 +120,7 @@ Vector<Real> minimize (Real f (Vector<Real>), Vector<Real> g (Vector<Real>), Vec
     newgg = g(x);
     yy    = newgg - gg;
     ys    = scalar_product(yy,ss);
-    WW    = W*(yy/ys) + yy/ys;
+    WW    = W*(yy/ys);
     u     = 1.0 + scalar_product(yy,WW);
 
     W.rank1update((u/ys)*ss-WW,ss);
@@ -137,8 +139,8 @@ int main () {
   //M.rank1update(V,V);
   //cout << M << endl;
 
-  Vector<Real> x(DIM);
-  for (unsigned int i=0; i<DIM; ++i) x[i] = cos(i);
-  x = minimize (f,g,x);
+  Vector<Real> x(DIM); for (unsigned int i=0; i<DIM; ++i) x[i] = cos(i);
+  Vector<Real> W0(DIM); for (unsigned int i=0; i<DIM; ++i) W0[i] = (i+1)*(i+1);
+  x = minimize (f,g,x,W0);
   cout << "Final value: " << f(x) << endl;
 }

@@ -11,7 +11,6 @@
 
 namespace vb {
   template <class T> class Vector;
-  template <class T> class MatrixStorage_Plain;
 
   template <class T> class MatrixStorage {
     public:
@@ -21,6 +20,8 @@ namespace vb {
       virtual ~MatrixStorage () {}
 
       virtual MatrixStorage<T> *copy () =0;
+      virtual MatrixStorage<T> *compute () =0;
+
       virtual T at (unsigned int i, unsigned int j) const =0;
       virtual MatrixStorage<T> *put (unsigned int i, unsigned int j, const T &t) =0;
       virtual MatrixStorage<T> *add (MatrixStorage<T> *M) =0;
@@ -29,13 +30,6 @@ namespace vb {
       virtual MatrixStorage<T> *rank1update (const Vector<T> &A, const Vector<T> &B) =0;
       virtual Vector<T> map_right (const Vector<T> &X) =0;
 
-      MatrixStorage<T> *compute () {
-        MatrixStorage_Plain<T> *tmp = new MatrixStorage_Plain<T> (this->height, this->width);
-        for (unsigned int i=0; i<this->height; ++i)
-          for (unsigned int j=0; j<this->width; ++j)
-            tmp->lines[i][j] = this->at(i,j);
-        return tmp;
-      }
   };
 
   template <class T> class MatrixStorage_Plain : public MatrixStorage<T> {
@@ -48,6 +42,8 @@ namespace vb {
       virtual MatrixStorage<T> *copy () {
         return new MatrixStorage_Plain<T> (*this);
       }
+      virtual MatrixStorage<T> *compute () { return this; }
+
       virtual T at (unsigned int i, unsigned int j) const {
         return lines[i][j];
       }
@@ -106,6 +102,17 @@ namespace vb {
       virtual MatrixStorage<T> *copy () {
         return new MatrixStorage_DiagSmallRank (*this);
       }
+      MatrixStorage<T> *compute () {
+        MatrixStorage_Plain<T> *tmp = new MatrixStorage_Plain<T> (this->height, this->width);
+        for (unsigned int i=0; i<this->height; ++i) {
+          for (unsigned int j=0; j<updates.size(); ++j)
+            tmp->lines[i] += updates[j].first[i] * updates[j].second;
+        }
+        for (unsigned int i=0; i<(this->height<this->width?this->height:this->width); ++i)
+          tmp->lines[i][i] += diag[i];
+        return tmp;
+      }
+
       virtual T at (unsigned int i, unsigned int j) const {
         T tmp = 0;
         if (i==j) tmp += diag[i];
@@ -135,12 +142,16 @@ namespace vb {
       }
       virtual MatrixStorage<T> *rank1update (const Vector<T> &A, const Vector<T> &B) {
         updates.push_back (std::pair< Vector<T>,Vector<T> > (A,B));
-        return this;
+        if (updates.size() > this->height/10) {
+          return this->compute();
+        } else {
+          return this;
+        }
       }
       virtual Vector<T> map_right (const Vector<T> &X) {
         Vector<T> tmp(this->width);
-        for (int i=0; i<(this->width<this->height?this->width:this->height); ++i) tmp[i] = diag[i]*X[i];
-        for (int i=0; i<updates.size(); ++i) tmp += updates[i].first * scalar_product(updates[i].second,X);
+        for (unsigned int i=0; i<(this->width<this->height?this->width:this->height); ++i) tmp[i] = diag[i]*X[i];
+        for (unsigned int i=0; i<updates.size(); ++i) tmp += updates[i].first * scalar_product(updates[i].second,X);
         return tmp;
       }
   };
@@ -151,6 +162,7 @@ namespace vb {
       MatrixStorage<T> *data;
 
       Matrix (unsigned int h, unsigned int w) : width(w), height(h), data (new MatrixStorage_DiagSmallRank<T> (h,w)) {}
+      Matrix (unsigned int h, unsigned int w, const Vector<T> &d) : width(w), height(h), data (new MatrixStorage_DiagSmallRank<T> (h,w,d)) {}
       Matrix (const Matrix<T> &M) : width(M.width), height(M.height), data(M.data->copy()) {}
 
       Matrix operator= (const Matrix<T> &M) {
@@ -303,6 +315,7 @@ namespace vb {
   template <class T> class Vector : public std::vector<T> {
     public:
       Vector (int size = 0) : std::vector<T> (size) { };
+      Vector (int size, const T &t) : std::vector<T> (size,t) { };
 
       Vector<T> &operator+= (const Vector<T> &O) {
         for (unsigned int i=0; i<this->size(); ++i) (*this)[i] += O[i];
