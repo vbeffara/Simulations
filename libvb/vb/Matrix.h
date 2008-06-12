@@ -12,6 +12,51 @@
 namespace vb {
   template <class T> class Vector;
 
+  template <class T> class MatrixStorage {
+    public:
+      unsigned int width, height;
+      MatrixStorage (unsigned int h, unsigned int w) : width(w), height(h) {}
+      virtual ~MatrixStorage () {}
+      virtual T at (unsigned int i, unsigned int j) const =0;
+      virtual MatrixStorage *put (unsigned int i, unsigned int j, const T &t) =0;
+  };
+
+  template <class T> class MatrixStorage_Plain : public MatrixStorage<T> {
+    public:
+      std::vector< std::vector<T> > lines;
+      MatrixStorage_Plain (unsigned int h, unsigned int w) : MatrixStorage<T> (w,h) {
+        for (unsigned int i=0; i<h; ++i) lines.push_back(std::vector<T>(w));
+      }
+      virtual ~MatrixStorage_Plain () {}
+      virtual T at (unsigned int i, unsigned int j) const { return lines[i][j]; };
+      virtual MatrixStorage_Plain<T> *put (unsigned int i, unsigned int j, const T &t) { lines[i][j] = t; return this; }
+  };
+
+  template <class T> class NewMatrix {
+    public:
+      unsigned int width, height;
+      MatrixStorage<T> *data;
+
+      NewMatrix (unsigned int h, unsigned int w) : width(w), height(h), data (new MatrixStorage_Plain<T> (h,w)) {};
+      T at (unsigned int i, unsigned int j) const { return data->at(i,j); }
+      T operator() (unsigned int i, unsigned int j) const { return this->at(i,j); }
+      NewMatrix &put (unsigned int i, unsigned int j, const T &t) { 
+        MatrixStorage<T> *tmp = data->put(i,j,t);
+        if (data != tmp) { delete data; data = tmp; }
+        return (*this);
+      }
+  };
+
+  template <class T> std::ostream &operator<< (std::ostream &o, NewMatrix<T> M) {
+   o << "<NewMatrix(" << M.height << "," << M.width << ")";
+    for (unsigned int i=0; i<M.height; ++i)
+      for (unsigned int j=0; j<M.width; ++j)
+        o << " " << M(i,j);
+    return o << ">";
+  }
+
+  /*************** THE OLD MATRIX TYPE, NO STORAGE CHOICE **************/
+
   template <class T> class Matrix {
     public:
       unsigned int lines, columns;

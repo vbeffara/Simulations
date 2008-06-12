@@ -1,14 +1,16 @@
 
 #include <vb/Matrix.h>
-#include <vb/Real.h>
+//#include <vb/Real.h>
 #include <vb/PRNG.h>
 #include <iostream>
 #include <math.h>
 
+#define Real double
+
 using namespace std;
 using namespace vb;
 
-#define DIM 200
+#define DIM 1000
 
 //namespace vb { typedef double Real; }
 
@@ -129,8 +131,12 @@ Vector<Real> minimize (Real f (Vector<Real>), Vector<Real> g (Vector<Real>), Vec
 }
 
 int main () {
-  Vector<Real> x(DIM);
-  for (unsigned int i=0; i<DIM; ++i) x[i] = cos(i);
-  x = minimize (f,g,x);
-  cout << "Final value: " << x << " -> " << f(x) << endl;
+  //Vector<Real> x(DIM);
+  //for (unsigned int i=0; i<DIM; ++i) x[i] = cos(i);
+  //x = minimize (f,g,x);
+  //cout << "Final value: " << x << " -> " << f(x) << endl;
+  
+  NewMatrix<double> M(3,3);
+  for (int i=0; i<3; ++i) for (int j=0; j<3; ++j) M.put(i,j,i+j);
+  cout << M << endl;
 }
