@@ -95,7 +95,7 @@ Vector<Real> minimize (Real f (Vector<Real>), Vector<Real> g (Vector<Real>), Vec
   Real         ff = f(x);
   Vector<Real> gg = g(x);
 
-  NewMatrix<Real> W(DIM,DIM); // this is actually W-I with the book's notation. It has small rank.
+  Matrix<Real> W(DIM,DIM); // this is actually W-I with the book's notation. It has small rank.
 
   Vector<Real> ss(DIM);
   Real newff,ys,u;

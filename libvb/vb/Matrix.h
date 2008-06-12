@@ -82,15 +82,15 @@ namespace vb {
       }
   };
 
-  template <class T> class NewMatrix {
+  template <class T> class Matrix {
     public:
       unsigned int width, height;
       MatrixStorage<T> *data;
 
-      NewMatrix (unsigned int h, unsigned int w) : width(w), height(h), data (new MatrixStorage_Plain<T> (h,w)) {}
-      NewMatrix (const NewMatrix<T> &M) : width(M.width), height(M.height), data(M.data->copy()) {}
+      Matrix (unsigned int h, unsigned int w) : width(w), height(h), data (new MatrixStorage_Plain<T> (h,w)) {}
+      Matrix (const Matrix<T> &M) : width(M.width), height(M.height), data(M.data->copy()) {}
 
-      NewMatrix operator= (const NewMatrix<T> &M) {
+      Matrix operator= (const Matrix<T> &M) {
         if (&M != this) {
           width=M.width;
           height=M.height;
@@ -107,58 +107,40 @@ namespace vb {
         return this->at(i,j);
       }
 
-      NewMatrix &put (unsigned int i, unsigned int j, const T &t) { 
+      Matrix &put (unsigned int i, unsigned int j, const T &t) { 
         MatrixStorage<T> *tmp = data->put(i,j,t);
         if (data != tmp) { delete data; data = tmp; }
         return (*this);
       }
-      NewMatrix &operator+= (const NewMatrix &M) {
+      Matrix &operator+= (const Matrix &M) {
         MatrixStorage<T> *tmp = data->add(M.data);
         if (data != tmp) { delete data; data = tmp; }
         return (*this);
       }
-      NewMatrix &operator-= (const NewMatrix &M) {
+      Matrix &operator-= (const Matrix &M) {
         MatrixStorage<T> *tmp = data->sub(M.data);
         if (data != tmp) { delete data; data = tmp; }
         return (*this);
       }
-      NewMatrix &operator*= (const NewMatrix &M) {
+      Matrix &operator*= (const Matrix &M) {
         MatrixStorage<T> *tmp = data->mul(M.data);
         if (data != tmp) { delete data; data = tmp; }
         return (*this);
       }
-      NewMatrix &rank1update (const Vector<T> &A, const Vector<T> &B) {
+      Matrix &rank1update (const Vector<T> &A, const Vector<T> &B) {
         MatrixStorage<T> *tmp = data->rank1update(A,B);
         if (data != tmp) { delete data; data = tmp; }
         return (*this);
       }
   };
 
-  template <class T> NewMatrix<T> operator+ (const NewMatrix<T> &M, const NewMatrix<T> &N) { NewMatrix<T> O=M; O+=N; return O; }
-  template <class T> NewMatrix<T> operator- (const NewMatrix<T> &M, const NewMatrix<T> &N) { NewMatrix<T> O=M; O-=N; return O; }
-  template <class T> NewMatrix<T> operator* (const NewMatrix<T> &M, const NewMatrix<T> &N) { NewMatrix<T> O=M; O*=N; return O; }
+  template <class T> Matrix<T> operator+ (const Matrix<T> &M, const Matrix<T> &N) { Matrix<T> O=M; O+=N; return O; }
+  template <class T> Matrix<T> operator- (const Matrix<T> &M, const Matrix<T> &N) { Matrix<T> O=M; O-=N; return O; }
+  template <class T> Matrix<T> operator* (const Matrix<T> &M, const Matrix<T> &N) { Matrix<T> O=M; O*=N; return O; }
 
-  template <class T> Vector<T> operator* (const NewMatrix<T> &M, const Vector<T> &X) { return M.data->map_right(X); }
+  template <class T> Vector<T> operator* (const Matrix<T> &M, const Vector<T> &X) { return M.data->map_right(X); }
 
-  template <class T> Vector<T> operatorr (const NewMatrix<T> &M, const Vector<T> &X) { // Generic - to be put in storage classes eventually TODO
-    Vector<T> Y(M.height);
-    for (unsigned int i=0; i<M.height; ++i) {
-      Y[i] = M(i,0)*X[0];
-      for (unsigned int j=1; j<M.width; ++j)
-        Y[i] += M(i,j)*X[j];
-    }
-    return Y;
-  }
-
-  template <class T> NewMatrix<T> aTb (const Vector<T> &A, const Vector<T> &B) {
-    NewMatrix<T> M(A.size(),B.size());
-    for (unsigned int i=0; i<M.height; ++i)
-      for (unsigned int j=0; j<M.width; ++j)
-        M.put(i,j,A[i]*B[j]);
-    return M;
-  }
-
-  template <class T> std::ostream &operator<< (std::ostream &os, const NewMatrix<T> &M) {
+  template <class T> std::ostream &operator<< (std::ostream &os, const Matrix<T> &M) {
     os << "[";
     for (unsigned int i=0; i<M.height; ++i) {
       os << "[";
@@ -175,16 +157,16 @@ namespace vb {
 
   /*************** THE OLD MATRIX TYPE, NO STORAGE CHOICE **************/
 
-  template <class T> class Matrix {
+  template <class T> class OldMatrix {
     public:
       unsigned int lines, columns;
       std::vector < std::vector <T> > data;
 
-      Matrix (int l, int c = 1) : lines(l), columns(c) {
+      OldMatrix (int l, int c = 1) : lines(l), columns(c) {
         for (unsigned int i=0; i<lines; ++i) data.push_back(std::vector<T>(columns));
       }
 
-      Matrix (const Vector<T> &V) : lines(V.size()), columns(1) {
+      OldMatrix (const Vector<T> &V) : lines(V.size()), columns(1) {
         for (unsigned int i=0; i<V.size(); ++i) {
           Vector<T> t;
           t.push_back(V[i]);
@@ -192,14 +174,14 @@ namespace vb {
         }
       }
 
-      Matrix<T> &operator*= (T l) {
+      OldMatrix<T> &operator*= (T l) {
         for (unsigned int i=0; i<lines; ++i)
           for (unsigned int j=0; j<columns; ++j)
             data[i][j] *= l;
         return (*this);
       }
 
-      Matrix<T> &operator/= (T l) {
+      OldMatrix<T> &operator/= (T l) {
         for (unsigned int i=0; i<lines; ++i)
           for (unsigned int j=0; j<columns; ++j)
             data[i][j] /= l;
@@ -207,37 +189,37 @@ namespace vb {
       }
   };
 
-  template <class T> Matrix<T> operator- (const Matrix<T> &M) {
-    Matrix<T> B = M;
+  template <class T> OldMatrix<T> operator- (const OldMatrix<T> &M) {
+    OldMatrix<T> B = M;
     for (unsigned int i=0; i<B.lines; ++i)
       for (unsigned int j=0; j<B.columns; ++j)
         B.data[i][j] = - B.data[i][j];
     return B;
   }
 
-  template <class T> Matrix<T> operator* (T l, const Matrix<T> &M) {
-    Matrix<T> P = M; P *= l;
+  template <class T> OldMatrix<T> operator* (T l, const OldMatrix<T> &M) {
+    OldMatrix<T> P = M; P *= l;
     return P;
   }
 
-  template <class T> Matrix<T> operator* (const Matrix<T> &M, T l) {
+  template <class T> OldMatrix<T> operator* (const OldMatrix<T> &M, T l) {
     return l*M;
   }
 
-  template <class T> Matrix<T> operator/ (const Matrix<T> &M, T l) {
-    Matrix<T> P = M; P /= l;
+  template <class T> OldMatrix<T> operator/ (const OldMatrix<T> &M, T l) {
+    OldMatrix<T> P = M; P /= l;
     return P;
   }
 
-  template <class T> Matrix<T> transpose (const Matrix<T> M) {
-    Matrix<T> P (M.columns, M.lines);
+  template <class T> OldMatrix<T> transpose (const OldMatrix<T> M) {
+    OldMatrix<T> P (M.columns, M.lines);
     for (unsigned int i=0; i<P.lines; ++i)
       for (unsigned int j=0; j<P.columns; ++j)
         P.data[i][j] = M.data[j][i];
     return P;
   }
 
-  template <class T> T scalar_product (const Matrix<T> &A, const Matrix<T> &B) {
+  template <class T> T scalar_product (const OldMatrix<T> &A, const OldMatrix<T> &B) {
     if ((A.lines != B.lines) || (A.columns != B.columns))
       throw std::runtime_error("vb::Matrix : wrong dimension.");
 
@@ -249,7 +231,7 @@ namespace vb {
     return t;
   }
 
-  template <class T> T norm_squared (const Matrix<T> &M) {
+  template <class T> T norm_squared (const OldMatrix<T> &M) {
     return scalar_product(M,M);
   }
 
@@ -286,7 +268,7 @@ namespace vb {
       }
   };
 
-  template <class T> Vector<T> operator* (const Matrix<T> &A, const Vector<T> &X) {
+  template <class T> Vector<T> operator* (const OldMatrix<T> &A, const Vector<T> &X) {
     if (A.columns != X.size()) throw std::runtime_error("vb::Matrix : wrong dimension.");
 
     Vector<T> Y(A.lines);
@@ -298,10 +280,10 @@ namespace vb {
     return Y;
   }
 
-  template <class T> Matrix<T> operator* (const Vector<T> &X, const Matrix<T> &A) {
+  template <class T> OldMatrix<T> operator* (const Vector<T> &X, const OldMatrix<T> &A) {
     if (A.lines != 1) throw std::runtime_error("vb::Matrix : wrong dimension.");
 
-    Matrix<T> B (X.size(),A.columns);
+    OldMatrix<T> B (X.size(),A.columns);
     for (unsigned int i=0; i<X.size(); ++i)
       for (unsigned int j=0; j<A.columns; ++j)
         B.data[i][j] = X[i]*A.data[0][j];
@@ -332,8 +314,8 @@ namespace vb {
     return Y;
   }
 
-  template <class T> Matrix<T> transpose (const Vector<T> &X) {
-    Matrix<T> Y(1,X.size());
+  template <class T> OldMatrix<T> transpose (const Vector<T> &X) {
+    OldMatrix<T> Y(1,X.size());
     for (unsigned int i=0; i<X.size(); ++i) Y.data[0][i] = X[i];
     return Y;
   }
