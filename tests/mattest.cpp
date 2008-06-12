@@ -95,7 +95,7 @@ Vector<Real> minimize (Real f (Vector<Real>), Vector<Real> g (Vector<Real>), Vec
   Real         ff = f(x);
   Vector<Real> gg = g(x);
 
-  Matrix<Real> W(DIM,DIM); // this is actually W-I with the book's notation. It has small rank.
+  NewMatrix<Real> W(DIM,DIM); // this is actually W-I with the book's notation. It has small rank.
 
   Vector<Real> ss(DIM);
   Real newff,ys,u;
@@ -120,8 +120,8 @@ Vector<Real> minimize (Real f (Vector<Real>), Vector<Real> g (Vector<Real>), Vec
     ys    = scalar_product(yy,ss);
     WW    = W*(yy/ys) + yy/ys;
     u     = 1.0 + scalar_product(yy,WW);
-    W    += aTb((u/ys)*ss-WW,ss);
-    W    -= aTb(ss,WW);
+    W    += NewaTb((u/ys)*ss-WW,ss);
+    W    -= NewaTb(ss,WW);
 
     ff    = newff;
     gg    = newgg;
@@ -131,12 +131,8 @@ Vector<Real> minimize (Real f (Vector<Real>), Vector<Real> g (Vector<Real>), Vec
 }
 
 int main () {
-  //Vector<Real> x(DIM);
-  //for (unsigned int i=0; i<DIM; ++i) x[i] = cos(i);
-  //x = minimize (f,g,x);
-  //cout << "Final value: " << x << " -> " << f(x) << endl;
-  
-  NewMatrix<double> M(3,3);
-  for (int i=0; i<3; ++i) for (int j=0; j<3; ++j) M.put(i,j,i+j);
-  cout << M << endl;
+  Vector<Real> x(DIM);
+  for (unsigned int i=0; i<DIM; ++i) x[i] = cos(i);
+  x = minimize (f,g,x);
+  cout << "Final value: " << x << " -> " << f(x) << endl;
 }

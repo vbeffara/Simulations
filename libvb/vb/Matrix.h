@@ -15,21 +15,57 @@ namespace vb {
   template <class T> class MatrixStorage {
     public:
       unsigned int width, height;
+
       MatrixStorage (unsigned int h, unsigned int w) : width(w), height(h) {}
       virtual ~MatrixStorage () {}
+
+      virtual MatrixStorage<T> *copy () =0;
       virtual T at (unsigned int i, unsigned int j) const =0;
-      virtual MatrixStorage *put (unsigned int i, unsigned int j, const T &t) =0;
+      virtual MatrixStorage<T> *put (unsigned int i, unsigned int j, const T &t) =0;
+      virtual MatrixStorage<T> *add (MatrixStorage<T> *M) =0;
+      virtual MatrixStorage<T> *sub (MatrixStorage<T> *M) =0;
+      virtual MatrixStorage<T> *mul (MatrixStorage<T> *M) =0;
   };
 
   template <class T> class MatrixStorage_Plain : public MatrixStorage<T> {
     public:
-      std::vector< std::vector<T> > lines;
-      MatrixStorage_Plain (unsigned int h, unsigned int w) : MatrixStorage<T> (w,h) {
-        for (unsigned int i=0; i<h; ++i) lines.push_back(std::vector<T>(w));
-      }
+      std::vector< Vector<T> > lines;
+
+      MatrixStorage_Plain (unsigned int h, unsigned int w) : MatrixStorage<T> (w,h), lines (std::vector< Vector<T> > (h,Vector<T>(w))) { }
       virtual ~MatrixStorage_Plain () {}
-      virtual T at (unsigned int i, unsigned int j) const { return lines[i][j]; };
-      virtual MatrixStorage_Plain<T> *put (unsigned int i, unsigned int j, const T &t) { lines[i][j] = t; return this; }
+
+      virtual MatrixStorage<T> *copy () {
+        return new MatrixStorage_Plain<T> (*this);
+      }
+      virtual T at (unsigned int i, unsigned int j) const {
+        return lines[i][j];
+      }
+      virtual MatrixStorage<T> *put (unsigned int i, unsigned int j, const T &t) {
+        lines[i][j] = t; return this;
+      }
+      virtual MatrixStorage<T> *add (MatrixStorage<T> *M) {
+        for (unsigned int i=0; i<this->height; ++i)
+          for (unsigned int j=0; j<this->width; ++j)
+            lines[i][j] += M->at(i,j);
+        return this;
+      }
+      virtual MatrixStorage<T> *sub (MatrixStorage<T> *M) {
+        for (unsigned int i=0; i<this->height; ++i)
+          for (unsigned int j=0; j<this->width; ++j)
+            lines[i][j] -= M->at(i,j);
+        return this;
+      }
+      virtual MatrixStorage<T> *mul (MatrixStorage<T> *M) {
+        MatrixStorage_Plain<T> *tmp = new MatrixStorage_Plain<T> (this->height, M->width);
+        for (unsigned int i=0; i<this->height; ++i) {
+          for (unsigned int j=0; j<M->width; ++j) {
+            tmp->lines[i][j] = lines[i][0] * M->at(0,j);
+            for (unsigned int k=1; k<this->width; ++k) 
+              tmp->lines[i][j] += lines[i][k] * M->at(k,j);
+          }
+        }
+        return tmp;
+      }
   };
 
   template <class T> class NewMatrix {
@@ -37,15 +73,69 @@ namespace vb {
       unsigned int width, height;
       MatrixStorage<T> *data;
 
-      NewMatrix (unsigned int h, unsigned int w) : width(w), height(h), data (new MatrixStorage_Plain<T> (h,w)) {};
-      T at (unsigned int i, unsigned int j) const { return data->at(i,j); }
-      T operator() (unsigned int i, unsigned int j) const { return this->at(i,j); }
+      NewMatrix (unsigned int h, unsigned int w) : width(w), height(h), data (new MatrixStorage_Plain<T> (h,w)) {}
+      NewMatrix (const NewMatrix<T> &M) : width(M.width), height(M.height), data(M.data->copy()) {}
+
+      NewMatrix operator= (const NewMatrix<T> &M) {
+        if (&M != this) {
+          width=M.width;
+          height=M.height;
+          delete data;
+          data=M.data->copy();
+        }
+        return (*this);
+      }
+
+      T at (unsigned int i, unsigned int j) const {
+        return data->at(i,j);
+      }
+      T operator() (unsigned int i, unsigned int j) const {
+        return this->at(i,j);
+      }
+
       NewMatrix &put (unsigned int i, unsigned int j, const T &t) { 
         MatrixStorage<T> *tmp = data->put(i,j,t);
         if (data != tmp) { delete data; data = tmp; }
         return (*this);
       }
+      NewMatrix &operator+= (const NewMatrix &M) {
+        MatrixStorage<T> *tmp = data->add(M.data);
+        if (data != tmp) { delete data; data = tmp; }
+        return (*this);
+      }
+      NewMatrix &operator-= (const NewMatrix &M) {
+        MatrixStorage<T> *tmp = data->sub(M.data);
+        if (data != tmp) { delete data; data = tmp; }
+        return (*this);
+      }
+      NewMatrix &operator*= (const NewMatrix &M) {
+        MatrixStorage<T> *tmp = data->mul(M.data);
+        if (data != tmp) { delete data; data = tmp; }
+        return (*this);
+      }
   };
+
+  template <class T> NewMatrix<T> operator+ (const NewMatrix<T> &M, const NewMatrix<T> &N) { NewMatrix<T> O=M; O+=N; return O; }
+  template <class T> NewMatrix<T> operator- (const NewMatrix<T> &M, const NewMatrix<T> &N) { NewMatrix<T> O=M; O-=N; return O; }
+  template <class T> NewMatrix<T> operator* (const NewMatrix<T> &M, const NewMatrix<T> &N) { NewMatrix<T> O=M; O*=N; return O; }
+
+  template <class T> Vector<T> operator* (const NewMatrix<T> &M, const Vector<T> &X) { // Generic - to be put in storage classes eventually TODO
+    Vector<T> Y(M.height);
+    for (unsigned int i=0; i<M.height; ++i) {
+      Y[i] = M(i,0)*X[0];
+      for (unsigned int j=1; j<M.width; ++j)
+        Y[i] += M(i,j)*X[j];
+    }
+    return Y;
+  }
+
+  template <class T> NewMatrix<T> NewaTb (const Vector<T> &A, const Vector<T> &B) {
+    NewMatrix<T> M(A.size(),B.size());
+    for (unsigned int i=0; i<M.height; ++i)
+      for (unsigned int j=0; j<M.width; ++j)
+        M.put(i,j,A[i]*B[j]);
+    return M;
+  }
 
   template <class T> std::ostream &operator<< (std::ostream &o, NewMatrix<T> M) {
    o << "<NewMatrix(" << M.height << "," << M.width << ")";
