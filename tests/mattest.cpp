@@ -10,7 +10,7 @@
 using namespace std;
 using namespace vb;
 
-#define DIM 30000
+#define DIM 400
 
 //namespace vb { typedef double Real; }
 
@@ -29,6 +29,8 @@ Vector<Real> g (Vector<Real> x) {
 #define m1 .3
 #define m2 .8
 
+typedef pair <Vector<Real>,Real> PointValue;
+
 /** Line-search as a plug-in for a numerical optimization algorithm.
  *
  * It implements Wolfe's method. Reference : J.F. Bonnans et al., 
@@ -39,7 +41,7 @@ Vector<Real> g (Vector<Real> x) {
  * improves speed of convergence, but needs to be tried.
  */
 
-Real line_search (Real f (Vector<Real>), Vector<Real> g (Vector<Real>), Vector<Real> x, Vector<Real> d) {
+PointValue line_search (Real f (Vector<Real>), Vector<Real> g (Vector<Real>), Vector<Real> x, Vector<Real> d) {
   bool reverse = false;
   if (scalar_product(g(x),d)>0) { reverse = true; d = -d; }
 
@@ -63,7 +65,7 @@ Real line_search (Real f (Vector<Real>), Vector<Real> g (Vector<Real>), Vector<R
   }
 
   if (reverse) { t = -t; }
-  return t;
+  return PointValue(xx,q);
 }
 
 /** A quasi-Newtonian minimization algorithm.
@@ -90,46 +92,50 @@ Real line_search (Real f (Vector<Real>), Vector<Real> g (Vector<Real>), Vector<R
  * circle packings.
  */
 
-Vector<Real> minimize (Real f (Vector<Real>), Vector<Real> g (Vector<Real>), Vector<Real> x0, Vector<Real> W0 = Vector<Real>(0)) {
-  Vector<Real>  x = x0;
-  Real         ff = f(x);
-  Vector<Real> gg = g(x);
+Vector<Real> minimize_bfgs (Real f (Vector<Real>), Vector<Real> g (Vector<Real>), Vector<Real> x0, Vector<Real> W0 = Vector<Real>(0)) {
+  PointValue cur_pv (x0,f(x0));
+  PointValue old_pv (x0,cur_pv.second+1);
 
-  if (W0.size() == 0)
-    W0 = Vector<Real> (x0.size(), Real(1.0));
+  Vector<Real> cur_g = g(cur_pv.first);
+  Vector<Real> old_g = cur_g;
+
+  Vector<Real> dx,dg,Wdg;
+  Real dgdx,u;
+
+  if (W0.size() == 0) W0 = Vector<Real> (x0.size(), Real(1.0));
   Matrix<Real> W(DIM,DIM,W0);
 
-  Vector<Real> ss(DIM);
-  Real newff,ys,u;
-  Vector<Real> newgg(DIM);
-  Vector<Real> yy(DIM);
-  Vector<Real> WW(DIM);
+  while (cur_pv.second < old_pv.second) {
+    old_pv = cur_pv; cur_pv = line_search(f,g,cur_pv.first, -(W*cur_g));
+    old_g  = cur_g;  cur_g  = g(cur_pv.first);
 
-  for (int i=0;;++i) {
-    // cerr << ".";
+    dx = cur_pv.first - old_pv.first;
+    dg = cur_g - old_g;
+    Wdg = W*dg;
+    dgdx = scalar_product(dg,dx);
+    dx /= dgdx;
+    u = dgdx + scalar_product(dg,Wdg);
 
-    ss     = - (W*gg);
-    ss    *= line_search(f,g,x,ss);
-    x     += ss;
-    newff  = f(x);
-
-    cerr << newff << endl;
-
-    if (newff >= ff) { x -= ss; break; }
-
-    newgg = g(x);
-    yy    = newgg - gg;
-    ys    = scalar_product(yy,ss);
-    WW    = W*(yy/ys);
-    u     = 1.0 + scalar_product(yy,WW);
-
-    W.rank1update((u/ys)*ss-WW,ss);
-    W.rank1update(-ss,WW);
-
-    ff    = newff;
-    gg    = newgg;
+    W.rank1update(u*dx-Wdg,dx);
+    W.rank1update(dx,-Wdg);
   }
 
+  return old_pv.first;
+}
+
+Vector<Real> minimize_grad (Real f (Vector<Real>), Vector<Real> g (Vector<Real>), Vector<Real> x0) {
+  Vector<Real> x=x0;
+  Real ff=f(x), old_ff=ff+1;
+  Vector<Real> gg;
+
+  while (true) {
+    gg = g(x);
+    x = line_search(f,g,x,gg).first;
+
+    old_ff = ff;
+    ff = f(x);
+    if (ff >= old_ff) { x -= gg; break; }
+  }
   return x;
 }
 
@@ -141,6 +147,6 @@ int main () {
 
   Vector<Real> x(DIM); for (unsigned int i=0; i<DIM; ++i) x[i] = cos(i);
   Vector<Real> W0(DIM); for (unsigned int i=0; i<DIM; ++i) W0[i] = (i+1)*(i+1);
-  x = minimize (f,g,x,W0);
+  x = minimize_bfgs (f,g,x);
   cout << "Final value: " << f(x) << endl;
 }
