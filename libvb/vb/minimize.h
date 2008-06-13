@@ -36,14 +36,20 @@ namespace vb {
    * improves speed of convergence, but needs to be tried.
    */
 
-  template <class T> PointValueGradient<T> line_search (T f (const Vector<T> &), Vector<T> g (const Vector<T> &), const Vector<T> &x, const Vector<T> &d) {
+  template <class T> PointValueGradient<T> line_search (
+      T f (const Vector<T> &, void*),
+      Vector<T> g (const Vector<T> &, void*),
+      const Vector<T> &x,
+      const Vector<T> &d,
+      void *context = NULL)
+  {
     bool reverse = false;
     Vector<T> dd = d;
-    if (scalar_product(g(x),d)>0) { reverse = true; dd = -dd; }
+    if (scalar_product(g(x,context),d)>0) { reverse = true; dd = -dd; }
 
     T t_l = 0.0, t_r = 0.0, t = 1.0;
-    T q_0 = f(x);
-    T qq_0 = .8 * scalar_product (g(x),dd);
+    T q_0 = f(x,context);
+    T qq_0 = .8 * scalar_product (g(x,context),dd);
     T q, qq, y;
     Vector<T> xx=x;
     Vector<T> gg;
@@ -51,8 +57,8 @@ namespace vb {
 
     while (true) {
       xx=x+t*dd;
-      q = f(xx);
-      gg = g(xx);
+      q = f(xx,context);
+      gg = g(xx,context);
       qq = scalar_product (gg,dd);
       y = q_0 + .3 * t * qq_0;
 
@@ -74,14 +80,16 @@ namespace vb {
    *
    * In dimension N it has to maintain an N by N matrix, which limits it 
    * to a few thousand dimensions.
-   *
-   * @todo Keep track of a context (additional void* pointer in function 
-   * calls) to make it more generic, and in particular applicable to 
-   * circle packings.
    */
 
-  template <class T> PointValueGradient<T> minimize_bfgs (T f (const Vector<T> &), Vector<T> g (const Vector<T> &), const Vector<T> &x0, const Vector<T> &W0 = Vector<T>(0)) {
-    PointValueGradient<T> cur_pvg (x0,f(x0),g(x0));
+  template <class T> PointValueGradient<T> minimize_bfgs (
+      T f (const Vector<T> &, void*),
+      Vector<T> g (const Vector<T> &, void*),
+      const Vector<T> &x0,
+      void *context = NULL,
+      const Vector<T> &W0 = Vector<T>(0))
+  {
+    PointValueGradient<T> cur_pvg (x0,f(x0,context),g(x0,context));
     PointValueGradient<T> old_pvg (x0,cur_pvg.value+1,cur_pvg.gradient);
 
     Vector<T> dx,dg,Wdg;
@@ -115,8 +123,13 @@ namespace vb {
    * (when storage of the approximate inverse Hessian is problematic).
    */
 
-  template <class T> PointValueGradient<T> minimize_grad (T f (const Vector<T> &), Vector<T> g (const Vector<T> &), const Vector<T> &x0) {
-    PointValueGradient<T> cur_pvg (x0,f(x0),g(x0));
+  template <class T> PointValueGradient<T> minimize_grad (
+      T f (const Vector<T> &),
+      Vector<T> g (const Vector<T> &),
+      const Vector<T> &x0,
+      void *context = NULL)
+  {
+    PointValueGradient<T> cur_pvg (x0,f(x0,context),g(x0,context));
     PointValueGradient<T> old_pvg (x0,cur_pvg.value+1,cur_pvg.gradient);
 
     while (cur_pvg.value < old_pvg.value) {
