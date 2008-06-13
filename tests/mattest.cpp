@@ -23,11 +23,6 @@ Vector<Real> g (const Vector<Real> &x) {
 }
 
 int main () {
-  //Vector<double> V(8); for (int i=0; i<3; ++i) V[i]=i+1;
-  //Matrix<double> M(8,8);
-  //M.rank1update(V,V);
-  //cout << M << endl;
-
   Vector<Real> x(DIM); for (unsigned int i=0; i<DIM; ++i) x[i] = cos(i);
   Vector<Real> W0(DIM); for (unsigned int i=0; i<DIM; ++i) W0[i] = (i+1)*(i+1);
   PointValueGradient<Real> min = minimize_bfgs (f,g,x);
