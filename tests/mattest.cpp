@@ -14,13 +14,13 @@ using namespace vb;
 
 //namespace vb { typedef double Real; }
 
-Real f (Vector<Real> x) {
+Real f (const Vector<Real> &x) {
   Real o = 0;
   for (unsigned int i=0; i<DIM; ++i) o += (1 - cos(x[i]/(i+1)));
   return o;
 }
 
-Vector<Real> g (Vector<Real> x) {
+Vector<Real> g (const Vector<Real> &x) {
   Vector<Real> out(DIM);
   for (unsigned int i=0; i<DIM; ++i) out[i] = sin(x[i]/(i+1))/(i+1);
   return out;
@@ -29,7 +29,14 @@ Vector<Real> g (Vector<Real> x) {
 #define m1 .3
 #define m2 .8
 
-typedef pair <Vector<Real>,Real> PointValue;
+template <class T> class PointValueGradient {
+  public:
+    Vector<T> point;
+    T value;
+    Vector<T> gradient;
+
+    PointValueGradient (const Vector<T> &p, const T &v, const Vector<T> &g) : point(p), value(v), gradient(g) { };
+};
 
 /** Line-search as a plug-in for a numerical optimization algorithm.
  *
@@ -41,21 +48,24 @@ typedef pair <Vector<Real>,Real> PointValue;
  * improves speed of convergence, but needs to be tried.
  */
 
-PointValue line_search (Real f (Vector<Real>), Vector<Real> g (Vector<Real>), Vector<Real> x, Vector<Real> d) {
+PointValueGradient<Real> line_search (Real f (const Vector<Real> &), Vector<Real> g (const Vector<Real> &), const Vector<Real> &x, const Vector<Real> &d) {
   bool reverse = false;
-  if (scalar_product(g(x),d)>0) { reverse = true; d = -d; }
+  Vector<Real> dd = d;
+  if (scalar_product(g(x),d)>0) { reverse = true; dd = -dd; }
 
   Real t_l = 0.0, t_r = 0.0, t = 1.0;
   Real q_0 = f(x);
-  Real qq_0 = m2 * scalar_product (g(x),d);
+  Real qq_0 = m2 * scalar_product (g(x),dd);
   Real q, qq, y;
   Vector<Real> xx=x;
+  Vector<Real> gg;
   bool refining = false;
 
   while (true) {
-    xx=x+t*d;
+    xx=x+t*dd;
     q = f(xx);
-    qq = scalar_product (g(xx),d);
+    gg = g(xx);
+    qq = scalar_product (gg,dd);
     y = q_0 + m1 * t * qq_0;
 
     if ((q<=y) && (qq>=qq_0)) break;
@@ -65,7 +75,7 @@ PointValue line_search (Real f (Vector<Real>), Vector<Real> g (Vector<Real>), Ve
   }
 
   if (reverse) { t = -t; }
-  return PointValue(xx,q);
+  return PointValueGradient<Real> (xx,q,gg);
 }
 
 /** A quasi-Newtonian minimization algorithm.
@@ -92,25 +102,23 @@ PointValue line_search (Real f (Vector<Real>), Vector<Real> g (Vector<Real>), Ve
  * circle packings.
  */
 
-Vector<Real> minimize_bfgs (Real f (Vector<Real>), Vector<Real> g (Vector<Real>), Vector<Real> x0, Vector<Real> W0 = Vector<Real>(0)) {
-  PointValue cur_pv (x0,f(x0));
-  PointValue old_pv (x0,cur_pv.second+1);
-
-  Vector<Real> cur_g = g(cur_pv.first);
-  Vector<Real> old_g = cur_g;
+PointValueGradient<Real> minimize_bfgs (Real f (const Vector<Real> &), Vector<Real> g (const Vector<Real> &), const Vector<Real> &x0, const Vector<Real> &W0 = Vector<Real>(0)) {
+  PointValueGradient<Real> cur_pvg (x0,f(x0),g(x0));
+  PointValueGradient<Real> old_pvg (x0,cur_pvg.value+1,cur_pvg.gradient);
 
   Vector<Real> dx,dg,Wdg;
   Real dgdx,u;
 
-  if (W0.size() == 0) W0 = Vector<Real> (x0.size(), Real(1.0));
-  Matrix<Real> W(DIM,DIM,W0);
+  Vector<Real> diag = W0;
+  if (diag.size() == 0) diag = Vector<Real> (x0.size(), Real(1.0));
+  Matrix<Real> W(DIM,DIM,diag);
 
-  while (cur_pv.second < old_pv.second) {
-    old_pv = cur_pv; cur_pv = line_search(f,g,cur_pv.first, -(W*cur_g));
-    old_g  = cur_g;  cur_g  = g(cur_pv.first);
+  while (cur_pvg.value < old_pvg.value) {
+    old_pvg = cur_pvg; cur_pvg = line_search(f,g,old_pvg.point, -(W*old_pvg.gradient));
+    cerr << cur_pvg.value << endl;
 
-    dx = cur_pv.first - old_pv.first;
-    dg = cur_g - old_g;
+    dx = cur_pvg.point - old_pvg.point;
+    dg = cur_pvg.gradient - old_pvg.gradient;
     Wdg = W*dg;
     dgdx = scalar_product(dg,dx);
     dx /= dgdx;
@@ -120,23 +128,17 @@ Vector<Real> minimize_bfgs (Real f (Vector<Real>), Vector<Real> g (Vector<Real>)
     W.rank1update(dx,-Wdg);
   }
 
-  return old_pv.first;
+  return old_pvg;
 }
 
-Vector<Real> minimize_grad (Real f (Vector<Real>), Vector<Real> g (Vector<Real>), Vector<Real> x0) {
-  Vector<Real> x=x0;
-  Real ff=f(x), old_ff=ff+1;
-  Vector<Real> gg;
+PointValueGradient<Real> minimize_grad (Real f (const Vector<Real> &), Vector<Real> g (const Vector<Real> &), const Vector<Real> &x0) {
+  PointValueGradient<Real> cur_pvg (x0,f(x0),g(x0));
+  PointValueGradient<Real> old_pvg (x0,cur_pvg.value+1,cur_pvg.gradient);
 
-  while (true) {
-    gg = g(x);
-    x = line_search(f,g,x,gg).first;
-
-    old_ff = ff;
-    ff = f(x);
-    if (ff >= old_ff) { x -= gg; break; }
+  while (cur_pvg.value < old_pvg.value) {
+    old_pvg = cur_pvg; cur_pvg = line_search (f,g,old_pvg.point,-old_pvg.gradient);
   }
-  return x;
+  return old_pvg;
 }
 
 int main () {
@@ -147,6 +149,6 @@ int main () {
 
   Vector<Real> x(DIM); for (unsigned int i=0; i<DIM; ++i) x[i] = cos(i);
   Vector<Real> W0(DIM); for (unsigned int i=0; i<DIM; ++i) W0[i] = (i+1)*(i+1);
-  x = minimize_bfgs (f,g,x);
-  cout << "Final value: " << f(x) << endl;
+  PointValueGradient<Real> min = minimize_bfgs (f,g,x);
+  cout << "Final value: " << min.value << endl;
 }
