@@ -23,7 +23,7 @@
 
 namespace vb {
 
-#ifdef HAVE_GMPXX
+#ifdef HAVE_GMPXX_THIS_IS_DISABLED_FOR_NOW
   class Real {
     public:
       mpf_class _r;
@@ -66,8 +66,12 @@ namespace vb {
   Real sqrt (const Real &r);
 
   Real atan2 (const Real &x, const Real &y);
+
+  inline double get_d (const Real &x) { return x.get_d(); }
 #else
   typedef double Real;              ///< Utility type for a real number, if I ever want to use GMP.
+
+  inline double get_d (double x) { return x; }
 #endif
 
   typedef std::complex<Real> cpx;   ///< Utility type for a complex number.

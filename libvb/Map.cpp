@@ -47,16 +47,16 @@ namespace vb {
     fl_rectf (0,0,w(),h());
 
     fl_push_matrix();
-    fl_scale( (w()/(right()-left())).get_d(), (h()/(top()-bottom())).get_d());
-    fl_translate((-left()).get_d(),(-bottom()).get_d());
+    fl_scale( get_d(w()/(right()-left())), get_d(h()/(top()-bottom())) );
+    fl_translate(get_d(-left()),get_d(-bottom()));
 
     fl_color (FL_BLACK);
 
     for (int i=0; i<n; ++i) {
       for (adj_list::iterator j = v[i]->adj.begin(); j != v[i]->adj.end(); ++j) {
         fl_begin_line();
-        fl_vertex (v[i]->z.real().get_d(), v[i]->z.imag().get_d());
-        fl_vertex (v[*j]->z.real().get_d(), v[*j]->z.imag().get_d());
+        fl_vertex (get_d(v[i]->z.real()), get_d(v[i]->z.imag()));
+        fl_vertex (get_d(v[*j]->z.real()), get_d(v[*j]->z.imag()));
         fl_end_line();
       }
     }
@@ -249,7 +249,7 @@ namespace vb {
     for (int i=0; i<n; ++i)
       for (adj_list::iterator j = v[i]->adj.begin(); j != v[i]->adj.end(); ++j)
         tmp += 1.0/face(Edge(i,*j)).size();
-    return floor ((tmp + .1).get_d());
+    return floor (get_d(tmp + .1));
   }
 
   int Map::euler () {

@@ -4,6 +4,7 @@
 #include <vb/Real.h>
 
 namespace vb {
+#ifdef HAVE_GMPXX_EXCEPT_IT_IS_DISABLED_FOR_NOW
     Real::Real ()              : _r(mpf_class(0.0,REAL_PRECISION)) { };
     Real::Real (const Real &r) : _r(r._r)                          { };
     Real::Real (mpf_class r)   : _r(r)                             { };
@@ -41,4 +42,5 @@ namespace vb {
     Real sqrt (const Real &r) { return std::sqrt(r.get_d()); }
 
     Real atan2 (const Real &x, const Real &y) { return Real (atan2(x._r,y._r)); }
+#endif
 }
