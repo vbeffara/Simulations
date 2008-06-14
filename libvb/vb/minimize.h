@@ -5,6 +5,8 @@
 #ifndef __VB_MINIMIZE_H
 #define __VB_MINIMIZE_H
 
+#define DBG std::cerr << __FILE__ << " " << __LINE__ << std::endl
+
 #include <vb/Matrix.h>
 
 namespace vb {
@@ -100,7 +102,7 @@ namespace vb {
     Matrix<T> W(x0.size(),x0.size(),diag);
 
     while (cur_pvg.value < old_pvg.value) {
-      old_pvg = cur_pvg; cur_pvg = line_search(f,g,old_pvg.point, -(W*old_pvg.gradient));
+      old_pvg = cur_pvg; cur_pvg = line_search(f,g,old_pvg.point, -(W*old_pvg.gradient), context);
 
       dx = cur_pvg.point - old_pvg.point;
       dg = cur_pvg.gradient - old_pvg.gradient;
@@ -124,8 +126,8 @@ namespace vb {
    */
 
   template <class T> PointValueGradient<T> minimize_grad (
-      T f (const Vector<T> &),
-      Vector<T> g (const Vector<T> &),
+      T f (const Vector<T> &, void*),
+      Vector<T> g (const Vector<T> &, void*),
       const Vector<T> &x0,
       void *context = NULL)
   {
@@ -133,7 +135,8 @@ namespace vb {
     PointValueGradient<T> old_pvg (x0,cur_pvg.value+1,cur_pvg.gradient);
 
     while (cur_pvg.value < old_pvg.value) {
-      old_pvg = cur_pvg; cur_pvg = line_search (f,g,old_pvg.point,-old_pvg.gradient);
+      std::cerr << cur_pvg.value << std::endl;
+      old_pvg = cur_pvg; cur_pvg = line_search (f,g,old_pvg.point,-old_pvg.gradient, context);
     }
     return old_pvg;
   }
