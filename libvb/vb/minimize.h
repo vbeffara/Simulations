@@ -135,7 +135,6 @@ namespace vb {
     PointValueGradient<T> old_pvg (x0,cur_pvg.value+1,cur_pvg.gradient);
 
     while (cur_pvg.value < old_pvg.value) {
-      std::cerr << cur_pvg.value << std::endl;
       old_pvg = cur_pvg; cur_pvg = line_search (f,g,old_pvg.point,-old_pvg.gradient, context);
     }
     return old_pvg;

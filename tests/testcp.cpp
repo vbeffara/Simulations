@@ -14,19 +14,9 @@ double cost_balance (const Vector<double> &x, void *context) {
   double c = 0.0;
 
   for (int i=0; i < m->n; ++i) {
-    if (m->bd[i]) continue;
-    double xx=0.0, yy=0.0;
-    int d = 0;
-
     for (adj_list::iterator j = m->v[i]->adj.begin(); j != m->v[i]->adj.end(); ++j) {
-      ++d;
-      xx += x[2*(*j)];
-      yy += x[2*(*j) + 1];
-    }
-    if (d>0) {
-      xx /= d;
-      yy /= d;
-      c += (x[2*i]-xx)*(x[2*i]-xx) + (x[2*i+1]-yy)*(x[2*i+1]-yy);
+      c += (x[2*(*j)] - x[2*i]) * (x[2*(*j)] - x[2*i]);
+      c += (x[2*(*j)+1] - x[2*i+1]) * (x[2*(*j)+1] - x[2*i+1]);
     }
   }
 
@@ -38,21 +28,12 @@ Vector<double> cost_balance_grad (const Vector<double> &x, void *context) {
   Vector<double> g(2*m->n);
 
   for (int i=0; i < m->n; ++i) {
-    if (!(m->bd[i])) {
-      double xx=0.0, yy=0.0;
-      int d = 0;
-
-      for (adj_list::iterator j = m->v[i]->adj.begin(); j != m->v[i]->adj.end(); ++j) {
-        ++d;
-        xx += x[2*(*j)];
-        yy += x[2*(*j) + 1];
-      }
-      if (d>0) {
-        xx /= d;
-        yy /= d;
-        g[2*i]   = x[2*i]-xx;
-        g[2*i+1] = x[2*i+1]-yy;
-      }
+    if (m->bd[i]) continue;
+    for (adj_list::iterator j = m->v[i]->adj.begin(); j != m->v[i]->adj.end(); ++j) {
+      //g[2*(*j)] += x[2*(*j)] - x[2*i];
+      g[2*i]    -= x[2*(*j)] - x[2*i];
+      //g[2*(*j)+1] += x[2*(*j)+1] - x[2*i+1];
+      g[2*i+1]    -= x[2*(*j)+1] - x[2*i+1];
     }
   }
 
@@ -79,13 +60,33 @@ int main () {
 
   m.barycentric();
   m.barycentric();
+  m.barycentric();
+  m.barycentric();
   m.inscribe(m.face(Edge(1,m.v[1]->adj.back())));
 
-  Vector<double> x(2*m.n);
-  for (int i=0; i<m.n; ++i) { x[2*i]=m.v[i]->z.real(); x[2*i+1]=m.v[i]->z.imag(); }
-  PointValueGradient<double> opt = minimize_grad (cost_balance, cost_balance_grad, x, (void*)(&m));
-  x = opt.point;
-  for (int i=0; i<m.n; ++i) { m.v[i]->z.real()=x[2*i]; m.v[i]->z.imag()=x[2*i+1]; }
-  cerr << opt.point << endl << opt.value << endl << opt.gradient << endl;
-  m.show();Fl::run();
+  bool balance = true;
+
+  if (balance) {
+    m.balance();
+  } else {
+    Vector<double> x(2*m.n);
+    Vector<double> degree(2*m.n);
+
+    for (int i=0; i<m.n; ++i) {
+      x[2*i]        = m.v[i]->z.real();
+      x[2*i+1]      = m.v[i]->z.imag();
+      double dd = m.v[i]->adj.size();
+      if (dd>0) {
+        degree[2*i]   = 1.0 / sqrt(dd);
+        degree[2*i+1] = 1.0 / sqrt(dd);
+      }
+    }
+    
+    PointValueGradient<double> opt = minimize_bfgs (cost_balance, cost_balance_grad, x, (void*)(&m), degree);
+    x = opt.point;
+    for (int i=0; i<m.n; ++i) { m.v[i]->z.real()=x[2*i]; m.v[i]->z.imag()=x[2*i+1]; }
+  }
+
+  cerr << m.v[3]->z.real() << endl;
+  m.show(); m.pause();
 }
