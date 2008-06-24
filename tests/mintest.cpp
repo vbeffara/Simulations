@@ -22,8 +22,10 @@ Vector<Real> g (const Vector<Real> &x, void *context = NULL) {
 }
 
 int main () {
-  Vector<Real> x(DIM); for (unsigned int i=0; i<DIM; ++i) x[i] = cos(i);
-  Vector<Real> W0(DIM); for (unsigned int i=0; i<DIM; ++i) W0[i] = (i+1)*(i+1);
-  PointValueGradient<Real> min = minimize_bfgs (f,g,x,NULL,W0);
-  cout << "Final value: " << min.value << endl;
+  Vector<Real> x0(DIM); for (unsigned int i=0; i<DIM; ++i) x0[i] = cos(i);
+  Vector<Real> W0(DIM); for (unsigned int i=0; i<DIM; ++i) W0[i] = 1;
+
+  Minimizer<Real> M (f,g);
+  Real min = M.minimize_grad (x0);
+  cout << "Final value: " << min << endl;
 }
