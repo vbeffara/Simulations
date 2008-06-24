@@ -9,35 +9,25 @@ using namespace std;
 int center = 6;
 int infinity = 13;
 
-double cost_balance (const Vector<double> &x, void *context) {
+double fg_balance (const Vector<double> &x, Vector<double> &g, void *context) {
   Map *m = (Map *) context;
   double c = 0.0;
 
   for (int i=0; i < m->n; ++i) {
+    g[2*i] = 0;
+    g[2*i+1] = 0;
+
     for (adj_list::iterator j = m->v[i]->adj.begin(); j != m->v[i]->adj.end(); ++j) {
       c += (x[2*(*j)] - x[2*i]) * (x[2*(*j)] - x[2*i]);
       c += (x[2*(*j)+1] - x[2*i+1]) * (x[2*(*j)+1] - x[2*i+1]);
+      if (!(m->bd[i])) {
+        g[2*i]    -= x[2*(*j)] - x[2*i];
+        g[2*i+1]    -= x[2*(*j)+1] - x[2*i+1];
+      }
     }
   }
 
   return c;
-}
-
-Vector<double> cost_balance_grad (const Vector<double> &x, void *context) {
-  Map *m = (Map *) context;
-  Vector<double> g(2*m->n);
-
-  for (int i=0; i < m->n; ++i) {
-    if (m->bd[i]) continue;
-    for (adj_list::iterator j = m->v[i]->adj.begin(); j != m->v[i]->adj.end(); ++j) {
-      //g[2*(*j)] += x[2*(*j)] - x[2*i];
-      g[2*i]    -= x[2*(*j)] - x[2*i];
-      //g[2*(*j)+1] += x[2*(*j)+1] - x[2*i+1];
-      g[2*i+1]    -= x[2*(*j)+1] - x[2*i+1];
-    }
-  }
-
-  return g;
 }
 
 int main () {
@@ -64,7 +54,7 @@ int main () {
   m.barycentric();
   m.inscribe(m.face(Edge(1,m.v[1]->adj.back())));
 
-  bool balance = true;
+  bool balance = false;
 
   if (balance) {
     m.balance();
@@ -82,8 +72,10 @@ int main () {
       }
     }
     
-    PointValueGradient<double> opt = minimize_bfgs (cost_balance, cost_balance_grad, x, (void*)(&m), degree);
-    x = opt.point;
+    Minimizer<double> MM (2*m.n, fg_balance, &m);
+    MM.minimize_bfgs (x,degree);
+    x = MM.x;
+
     for (int i=0; i<m.n; ++i) { m.v[i]->z.real()=x[2*i]; m.v[i]->z.imag()=x[2*i+1]; }
   }
 
