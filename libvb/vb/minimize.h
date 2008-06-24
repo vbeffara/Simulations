@@ -12,8 +12,13 @@
 namespace vb {
   template <class T> class Minimizer {
     public:
+      unsigned int n;
+
       T (*f) (const Vector<T> &, void *);
       Vector<T> (*g) (const Vector<T> &, void *);
+
+      T (*fg) (const Vector<T> &, Vector<T> &, void *);
+
       void *context;
 
       Vector<T> x; T fx; Vector<T> gx;
@@ -21,12 +26,26 @@ namespace vb {
 
       T compute (const Vector<T> &x_) {
         x = x_;
-        fx = f(x,context);
-        gx = g(x,context);
+        if (fg) {
+          fx = fg (x,gx,context);
+        } else {
+          fx = f(x,context);
+          gx = g(x,context);
+        }
       }
 
-      Minimizer (T f_ (const Vector<T> &, void *), Vector<T> g_ (const Vector<T> &, void *), void *context_ = NULL) :
-        f(f_), g(g_), context(context_) { };
+      void init () {
+        x = Vector<T> (n);
+        gx = Vector<T> (n);
+        old_x = Vector<T> (n);
+        old_gx = Vector<T> (n);
+      }
+
+      Minimizer (unsigned int n_, T fg_ (const Vector<T> &, Vector<T> &, void *), void *context_ = NULL) :
+        n(n_), f(NULL), g(NULL), fg(fg_), context(context_) { init(); };
+
+      Minimizer (unsigned int n_, T f_ (const Vector<T> &, void *), Vector<T> g_ (const Vector<T> &, void *), void *context_ = NULL) :
+        n(n_), f(f_), g(g_), fg(NULL), context(context_) { init(); };
 
       /** Line-search as a plug-in for a numerical optimization algorithm.
        *
@@ -41,8 +60,8 @@ namespace vb {
        */
 
       void line_search (const Vector<T> d) {
-        old_x=x; old_fx=fx; old_gx=gx;
-        T qq_0 = .8 * scalar_product (gx,d);
+        old_x.swap(x); old_fx=fx; old_gx.swap(gx);
+        T qq_0 = .8 * scalar_product (old_gx,d);
         T dir = (qq_0>0 ? -1 : 1);
         T t_l = 0.0, t_r = 0.0, t = dir;
         T y;
