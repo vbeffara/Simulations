@@ -30,6 +30,38 @@ double fg_balance (const Vector<double> &x, Vector<double> &g, void *context) {
   return c;
 }
 
+double fg_circle (const Vector<double> &x, Vector<double> &g, void *context) {
+  Map *m = (Map *) context;
+  double c = 0.0;
+
+  for (int i=0; i < 3 * m->n; ++i) g[i] = 0.0;
+
+  for (int i=0; i < m->n; ++i) {
+    for (adj_list::iterator j = m->v[i]->adj.begin(); j != m->v[i]->adj.end(); ++j) {
+      double dx = x[3*(*j)]-x[3*i];
+      double dy = x[3*(*j)+1]-x[3*i+1];
+      double l = sqrt(dx*dx + dy*dy);
+      double sr = x[3*i+2] + x[3*(*j)+2];
+      double lsr = l-sr;
+
+      c += lsr * lsr;
+
+      g[3*(*j)] += 2*lsr*dx/l;
+      g[3*i]    -= 2*lsr*dx/l;
+
+      g[3*(*j)+1] += 2*lsr*dy/l;
+      g[3*i+1]    -= 2*lsr*dy/l;
+
+      if (!(m->bd[*j]))
+        g[3*(*j)+2] -= 2*lsr;
+      if (!(m->bd[i]))
+        g[3*i+2]    -= 2*lsr;
+    }
+  }
+
+  return c;
+}
+
 int main () {
   Map m (13);
 
@@ -52,27 +84,36 @@ int main () {
   m.barycentric();
   m.barycentric();
   m.barycentric();
+  m.barycentric();
   m.inscribe(m.face(Edge(1,m.v[1]->adj.back())));
 
-  bool balance = false;
+  m.balance();
 
-  if (balance) {
-    m.balance();
-  } else {
-    Vector<double> x(2*m.n);
+  Vector<double> x(3*m.n);
 
-    for (int i=0; i<m.n; ++i) {
-      x[2*i]        = m.v[i]->z.real();
-      x[2*i+1]      = m.v[i]->z.imag();
-    }
-    
-    Minimizer<double> MM (2*m.n, fg_balance, &m);
-    MM.minimize_qn (x);
-    x = MM.x;
-
-    for (int i=0; i<m.n; ++i) { m.v[i]->z.real()=x[2*i]; m.v[i]->z.imag()=x[2*i+1]; }
+  for (int i=0; i<m.n; ++i) {
+    x[3*i]        = m.v[i]->z.real();
+    x[3*i+1]      = m.v[i]->z.imag();
+    x[3*i+2]      = 1.0 / sqrt((double)m.n);
   }
 
-  cerr << m.v[3]->z.real() << endl;
-  m.show(); m.pause();
+  Minimizer<double> MM (3*m.n, fg_circle, &m);
+  MM.minimize_qn (x);
+  x = MM.x;
+
+  std::cerr << "Number of vertices:    " << m.n << std::endl;
+  std::cerr << "Final value of f:      " << MM.fx << std::endl;
+  std::cerr << "Final square gradient: " << scalar_product(MM.gx,MM.gx) << std::endl;
+
+  for (int i=0; i<m.n; ++i) {
+    m.v[i]->z.real() = x[3*i];
+    m.v[i]->z.imag() = x[3*i+1];
+    m.v[i]->r        = x[3*i+2];
+  }
+
+  Figure f;
+  m.plot_circles(f);
+  f.show();
+  f.pause();
+  f.printASY ("cp.asy");
 }
