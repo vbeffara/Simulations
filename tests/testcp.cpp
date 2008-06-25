@@ -34,7 +34,7 @@ double fg_circle (const Vector<double> &x, Vector<double> &g, void *context) {
   Map *m = (Map *) context;
   double c = 0.0;
 
-  for (int i=0; i < 3 * m->n; ++i) g[i] = 0.0;
+  fill (g.begin(), g.end(), 0.0);
 
   for (int i=0; i < m->n; ++i) {
     for (adj_list::iterator j = m->v[i]->adj.begin(); j != m->v[i]->adj.end(); ++j) {
@@ -43,19 +43,15 @@ double fg_circle (const Vector<double> &x, Vector<double> &g, void *context) {
       double l = sqrt(dx*dx + dy*dy);
       double sr = x[3*i+2] + x[3*(*j)+2];
       double lsr = l-sr;
+      double lsrl = lsr/l;
 
       c += lsr * lsr;
 
-      g[3*(*j)] += 2*lsr*dx/l;
-      g[3*i]    -= 2*lsr*dx/l;
+      g[3*i]   -= lsrl*dx;
+      g[3*i+1] -= lsrl*dy;
 
-      g[3*(*j)+1] += 2*lsr*dy/l;
-      g[3*i+1]    -= 2*lsr*dy/l;
-
-      if (!(m->bd[*j]))
-        g[3*(*j)+2] -= 2*lsr;
       if (!(m->bd[i]))
-        g[3*i+2]    -= 2*lsr;
+        g[3*i+2] -= lsr;
     }
   }
 
@@ -80,8 +76,6 @@ int main () {
     << Edge(12,11) << Edge(12,9) << Edge(12,7);
     //<< Edge(13,0) << Edge(13,1) << Edge(13,2) << Edge(13,5) << Edge(13,7) << Edge(13,10) << Edge(13,11) << Edge(13,12);
 
-  m.barycentric();
-  m.barycentric();
   m.barycentric();
   m.barycentric();
   m.barycentric();
