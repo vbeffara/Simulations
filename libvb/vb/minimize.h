@@ -59,7 +59,7 @@ namespace vb {
        * improves speed of convergence, but needs to be tried.
        */
 
-      void line_search (const Vector<T> d) {
+      void line_search (const Vector<T> &d) {
         old_x.swap(x); old_fx=fx; old_gx.swap(gx);
         T qq_0 = .8 * scalar_product (old_gx,d);
         T dir = (qq_0>0 ? -1 : 1);
@@ -92,7 +92,7 @@ namespace vb {
         old_gx = gx;
 
         while (fx < old_fx) {
-          line_search (gx);
+          line_search (Vector<T>(gx));
         }
         return fx;
       }
@@ -188,6 +188,36 @@ namespace vb {
           old_d = d; d = -gx;
           if (!first) {
             T c = scalar_product(gx - old_gx,gx) / scalar_product(old_gx,old_gx);
+            d += c * old_d;
+          }
+          line_search(d);
+          first=false;
+        }
+
+        return fx;
+      }
+
+      /** The mixed quasi-Newton / conjugate gradient method.
+       *
+       * Reference: J.F. Bonnans et al., "Numerical Optimization" (2ed, 
+       * Springer, 2006), p. 74.
+       */
+
+      T minimize_qn (const Vector<T> &x0) {
+        compute(x0);
+        old_x  = x;
+        old_fx = fx+1;
+        old_gx = gx;
+
+        Vector<T> d(n);
+        Vector<T> old_d(n);
+        bool first = true;
+
+        while (fx < old_fx) {
+          old_d = d; d = -gx;
+          if (!first) {
+            Vector<T> y = gx - old_gx;
+            T c = scalar_product(y,gx) / scalar_product(y,old_d);
             d += c * old_d;
           }
           line_search(d);

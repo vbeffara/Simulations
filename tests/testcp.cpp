@@ -67,7 +67,7 @@ int main () {
     }
     
     Minimizer<double> MM (2*m.n, fg_balance, &m);
-    MM.minimize_pr (x);
+    MM.minimize_qn (x);
     x = MM.x;
 
     for (int i=0; i<m.n; ++i) { m.v[i]->z.real()=x[2*i]; m.v[i]->z.imag()=x[2*i+1]; }

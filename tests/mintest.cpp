@@ -35,6 +35,6 @@ int main () {
   Vector<Real> W0(DIM); for (unsigned int i=0; i<DIM; ++i) W0[i] = (i+1)*(i+1);
 
   Minimizer<Real> M (DIM,fg);
-  Real min = M.minimize_fr (x0);
+  Real min = M.minimize_qn (x0);
   cout << "Final value: " << min << endl;
 }
