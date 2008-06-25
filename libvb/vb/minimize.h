@@ -5,8 +5,7 @@
 #ifndef __VB_MINIMIZE_H
 #define __VB_MINIMIZE_H
 
-#define DBG std::cerr << __FILE__ << " " << __LINE__ << std::endl
-
+#include <iostream>
 #include <vb/Matrix.h>
 
 namespace vb {
@@ -24,6 +23,9 @@ namespace vb {
       Vector<T> x; T fx; Vector<T> gx;
       Vector<T> old_x; T old_fx; Vector<T> old_gx;
 
+      std::ostream *os;
+      T er; int ler;
+
       T compute (const Vector<T> &x_) {
         x = x_;
         if (fg) {
@@ -35,6 +37,10 @@ namespace vb {
       }
 
       void init () {
+        os = NULL;
+        er = 1.0;
+        ler = 0;
+
         x = Vector<T> (n);
         gx = Vector<T> (n);
         old_x = Vector<T> (n);
@@ -75,6 +81,15 @@ namespace vb {
           if (fx>y) { t_r=t; refining = true; } else t_l = t;
           if (refining) t = (t_r+t_l)/2.0; else t *= 2.0;
           if (t-t_l+1.0 == 1.0) break;
+        }
+
+        if (os) {
+          T tmp = scalar_product (gx,gx);
+          while (tmp<er) {
+            er /= 10.0;
+            ++ler;
+            if (ler%10) *os << '.'; else *os << '*';
+          }
         }
       }
 

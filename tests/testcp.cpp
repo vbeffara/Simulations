@@ -79,6 +79,7 @@ int main () {
   m.barycentric();
   m.barycentric();
   m.barycentric();
+  m.barycentric();
   m.inscribe(m.face(Edge(1,m.v[1]->adj.back())));
 
   m.balance();
@@ -92,6 +93,8 @@ int main () {
   }
 
   Minimizer<double> MM (3*m.n, fg_circle, &m);
+  MM.os = &cerr;
+
   MM.minimize_qn (x);
   x = MM.x;
 
