@@ -60,20 +60,14 @@ int main () {
     m.balance();
   } else {
     Vector<double> x(2*m.n);
-    Vector<double> degree(2*m.n);
 
     for (int i=0; i<m.n; ++i) {
       x[2*i]        = m.v[i]->z.real();
       x[2*i+1]      = m.v[i]->z.imag();
-      double dd = m.v[i]->adj.size();
-      if (dd>0) {
-        degree[2*i]   = 1.0 / sqrt(dd);
-        degree[2*i+1] = 1.0 / sqrt(dd);
-      }
     }
     
     Minimizer<double> MM (2*m.n, fg_balance, &m);
-    MM.minimize_bfgs (x,degree);
+    MM.minimize_pr (x);
     x = MM.x;
 
     for (int i=0; i<m.n; ++i) { m.v[i]->z.real()=x[2*i]; m.v[i]->z.imag()=x[2*i+1]; }

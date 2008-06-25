@@ -138,6 +138,64 @@ namespace vb {
 
         return fx;
       }
+
+      /** The Fletcher-Reeves conjugate gradient algorithm.
+       *
+       * Reference: J.F. Bonnans et al., "Numerical Optimization" (2ed, 
+       * Springer, 2006), p. 73.
+       */
+
+      T minimize_fr (const Vector<T> &x0) {
+        compute(x0);
+        old_x  = x;
+        old_fx = fx+1;
+        old_gx = gx;
+
+        Vector<T> d(n);
+        Vector<T> old_d(n);
+        bool first = true;
+
+        while (fx < old_fx) {
+          old_d = d; d = -gx;
+          if (!first) {
+            T c = scalar_product(gx,gx) / scalar_product(old_gx,old_gx);
+            d += c * old_d;
+          }
+          line_search(d);
+          first=false;
+        }
+
+        return fx;
+      }
+
+      /** The Pollak-Ribiere conjugate gradient algorithm.
+       *
+       * Reference: J.F. Bonnans et al., "Numerical Optimization" (2ed, 
+       * Springer, 2006), p. 73.
+       */
+
+      T minimize_pr (const Vector<T> &x0) {
+        compute(x0);
+        old_x  = x;
+        old_fx = fx+1;
+        old_gx = gx;
+
+        Vector<T> d(n);
+        Vector<T> old_d(n);
+        bool first = true;
+
+        while (fx < old_fx) {
+          old_d = d; d = -gx;
+          if (!first) {
+            T c = scalar_product(gx - old_gx,gx) / scalar_product(old_gx,old_gx);
+            d += c * old_d;
+          }
+          line_search(d);
+          first=false;
+        }
+
+        return fx;
+      }
   };
 }
 
