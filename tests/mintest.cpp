@@ -1,5 +1,5 @@
 
-#include <vb/minimize.h>
+#include <vb/Minimizer.h>
 #include <vb/Real.h>
 #include <iostream>
 #include <math.h>
