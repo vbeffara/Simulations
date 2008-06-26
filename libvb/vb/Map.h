@@ -7,6 +7,7 @@
 #include <vector>
 
 #include <vb/Figure.h>
+#include <vb/Minimizer.h>
 
 namespace vb {
 
@@ -145,6 +146,18 @@ namespace vb {
        */
 
       void balance ();
+
+      /** Produce a balanced embedding of the map.
+       *
+       * This means that every non-boundary point is the barycenter of 
+       * its neighbors; boundary points (those specified by bd) are not 
+       * affected, so it is a good idea to use inscribe() before that.
+       *
+       * The algorithm is the old one (iterated relaxation), kept for 
+       * further reference.
+       */
+
+      void balance_old ();
 
       /// Add a new vertex at the middle of every edge in the map.
 
@@ -340,9 +353,27 @@ namespace vb {
       void draw ();
   };
 
+  /// Export a vb::Map as text (kind of DOT-looking).
+
   std::ostream &operator<< (std::ostream &os, Map m);
 
+  /// Add an vb::Edge to a vb::Map.
+
   Map &operator<< (Map &m, Edge e);
+
+  /// Compute the square distance to a balanced embedding.
+
+  Real Map_fg_balance (const Vector<double> &x, Vector<double> &g, void *context);
+
+  /** Compute the square distance to a circle packing.
+   *
+   * The points at which bd[] is true are considered to be of fixed 
+   * radius, so the gradient in their radius is always 0.0. For 
+   * inscribing a graph in the unit circle, use Map_fg_circle_disk.
+   */
+
+  Real Map_fg_circle_bd (const Vector<double> &x, Vector<double> &g, void *context);
+
 }
 
 #endif

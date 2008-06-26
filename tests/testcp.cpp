@@ -9,55 +9,6 @@ using namespace std;
 int center = 6;
 int infinity = 13;
 
-double fg_balance (const Vector<double> &x, Vector<double> &g, void *context) {
-  Map *m = (Map *) context;
-  double c = 0.0;
-
-  for (int i=0; i < m->n; ++i) {
-    g[2*i] = 0;
-    g[2*i+1] = 0;
-
-    for (adj_list::iterator j = m->v[i]->adj.begin(); j != m->v[i]->adj.end(); ++j) {
-      c += (x[2*(*j)] - x[2*i]) * (x[2*(*j)] - x[2*i]);
-      c += (x[2*(*j)+1] - x[2*i+1]) * (x[2*(*j)+1] - x[2*i+1]);
-      if (!(m->bd[i])) {
-        g[2*i]    -= x[2*(*j)] - x[2*i];
-        g[2*i+1]    -= x[2*(*j)+1] - x[2*i+1];
-      }
-    }
-  }
-
-  return c;
-}
-
-double fg_circle (const Vector<double> &x, Vector<double> &g, void *context) {
-  Map *m = (Map *) context;
-  double c = 0.0;
-
-  fill (g.begin(), g.end(), 0.0);
-
-  for (int i=0; i < m->n; ++i) {
-    for (adj_list::iterator j = m->v[i]->adj.begin(); j != m->v[i]->adj.end(); ++j) {
-      double dx = x[3*(*j)]-x[3*i];
-      double dy = x[3*(*j)+1]-x[3*i+1];
-      double l = sqrt(dx*dx + dy*dy);
-      double sr = x[3*i+2] + x[3*(*j)+2];
-      double lsr = l-sr;
-      double lsrl = lsr/l;
-
-      c += lsr * lsr;
-
-      g[3*i]   -= lsrl*dx;
-      g[3*i+1] -= lsrl*dy;
-
-      if (!(m->bd[i]))
-        g[3*i+2] -= lsr;
-    }
-  }
-
-  return c;
-}
-
 int main () {
   Map m (13);
 
@@ -79,10 +30,12 @@ int main () {
   m.barycentric();
   m.barycentric();
   m.barycentric();
-  m.barycentric();
   m.inscribe(m.face(Edge(1,m.v[1]->adj.back())));
 
   m.balance();
+
+  m.show();
+  m.pause();
 
   Vector<double> x(3*m.n);
 
@@ -92,7 +45,7 @@ int main () {
     x[3*i+2]      = 1.0 / sqrt((double)m.n);
   }
 
-  Minimizer<double> MM (3*m.n, fg_circle, &m);
+  Minimizer<double> MM (3*m.n, Map_fg_circle_bd, &m);
   MM.os = &cerr;
 
   MM.minimize_qn (x);

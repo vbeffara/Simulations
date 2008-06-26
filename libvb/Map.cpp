@@ -123,6 +123,24 @@ namespace vb {
   }
 
   void Map::balance () {
+    Vector<double> x(2*n);
+
+    for (int i=0; i<n; ++i) {
+      x[2*i]   = v[i]->z.real();
+      x[2*i+1] = v[i]->z.imag();
+    }
+
+    Minimizer<double> M (2*n, Map_fg_balance, this);
+    M.minimize_qn (x);
+
+    for (int i=0; i<n; ++i) {
+      v[i]->z = cpx (M.x[2*i],M.x[2*i+1]);
+    }
+
+    update();
+  }
+
+  void Map::balance_old () {
     bool dirty=true;
 
     while (dirty) {
@@ -510,8 +528,6 @@ namespace vb {
     return output;
   }
 
-  /// Export a vb::Map as text (kind of DOT-looking).
-
   std::ostream &operator<< (std::ostream &os, Map m) {
     os << m.n << " vertices:" << std::endl;
     for (int i=0; i<m.n; ++i) {
@@ -523,10 +539,58 @@ namespace vb {
     return os;
   }
 
-  /// Add an vb::Edge to a vb::Map.
-
   Map &operator<< (Map &m, Edge e) {
     m.v[e.first]->adj.push_back(e.second);
     return m;
   }
+
+  Real Map_fg_balance (const Vector<double> &x, Vector<double> &g, void *context) {
+    Map *m = (Map *) context;
+    double c = 0.0;
+
+    for (int i=0; i < m->n; ++i) {
+      g[2*i] = 0;
+      g[2*i+1] = 0;
+
+      for (adj_list::iterator j = m->v[i]->adj.begin(); j != m->v[i]->adj.end(); ++j) {
+        c += (x[2*(*j)] - x[2*i]) * (x[2*(*j)] - x[2*i]);
+        c += (x[2*(*j)+1] - x[2*i+1]) * (x[2*(*j)+1] - x[2*i+1]);
+        if (!(m->bd[i])) {
+          g[2*i]    -= x[2*(*j)] - x[2*i];
+          g[2*i+1]    -= x[2*(*j)+1] - x[2*i+1];
+        }
+      }
+    }
+
+    return c;
+  }
+
+  Real Map_fg_circle_bd (const Vector<double> &x, Vector<double> &g, void *context) {
+    Map *m = (Map *) context;
+    double c = 0.0;
+
+    fill (g.begin(), g.end(), 0.0);
+
+    for (int i=0; i < m->n; ++i) {
+      for (adj_list::iterator j = m->v[i]->adj.begin(); j != m->v[i]->adj.end(); ++j) {
+        double dx = x[3*(*j)]-x[3*i];
+        double dy = x[3*(*j)+1]-x[3*i+1];
+        double l = sqrt(dx*dx + dy*dy);
+        double sr = x[3*i+2] + x[3*(*j)+2];
+        double lsr = l-sr;
+        double lsrl = lsr/l;
+
+        c += lsr * lsr;
+
+        g[3*i]   -= lsrl*dx;
+        g[3*i+1] -= lsrl*dy;
+
+        if (!(m->bd[i]))
+          g[3*i+2] -= lsr;
+      }
+    }
+
+    return c;
+  }
+
 }
