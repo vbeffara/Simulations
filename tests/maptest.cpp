@@ -12,6 +12,36 @@ template <typename T1, typename T2> ostream &operator<< (ostream &os, pair<T1,T2
   return os;
 }
 
+Real fg (const Vector<double> &x, Vector<double> &g, void *context) {
+  Map *m = (Map *) context;
+  double c = 0.0;
+
+  fill (g.begin(), g.end(), 0.0);
+
+  for (int i=0; i < m->n; ++i) {
+    for (adj_list::iterator j = m->v[i]->adj.begin(); j != m->v[i]->adj.end(); ++j) {
+      double dx = x[3*(*j)]-x[3*i];
+      double dy = x[3*(*j)+1]-x[3*i+1];
+      double l = sqrt(dx*dx + dy*dy);
+      double sr = x[3*i+2] + x[3*(*j)+2];
+      double lsr = l-sr;
+      double lsrl = lsr/l;
+
+      c += lsr * lsr;
+
+      g[3*i]   -= lsrl*dx;
+      g[3*i+1] -= lsrl*dy;
+
+      if (!(m->bd[i]))
+        g[3*i+2] -= lsr;
+    }
+  }
+
+  return c;
+}
+
+
+
 int main () {
   Map m (13);
 
@@ -34,13 +64,44 @@ int main () {
   for (int i=0; i<m.n; ++i) m.v[i]->r=.5/sqrt((double)m.n);
 
   m.show();
-  m.fps = 3;
-  m.balance(); //m.pause();
-  m.barycentric(); m.inscribe(m.face(Edge(0,m.v[0]->adj.back()))); m.balance(); //m.pause();
-  m.barycentric(); m.inscribe(m.face(Edge(0,m.v[0]->adj.back()))); m.balance(); //m.pause();
-  m.barycentric(); m.inscribe(m.face(Edge(0,m.v[0]->adj.back()))); m.balance(); //m.pause();
+  m.balance();
+  m.barycentric(); m.inscribe(m.face(Edge(0,m.v[0]->adj.back()))); m.balance();
+  m.barycentric(); m.inscribe(m.face(Edge(0,m.v[0]->adj.back()))); m.balance();
+  m.barycentric(); m.inscribe(m.face(Edge(0,m.v[0]->adj.back()))); m.balance();
 
-  m.circlepack (6,0,m.face(Edge(0,m.v[0]->adj.back())));
+
+  std::list<int> bord = m.face (Edge(0,m.v[0]->adj.back()));
+
+  bool circlepack = false;
+  if (circlepack) {
+    // 7 seconds total on seltz.
+    m.circlepack (6,0,bord);
+  } else {
+    // 3.6 seconds total on seltz.
+    fill (m.bd.begin(), m.bd.end(), false);
+    for (std::list<int>::iterator i = bord.begin(); i != bord.end(); ++i) {
+      m.bd[*i] = true;
+    }
+
+    Vector<double> x(3*m.n);
+
+    for (int i=0; i<m.n; ++i) {
+      x[3*i]   = m.v[i]->z.real();
+      x[3*i+1] = m.v[i]->z.imag();
+      x[3*i+2] = 1.0 / sqrt((double)m.n);
+    }
+
+    Minimizer<double> M (3*m.n, fg, &m);
+    M.os = &cerr;
+    M.minimize_qn (x);
+
+    for (int i=0; i<m.n; ++i) {
+      m.v[i]->z = cpx (M.x[3*i],M.x[3*i+1]);
+      m.v[i]->r = M.x[3*i+2];
+    }
+    // do nothing
+  }
+
   Figure f; m.plot_circles (f); f.show(); f.pause();
 
 #ifdef HAVE_FLTK
