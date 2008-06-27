@@ -9,6 +9,47 @@ using namespace std;
 int center = 6;
 int infinity = 13;
 
+double fg (const Vector<double> &x, Vector<double> &g, void *context) {
+  Map *m = (Map *) context;
+  double c = 0.0;
+
+  fill (g.begin(), g.end(), 0.0);
+
+  for (int i=0; i < m->n; ++i) {
+    double l2 = x[3*i]*x[3*i] + x[3*i+1]*x[3*i+1];
+    double l = sqrt(l2);
+    double r = x[3*i+2];
+
+    if ((m->bd[i]) || (l+r>1.0)) {
+      double lr1 = l+r-1.0;
+      double lr1r = lr1/l;
+
+      c += .1*lr1*lr1;
+
+      g[3*i]   += .1*lr1r*x[3*i];
+      g[3*i+1] += .1*lr1r*x[3*i+1];
+      g[3*i+2] += .1*lr1;
+    }
+
+    for (adj_list::iterator j = m->v[i]->adj.begin(); j != m->v[i]->adj.end(); ++j) {
+      double dx = x[3*(*j)]-x[3*i];
+      double dy = x[3*(*j)+1]-x[3*i+1];
+      double l = sqrt(dx*dx + dy*dy);
+      double sr = x[3*i+2] + x[3*(*j)+2];
+      double lsr = l-sr;
+      double lsrl = lsr/l;
+
+      c += lsr * lsr;
+
+      g[3*i]   -= lsrl*dx;
+      g[3*i+1] -= lsrl*dy;
+      g[3*i+2] -= lsr;
+    }
+  }
+
+  return c;
+}
+
 int main () {
   Map m (13);
 
@@ -25,8 +66,10 @@ int main () {
     << Edge(10,5) << Edge(10,8) << Edge(10,11)
     << Edge(11,10) << Edge(11,8) << Edge(11,6) << Edge(11,9) << Edge(11,12)
     << Edge(12,11) << Edge(12,9) << Edge(12,7);
-    //<< Edge(13,0) << Edge(13,1) << Edge(13,2) << Edge(13,5) << Edge(13,7) << Edge(13,10) << Edge(13,11) << Edge(13,12);
+  //<< Edge(13,0) << Edge(13,1) << Edge(13,2) << Edge(13,5) << Edge(13,7) << Edge(13,10) << Edge(13,11) << Edge(13,12);
 
+  m.barycentric();
+  m.barycentric();
   m.barycentric();
   m.barycentric();
   m.barycentric();
@@ -39,13 +82,15 @@ int main () {
 
   Vector<double> x(3*m.n);
 
+  double r = 1.0/sqrt((double)m.n);
+
   for (int i=0; i<m.n; ++i) {
-    x[3*i]        = m.v[i]->z.real();
-    x[3*i+1]      = m.v[i]->z.imag();
-    x[3*i+2]      = 1.0 / sqrt((double)m.n);
+    x[3*i]        = m.v[i]->z.real() / (1-r);
+    x[3*i+1]      = m.v[i]->z.imag() / (1-r);
+    x[3*i+2]      = .8*r;
   }
 
-  Minimizer<double> MM (3*m.n, Map_fg_circle_bd, &m);
+  Minimizer<double> MM (3*m.n, fg, &m);
   MM.os = &cerr;
 
   MM.minimize_qn (x);
@@ -63,6 +108,7 @@ int main () {
 
   Figure f;
   m.plot_circles(f);
+  f.circle(cpx(0.0,0.0),1.0);
   f.show();
   f.pause();
   f.printASY ("cp.asy");

@@ -151,7 +151,7 @@ namespace vb {
 #endif
 
   std::ostream & Figure::printASY (std::ostream &os) {
-    os << "unitsize(100);" << std::endl;
+    os << "unitsize(1000);" << std::endl;
 
     std::list<Shape*>::iterator i;
     for (i = contents.begin(); i != contents.end(); ++i) {
