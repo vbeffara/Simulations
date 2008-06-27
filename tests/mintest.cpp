@@ -31,7 +31,7 @@ Real fg (const Vector<Real> &x, Vector<Real> &g, void *context = NULL) {
 }
 
 int main () {
-  Vector<Real> x0(DIM); for (unsigned int i=0; i<DIM; ++i) x0[i] = cos(i);
+  Vector<Real> x0(DIM); for (unsigned int i=0; i<DIM; ++i) x0[i] = cos((double)i);
   Vector<Real> W0(DIM); for (unsigned int i=0; i<DIM; ++i) W0[i] = (i+1)*(i+1);
 
   Minimizer<Real> M (DIM,fg);

@@ -18,7 +18,7 @@ Image *img;
 double *c,*cmax,*cmin;
 double kappa;
 
-char color(int x, int y)
+unsigned char color(int x, int y)
 {
   double a,b,d;
   int k;
@@ -37,7 +37,7 @@ char color(int x, int y)
   else return RIGHTSIDE;
 }
 
-char color_smooth(int x, int y)
+unsigned char color_smooth(int x, int y)
 {
   double a,b,d;
   int k;

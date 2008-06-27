@@ -16,7 +16,7 @@ namespace vb {
    * vb::Image::lazy_eval.
    */
 
-  typedef char coloring (int,int);
+  typedef unsigned char coloring (int,int);
 
   /** The main image class, used for all displays.
    *
