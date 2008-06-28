@@ -98,9 +98,12 @@ namespace vb {
        * If fg is not NULL, it uses (*fg); if it is NULL, it will use 
        * (*f) and (*g) separately. Both work fine, but the first one is 
        * always faster.
+       *
+       * The default value (or an empty vector, or x itself) means that 
+       * x already contains the correct point coordinates.
        */
 
-      T compute (const Vector<T> &x_);
+      T compute (const Vector<T> &x_ = Vector<T>(0));
 
       /** Perform a few initialization.
        *
@@ -230,7 +233,8 @@ namespace vb {
   /****************************************************/
 
   template <typename T> inline T Minimizer<T>::compute (const Vector<T> &x_) {
-    x = x_;
+    if ((!x_.empty()) && (&x != &x_)) x.assign (x_.begin(), x_.end());
+
     if (fg) {
       fx = fg (x,gx,context);
     } else {
@@ -254,14 +258,21 @@ namespace vb {
 
   template <typename T> void Minimizer<T>::line_search (const Vector<T> &d) {
     old_x.swap(x); old_fx=fx; old_gx.swap(gx);
+
     T qq_0 = .8 * scalar_product (old_gx,d);
     T dir = (qq_0>0 ? -1 : 1);
     T t_l = 0.0, t_r = 0.0, t = dir;
     T y;
+
     bool refining = false;
 
     while (true) {
-      compute (old_x + t*d);
+      // Compute old_x+t*d in-place :
+      x.assign (d.begin(), d.end());
+      x *= t; x += old_x;
+
+      compute();
+
       y = old_fx + .3 * t * qq_0;
 
       if ((fx<=y) && (dir*scalar_product (gx,d) >= dir*qq_0)) break;

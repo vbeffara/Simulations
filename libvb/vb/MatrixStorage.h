@@ -34,6 +34,10 @@ namespace vb {
       virtual MatrixStorage<T> *sub (MatrixStorage<T> *M) =0;
       virtual MatrixStorage<T> *mul (MatrixStorage<T> *M) =0;
       virtual MatrixStorage<T> *rank1update (const Vector<T> &A, const Vector<T> &B) =0;
+      virtual void multiply (const Vector<T> &X, Vector<T> &Y) =0;
+
+      /* What follows is cruft and should vanish eventually ... */
+
       virtual Vector<T> map_right (const Vector<T> &X) =0;
   };
 
