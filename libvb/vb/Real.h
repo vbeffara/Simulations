@@ -71,7 +71,12 @@ namespace vb {
 #else
   typedef double Real;              ///< Utility type for a real number, if I ever want to use GMP.
 
-  inline double get_d (double x) { return x; }
+  /** Return the value of a vb::Real as a double.
+   *
+   * @param x The number in question.
+   */
+
+  inline double get_d (const Real &x) { return x; }
 #endif
 
   typedef std::complex<Real> cpx;   ///< Utility type for a complex number.

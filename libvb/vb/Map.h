@@ -361,15 +361,37 @@ namespace vb {
 
   Map &operator<< (Map &m, Edge e);
 
-  /// Compute the square distance to a balanced embedding.
+  /** Compute the square distance to a balanced embedding.
+   *
+   * @param x       The list of point coordinates (3 per vertex).
+   * @param g       The vector in which to compute the gradient.
+   * @param context A pointer to a vb::Map.
+   */
 
   Real Map_fg_balance (const Vector<Real> &x, Vector<Real> &g, void *context);
+
+  /** Compute the square distance to a circle packing.
+   *
+   * This is meant as a base to "real" circle packing helpers, and it 
+   * imposes no constraint at all on the packing except the tangency 
+   * structure.
+   *
+   * @param x       The list of point coordinates (3 per vertex).
+   * @param g       The vector in which to compute the gradient.
+   * @param context A pointer to a vb::Map.
+   */
+
+  Real Map_fg_circle_base (const Vector<Real> &x, Vector<Real> &g, void *context);
 
   /** Compute the square distance to a circle packing.
    *
    * The points at which bd[] is true are considered to be of fixed 
    * radius, so the gradient in their radius is always 0.0. For 
    * inscribing a graph in the unit circle, use Map_fg_circle_disk.
+   *
+   * @param x       The list of point coordinates (3 per vertex).
+   * @param g       The vector in which to compute the gradient.
+   * @param context A pointer to a vb::Map.
    */
 
   Real Map_fg_circle_bd (const Vector<Real> &x, Vector<Real> &g, void *context);
@@ -378,6 +400,10 @@ namespace vb {
    *
    * The points for which bd[] is true will correspond to circles that 
    * are tangent to the unit circle.
+   *
+   * @param x       The list of point coordinates (3 per vertex).
+   * @param g       The vector in which to compute the gradient.
+   * @param context A pointer to a vb::Map.
    */
 
   Real Map_fg_circle_disk (const Vector<Real> &x, Vector<Real> &g, void *context);

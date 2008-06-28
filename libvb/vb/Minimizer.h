@@ -1,5 +1,4 @@
-
-/// @file minimize.h
+/// @file Minimizer.h
 /// Algorithms for function minimization.
 
 #ifndef __VB_MINIMIZE_H
@@ -101,6 +100,8 @@ namespace vb {
        *
        * The default value (or an empty vector, or x itself) means that 
        * x already contains the correct point coordinates.
+       *
+       * @param x_ The point at which the computation is to be done.
        */
 
       T compute (const Vector<T> &x_ = Vector<T>(0));
@@ -119,9 +120,9 @@ namespace vb {
        * It calls init() after setting the functions. Logging and such 
        * need to be taken carre of separately.
        *
-       * @param n_      The dimension of space.
-       * @param fg_     The function to which vb::Minimizer::fg will point.
-       * @param context The computation context that will be passed to * (*fg).
+       * @param n_       The dimension of space.
+       * @param fg_      The function to which vb::Minimizer::fg will point.
+       * @param context_ The computation context that will be passed to * (*fg).
        */
 
       Minimizer (unsigned int n_,
@@ -134,10 +135,10 @@ namespace vb {
        * It calls init() after setting the functions. Logging and such 
        * need to be taken carre of separately.
        *
-       * @param n_      The dimension of space.
-       * @param f_      The function to which vb::Minimizer::f will point.
-       * @param g_      The function to which vb::Minimizer::g will point.
-       * @param context The computation context that will be passed to * (*fg).
+       * @param n_       The dimension of space.
+       * @param f_       The function to which vb::Minimizer::f will point.
+       * @param g_       The function to which vb::Minimizer::g will point.
+       * @param context_ The computation context that will be passed to * (*fg).
        */
 
       Minimizer (unsigned int n_,
@@ -427,3 +428,4 @@ namespace vb {
 }
 
 #endif
+

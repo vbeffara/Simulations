@@ -16,27 +16,98 @@ namespace vb {
    * surrounding vb::Matrix to juggle between them. Not sure that this 
    * is such a wonderful way of doing it, but it works pretty well and 
    * is transparent to the user.
+   *
+   * One assumption is that the default value of the template parameter 
+   * T is neutral for addition.
+   *
+   * @todo Add in-place versions of as many things as possible.
    */
 
   template <typename T> class MatrixStorage {
     public:
-      unsigned int width, height;
+      unsigned int width;  ///< The width of the matrix;
+      unsigned int height; ///< The height of the matrix.
+
+      /** Standard constructor.
+       *
+       * @param h The height of the matrix.
+       * @param w The width of the matrix.
+       */
 
       MatrixStorage (unsigned int h, unsigned int w) : width(w), height(h) {}
+
+      /// Standard virtual destructor.
+
       virtual ~MatrixStorage () {}
 
+      /// Produce a copy of the object and return it.
+
       virtual MatrixStorage<T> *copy () =0;
+
+      /// Compute each of the entry, converting to MatrixStorage_Plain.
+
       virtual MatrixStorage<T> *compute () =0;
 
-      virtual T at (unsigned int i, unsigned int j) const =0;
-      virtual MatrixStorage<T> *put (unsigned int i, unsigned int j, const T &t) =0;
-      virtual MatrixStorage<T> *add (MatrixStorage<T> *M) =0;
-      virtual MatrixStorage<T> *sub (MatrixStorage<T> *M) =0;
-      virtual MatrixStorage<T> *mul (MatrixStorage<T> *M) =0;
-      virtual MatrixStorage<T> *rank1update (const Vector<T> &A, const Vector<T> &B) =0;
-      virtual void multiply (const Vector<T> &X, Vector<T> &Y) =0;
+      /** Return the entry at the given coordinates.
+       *
+       * @param i The line of the entry.
+       * @param j The column of the entry.
+       */
 
-      /* What follows is cruft and should vanish eventually ... */
+      virtual T at (unsigned int i, unsigned int j) const =0;
+
+      /** Set the value of a particular matrix entry.
+       *
+       * @param i The line of the entry.
+       * @param j The line of the entry.
+       * @param t The new value of the entry.
+       */
+
+      virtual MatrixStorage<T> *put (unsigned int i, unsigned int j, const T &t) =0;
+
+      /** Add a MatrixStorage to the current one.
+       *
+       * NB There is no add(const vb::Matrix) because it is not the 
+       * point ... MatrixStorage does not know about Matrix. It's 
+       * simpler this way.
+       *
+       * @param M The MatrixStorage to add.
+       */
+
+      virtual MatrixStorage<T> *add (MatrixStorage<T> *M) =0;
+
+      /** Subtract a MatrixStorage from the current one.
+       *
+       * NB There is no sub(const vb::Matrix) because it is not the 
+       * point ... MatrixStorage does not know about Matrix. It's 
+       * simpler this way.
+       *
+       * @param M The MatrixStorage to subtract.
+       */
+
+      virtual MatrixStorage<T> *sub (MatrixStorage<T> *M) =0;
+
+      /** Right-multiply the current matrix by another one.
+       *
+       * @param M The (right) multiplicator.
+       */
+
+      virtual MatrixStorage<T> *mul_right (MatrixStorage<T> *M) =0;
+
+      /** Make a rank-one update of the matrix.
+       *
+       * This adds the rank-one matrix A^t.B to the current matrix.
+       *
+       * @param A The column vector of the rank-one matrix.
+       * @param B The line vector of the rank-one matrix.
+       */
+
+      virtual MatrixStorage<T> *rank1update (const Vector<T> &A, const Vector<T> &B) =0;
+
+      /** Map a vector by the current matrix.
+       *
+       * @param X The vector to map.
+       */
 
       virtual Vector<T> map_right (const Vector<T> &X) =0;
   };
@@ -50,7 +121,15 @@ namespace vb {
 
   template <typename T> class MatrixStorage_Plain : public MatrixStorage<T> {
     public:
+      /// The lines of the matrix.
+
       std::vector< Vector<T> > lines;
+
+      /** The standard constructor of a zero matrix.
+       *
+       * @param h The height of the matrix.
+       * @param w The width of the matrix.
+       */
 
       MatrixStorage_Plain (unsigned int h, unsigned int w) : MatrixStorage<T> (h,w), lines (std::vector< Vector<T> > (h,Vector<T>(w))) { }
       virtual ~MatrixStorage_Plain () {}
@@ -58,27 +137,32 @@ namespace vb {
       virtual MatrixStorage<T> *copy () {
         return new MatrixStorage_Plain<T> (*this);
       }
+
       virtual MatrixStorage<T> *compute () { return this; }
 
       virtual T at (unsigned int i, unsigned int j) const {
         return lines[i][j];
       }
+
       virtual MatrixStorage<T> *put (unsigned int i, unsigned int j, const T &t) {
         lines[i][j] = t; return this;
       }
+
       virtual MatrixStorage<T> *add (MatrixStorage<T> *M) {
         for (unsigned int i=0; i<this->height; ++i)
           for (unsigned int j=0; j<this->width; ++j)
             lines[i][j] += M->at(i,j);
         return this;
       }
+
       virtual MatrixStorage<T> *sub (MatrixStorage<T> *M) {
         for (unsigned int i=0; i<this->height; ++i)
           for (unsigned int j=0; j<this->width; ++j)
             lines[i][j] -= M->at(i,j);
         return this;
       }
-      virtual MatrixStorage<T> *mul (MatrixStorage<T> *M) {
+
+      virtual MatrixStorage<T> *mul_right (MatrixStorage<T> *M) {
         MatrixStorage_Plain<T> *tmp = new MatrixStorage_Plain<T> (this->height, M->width);
         for (unsigned int i=0; i<this->height; ++i) {
           for (unsigned int j=0; j<M->width; ++j) {
@@ -89,12 +173,14 @@ namespace vb {
         }
         return tmp;
       }
+
       virtual MatrixStorage<T> *rank1update (const Vector<T> &A, const Vector<T> &B) {
         for (unsigned int i=0; i<this->height; ++i)
           for (unsigned int j=0; j<this->width; ++j)
             lines[i][j] += A[i]*B[j];
         return this;
       }
+
       virtual Vector<T> map_right (const Vector<T> &X) {
         Vector<T> Y(this->height);
         for (unsigned int i=0; i<this->height; ++i)
@@ -115,19 +201,39 @@ namespace vb {
 
   template <typename T> class MatrixStorage_DiagSmallRank : public MatrixStorage<T> {
     public:
+      /// The diagonal of the unperturbed matrix.
+
       Vector<T> diag;
+
+      /// The list of rank-one updates performed to the matrix.
+
       Vector< std::pair< Vector<T>,Vector<T> > > updates;
+
+      /** Standard constructor of a zero matrix.
+       *
+       * @param h The height of the matrix.
+       * @param w The width of the matrix.
+       */
 
       MatrixStorage_DiagSmallRank (unsigned int h, unsigned int w) : MatrixStorage<T> (h,w) {
         diag = Vector<T> (h);
         for (unsigned int i=0; i<h; ++i) diag[i]=0;
       }
+
+      /** Constructor from a diagonal vector.
+       *
+       * @param h The height of the matrix.
+       * @param w The width of the matrix.
+       * @param d The diagonal of the matrix.
+       */
+
       MatrixStorage_DiagSmallRank (unsigned int h, unsigned int w, const Vector<T> &d) : MatrixStorage<T> (h,w), diag(d) { }
       virtual ~MatrixStorage_DiagSmallRank () {}
 
       virtual MatrixStorage<T> *copy () {
         return new MatrixStorage_DiagSmallRank (*this);
       }
+
       MatrixStorage<T> *compute () {
         MatrixStorage_Plain<T> *tmp = new MatrixStorage_Plain<T> (this->height, this->width);
         for (unsigned int i=0; i<this->height; ++i) {
@@ -146,26 +252,31 @@ namespace vb {
           tmp += updates[k].first[i] * updates[k].second[j];
         return tmp;
       }
+
       virtual MatrixStorage<T> *put (unsigned int i, unsigned int j, const T &t) {
         MatrixStorage<T> *tmp = this->compute();
         tmp->put (i,j,t);
         return tmp;
       }
+
       virtual MatrixStorage<T> *add (MatrixStorage<T> *M) {
         MatrixStorage<T> *tmp = this->compute();
         tmp->add(M);
         return tmp;
       }
+
       virtual MatrixStorage<T> *sub (MatrixStorage<T> *M) {
         MatrixStorage<T> *tmp = this->compute();
         tmp->sub(M);
         return tmp;
       }
-      virtual MatrixStorage<T> *mul (MatrixStorage<T> *M) {
+
+      virtual MatrixStorage<T> *mul_right (MatrixStorage<T> *M) {
         MatrixStorage<T> *tmp = this->compute();
         tmp->mul(M);
         return tmp;
       }
+
       virtual MatrixStorage<T> *rank1update (const Vector<T> &A, const Vector<T> &B) {
         updates.push_back (std::pair< Vector<T>,Vector<T> > (A,B));
         if (updates.size() > this->height/10) {
@@ -174,6 +285,7 @@ namespace vb {
           return this;
         }
       }
+
       virtual Vector<T> map_right (const Vector<T> &X) {
         Vector<T> tmp(this->width);
         for (unsigned int i=0; i<(this->width<this->height?this->width:this->height); ++i) tmp[i] = diag[i]*X[i];
@@ -184,4 +296,3 @@ namespace vb {
 }
 
 #endif
-
