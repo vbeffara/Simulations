@@ -9,47 +9,6 @@ using namespace std;
 int center = 6;
 int infinity = 13;
 
-double fg (const Vector<double> &x, Vector<double> &g, void *context) {
-  Map *m = (Map *) context;
-  double c = 0.0;
-
-  fill (g.begin(), g.end(), 0.0);
-
-  for (int i=0; i < m->n; ++i) {
-    double l2 = x[3*i]*x[3*i] + x[3*i+1]*x[3*i+1];
-    double l = sqrt(l2);
-    double r = x[3*i+2];
-
-    if ((m->bd[i]) || (l+r>1.0)) {
-      double lr1 = l+r-1.0;
-      double lr1r = lr1/l;
-
-      c += .1*lr1*lr1;
-
-      g[3*i]   += .1*lr1r*x[3*i];
-      g[3*i+1] += .1*lr1r*x[3*i+1];
-      g[3*i+2] += .1*lr1;
-    }
-
-    for (adj_list::iterator j = m->v[i]->adj.begin(); j != m->v[i]->adj.end(); ++j) {
-      double dx = x[3*(*j)]-x[3*i];
-      double dy = x[3*(*j)+1]-x[3*i+1];
-      double l = sqrt(dx*dx + dy*dy);
-      double sr = x[3*i+2] + x[3*(*j)+2];
-      double lsr = l-sr;
-      double lsrl = lsr/l;
-
-      c += lsr * lsr;
-
-      g[3*i]   -= lsrl*dx;
-      g[3*i+1] -= lsrl*dy;
-      g[3*i+2] -= lsr;
-    }
-  }
-
-  return c;
-}
-
 int main () {
   Map m (13);
 
@@ -73,6 +32,7 @@ int main () {
   m.barycentric();
   m.barycentric();
   m.barycentric();
+  m.barycentric();
   m.inscribe(m.face(Edge(1,m.v[1]->adj.back())));
 
   m.balance();
@@ -90,7 +50,7 @@ int main () {
     x[3*i+2]      = .8*r;
   }
 
-  Minimizer<double> MM (3*m.n, fg, &m);
+  Minimizer<double> MM (3*m.n, Map_fg_circle_disk, &m);
   MM.os = &cerr;
 
   MM.minimize_qn (x);
@@ -111,4 +71,6 @@ int main () {
   f.show();
   f.pause();
   f.printASY ("cp.asy");
+
+  return 0;
 }

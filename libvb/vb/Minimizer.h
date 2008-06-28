@@ -237,6 +237,8 @@ namespace vb {
       fx = f(x,context);
       gx = g(x,context);
     }
+
+    return fx;
   }
 
   template <typename T> void Minimizer<T>::init () {

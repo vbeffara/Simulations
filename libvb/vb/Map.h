@@ -363,7 +363,7 @@ namespace vb {
 
   /// Compute the square distance to a balanced embedding.
 
-  Real Map_fg_balance (const Vector<double> &x, Vector<double> &g, void *context);
+  Real Map_fg_balance (const Vector<Real> &x, Vector<Real> &g, void *context);
 
   /** Compute the square distance to a circle packing.
    *
@@ -372,8 +372,15 @@ namespace vb {
    * inscribing a graph in the unit circle, use Map_fg_circle_disk.
    */
 
-  Real Map_fg_circle_bd (const Vector<double> &x, Vector<double> &g, void *context);
+  Real Map_fg_circle_bd (const Vector<Real> &x, Vector<Real> &g, void *context);
 
+  /** Compute the square distance to a circle packing of the unit disk.
+   *
+   * The points for which bd[] is true will correspond to circles that 
+   * are tangent to the unit circle.
+   */
+
+  Real Map_fg_circle_disk (const Vector<Real> &x, Vector<Real> &g, void *context);
 }
 
 #endif
