@@ -229,88 +229,7 @@ namespace vb {
     return os << "]";
   }
 
-
-  /*************** THE OLD MATRIX TYPE, NO STORAGE CHOICE **************/
-
-  template <typename T> class OldMatrix {
-    public:
-      unsigned int lines, columns;
-      std::vector < std::vector <T> > data;
-
-      OldMatrix (int l, int c = 1) : lines(l), columns(c) {
-        for (unsigned int i=0; i<lines; ++i) data.push_back(std::vector<T>(columns));
-      }
-
-      OldMatrix (const Vector<T> &V) : lines(V.size()), columns(1) {
-        for (unsigned int i=0; i<V.size(); ++i) {
-          Vector<T> t;
-          t.push_back(V[i]);
-          data.push_back(t);
-        }
-      }
-
-      OldMatrix<T> &operator*= (T l) {
-        for (unsigned int i=0; i<lines; ++i)
-          for (unsigned int j=0; j<columns; ++j)
-            data[i][j] *= l;
-        return (*this);
-      }
-
-      OldMatrix<T> &operator/= (T l) {
-        for (unsigned int i=0; i<lines; ++i)
-          for (unsigned int j=0; j<columns; ++j)
-            data[i][j] /= l;
-        return (*this);
-      }
-  };
-
-  template <typename T> OldMatrix<T> operator- (const OldMatrix<T> &M) {
-    OldMatrix<T> B = M;
-    for (unsigned int i=0; i<B.lines; ++i)
-      for (unsigned int j=0; j<B.columns; ++j)
-        B.data[i][j] = - B.data[i][j];
-    return B;
-  }
-
-  template <typename T> OldMatrix<T> operator* (T l, const OldMatrix<T> &M) {
-    OldMatrix<T> P = M; P *= l;
-    return P;
-  }
-
-  template <typename T> OldMatrix<T> operator* (const OldMatrix<T> &M, T l) {
-    return l*M;
-  }
-
-  template <typename T> OldMatrix<T> operator/ (const OldMatrix<T> &M, T l) {
-    OldMatrix<T> P = M; P /= l;
-    return P;
-  }
-
-  template <typename T> OldMatrix<T> transpose (const OldMatrix<T> M) {
-    OldMatrix<T> P (M.columns, M.lines);
-    for (unsigned int i=0; i<P.lines; ++i)
-      for (unsigned int j=0; j<P.columns; ++j)
-        P.data[i][j] = M.data[j][i];
-    return P;
-  }
-
-  template <typename T> T scalar_product (const OldMatrix<T> &A, const OldMatrix<T> &B) {
-    if ((A.lines != B.lines) || (A.columns != B.columns))
-      throw std::runtime_error("vb::Matrix : wrong dimension.");
-
-    T t = A.data[0][0] * B.data[0][0];
-    for (int i=0; i<A.lines; ++i)
-      for (int j=0; j<A.columns; ++j)
-        if ((i!=0) || (j!=0))
-          t += A.data[i][j] * B.data[i][j];
-    return t;
-  }
-
-  template <typename T> T norm_squared (const OldMatrix<T> &M) {
-    return scalar_product(M,M);
-  }
-
-  /*******************************/
+  /***************************************************/
 
   template <typename T> class Vector : public std::vector<T> {
     public:
@@ -344,28 +263,6 @@ namespace vb {
       }
   };
 
-  template <typename T> Vector<T> operator* (const OldMatrix<T> &A, const Vector<T> &X) {
-    if (A.columns != X.size()) throw std::runtime_error("vb::Matrix : wrong dimension.");
-
-    Vector<T> Y(A.lines);
-    for (unsigned int i=0; i<A.lines; ++i) {
-      Y[i] = A.data[i][0] * X[0];
-      for (unsigned int j=1; j<A.columns; ++j)
-        Y[i] += A.data[i][j] * X[j];
-    }
-    return Y;
-  }
-
-  template <typename T> OldMatrix<T> operator* (const Vector<T> &X, const OldMatrix<T> &A) {
-    if (A.lines != 1) throw std::runtime_error("vb::Matrix : wrong dimension.");
-
-    OldMatrix<T> B (X.size(),A.columns);
-    for (unsigned int i=0; i<X.size(); ++i)
-      for (unsigned int j=0; j<A.columns; ++j)
-        B.data[i][j] = X[i]*A.data[0][j];
-    return B;
-  }
-
   template <typename T> T scalar_product (const Vector<T> &X, const Vector<T> &Y) {
     if (X.size() != Y.size()) throw std::runtime_error("vb::Matrix : wrong dimension.");
 
@@ -387,12 +284,6 @@ namespace vb {
   template <typename T> Vector<T> operator/ (const Vector<T> &X, const T &l) {
     Vector<T> Y = X;
     Y /= l;
-    return Y;
-  }
-
-  template <typename T> OldMatrix<T> transpose (const Vector<T> &X) {
-    OldMatrix<T> Y(1,X.size());
-    for (unsigned int i=0; i<X.size(); ++i) Y.data[0][i] = X[i];
     return Y;
   }
 
