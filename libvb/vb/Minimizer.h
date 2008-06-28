@@ -402,8 +402,10 @@ namespace vb {
         y.assign (gx.begin(), gx.end());
         y -= old_gx;
         T c = scalar_product(y,gx) / scalar_product(y,old_d);
-        d += c * old_d;
+        old_d *= c;
+        d += old_d;
       }
+
       line_search(d);
       first=false;
     }
