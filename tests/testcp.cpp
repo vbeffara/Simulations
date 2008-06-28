@@ -31,8 +31,6 @@ int main () {
   m.barycentric();
   m.barycentric();
   m.barycentric();
-  m.barycentric();
-  m.barycentric();
   m.inscribe(m.face(Edge(1,m.v[1]->adj.back())));
 
   m.balance();

@@ -564,11 +564,11 @@ namespace vb {
 
     return c;
   }
-
-  Real Map_fg_circle_bd (const Vector<Real> &x, Vector<Real> &g, void *context) {
+  
+  Real Map_fg_circle_base (const Vector<Real> &x, Vector<Real> &g, void *context) {
     Map *m = (Map *) context;
     Real c = 0.0;
-
+    
     fill (g.begin(), g.end(), 0.0);
 
     for (int i=0; i < m->n; ++i) {
@@ -584,20 +584,27 @@ namespace vb {
 
         g[3*i]   -= lsrl*dx;
         g[3*i+1] -= lsrl*dy;
-
-        if (!(m->bd[i]))
-          g[3*i+2] -= lsr;
+        g[3*i+2] -= lsr;
       }
     }
 
     return c;
   }
 
+  Real Map_fg_circle_bd (const Vector<Real> &x, Vector<Real> &g, void *context) {
+    Map *m = (Map *) context;
+    Real c = Map_fg_circle_base (x,g,context);
+
+    for (int i=0; i < m->n; ++i)
+      if (m->bd[i])
+        g[3*i+2] = 0.0;
+
+    return c;
+  }
+
   Real Map_fg_circle_disk (const Vector<Real> &x, Vector<Real> &g, void *context) {
     Map *m = (Map *) context;
-    Real c = 0.0;
-
-    fill (g.begin(), g.end(), 0.0);
+    Real c = Map_fg_circle_base (x,g,context);
 
     for (int i=0; i < m->n; ++i) {
       Real l2 = x[3*i]*x[3*i] + x[3*i+1]*x[3*i+1];
@@ -613,21 +620,6 @@ namespace vb {
         g[3*i]   += .1*lr1r*x[3*i];
         g[3*i+1] += .1*lr1r*x[3*i+1];
         g[3*i+2] += .1*lr1;
-      }
-
-      for (adj_list::iterator j = m->v[i]->adj.begin(); j != m->v[i]->adj.end(); ++j) {
-        Real dx = x[3*(*j)]-x[3*i];
-        Real dy = x[3*(*j)+1]-x[3*i+1];
-        Real l = sqrt(dx*dx + dy*dy);
-        Real sr = x[3*i+2] + x[3*(*j)+2];
-        Real lsr = l-sr;
-        Real lsrl = lsr/l;
-
-        c += lsr * lsr;
-
-        g[3*i]   -= lsrl*dx;
-        g[3*i+1] -= lsrl*dy;
-        g[3*i+2] -= lsr;
       }
     }
 
