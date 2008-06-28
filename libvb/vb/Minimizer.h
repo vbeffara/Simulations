@@ -366,14 +366,26 @@ namespace vb {
 
     Vector<T> d(n);
     Vector<T> old_d(n);
+    Vector<T> y(n);
+
     bool first = true;
 
     while (fx < old_fx) {
-      old_d = d; d = -gx;
+      old_d.swap(d);
+      d.assign(gx.begin(), gx.end());
+      d *= -1.0;
+
       if (!first) {
-        T c = scalar_product(gx - old_gx,gx) / scalar_product(old_gx,old_gx);
-        d += c * old_d;
+        T c1 = scalar_product(old_gx,old_gx);
+        
+        old_gx -= gx;
+
+        T c = scalar_product(old_gx,gx) / c1;
+
+        old_d *= c;
+        d -= old_d;
       }
+
       line_search(d);
       first=false;
     }
