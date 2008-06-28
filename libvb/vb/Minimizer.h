@@ -392,7 +392,10 @@ namespace vb {
     bool first = true;
 
     while (fx < old_fx) {
-      old_d = d; d = -gx;
+      old_d.swap(d);
+      d.assign(gx.begin(), gx.end());
+      d *= -1.0;
+
       if (!first) {
         Vector<T> y = gx - old_gx;
         T c = scalar_product(y,gx) / scalar_product(y,old_d);
