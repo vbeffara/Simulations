@@ -389,6 +389,8 @@ namespace vb {
 
     Vector<T> d(n);
     Vector<T> old_d(n);
+    Vector<T> y(n);
+
     bool first = true;
 
     while (fx < old_fx) {
@@ -397,7 +399,8 @@ namespace vb {
       d *= -1.0;
 
       if (!first) {
-        Vector<T> y = gx - old_gx;
+        y.assign (gx.begin(), gx.end());
+        y -= old_gx;
         T c = scalar_product(y,gx) / scalar_product(y,old_d);
         d += c * old_d;
       }
