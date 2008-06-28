@@ -1,4 +1,3 @@
-
 /// @file CoarseImage.h
 /// Definitions for the vb::CoarseImage class
 

@@ -1,15 +1,14 @@
 /// @file Real.h
 /// Definitions of types for real and complex numbers.
-//
-// If it can fing gmpxx.h it will use GMP (for arbitrary precision), in 
-// which case you can define REAL_PRECISION to the number of needed 
-// significant bits.
+///
+/// If it can find gmpxx.h it will use GMP (for arbitrary precision), in 
+/// which case you can define REAL_PRECISION to the number of needed 
+/// significant bits.
 
 #ifndef __VB_REAL_H
 #define __VB_REAL_H
 
 #include <complex>
-#include <iostream>
 #include <vb/config.h>
 #include <math.h>
 

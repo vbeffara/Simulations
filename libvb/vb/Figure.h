@@ -7,7 +7,6 @@
 #include <vb/Real.h>
 #include <vb/AutoWindow.h>
 
-#include <iostream>
 #include <list>
 
 namespace vb {

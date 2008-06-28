@@ -1,4 +1,3 @@
-
 /// @file MatrixStorage.h
 /// Definitions of various kinds of matrix storage.
 

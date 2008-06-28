@@ -4,7 +4,6 @@
 #ifndef __VB_MINIMIZE_H
 #define __VB_MINIMIZE_H
 
-#include <iostream>
 #include <vb/Matrix.h>
 
 namespace vb {

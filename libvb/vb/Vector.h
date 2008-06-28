@@ -1,4 +1,3 @@
-
 /// @file Vector.h
 /// Definitions of a vector template class.
 

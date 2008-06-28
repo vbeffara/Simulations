@@ -1,7 +1,5 @@
-
-/** @file Image.h
- * Definitions for the vb::Image class
- */
+/// @file Image.h
+/// Definitions for the vb::Image class
 
 #ifndef __VB_IMAGE_H
 #define __VB_IMAGE_H

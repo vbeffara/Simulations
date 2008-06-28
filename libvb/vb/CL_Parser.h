@@ -1,4 +1,3 @@
-
 /// @file CL_Parser.h
 /// Definitions for the vb::CL_Parser class
 

@@ -1,4 +1,3 @@
-
 /// @file PRNG.h
 /// Definitions for the vb::PRNG class
 

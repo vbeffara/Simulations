@@ -1,7 +1,5 @@
-
-/** @file ProgressBar.h
- * Definitions for the vb::ProgressBar class
- */
+/// @file ProgressBar.h
+/// Definitions for the vb::ProgressBar class
 
 #ifndef __VB_PROGRESS_BAR_H
 #define __VB_PROGRESS_BAR_H

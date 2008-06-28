@@ -1,4 +1,3 @@
-
 /// @file Point.h
 /// Definitions for the vb::Point and vb::PointQueue classes
 

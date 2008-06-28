@@ -1,4 +1,3 @@
-
 /// @file Matrix.h
 /// Definitions of a matrix template class.
 

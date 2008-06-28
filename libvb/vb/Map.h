@@ -4,8 +4,6 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include <vector>
-
 #include <vb/Figure.h>
 #include <vb/Minimizer.h>
 
