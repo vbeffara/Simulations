@@ -8,6 +8,7 @@
 #include <vb/AutoWindow.h>
 
 #include <list>
+#include <typeinfo>
 
 namespace vb {
 

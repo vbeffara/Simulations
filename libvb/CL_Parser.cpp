@@ -39,7 +39,7 @@ namespace vb {
   }
   
   void CL_Parser::parse (int argc, char **argv) {
-    char ch;
+    int ch;
     
     while ((ch = getopt(argc,argv,getopt_arg.c_str())) != -1) {
       if (ch == 'h') {

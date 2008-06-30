@@ -21,3 +21,4 @@ DATA
 *.ps.gz
 *.eps.gz
 tools/scons*
+*.orig
