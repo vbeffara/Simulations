@@ -131,6 +131,8 @@ namespace vb {
        */
 
       MatrixStorage_Plain (unsigned int h, unsigned int w) : MatrixStorage<T> (h,w), lines (std::vector< Vector<T> > (h,Vector<T>(w))) { }
+
+      /// The standard destructor.
       virtual ~MatrixStorage_Plain () {}
 
       virtual MatrixStorage<T> *copy () {
@@ -227,6 +229,8 @@ namespace vb {
        */
 
       MatrixStorage_DiagSmallRank (unsigned int h, unsigned int w, const Vector<T> &d) : MatrixStorage<T> (h,w), diag(d) { }
+
+      /// The standard destructor.
       virtual ~MatrixStorage_DiagSmallRank () {}
 
       virtual MatrixStorage<T> *copy () {

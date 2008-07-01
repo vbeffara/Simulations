@@ -4,6 +4,11 @@
 
 #include <vb/CL_Parser.h>
 
+#include <iostream>
+#include <stdlib.h>
+#include <sstream>
+#include <unistd.h>
+
 namespace vb {
   CL_Parser::CL_Parser (int argc, char **argv, std::string syntax,
                                                std::string help) :

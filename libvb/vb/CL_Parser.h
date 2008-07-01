@@ -6,10 +6,6 @@
 
 #include <string>
 #include <map>
-#include <iostream>
-#include <sstream>
-#include <unistd.h>
-#include <stdlib.h>
 
 namespace vb {
 
