@@ -26,11 +26,8 @@ int main(int argc, char ** argv)
 
   /* arguments -> taille du terrain */
 
-  if (argc != 2) {
-    fprintf(stderr, "Syntaxe : MB <n>\n");
-    exit(1);
-  }
-  n=atoi(argv[1]);
+  CL_Parser CLP (argc,argv,"n=500");
+  n = CLP.as_int('n');
 
   /* Initialisations */
 

@@ -89,12 +89,9 @@ int main(int argc, char ** argv)
 
   /* arguments -> p et n */
 
-  if (argc != 3) {
-    fprintf(stderr, "Syntaxe : Perco <n> <epsilon>\n");
-    exit(1);
-  }
-  n=atoi(argv[1]);
-  epsilon=atof(argv[2]);
+  CL_Parser CLP (argc,argv,"n=500,e=.1");
+  n = CLP.as_int('n');
+  epsilon = CLP.as_double('e');
 
   PRNG prng;
 

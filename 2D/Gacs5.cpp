@@ -10,6 +10,8 @@
 
 using namespace vb;
 
+PRNG prng;
+
 class Automaton {
 public:
   Automaton (int);
@@ -41,8 +43,8 @@ Automaton::~Automaton () {
 
 void Automaton::randomize (double e) {
   for (int i=0; i<size; ++i)
-    if (rand()<e*RAND_MAX)
-      main[i] = rand() & ALL_BITS;
+    if (prng.bernoulli(e))
+      main[i] = prng.rand() & ALL_BITS;
 }
 
 void Automaton::shift () {
@@ -66,7 +68,7 @@ void Automaton::emit () {
 
 void Automaton::forget (double r) {
   for (int i=0; i<size; ++i)
-    if (rand()<r*RAND_MAX)
+    if (prng.bernoulli(r))
       main[i] &= 1;
 }
 
@@ -75,16 +77,16 @@ void Automaton::effect (double r) {
     alt[i] = main[i];
   for (int i=0; i<size; i++) {
     if ( !(main[i]&1) && (main[(i+size-1)%size]&1) &&
-	 (main[i]&L1_BIT) && (rand()<r*RAND_MAX) )
+	 (main[i]&L1_BIT) && (prng.bernoulli(r)) )
       alt[i] |= 1;
     else if ( !(main[i]&1) && (main[(i+size-1)%size]&1) &&
-	 (main[i]&R1_BIT) && (rand()<r*RAND_MAX) )
+	 (main[i]&R1_BIT) && (prng.bernoulli(r)) )
       alt[(i+size-1)%size] &= 30;
     else if ( (main[i]&1) && !(main[(i+size-1)%size]&1) &&
-	 (main[i]&L2_BIT) && (rand()<r*RAND_MAX) )
+	 (main[i]&L2_BIT) && (prng.bernoulli(r)) )
       alt[i] &= 30;
     else if ( (main[i]&1) && !(main[(i+size-1)%size]&1) &&
-	 (main[i]&R2_BIT) && (rand()<r*RAND_MAX) )
+	 (main[i]&R2_BIT) && (prng.bernoulli(r)) )
       alt[(i+size-1)%size] |= 1;
   }
   this->swap();
@@ -102,7 +104,7 @@ int main (int argc, char **argv) {
   Automaton a(n);
 
   for (int x=0; x<n; ++x)
-    a.main[x] = rand()&31;
+    a.main[x] = prng.rand()&31;
 
   for (int i=0; ; ++i) {
     int nb=0;

@@ -12,6 +12,8 @@ long minx,maxx,miny,maxy,mx,my;
 long dx[4] = {1,0,-1,0};  /* 0=est, 1=nord ... */
 long dy[4] = {0,1,0,-1};
 
+PRNG prng;
+
 void putPoint(long x, long y)
 {
   long t,cx,cy;
@@ -87,7 +89,7 @@ long dist (long x, long y)
 
 long bigrand (long s)
 {
-  return -s + (((long)rand()) % (2*s+1));
+  return -s + ((prng.rand()) % (2*s+1));
 }
 	
 void runDLA(){
@@ -105,7 +107,7 @@ void runDLA(){
   while ((x>0)&&(x<n-1)&&(y>0)&&(y<n-1)) {
     sradius = 2*radius + 5; /* Mouais bof ... */
 
-    switch (rand() & 3) {
+    switch (prng.rand() & 3) {
     case 0:
       x = mx + bigrand(sradius);
       y = my - sradius;
@@ -126,7 +128,7 @@ void runDLA(){
     
     while ((d=dist(x,y))) {
       if (d==1) {
-	r = rand()%4;
+	r = prng.rand()%4;
 	x += dx[r];
 	y += dy[r];
       } else {
@@ -166,13 +168,8 @@ int main(int argc, char ** argv)
   
   /* arguments -> taille du terrain */
 
-  if (argc != 2) {
-    fprintf(stderr, "Syntaxe : %s <n>\n", argv[0]);
-    exit(1);
-  }
-  n=atoi(argv[1]);
-
-  n=1<<n; /* BIG !!! */
+  CL_Parser CLP (argc,argv,"n=8");
+  n = 1 << CLP.as_int('n');
 
   /* Initialisations */
 

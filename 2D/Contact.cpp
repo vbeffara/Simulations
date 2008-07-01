@@ -5,18 +5,14 @@ using namespace vb;
 
 int main(int argc, char *argv[])
 {
-  double p;
-  long i,nstep,x,y,total,n;
+  long i,nstep,x,y,total;
   char title[80];
 
   /* arguments -> p et n */
 
-  if (argc != 3) {
-    std::cerr << "Syntaxe : Contant <p> <n>\n";
-    exit(1);
-  }
-  p=atof(argv[1]);
-  n=atoi(argv[2]);
+  CL_Parser CLP (argc,argv,"p=.4,n=400");
+  double p = CLP.as_double('p');
+  int n = CLP.as_int('n');
 
   sprintf(title,"Discrete-time contact process on Z^2 (p=%f)",p);
 

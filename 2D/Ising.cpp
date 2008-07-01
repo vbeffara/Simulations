@@ -10,16 +10,13 @@ int main(int argc, char *argv[])
   unsigned long p[5];
   char title[80];
 
-  /* arguments -> beta et n */
+  /* arguments -> beta et n
+   * beta_critical = log(1+sqrt(2)) = 0.88137359...
+   */
 
-  if (argc != 3) {
-    fprintf(stderr, "Syntaxe : Ising <beta> <n>\n");
-    fprintf(stderr, "   (beta_critical = log(1+sqrt(2)) = 0.88137359...)\n");
-    exit(1);
-  }
-
-  double beta=atof(argv[1]);
-  long n=atoi(argv[2]);
+  CL_Parser CLP (argc,argv,"b=.88137359,n=300");
+  double beta = CLP.as_double('b');
+  long n = CLP.as_int('n');
 
   sprintf(title,"An Ising configuration (beta=%6f)",beta);
   Image img(n,n,1,title);
@@ -55,10 +52,10 @@ int main(int argc, char *argv[])
   /* Initialisations */
 
   p[0]=0;
-  p[1]=(long)(exp(-beta) * (double)RAND_MAX);
-  p[2]=(long)(exp(-2*beta) * (double)RAND_MAX);
-  p[3]=(long)(exp(-3*beta) * (double)RAND_MAX);
-  p[4]=(long)(exp(-4*beta) * (double)RAND_MAX);
+  p[1]=(long)(exp(-beta) * prng.max);
+  p[2]=(long)(exp(-2*beta) * prng.max);
+  p[3]=(long)(exp(-3*beta) * prng.max);
+  p[4]=(long)(exp(-4*beta) * prng.max);
 
   /* Simulation */
 
@@ -74,7 +71,7 @@ int main(int argc, char *argv[])
 	if (img(xy) == img(xy+1)) { f2++; } else { f1++; } 
 	if (img(xy) == img(xy+n)) { f2++; } else { f1++; } 
 	
-	if ( (f2<=f1) || ((prng.rand()%RAND_MAX) < p[f2-f1]) ) {
+	if ( (f2<=f1) || (prng.rand() < p[f2-f1]) ) {
 	  img.putpoint(x,y,(1-img(xy)));
 	}
       }

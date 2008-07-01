@@ -89,13 +89,10 @@ int main(int argc, char ** argv)
 
   /* arguments -> p et n */
 
-  if (argc != 4) {
-    fprintf(stderr, "Syntaxe : Perco <p1> <p2> <n>\n");
-    exit(1);
-  }
-  p1=atof(argv[1]);
-  p2=atof(argv[2]);
-  n=atoi(argv[3]);
+  CL_Parser CLP (argc,argv,"n=500,p=.6,q=.4");
+  n = CLP.as_int('n');
+  p1 = CLP.as_double('p');
+  p2 = CLP.as_double('q');
 
   sprintf(title,"Bond-percolation cluster (p1=%f, p2=%f)",p1,p2);
   img = new Image(2*n,2*n,1,title);

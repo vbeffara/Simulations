@@ -60,18 +60,15 @@ int main(int argc, char *argv[])
 {
   long i,j,bla;
   char title[80];
-  double beta;
   long dist;
 
-  /* arguments -> beta et n */
+  /* arguments -> beta et n
+   * beta_critical = log(1+sqrt(2)) = 0.88137359...
+   */
 
-  if (argc != 3) {
-    fprintf(stderr, "Syntaxe : Ising-cftp <beta> <n>\n");
-    fprintf(stderr, "   (beta_critical = log(1+sqrt(2)) = 0.88137359...)\n");
-    exit(1);
-  }
-  beta=atof(argv[1]);
-  n=atoi(argv[2]);
+  CL_Parser CLP (argc,argv,"b=.88137359,n=300");
+  double beta = CLP.as_double('b');
+  n = CLP.as_int('n');
 
   sprintf(title,"An Ising configuration (beta=%6f)",beta);
   Image img (n,n,2,title);

@@ -8,6 +8,8 @@ int n,nn;
 Image *img;
 int *x,*y;
 
+PRNG prng;
+
 inline int COO(int i, int j)
 {
   int k;
@@ -53,10 +55,10 @@ int main(int argc, char ** argv)
   while(cont) {
     x[0]=0; y[0]=0; i=0; j=0;
     for(k=1;k<n;k++) {
-      if (rand()&16) {
-	i += (rand()&64?1:-1);
+      if (prng.rand()&16) {
+	i += (prng.rand()&64?1:-1);
       } else {
-	j += (rand()&4?1:-1);
+	j += (prng.rand()&4?1:-1);
       }
       x[k]=i; y[k]=j;
     }

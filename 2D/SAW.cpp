@@ -72,12 +72,9 @@ int main(int argc, char ** argv)
 
   /* arguments -> nb de pas */
 
-  if (argc != 3) {
-    fprintf(stderr, "Syntaxe : SAW <n> <t>\n");
-    exit(1);
-  }
-  n=atoi(argv[1]);
-  t=atoi(argv[2]);
+  CL_Parser CLP (argc,argv,"n=500,t=5000");
+  n = CLP.as_int('n');
+  t = CLP.as_int('t');
 
   /* Initialisations */
 
