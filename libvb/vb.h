@@ -43,7 +43,9 @@ namespace vb {
  *   will try to update the screen representation of the image on the
  *   screen about 25 times per second. It works best if the computation
  *   time is roughly the same for all the points displayed. This is
- *   extremely practical.
+ *   extremely practical. This is wrapped into a class called 
+ *   vb::AutoWindow so that it can be re-used (by vb::Figure for 
+ *   instance).
  *
  * - vb::Image::tessellate(): a quick way to fill an image according to
  *   a coloring function (which gives the gray level as a function of
@@ -67,6 +69,14 @@ namespace vb {
  *   exporting it as an Asymptote file. Right now it is embryonic (only 
  *   dots, line segments and circles) but already functional.
  *
+ * - vb::Map: a class to encode planar maps, implementing various 
+ *   algorithms as I need them (circle packing for instance).
+ *
+ * - vb::Minimizer: to minimize a function of potentially many 
+ *   variables, using one of a few available algorithms 
+ *   (Fletcher-Reeves, BFGS ... see the documentation for the whole 
+ *   list).
+ *
  * And once again: this is all supposed to be very easy to use:
  * everything resides in header files for easy inclusion. If it
  * isn't, please let me know (vbeffara@ens-lyon.fr) ! See the sample
@@ -82,8 +92,11 @@ namespace vb {
  * The main dependency is on the FLTK toolkit (http://www.fltk.org) for 
  * display - though everything will happily build without it. If libpng 
  * (http://www.libpng.org/pub/png/libpng.html) is installed, most of the 
- * objects can create PNG versions of themselves, and soon movie 
- * creation should be possible. I am using SCons (http://www.scons.org/) 
- * as a build framework, but it should be very easy to compile without 
- * it.
+ * objects can create PNG versions of themselves, and soon movie creation 
+ * should be possible.
+ *
+ * I am using SCons (http://www.scons.org/) as a build framework, but if 
+ * you don't have it installed, there is one included in the source and a 
+ * Makefile that will use it, so typing 'make' will work - provided you
+ * at least have Python, which is very likely.
  */
