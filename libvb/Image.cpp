@@ -73,7 +73,7 @@ namespace vb {
     os << "%%\n";
     os << "%%Title: " << img.title << "\n";
     os << "%%\n";
-    os << "%%Creator: libvb - © 2001-2007 VB - GPL\n";
+    os << "%%Creator: libvb - © 2001-2008 Vincent Beffara - GPL v3\n";
     os << "%%Creator:   Mail: Vincent.Beffara@ens-lyon.fr\n";
     os << "%%Creator:   Web:  <http://www.umpa.ens-lyon.fr/~vbeffara/>\n";
     os << "%%\n";

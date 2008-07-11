@@ -99,4 +99,11 @@ namespace vb {
  * you don't have it installed, there is one included in the source and a 
  * Makefile that will use it, so typing 'make' will work - provided you
  * at least have Python, which is very likely.
+ *
+ * Everything I wrote in the package is distributed under the terms of 
+ * the GNU GPL license, version 3 (a copy of which is contained in the 
+ * archive of the library). The contents of the xtoys/ directory are not 
+ * written by me, and the license on it is not clear, I am only 
+ * including it for convenience (so that it can benefit from the SCons 
+ * framework). I will remove it if asked.
  */
