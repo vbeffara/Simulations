@@ -73,6 +73,11 @@ env = Environment(
     CCFLAGS = Split(os.environ.get ('CFLAGS', "-O2")),
     CXXFLAGS = Split(os.environ.get ('CXXFLAGS', "-O2")),
     LINKFLAGS = Split(os.environ.get ('LDFLAGS', "")),
+    CCCOMSTR = "[CC] $SOURCE -> $TARGET",
+    CXXCOMSTR = "[CXX] $SOURCE -> $TARGET",
+    SHCXXCOMSTR = "[CXX] $SOURCE -> $TARGET",
+    LINKCOMSTR = "[LINK] $TARGET",
+    SHLINKCOMSTR = "[LINK] $TARGET",
     )
 
 env.Decider ('MD5-timestamp')
