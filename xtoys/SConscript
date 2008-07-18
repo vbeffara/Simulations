@@ -3,7 +3,7 @@ Import("env")
 x11 = env.Clone()
 x11.Append (
     CPPPATH = ['/usr/include/sys'],
-    LIBPATH = ['/usr/X11R6/lib'],
+    LIBPATH = ['/usr/X11R6/lib64','/usr/X11R6/lib'],
     LIBS = ['X11','m'],
     )
 
