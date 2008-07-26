@@ -119,7 +119,7 @@ int main (int argc, char **argv) {
       "Syntax: Glass [-n size] [-p p] [-c conditioning]\n\
       conditioning is one of: none (default), glass, connect4, connect6");
 
-  int n = CLP.as_int('n');
+  int n = CLP('n');
   double p = CLP.as_double('p');
   string c = CLP.as_string('c');
   

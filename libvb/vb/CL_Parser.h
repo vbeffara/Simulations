@@ -9,6 +9,24 @@
 
 namespace vb {
 
+  /** A helper class for CL_Parser, that holds an unparsed parameter.
+   *
+   * It can be casted to an int, a double or a string, and it will do 
+   * what needs to be done accordingly.
+   */
+
+  class CL_Value {
+    public:
+      CL_Value (std::string s); /// Creator from a string.
+      operator std::string();   /// Convert to a string.
+      operator bool();          /// Convert to a bool.
+      operator int();           /// Convert to an int.
+      operator long();          /// Convert to a long int.
+      operator double();        /// Convert to a double.
+    private:
+      std::string value;
+  };
+
   /** A very useful and simple wrapper around getopt().
    *
    * Defines a syntax for the program, with default values. The string
@@ -60,6 +78,10 @@ namespace vb {
     /** Return the value of a parameter as a string. */
 
     std::string as_string(char);
+
+    /** Return a generic CL_Value holder. */
+
+    CL_Value operator() (char);
   private:
     std::string getopt_arg;
     std::string _help;

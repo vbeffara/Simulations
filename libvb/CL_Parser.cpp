@@ -10,6 +10,13 @@
 #include <unistd.h>
 
 namespace vb {
+  CL_Value::CL_Value (std::string s) : value(s) { }
+  CL_Value::operator std::string() { return value; }
+  CL_Value::operator bool() { return atoi(value.c_str()); }
+  CL_Value::operator int() { return atoi(value.c_str()); }
+  CL_Value::operator long() { return atoi(value.c_str()); }
+  CL_Value::operator double() { return atof(value.c_str()); }
+
   CL_Parser::CL_Parser (int argc, char **argv, std::string syntax,
                                                std::string help) :
     getopt_arg("h"), _help(help) {
@@ -72,5 +79,9 @@ namespace vb {
   
   std::string CL_Parser::as_string (char c) {
     return params[c];
+  }
+
+  CL_Value CL_Parser::operator() (char c) {
+    return CL_Value (params[c]);
   }
 }
