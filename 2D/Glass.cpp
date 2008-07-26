@@ -112,7 +112,7 @@ void init_ok_connect6 (void) {
 }
 
 int main (int argc, char **argv) {
-  long x,y,i,nb;
+  long x,y,i;
   PRNG prng;
 
   CL_Parser CLP (argc,argv,"n=300,p=.5,c=none",
@@ -133,34 +133,40 @@ int main (int argc, char **argv) {
   }
 
   snprintf (title,99, "A glass process of parameter %g (conditioning: '%s')", p, c.c_str());
-  Image img (n,n,1,title);
-
-  for (x=0;x<n;x++)
-    for (y=0;y<n;y++)
-      if (prng.bernoulli(1-p))
-	img.putpoint (x,y,1);
+  Image img (n,n,2,title);
 
   for (i=0;i<n;i++) {
-    img.putpoint (0,i,1);
-    img.putpoint (i,0,1);
-    img.putpoint (n-1,i,0);
-    img.putpoint (i,n-1,0);
+    img.putpoint (i,n/2,3);
   }
 
   img.show ();
 
-  for (i=2000*n*n; i>0; i--) {
+  for (i=2000*n*n; ; i--) {
     x = 1 + (prng.rand()%(n-2));
     y = 1 + (prng.rand()%(n-2));
 
-    nb = img(x+1,y) + 2*img(x+1,y+1) + 4*img(x,y+1) + 8*img(x-1,y+1)
-      + 16*img(x-1,y) + 32*img(x-1,y-1) + 64*img(x,y-1) + 128*img(x+1,y-1);
+    int nb = 0;
+    if (img(x+1,y)) nb += 1; 
+    if (img(x+1,y+1))  nb += 2; 
+    if (img(x,y+1))  nb += 4; 
+    if (img(x-1,y+1)) nb += 8; 
+    if (img(x-1,y))  nb += 16; 
+    if (img(x-1,y-1))  nb += 32; 
+    if (img(x,y-1))  nb += 64; 
+    if (img(x+1,y-1)) nb += 128; 
 
     if (ok[nb]) {
       if (prng.bernoulli(p)) {
-	if (img(x,y)==0) img.putpoint (x,y,1);
+	if (img(x,y)==0) {
+          int tmp = img(x+1,y);
+          tmp |= img (x-1,y);
+          tmp |= img (x,y+1);
+          tmp |= img (x,y-1);
+          if (tmp==0) tmp=1;
+          img.putpoint (x,y,tmp);
+        }
       } else {
-	if (img(x,y)==1) img.putpoint (x,y,0);
+	if (img(x,y)>0) img.putpoint (x,y,0);
       }
     }
   }
