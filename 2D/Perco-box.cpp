@@ -83,5 +83,5 @@ int main (int argc, char **argv) {
   }
 
   PB.die();
-  cout << m << " " << n << " " << p << " " << q << " " << t << " " << ncross << " " << double(ncross)/double(t) << endl;
+  cout << m << " " << n << " " << p << " " << q << " | " << t << " | " << double(ncross)/double(t) << endl;
 }

@@ -34,6 +34,7 @@ namespace vb {
   }
 
   void ProgressBar::die (void) {
+    update(final);
     std::cerr << "\n";
   }
 

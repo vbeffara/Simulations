@@ -1,0 +1,29 @@
+#!/usr/bin/env python
+
+import sys
+from math import sqrt
+
+data = {}
+
+for f in sys.argv[1:]:
+    for l in open(f):
+        key,n,vs = l.strip().split(" | ", 2)
+        n = int(n)
+        v = [n*float(x.split()[0]) for x in vs.split(" | ")]
+
+        if not key in data:
+            data[key] = [n,v]
+        else:
+            data[key][0] += n
+            for i in range(len(v)):
+                data[key][1][i] += v[i]
+
+def f(s):
+    return float(s.split()[0])
+
+for key in sorted(data,key=f):
+    n = data[key][0]
+    v = []
+    for x in data[key][1]:
+        v.append ("%f %f" % (x/n, sqrt(x*(1-x/n))/n))
+    print "%s | %d | %s" % (key,n," | ".join(v))
