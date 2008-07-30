@@ -9,19 +9,23 @@ __author__ = "Vincent Beffara <vbeffara@ens-lyon.fr>"
 __copyright__ = "(c) 2008 VB. GNU GPL v3."
 
 from math import sqrt
-import sys
+import sys, os
 
 class mc_data (object):
     def __init__ (self, file=None):
         self.data = {}
         self.comments = []
+        self.dirty = False
         self.file = file
 
         if self.file:
+            if not os.path.isfile (self.file):
+                open (self.file, "w")
             self.read (self.file)
 
     def __del__ (self):
-        self.save()
+        if self.dirty:
+            self.save()
 
     def parse (self, l):
         (key,n,v) = l.strip().split (" | ", 2)
@@ -35,6 +39,8 @@ class mc_data (object):
         self.data[key][0] += n
         for i in range(len(vs)):
             self.data[key][1][i] += n*vs[i]
+
+        self.dirty = True
 
     def read (self, file):
         for l in open(file):
