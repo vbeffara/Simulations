@@ -1,0 +1,7 @@
+#!/usr/bin/env python
+
+import vb
+
+D = vb.mc_data("../bla")
+
+D.dump("ii")

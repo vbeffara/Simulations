@@ -22,3 +22,4 @@ DATA
 *.eps.gz
 tools/scons*
 *.orig
+*.pyc
