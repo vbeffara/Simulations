@@ -76,8 +76,8 @@ env = Environment(
     CCCOMSTR = "[CC] $SOURCE -> $TARGET",
     CXXCOMSTR = "[CXX] $SOURCE -> $TARGET",
     SHCXXCOMSTR = "[CXX] $SOURCE -> $TARGET",
-    LINKCOMSTR = "[LINK] $TARGET",
-    SHLINKCOMSTR = "[LINK] $TARGET",
+    LINKCOMSTR = "[LINK] $SOURCE -> $TARGET",
+    SHLINKCOMSTR = "[LINK] $SOURCE -> $TARGET",
     )
 
 env.Decider ('MD5-timestamp')
