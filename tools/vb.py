@@ -88,9 +88,12 @@ class mc_auto (mc_data):
         self.above = 0
         self.below = 0
 
+    def e (self, v):
+        ff = map (self.f, [v for i in self.x], self.x)
+        return [(ff[i]-self.y[i])/self.z[i] for i in range(len(self.x))]
+
     def fit (self):
-        e = lambda v, x, y, z: (self.f(v,x)-y)/z
-        self.v, success = leastsq (e, self.v, args=(self.x, self.y, self.z))
+        self.v, success = leastsq (self.e, self.v)
 
         self.xx = self.y - self.f (self.v, self.x)
         self.above = self.xx + 2*self.z
@@ -114,13 +117,10 @@ class mc_auto (mc_data):
         return sqrt (0.5 * sqerr / len(self.x))
 
     def next (self):
-        m1 = list(self.above).index(max(self.above))
-        m2 = list(self.below).index(min(self.below))
-
-        if self.above[m1] + self.below[m2] > 0:
-            m = m1
+        if self.above.max() + self.below.min() > 0:
+            m = self.above.argmax()
         else:
-            m = m2
+            m = self.below.argmin()
 
         return self.data.keys()[m]
 
@@ -128,6 +128,6 @@ class mc_auto (mc_data):
         while True:
             self.fit()
             m = self.next()
-            print str(self.v) + " " + str(self.err()) + " -> " + m
+            print self.v, self.err(), "=>", m
             self.run_once (m)
 
