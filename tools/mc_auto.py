@@ -6,7 +6,7 @@ import vb
 def run (key):
     n = str(key[0])
     cmd = ["build/2D/Perco-box", "-n", n, "-m", n,
-            "-p", ".6", "-q", ".4", "-t", "10000"]
+            "-p", ".6", "-q", ".4", "-t", "100000"]
 
     P = Popen (cmd, stdout=PIPE, stderr=open("/dev/null","w"))
     return P.communicate()[0]

@@ -3,6 +3,7 @@
 /// Implementation of the vb::ProgressBar class
 
 #include <vb/ProgressBar.h>
+#include <sstream>
 
 namespace vb {
   ProgressBar::ProgressBar (int length) : 
@@ -39,12 +40,14 @@ namespace vb {
   }
 
   void ProgressBar::display (void) {
-    std::cerr << "\r[";
+    std::ostringstream bar;
+
+    bar << "\r[";
     for (int i=0; i<nchar; ++i)
-      std::cerr << "=";
+      bar << "=";
     for (int i=nchar; i<50; ++i)
-      std::cerr << " ";
-    std::cerr << "]";
+      bar << " ";
+    bar << "]";
     
     // std::cerr << " (" << current << "/" << final << ")";
 
@@ -52,18 +55,24 @@ namespace vb {
       double steps_per_sec = (double)current / (double)(last_time-start_time);
       int eta = (int)((double)(final-current)/steps_per_sec);
 
-      int sec = eta%60; eta = (eta-sec)/60;    // in minutes
-      int min = eta%60; eta = (eta-min)/60;    // in hours
-      int hour = eta%24; eta = (eta-hour)/24;  // in days
+      bar << " ETA: ";
 
-      std::cerr << " ETA: ";
-      if (eta>0)
-        std::cerr << eta << "d ";
-      if ((eta>0)||(hour>0))
-        std::cerr << hour << "h ";
-      std::cerr << min << ":" << std::setw(2) << std::setfill('0') << sec;
+      if (eta < 60) bar << eta << " second(s)"; else {
+        eta /= 60;
+        if (eta < 60) bar << eta << " minute(s)"; else {
+          eta /= 60;
+          if (eta < 24) bar << eta << " hour(s)"; else {
+            eta /= 24;
+            if (eta < 365) bar << eta << " day(s)"; else {
+              eta /= 365;
+              bar << eta << " year(s)";
+            }
+          }
+        }
+      }
 
-      std::cerr << "     ";
+      bar << "     ";
+      std::cerr << bar.str();
     }
   }
 }

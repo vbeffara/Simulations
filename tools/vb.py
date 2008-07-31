@@ -135,4 +135,3 @@ class mc_auto (mc_data):
             m = self.next()
             print self.v, self.err(), "=>", " ".join(str(i) for i in m)
             self.run_once (m)
-
