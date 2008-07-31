@@ -29,9 +29,10 @@ class mc_data (object):
             self.save()
 
     def parse (self, l):
-        (key,n,v) = l.strip().split (" | ", 2)
+        (k,n,v) = l.strip().split (" | ", 2)
 
         n = int(n)
+        key = tuple(float(s) for s in k.split(" "))
         vs = [float(s.split(" ")[0]) for s in v.split(" | ")]
 
         if key not in self.data:
@@ -60,12 +61,13 @@ class mc_data (object):
         for l in self.comments:
             f.write (l)
 
-        for key in sorted(self.data, key = lambda s: float(s.split()[0])):
+        for key in sorted(self.data):
             n = self.data[key][0]
+            k = " ".join(str(i) for i in key)
             v = []
             for x in self.data[key][1]:
                 v.append ("%f %f" % (x/n, sqrt(x*(1-x/n))/n))
-            f.write ("%s | %d | %s\n" % (key,n," | ".join(v)))
+            f.write ("%s | %d | %s\n" % (k,n," | ".join(v)))
 
     def save (self):
         if self.file:
@@ -77,27 +79,29 @@ class mc_auto (mc_data):
         mc_data.__init__ (self,file)
         self.run = run
         self.f = f
-        self.v = array(v)
+        self.v = v
 
         self.n = array ([self.data[key][0] for key in self.data])
-        self.x = array ([float(key.split()[0]) for key in self.data])
+        self.x = array (self.data.keys())
         self.y = array ([self.data[key][1][0] for key in self.data]) / self.n
         self.z = sqrt (self.y*(1.0-self.y)/self.n)
 
-        self.xx = 0
+        self.fx = 0
         self.above = 0
         self.below = 0
 
+        self.fit()
+
     def e (self, v):
-        ff = map (self.f, [v for i in self.x], self.x)
-        return [(ff[i]-self.y[i])/self.z[i] for i in range(len(self.x))]
+        ff = array ([self.f (v,x) for x in self.x])
+        return (ff-self.y)/self.z
 
     def fit (self):
         self.v, success = leastsq (self.e, self.v)
 
-        self.xx = self.y - self.f (self.v, self.x)
-        self.above = self.xx + 2*self.z
-        self.below = self.xx - 2*self.z
+        self.fx = array ([self.f (self.v,x) for x in self.x])
+        self.above = self.fx - self.y + 2*self.z
+        self.below = self.fx - self.y - 2*self.z
 
         return success
 
@@ -110,6 +114,8 @@ class mc_auto (mc_data):
         self.n[i] = self.data[key][0]
         self.y[i] = self.data[key][1][0] / self.n[i]
         self.z[i] = sqrt (self.y[i] * (1.0-self.y[i]) / self.n[i])
+
+        self.fit()
 
     def err (self):
         sqerr = sum(i*i for i in self.above) + sum(i*i for i in self.below)
@@ -126,8 +132,7 @@ class mc_auto (mc_data):
 
     def loop (self):
         while True:
-            self.fit()
             m = self.next()
-            print self.v, self.err(), "=>", m
+            print self.v, self.err(), "=>", " ".join(str(i) for i in m)
             self.run_once (m)
 
