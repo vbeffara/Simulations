@@ -8,7 +8,8 @@ __revision__ = "2"
 __author__ = "Vincent Beffara <vbeffara@ens-lyon.fr>"
 __copyright__ = "(c) 2008 VB. GNU GPL v3."
 
-from math import sqrt
+from numpy import *
+from scipy.optimize import leastsq
 import sys, os
 
 class mc_data (object):
@@ -41,6 +42,7 @@ class mc_data (object):
             self.data[key][1][i] += n*vs[i]
 
         self.dirty = True
+        return key
 
     def read (self, file):
         for l in open(file):
@@ -68,3 +70,64 @@ class mc_data (object):
     def save (self):
         if self.file:
             self.dump (self.file)
+            self.dirty = False
+
+class mc_auto (mc_data):
+    def __init__ (self, run, f, v, file="amc.data"):
+        mc_data.__init__ (self,file)
+        self.run = run
+        self.f = f
+        self.v = array(v)
+
+        self.n = array ([self.data[key][0] for key in self.data])
+        self.x = array ([float(key.split()[0]) for key in self.data])
+        self.y = array ([self.data[key][1][0] for key in self.data]) / self.n
+        self.z = sqrt (self.y*(1.0-self.y)/self.n)
+
+        self.xx = 0
+        self.above = 0
+        self.below = 0
+
+    def fit (self):
+        e = lambda v, x, y, z: (self.f(v,x)-y)/z
+        self.v, success = leastsq (e, self.v, args=(self.x, self.y, self.z))
+
+        self.xx = self.y - self.f (self.v, self.x)
+        self.above = self.xx + 2*self.z
+        self.below = self.xx - 2*self.z
+
+        return success
+
+    def run_once (self, key):
+        self.parse (self.run (key))
+        self.save()
+
+        i = self.data.keys().index(key)
+
+        self.n[i] = self.data[key][0]
+        self.y[i] = self.data[key][1][0] / self.n[i]
+        self.z[i] = sqrt (self.y[i] * (1.0-self.y[i]) / self.n[i])
+
+    def err (self):
+        sqerr = sum(i*i for i in self.above) + sum(i*i for i in self.below)
+
+        return sqrt (0.5 * sqerr / len(self.x))
+
+    def next (self):
+        m1 = list(self.above).index(max(self.above))
+        m2 = list(self.below).index(min(self.below))
+
+        if self.above[m1] + self.below[m2] > 0:
+            m = m1
+        else:
+            m = m2
+
+        return self.data.keys()[m]
+
+    def loop (self):
+        while True:
+            self.fit()
+            m = self.next()
+            print str(self.v) + " " + str(self.err()) + " -> " + m
+            self.run_once (m)
+
