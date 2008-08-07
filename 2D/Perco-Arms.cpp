@@ -112,13 +112,13 @@ int main(int argc, char **argv) {
 
   PB.die();
 
-  cout << n;
+  cout << n << " | " << n_iter;
   for (int i=1; i<=4; ++i) {
     int bla=0;
     for (int j=i; j<=4; ++j) bla += stats[j];
-    cout << " " << (double)bla / (double)n_iter;
+    cout << " | " << (double)bla / (double)n_iter;
   }
-  cout << " " << n_iter << endl;
+  cout << endl;
 }
 
 #else

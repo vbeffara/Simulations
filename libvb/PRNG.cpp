@@ -4,7 +4,23 @@
 
 #include <vb/PRNG.h>
 
+#include <sys/time.h>
+#include <time.h>
+#include <stdlib.h>
+
 namespace vb {
+
+  static long getseed() {
+    struct timeval tv;
+    time_t curtime;
+    long usec;
+
+    gettimeofday (&tv, NULL); 
+    curtime = tv.tv_sec;
+    usec = tv.tv_usec;
+
+    return usec;
+  }
 
   PRNG_base::~PRNG_base () {};
 
@@ -33,6 +49,7 @@ namespace vb {
   }
 
   void PRNG_MT::srand (unsigned long seed) {
+    if (!seed) seed = getseed();
     mt[0] = seed & 0xffffffffUL;
     for (mti = 1; mti < PRNG_MT_N; mti++) {
       mt[mti] = (1812433253UL * (mt[mti - 1] ^ (mt[mti - 1] >> 30)) + mti);
@@ -96,6 +113,7 @@ namespace vb {
   }
 
   void PRNG_Rewindable::srand (unsigned long seed) {
+    if (!seed) seed = getseed();
     rdmbuf = seed;
   }
 

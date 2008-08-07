@@ -133,5 +133,5 @@ class mc_auto (mc_data):
     def loop (self):
         while True:
             m = self.next()
-            print self.v, self.err(), "=>", " ".join(str(i) for i in m)
+            #print self.v, self.err(), "=>", " ".join(str(i) for i in m)
             self.run_once (m)

@@ -5,7 +5,6 @@
 #define __VB_PRNG_H
 
 #include <math.h>
-#include <time.h>
 
 namespace vb {
   /** A general-purpose pseudo-random number generator framework.
@@ -120,7 +119,7 @@ namespace vb {
        * @param seed The initialization value to use.
        */
 
-      void srand (unsigned long seed = time(0));
+      void srand (unsigned long seed = 0);
 
       /** Iterate x -> a*x+b, n times.
        *
@@ -215,14 +214,14 @@ namespace vb {
 
   class PRNG_MT : public PRNG_base {
     public:
-      PRNG_MT (unsigned long seed = time(0)); ///< The standard constructor.
+      PRNG_MT (unsigned long seed = 0); ///< The standard constructor.
 
       /** Initialize the PRNG from an integer seed.
        * 
        * @param seed The initialization seed.
        */
 
-      void srand (unsigned long seed = time(0));
+      void srand (unsigned long seed = 0);
 
       /// Return an integer between 0 and max.
 
