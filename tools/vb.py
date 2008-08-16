@@ -8,8 +8,6 @@ __revision__ = "2"
 __author__ = "Vincent Beffara <vbeffara@ens-lyon.fr>"
 __copyright__ = "(c) 2008 VB. GNU GPL v3."
 
-from numpy import *
-from scipy.optimize import leastsq
 import sys, os
 
 class mc_data (object):
@@ -76,6 +74,9 @@ class mc_data (object):
 
 class mc_auto (mc_data):
     def __init__ (self, run, f, v, file="amc.data"):
+        from numpy import array
+        from scipy.optimize import leastsq
+
         mc_data.__init__ (self,file)
         self.run = run
         self.f = f
