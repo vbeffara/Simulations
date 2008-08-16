@@ -14,9 +14,9 @@ if env['GUI'] == 'fltk' and conf.CheckCXXHeader ("FL/Fl.H"):
     conf.Define ('HAVE_FLTK')
     env.ParseConfig ("fltk-config --cxxflags --ldflags")
 
-if conf.CheckCXXHeader ("gmpxx.h"):
-    conf.Define ('HAVE_GMPXX')
-    env.Append ( LIBS = ['gmp', 'gmpxx'] )
+if conf.CheckCXXHeader ("cln/cln.h"):
+    conf.Define ('HAVE_CLN')
+    env.ParseConfig ("cln-config --libs --cppflags")
 
 if conf.CheckCXXHeader ("boost/graph/graph_utility.hpp"):
     conf.Define ('HAVE_BOOST')

@@ -123,14 +123,14 @@ namespace vb {
   }
 
   void Map::balance () {
-    Vector<double> x(2*n);
+    Vector<Real> x(2*n);
 
     for (int i=0; i<n; ++i) {
       x[2*i]   = v[i]->z.real();
       x[2*i+1] = v[i]->z.imag();
     }
 
-    Minimizer<double> M (2*n, Map_fg_balance, this);
+    Minimizer<Real> M (2*n, Map_fg_balance, this);
     M.minimize_qn (x);
 
     for (int i=0; i<n; ++i) {
@@ -266,7 +266,7 @@ namespace vb {
     Real tmp = 0.0;
     for (int i=0; i<n; ++i)
       for (adj_list::iterator j = v[i]->adj.begin(); j != v[i]->adj.end(); ++j)
-        tmp += 1.0/face(Edge(i,*j)).size();
+        tmp += Real(1.0) / Real(face(Edge(i,*j)).size());
     return floor (get_d(tmp + .1));
   }
 
@@ -288,7 +288,7 @@ namespace vb {
 
   Real Map::optimize (Real func(const Map&), Real delta_func(const Map&,int,cpx,Real)) {
     Real cost = func(*this);
-    Real delta_cost = 1;
+    Real delta_cost = 1.0;
     Real delta = 1.0;
     Real dv;
 
@@ -393,7 +393,7 @@ namespace vb {
       old_lambda = lambda; lambda = (old_E-E)/E;
 
       dlambda = (old_lambda-lambda)/lambda;
-      if (fabs(dlambda) < .01) {
+      if (fabs(get_d(dlambda)) < .01) {
         sqrtlambda = sqrt(lambda);
         for (int i=0; i<n; ++i) {
           nr = v[i]->r + (v[i]->r-old_rad[i])/sqrtlambda;
@@ -437,9 +437,9 @@ namespace vb {
             Real t = (((x+y)*(x+y) + (x+prev_r)*(x+prev_r) - (y+prev_r)*(y+prev_r)) / (2*(x+y)*(x+prev_r)));
             if (t<-1.0) t=-1.0;
             if (t>1.0) t=1.0;
-            Real alpha = acos (t);
+            Real alpha = realpart(acos(t));
             alpha += arg(prev_z-v[i]->z);
-            v[*j]->z = v[i]->z + (x+y) * cpx(cos(alpha),sin(alpha));
+            v[*j]->z = v[i]->z + cpx((x+y)*cos(alpha), (x+y)*sin(alpha));
             z = v[*j]->z;
             dirty = true;
           }
@@ -457,17 +457,17 @@ namespace vb {
     w /= scale;
     r /= scale;
 
-    cpx Delta = (1+norm(w)-r*r)*(1+norm(w)-r*r) - 4*norm(w);
-    cpx x = ((1+norm(w)-r*r) + sqrt(Delta)) / (Real(2)*conj(w));
-    if (norm(x)>1) x = ((1+norm(w)-r*r) - sqrt(Delta)) / (Real(2)*conj(w));
+    cpx Delta ( (1+norm(w)-r*r)*(1+norm(w)-r*r) - 4*norm(w), 0 );
+    cpx x = (cpx(1+norm(w)-r*r) + sqrt(Delta)) / (cpx(2)*conj(w));
+    if (norm(x)>1) x = (cpx(1+norm(w)-r*r) - sqrt(Delta)) / (cpx(2)*conj(w));
 
     for (int i=0; i<n; ++i) {
       cpx W = v[i]->z/scale;
       Real R = v[i]->r/scale;
 
-      cpx A = norm(Real(1) - W*conj(x)) - R*R*norm(x);
-      cpx B = (Real(1) - W*conj(x)) * (conj(x)-conj(W)) - R*R*conj(x);
-      cpx C = (x-W)*(conj(x)-conj(W)) - R*R;
+      cpx A = norm(Real(1) - W*conj(x)) - cpx(R*R*norm(x),0);
+      cpx B = (cpx(1,0) - W*conj(x)) * (conj(x)-conj(W)) - cpx(R*R,0)*conj(x);
+      cpx C = (x-W)*(conj(x)-conj(W)) - cpx(R*R,0);
 
       v[i]->z = scale * conj(-B/A);
       v[i]->r = scale * sqrt(abs(norm(v[i]->z/scale) - C/A));
@@ -544,9 +544,9 @@ namespace vb {
     return m;
   }
 
-  Real Map_fg_balance (const Vector<double> &x, Vector<double> &g, void *context) {
+  Real Map_fg_balance (const Vector<Real> &x, Vector<Real> &g, void *context) {
     Map *m = (Map *) context;
-    double c = 0.0;
+    Real c = 0.0;
 
     for (int i=0; i < m->n; ++i) {
       g[2*i] = 0;

@@ -12,63 +12,34 @@
 #include <vb/config.h>
 #include <math.h>
 
-#ifdef HAVE_GMPXX
-#include <gmpxx.h>
-
-#ifndef REAL_PRECISION
-#define REAL_PRECISION 64
-#endif
+#ifdef HAVE_CLN
+#define WANT_OBFUSCATING_OPERATORS
+#include <cln/cln.h>
 #endif
 
 namespace vb {
+#ifdef HAVE_CLN
+  extern int real_precision;
 
-#ifdef HAVE_GMPXX_THIS_IS_DISABLED_FOR_NOW
-  class Real {
+  class Real : public cln::cl_R {
     public:
-      mpf_class _r;
-
-      Real ();
-      Real (const Real &r);
-      Real (mpf_class r);
-      Real (double r);
-
-      Real operator- () const;
-      Real operator+= (const Real &other);
-      Real operator-= (const Real &other);
-      Real operator*= (const Real &other);
-      Real operator/= (const Real &other);
-
-      double get_d() const;
+      Real (int x = 0) : cln::cl_R (cln::cl_float(x, cln::float_format(real_precision))) { }
+      Real (double x) : cln::cl_R (cln::cl_float(x, cln::float_format(real_precision))) { }
+      Real (size_t x) : cln::cl_R (cln::cl_float(int(x), cln::float_format(real_precision))) { }
+      Real (const cln::cl_R &x) : cln::cl_R (x) { }
   };
 
-  bool operator== (const Real &x, const Real &y);
-  bool operator!= (const Real &x, const Real &y);
+  inline double get_d (const Real &x) { return cln::double_approx(x); }
 
-  bool operator< (const Real &x, const Real &y);
-  bool operator> (const Real &x, const Real &y);
-  bool operator<= (const Real &x, const Real &y);
-  bool operator>= (const Real &x, const Real &y);
-
-  Real operator+ (const Real &x, const Real &y);
-  Real operator- (const Real &x, const Real &y);
-  Real operator* (const Real &x, const Real &y);
-  Real operator/ (const Real &x, const Real &y);
-
-  std::ostream &operator<< (std::ostream &o, const Real &x);
-
-  Real abs (const Real &r);
-  Real fabs (const Real &r);
-  Real exp (const Real &r);
-  Real cos (const Real &r);
-  Real acos (const Real &r);
-  Real sin (const Real &r);
-  Real sqrt (const Real &r);
-
-  Real atan2 (const Real &x, const Real &y);
-
-  inline double get_d (const Real &x) { return x.get_d(); }
+  Real atan2 (const Real &y, const Real &x);
 #else
   typedef double Real;              ///< Utility type for a real number, if I ever want to use GMP.
+
+  /// Return the smaller of two real numbers.
+  inline Real min (Real x, Real y) { return (x<y?x:y); }
+
+  /// Return the larger of two real numbers.
+  inline Real max (Real x, Real y) { return (x>y?x:y); }
 
   /** Return the value of a vb::Real as a double.
    *
@@ -79,12 +50,6 @@ namespace vb {
 #endif
 
   typedef std::complex<Real> cpx;   ///< Utility type for a complex number.
-
-  /// Return the smaller of two real numbers.
-  inline Real min (Real x, Real y) { return (x<y?x:y); }
-
-  /// Return the larger of two real numbers.
-  inline Real max (Real x, Real y) { return (x>y?x:y); }
 
   /// This is equal to Pi.
 #define ONE_PI ((Real)3.14159265358979)
