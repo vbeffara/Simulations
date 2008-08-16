@@ -5,7 +5,6 @@
 
 namespace vb {
 #ifdef HAVE_CLN
-  int real_precision = 50;
-  Real atan2 (const Real &y, const Real &x) { return atan(x,y); }
+  int real_precision = 10;
 #endif
 }

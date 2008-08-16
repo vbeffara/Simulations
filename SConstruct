@@ -86,6 +86,7 @@ env.Decider ('MD5-timestamp')
 
 opts = Options('simulations.conf')
 opts.Add(PathOption("prefix", "installation prefix", "/usr/local", PathOption.PathAccept))
+opts.Add(BoolOption('CLN','Use CLN for the vb::Real and vb::Complex types (slow!)',0))
 opts.Add('GUI','The GUI to use (fltk or none)','fltk')
 opts.Update(env)
 opts.Save('simulations.conf', env)

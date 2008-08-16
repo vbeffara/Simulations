@@ -24,6 +24,7 @@ namespace vb {
   class Real : public cln::cl_R {
     public:
       Real (int x = 0) : cln::cl_R (cln::cl_float(x, cln::float_format(real_precision))) { }
+      Real (unsigned int x) : cln::cl_R (cln::cl_float(x, cln::float_format(real_precision))) { }
       Real (double x) : cln::cl_R (cln::cl_float(x, cln::float_format(real_precision))) { }
       Real (size_t x) : cln::cl_R (cln::cl_float(int(x), cln::float_format(real_precision))) { }
       Real (const cln::cl_R &x) : cln::cl_R (x) { }
@@ -31,7 +32,9 @@ namespace vb {
 
   inline double get_d (const Real &x) { return cln::double_approx(x); }
 
-  Real atan2 (const Real &y, const Real &x);
+  inline Real atan2 (const Real &y, const Real &x) { return atan(x,y); }
+
+  typedef std::complex<Real> cpx;   ///< Utility type for a complex number.
 #else
   typedef double Real;              ///< Utility type for a real number, if I ever want to use GMP.
 
@@ -47,9 +50,11 @@ namespace vb {
    */
 
   inline double get_d (const Real &x) { return x; }
-#endif
 
   typedef std::complex<Real> cpx;   ///< Utility type for a complex number.
+
+  inline double realpart (cpx z) { return z.real(); }
+#endif
 
   /// This is equal to Pi.
 #define ONE_PI ((Real)3.14159265358979)

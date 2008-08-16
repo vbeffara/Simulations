@@ -14,7 +14,7 @@ if env['GUI'] == 'fltk' and conf.CheckCXXHeader ("FL/Fl.H"):
     conf.Define ('HAVE_FLTK')
     env.ParseConfig ("fltk-config --cxxflags --ldflags")
 
-if conf.CheckCXXHeader ("cln/cln.h"):
+if env['CLN'] and conf.CheckCXXHeader ("cln/cln.h"):
     conf.Define ('HAVE_CLN')
     env.ParseConfig ("cln-config --libs --cppflags")
 
