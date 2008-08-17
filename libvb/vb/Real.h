@@ -1,8 +1,8 @@
 /// @file Real.h
 /// Definitions of types for real and complex numbers.
 ///
-/// If it can find gmpxx.h it will use GMP (for arbitrary precision), in 
-/// which case you can define REAL_PRECISION to the number of needed 
+/// If it can find it,  it will use CLN (for arbitrary precision), in 
+/// which case you can define real_precision to the number of needed 
 /// significant bits.
 
 #ifndef __VB_REAL_H

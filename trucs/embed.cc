@@ -20,15 +20,10 @@
 #include <iostream>
 #include <time.h>
 
-#include <vb/config.h>
+#include <vb/Real.h>
 
-#ifdef HAVE_GMPXX
-#include <gmp.h>
-#include <gmpxx.h>
-#else
-#include <math.h>
-#define mpf_class double
-#endif
+using namespace vb;
+using namespace std;
 
 using std::cout;
 using std::cerr;
@@ -38,14 +33,14 @@ using std::cerr;
 #define z coo[2]
 #define r coo[3]
 
-typedef mpf_class costfunction (void);
+typedef Real costfunction (void);
 
 #define n_total 9
 
 #define nb_bits 256
 
-mpf_class coo[4][n_total];
-mpf_class per[4][2];
+Real coo[4][n_total];
+Real per[4][2];
 
 int adj_matrix[n_total][n_total];
 
@@ -190,8 +185,8 @@ void dump_coo (void) {
   }
 }
 
-mpf_class cost_circles (void) {
-  mpf_class dx,dy,sr,tmp,cost;
+Real cost_circles (void) {
+  Real dx,dy,sr,tmp,cost;
 
   cost = 0.0;
   for (int i=0; i<n_total; i++) {
@@ -209,8 +204,8 @@ mpf_class cost_circles (void) {
   return cost;
 }
 
-mpf_class cost_triangles (void) {
-  mpf_class dx,dy,dz,tmp,cost;
+Real cost_triangles (void) {
+  Real dx,dy,dz,tmp,cost;
   int i,j;
 
   cost = 0.0;
@@ -229,9 +224,9 @@ mpf_class cost_triangles (void) {
   return cost;
 }
 
-mpf_class optimize (costfunction c) {
-  mpf_class tmp_cost,old_cost,new_cost;
-  mpf_class cost,step;
+Real optimize (costfunction c) {
+  Real tmp_cost,old_cost,new_cost;
+  Real cost,step;
 
   cost = c();
   old_cost = cost + 1;
@@ -288,18 +283,18 @@ int main (void) {
 
   update_lattice();
 
-  mpf_class opt_cost = optimize (cost_triangles);
+  Real opt_cost = optimize (cost_triangles);
 
   // Calcul du module
   
-  mpf_class p1x (x[2] - x[0]);
-  mpf_class p2x (x[6] - x[0]);
-  mpf_class p1y (y[2] - y[0]);
-  mpf_class p2y (y[6] - y[0]);
-  mpf_class p1z (z[2] - z[0]);
-  mpf_class p2z (z[6] - z[0]);
+  Real p1x (x[2] - x[0]);
+  Real p2x (x[6] - x[0]);
+  Real p1y (y[2] - y[0]);
+  Real p2y (y[6] - y[0]);
+  Real p1z (z[2] - z[0]);
+  Real p2z (z[6] - z[0]);
 
-  mpf_class n1 (sqrt(p1x*p1x + p1y*p1y + p1z*p1z));
+  Real n1 (sqrt(p1x*p1x + p1y*p1y + p1z*p1z));
   
   p1x = p1x / n1; 
   p1y = p1y / n1; 
@@ -309,13 +304,13 @@ int main (void) {
   p2y = p2y / n1;
   p2z = p2z / n1;
   
-  mpf_class re_tau (p1x*p2x + p1y*p2y + p1z*p2z);
+  Real re_tau (p1x*p2x + p1y*p2y + p1z*p2z);
   
   p2x = p2x - re_tau * p1x;
   p2y = p2y - re_tau * p1y;
   p2z = p2z - re_tau * p1z;
   
-  mpf_class im_tau (sqrt(p2x*p2x + p2y*p2y + p2z*p2z));
+  Real im_tau (sqrt(p2x*p2x + p2y*p2y + p2z*p2z));
 
   cerr << "\n";
 
