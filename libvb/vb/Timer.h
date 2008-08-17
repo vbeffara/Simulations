@@ -11,13 +11,16 @@ namespace vb {
   class Timer {
     public:
       int sec, usec, t_sec, t_usec;
-      int period;
+      double period;
 
-      Timer (int p);
+      Timer (double p);
 
       void compute ();
       bool check ();
       void reset ();
+
+      double elapsed ();
+      double t_elapsed ();
 
     private:
       timeval start;

@@ -7,7 +7,7 @@
 
 namespace vb {
   ProgressBar::ProgressBar (int length) : 
-    final(length), current(0), start_time(time(0)), last_time(time(0)), nchar(0) {
+    final(length), current(0), nchar(0), timer (Timer(1.0)) {
       display();
     }
 
@@ -17,17 +17,16 @@ namespace vb {
 
     current = pos;
     int dirty = 0;
-    int new_time = time(0);
     int new_nchar = (pos*50)/final;
 
-    if (new_nchar > nchar) {
-      nchar = new_nchar;
-      last_time = new_time + 1;
+    if (timer.check()) {
+      timer.reset();
       dirty = 1;
     }
 
-    if (new_time > last_time) {
-      last_time = new_time;
+    if (new_nchar > nchar) {
+      nchar = new_nchar;
+      timer.reset();
       dirty = 1;
     }
 
@@ -51,8 +50,8 @@ namespace vb {
     
     // std::cerr << " (" << current << "/" << final << ")";
 
-    if (last_time > start_time) {
-      double steps_per_sec = (double)current / (double)(last_time-start_time);
+    if (timer.t_elapsed() > 0) {
+      double steps_per_sec = (double)current / timer.t_elapsed();
       int eta = (int)((double)(final-current)/steps_per_sec);
 
       bar << " ETA: ";
@@ -72,7 +71,8 @@ namespace vb {
       }
 
       bar << "     ";
-      std::cerr << bar.str();
     }
+
+    std::cerr << bar.str();
   }
 }

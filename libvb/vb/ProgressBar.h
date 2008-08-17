@@ -4,7 +4,8 @@
 #ifndef __VB_PROGRESS_BAR_H
 #define __VB_PROGRESS_BAR_H
 
-#include <time.h>
+#include <vb/Timer.h>
+
 #include <iostream>
 #include <iomanip>
 
@@ -34,10 +35,9 @@ namespace vb {
       int final;            ///< The final value for the counter
       int current;          ///< The current value of the counter
 
-      int start_time;       ///< Start at which the progress bar was created
-      int last_time;        ///< Last time the ETA was computed
-
       int nchar;            ///< Number of displayed characters on the screen
+
+      Timer timer;          ///< Timer for automatic updating
 
       void display (void);  ///< Actually draw the bar on the screen
   };
