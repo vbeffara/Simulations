@@ -29,7 +29,7 @@ namespace vb {
 
   void Timer::reset () {
     last = current;
-    compute();
+    sec = 0; usec = 0;
   }
 
   double Timer::elapsed () {

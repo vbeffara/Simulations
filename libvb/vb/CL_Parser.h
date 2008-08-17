@@ -17,12 +17,12 @@ namespace vb {
 
   class CL_Value {
     public:
-      CL_Value (std::string s); /// Creator from a string.
-      operator std::string();   /// Convert to a string.
-      operator bool();          /// Convert to a bool.
-      operator int();           /// Convert to an int.
-      operator long();          /// Convert to a long int.
-      operator double();        /// Convert to a double.
+      CL_Value (std::string s); ///< Creator from a string.
+      operator std::string();   ///< Convert to a string.
+      operator bool();          ///< Convert to a bool.
+      operator int();           ///< Convert to an int.
+      operator long();          ///< Convert to a long int.
+      operator double();        ///< Convert to a double.
     private:
       std::string value;
   };

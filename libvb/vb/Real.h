@@ -51,9 +51,14 @@ namespace vb {
 
   inline double get_d (const Real &x) { return x; }
 
-  typedef std::complex<Real> cpx;   ///< Utility type for a complex number.
+  typedef std::complex<Real> cpx;                      ///< Utility type for a complex number.
 
-  inline double realpart (cpx z) { return z.real(); }
+  /** Returns the real part of a complex number.
+   *
+   * @param z The complex number in question.
+   */
+
+  inline Real realpart (cpx z) { return z.real(); }
 #endif
 
   /// This is equal to Pi.
