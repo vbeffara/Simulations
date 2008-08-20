@@ -1,6 +1,7 @@
 
 #include <math.h>
 #include <vb.h>
+#include <cstdio>
 
 using namespace vb;
 

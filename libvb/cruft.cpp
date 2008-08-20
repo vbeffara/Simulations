@@ -2,6 +2,7 @@
 /// Old C stuff that should belong in a separate C++ class.
 
 #include <iostream>
+#include <string>
 
 namespace vb {
   int printout_path (char *p, long l, std::string title)

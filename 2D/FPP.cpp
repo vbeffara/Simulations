@@ -9,7 +9,7 @@
 
 using namespace vb;
 
-PointQueue queue;
+PointQueue pqueue;
 
 PRNG PR;
 
@@ -19,13 +19,13 @@ double cost (void) {
 
 void spread (CoarseImage &img, double t, int x, int y) {
   if (!(img(x+1,y)))
-    queue << Point(x+1,y,t+cost());
+    pqueue << Point(x+1,y,t+cost());
   if (!(img(x-1,y)))
-    queue << Point(x-1,y,t+cost());
+    pqueue << Point(x-1,y,t+cost());
   if (!(img(x,y+1)))
-    queue << Point(x,y+1,t+cost());
+    pqueue << Point(x,y+1,t+cost());
   if (!(img(x,y-1)))
-    queue << Point(x,y-1,t+cost());
+    pqueue << Point(x,y-1,t+cost());
 }
 
 int main (int argc, char **argv) {
@@ -45,13 +45,13 @@ int main (int argc, char **argv) {
   img.show();
 
   Point pt(n>>1,n>>1,+cost());
-  queue << pt;
-  if (twostep) queue << Point((n>>1)+1,n>>1,cost());
+  pqueue << pt;
+  if (twostep) pqueue << Point((n>>1)+1,n>>1,cost());
 
   curtime = 0;
 
   while (1) {
-    queue >> pt;
+    pqueue >> pt;
 
     if (!(img(pt.x,pt.y))) {
       img << pt;

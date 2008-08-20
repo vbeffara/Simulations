@@ -5,6 +5,7 @@
 #include <math.h>
 #include <vb.h>
 #include <unistd.h>
+#include <cstdio>
 
 using namespace vb;
 
@@ -57,7 +58,7 @@ unsigned char color_smooth(int x, int y)
   double t = (a+b)/(2*b);
   t = t*t*(3-2*t);
 
-  return 1 + 254*t;
+  return (unsigned char) (1 + 254*t);
 } 
 
 void edge_detect(void)

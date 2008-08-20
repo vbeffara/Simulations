@@ -14,6 +14,7 @@
 #include <vb.h>
 #include <stdlib.h>
 #include <math.h>
+#include <cstdio>
 
 using namespace vb;
 
