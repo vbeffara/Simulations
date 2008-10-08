@@ -10,6 +10,9 @@ __copyright__ = "(c) 2008 VB. GNU GPL v3."
 
 import sys, os
 
+from numpy import *
+from scipy.optimize import leastsq
+
 class mc_data (object):
     def __init__ (self, file=None):
         self.data = {}
@@ -30,15 +33,15 @@ class mc_data (object):
         (k,n,v) = l.strip().split (" | ", 2)
 
         n = int(n)
-        key = tuple(float(s) for s in k.split(" "))
-        vs = [float(s.split(" ")[0]) for s in v.split(" | ")]
+        key = tuple(float(s) for s in k.strip(" ").split(" "))
+        vs = [int(s.strip(" ").split(" ")[0]) for s in v.split(" | ")]
 
         if key not in self.data:
             self.data[key] = [ 0, [0 for i in vs] ]
 
         self.data[key][0] += n
         for i in range(len(vs)):
-            self.data[key][1][i] += n*vs[i]
+            self.data[key][1][i] += vs[i]
 
         self.dirty = True
         return key
@@ -64,7 +67,8 @@ class mc_data (object):
             k = " ".join(str(i) for i in key)
             v = []
             for x in self.data[key][1]:
-                v.append ("%f %f" % (x/n, sqrt(x*(1-x/n))/n))
+                r = float(x)/n
+                v.append ("%d %f %f" % (x, r, sqrt(r*(1-r)/n)))
             f.write ("%s | %d | %s\n" % (k,n," | ".join(v)))
 
     def save (self):
@@ -74,9 +78,6 @@ class mc_data (object):
 
 class mc_auto (mc_data):
     def __init__ (self, run, f, v, file="amc.data"):
-        from numpy import array
-        from scipy.optimize import leastsq
-
         mc_data.__init__ (self,file)
         self.run = run
         self.f = f
@@ -84,7 +85,7 @@ class mc_auto (mc_data):
 
         self.n = array ([self.data[key][0] for key in self.data])
         self.x = array (self.data.keys())
-        self.y = array ([self.data[key][1][0] for key in self.data]) / self.n
+        self.y = array ([float(self.data[key][1][0]) for key in self.data]) / self.n
         self.z = sqrt (self.y*(1.0-self.y)/self.n)
 
         self.fx = 0
@@ -113,7 +114,7 @@ class mc_auto (mc_data):
         i = self.data.keys().index(key)
 
         self.n[i] = self.data[key][0]
-        self.y[i] = self.data[key][1][0] / self.n[i]
+        self.y[i] = float(self.data[key][1][0]) / self.n[i]
         self.z[i] = sqrt (self.y[i] * (1.0-self.y[i]) / self.n[i])
 
         self.fit()

@@ -5,13 +5,13 @@ import vb
 
 def run (key):
     n = str(key[0])
-    cmd = ["build/2D/Perco-Arms", "-n", n, "-t", "100"]
+    cmd = ["build/2D/Perco-box", "-n", n, "-m", n, "-p", ".6", "-q", ".4", "-t", "1000"]
 
     P = Popen (cmd, stdout=PIPE, stderr=open("/dev/null","w"))
     return P.communicate()[0]
 
 def f (v, x):
-    return v[0]*(x[0]**(v[1]/48))
+    return v[0] + v[1] * (x[0]**(-v[2])) + v[3] * (x[0]**(-v[2]-1.0))
 
-F = vb.mc_auto (run, f, [1.,-5.])
+F = vb.mc_auto (run, f, [.7,.3,.9,.1])
 F.loop()
