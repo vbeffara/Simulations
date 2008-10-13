@@ -33,8 +33,8 @@ class mc_data (object):
         (k,n,v) = l.strip().split (" | ", 2)
 
         n = int(n)
-        key = tuple(float(s) for s in k.strip(" ").split(" "))
-        vs = [int(s.strip(" ").split(" ")[0]) for s in v.split(" | ")]
+        key = tuple(float(s) for s in k.split())
+        vs = [int(s.split()[0]) for s in v.split(" | ")]
 
         if key not in self.data:
             self.data[key] = [ 0, [0 for i in vs] ]
@@ -55,21 +55,41 @@ class mc_data (object):
 
     def dump (self, file=None):
         if file:
-            f = open (file,"w")
+            f = open (file+".tmp","w")
         else:
             f = sys.stdout
 
         for l in self.comments:
             f.write (l)
 
-        for key in sorted(self.data):
-            n = self.data[key][0]
+        outstrings = {}
+        for key in self.data:
             k = " ".join(str(i) for i in key)
+            n = self.data[key][0]
             v = []
+
             for x in self.data[key][1]:
                 r = float(x)/n
                 v.append ("%d %f %f" % (x, r, sqrt(r*(1-r)/n)))
-            f.write ("%s | %d | %s\n" % (k,n," | ".join(v)))
+
+            outstrings[key] = (k,str(n),v)
+
+        max_k = max(len(k) for (k,n,vs) in outstrings.values())
+        max_n = max(len(n) for (k,n,vs) in outstrings.values())
+        max_v = max(len(v) for (k,n,vs) in outstrings.values() for v in vs)
+
+        for key in sorted(self.data):
+            k,n,v = outstrings[key]
+
+            k = k.ljust(max_k)
+            n = n.rjust(max_n)
+            v = [s.rjust(max_v) for s in v]
+
+            f.write ("%s | %s | %s\n" % (k,n," | ".join(v)))
+
+        if file:
+            f.close()
+            os.rename (file+".tmp", file)
 
     def save (self):
         if self.file:
