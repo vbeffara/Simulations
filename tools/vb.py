@@ -8,7 +8,8 @@ __revision__ = "2"
 __author__ = "Vincent Beffara <vbeffara@ens-lyon.fr>"
 __copyright__ = "(c) 2008 VB. GNU GPL v3."
 
-import sys, os
+import sys, os, re
+from subprocess import *
 
 from numpy import *
 from scipy.optimize import leastsq
@@ -17,6 +18,7 @@ class mc_data (object):
     def __init__ (self, file=None):
         self.data = {}
         self.comments = []
+        self.command = ""
         self.dirty = False
         self.file = file
 
@@ -50,6 +52,8 @@ class mc_data (object):
         for l in open(file):
             if l[0] == "#":
                 self.comments.append (l)
+                if l[1] == "!":
+                    self.command = l[2:].strip()
             else:
                 self.parse (l)
 
@@ -97,9 +101,8 @@ class mc_data (object):
             self.dirty = False
 
 class mc_auto (mc_data):
-    def __init__ (self, run, f, v, file="amc.data"):
+    def __init__ (self, f, v, file="amc.data"):
         mc_data.__init__ (self,file)
-        self.run = run
         self.f = f
         self.v = v
 
@@ -126,6 +129,14 @@ class mc_auto (mc_data):
         self.below = self.fx - self.y - 2*self.z
 
         return success
+
+    def run (self,key):
+        keydict = dict ( (str(i+1),key[i]) for i in range(len(key)) )
+        cmdstr = re.sub ('\$([0-9]*)', '%(\\1)s', self.command)
+        cmd = (cmdstr % keydict).split()
+
+        P = Popen (cmd, stdout=PIPE, stderr=open("/dev/null","w"))
+        return P.communicate()[0]
 
     def run_once (self, key):
         self.parse (self.run (key))
