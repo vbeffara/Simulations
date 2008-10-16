@@ -8,7 +8,7 @@ __revision__ = "2"
 __author__ = "Vincent Beffara <vbeffara@ens-lyon.fr>"
 __copyright__ = "(c) 2008 VB. GNU GPL v3."
 
-import sys, os, re
+import sys, os, re, random
 from subprocess import *
 
 from numpy import *
@@ -18,7 +18,6 @@ class mc_data (object):
     def __init__ (self, file=None):
         self.data = {}
         self.comments = []
-        self.command = ""
         self.dirty = False
         self.file = file
 
@@ -52,8 +51,6 @@ class mc_data (object):
         for l in open(file):
             if l[0] == "#":
                 self.comments.append (l)
-                if l[1] == "!":
-                    self.command = l[2:].strip()
             else:
                 self.parse (l)
 
@@ -101,10 +98,36 @@ class mc_data (object):
             self.dirty = False
 
 class mc_auto (mc_data):
-    def __init__ (self, f, v, file="amc.data"):
+    def __init__ (self, file):
         mc_data.__init__ (self,file)
-        self.f = f
-        self.v = v
+
+        self.command = ""
+        self.fitstr = ""
+
+        for l in self.comments:
+            if l[1] == "!":
+                self.command = l[2:].strip()
+            if l[1] == "?":
+                self.fitstr = l[2:].strip()
+
+        if not self.fitstr:
+            self.fitstr = "a*x+b"
+
+        self.fitstr = self.fitstr.replace ('a','v[0]')
+        self.fitstr = self.fitstr.replace ('b','v[1]')
+        self.fitstr = self.fitstr.replace ('c','v[2]')
+        self.fitstr = self.fitstr.replace ('d','v[3]')
+
+        self.fitstr = self.fitstr.replace ('x','x[0]')
+        self.fitstr = self.fitstr.replace ('y','x[1]')
+        self.fitstr = self.fitstr.replace ('z','x[2]')
+
+        self.f = eval ("lambda v,x: " + self.fitstr, {})
+
+        self.v = []
+        for i in range(4):
+            if ("v[%d]" % i) in self.fitstr:
+                self.v.append (.495876945)
 
         self.n = array ([self.data[key][0] for key in self.data])
         self.x = array (self.data.keys())
@@ -127,6 +150,8 @@ class mc_auto (mc_data):
         self.fx = array ([self.f (self.v,x) for x in self.x])
         self.above = self.fx - self.y + 2*self.z
         self.below = self.fx - self.y - 2*self.z
+
+        print self.v
 
         return success
 

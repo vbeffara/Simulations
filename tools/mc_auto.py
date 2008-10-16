@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
-import vb
+import sys, vb
 
-def f (v, x):
-    return v[0] + v[1] * (x[0]**(-v[2])) + v[3] * (x[0]**(-v[2]-1.0))
+if len(sys.argv) > 1:
+    file = sys.argv[1]
+else:
+    file = "amc.data"
 
-F = vb.mc_auto (f, [.7,.3,.9,.1])
-F.loop()
+vb.mc_auto(file).loop()
