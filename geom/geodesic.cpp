@@ -34,11 +34,77 @@ void trace (Image &img, vector<int> &direction, int x, int y) {
   }
 }
 
+void find_geodesics (const vector<double> &field, vector<double> &distance, vector<int> &direction, int nn) {
+  unsigned int changed = 1; while (changed>0) {
+    changed=0;
+
+    for (int x=0; x<nn; ++x) {
+      for (int y=0; y<nn; ++y) {
+        int xy = x+nn*y;
+        bool flag = false;
+
+        if ((x>0)    && (distance[xy-1]  + field[xy] < distance[xy])) { direction[xy] = xy-1;  distance[xy] = distance[xy-1]  + field[xy]; flag=true; }
+        if ((x<nn-1) && (distance[xy+1]  + field[xy] < distance[xy])) { direction[xy] = xy+1;  distance[xy] = distance[xy+1]  + field[xy]; flag=true; }
+        if ((y>0)    && (distance[xy-nn] + field[xy] < distance[xy])) { direction[xy] = xy-nn; distance[xy] = distance[xy-nn] + field[xy]; flag=true; }
+        if ((y<nn-1) && (distance[xy+nn] + field[xy] < distance[xy])) { direction[xy] = xy+nn; distance[xy] = distance[xy+nn] + field[xy]; flag=true; }
+
+        if (flag) ++changed;
+      }
+    }
+
+    for (int x=nn-1; x>=0; --x) {
+      for (int y=nn-1; y>=0; --y) {
+        int xy = x+nn*y;
+        bool flag = false;
+
+        if ((x>0)    && (distance[xy-1]  + field[xy] < distance[xy])) { direction[xy] = xy-1;  distance[xy] = distance[xy-1]  + field[xy]; flag=true; }
+        if ((x<nn-1) && (distance[xy+1]  + field[xy] < distance[xy])) { direction[xy] = xy+1;  distance[xy] = distance[xy+1]  + field[xy]; flag=true; }
+        if ((y>0)    && (distance[xy-nn] + field[xy] < distance[xy])) { direction[xy] = xy-nn; distance[xy] = distance[xy-nn] + field[xy]; flag=true; }
+        if ((y<nn-1) && (distance[xy+nn] + field[xy] < distance[xy])) { direction[xy] = xy+nn; distance[xy] = distance[xy+nn] + field[xy]; flag=true; }
+
+        if (flag) ++changed;
+      }
+    }
+
+    for (int x=0; x<nn; ++x) {
+      for (int y=nn-1; y>=0; --y) {
+        int xy = x+nn*y;
+        bool flag = false;
+
+        if ((x>0)    && (distance[xy-1]  + field[xy] < distance[xy])) { direction[xy] = xy-1;  distance[xy] = distance[xy-1]  + field[xy]; flag=true; }
+        if ((x<nn-1) && (distance[xy+1]  + field[xy] < distance[xy])) { direction[xy] = xy+1;  distance[xy] = distance[xy+1]  + field[xy]; flag=true; }
+        if ((y>0)    && (distance[xy-nn] + field[xy] < distance[xy])) { direction[xy] = xy-nn; distance[xy] = distance[xy-nn] + field[xy]; flag=true; }
+        if ((y<nn-1) && (distance[xy+nn] + field[xy] < distance[xy])) { direction[xy] = xy+nn; distance[xy] = distance[xy+nn] + field[xy]; flag=true; }
+
+        if (flag) ++changed;
+      }
+    }
+
+    for (int x=nn-1; x>=0; --x) {
+      for (int y=0; y<nn; ++y) {
+        int xy = x+nn*y;
+        bool flag = false;
+
+        if ((x>0)    && (distance[xy-1]  + field[xy] < distance[xy])) { direction[xy] = xy-1;  distance[xy] = distance[xy-1]  + field[xy]; flag=true; }
+        if ((x<nn-1) && (distance[xy+1]  + field[xy] < distance[xy])) { direction[xy] = xy+1;  distance[xy] = distance[xy+1]  + field[xy]; flag=true; }
+        if ((y>0)    && (distance[xy-nn] + field[xy] < distance[xy])) { direction[xy] = xy-nn; distance[xy] = distance[xy-nn] + field[xy]; flag=true; }
+        if ((y<nn-1) && (distance[xy+nn] + field[xy] < distance[xy])) { direction[xy] = xy+nn; distance[xy] = distance[xy+nn] + field[xy]; flag=true; }
+
+        if (flag) ++changed;
+      }
+    }
+
+    cerr << "\r" << changed << "       ";
+  }
+}
+
 int main (int argc, char **argv) {
-  CL_Parser CLP (argc, argv, "n=8,g=1");
+  CL_Parser CLP (argc, argv, "n=8,g=1,s=0");
   int n = CLP('n');
   int nn = 1<<n;
   double g = CLP('g');
+  int s = CLP('s');
+  if (s) prng.srand(s);
 
   vector<double> field;
   for (int i=0; i<nn*nn; ++i) field.push_back(0.0);
@@ -63,24 +129,7 @@ int main (int argc, char **argv) {
   vector<int> direction;
   for (int i=0; i<nn*nn; ++i) direction.push_back(nn*(nn+1)/2);
 
-  bool flag = true;
-
-  while (flag) {
-    flag = false;
-
-    for (int x=0; x<nn; ++x) {
-      for (int y=0; y<nn; ++y) {
-        int xy = x+nn*y;
-        double lc = distance[xy];
-
-        if ((x>0)    && (distance[xy-1]  + field[xy] < lc)) { direction[xy] = xy-1;  distance[xy] = distance[xy-1]  + field[xy]; flag = true; }
-        if ((x<nn-1) && (distance[xy+1]  + field[xy] < lc)) { direction[xy] = xy+1;  distance[xy] = distance[xy+1]  + field[xy]; flag = true; }
-
-        if ((y>0)    && (distance[xy-nn] + field[xy] < lc)) { direction[xy] = xy-nn; distance[xy] = distance[xy-nn] + field[xy]; flag = true; }
-        if ((y<nn-1) && (distance[xy+nn] + field[xy] < lc)) { direction[xy] = xy+nn; distance[xy] = distance[xy+nn] + field[xy]; flag = true; }
-      }
-    }
-  }
+  find_geodesics (field, distance, direction, nn);
 
   Image img (nn,nn,8,"A dyadic GFF");
   for (int i=0; i<nn; ++i)
