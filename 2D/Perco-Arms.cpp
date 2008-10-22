@@ -116,7 +116,7 @@ int main(int argc, char **argv) {
   for (int i=1; i<=4; ++i) {
     int bla=0;
     for (int j=i; j<=4; ++j) bla += stats[j];
-    cout << " | " << (double)bla / (double)n_iter;
+    cout << " | " << bla << " " << (double)bla / (double)n_iter;
   }
   cout << endl;
 }
