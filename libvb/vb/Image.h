@@ -127,7 +127,7 @@ namespace vb {
        * @param y The second coordinate of the point.
        */
 
-      char &operator() (int x, int y) const {
+      unsigned char &operator() (int x, int y) const {
         return pic[x+width*y];
       };
 
@@ -139,7 +139,7 @@ namespace vb {
        * @param xy The coordinate of the point.
        */
 
-      char &operator() (int xy) const {
+      unsigned char &operator() (int xy) const {
         return pic[xy];
       };
 
@@ -158,7 +158,7 @@ namespace vb {
       friend std::ostream &operator<< (std::ostream &os, vb::Image &img);    
 
     private:
-      char * pic;                       ///< The raw image data
+      unsigned char * pic;              ///< The raw image data
       std::string title;                ///< The title of the image
       void compute_stage();             ///< Fills the stage field with 8bpp data.
       unsigned char * image_data();     ///< Returns 8bpp raw image data (for PNG creation).

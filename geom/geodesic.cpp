@@ -26,8 +26,8 @@ void fill_dyadic (vector<double> &f, int n) {
 void trace (Image &img, vector<int> &direction, int x, int y) {
   int nn = img.width;
 
-  while (img(x,y) != 3) {
-    img.putpoint (x,y,3);
+  while (img(x,y) != 255) {
+    img.putpoint (x,y,255);
     int xy = direction[x+nn*y];
     x = xy%nn;
     y = xy/nn;
@@ -45,7 +45,13 @@ int main (int argc, char **argv) {
   fill_dyadic (field,n);
 
   double big = 0.0;
+  double max = field[0];
+  double min = field[0];
+
   for (int i=0; i<nn*nn; ++i) {
+    if (field[i]<min) min=field[i];
+    if (field[i]>max) max=field[i];
+
     field[i] = exp(g * field[i]);
     big += field[i];
   }
@@ -76,10 +82,16 @@ int main (int argc, char **argv) {
     }
   }
 
-  Image img (nn,nn,2,"A dyadic GFF");
+  Image img (nn,nn,8,"A dyadic GFF");
   for (int i=0; i<nn; ++i)
-    for (int j=0; j<nn; ++j)
-      img.putpoint (i,j, (field[i+nn*j]>1?1:0));
+    for (int j=0; j<nn; ++j) {
+      double renorm = log(field[i+nn*j])/(g*sqrt((double)n));
+      int color = 32 * (2.0 + renorm);
+
+      if (color>128) color=128;
+      if (color<0) color=0;
+      img.putpoint (i,j,color);
+    }
 
   for (int i=0; i<=nn-1; i+=15) {
     trace (img, direction, 0, i);

@@ -15,7 +15,7 @@ namespace vb {
         exit(1);
       }
 
-      pic = new char[width*ht];
+      pic = new unsigned char[width*ht];
       if (!(pic)) {
         std::cerr << "libvb : error : image too large.\n";
         delete[] pic;

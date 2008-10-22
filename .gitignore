@@ -25,3 +25,4 @@ tools/scons*
 *.pyc
 *.data
 *.old
+amc.*
