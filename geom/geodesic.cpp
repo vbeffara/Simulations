@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <string>
 #include <vb/PRNG.h>
 #include <vb/CL_Parser.h>
 #include <vb/Image.h>
@@ -21,6 +22,11 @@ void fill_dyadic (vector<double> &f, int n) {
             f[x+nn*y] += g;
       }
   }
+}
+
+void fill_white (vector<double> &f, int n) {
+  for (int i=0; i<(1<<(2*n)); ++i)
+    f[i] = prng.gaussian() * sqrt((double)n);
 }
 
 void trace (Image &img, vector<int> &direction, int x, int y) {
@@ -99,16 +105,23 @@ void find_geodesics (const vector<double> &field, vector<double> &distance, vect
 }
 
 int main (int argc, char **argv) {
-  CL_Parser CLP (argc, argv, "n=8,g=1,s=0");
+  CL_Parser CLP (argc, argv, "w=dyadic,n=8,g=1,s=0");
   int n = CLP('n');
   int nn = 1<<n;
   double g = CLP('g');
   int s = CLP('s');
   if (s) prng.srand(s);
+  string noise = CLP('w');
 
   vector<double> field;
   for (int i=0; i<nn*nn; ++i) field.push_back(0.0);
-  fill_dyadic (field,n);
+
+  if (noise == "dyadic")
+    fill_dyadic (field,n);
+  else if (noise == "white")
+    fill_white (field,n);
+  else 
+    cerr << "Noise type " << noise << " unknown, no noise for you!" << endl;
 
   double big = 0.0;
   double max = field[0];
