@@ -144,6 +144,15 @@ int main (int argc, char **argv) {
 
   find_geodesics (field, distance, direction, nn);
 
+  double radius = distance[0];
+  for (int i=0; i<nn; ++i) {
+    if (distance[i]<radius) radius=distance[i];
+    if (distance[nn*i]<radius) radius=distance[i];
+    if (distance[i+nn*(nn-1)]<radius) radius=distance[i];
+    if (distance[nn-1+nn*i]<radius) radius=distance[i];
+  }
+  cerr << "Distance to the boundary : " << radius << endl;
+
   Image img (nn,nn,8,"A dyadic GFF");
   for (int i=0; i<nn; ++i)
     for (int j=0; j<nn; ++j) {
@@ -160,6 +169,16 @@ int main (int argc, char **argv) {
     trace (img, direction, nn-1, i);
     trace (img, direction, i, 0);
     trace (img, direction, i, nn-1);
+  }
+
+  for (int x=0; x<nn; ++x) {
+    for (int y=0; y<nn; ++y) {
+      int i=x+nn*y;
+      if (distance[i]<=radius)
+        img.putpoint(x,y,127+img(i)/2);
+      else if (distance[i]-field[i]<=radius)
+        img.putpoint(x,y,0);
+    }
   }
 
   cout<<img;
