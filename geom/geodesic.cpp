@@ -10,9 +10,9 @@ using namespace vb;
 
 PRNG prng;
 
-void fill_dyadic (vector<double> &f, int n) {
+void fill_dyadic (vector<double> &f, int n, int n0) {
   int nn = 1<<n;
-  for (int l=0; l<n; ++l) {
+  for (int l=n-1; l>=n0; --l) {
     int ll = 1<<l;
     for (int i=0; i<nn/ll; ++i)
       for (int j=0; j<nn/ll; ++j) {
@@ -105,11 +105,12 @@ void find_geodesics (const vector<double> &field, vector<double> &distance, vect
 }
 
 int main (int argc, char **argv) {
-  CL_Parser CLP (argc, argv, "w=dyadic,n=8,g=1,s=0");
+  CL_Parser CLP (argc, argv, "w=dyadic,n=8,z=0,g=1,s=0");
   int n = CLP('n');
   int nn = 1<<n;
   double g = CLP('g');
   int s = CLP('s');
+  int z = CLP('z');
   if (s) prng.srand(s);
   string noise = CLP('w');
 
@@ -117,7 +118,7 @@ int main (int argc, char **argv) {
   for (int i=0; i<nn*nn; ++i) field.push_back(0.0);
 
   if (noise == "dyadic")
-    fill_dyadic (field,n);
+    fill_dyadic (field,n,z);
   else if (noise == "white")
     fill_white (field,n);
   else 
