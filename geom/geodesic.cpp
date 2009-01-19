@@ -5,6 +5,10 @@
 #include <vb/CL_Parser.h>
 #include <vb/Image.h>
 
+#ifdef HAVE_FFTW3
+#include <fftw3.h>
+#endif
+
 using namespace std;
 using namespace vb;
 
@@ -41,6 +45,36 @@ void fill_boolean (vector<double> &f, int n, int n0) {
 void fill_white (vector<double> &f, int n) {
   for (int i=0; i<(1<<(2*n)); ++i)
     f[i] = prng.gaussian() * sqrt((double)n);
+}
+
+void fill_free (vector<double> &f, int n) {
+#ifdef HAVE_FFTW3
+  int N = 1<<n;
+
+  fftw_complex *in  = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N * N);
+  fftw_complex *out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N * N);
+  fftw_plan p = fftw_plan_dft_2d (N, N, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+
+  for (int i=0; i<N; ++i) {
+    for (int j=0; j<N; ++j) {
+      if ((i==0)&&(j==0)) break;
+      double size = 0;
+      if (i<N/2) size += i*i; else size += (N-i)*(N-i);
+      if (j<N/2) size += j*j; else size += (N-j)*(N-j);
+      size = sqrt(size);
+      in[i+N*j][0] = prng.gaussian() / size;
+      in[i+N*j][1] = prng.gaussian() / size;
+    }
+  }
+
+  fftw_execute(p);
+  for (int i=0; i<N*N; ++i) f[i] = out[i][0];
+
+  fftw_destroy_plan(p);
+  fftw_free(in); fftw_free(out);
+#else
+  std::cerr << "No FFTW3, can't make a free field !" << std::endl;
+#endif
 }
 
 void trace (Image &img, vector<int> &direction, int x, int y) {
@@ -137,6 +171,8 @@ int main (int argc, char **argv) {
     fill_white (field,n);
   else if (noise == "boolean")
     fill_boolean (field,n,z);
+  else if (noise == "free")
+    fill_free (field,n);
   else 
     cerr << "Noise type " << noise << " unknown, no noise for you!" << endl;
 
@@ -148,7 +184,7 @@ int main (int argc, char **argv) {
     if (field[i]<min) min=field[i];
     if (field[i]>max) max=field[i];
 
-    field[i] = exp(g * field[i]);
+    field[i] = exp(g * field[i]) / nn;
     big += field[i];
   }
 

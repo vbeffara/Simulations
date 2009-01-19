@@ -6,6 +6,10 @@ Import('env')
 
 conf = Configure(env, config_h='#build/libvb/vb/config.h')
 
+if conf.CheckCHeader ("fftw3.h"):
+    conf.Define ('HAVE_FFTW3')
+    env.Append (LIBS = ["fftw3"])
+
 if conf.CheckCHeader ("png.h"):
     conf.Define ('HAVE_PNG')
     env.Append (LIBS = ["png"])
