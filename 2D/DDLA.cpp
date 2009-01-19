@@ -12,6 +12,7 @@ using namespace vb;
 CoarseImage *img;
 int *shape;
 int n,maxx,maxy;
+double p;
 
 PRNG prng;
 
@@ -35,7 +36,7 @@ void reshape (int x, int y) {
 bool ddla (int x, int y) {
   int xx=x, yy=y;
   while (1) {
-    if (prng.rand()&128) ++xx;
+    if (prng.uniform()<p) ++xx;
     else ++yy;
     if ((xx>=n) || (yy>=shape[xx])) return 1;
     if ((*img)(xx,yy) == 1) return 0;
@@ -59,8 +60,9 @@ bool ok (int x, int y) {
 }
 
 int main (int argc, char **argv) {
-  CL_Parser CLP (argc,argv,"n=2000");
-  n = CLP.as_int('n');
+  CL_Parser CLP (argc,argv,"n=2000,p=.5");
+  n = CLP('n');
+  p = CLP('p');
 
   PointQueue queue;
 
@@ -86,9 +88,9 @@ int main (int argc, char **argv) {
 	addapoint (pt.x,pt.y);
 	reshape (pt.x,pt.y);
 	if ( (pt.x<n-1) && ((*img)(pt.x+1,pt.y)==0) )
-	  queue << Point(pt.x+1,pt.y,curtime+prng.exponential());
+	  queue << Point(pt.x+1,pt.y,curtime+prng.exponential()/p);
 	if ( (pt.y<n-1) && ((*img)(pt.x,pt.y+1)==0) )
-	  queue << Point(pt.x,pt.y+1,curtime+prng.exponential());
+	  queue << Point(pt.x,pt.y+1,curtime+prng.exponential()/(1-p));
       } else {
 	queue << Point(pt.x,pt.y,curtime+prng.exponential());
       }
