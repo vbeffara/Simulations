@@ -16,7 +16,7 @@ clean:
 
 distclean: clean
 	rm -rf .scon* config.log simulations.conf
-	cd tools/SCons; rm -rf scons-LICENSE scons-README scons-local-0.98.4 scons*.py
+	cd tools/SCons; rm -rf scons-LICENSE scons-README scons-local-1.2.0 scons*.py
 
 tools/SCons/scons.py:
-	cd tools/SCons; tar zxvf scons-local-0.98.4.tar.gz
+	cd tools/SCons; tar zxvf scons-local-1.2.0.tar.gz
