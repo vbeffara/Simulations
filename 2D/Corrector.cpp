@@ -69,7 +69,7 @@ int main (int argc, char **argv) {
   if (!batch) { m.show(); m.pause(); }
 
   Real output = m.balance();
-  cerr << n << " " << p << " " << output << endl;
+  cout << n << " " << p << " " << output << endl;
 
   if (!batch) m.pause();
 
