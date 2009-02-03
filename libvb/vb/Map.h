@@ -143,7 +143,7 @@ namespace vb {
        * affected, so it is a good idea to use inscribe() before that.
        */
 
-      void balance ();
+      Real balance ();
 
       /** Produce a balanced embedding of the map.
        *

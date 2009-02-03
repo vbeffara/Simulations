@@ -122,7 +122,7 @@ namespace vb {
     }
   }
 
-  void Map::balance () {
+  Real Map::balance () {
     Vector<Real> x(2*n);
 
     for (int i=0; i<n; ++i) {
@@ -131,13 +131,14 @@ namespace vb {
     }
 
     Minimizer<Real> M (2*n, Map_fg_balance, this);
-    M.minimize_qn (x);
+    Real output = M.minimize_qn (x);
 
     for (int i=0; i<n; ++i) {
       v[i]->z = cpx (M.x[2*i],M.x[2*i+1]);
     }
 
     update();
+    return output;
   }
 
   void Map::balance_old () {
