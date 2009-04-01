@@ -152,6 +152,23 @@ void find_geodesics (const vector<double> &field, vector<double> &distance, vect
   }
 }
 
+void explore (const Image &img, const vector<int> &direction, int x, int y, const vector<double> d, const vector<double> f) {
+  int nn = img.width;
+
+  double l = d[x+nn*y];
+
+  cerr << endl;
+
+  while ((x!=nn/2)||(y!=nn/2)) {
+    cerr << l << " " << f[x+nn*y] << endl;
+    l -= f[x+nn*y];
+    int xy = direction[x+nn*y];
+    x = xy%nn;
+    y = xy/nn;
+  }
+}
+
+
 int main (int argc, char **argv) {
   CL_Parser CLP (argc, argv, "w=dyadic,n=8,z=0,g=1,s=0");
   int n = CLP('n');
@@ -222,6 +239,13 @@ int main (int argc, char **argv) {
     trace (img, direction, nn-1, i);
     trace (img, direction, i, 0);
     trace (img, direction, i, nn-1);
+  }
+
+  for (int i=0; i<=nn-1; i+=15) {
+    explore (img, direction, 0, i, distance, field);
+    explore (img, direction, nn-1, i, distance, field);
+    explore (img, direction, i, 0, distance, field);
+    explore (img, direction, i, nn-1, distance, field);
   }
 
   for (int x=0; x<nn; ++x) {

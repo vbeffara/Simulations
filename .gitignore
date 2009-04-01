@@ -5,7 +5,6 @@ simulations.conf
 *.pdf
 doc
 *.fig
-*.asy
 *.swp
 tags
 *.aux
@@ -17,7 +16,6 @@ out*
 *.gz
 *.avi
 .sconf_temp
-DATA
 *.ps.gz
 *.eps.gz
 tools/scons*
@@ -26,3 +24,4 @@ tools/scons*
 *.data
 *.old
 amc.*
+00_Results
