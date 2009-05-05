@@ -10,9 +10,10 @@
 using namespace vb;
 
 CoarseImage *img;
-int *shape;
+int cursum;
 int n,maxx,maxy;
 double p;
+bool s;
 
 PRNG prng;
 
@@ -27,19 +28,21 @@ void addapoint (int x, int y) {
 void reshape (int x, int y) {
   if (x==maxx) ++maxx;
   if (y==maxy) ++maxy;
-  while ((x>=0) && (y>shape[x])) {
-    shape[x]=y;
-    --x;
-  }
+  if (x+y>cursum) cursum=x+y;
 }
 
 bool ddla (int x, int y) {
   int xx=x, yy=y;
+  bool just_started=true;
+
   while (1) {
     if (prng.uniform()<p) ++xx;
     else ++yy;
-    if ((xx>=n) || (yy>=shape[xx])) return 1;
+    if ((xx>=n) || (yy>=n) || (xx+yy > cursum)) return 1;
     if ((*img)(xx,yy) == 1) return 0;
+    if (s && (!just_started) && (xx<n-1) && (yy<n-1) &&
+        (((*img)(xx+1,yy)==1) || ((*img)(xx,yy+1)==1))) return 0;
+    just_started = false;
   }
 }
 
@@ -60,15 +63,14 @@ bool ok (int x, int y) {
 }
 
 int main (int argc, char **argv) {
-  CL_Parser CLP (argc,argv,"n=2000,p=.5");
+  CL_Parser CLP (argc,argv,"n=2000,p=.5,s");
   n = CLP('n');
   p = CLP('p');
+  s = CLP('s');
 
   PointQueue queue;
 
-  shape = new int[n];
-  for (int i=0; i<n; ++i) shape[i]=0;
-  maxx=1; maxy=1;
+  maxx=1; maxy=1; cursum=0;
 
   img = new CoarseImage (n,n,(int)pow((double)n,.33),"A directed DLA cluster");
   img->show();
@@ -91,6 +93,10 @@ int main (int argc, char **argv) {
 	  queue << Point(pt.x+1,pt.y,curtime+prng.exponential()/p);
 	if ( (pt.y<n-1) && ((*img)(pt.x,pt.y+1)==0) )
 	  queue << Point(pt.x,pt.y+1,curtime+prng.exponential()/(1-p));
+        if ( s && (pt.x>0) && ((*img)(pt.x-1,pt.y)==0) )
+          queue << Point(pt.x-1,pt.y,curtime+prng.exponential());
+        if ( s && (pt.y>0) && ((*img)(pt.x,pt.y-1)==0) )
+          queue << Point(pt.x,pt.y-1,curtime+prng.exponential());
       } else {
 	queue << Point(pt.x,pt.y,curtime+prng.exponential());
       }
