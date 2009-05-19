@@ -9,7 +9,7 @@ namespace vb {
     : Image (1+(wd-1)/l,1+(ht-1)/l,8,title),
       true_width(wd), true_height(ht), L(l), LL(l*l),
       fill(new int [width*height]), sub(new char* [width*height]),
-      stored(0)
+      stored(0), storage_size(0)
   {
     for (int i=0; i<width*height; i++) {
       fill[i] = 0;
@@ -37,7 +37,9 @@ namespace vb {
   }
 
   void CoarseImage::release (char *box) {
-    if (stored == storage.size()) storage.push_back(box);
+    if (stored == storage_size) {
+      storage.push_back(box);
+      storage_size++; }
     else storage[stored] = box;
     ++stored;
   }

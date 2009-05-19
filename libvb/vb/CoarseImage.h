@@ -85,6 +85,7 @@ namespace vb {
       char **sub;
 
       int stored;
+      int storage_size;
       std::vector <char*> storage;
   };
 }
