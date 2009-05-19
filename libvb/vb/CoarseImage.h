@@ -6,6 +6,8 @@
 
 #include <vb/Image.h>
 
+#include <vector>
+
 namespace vb {
 
   /** A multi-scale version of Image.
@@ -48,6 +50,9 @@ namespace vb {
 
       ~CoarseImage ();
 
+      char * claim (char color);
+      void release (char * box);
+
       /** Set the color of the point at (x,y).
        *
        * It takes care of everything : allocate memory if the
@@ -75,10 +80,12 @@ namespace vb {
     
     private:
       int LL;
-      int nblocs;
     
       int *fill;
       char **sub;
+
+      int stored;
+      std::vector <char*> storage;
   };
 }
 
