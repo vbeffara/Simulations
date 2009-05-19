@@ -1,5 +1,5 @@
 Import('env')
 
-libvb = env.MyLibrary ('vb', Glob("*.cpp"))
+libvb = env.MyLibrary ('vb', Glob("*.c*"))
 
 Return("libvb")
