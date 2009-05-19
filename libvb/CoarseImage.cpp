@@ -22,6 +22,8 @@ namespace vb {
       delete[] sub[i];
     delete[] sub;
     delete[] fill;
+    for (int i=0; i<storage_size; ++i)
+      delete[] storage[i];
   }
 
   char * CoarseImage::claim (char color) {
