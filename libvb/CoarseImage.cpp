@@ -29,8 +29,10 @@ namespace vb {
     if (stored) { ret=storage[--stored]; }
     else ret = new char[LL];
 
-    for (int i=0; i<LL; i++)
-      ret[i] = color;
+    if (ret[0] != color) {
+      for (int i=0; i<LL; i++)
+        ret[i] = color;
+    }
     return ret;
   }
 
