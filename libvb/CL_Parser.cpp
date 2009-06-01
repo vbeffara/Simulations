@@ -65,10 +65,6 @@ namespace vb {
     }
   }
   
-  bool CL_Parser::as_bool (char c) {
-    return atoi(params[c].c_str());
-  }
-  
   std::string CL_Parser::as_string (char c) {
     return params[c];
   }
