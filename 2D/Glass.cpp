@@ -121,7 +121,7 @@ int main (int argc, char **argv) {
 
   int n = CLP('n');
   double p = CLP('p');
-  string c = CLP.as_string('c');
+  string c = CLP('c');
   
   if (c == "none") init_ok_none();
   else if (c == "glass") init_ok_glass();

@@ -65,10 +65,6 @@ namespace vb {
     }
   }
   
-  std::string CL_Parser::as_string (char c) {
-    return params[c];
-  }
-
   CL_Value CL_Parser::operator() (char c) {
     return CL_Value (params[c]);
   }

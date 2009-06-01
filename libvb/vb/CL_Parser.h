@@ -63,10 +63,6 @@ namespace vb {
     CL_Parser (int argc, char** argv, std::string syntax,
                std::string help = "");
     
-    /** Return the value of a parameter as a string. */
-
-    std::string as_string(char);
-
     /** Return a generic CL_Value holder. */
 
     CL_Value operator() (char);
