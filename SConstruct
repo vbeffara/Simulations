@@ -1,7 +1,6 @@
 # General SConstruct file - fit for any project.
 
-import os
-import sys
+import os, sys
 
 CacheDir('.scons_cache')
 
@@ -14,8 +13,6 @@ CacheDir('.scons_cache')
 #
 # g++ -o Voter -Wl,-R,/home/vbeffara/Boulot/Simulations/libvb Voter.o
 # -L../libvb -lvb
-#
-# (no need to use -lSDL ???)
 
 class _Null:
     pass
@@ -68,34 +65,21 @@ SConsEnvironment.MyProgram = MyProgram
 
 env = Environment(
     ENV = os.environ,
-    CC = os.environ.get ('CC', 'gcc'),
+
+    CC  = os.environ.get ('CC',  'gcc'),
     CXX = os.environ.get ('CXX', 'g++'),
-    CCFLAGS = Split(os.environ.get ('CFLAGS', "-O2")),
-    CXXFLAGS = Split(os.environ.get ('CXXFLAGS', "-O2")),
-    LINKFLAGS = Split(os.environ.get ('LDFLAGS', "")),
-    CCCOMSTR = "[CC] $SOURCE -> $TARGET",
-    CXXCOMSTR = "[CXX] $SOURCE -> $TARGET",
-    SHCXXCOMSTR = "[CXX] $SOURCE -> $TARGET",
-    LINKCOMSTR = "[LINK] $SOURCE -> $TARGET",
+
+    CCFLAGS   = Split(os.environ.get ('CFLAGS',   "-O2")),
+    CXXFLAGS  = Split(os.environ.get ('CXXFLAGS', "-O2")),
+    LINKFLAGS = Split(os.environ.get ('LDFLAGS',  "")),
+
+    CCCOMSTR     = "[CC]   $SOURCE -> $TARGET",
+    SHCCCOMSTR   = "[CC]   $SOURCE -> $TARGET",
+    CXXCOMSTR    = "[CXX]  $SOURCE -> $TARGET",
+    SHCXXCOMSTR  = "[CXX]  $SOURCE -> $TARGET",
+    LINKCOMSTR   = "[LINK] $SOURCE -> $TARGET",
     SHLINKCOMSTR = "[LINK] $SOURCE -> $TARGET",
     )
-
-env.Decider ('MD5-timestamp')
-
-# Get the installation prefix and stuff.
-
-opts = Variables('simulations.conf')
-opts.Add(PathVariable("prefix", "installation prefix", "/usr/local", PathVariable.PathAccept))
-opts.Add(BoolVariable('CLN','Use CLN for the vb::Real and vb::Complex types (slow!)',0))
-opts.Add('GUI','The GUI to use (fltk or none)','fltk')
-opts.Update(env)
-opts.Save('simulations.conf', env)
-
-Help(opts.GenerateHelpText(env))
-
-# The install target
-
-env.Alias ('install',"$prefix")
 
 # Now for the specific stuff.
 

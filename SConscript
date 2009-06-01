@@ -2,6 +2,18 @@
 
 Import('env')
 
+# Get the installation prefix and stuff.
+
+opts = Variables('simulations.conf')
+opts.Add (PathVariable ("prefix", "installation prefix", "/usr/local", PathVariable.PathAccept))
+opts.Add (BoolVariable ("CLN",    "Use CLN for the vb::Real and vb::Complex types (slow!)", 0))
+opts.Add ("GUI", "The GUI to use (fltk or none)", "fltk")
+opts.Update(env)
+opts.Save('simulations.conf', env)
+
+env.Alias ('install',"$prefix")
+Help(opts.GenerateHelpText(env))
+
 # Check the configuration
 
 conf = Configure(env, config_h='#build/libvb/vb/config.h')
