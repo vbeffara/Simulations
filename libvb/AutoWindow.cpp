@@ -56,7 +56,7 @@ namespace vb {
 #endif
   }  
 
-  AutoWindow::AutoWindow (int wd, int ht, std::string t) : 
+  AutoWindow::AutoWindow (int wd, int ht, const std::string &t) : 
 #ifdef HAVE_FLTK
     Fl_Double_Window (wd, ht, t.c_str()),
 #endif
@@ -93,7 +93,7 @@ namespace vb {
     saved_clock = clock();
   }
 
-  void AutoWindow::output_png (std::string s) {
+  void AutoWindow::output_png (const std::string &s) {
 #ifdef HAVE_PNG
     unsigned char *p = image_data();
     if (!p) {
@@ -140,7 +140,7 @@ namespace vb {
     snapshot_clock = clock();
   }
 
-  void AutoWindow::snapshot_setup (std::string prefix, double period) {
+  void AutoWindow::snapshot_setup (const std::string &prefix, double period) {
     snapshot_period = period;
     snapshot_prefix = prefix;
     snapshot_number = 0;

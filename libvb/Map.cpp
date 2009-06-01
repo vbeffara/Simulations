@@ -65,33 +65,33 @@ namespace vb {
   }
 #endif
 
-  adj_list::iterator Map::find_edge (Edge e) const {
+  adj_list::iterator Map::find_edge (const Edge &e) const {
     if (e.first >= n) return (adj_list::iterator) NULL;
     for (adj_list::iterator i = v[e.first]->adj.begin(); i != v[e.first]->adj.end(); ++i)
       if (*i == e.second) return i;
     return (adj_list::iterator) NULL;
   }
 
-  Edge Map::turn_left (Edge e) {
+  Edge Map::turn_left (const Edge &e) {
     adj_list::iterator ee = find_edge (Edge(e.second,e.first));
     if (ee == v[e.second]->adj.begin()) ee = v[e.second]->adj.end();
     --ee;
     return Edge(e.second,*ee);
   }
 
-  Edge Map::turn_right (Edge e) {
+  Edge Map::turn_right (const Edge &e) {
     adj_list::iterator ee = find_edge (Edge(e.second,e.first));
     ++ee;
     if (ee == v[e.second]->adj.end()) ee = v[e.second]->adj.begin();
     return Edge(e.second,*ee);
   }
 
-  void Map::add_before (Edge e, int vv) {
+  void Map::add_before (const Edge &e, int vv) {
     adj_list::iterator ee = find_edge(e);
     v[e.first]->adj.insert (ee,vv);
   }
 
-  void Map::add_after (Edge e, int vv) {
+  void Map::add_after (const Edge &e, int vv) {
     adj_list::iterator ee = find_edge(e);
     ++ee;
     v[e.first]->adj.insert (ee,vv);
@@ -108,14 +108,14 @@ namespace vb {
     return l;
   }
 
-  void Map::inscribe (std::list<int> face_ext, Real radius, bool reverse) {
+  void Map::inscribe (const std::list<int> &face_ext, const Real &radius, bool reverse) {
     int n_ext = face_ext.size();
 
     for (int i=0; i<n; ++i) { bd[i] = false; }
     scale = radius;
 
     int k=0;
-    for (std::list<int>::iterator i = face_ext.begin(); i != face_ext.end(); ++i, --k) {
+    for (std::list<int>::const_iterator i = face_ext.begin(); i != face_ext.end(); ++i, --k) {
       bd[*i] = true;
       Real angle = (reverse?-2.0:2.0)*3.1415927*k/n_ext;
       v[*i]->z = radius * cpx(cos(angle),sin(angle));
@@ -197,8 +197,8 @@ namespace vb {
     return output;
   }
 
-  void Map::hex_to_triangle (std::list<int> f) {
-    std::list<int>::iterator i = f.begin();
+  void Map::hex_to_triangle (const std::list<int> &f) {
+    std::list<int>::const_iterator i = f.begin();
     int x = *i; ++i;
     int b = *i; ++i;
     int y = *i; ++i;
@@ -279,7 +279,7 @@ namespace vb {
     return 1 - (euler()/2);
   }
 
-  void Map::mobius (cpx w, Real theta) {
+  void Map::mobius (cpx w, const Real &theta) {
     for (int i=0; i<n; ++i) {
       cpx z = v[i]->z / scale;
       w /= scale;
@@ -450,7 +450,7 @@ namespace vb {
     }
   }
 
-  void Map::rotate (Real theta) {
+  void Map::rotate (const Real &theta) {
     for (int i=0; i<n; ++i) v[i]->z *= cpx(cos(theta),sin(theta));
   }
 
@@ -475,7 +475,7 @@ namespace vb {
     }
   }
 
-  Real Map::circlepack (int _zero, int _one, const std::list<int> _bord) {
+  Real Map::circlepack (int _zero, int _one, const std::list<int> &_bord) {
     balance();
     // First, add the outer vertex.
 
@@ -529,7 +529,7 @@ namespace vb {
     return output;
   }
 
-  std::ostream &operator<< (std::ostream &os, Map m) {
+  std::ostream &operator<< (std::ostream &os, const Map &m) {
     os << m.n << " vertices:" << std::endl;
     for (int i=0; i<m.n; ++i) {
       os << "  " << i << " ->";
@@ -540,7 +540,7 @@ namespace vb {
     return os;
   }
 
-  Map &operator<< (Map &m, Edge e) {
+  Map &operator<< (Map &m, const Edge &e) {
     m.v[e.first]->adj.push_back(e.second);
     return m;
   }

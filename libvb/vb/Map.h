@@ -29,10 +29,10 @@ namespace vb {
       adj_list adj;
 
       /// The default constructor.
-      Vertex (cpx z=cpx(0.0,0.0), Real r=0.0) : Circle(z,r) {};
+      Vertex (const cpx &z = cpx(0.0,0.0), const Real &r = 0.0) : Circle(z,r) {};
 
       /// Shortcut for a point on the real line.
-      Vertex (Real z, Real r=0.0) : Circle(z,r) {};
+      Vertex (const Real &z, const Real &r = 0.0) : Circle(z,r) {};
   };
 
   /** The main class for a planar map.
@@ -79,15 +79,15 @@ namespace vb {
        * @param e The edge to look for.
        */
 
-      adj_list::iterator find_edge (Edge e) const;
+      adj_list::iterator find_edge (const Edge &e) const;
 
       /// Walk on the map, turning left.
 
-      Edge turn_left (Edge e);
+      Edge turn_left (const Edge &e);
 
       /// Walk on the map, turning right.
 
-      Edge turn_right (Edge e);
+      Edge turn_right (const Edge &e);
 
       /** Add an edge to the map.
        *
@@ -98,7 +98,7 @@ namespace vb {
        * @param vv The endpoint of the new edge.
        */
 
-      void add_before (Edge e, int vv);
+      void add_before (const Edge &e, int vv);
 
       /** Add an edge to the map.
        *
@@ -109,7 +109,7 @@ namespace vb {
        * @param vv The endpoint of the new edge.
        */
 
-      void add_after (Edge e, int vv);
+      void add_after (const Edge &e, int vv);
 
       /** Compute the face associated to an edge.
        *
@@ -134,7 +134,7 @@ namespace vb {
        * @param reverse  If true, rotate clockwise.
        */
 
-      void inscribe (std::list<int> face_ext, Real radius = 1.0, bool reverse = false);
+      void inscribe (const std::list<int> &face_ext, const Real &radius = 1.0, bool reverse = false);
 
       /** Produce a balanced embedding of the map.
        *
@@ -169,7 +169,7 @@ namespace vb {
        * @param f The hexagon to split into 4 triangles.
        */
 
-      void hex_to_triangle (std::list<int> f);
+      void hex_to_triangle (const std::list<int> &f);
 
       /** Perform barycentric subdivision of the map.
        *
@@ -236,7 +236,7 @@ namespace vb {
        * @param theta The rotation angle.
        */
 
-      void mobius (cpx w, Real theta);
+      void mobius (cpx w, const Real &theta);
 
       /** Find the minimum of the given function.
        *
@@ -280,7 +280,7 @@ namespace vb {
        * @param _bord The list of boundary vertices.
        */
 
-      Real circlepack (int _zero, int _one, std::list<int> _bord);
+      Real circlepack (int _zero, int _one, const std::list<int> &_bord);
 
       /** Compute the labels for a circle packing.
        *
@@ -318,7 +318,7 @@ namespace vb {
 
       /// Rotate the whole embedding by a given angle.
 
-      void rotate (Real theta);
+      void rotate (const Real &theta);
 
       /** Apply a Möbius transform to the circles of the embedding.
        *
@@ -353,11 +353,11 @@ namespace vb {
 
   /// Export a vb::Map as text (kind of DOT-looking).
 
-  std::ostream &operator<< (std::ostream &os, Map m);
+  std::ostream &operator<< (std::ostream &os, const Map &m);
 
   /// Add an vb::Edge to a vb::Map.
 
-  Map &operator<< (Map &m, Edge e);
+  Map &operator<< (Map &m, const Edge &e);
 
   /** Compute the square distance to a balanced embedding.
    *

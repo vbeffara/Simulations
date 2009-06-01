@@ -19,7 +19,7 @@ namespace vb {
    * @param title The title of the created image.
    */
 
-  int printout_path (char *p, long l, std::string title);
+  int printout_path (char *p, long l, const std::string &title);
 }
 
 /** @mainpage Documentation for the `libvb' library.

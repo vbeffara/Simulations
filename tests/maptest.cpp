@@ -68,7 +68,7 @@ int main () {
   m.barycentric(); m.inscribe(m.face(Edge(0,m.v[0]->adj.back()))); m.balance();
   m.barycentric(); m.inscribe(m.face(Edge(0,m.v[0]->adj.back()))); m.balance();
   m.barycentric(); m.inscribe(m.face(Edge(0,m.v[0]->adj.back()))); m.balance();
-
+  m.barycentric(); m.inscribe(m.face(Edge(0,m.v[0]->adj.back()))); m.balance();
 
   std::list<int> bord = m.face (Edge(0,m.v[0]->adj.back()));
 

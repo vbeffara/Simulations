@@ -68,7 +68,7 @@ namespace vb {
        * @param t  The title of the window.
        */
 
-      AutoWindow (int wd, int ht, std::string t);
+      AutoWindow (int wd, int ht, const std::string &t);
 
       /** The standard destructor.
        *
@@ -90,13 +90,13 @@ namespace vb {
       void pause() { paused=true; update(); }
 
       /// Output the current image to a PNG file of specified name.
-      void output_png (std::string s);
+      void output_png (const std::string &s);
 
       /// Take a snapshot of the current window as a PNG file.
       void snapshot (bool silent = false);
 
       /// Initiate automatic snapshots.
-      void snapshot_setup (std::string prefix, double period = 0.0);
+      void snapshot_setup (const std::string &prefix, double period = 0.0);
 
       std::string title;             ///< The title of the window.
       int fps;                       ///< The target FPS rate.

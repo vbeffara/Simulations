@@ -10,15 +10,16 @@
 #include <unistd.h>
 
 namespace vb {
-  CL_Value::CL_Value (std::string s) : value(s) { }
-  CL_Value::operator std::string() { return value; }
-  CL_Value::operator bool() { return atoi(value.c_str()); }
-  CL_Value::operator int() { return atoi(value.c_str()); }
-  CL_Value::operator long() { return atoi(value.c_str()); }
-  CL_Value::operator double() { return atof(value.c_str()); }
+  CL_Value::CL_Value (const std::string &s) : value(s) { }
+
+  CL_Value::operator std::string() const { return value; }
+  CL_Value::operator bool()        const { return atoi(value.c_str()); }
+  CL_Value::operator int()         const { return atoi(value.c_str()); }
+  CL_Value::operator long()        const { return atoi(value.c_str()); }
+  CL_Value::operator double()      const { return atof(value.c_str()); }
 
   CL_Parser::CL_Parser (int argc, char **argv, std::string syntax,
-                                               std::string help) :
+                                               const std::string &help) :
     getopt_arg("h"), _help(help) {
 
     if (help.length()==0) {
@@ -38,7 +39,7 @@ namespace vb {
     parse(argc,argv);
   }
   
-  void CL_Parser::newparam (std::string s) {
+  void CL_Parser::newparam (const std::string &s) {
     if (s.length() == 1) {
       getopt_arg.append(1,s[0]);
       params[s[0]] = "0";

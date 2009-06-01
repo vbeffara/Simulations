@@ -5,8 +5,7 @@
 #include <string>
 
 namespace vb {
-  int printout_path (char *p, long l, std::string title)
-  {
+  int printout_path (char *p, long l, const std::string &title) {
     const char *dirs = "ENWS";
     const long dx[4] = {1,0,-1,0};
     const long dy[4] = {0,1,0,-1};

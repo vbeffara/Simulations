@@ -17,12 +17,14 @@ namespace vb {
 
   class CL_Value {
     public:
-      CL_Value (std::string s); ///< Creator from a string.
-      operator std::string();   ///< Convert to a string.
-      operator bool();          ///< Convert to a bool.
-      operator int();           ///< Convert to an int.
-      operator long();          ///< Convert to a long int.
-      operator double();        ///< Convert to a double.
+      CL_Value (const std::string &s); ///< Creator from a string.
+
+      operator std::string() const; ///< Convert to a string.
+      operator bool()        const; ///< Convert to a bool.
+      operator int()         const; ///< Convert to an int.
+      operator long()        const; ///< Convert to a long int.
+      operator double()      const; ///< Convert to a double.
+
     private:
       std::string value;
   };
@@ -49,8 +51,8 @@ namespace vb {
 
   class CL_Parser {
   public:
-    std::map<char,std::string> params; ///< The current values of the parameters
-    std::map<char,bool> has_arg;       ///< The list of known flags 
+    std::map<char,std::string> params;  ///< The current values of the parameters
+    std::map<char,bool>        has_arg; ///< The list of known flags 
     
     /** The standard constructor of the vb::CL_Parser class.
      *
@@ -60,17 +62,19 @@ namespace vb {
      * @param help A help message for the '-h' flag.
      */
 
-    CL_Parser (int argc, char** argv, std::string syntax,
-               std::string help = "");
+    CL_Parser (int argc, char** argv,
+               std::string syntax,
+               const std::string &help = "");
     
     /** Return a generic CL_Value holder. */
 
     CL_Value operator() (char);
+
   private:
     std::string getopt_arg;
     std::string _help;
 
-    void newparam (std::string);
+    void newparam (const std::string &);
     void parse (int, char**);
   };
 }

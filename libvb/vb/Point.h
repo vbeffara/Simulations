@@ -58,7 +58,7 @@ namespace vb {
       std::priority_queue<Point> q;   ///< The std::priority_queue itself.
 
       friend inline PointQueue &operator>> (PointQueue &, Point &);
-      friend inline PointQueue &operator<< (PointQueue &pq, Point p);
+      friend inline PointQueue &operator<< (PointQueue &pq, const Point &p);
   };
 
   /** Put a Point in a PointQueue.
@@ -67,7 +67,7 @@ namespace vb {
    * @param p  The vb::Point to insert.
    */
 
-  inline PointQueue &operator<< (PointQueue &pq, Point p) {
+  inline PointQueue &operator<< (PointQueue &pq, const Point &p) {
     pq.q.push(p);
     return pq;
   }
@@ -97,7 +97,7 @@ namespace vb {
    * @param p   The point to inset.
    */
 
-  inline Image &operator<< (Image &img, Point p) {
+  inline Image &operator<< (Image &img, const Point &p) {
     img.putpoint (p.x,p.y,p.c);
     return img;
   }
@@ -111,7 +111,7 @@ namespace vb {
    * @param p   The point to inset.
    */
 
-  inline CoarseImage &operator<< (CoarseImage &img, Point p) {
+  inline CoarseImage &operator<< (CoarseImage &img, const Point &p) {
     img.putpoint (p.x,p.y,p.c);
     return img;
   }

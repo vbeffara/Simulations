@@ -40,7 +40,7 @@ namespace vb {
        * @param tit The title of the image.
        */
 
-      Image (int wd, int ht, int dp, std::string tit);
+      Image (int wd, int ht, int dp, const std::string &tit);
 
       /** The standard destructor of the Image class. */
 
@@ -167,24 +167,6 @@ namespace vb {
       void draw();             ///< Fill the fltk::Rectangle R with the image contents.
 #endif
   };
-
-  /** Return the parameter as a hexadecimal digit.
-   *
-   * It does bound-checking and returns a digit between 0 and F. There
-   * probably is a more canonical way of doing that, but it works.
-   *
-   * @param i The integer to translate.
-   * @return The corresponding digit as a char.
-   */
-
-  inline char trans (int i)
-  {
-    static char trans[17] = "0123456789ABCDEF";
-
-    if (i<0) i=0;
-    if (i>15) i=15;
-    return trans[15-i];
-  }
 }
 
 /** @example sample.cpp
