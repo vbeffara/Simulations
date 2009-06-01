@@ -15,8 +15,8 @@ int main(int argc, char ** argv)
 
   CL_Parser CLP (argc,argv,"n=300,p=.3,q=.4");
   int n = CLP.as_int('n');
-  double p = CLP.as_double('p');
-  double q = CLP.as_double('q');
+  double p = CLP('p');
+  double q = CLP('q');
 
   // Connectivity (&1 -> to the right, &2 -> downwards)
 

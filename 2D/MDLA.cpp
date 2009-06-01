@@ -31,10 +31,10 @@ int main(int argc, char ** argv)
 
   CL_Parser CLP (argc, argv, "n=250,p=.5,g,a=1.0,t=0.0,s");
   int    n = CLP.as_int('n');
-  double p = CLP.as_double('p');
+  double p = CLP('p');
   bool   g = CLP.as_bool('g');
-  double a = CLP.as_double('a');
-  double t = CLP.as_double('t');
+  double a = CLP('a');
+  double t = CLP('t');
   bool   s = CLP.as_bool('s');
 
   /* Initialisations */

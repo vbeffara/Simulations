@@ -90,7 +90,7 @@ int main(int argc, char ** argv)
 
   CL_Parser CLP (argc,argv,"n=500,p=.5");
   n = CLP.as_int('n');
-  p = CLP.as_double('p');
+  p = CLP('p');
 
   sprintf(title,"Bond-percolation cluster (p=%f)",p);
   Image img (2*n,2*n,2,title);

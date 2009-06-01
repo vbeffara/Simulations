@@ -120,7 +120,7 @@ int main (int argc, char **argv) {
       conditioning is one of: none (default), glass, connect4, connect6");
 
   int n = CLP('n');
-  double p = CLP.as_double('p');
+  double p = CLP('p');
   string c = CLP.as_string('c');
   
   if (c == "none") init_ok_none();

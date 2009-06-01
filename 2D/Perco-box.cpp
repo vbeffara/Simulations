@@ -53,8 +53,8 @@ int main (int argc, char **argv) {
   int n = CLP.as_int('n');
   int m = CLP.as_int('m');
   int t = CLP.as_int('t');
-  double p = CLP.as_double('p');
-  double q = CLP.as_double('q');
+  double p = CLP('p');
+  double q = CLP('q');
 
   if (m==0) m=n;
   if (q==0) q=p;

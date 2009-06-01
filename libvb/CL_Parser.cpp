@@ -69,10 +69,6 @@ namespace vb {
     return atoi(params[c].c_str());
   }
   
-  double CL_Parser::as_double (char c) {
-    return atof(params[c].c_str());
-  }
-  
   bool CL_Parser::as_bool (char c) {
     return atoi(params[c].c_str());
   }

@@ -50,8 +50,8 @@ int main(int argc, char ** argv)
   int n = clp.as_int('n');
   int w = clp.as_int('W');
   int h = clp.as_int('H');
-  double p1 = clp.as_double('p');
-  double p2 = clp.as_double('q');
+  double p1 = clp('p');
+  double p2 = clp('q');
 
   if ((w*h==0) && (w+h!=0)) {
     std::cerr << "Please specify both width and height, or neither." << std::endl;

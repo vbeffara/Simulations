@@ -95,8 +95,8 @@ void Automaton::effect (double r) {
 int main (int argc, char **argv) {
   CL_Parser CLP (argc,argv,"n=500,e=.03,r=.05");
   const int n = CLP.as_int('n');
-  const double e = CLP.as_double('e');
-  const double r = CLP.as_double('r');
+  const double e = CLP('e');
+  const double r = CLP('r');
 
   Image img (n,n,1,"Cellular automaton");
   img.show();

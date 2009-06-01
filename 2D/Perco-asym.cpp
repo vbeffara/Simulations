@@ -91,7 +91,7 @@ int main(int argc, char ** argv)
 
   CL_Parser CLP (argc,argv,"n=500,e=.1");
   n = CLP.as_int('n');
-  epsilon = CLP.as_double('e');
+  epsilon = CLP('e');
 
   PRNG prng;
 

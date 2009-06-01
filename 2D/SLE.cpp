@@ -98,7 +98,7 @@ int main(int argc, char ** argv)
   CL_Parser CLP (argc,argv,"n=300,k=2.666666666667,r=0,s",
       "Syntax: SLE [-n size] [-k kappa] [-r random_seed] [-s]");
   nn = CLP.as_int('n');
-  kappa = CLP.as_double('k');
+  kappa = CLP('k');
   int r = CLP.as_int('r');
   int smooth = CLP.as_int('s');
 

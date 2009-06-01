@@ -6,7 +6,7 @@ using namespace vb;
 int main (int argc, char **argv) {
   CL_Parser clp (argc,argv,"n=500,l=.2,a=0,b=0");
   int n = clp.as_int('n');
-  double l = clp.as_double('l');
+  double l = clp('l');
   int a = clp.as_int('a');
   int b = clp.as_int('b');
   l = l/(1+l);

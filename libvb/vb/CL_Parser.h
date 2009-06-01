@@ -67,10 +67,6 @@ namespace vb {
 
     int as_int(char);
 
-    /** Return the value of a parameter as a double. */
-
-    double as_double(char);
-
     /** Return the value of a parameter as a boolean. */
 
     bool as_bool(char);

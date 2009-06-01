@@ -6,9 +6,9 @@
 int main (int argc, char **argv) {
   vb::CL_Parser CLP(argc,argv,"n=500,e=0.01,f,c=0");
   const int n = CLP.as_int('n');
-  const double e = CLP.as_double('e');
+  const double e = CLP('e');
   const bool f = CLP.as_bool('f');
-  const double c = CLP.as_double('c');
+  const double c = CLP('c');
 
   vb::CoarseImage img (n,n,10,"RPNG");
   img.show();

@@ -7,9 +7,9 @@ using namespace vb;
 int main (int argc, char **argv) {
   CL_Parser CLP (argc,argv, "n=500,r=.1,l=.01,d=0");
   int n = CLP.as_int('n');
-  double r = CLP.as_double('r');
-  double l = CLP.as_double('l');
-  double d = CLP.as_double('d');
+  double r = CLP('r');
+  double l = CLP('l');
+  double d = CLP('d');
 
   PRNG prng;
 

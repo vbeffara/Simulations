@@ -91,8 +91,8 @@ int main(int argc, char ** argv)
 
   CL_Parser CLP (argc,argv,"n=500,p=.6,q=.4");
   n = CLP.as_int('n');
-  p1 = CLP.as_double('p');
-  p2 = CLP.as_double('q');
+  p1 = CLP('p');
+  p2 = CLP('q');
 
   sprintf(title,"Bond-percolation cluster (p1=%f, p2=%f)",p1,p2);
   img = new Image(2*n,2*n,1,title);

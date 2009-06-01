@@ -38,7 +38,7 @@ int main(int argc, char **argv) {
   vb::CL_Parser CLP(argc,argv,"n=100,t=1,p=.5");
   int n = CLP.as_int('n');
   int n_iter = CLP.as_int('t');
-  double p = CLP.as_double('p');
+  double p = CLP('p');
 
   int stats[5];
   for (int i=0;i<5;++i) stats[i]=0;

@@ -5,7 +5,7 @@ int main (int argc, char **argv) {
   vb::CL_Parser CLP(argc,argv,"n=500,p=.75",
 		"Syntax: Perco-oriented [-n <size>]");
   const int n = CLP.as_int('n');
-  const double p = CLP.as_double('p');
+  const double p = CLP('p');
 
   vb::Image img (n,n,1,"Oriented site-percolation");
   img.show();

@@ -5,7 +5,7 @@ using namespace vb;
 int main (int argc, char **argv) {
   CL_Parser CLP (argc,argv,"n=500,p=.5,d=1");
   int n = CLP.as_int('n');
-  double p = CLP.as_double('p');
+  double p = CLP('p');
   int d = CLP.as_int('d');
 
   Image img (n,n,d,"Voter model");

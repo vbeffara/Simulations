@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
   /* arguments -> p et n */
 
   CL_Parser CLP (argc,argv,"p=.5,n=400");
-  double p = CLP.as_double('p');
+  double p = CLP('p');
   int n = CLP.as_int('n');
 
   sprintf(title,"Discrete-time contact process on the tri/hex lattice (p=%f)",p);

@@ -29,7 +29,7 @@ int main(int argc, char ** argv)
 
   CL_Parser CLP (argc,argv,"n=1000,a=2");
   int n = CLP.as_int('n');
-  double a = CLP.as_double('a');
+  double a = CLP('a');
   a=1/(1+a);
 
   /* Initialisations */
