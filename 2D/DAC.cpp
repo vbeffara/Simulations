@@ -14,7 +14,7 @@ int main(int argc, char ** argv)
   // Parameters from the command line
 
   CL_Parser CLP (argc,argv,"n=300,p=.3,q=.4");
-  int n = CLP.as_int('n');
+  int n = CLP('n');
   double p = CLP('p');
   double q = CLP('q');
 

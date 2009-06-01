@@ -30,7 +30,7 @@ int main(int argc, char ** argv)
   long x,y,nx,ny,done,ndraw,ngrey;
 
   CL_Parser CLP (argc, argv, "n=250,p=.5,g,a=1.0,t=0.0,s");
-  int    n = CLP.as_int('n');
+  int    n = CLP('n');
   double p = CLP('p');
   bool   g = CLP.as_bool('g');
   double a = CLP('a');

@@ -17,7 +17,7 @@ unsigned char f (int x, int y) {
 int main(int argc, char *argv[])
 {
   vb::CL_Parser CLP (argc,argv,"n=500");
-  n = CLP.as_int('n');
+  n = CLP('n');
 
   vb::Image img (n,n,8,"Sample");
   img.show();

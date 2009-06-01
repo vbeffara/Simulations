@@ -170,7 +170,7 @@ int main(int argc, char ** argv)
   /* arguments -> taille du terrain */
 
   CL_Parser CLP (argc,argv,"n=8");
-  n = 1 << CLP.as_int('n');
+  n = 1 << int(CLP('n'));
 
   /* Initialisations */
 

@@ -200,7 +200,7 @@ namespace vb {
  * First, create an instance of vb::CL_Parser. Use it to get the value
  * of n, the size of the image (the default is 500 here):
  * @skip CLP
- * @until as_int
+ * @until CLP(
  * Then, create a vb::Image of this size, and display it on the screen:
  * @skip Image
  * @until show

@@ -27,7 +27,7 @@ int main(int argc, char ** argv)
   /* arguments -> taille du terrain */
 
   CL_Parser CLP (argc,argv,"n=500");
-  n = CLP.as_int('n');
+  n = CLP('n');
 
   /* Initialisations */
 

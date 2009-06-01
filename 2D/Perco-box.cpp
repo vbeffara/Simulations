@@ -50,9 +50,9 @@ void bndcnx (int ox, int oy) {
 
 int main (int argc, char **argv) {
   CL_Parser CLP (argc,argv,"n=100,m=0,t=1,p=.5,q=0");
-  int n = CLP.as_int('n');
-  int m = CLP.as_int('m');
-  int t = CLP.as_int('t');
+  int n = CLP('n');
+  int m = CLP('m');
+  int t = CLP('t');
   double p = CLP('p');
   double q = CLP('q');
 

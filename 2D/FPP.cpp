@@ -34,7 +34,7 @@ int main (int argc, char **argv) {
 
   CL_Parser CLP (argc,argv,"n=1000,i,2",
       "-n <size>, -i for invasion percolation, -2 for the two-step Eden model");
-  int n = CLP.as_int('n');
+  int n = CLP('n');
   bool invasion = CLP.as_bool('i');
   bool twostep = CLP.as_bool('2');
 

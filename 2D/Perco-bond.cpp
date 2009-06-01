@@ -89,7 +89,7 @@ int main(int argc, char ** argv)
   /* arguments -> p et n */
 
   CL_Parser CLP (argc,argv,"n=500,p=.5");
-  n = CLP.as_int('n');
+  n = CLP('n');
   p = CLP('p');
 
   sprintf(title,"Bond-percolation cluster (p=%f)",p);

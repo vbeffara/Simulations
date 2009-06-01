@@ -187,7 +187,7 @@ int main (int argc, char **argv) {
   PRNG prng;
 
   CL_Parser CLP (argc, argv, "n=20");
-  N = CLP.as_int('n');
+  N = CLP('n');
 
   vector<double> o (N*N);
   for (int i=0; i<N*N; ++i) o[i] = tan(prng.uniform(PI));

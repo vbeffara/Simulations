@@ -44,7 +44,7 @@ namespace vb {
    * syntax string, which is better than nothing.
    *
    * The values of the parameters are stored as strings, and accessed
-   * using the as_* methods.
+   * by casting the returned vb::CL_Value object to the wanted type.
    */
 
   class CL_Parser {
@@ -63,10 +63,6 @@ namespace vb {
     CL_Parser (int argc, char** argv, std::string syntax,
                std::string help = "");
     
-    /** Return the value of a parameter as an integer. */
-
-    int as_int(char);
-
     /** Return the value of a parameter as a boolean. */
 
     bool as_bool(char);

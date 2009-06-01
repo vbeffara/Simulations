@@ -90,7 +90,7 @@ int main(int argc, char ** argv)
   /* arguments -> p et n */
 
   CL_Parser CLP (argc,argv,"n=500,p=.6,q=.4");
-  n = CLP.as_int('n');
+  n = CLP('n');
   p1 = CLP('p');
   p2 = CLP('q');
 

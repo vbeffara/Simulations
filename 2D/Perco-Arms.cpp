@@ -36,8 +36,8 @@ void add_one (Graph &g, int i, int j) {
 
 int main(int argc, char **argv) {
   vb::CL_Parser CLP(argc,argv,"n=100,t=1,p=.5");
-  int n = CLP.as_int('n');
-  int n_iter = CLP.as_int('t');
+  int n = CLP('n');
+  int n_iter = CLP('t');
   double p = CLP('p');
 
   int stats[5];

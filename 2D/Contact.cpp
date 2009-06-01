@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 
   CL_Parser CLP (argc,argv,"p=.4,n=400");
   double p = CLP('p');
-  int n = CLP.as_int('n');
+  int n = CLP('n');
 
   sprintf(title,"Discrete-time contact process on Z^2 (p=%f)",p);
 

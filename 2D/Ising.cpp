@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 
   CL_Parser CLP (argc,argv,"b=.88137359,n=300");
   double beta = CLP('b');
-  long n = CLP.as_int('n');
+  long n = CLP('n');
 
   sprintf(title,"An Ising configuration (beta=%6f)",beta);
   Image img(n,n,1,title);

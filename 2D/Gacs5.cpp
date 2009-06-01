@@ -94,7 +94,7 @@ void Automaton::effect (double r) {
 
 int main (int argc, char **argv) {
   CL_Parser CLP (argc,argv,"n=500,e=.03,r=.05");
-  const int n = CLP.as_int('n');
+  const int n = CLP('n');
   const double e = CLP('e');
   const double r = CLP('r');
 

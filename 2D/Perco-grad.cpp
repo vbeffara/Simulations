@@ -47,9 +47,9 @@ void cnx (Image *img, long ox, long oy, long in, long out)
 int main(int argc, char ** argv)
 {
   CL_Parser clp (argc, argv, "n=500,p=0,q=1,W=0,H=0");
-  int n = clp.as_int('n');
-  int w = clp.as_int('W');
-  int h = clp.as_int('H');
+  int n = clp('n');
+  int w = clp('W');
+  int h = clp('H');
   double p1 = clp('p');
   double p2 = clp('q');
 

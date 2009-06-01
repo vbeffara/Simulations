@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 
   CL_Parser CLP (argc,argv,"p=.5,n=400");
   double p = CLP('p');
-  int n = CLP.as_int('n');
+  int n = CLP('n');
 
   sprintf(title,"Discrete-time contact process on the tri/hex lattice (p=%f)",p);
 

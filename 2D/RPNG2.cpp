@@ -5,10 +5,10 @@ using namespace vb;
 
 int main (int argc, char **argv) {
   CL_Parser clp (argc,argv,"n=500,l=.2,a=0,b=0");
-  int n = clp.as_int('n');
+  int n = clp('n');
   double l = clp('l');
-  int a = clp.as_int('a');
-  int b = clp.as_int('b');
+  int a = clp('a');
+  int b = clp('b');
   l = l/(1+l);
 
   PRNG prng;
