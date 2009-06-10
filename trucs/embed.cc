@@ -225,7 +225,7 @@ Real cost_triangles (void) {
 }
 
 Real optimize (costfunction c) {
-  Real tmp_cost,old_cost,new_cost;
+  Real tmp_cost,old_cost;
   Real cost,step;
 
   cost = c();
