@@ -7,9 +7,6 @@
 #include <vb/Real.h>
 #include <vb/AutoWindow.h>
 
-#include <list>
-#include <typeinfo>
-
 namespace vb {
 
   /// Base class for the elements of a figure.

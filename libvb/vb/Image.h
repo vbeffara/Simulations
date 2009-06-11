@@ -4,8 +4,6 @@
 #ifndef __VB_IMAGE_H
 #define __VB_IMAGE_H
 
-#include <iostream>
-
 #include <vb/AutoWindow.h>
 
 namespace vb {
@@ -161,6 +159,7 @@ namespace vb {
       unsigned char * pic;              ///< The raw image data
       std::string title;                ///< The title of the image
       void compute_stage();             ///< Fills the stage field with 8bpp data.
+    public:
       unsigned char * image_data();     ///< Returns 8bpp raw image data (for PNG creation).
 
 #ifdef HAVE_FLTK

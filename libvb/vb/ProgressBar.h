@@ -6,9 +6,6 @@
 
 #include <vb/Timer.h>
 
-#include <iostream>
-#include <iomanip>
-
 namespace vb {
 
   /** A class to show a progress bar.

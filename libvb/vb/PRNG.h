@@ -4,7 +4,7 @@
 #ifndef __VB_PRNG_H
 #define __VB_PRNG_H
 
-#include <math.h>
+#include <vb/common.h>
 
 namespace vb {
   /** A general-purpose pseudo-random number generator framework.

@@ -4,8 +4,7 @@
 #ifndef __VB_CL_PARSER_H
 #define __VB_CL_PARSER_H
 
-#include <string>
-#include <map>
+#include <vb/common.h>
 
 namespace vb {
 

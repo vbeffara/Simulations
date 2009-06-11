@@ -6,8 +6,6 @@
 
 #include <vb/Image.h>
 
-#include <vector>
-
 namespace vb {
 
   /** A multi-scale version of Image.

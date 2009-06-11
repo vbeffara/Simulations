@@ -4,9 +4,7 @@
 #ifndef __VB_VECTOR_H
 #define __VB_VECTOR_H
 
-#include <vector>
-#include <iostream>
-#include <stdexcept>
+#include <vb/common.h>
 
 namespace vb {
 

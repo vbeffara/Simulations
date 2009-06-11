@@ -5,13 +5,14 @@
  * small disk.
  */
 
+#include <vb.h>
+
 #define RAD1 10
 #define RAD2 20
 #define RAD3 40
 
 #define N (2*RAD3)
 
-#include <vb.h>
 #include <stdlib.h>
 #include <math.h>
 #include <cstdio>

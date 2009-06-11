@@ -8,14 +8,7 @@
 #ifndef __VB_REAL_H
 #define __VB_REAL_H
 
-#include <complex>
-#include <vb/config.h>
-#include <math.h>
-
-#ifdef HAVE_CLN
-#define WANT_OBFUSCATING_OPERATORS
-#include <cln/cln.h>
-#endif
+#include <vb/common.h>
 
 namespace vb {
 #ifdef HAVE_CLN

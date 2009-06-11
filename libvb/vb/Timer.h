@@ -5,7 +5,7 @@
 #ifndef __VB_TIMER_H
 #define __VB_TIMER_H
 
-#include <sys/time.h>
+#include <vb/common.h>
 
 namespace vb {
 

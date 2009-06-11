@@ -4,22 +4,7 @@
 #ifndef AUTOWINDOW_H
 #define AUTOWINDOW_H
 
-#include <stdlib.h>
-#include <time.h>
-#include <string>
-
-#include <vb/config.h>
-
-#ifdef HAVE_FLTK
-#include <FL/Fl.H>
-#include <FL/Fl_Double_Window.H>
-#include <FL/fl_draw.H>
-#include <FL/Enumerations.H>
-#endif
-
-#ifdef HAVE_PNG
-#include <png.h>
-#endif
+#include <vb/common.h>
 
 namespace vb {
 
