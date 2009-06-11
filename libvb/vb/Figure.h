@@ -13,19 +13,22 @@ namespace vb {
 
   class Shape {
     public:
-      virtual ~Shape() {}                                   ///< Empty destructor to make the compiler happy.
+      virtual ~Shape() {}                                     ///< Empty destructor to make the compiler happy.
 
       virtual double left () =0;                              ///< Get the left boundary of the Shape.
       virtual double right () =0;                             ///< Get the right boundary of the Shape.
       virtual double top () =0;                               ///< Get the top boundary of the Shape.
       virtual double bottom () =0;                            ///< Get the bottom boundary of the Shape.
 
-      virtual bool operator== (const Shape&) const =0;      ///< Test for equality between two shapes.
+      virtual bool operator== (const Shape&) const =0;        ///< Test for equality between two shapes.
 
-      virtual std::ostream &printASY (std::ostream &os) =0; ///< Write ASY code for the shape.
+      virtual std::ostream &printASY (std::ostream &os) =0;   ///< Write ASY code for the shape.
 
 #ifdef HAVE_FLTK
-      virtual void draw () =0;                              ///< Draw the shape in a window (FLTK).
+      virtual void draw () =0;                                ///< Draw the shape in a window (FLTK).
+#endif
+#ifdef HAVE_CAIRO
+      virtual void draw (Cairo::RefPtr<Cairo::Context> cr) =0; ///< Draw the shape on a Cairo context.
 #endif
   };
 
@@ -57,6 +60,9 @@ namespace vb {
 #ifdef HAVE_FLTK
       virtual void draw ();                                ///< Draw the shape in a window (FLTK).
 #endif
+#ifdef HAVE_CAIRO
+      virtual void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw the shape on a Cairo context.
+#endif
   };
 
   /// Subclass of vb::Shape for a dot.
@@ -87,6 +93,9 @@ namespace vb {
 #ifdef HAVE_FLTK
       virtual void draw ();                                ///< Draw the shape in a window (FLTK).
 #endif
+#ifdef HAVE_CAIRO
+      virtual void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw the shape on a Cairo context.
+#endif
   };
 
   /// Subclass of vb::Shape for a circle.
@@ -116,6 +125,9 @@ namespace vb {
 
 #ifdef HAVE_FLTK
       virtual void draw ();                                ///< Draw the shape in a window (FLTK).
+#endif
+#ifdef HAVE_CAIRO
+      virtual void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw the shape on a Cairo context.
 #endif
   };
 
@@ -157,6 +169,10 @@ namespace vb {
 
 #ifdef HAVE_FLTK
       void draw (); ///< Draw it onto the screen.
+#endif
+#ifdef HAVE_CAIRO
+      void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw it onto a Cairo context.
+      void printPNG (const std::string &s);         ///< Output to a PNG file.
 #endif
   };
 }

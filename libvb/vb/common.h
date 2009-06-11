@@ -26,6 +26,11 @@
 
 #include <vb/config.h>
 
+#ifdef HAVE_CAIRO
+#include <cairomm/context.h>
+#include <cairomm/surface.h>
+#endif
+
 #ifdef HAVE_CLN
 #define WANT_OBFUSCATING_OPERATORS
 #include <cln/cln.h>
