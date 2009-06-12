@@ -94,37 +94,11 @@ namespace vb {
   }
 
   void AutoWindow::output_png (const std::string &s) {
-#ifdef HAVE_PNG
-    unsigned char *p = image_data();
-    if (!p) {
-      std::cerr << "libvb: don't know how to get image data!" << std::endl;
-      return;
-    }
-
-    FILE *fp = fopen (s.c_str(),"wb");
-
-    png_structp png_ptr = png_create_write_struct
-      (PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-    png_infop info_ptr = png_create_info_struct(png_ptr);
-
-    png_init_io (png_ptr, fp);
-
-    png_set_IHDR (png_ptr, info_ptr, w(), h(), 8, PNG_COLOR_TYPE_GRAY,
-        PNG_INTERLACE_NONE,PNG_COMPRESSION_TYPE_DEFAULT,PNG_FILTER_TYPE_DEFAULT);
-
-    std::vector <png_bytep> row_pointers (h());
-
-    for (int i=0; i<h(); ++i)
-      row_pointers[i] = p + i*w();
-    png_set_rows (png_ptr, info_ptr, &row_pointers.front());
-
-    png_write_info (png_ptr, info_ptr);
-    png_write_image (png_ptr, &row_pointers.front());
-    png_write_end (png_ptr, NULL);
-
-    fclose (fp);
+#ifdef HAVE_CAIRO
+    image_data();
+    surface->write_to_png (s);
 #else
-    std::cerr << "libvb: compiled without PNG support." << std::endl;
+    std::cerr << "libvb: compiled without Cairo, no PNG support." << std::endl;
 #endif
   }
 

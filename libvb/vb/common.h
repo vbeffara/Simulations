@@ -43,10 +43,6 @@
 #include <FL/Enumerations.H>
 #endif
 
-#ifdef HAVE_PNG
-#include <png.h>
-#endif
-
 namespace vb {
   /// Utility type for a complex number.
   typedef std::complex<double> cpx;
