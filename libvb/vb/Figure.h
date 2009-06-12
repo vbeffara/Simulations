@@ -1,5 +1,6 @@
 /// @file Figure.h
 /// Definitions for the vb::Figure and related classes.
+/// @example test_figure.cpp
 
 #ifndef __VB_FIGURE_H
 #define __VB_FIGURE_H
@@ -160,7 +161,5 @@ namespace vb {
 #endif
   };
 }
-
-/// @example figtest.cpp
 
 #endif
