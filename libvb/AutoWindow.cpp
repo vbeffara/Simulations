@@ -69,6 +69,11 @@ namespace vb {
 #else
     _w = wd; _h = ht; 
 #endif
+#ifdef HAVE_CAIRO
+      stride = Cairo::ImageSurface::format_stride_for_width (Cairo::FORMAT_A8, wd);
+#else
+      stride = wd;
+#endif
   }
 
   void AutoWindow::cycle () {

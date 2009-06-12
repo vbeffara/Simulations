@@ -15,16 +15,13 @@ namespace vb {
 
   Image::Image (int wd, int ht, int dp, const std::string &tit) : 
     AutoWindow(wd,ht,tit), width(wd), height(ht), depth(dp), 
-    outputsize(0.0), cropped(0), pic(wd*ht,0), title(tit) { 
+    outputsize(0.0), cropped(0), pic(stride*ht,0), title(tit) { 
 
       if ((depth!=1)&&(depth!=2)&&(depth!=4)&&(depth!=8)) {
         std::cerr << "libvb : error : invalid depth"
           << " (only 1, 2, 4 and 8 bpp allowed).\n";
         exit(1);
       }
-
-      for (int i=0; i<width*ht; i++)
-        pic[i]=0;
     }
 
   std::ostream &operator<< (std::ostream &os, Image &img) {
@@ -160,7 +157,12 @@ namespace vb {
   }
 
   void Image::compute_stage () {
-    if (stage.empty()) stage.resize (width*height);
+    if (stage.empty()) {
+      stage.resize (width*height);
+#ifdef HAVE_CAIRO
+      surface = Cairo::ImageSurface::create (&stage.front(), Cairo::FORMAT_A8, width, height, stride);
+#endif
+    }
     char D = 255 / ((1<<depth)-1);
     for (int i=0; i<width*height; ++i) stage[i] = D * pic[i];
   }
@@ -173,7 +175,7 @@ namespace vb {
 #ifdef HAVE_FLTK
   void Image::draw() {
     compute_stage();
-    fl_draw_image_mono (&stage.front(),0,0,width,height);
+    fl_draw_image_mono (&stage.front(),0,0,width,height,1,stride);
   }
 #endif
 

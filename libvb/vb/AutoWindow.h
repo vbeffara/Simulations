@@ -97,6 +97,10 @@ namespace vb {
       std::vector <unsigned char> raw_image_data;
 
     protected:
+#ifdef HAVE_CAIRO
+      Cairo::RefPtr<Cairo::ImageSurface> surface; ///< Cairo surface with the same contents.
+#endif
+      int stride; ///< The size of one line of the image in memory.
       /// A staging area intended to contain 8bpp grayscale data.
       std::vector <unsigned char> stage;
 

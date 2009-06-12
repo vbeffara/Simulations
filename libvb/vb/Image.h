@@ -53,7 +53,7 @@ namespace vb {
        */
 
       int putpoint (int x, int y, int c, int dt=1) {
-        int xy = x+y*width;
+        int xy = x+y*stride;
         if (pic[xy]!=c) {
           pic[xy] = c;
           if (dt) step();
@@ -122,7 +122,7 @@ namespace vb {
        */
 
       unsigned char &operator() (int x, int y) {
-        return pic[x+width*y];
+        return pic[x+stride*y];
       };
 
       /** Return the color of the image at point (xy%width,xy/width).
@@ -155,6 +155,7 @@ namespace vb {
       std::vector <unsigned char> pic;  ///< The raw image data
       std::string title;                ///< The title of the image
       void compute_stage();             ///< Fills the stage field with 8bpp data.
+
     public:
       unsigned char * image_data();     ///< Returns 8bpp raw image data (for PNG creation).
 
