@@ -9,15 +9,19 @@
 #include <iomanip>
 
 namespace vb {
+  void AutoWindow::show () {
+#ifdef HAVE_FLTK
+    Fl_Double_Window::show();
+    update();
+#else
+    std::cerr << "libvb: without FLTK, I can't show you this !" << std::endl;
+#endif
+  }
+
 #ifdef HAVE_FLTK
   /// Forcefully exit the program if the used closes the window.
   void close_window (Fl_Widget *w) {
     exit(1);
-  }
-
-  void AutoWindow::show () {
-    Fl_Double_Window::show();
-    update();
   }
 
   int AutoWindow::handle (int event) {
@@ -70,10 +74,15 @@ namespace vb {
     _w = wd; _h = ht; 
 #endif
 #ifdef HAVE_CAIRO
-      stride = Cairo::ImageSurface::format_stride_for_width (Cairo::FORMAT_A8, wd);
+    surface = Cairo::ImageSurface::create (Cairo::FORMAT_A8, wd, ht);
+    stride = surface->get_stride();
 #else
-      stride = wd;
+    stride = wd;
 #endif
+  }
+
+  AutoWindow::~AutoWindow () {
+    delete[] stage;
   }
 
   void AutoWindow::cycle () {
@@ -126,9 +135,9 @@ namespace vb {
 
     make_current();
     if (fl_read_image (&raw_image_data.front(), 0, 0, w(), h())) {
-      if (stage.empty()) stage.resize (w()*h());
+      if (!stage) stage = new unsigned char [w()*h()];
       for (int i=0; i<w()*h(); ++i) stage[i] = raw_image_data[3*i];
-      return &stage.front();
+      return stage;
     } else {
       return NULL;
     }

@@ -22,6 +22,15 @@ namespace vb {
           << " (only 1, 2, 4 and 8 bpp allowed).\n";
         exit(1);
       }
+
+#ifdef HAVE_CAIRO
+      stage = surface->get_data();
+#else
+      stage = new unsigned char[stride*ht];
+#endif
+
+      for (int i=0; i<stride*ht; i++)
+        pic[i]=0;
     }
 
   std::ostream &operator<< (std::ostream &os, Image &img) {
@@ -157,10 +166,10 @@ namespace vb {
   }
 
   void Image::compute_stage () {
-    if (stage.empty()) {
-      stage.resize (width*height);
+    if (!stage) {
+      stage = new unsigned char [width*height];
 #ifdef HAVE_CAIRO
-      surface = Cairo::ImageSurface::create (&stage.front(), Cairo::FORMAT_A8, width, height, stride);
+      surface = Cairo::ImageSurface::create (stage, Cairo::FORMAT_A8, width, height, stride);
 #endif
     }
     char D = 255 / ((1<<depth)-1);
@@ -169,13 +178,13 @@ namespace vb {
 
   unsigned char * Image::image_data () { 
     compute_stage();
-    return &stage.front();
+    return stage;
   }
 
 #ifdef HAVE_FLTK
   void Image::draw() {
     compute_stage();
-    fl_draw_image_mono (&stage.front(),0,0,width,height,1,stride);
+    fl_draw_image_mono (stage,0,0,width,height,1,stride);
   }
 #endif
 

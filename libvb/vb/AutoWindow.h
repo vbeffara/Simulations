@@ -21,30 +21,19 @@ namespace vb {
     : public Fl_Double_Window
 #endif
     {
+    public:
+      virtual void show ();       ///< Show the window on the screen.
+
 #ifdef HAVE_FLTK
-    public:
-
-      /// Show the window on the screen.
-      virtual void show ();
-
-      /// The thing to do if the user presses 'q'.
-      virtual void on_quit() { };
-
-    private:
-
-      /// Handle the events, in particular 'q' and 'x'.
-      int handle (int event);
+      virtual void on_quit() { }; ///< The thing to do if the user presses 'q'.
+      int handle (int event);     ///< Handle the events, in particular 'q' and 'x'.
 #else
-    public:
       int _w,_h;
-      int w() { return _w; }
-      int h() { return _h; }
-      bool visible() { return false; }
-      void show() { };
+      int w()                { return _w;    }
+      int h()                { return _h;    }
+      bool visible()         { return false; }
       virtual void on_quit() { };
 #endif
-
-    public:
       
       /** The standard constructor
        *
@@ -54,6 +43,7 @@ namespace vb {
        */
 
       AutoWindow (int wd, int ht, const std::string &t);
+      ~AutoWindow ();
 
       /// Update the screen, handle the events.
       void update ();
@@ -101,8 +91,9 @@ namespace vb {
       Cairo::RefPtr<Cairo::ImageSurface> surface; ///< Cairo surface with the same contents.
 #endif
       int stride; ///< The size of one line of the image in memory.
+
       /// A staging area intended to contain 8bpp grayscale data.
-      std::vector <unsigned char> stage;
+      unsigned char * stage;
 
       /// Return a pointer to 8bpp image data (for PNG output)
       virtual unsigned char * image_data ();

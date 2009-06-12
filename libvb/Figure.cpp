@@ -88,6 +88,8 @@ namespace vb {
 #endif
   }
 
+  void Figure::show() { }
+
   void Figure::clean() {
     std::list<Shape*>::iterator i;
     for (i=contents.begin(); i!=contents.end(); ++i)

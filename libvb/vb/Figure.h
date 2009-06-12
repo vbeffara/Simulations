@@ -168,6 +168,7 @@ namespace vb {
       std::list<Shape*> contents;  ///< The elements of the figure.
 
 #ifdef HAVE_FLTK
+      virtual void show ();        ///< Show the window on the screen.
       void draw (); ///< Draw it onto the screen.
 #endif
 #ifdef HAVE_CAIRO
