@@ -74,7 +74,7 @@ namespace vb {
     _w = wd; _h = ht; 
 #endif
 #ifdef HAVE_CAIRO
-    surface = Cairo::ImageSurface::create (Cairo::FORMAT_A8, wd, ht);
+    surface = Cairo::ImageSurface::create (Cairo::FORMAT_RGB24, wd, ht);
     stride = surface->get_stride();
 #else
     stride = wd;

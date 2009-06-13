@@ -39,6 +39,7 @@ namespace vb {
        */
 
       Image (int wd, int ht, int dp, const std::string &tit);
+      ~Image ();
 
       /** Set the color of a point in the image.
        *
@@ -53,7 +54,7 @@ namespace vb {
        */
 
       int putpoint (int x, int y, int c, int dt=1) {
-        int xy = x+y*stride;
+        int xy = x+y*width;
         if (pic[xy]!=c) {
           pic[xy] = c;
           if (dt) step();
@@ -122,7 +123,7 @@ namespace vb {
        */
 
       unsigned char &operator() (int x, int y) {
-        return pic[x+stride*y];
+        return pic[x+width*y];
       };
 
       /** Return the color of the image at point (xy%width,xy/width).

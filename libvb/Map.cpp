@@ -43,25 +43,37 @@ namespace vb {
 
 #ifdef HAVE_FLTK
   void Map::draw () {
-    fl_color (FL_WHITE);
-    fl_rectf (0,0,w(),h());
+    Cairo::RefPtr<Cairo::Context> cr = Cairo::Context::create (surface);
 
-    fl_push_matrix();
-    fl_scale(w()/(right()-left()), h()/(top()-bottom()));
-    fl_translate(-left(),-bottom());
+    double width  = right()-left(), mid_x = (right()+left())/2;
+    double height = top()-bottom(), mid_y = (top()+bottom())/2;
+    double scale_x = w()/width, scale_y = h()/height;
 
-    fl_color (FL_BLACK);
+    double scale = min(scale_x, scale_y);
+
+    cr->save();
+    cr->set_source_rgb (1,1,1);
+    cr->paint();
+    cr->restore();
+
+    cr->save();
+    cr->translate (w()/2,h()/2);
+    cr->scale (scale,scale);
+    cr->translate (-mid_x,-mid_y);
+    cr->set_source_rgb (0,0,0);
+    cr->set_line_width (.5/scale);
 
     for (int i=0; i<n; ++i) {
       for (adj_list::iterator j = v[i]->adj.begin(); j != v[i]->adj.end(); ++j) {
-        fl_begin_line();
-        fl_vertex (v[i]->z.real(), v[i]->z.imag());
-        fl_vertex (v[*j]->z.real(), v[*j]->z.imag());
-        fl_end_line();
+        cr->move_to (v[i]->z.real(), v[i]->z.imag());
+        cr->line_to (v[*j]->z.real(), v[*j]->z.imag());
       }
     }
 
-    fl_pop_matrix();
+    cr->stroke();
+    cr->restore();
+
+    fl_draw_image_mono (surface->get_data()+1,0,0,w(),h(),4,stride);
   }
 #endif
 

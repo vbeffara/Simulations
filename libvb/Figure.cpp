@@ -20,14 +20,6 @@ namespace vb {
     return os << "draw (" << z1 << "--" << z2 << ");" << std::endl;
   }
 
-#ifdef HAVE_FLTK
-  void Segment::draw () {
-    fl_begin_line();
-    fl_vertex (z1.real(), z1.imag());
-    fl_vertex (z2.real(), z2.imag());
-    fl_end_line();
-  }
-#endif
 #ifdef HAVE_CAIRO
   void Segment::draw (Cairo::RefPtr<Cairo::Context> cr){
       cr->move_to (z1.real(), z1.imag());
@@ -49,9 +41,6 @@ namespace vb {
     return os << "dot(" << z << ");" << std::endl;
   }
 
-#ifdef HAVE_FLTK
-  void Dot::draw () { }
-#endif
 #ifdef HAVE_CAIRO
   void Dot::draw (Cairo::RefPtr<Cairo::Context> cr) { }
 #endif
@@ -70,11 +59,6 @@ namespace vb {
     return os << "draw (circle(" << z << "," << r << "));" << std::endl;
   }
 
-#ifdef HAVE_FLTK
-  void Circle::draw () {
-    fl_circle (z.real(), z.imag(), r);
-  }
-#endif
 #ifdef HAVE_CAIRO
   void Circle::draw (Cairo::RefPtr<Cairo::Context> cr) {
     cr->begin_new_sub_path ();
@@ -88,7 +72,14 @@ namespace vb {
 #endif
   }
 
-  void Figure::show() { }
+  void Figure::show() {
+#ifdef HAVE_FLTK
+    Fl_Double_Window::show();
+    update();
+#else
+    std::cerr << "libvb: without FLTK, I can't show you this !" << std::endl;
+#endif
+  }
 
   void Figure::clean() {
     std::list<Shape*>::iterator i;
@@ -152,18 +143,30 @@ namespace vb {
 
 #ifdef HAVE_FLTK
   void Figure::draw() {
-    fl_color (FL_WHITE);
-    fl_rectf (0,0,w(),h());
+    Cairo::RefPtr<Cairo::Context> cr = Cairo::Context::create (surface);
 
-    fl_push_matrix();
-    fl_scale (w()/(right()-left()), h()/(top()-bottom()));
-    fl_translate(-left(), -bottom());
+    double width  = right()-left(), mid_x = (right()+left())/2;
+    double height = top()-bottom(), mid_y = (top()+bottom())/2;
+    double scale_x = w()/width, scale_y = h()/height;
 
-    fl_color (FL_BLACK);
-    for (std::list<Shape*>::iterator i = contents.begin(); i != contents.end(); ++i)
-      (*i)->draw();
+    double scale = min(scale_x, scale_y);
 
-    fl_pop_matrix();
+    cr->save();
+    cr->set_source_rgb (1,1,1);
+    cr->paint();
+    cr->restore();
+
+    cr->save();
+    cr->translate (w()/2,h()/2);
+    cr->scale (scale,scale);
+    cr->translate (-mid_x,-mid_y);
+    cr->set_source_rgb (0,0,0);
+    cr->set_line_width (1.0/scale);
+    draw(cr);
+    cr->stroke();
+    cr->restore();
+
+    fl_draw_image_mono (surface->get_data()+1,0,0,w(),h(),4,stride);
   }
 #endif
 
@@ -192,6 +195,7 @@ namespace vb {
     cr->translate (w()/2,h()/2);
     cr->scale (scale,scale);
     cr->translate (-mid_x,-mid_y);
+    cr->set_source_rgb (0,0,0);
     cr->set_line_width (1.0/scale);
     draw(cr);
     cr->stroke();

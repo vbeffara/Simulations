@@ -24,9 +24,6 @@ namespace vb {
 
       virtual std::ostream &printASY (std::ostream &os) =0;   ///< Write ASY code for the shape.
 
-#ifdef HAVE_FLTK
-      virtual void draw () =0;                                ///< Draw the shape in a window (FLTK).
-#endif
 #ifdef HAVE_CAIRO
       virtual void draw (Cairo::RefPtr<Cairo::Context> cr) =0; ///< Draw the shape on a Cairo context.
 #endif
@@ -57,9 +54,6 @@ namespace vb {
 
       virtual std::ostream &printASY (std::ostream &os);   ///< Write ASY code for the shape.
 
-#ifdef HAVE_FLTK
-      virtual void draw ();                                ///< Draw the shape in a window (FLTK).
-#endif
 #ifdef HAVE_CAIRO
       virtual void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw the shape on a Cairo context.
 #endif
@@ -90,9 +84,6 @@ namespace vb {
 
       virtual std::ostream &printASY (std::ostream &os);   ///< Write ASY code for the shape.
 
-#ifdef HAVE_FLTK
-      virtual void draw ();                                ///< Draw the shape in a window (FLTK).
-#endif
 #ifdef HAVE_CAIRO
       virtual void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw the shape on a Cairo context.
 #endif
@@ -123,9 +114,6 @@ namespace vb {
 
       virtual std::ostream &printASY (std::ostream &os);   ///< Write ASY code for the shape.
 
-#ifdef HAVE_FLTK
-      virtual void draw ();                                ///< Draw the shape in a window (FLTK).
-#endif
 #ifdef HAVE_CAIRO
       virtual void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw the shape on a Cairo context.
 #endif
@@ -167,13 +155,15 @@ namespace vb {
 
       std::list<Shape*> contents;  ///< The elements of the figure.
 
-#ifdef HAVE_FLTK
       virtual void show ();        ///< Show the window on the screen.
+#ifdef HAVE_FLTK
       void draw (); ///< Draw it onto the screen.
 #endif
 #ifdef HAVE_CAIRO
       void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw it onto a Cairo context.
       void printPNG (const std::string &s);         ///< Output to a PNG file.
+    private:
+      Cairo::RefPtr<Cairo::Context> cr;
 #endif
   };
 }

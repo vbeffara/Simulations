@@ -26,12 +26,18 @@ namespace vb {
 #ifdef HAVE_CAIRO
       stage = surface->get_data();
 #else
-      stage = new unsigned char[stride*ht];
+      stage = new unsigned char[wd*ht];
 #endif
 
-      for (int i=0; i<stride*ht; i++)
+      for (int i=0; i<wd*ht; i++)
         pic[i]=0;
     }
+
+  Image::~Image () {
+#ifdef HAVE_CAIRO
+    stage = NULL;
+#endif
+  }
 
   std::ostream &operator<< (std::ostream &os, Image &img) {
     long bits;
@@ -166,14 +172,21 @@ namespace vb {
   }
 
   void Image::compute_stage () {
-    if (!stage) {
-      stage = new unsigned char [width*height];
-#ifdef HAVE_CAIRO
-      surface = Cairo::ImageSurface::create (stage, Cairo::FORMAT_A8, width, height, stride);
-#endif
-    }
     char D = 255 / ((1<<depth)-1);
-    for (int i=0; i<width*height; ++i) stage[i] = D * pic[i];
+#ifdef HAVE_CAIRO
+    int step = 4;
+#else
+    int step = 1;
+#endif
+
+    for (int i=0; i<width; ++i) {
+      for (int j=0; j<height; ++j) {
+        unsigned char c = D * pic[i+width*j];
+        for (int k=0; k<step; ++k) stage[step*i+stride*j+k] = c;
+      }
+    }
+
+    for (int i=0; i<width*height; ++i) stage[step*i] = D * pic[i];
   }
 
   unsigned char * Image::image_data () { 
@@ -184,7 +197,7 @@ namespace vb {
 #ifdef HAVE_FLTK
   void Image::draw() {
     compute_stage();
-    fl_draw_image_mono (stage,0,0,width,height,1,stride);
+    fl_draw_image_mono (stage,0,0,width,height,4,stride);
   }
 #endif
 

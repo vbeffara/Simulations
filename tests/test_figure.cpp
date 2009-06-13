@@ -24,6 +24,7 @@ int main (int argc, char **argv) {
 #ifdef HAVE_CAIRO
   F.printPNG ("figtest.png");
 #endif
+
 #ifdef HAVE_FLTK
   //F.resizable(&F);
   F.show();
