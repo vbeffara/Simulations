@@ -2,10 +2,10 @@
  * Directed DLA
  */
 
-#include <vb.h>
+#include <vb/CL_Parser.h>
+#include <vb/Image.h>
+#include <vb/PRNG.h>
 #include <vb/Point.h>
-#include <iostream>
-#include <cmath>
 
 using namespace vb;
 

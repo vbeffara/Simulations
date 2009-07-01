@@ -5,7 +5,9 @@
  * small disk.
  */
 
-#include <vb.h>
+#include <vb/CL_Parser.h>
+#include <vb/Image.h>
+#include <vb/PRNG.h>
 
 #define RAD1 10
 #define RAD2 20

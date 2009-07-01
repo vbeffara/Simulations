@@ -1,6 +1,7 @@
 
-#include <iostream>
-#include <vb.h>
+#include <vb/CL_Parser.h>
+#include <vb/Image.h>
+#include <vb/PRNG.h>
 #include <vb/CoarseImage.h>
 
 int main (int argc, char **argv) {

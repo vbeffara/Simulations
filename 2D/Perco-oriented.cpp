@@ -1,5 +1,7 @@
 
-#include <vb.h>
+#include <vb/CL_Parser.h>
+#include <vb/Image.h>
+#include <vb/PRNG.h>
 
 int main (int argc, char **argv) {
   vb::CL_Parser CLP(argc,argv,"n=500,p=.75",

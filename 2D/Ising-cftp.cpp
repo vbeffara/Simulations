@@ -1,7 +1,7 @@
 
-#include <vb.h>
-#include <math.h>
-#include <cstdio>
+#include <vb/CL_Parser.h>
+#include <vb/Image.h>
+#include <vb/PRNG.h>
 
 using namespace vb;
 

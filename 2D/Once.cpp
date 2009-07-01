@@ -2,7 +2,8 @@
  * Vertex-Once-Reinforced Random Walk in Z^2
  */
 
-#include <vb.h>
+#include <vb/CL_Parser.h>
+#include <vb/PRNG.h>
 #include <vb/CoarseImage.h>
 
 #include <stdio.h>

@@ -1,5 +1,7 @@
 
-#include <vb.h>
+#include <vb/CL_Parser.h>
+#include <vb/Image.h>
+#include <vb/PRNG.h>
 
 #define MAIN_BIT 1
 #define L1_BIT 2
