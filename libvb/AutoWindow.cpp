@@ -24,6 +24,8 @@ namespace vb {
     exit(1);
   }
 
+  void AutoWindow::on_quit() { };
+
   int AutoWindow::handle (int event) {
     switch (event) {
       case FL_KEYDOWN:

@@ -25,7 +25,7 @@ namespace vb {
       virtual void show ();       ///< Show the window on the screen.
 
 #ifdef HAVE_FLTK
-      virtual void on_quit() { }; ///< The thing to do if the user presses 'q'.
+      virtual void on_quit();     ///< The thing to do if the user presses 'q'.
       int handle (int event);     ///< Handle the events, in particular 'q' and 'x'.
 #else
       int _w,_h;
