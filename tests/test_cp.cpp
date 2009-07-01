@@ -38,9 +38,9 @@ int main () {
   m.show();
   m.pause();
 
-  Vector<Real> x(3*m.n);
+  Vector<double> x(3*m.n);
 
-  Real r = 1.0/sqrt((Real)m.n);
+  double r = 1.0/sqrt((double)m.n);
 
   for (int i=0; i<m.n; ++i) {
     x[3*i]        = m.v[i]->z.real() / (1-r);
@@ -48,7 +48,7 @@ int main () {
     x[3*i+2]      = .8*r;
   }
 
-  Minimizer<Real> MM (3*m.n, Map_fg_circle_disk, &m);
+  Minimizer<double> MM (3*m.n, Map_fg_circle_disk, &m);
   MM.os = &cerr;
 
   MM.minimize_qn (x);

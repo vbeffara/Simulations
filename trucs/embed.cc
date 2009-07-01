@@ -19,10 +19,8 @@
 
 #include <iostream>
 #include <time.h>
+#include <math.h>
 
-#include <vb/Real.h>
-
-using namespace vb;
 using namespace std;
 
 using std::cout;
@@ -33,14 +31,14 @@ using std::cerr;
 #define z coo[2]
 #define r coo[3]
 
-typedef Real costfunction (void);
+typedef double costfunction (void);
 
 #define n_total 9
 
 #define nb_bits 256
 
-Real coo[4][n_total];
-Real per[4][2];
+double coo[4][n_total];
+double per[4][2];
 
 int adj_matrix[n_total][n_total];
 
@@ -185,8 +183,8 @@ void dump_coo (void) {
   }
 }
 
-Real cost_circles (void) {
-  Real dx,dy,sr,tmp,cost;
+double cost_circles (void) {
+  double dx,dy,sr,tmp,cost;
 
   cost = 0.0;
   for (int i=0; i<n_total; i++) {
@@ -204,8 +202,8 @@ Real cost_circles (void) {
   return cost;
 }
 
-Real cost_triangles (void) {
-  Real dx,dy,dz,tmp,cost;
+double cost_triangles (void) {
+  double dx,dy,dz,tmp,cost;
   int i,j;
 
   cost = 0.0;
@@ -224,9 +222,9 @@ Real cost_triangles (void) {
   return cost;
 }
 
-Real optimize (costfunction c) {
-  Real tmp_cost,old_cost;
-  Real cost,step;
+double optimize (costfunction c) {
+  double tmp_cost,old_cost;
+  double cost,step;
 
   cost = c();
   old_cost = cost + 1;
@@ -283,18 +281,18 @@ int main (void) {
 
   update_lattice();
 
-  Real opt_cost = optimize (cost_triangles);
+  double opt_cost = optimize (cost_triangles);
 
   // Calcul du module
   
-  Real p1x (x[2] - x[0]);
-  Real p2x (x[6] - x[0]);
-  Real p1y (y[2] - y[0]);
-  Real p2y (y[6] - y[0]);
-  Real p1z (z[2] - z[0]);
-  Real p2z (z[6] - z[0]);
+  double p1x (x[2] - x[0]);
+  double p2x (x[6] - x[0]);
+  double p1y (y[2] - y[0]);
+  double p2y (y[6] - y[0]);
+  double p1z (z[2] - z[0]);
+  double p2z (z[6] - z[0]);
 
-  Real n1 (sqrt(p1x*p1x + p1y*p1y + p1z*p1z));
+  double n1 (sqrt(p1x*p1x + p1y*p1y + p1z*p1z));
   
   p1x = p1x / n1; 
   p1y = p1y / n1; 
@@ -304,13 +302,13 @@ int main (void) {
   p2y = p2y / n1;
   p2z = p2z / n1;
   
-  Real re_tau (p1x*p2x + p1y*p2y + p1z*p2z);
+  double re_tau (p1x*p2x + p1y*p2y + p1z*p2z);
   
   p2x = p2x - re_tau * p1x;
   p2y = p2y - re_tau * p1y;
   p2z = p2z - re_tau * p1z;
   
-  Real im_tau (sqrt(p2x*p2x + p2y*p2y + p2z*p2z));
+  double im_tau (sqrt(p2x*p2x + p2y*p2y + p2z*p2z));
 
   cerr << "\n";
 

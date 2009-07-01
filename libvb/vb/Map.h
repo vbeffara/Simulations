@@ -29,10 +29,10 @@ namespace vb {
       adj_list adj;
 
       /// The default constructor.
-      Vertex (const cpx &z = cpx(0.0,0.0), const Real &r = 0.0) : Circle(z,r) {};
+      Vertex (const cpx &z = cpx(0.0,0.0), const double &r = 0.0) : Circle(z,r) {};
 
       /// Shortcut for a point on the real line.
-      Vertex (const Real &z, const Real &r = 0.0) : Circle(z,r) {};
+      Vertex (const double &z, const double &r = 0.0) : Circle(z,r) {};
   };
 
   /** The main class for a planar map.
@@ -53,7 +53,7 @@ namespace vb {
       int zero;                    ///< The index of a vertex to locate at the origin.
       int one;                     ///< The index of a vertex to locate on the real axis.
       int infinity;                ///< The index of a vertex "at infinity" (when that makes sense).
-      Real scale;                  ///< The scale of the embedding.
+      double scale;                  ///< The scale of the embedding.
 
       /** The constructor for a vb::MAp with no edges.
        *
@@ -134,7 +134,7 @@ namespace vb {
        * @param reverse  If true, rotate clockwise.
        */
 
-      void inscribe (const std::list<int> &face_ext, const Real &radius = 1.0, bool reverse = false);
+      void inscribe (const std::list<int> &face_ext, const double &radius = 1.0, bool reverse = false);
 
       /** Produce a balanced embedding of the map.
        *
@@ -143,7 +143,7 @@ namespace vb {
        * affected, so it is a good idea to use inscribe() before that.
        */
 
-      Real balance ();
+      double balance ();
 
       /** Produce a balanced embedding of the map.
        *
@@ -236,7 +236,7 @@ namespace vb {
        * @param theta The rotation angle.
        */
 
-      void mobius (cpx w, const Real &theta);
+      void mobius (cpx w, const double &theta);
 
       /** Find the minimum of the given function.
        *
@@ -261,7 +261,7 @@ namespace vb {
        * @param  delta_func The helper function.
        */
 
-      Real optimize (Real func(const Map&), Real delta_func(const Map&,int,cpx,Real));
+      double optimize (double func(const Map&), double delta_func(const Map&,int,cpx,double));
 
       /** Produce a circle packing of the map.
        *
@@ -280,7 +280,7 @@ namespace vb {
        * @param _bord The list of boundary vertices.
        */
 
-      Real circlepack (int _zero, int _one, const std::list<int> &_bord);
+      double circlepack (int _zero, int _one, const std::list<int> &_bord);
 
       /** Compute the labels for a circle packing.
        *
@@ -299,7 +299,7 @@ namespace vb {
        * it is not clear what happens.
        */
 
-      Real ACPA ();
+      double ACPA ();
 
       /** Given radii for each vertex, compute an embedding of the map.
        *
@@ -318,7 +318,7 @@ namespace vb {
 
       /// Rotate the whole embedding by a given angle.
 
-      void rotate (const Real &theta);
+      void rotate (const double &theta);
 
       /** Apply a Möbius transform to the circles of the embedding.
        *
@@ -333,19 +333,19 @@ namespace vb {
        * @param r The radius of the circle to move to the origin.
        */
 
-      void mobius_circle (cpx w, Real r);
+      void mobius_circle (cpx w, double r);
 
       /// Returns the leftmost coordinate of anything on the map.
-      Real left ();
+      double left ();
 
       /// Returns the rightmost coordinate of anything on the map.
-      Real right ();
+      double right ();
 
       /// Returns the topmost coordinate of anything on the map.
-      Real top ();
+      double top ();
 
       /// Returns the bottom-most coordinate of anything on the map.
-      Real bottom ();
+      double bottom ();
 
       /// Draw the (planar) map on the current vb::AutoWindow.
       void draw ();
@@ -366,7 +366,7 @@ namespace vb {
    * @param context A pointer to a vb::Map.
    */
 
-  Real Map_fg_balance (const Vector<Real> &x, Vector<Real> &g, void *context);
+  double Map_fg_balance (const Vector<double> &x, Vector<double> &g, void *context);
 
   /** Compute the square distance to a circle packing.
    *
@@ -379,7 +379,7 @@ namespace vb {
    * @param context A pointer to a vb::Map.
    */
 
-  Real Map_fg_circle_base (const Vector<Real> &x, Vector<Real> &g, void *context);
+  double Map_fg_circle_base (const Vector<double> &x, Vector<double> &g, void *context);
 
   /** Compute the square distance to a circle packing.
    *
@@ -392,7 +392,7 @@ namespace vb {
    * @param context A pointer to a vb::Map.
    */
 
-  Real Map_fg_circle_bd (const Vector<Real> &x, Vector<Real> &g, void *context);
+  double Map_fg_circle_bd (const Vector<double> &x, Vector<double> &g, void *context);
 
   /** Compute the square distance to a circle packing of the unit disk.
    *
@@ -404,7 +404,7 @@ namespace vb {
    * @param context A pointer to a vb::Map.
    */
 
-  Real Map_fg_circle_disk (const Vector<Real> &x, Vector<Real> &g, void *context);
+  double Map_fg_circle_disk (const Vector<double> &x, Vector<double> &g, void *context);
 }
 
 #endif

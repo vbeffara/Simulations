@@ -68,7 +68,7 @@ int main (int argc, char **argv) {
 
   if (!batch) { m.show(); m.pause(); }
 
-  Real output = m.balance();
+  double output = m.balance();
   cout << n << " " << p << " " << output << endl;
 
   if (!batch) m.pause();

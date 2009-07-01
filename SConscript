@@ -6,7 +6,6 @@ Import('env')
 
 opts = Variables('simulations.conf')
 opts.Add (PathVariable ("prefix", "installation prefix", "/usr/local", PathVariable.PathAccept))
-opts.Add (BoolVariable ("CLN",    "Use CLN for the vb::Real and vb::Complex types (slow!)", 0))
 opts.Add ("GUI", "The GUI to use (fltk or none)", "fltk")
 opts.Update(env)
 opts.Save('simulations.conf', env)
@@ -29,10 +28,6 @@ if conf.CheckCHeader ("png.h"):
 if env['GUI'] == 'fltk' and conf.CheckCXXHeader ("FL/Fl.H"):
     conf.Define ('HAVE_FLTK')
     env.ParseConfig ("fltk-config --cxxflags --ldflags")
-
-if env['CLN'] and conf.CheckCXXHeader ("cln/cln.h"):
-    conf.Define ('HAVE_CLN')
-    env.ParseConfig ("cln-config --libs --cppflags")
 
 if conf.CheckCXXHeader ("boost/graph/graph_utility.hpp"):
     conf.Define ('HAVE_BOOST')

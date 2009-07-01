@@ -41,10 +41,20 @@
 #include <png.h>
 #endif
 
-#endif
+namespace vb {
+  /// Utility type for a complex number.
+  typedef std::complex<double> cpx;
 
-/** The namespace where libvb puts everything it defines. */
-namespace vb { };
+  /// Return the smaller of two real numbers.
+  inline double min (double x, double y) { return (x<y?x:y); }
+
+  /// Return the larger of two real numbers.
+  inline double max (double x, double y) { return (x>y?x:y); }
+
+#define TWO_PI (6.28318530717958)
+};
+
+#endif
 
 /** @mainpage Documentation for the `libvb' library.
  *

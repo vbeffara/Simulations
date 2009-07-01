@@ -12,20 +12,20 @@ template <typename T1, typename T2> ostream &operator<< (ostream &os, pair<T1,T2
   return os;
 }
 
-Real fg (const Vector<Real> &x, Vector<Real> &g, void *context) {
+double fg (const Vector<double> &x, Vector<double> &g, void *context) {
   Map *m = (Map *) context;
-  Real c = 0.0;
+  double c = 0.0;
 
   fill (g.begin(), g.end(), 0.0);
 
   for (int i=0; i < m->n; ++i) {
     for (adj_list::iterator j = m->v[i]->adj.begin(); j != m->v[i]->adj.end(); ++j) {
-      Real dx = x[3*(*j)]-x[3*i];
-      Real dy = x[3*(*j)+1]-x[3*i+1];
-      Real l = sqrt(dx*dx + dy*dy);
-      Real sr = x[3*i+2] + x[3*(*j)+2];
-      Real lsr = l-sr;
-      Real lsrl = lsr/l;
+      double dx = x[3*(*j)]-x[3*i];
+      double dy = x[3*(*j)+1]-x[3*i+1];
+      double l = sqrt(dx*dx + dy*dy);
+      double sr = x[3*i+2] + x[3*(*j)+2];
+      double lsr = l-sr;
+      double lsrl = lsr/l;
 
       c += lsr * lsr;
 
@@ -61,7 +61,7 @@ int main () {
 
   m.inscribe(m.face(Edge(0,m.v[0]->adj.back())));
 
-  for (int i=0; i<m.n; ++i) m.v[i]->r=.5/sqrt((Real)m.n);
+  for (int i=0; i<m.n; ++i) m.v[i]->r=.5/sqrt((double)m.n);
 
   m.show();
   m.balance();
@@ -83,15 +83,15 @@ int main () {
       m.bd[*i] = true;
     }
 
-    Vector<Real> x(3*m.n);
+    Vector<double> x(3*m.n);
 
     for (int i=0; i<m.n; ++i) {
       x[3*i]   = m.v[i]->z.real();
       x[3*i+1] = m.v[i]->z.imag();
-      x[3*i+2] = 1.0 / sqrt(Real(m.n));
+      x[3*i+2] = 1.0 / sqrt(double(m.n));
     }
 
-    Minimizer<Real> M (3*m.n, fg, &m);
+    Minimizer<double> M (3*m.n, fg, &m);
     M.os = &cerr;
     M.minimize_qn (x);
 

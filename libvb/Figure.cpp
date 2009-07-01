@@ -23,8 +23,8 @@ namespace vb {
 #ifdef HAVE_FLTK
   void Segment::draw () {
     fl_begin_line();
-    fl_vertex (get_d(z1.real()), get_d(z1.imag()));
-    fl_vertex (get_d(z2.real()), get_d(z2.imag()));
+    fl_vertex (z1.real(), z1.imag());
+    fl_vertex (z2.real(), z2.imag());
     fl_end_line();
   }
 #endif
@@ -63,7 +63,7 @@ namespace vb {
 
 #ifdef HAVE_FLTK
   void Circle::draw () {
-    fl_circle (get_d(z.real()), get_d(z.imag()), get_d(r));
+    fl_circle (z.real(), z.imag(), r);
   }
 #endif
 
@@ -84,32 +84,32 @@ namespace vb {
     clean();
   }
 
-  Real Figure::left () {
-    Real l = 0.0;
+  double Figure::left () {
+    double l = 0.0;
     std::list<Shape*>::iterator i;
     for (i=contents.begin(); i!=contents.end(); ++i)
       l = min (l,(*i)->left());
     return l;
   }
 
-  Real Figure::right () {
-    Real l = 0.0;
+  double Figure::right () {
+    double l = 0.0;
     std::list<Shape*>::iterator i;
     for (i=contents.begin(); i!=contents.end(); ++i)
       l = max (l,(*i)->right());
     return l;
   }
 
-  Real Figure::top () {
-    Real l = 0.0;
+  double Figure::top () {
+    double l = 0.0;
     std::list<Shape*>::iterator i;
     for (i=contents.begin(); i!=contents.end(); ++i)
       l = max (l,(*i)->top());
     return l;
   }
 
-  Real Figure::bottom () {
-    Real l = 0.0;
+  double Figure::bottom () {
+    double l = 0.0;
     std::list<Shape*>::iterator i;
     for (i=contents.begin(); i!=contents.end(); ++i)
       l = min (l,(*i)->bottom());
@@ -129,7 +129,7 @@ namespace vb {
     return add (new Dot (z,l));
   }
 
-  Figure & Figure::circle (cpx z, Real r) {
+  Figure & Figure::circle (cpx z, double r) {
     return add (new Circle (z,r));
   }
 
@@ -139,8 +139,8 @@ namespace vb {
     fl_rectf (0,0,w(),h());
 
     fl_push_matrix();
-    fl_scale (get_d(w()/(right()-left())), get_d(h()/(top()-bottom())));
-    fl_translate(get_d(-left()),get_d(-bottom()));
+    fl_scale (w()/(right()-left()), h()/(top()-bottom()));
+    fl_translate(-left(), -bottom());
 
     fl_color (FL_BLACK);
     for (std::list<Shape*>::iterator i = contents.begin(); i != contents.end(); ++i)

@@ -6,6 +6,8 @@
 
 #include <vb/common.h>
 
+/** The namespace where libvb puts everything it defines. */
+
 namespace vb {
 
   /** A helper class for CL_Parser, that holds an unparsed parameter.

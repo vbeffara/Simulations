@@ -13,9 +13,6 @@ namespace vb {
    * It implements various algorithms, and which one to choose heavily 
    * depends on the function ... See the separate documentation for each 
    * of them, they are named minimize_*.
-   *
-   * It is made as a template so that the algorithms can be used on 
-   * double or vb::Real, the last one will eventually be using GMP.
    */
 
   template <typename T> class Minimizer {

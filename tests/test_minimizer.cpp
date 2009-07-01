@@ -1,28 +1,25 @@
 
 #include <vb/Minimizer.h>
-#include <vb/Real.h>
-#include <iostream>
-#include <math.h>
 
 using namespace std;
 using namespace vb;
 
 #define DIM 400
 
-Real f (const Vector<Real> &x, void *context = NULL) {
-  Real o = 0;
+double f (const Vector<double> &x, void *context = NULL) {
+  double o = 0;
   for (unsigned int i=0; i<DIM; ++i) o += (1 - cos(x[i]/(i+1)));
   return o;
 }
 
-Vector<Real> g (const Vector<Real> &x, void *context = NULL) {
-  Vector<Real> out(DIM);
+Vector<double> g (const Vector<double> &x, void *context = NULL) {
+  Vector<double> out(DIM);
   for (unsigned int i=0; i<DIM; ++i) out[i] = sin(x[i]/(i+1))/(i+1);
   return out;
 }
 
-Real fg (const Vector<Real> &x, Vector<Real> &g, void *context = NULL) {
-  Real o = 0;
+double fg (const Vector<double> &x, Vector<double> &g, void *context = NULL) {
+  double o = 0;
   for (unsigned int i=0; i<DIM; ++i) {
     o += (1 - cos(x[i]/(i+1)));
     g[i] = sin(x[i]/(i+1))/(i+1);
@@ -31,10 +28,10 @@ Real fg (const Vector<Real> &x, Vector<Real> &g, void *context = NULL) {
 }
 
 int main () {
-  Vector<Real> x0(DIM); for (unsigned int i=0; i<DIM; ++i) x0[i] = cos(Real(i));
-  Vector<Real> W0(DIM); for (unsigned int i=0; i<DIM; ++i) W0[i] = (i+1)*(i+1);
+  Vector<double> x0(DIM); for (unsigned int i=0; i<DIM; ++i) x0[i] = cos(double(i));
+  Vector<double> W0(DIM); for (unsigned int i=0; i<DIM; ++i) W0[i] = (i+1)*(i+1);
 
-  Minimizer<Real> M (DIM,fg);
-  Real min = M.minimize_qn (x0);
+  Minimizer<double> M (DIM,fg);
+  double min = M.minimize_qn (x0);
   cout << "Final value: " << min << endl;
 }
