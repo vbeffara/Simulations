@@ -8,12 +8,14 @@
 #include <vb/Point.h>
 
 using namespace vb;
+using namespace std;
 
 CoarseImage *img;
 int cursum;
 int n,maxx,maxy;
 double p;
 bool s;
+bool t;
 
 PRNG prng;
 
@@ -34,16 +36,31 @@ void reshape (int x, int y) {
 bool ddla (int x, int y) {
   int xx=x, yy=y;
   bool just_started=true;
+  int ans=-1;
 
-  while (1) {
-    if (prng.uniform()<p) ++xx;
-    else ++yy;
-    if ((xx>=n) || (yy>=n) || (xx+yy > cursum)) return 1;
-    if ((*img)(xx,yy) == 1) return 0;
+  while (ans == -1) {
+    if (prng.uniform()<p) ++xx; else ++yy;
+
+    if ((xx>=n) || (yy>=n) || (xx+yy > cursum)) ans = 1;
+    if ((*img)(xx,yy) == 1) ans = 0;
+
     if (s && (!just_started) && (xx<n-1) && (yy<n-1) &&
-        (((*img)(xx+1,yy)==1) || ((*img)(xx,yy+1)==1))) return 0;
+        (((*img)(xx+1,yy)==1) || ((*img)(xx,yy+1)==1))) ans = 0;
     just_started = false;
   }
+
+  if (t && ans == 1) {
+    int w=0, s=0;
+    if ((x>0) && ((*img)(x-1,y)==1)) w=1;
+    if ((y>0) && ((*img)(x,y-1)==1)) s=1;
+
+    if ( (s==0) || ((w==1) && prng.uniform()<p) )
+      cerr << x << " " << y << endl << x-1 << " " << y << endl << endl;
+    else
+      cerr << x << " " << y << endl << x << " " << y-1 << endl << endl;
+  }
+
+  return ans;
 }
 
 bool corner_plus_top (int x, int y) {
@@ -63,10 +80,11 @@ bool ok (int x, int y) {
 }
 
 int main (int argc, char **argv) {
-  CL_Parser CLP (argc,argv,"n=2000,p=.5,s");
+  CL_Parser CLP (argc,argv,"n=2000,p=.5,s,t");
   n = CLP('n');
   p = CLP('p');
   s = CLP('s');
+  t = CLP('t');
 
   PointQueue queue;
 
