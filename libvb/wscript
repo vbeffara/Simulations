@@ -3,7 +3,8 @@ def build (bld) :
     bld.new_task_gen(features = 'cxx cshlib',
             source = bld.glob('*.cpp'),
             target = 'vb',
-            includes='.',
+            includes = '.',
+            export_incdirs = '.',
             uselib='fltk png')
 
 # vim: ft=python
