@@ -1,7 +1,7 @@
 
 def set_options (opt) :
     opt.tool_options ('compiler_cc compiler_cxx')
-    opt.add_option('--gui', default='fltk', help='Build to use the specified GUI')
+    opt.add_option ('--gui', default='fltk', help='Build to use the specified GUI')
 
 def configure (conf) :
     conf.check_tool ('compiler_cc compiler_cxx')

@@ -5,23 +5,20 @@ Simulations and stuff - Vincent Beffara <vbeffara@ens-lyon.fr>
 
 0. Executive simmary
 
-Compile typing either 'scons' (if you have it installed) or 'make' (if 
-you don't - it will use the bundled one). Don't forget to add 
-build/libvb to your LD_LIBRARY_PATH variable if necessary.
+Compile typing either 'tools/waf' or 'make' (or just 'waf' if you have 
+it somewhere in your $PATH). Don't forget to add build/libvb to your 
+LD_LIBRARY_PATH variable if necessary.
 
 
 1. Compilation
 
-I am using the very nice SCons framework for my simulations, because
-it has a lot of cool features (such as object file cache, automatic
-dependency tracking, and most of all portability). It is very easy to
-install, if you already have Python; once it is done, just type 'scons'
-in the main directory.
-
-If you don't have SCons installed, for convenience there is one in the 
-tools/ directory. You can untar it there and then, from the top 
-directory, run it by typing 'python tools/scons.py'. This is what the 
-included Makefile does, so you can actually type 'make' instead.
+I am using the very nice waf framework for my simulations, because
+it has a lot of cool features (such as automatic dependency tracking, 
+and most of all portability). It is very easy to install, if you already 
+have Python, because it is a single file; there is a copy in the tools/ 
+directory, which you can copy somewhere in your $PATH for convenience 
+(somewhere where you have write priviledges while running it), ore use 
+directly.
 
 
 2. Some notes about the 'libvb' library

@@ -1,5 +1,5 @@
 
-# This is a simple wrapper around SCons for convenience
+# This is a simple wrapper around waf for convenience
 #
 # Change the lines below (or use the command line) accordingly : PREFIX 
 # is the installation prefix, GUI is either 'fltk' (try to use fltk if 
@@ -8,15 +8,11 @@
 PREFIX = /usr/local
 GUI = fltk
 
-all: tools/SCons/scons.py
-	python tools/SCons/scons.py GUI=$(GUI) prefix=$(PREFIX)
+all:
+	python tools/waf --gui $(GUI) --prefix $(PREFIX)
 
 clean:
-	rm -rf build
+	if [ -d build ]; then python tools/waf clean; fi
 
-distclean: clean
-	rm -rf .scon* config.log simulations.conf
-	cd tools/SCons; rm -rf scons-LICENSE scons-README scons-local-1.2.0 scons*.py
-
-tools/SCons/scons.py:
-	cd tools/SCons; tar zxvf scons-local-1.2.0.tar.gz
+distclean:
+	if [ -d build ]; then python tools/waf distclean; fi

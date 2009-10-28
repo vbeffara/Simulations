@@ -593,13 +593,10 @@ RECURSIVE              = YES
 # excluded from the INPUT source files. This way you can easily exclude a 
 # subdirectory from a directory tree whose root is specified with the INPUT tag.
 
-EXCLUDE                = _darcs \
-                         xtoys \
+EXCLUDE                = xtoys \
                          1D \
                          2D \
                          trucs \
-                         .scons_cache \
-                         .sconf_temp \
                          build \
                          tools \
                          .git

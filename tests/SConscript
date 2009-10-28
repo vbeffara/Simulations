@@ -1,4 +1,0 @@
-Import('vb')
-
-for i in Glob("*.cpp"):
-  vb.Program(i)
