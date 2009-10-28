@@ -26,3 +26,4 @@ tools/scons*
 amc.*
 00_Results
 *.svg
+.lock-wscript
