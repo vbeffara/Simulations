@@ -16,9 +16,9 @@ def configure (conf) :
     
     conf.check_cxx (header_name='boost/version.hpp', define_name='HAVE_BOOST')
 
-    conf.write_config_header ('config.h')
+    conf.write_config_header ('libvb/vb/config.h')
 
 def build (bld) :
-    pass
+    bld.add_subdirs ('libvb')
 
 # vim: ft=python
