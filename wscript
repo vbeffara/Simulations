@@ -20,5 +20,6 @@ def configure (conf) :
 
 def build (bld) :
     bld.add_subdirs ('libvb tests 1D 2D trucs geom xtoys')
+    bld.install_files ('${PREFIX}/include/vb', 'libvb/vb/config.h')
 
 # vim: ft=python

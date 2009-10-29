@@ -6,5 +6,6 @@ def build (bld) :
             includes = '.',
             export_incdirs = '.',
             uselib='fltk png')
+    bld.install_files ('${PREFIX}/include/vb', 'vb/*.h')
 
 # vim: ft=python
