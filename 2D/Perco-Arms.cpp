@@ -5,7 +5,7 @@
 
 #include <boost/config.hpp>
 #include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/edmunds_karp_max_flow.hpp>
+#include <boost/graph/edmonds_karp_max_flow.hpp>
 #include <boost/graph/graph_utility.hpp>
 #include <vb/CL_Parser.h>
 #include <vb/PRNG.h>
@@ -104,7 +104,7 @@ int main(int argc, char **argv) {
       cap[rev_edges[i]] = o;
     }
 
-    long flow = edmunds_karp_max_flow (g,(n>>1)*(n+1),n*n);
+    long flow = edmonds_karp_max_flow (g,(n>>1)*(n+1),n*n);
     stats[flow]++;
 
     PB.update (iter);
