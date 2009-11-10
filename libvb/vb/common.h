@@ -10,6 +10,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <time.h>
+#include <strings.h>
 #include <sys/time.h>
 
 #include <complex>
