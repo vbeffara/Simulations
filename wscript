@@ -11,8 +11,7 @@ def configure (conf) :
     conf.check_cfg (package='x11',    args='--cflags --libs', uselib_store='x11')
 
     from Options import options
-    if options.gui == 'fltk':
-        conf.check_cfg (path='fltk-config', args='--cxxflags --ldflags', package='', uselib_store='fltk', msg='Checking for fltk')
+    if options.gui == 'fltk': conf.check_tool ('fluid')
     
     conf.check_cxx (header_name='boost/version.hpp', define_name='HAVE_BOOST')
 
