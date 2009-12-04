@@ -4,12 +4,14 @@
 using namespace vb;
 
 int main () {
-  TriMatrix <int> M (18);
+  TriMatrix <int> M (-1);
 
   M.put (35,42,3);
+  M.put (1234,5678,5);
 
   std::cout << "Far   : " << M(981327,2371827) << std::endl;
-  std::cout << "Set   : " << M(35,42)          << std::endl;
+  std::cout << "Set 1 : " << M(35,42)          << std::endl;
+  std::cout << "Set 2 : " << M(1234,5678)      << std::endl;
   std::cout << "Unset : " << M(3,4)            << std::endl;
 
   return 0;
