@@ -4,13 +4,22 @@
 #ifndef __VB_TRIMATRIX_H
 #define __VB_TRIMATRIX_H
 
-#include <iostream>
+#include <vb/common.h>
 
 namespace vb {
 
   /** A class for storing unbounded spatial data.
    *
-   * Assumption : the matrix is in one of three states:
+   * The structure grows dynamically like a 9-ary tree, tripling its 
+   * size as often as needed, but this is transparent to the user. Just 
+   * use get() and put() and focus on something more interesting!
+   *
+   * The whole class is a template, so the code is inline and 
+   * performance should be quite good, but I didn't test it properly, 
+   * maybe something more efficient can be done ...
+   */
+
+   /* Assumption : the matrix is in one of three states:
    *
    * (i)   Empty (tile == sub == NULL, default),
    * (ii)  Leaf (tile != NULL, sub == NULL),
@@ -21,20 +30,59 @@ namespace vb {
 
   template <typename T> class TriMatrix {
     public:
+      /** The default creator.
+       *
+       * The argument is the default value returned by get() for unset 
+       * entries, it defaults to 0 (meaning that the underlying type T 
+       * must be initializable from 0 ...)
+       *
+       * @param empty The value of an empty entry.
+       */
+
       TriMatrix  (T empty = 0);
       ~TriMatrix ();
 
+      /** Get the contents of an entry in the matrix.
+       *
+       * If the corresponding entry is not set yet, return the default 
+       * value as specified to the constructor.
+       *
+       * @param i The first coordinate of the entry.
+       * @param j The second coordinate of the entry.
+       */
+
       T    get (int i, int j) const;
+
+      /** Set the contents of an entry in the matrix.
+       *
+       * If the corresponding entry is out of bounds, grow the structure 
+       * accordingly (even if t is the default value, but that might 
+       * change eventually).
+       *
+       * @param i The first coordinate of the entry.
+       * @param j The second coordinate of the entry.
+       * @param t The value to store in the entry.
+       */
+
       void put (int i, int j, T t);
+
+      /** Get the contents of an entry in the matrix.
+       *
+       * If the corresponding entry is not set yet, return the default 
+       * value as specified to the constructor.
+       *
+       * This is exactly equivalent to get().
+       *
+       * @param i The first coordinate of the entry.
+       * @param j The second coordinate of the entry.
+       */
 
       T operator() (int i, int j) const { return get(i,j); };
 
-      int size;
-
     private:
-      int max (int i, int j) const { return (i>j?i:j); }
       void triple ();
 
+      int size;
       T _empty;
       T *tile;
       TriMatrix<T> *sub;
@@ -87,7 +135,6 @@ namespace vb {
   }
 
   template <typename T> void TriMatrix<T>::put (int i, int j, T t) {
-    std::cerr << "(" << i << "," << j << ") <- " << t << " " << std::endl;
     if (size==0) {
       tile = new T[256*256];
       for (int k=0; k<256*256; ++k) tile[k]=_empty;

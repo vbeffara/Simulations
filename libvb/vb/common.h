@@ -47,10 +47,10 @@ namespace vb {
   typedef std::complex<double> cpx;
 
   /// Return the smaller of two real numbers.
-  inline double min (double x, double y) { return (x<y?x:y); }
+  template <typename T> T min (T x, T y) { return (x<y?x:y); }
 
   /// Return the larger of two real numbers.
-  inline double max (double x, double y) { return (x>y?x:y); }
+  template <typename T> T max (T x, T y) { return (x>y?x:y); }
 
 #define TWO_PI (6.28318530717958)
 };
