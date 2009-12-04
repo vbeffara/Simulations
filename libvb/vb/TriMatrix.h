@@ -55,7 +55,18 @@ namespace vb {
     // So now, it fits, target<size.
 
     if (size==128) return tile [(i+128) + 256*(j+128)];
-    return _empty;
+
+    // So we are a node, we need to recurse.
+
+    int sub_size = (size+1)/3; // TODO : Store this somewhere to save computations ?
+    int index = 4;
+
+    if (i >=   sub_size) { index += 1; i -= sub_size; }
+    if (i <= - sub_size) { index -= 1; i += sub_size; }
+    if (j >=   sub_size) { index += 3; j -= sub_size; }
+    if (j <= - sub_size) { index -= 3; j += sub_size; }
+
+    return sub[index].get(i,j);
   }
 
   template <typename T> void TriMatrix<T>::triple () {
