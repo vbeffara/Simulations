@@ -59,12 +59,13 @@ namespace vb {
     // So we are a node, we need to recurse.
 
     int sub_size = (size+1)/3; // TODO : Store this somewhere to save computations ?
+    int sub_shift = size - sub_size;
     int index = 4;
 
-    if (i >=   sub_size) { index += 1; i -= sub_size; }
-    if (i <= - sub_size) { index -= 1; i += sub_size; }
-    if (j >=   sub_size) { index += 3; j -= sub_size; }
-    if (j <= - sub_size) { index -= 3; j += sub_size; }
+    if (i >=   sub_size) { index += 1; i -= sub_shift; }
+    if (i <= - sub_size) { index -= 1; i += sub_shift; }
+    if (j >=   sub_size) { index += 3; j -= sub_shift; }
+    if (j <= - sub_size) { index -= 3; j += sub_shift; }
 
     return sub[index].get(i,j);
   }
@@ -98,7 +99,20 @@ namespace vb {
 
     // So now, it fits, target<size. Two cases:
 
-    if (size==128) tile [(i+128) + 256*(j+128)] = t;
+    if (size==128) {
+      tile [(i+128) + 256*(j+128)] = t;
+    } else {
+      int sub_size = (size+1)/3; // TODO : Store this somewhere to save computations ?
+      int sub_shift = size - sub_size;
+      int index = 4;
+
+      if (i >=   sub_size) { index += 1; i -= sub_shift; }
+      if (i <= - sub_size) { index -= 1; i += sub_shift; }
+      if (j >=   sub_size) { index += 3; j -= sub_shift; }
+      if (j <= - sub_size) { index -= 3; j += sub_shift; }
+
+      sub[index].put(i,j,t);
+    }
   }
 }
 
