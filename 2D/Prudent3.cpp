@@ -1,6 +1,7 @@
 #include <vb/PRNG.h>
 #include <vb/CL_Parser.h>
 #include <vb/TriMatrix.h>
+#include <vb/ProgressBar.h>
 
 using namespace std;
 using namespace vb;
@@ -81,6 +82,7 @@ int main (int argc, char **argv) {
   int *ends = new int[l]; for (int i=0; i<l; ++i) ends[i]=0;
 
   PRNG prng;
+  ProgressBar PB ((n>1 ? n : l));
 
   for (int i=0; i<n; ++i) {
     Walker W;
@@ -89,8 +91,13 @@ int main (int argc, char **argv) {
       if (n==1) cout << W;
       ends[W.length] += W.norm1();
       while (0 == W.step (prng.rand()%3, 2*(prng.rand()%2) - 1)) { };
+      if (n==1) PB.update (W.length);
     }
+
+    if (n>1) PB.update(i);
   }
+
+  PB.die();
 
   if (n>1) {
     for (int i=0; i<l; ++i) {
