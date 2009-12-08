@@ -40,7 +40,6 @@ namespace vb {
        */
 
       TriMatrix  (T e = 0);
-      ~TriMatrix ();
 
       /** Get the contents of an entry in the matrix.
        *
@@ -51,7 +50,7 @@ namespace vb {
        * @param j The second coordinate of the entry.
        */
 
-      T    get (int i, int j) const;
+      T get (int i, int j) const;
 
       /** Set the contents of an entry in the matrix.
        *
@@ -82,18 +81,13 @@ namespace vb {
     private:
       void triple ();
 
-      int              size;
-      T                empty;
-      std::vector<T>   tile;
-      TriMatrix<T>   * sub;
+      int                          size;
+      const T                      empty;
+      std::vector < T >            tile;
+      std::vector < TriMatrix<T> > sub;
   };
 
-  template <typename T> TriMatrix<T>::TriMatrix (T e)
-    : size(0), empty(e), sub(NULL) { }
-
-  template <typename T> TriMatrix<T>::~TriMatrix () {
-    delete[] sub;
-  }
+  template <typename T> TriMatrix<T>::TriMatrix (T e) : size(0), empty(e) { }
 
   template <typename T> T TriMatrix<T>::get (int i, int j) const {
     int target = max (abs(i), abs(j));
@@ -101,18 +95,18 @@ namespace vb {
 
     // So now, it fits, target<size.
 
-    if (size==128) return tile [(i+128) + 256*(j+128)];
+    if (size==128) return tile [257*128 + i + 256*j];
 
     // So we are a node, we need to recurse.
 
-    int sub_size = (size+1)/3; // TODO : Store this somewhere to save computations ?
+    int sub_size  = (size+1)/3; // TODO : Store this somewhere to save computations ?
     int sub_shift = size - sub_size;
-    int index = 4;
+    int index     = 4;
 
-    if (i >=   sub_size) { index += 1; i -= sub_shift; }
-    if (i <= - sub_size) { index -= 1; i += sub_shift; }
-    if (j >=   sub_size) { index += 3; j -= sub_shift; }
-    if (j <= - sub_size) { index -= 3; j += sub_shift; }
+    if      (i >=   sub_size) { index += 1; i -= sub_shift; }
+    else if (i <= - sub_size) { index -= 1; i += sub_shift; }
+    if      (j >=   sub_size) { index += 3; j -= sub_shift; }
+    else if (j <= - sub_size) { index -= 3; j += sub_shift; }
 
     return sub[index].get(i,j);
   }
@@ -120,16 +114,15 @@ namespace vb {
   template <typename T> void TriMatrix<T>::triple () {
     if (size==0) return;
 
-    TriMatrix<T> *tmp_sub = new TriMatrix<T> [9];
+    std::vector < TriMatrix<T> > tmp_sub (9, empty);
 
-    for (int i=0; i<9; ++i) tmp_sub[i].empty = empty;
+    tmp_sub.swap (sub);
+    tmp_sub.swap (sub[4].sub);
 
-    tmp_sub[4].size = size;
-    tmp_sub[4].sub  = sub;
-    tmp_sub[4].tile.swap (tile);
-
-    sub = tmp_sub;
+    sub[4].size = size;
     size = 3*size-1;
+
+    sub[4].tile.swap (tile);
   }
 
   template <typename T> void TriMatrix<T>::put (int i, int j, T t) {
@@ -143,17 +136,16 @@ namespace vb {
 
     // So now, it fits, target<size. Two cases:
 
-    if (size==128) {
-      tile [(i+128) + 256*(j+128)] = t;
-    } else {
-      int sub_size = (size+1)/3; // TODO : Store this somewhere to save computations ?
+    if (size==128) tile [257*128 + i + 256*j] = t;
+    else {
+      int sub_size  = (size+1)/3;       // TODO : Store this somewhere to save computations ?
       int sub_shift = size - sub_size;
-      int index = 4;
+      int index     = 4;
 
-      if (i >=   sub_size) { index += 1; i -= sub_shift; }
-      if (i <= - sub_size) { index -= 1; i += sub_shift; }
-      if (j >=   sub_size) { index += 3; j -= sub_shift; }
-      if (j <= - sub_size) { index -= 3; j += sub_shift; }
+      if      (i >=   sub_size) { index += 1; i -= sub_shift; }
+      else if (i <= - sub_size) { index -= 1; i += sub_shift; }
+      if      (j >=   sub_size) { index += 3; j -= sub_shift; }
+      else if (j <= - sub_size) { index -= 3; j += sub_shift; }
 
       sub[index].put(i,j,t);
     }
