@@ -82,12 +82,14 @@ namespace vb {
       void triple ();
 
       int                          size;
+      int                          sub_size;
+      int                          sub_shift;
       const T                      empty;
       std::vector < T >            tile;
       std::vector < TriMatrix<T> > sub;
   };
 
-  template <typename T> TriMatrix<T>::TriMatrix (T e) : size(0), empty(e) { }
+  template <typename T> TriMatrix<T>::TriMatrix (T e) : size(0), sub_size(0), sub_shift(0), empty(e) { }
 
   template <typename T> T TriMatrix<T>::get (int i, int j) const {
     int target = max (abs(i), abs(j));
@@ -99,9 +101,7 @@ namespace vb {
 
     // So we are a node, we need to recurse.
 
-    int sub_size  = (size+1)/3; // TODO : Store this somewhere to save computations ?
-    int sub_shift = size - sub_size;
-    int index     = 4;
+    int index = 4;
 
     if      (i >=   sub_size) { index += 1; i -= sub_shift; }
     else if (i <= - sub_size) { index -= 1; i += sub_shift; }
@@ -119,10 +119,14 @@ namespace vb {
     tmp_sub.swap (sub);
     tmp_sub.swap (sub[4].sub);
 
-    sub[4].size = size;
-    size = 3*size-1;
-
     sub[4].tile.swap (tile);
+    sub[4].size      = size;
+    sub[4].sub_size  = sub_size;
+    sub[4].sub_shift = sub_shift;
+
+    sub_size  = size;
+    size      = 3*size-1;
+    sub_shift = size - sub_size;
   }
 
   template <typename T> void TriMatrix<T>::put (int i, int j, T t) {
@@ -138,9 +142,7 @@ namespace vb {
 
     if (size==128) tile [257*128 + i + 256*j] = t;
     else {
-      int sub_size  = (size+1)/3;       // TODO : Store this somewhere to save computations ?
-      int sub_shift = size - sub_size;
-      int index     = 4;
+      int index = 4;
 
       if      (i >=   sub_size) { index += 1; i -= sub_shift; }
       else if (i <= - sub_size) { index -= 1; i += sub_shift; }
