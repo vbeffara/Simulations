@@ -36,10 +36,10 @@ namespace vb {
        * entries, it defaults to 0 (meaning that the underlying type T 
        * must be initializable from 0 ...)
        *
-       * @param empty The value of an empty entry.
+       * @param e The value of an empty entry.
        */
 
-      TriMatrix  (T empty = 0);
+      TriMatrix  (T e = 0);
       ~TriMatrix ();
 
       /** Get the contents of an entry in the matrix.
@@ -82,23 +82,22 @@ namespace vb {
     private:
       void triple ();
 
-      int size;
-      T _empty;
-      T *tile;
-      TriMatrix<T> *sub;
+      int              size;
+      T                empty;
+      std::vector<T>   tile;
+      TriMatrix<T>   * sub;
   };
 
-  template <typename T> TriMatrix<T>::TriMatrix (T empty)
-    : size(0), _empty(empty), tile(NULL), sub(NULL) { }
+  template <typename T> TriMatrix<T>::TriMatrix (T e)
+    : size(0), empty(e), sub(NULL) { }
 
   template <typename T> TriMatrix<T>::~TriMatrix () {
-    delete[] tile;
     delete[] sub;
   }
 
   template <typename T> T TriMatrix<T>::get (int i, int j) const {
     int target = max (abs(i), abs(j));
-    if (target >= size) return _empty;
+    if (target >= size) return empty;
 
     // So now, it fits, target<size.
 
@@ -123,21 +122,19 @@ namespace vb {
 
     TriMatrix<T> *tmp_sub = new TriMatrix<T> [9];
 
-    for (int i=0; i<9; ++i) tmp_sub[i]._empty = _empty;
+    for (int i=0; i<9; ++i) tmp_sub[i].empty = empty;
 
     tmp_sub[4].size = size;
-    tmp_sub[4].tile = tile;
     tmp_sub[4].sub  = sub;
+    tmp_sub[4].tile.swap (tile);
 
-    tile = NULL;
     sub = tmp_sub;
     size = 3*size-1;
   }
 
   template <typename T> void TriMatrix<T>::put (int i, int j, T t) {
     if (size==0) {
-      tile = new T[256*256];
-      for (int k=0; k<256*256; ++k) tile[k]=_empty;
+      tile.resize (256*256, empty);
       size = 128;
     }
 
