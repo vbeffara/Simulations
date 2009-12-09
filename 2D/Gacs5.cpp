@@ -17,9 +17,8 @@ PRNG prng;
 class Automaton {
 public:
   Automaton (int);
-  ~Automaton ();
 
-  void swap() { char *tmp=main; main=alt; alt=tmp; };
+  void swap() { main.swap(alt); };
 
   void randomize (double);
   void shift ();
@@ -28,20 +27,11 @@ public:
   void effect (double r);
 
   int size;
-  char *main;
-  char *alt;
+  std::vector <char> main;
+  std::vector <char> alt;
 };
 
-Automaton::Automaton (int n) : 
-  size(n), main (new char[n]), alt (new char[n]) {
-  for (int i=0; i<size; ++i)
-    main[i]=0;
-}
-
-Automaton::~Automaton () {
-  delete[] alt;
-  delete[] main;
-}
+Automaton::Automaton (int n) : size(n), main (n,0), alt (n) { }
 
 void Automaton::randomize (double e) {
   for (int i=0; i<size; ++i)

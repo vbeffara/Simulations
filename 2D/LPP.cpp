@@ -18,7 +18,7 @@ int main (int argc, char **argv) {
   Image img (n,n,1,"Broken line process");
   img.show();
 
-  int *field = new int[n];
+  vector <int> field (n);
 
   for (int x=0; x<n; ++x)
     if (prng.bernoulli(r)) {
@@ -53,6 +53,5 @@ int main (int argc, char **argv) {
 
   cout << img;
 
-  delete[] field;
   return 0;
 }
