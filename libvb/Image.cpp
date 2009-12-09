@@ -15,7 +15,7 @@ namespace vb {
 
   Image::Image (int wd, int ht, int dp, const std::string &tit) : 
     AutoWindow(wd,ht,tit), width(wd), height(ht), depth(dp), 
-    outputsize(0.0), cropped(0), title(tit) { 
+    outputsize(0.0), cropped(0), pic(wd*ht,0), title(tit) { 
 
       if ((depth!=1)&&(depth!=2)&&(depth!=4)&&(depth!=8)) {
         std::cerr << "libvb : error : invalid depth"
@@ -23,20 +23,9 @@ namespace vb {
         exit(1);
       }
 
-      pic = new unsigned char[width*ht];
-      if (!(pic)) {
-        std::cerr << "libvb : error : image too large.\n";
-        delete[] pic;
-        exit (1);
-      }
-
       for (int i=0; i<width*ht; i++)
         pic[i]=0;
     }
-
-  Image::~Image () {
-    delete[] pic;
-  }
 
   std::ostream &operator<< (std::ostream &os, Image &img) {
     long bits;

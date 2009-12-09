@@ -40,10 +40,6 @@ namespace vb {
 
       Image (int wd, int ht, int dp, const std::string &tit);
 
-      /** The standard destructor of the Image class. */
-
-      ~Image ();
-
       /** Set the color of a point in the image.
        *
        * If the previous color was different and dt is set to 1 (default),
@@ -125,7 +121,7 @@ namespace vb {
        * @param y The second coordinate of the point.
        */
 
-      unsigned char &operator() (int x, int y) const {
+      unsigned char &operator() (int x, int y) {
         return pic[x+width*y];
       };
 
@@ -137,7 +133,7 @@ namespace vb {
        * @param xy The coordinate of the point.
        */
 
-      unsigned char &operator() (int xy) const {
+      unsigned char &operator() (int xy) {
         return pic[xy];
       };
 
@@ -156,7 +152,7 @@ namespace vb {
       friend std::ostream &operator<< (std::ostream &os, vb::Image &img);    
 
     private:
-      unsigned char * pic;              ///< The raw image data
+      std::vector <unsigned char> pic;  ///< The raw image data
       std::string title;                ///< The title of the image
       void compute_stage();             ///< Fills the stage field with 8bpp data.
     public:
