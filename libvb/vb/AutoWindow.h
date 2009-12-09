@@ -104,7 +104,7 @@ namespace vb {
       /// Estimate the refresh rate, then call update().
       void cycle();
 
-      unsigned char * raw_image_data;
+      std::vector <unsigned char> raw_image_data;
 
     protected:
       /// A staging area intended to contain 8bpp grayscale data.

@@ -63,7 +63,7 @@ namespace vb {
     title(t), fps(20), npts(0), delay(1), timer(1),
     saved_clock(clock()), nb_clock(0), snapshot_prefix("snapshot"),
     snapshot_number(0), snapshot_period(0.0), snapshot_clock(clock()),
-    paused(false), raw_image_data(NULL), stage(NULL) {
+    paused(false), stage(NULL) {
 #ifdef HAVE_FLTK
     callback(close_window);
 #else
@@ -72,7 +72,6 @@ namespace vb {
   }
 
   AutoWindow::~AutoWindow() {
-    if (raw_image_data != NULL) delete[] raw_image_data;
     if (stage != NULL) delete[] stage;
   }
 
@@ -149,10 +148,10 @@ namespace vb {
 
   unsigned char * AutoWindow::image_data () {
 #ifdef HAVE_FLTK
-    if (!raw_image_data) raw_image_data = new unsigned char [w()*h()*3];
+    if (raw_image_data.empty()) raw_image_data.resize (w()*h()*3);
 
     make_current();
-    if (fl_read_image (raw_image_data, 0, 0, w(), h())) {
+    if (fl_read_image (&raw_image_data.front(), 0, 0, w(), h())) {
       if (!stage) stage = new unsigned char [w()*h()];
       for (int i=0; i<w()*h(); ++i) stage[i] = raw_image_data[3*i];
       return stage;
