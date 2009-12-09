@@ -6,6 +6,10 @@
 
 #include <vb/common.h>
 
+#ifndef TRIMATRIX_BSIZE
+#define TRIMATRIX_BSIZE 128
+#endif
+
 namespace vb {
 
   /** A class for storing unbounded spatial data.
@@ -25,7 +29,8 @@ namespace vb {
    * (ii)  Leaf (tile != NULL, sub == NULL),
    * (iii) Node (tile == NULL, sub != NULL).
    *
-   * The square represented is (-size,size), and size==128 iff Leaf.
+   * The square represented is (-size,size), and size==TRIMATRIX_BSIZE 
+   * iff Leaf.
    */
 
   template <typename T> class TriMatrix {
@@ -89,7 +94,8 @@ namespace vb {
       std::vector < TriMatrix<T> > sub;
   };
 
-  template <typename T> TriMatrix<T>::TriMatrix (T e) : size(0), sub_size(0), sub_shift(0), empty(e) { }
+  template <typename T> TriMatrix<T>::TriMatrix (T e)
+    : size(0), sub_size(0), sub_shift(0), empty(e) { }
 
   template <typename T> T TriMatrix<T>::get (int i, int j) const {
     int target = max (abs(i), abs(j));
@@ -97,7 +103,8 @@ namespace vb {
 
     // So now, it fits, target<size.
 
-    if (size==128) return tile [257*128 + i + 256*j];
+    if (size==TRIMATRIX_BSIZE)
+      return tile [(2*TRIMATRIX_BSIZE+1)*TRIMATRIX_BSIZE + i + 2*TRIMATRIX_BSIZE*j];
 
     // So we are a node, we need to recurse.
 
@@ -131,8 +138,8 @@ namespace vb {
 
   template <typename T> void TriMatrix<T>::put (int i, int j, T t) {
     if (size==0) {
-      tile.resize (256*256, empty);
-      size = 128;
+      tile.resize (2*TRIMATRIX_BSIZE*2*TRIMATRIX_BSIZE, empty);
+      size = TRIMATRIX_BSIZE;
     }
 
     int target = max (abs(i), abs(j));
@@ -140,7 +147,8 @@ namespace vb {
 
     // So now, it fits, target<size. Two cases:
 
-    if (size==128) tile [257*128 + i + 256*j] = t;
+    if (size==TRIMATRIX_BSIZE)
+      tile [(2*TRIMATRIX_BSIZE+1)*TRIMATRIX_BSIZE + i + 2*TRIMATRIX_BSIZE*j] = t;
     else {
       int index = 4;
 
