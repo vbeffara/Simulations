@@ -7,6 +7,7 @@
 #include <vb/common.h>
 
 #ifndef TRIMATRIX_BSIZE
+/// The size of a fundamental block in the storage structure.
 #define TRIMATRIX_BSIZE 128
 #endif
 
@@ -89,7 +90,7 @@ namespace vb {
       int                          size;
       int                          sub_size;
       int                          sub_shift;
-      const T                      empty;
+      T                            empty;
       std::vector < T >            tile;
       std::vector < TriMatrix<T> > sub;
   };
