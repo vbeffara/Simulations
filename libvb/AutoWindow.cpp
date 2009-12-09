@@ -71,10 +71,6 @@ namespace vb {
 #endif
   }
 
-  AutoWindow::~AutoWindow() {
-    if (stage != NULL) delete[] stage;
-  }
-
   void AutoWindow::cycle () {
     long tmp = clock() - saved_clock;
     if (tmp>=0) nb_clock += tmp+1;
@@ -152,9 +148,9 @@ namespace vb {
 
     make_current();
     if (fl_read_image (&raw_image_data.front(), 0, 0, w(), h())) {
-      if (!stage) stage = new unsigned char [w()*h()];
+      if (stage.empty()) stage.resize (w()*h());
       for (int i=0; i<w()*h(); ++i) stage[i] = raw_image_data[3*i];
-      return stage;
+      return &stage.front();
     } else {
       return NULL;
     }

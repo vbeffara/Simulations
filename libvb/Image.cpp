@@ -35,7 +35,6 @@ namespace vb {
     }
 
   Image::~Image () {
-    if (depth==8) stage=NULL; // to prevent double freeing.
     delete[] pic;
   }
 
@@ -172,26 +171,20 @@ namespace vb {
   }
 
   void Image::compute_stage () {
-    if (stage == NULL) {
-      if (depth<8) stage = new unsigned char [width*height];
-      else stage = (unsigned char *) pic;
-    }
-
-    if (depth<8) {
-      char D = 255 / ((1<<depth)-1);
-      for (int i=0; i<width*height; ++i) stage[i] = D * pic[i];
-    }
+    if (stage.empty()) stage.resize (width*height);
+    char D = 255 / ((1<<depth)-1);
+    for (int i=0; i<width*height; ++i) stage[i] = D * pic[i];
   }
 
   unsigned char * Image::image_data () { 
     compute_stage();
-    return stage;
+    return &stage.front();
   }
 
 #ifdef HAVE_FLTK
   void Image::draw() {
     compute_stage();
-    fl_draw_image_mono (stage,0,0,width,height);
+    fl_draw_image_mono (&stage.front(),0,0,width,height);
   }
 #endif
 
