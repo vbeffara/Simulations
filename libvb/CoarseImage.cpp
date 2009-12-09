@@ -8,42 +8,30 @@ namespace vb {
   CoarseImage::CoarseImage (int wd, int ht, int l, const std::string &title) 
     : Image (1+(wd-1)/l,1+(ht-1)/l,8,title),
       true_width(wd), true_height(ht), L(l), LL(l*l),
-      fill(new int [width*height]), sub(new char* [width*height]),
-      stored(0), storage_size(0)
-  {
-    for (int i=0; i<width*height; i++) {
-      fill[i] = 0;
-      sub[i] = NULL;
-    }
-  }    
+      fill(width*height,0), sub(width*height,NULL)
+  { }    
   
   CoarseImage::~CoarseImage () {
-    for (int i=0; i<width*height; i++)
-      delete[] sub[i];
-    delete[] sub;
-    delete[] fill;
-    for (int i=0; i<storage_size; ++i)
-      delete[] storage[i];
+    for (int i=0; i<width*height;   ++i) delete[] sub[i];
+    for (int i=0; i<storage.size(); ++i) delete[] storage[i];
   }
 
   char * CoarseImage::claim (char color) {
     char *ret;
-    if (stored) { ret=storage[--stored]; }
-    else ret = new char[LL];
-
-    if (ret[0] != color) {
-      for (int i=0; i<LL; i++)
-        ret[i] = color;
+    if (storage.empty())
+      ret = new char[LL];
+    else {
+      ret = storage.back();
+      storage.pop_back();
     }
+
+    for (int i=0; i<LL; i++) ret[i] = color;
+
     return ret;
   }
 
   void CoarseImage::release (char *box) {
-    if (stored == storage_size) {
-      storage.push_back(box);
-      storage_size++; }
-    else storage[stored] = box;
-    ++stored;
+    storage.push_back(box);
   }
   
   int CoarseImage::putpoint (int x, int y, int c, int dt) {

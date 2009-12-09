@@ -98,12 +98,9 @@ namespace vb {
     private:
       int LL;
     
-      int *fill;
-      char **sub;
-
-      int stored;
-      int storage_size;
-      std::vector <char*> storage;
+      std::vector <int>    fill;
+      std::vector <char *> sub;
+      std::vector <char *> storage;
   };
 }
 
