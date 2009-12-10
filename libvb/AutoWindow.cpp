@@ -31,12 +31,6 @@ namespace vb {
     stage   = surface->get_data();
   }
 
-  AutoWindow::~AutoWindow () {
-    std::ostringstream s;
-    s << title << ".png";
-    output_png (s.str());
-  }
-
   void AutoWindow::show () {
 #ifdef HAVE_FLTK
     Fl_Double_Window::show();

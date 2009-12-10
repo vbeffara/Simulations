@@ -24,6 +24,12 @@ namespace vb {
       }
     }
 
+  Image::~Image () {
+    std::ostringstream s;
+    s << title << ".png";
+    output_png (s.str());
+  }
+
   char Image::lazy_eval (coloring *f, int x, int y)
   {
     char tmp = (*this)(x,y);

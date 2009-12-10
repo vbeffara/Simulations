@@ -41,7 +41,6 @@ namespace vb {
        */
 
       AutoWindow (int wd, int ht, const std::string &t);
-      ~AutoWindow ();
 
       /// Update the screen, handle the events.
       void update ();

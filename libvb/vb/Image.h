@@ -37,6 +37,7 @@ namespace vb {
        */
 
       Image (int wd, int ht, int dp, const std::string &tit);
+      ~Image ();
 
       /** Set the color of a point in the image.
        *
