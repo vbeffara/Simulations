@@ -147,10 +147,6 @@ namespace vb {
 
       std::list<Shape*> contents;  ///< The elements of the figure.
 
-      virtual void show ();        ///< Show the window on the screen.
-#ifdef HAVE_FLTK
-      void draw (); ///< Draw it onto the screen.
-#endif
       void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw it onto a Cairo context.
 
     protected:

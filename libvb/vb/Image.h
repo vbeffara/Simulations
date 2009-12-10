@@ -140,11 +140,6 @@ namespace vb {
       std::vector <unsigned char> pic;  ///< The raw image data
       std::string title;                ///< The title of the image
 
-    public:
-#ifdef HAVE_FLTK
-      void draw();             ///< Fill the fltk::Rectangle R with the image contents.
-#endif
-
     protected:
       virtual void paint ();
   };

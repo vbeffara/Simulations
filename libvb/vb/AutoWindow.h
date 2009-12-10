@@ -33,6 +33,7 @@ namespace vb {
 
 #ifdef HAVE_FLTK
       virtual int handle (int event); ///< Handle the events, in particular 'q' and 'x'.
+      void draw ();
 #else
       int _w,_h;
       int w()                { return _w;    }

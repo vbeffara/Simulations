@@ -62,15 +62,6 @@ namespace vb {
 
   Figure::Figure () : AutoWindow (400,400,"Figure") { }
 
-  void Figure::show() {
-#ifdef HAVE_FLTK
-    Fl_Double_Window::show();
-    update();
-#else
-    std::cerr << "libvb: without FLTK, I can't show you this !" << std::endl;
-#endif
-  }
-
   void Figure::clean() {
     std::list<Shape*>::iterator i;
     for (i=contents.begin(); i!=contents.end(); ++i)
@@ -153,13 +144,6 @@ namespace vb {
     cr->stroke();
     cr->restore();
   }
-
-#ifdef HAVE_FLTK
-  void Figure::draw() {
-    paint ();
-    fl_draw_image_mono (surface->get_data()+1,0,0,w(),h(),4,stride);
-  }
-#endif
 
   void Figure::draw (Cairo::RefPtr<Cairo::Context> cr) {
     for (std::list<Shape*>::iterator i = contents.begin(); i != contents.end(); ++i)

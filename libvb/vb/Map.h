@@ -347,9 +347,6 @@ namespace vb {
       /// Returns the bottom-most coordinate of anything on the map.
       double bottom ();
 
-      /// Draw the (planar) map on the current vb::AutoWindow.
-      void draw ();
-
     protected:
       virtual void paint ();
   };

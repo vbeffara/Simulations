@@ -78,6 +78,13 @@ namespace vb {
 #endif
   }  
 
+#ifdef HAVE_FLTK
+  void AutoWindow::draw () {
+    paint ();
+    fl_draw_image_mono (surface->get_data()+1,0,0,w(),h(),4,stride);
+  }
+#endif
+
   void AutoWindow::cycle () {
     long tmp = clock() - saved_clock;
     if (tmp>=0) nb_clock += tmp+1;

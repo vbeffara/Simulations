@@ -78,13 +78,6 @@ namespace vb {
     }
   }
 
-#ifdef HAVE_FLTK
-  void Image::draw() {
-    paint();
-    fl_draw_image_mono (stage,0,0,width,height,4,stride);
-  }
-#endif
-
   void Image::paint () {
     char D = 255 / ((1<<depth)-1);
 

@@ -38,8 +38,7 @@ namespace vb {
     return l;
   }
 
-#ifdef HAVE_FLTK
-  void Map::draw () {
+  void Map::paint () {
     double width  = right()-left(), mid_x = (right()+left())/2;
     double height = top()-bottom(), mid_y = (top()+bottom())/2;
     double scale_x = w()/width, scale_y = h()/height;
@@ -67,10 +66,7 @@ namespace vb {
 
     cr->stroke();
     cr->restore();
-
-    fl_draw_image_mono (surface->get_data()+1,0,0,w(),h(),4,stride);
   }
-#endif
 
   adj_list::iterator Map::find_edge (const Edge &e) const {
     if (e.first >= n) return (adj_list::iterator) NULL;
@@ -633,6 +629,4 @@ namespace vb {
 
     return c;
   }
-
-  void Map::paint () { }
 }
