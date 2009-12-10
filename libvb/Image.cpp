@@ -103,4 +103,5 @@ namespace vb {
   }
 #endif
 
+  void Image::paint () { }
 }

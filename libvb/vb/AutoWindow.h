@@ -16,6 +16,13 @@ namespace vb {
    * sub-class, that should be enough.
    */
 
+  /* A few development nodes:
+   *
+   * - surface is a CairoMM surface reference of the necessary size;
+   *
+   * - AutoWindow is in charge of displaying thsat to the window
+   */
+
   class AutoWindow
 #ifdef HAVE_FLTK
     : public Fl_Double_Window
@@ -25,7 +32,7 @@ namespace vb {
       virtual void show ();       ///< Show the window on the screen.
 
 #ifdef HAVE_FLTK
-      int handle (int event);     ///< Handle the events, in particular 'q' and 'x'.
+      virtual int handle (int event); ///< Handle the events, in particular 'q' and 'x'.
 #else
       int _w,_h;
       int w()                { return _w;    }
@@ -90,8 +97,11 @@ namespace vb {
       /// A staging area intended to contain 8bpp grayscale data.
       unsigned char * stage;
 
-      /// Return a pointer to 8bpp image data (for PNG output)
+      /// Return a pointer to 8bpp image data (for PNG output).
       virtual unsigned char * image_data ();
+
+      /// Update the contents of surface from a derived class data.
+      virtual void paint () =0;
   };
 }
 

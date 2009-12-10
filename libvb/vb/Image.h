@@ -147,6 +147,9 @@ namespace vb {
 #ifdef HAVE_FLTK
       void draw();             ///< Fill the fltk::Rectangle R with the image contents.
 #endif
+
+    protected:
+      virtual void paint ();
   };
 }
 

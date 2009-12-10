@@ -349,6 +349,9 @@ namespace vb {
 
       /// Draw the (planar) map on the current vb::AutoWindow.
       void draw ();
+
+    protected:
+      virtual void paint ();
   };
 
   /// Export a vb::Map as text (kind of DOT-looking).

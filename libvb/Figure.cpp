@@ -221,4 +221,6 @@ namespace vb {
         while ((j != contents.end()) && ((**i) == (**j)))
           j = contents.erase(j);
   }
+
+  void Figure::paint () { }
 }

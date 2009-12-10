@@ -638,4 +638,6 @@ namespace vb {
 
     return c;
   }
+
+  void Map::paint () { }
 }

@@ -156,6 +156,9 @@ namespace vb {
       void printPNG (const std::string &s);         ///< Output to a PNG file.
     private:
       Cairo::RefPtr <Cairo::Context> cr;
+
+    protected:
+      virtual void paint ();
   };
 }
 
