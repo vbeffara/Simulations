@@ -20,12 +20,10 @@ namespace vb {
     return os << "draw (" << z1 << "--" << z2 << ");" << std::endl;
   }
 
-#ifdef HAVE_CAIRO
   void Segment::draw (Cairo::RefPtr<Cairo::Context> cr){
       cr->move_to (z1.real(), z1.imag());
       cr->line_to (z2.real(), z2.imag());
   }
-#endif
 
   bool Dot::operator== (const Shape &other) const {
     if (typeid(*this) != typeid(other)) return false;
@@ -41,9 +39,7 @@ namespace vb {
     return os << "dot(" << z << ");" << std::endl;
   }
 
-#ifdef HAVE_CAIRO
   void Dot::draw (Cairo::RefPtr<Cairo::Context> cr) { }
-#endif
 
   bool Circle::operator== (const Shape &other) const {
     if (typeid(*this) != typeid(other)) return false;
@@ -59,12 +55,10 @@ namespace vb {
     return os << "draw (circle(" << z << "," << r << "));" << std::endl;
   }
 
-#ifdef HAVE_CAIRO
   void Circle::draw (Cairo::RefPtr<Cairo::Context> cr) {
     cr->begin_new_sub_path ();
     cr->arc (z.real(), z.imag(), r, 0, 2*M_PI);
   }
-#endif
 
   Figure::Figure () : AutoWindow (400,400,"Figure") {
 #ifdef HAVE_FLTK
@@ -170,7 +164,6 @@ namespace vb {
   }
 #endif
 
-#ifdef HAVE_CAIRO
   void Figure::draw (Cairo::RefPtr<Cairo::Context> cr) {
     for (std::list<Shape*>::iterator i = contents.begin(); i != contents.end(); ++i)
       (*i)->draw(cr);
@@ -203,7 +196,6 @@ namespace vb {
 
     surface->write_to_png (s);
   }
-#endif
 
   std::ostream & Figure::printASY (std::ostream &os) {
     os << "unitsize(1000);" << std::endl;

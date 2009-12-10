@@ -6,8 +6,7 @@ def set_options (opt) :
 def configure (conf) :
     conf.check_tool ('compiler_cc compiler_cxx')
 
-    conf.check_cfg (package='libpng',      args='--cflags --libs', uselib_store='png')
-    conf.check_cfg (package='cairomm-1.0', args='--cflags --libs', uselib_store='cairo')
+    conf.check_cfg (package='cairomm-1.0', args='--cflags --libs', uselib_store='cairo', mandatory=1)
     conf.check_cfg (package='fftw3',       args='--cflags --libs', uselib_store='fftw3')
     conf.check_cfg (package='x11',         args='--cflags --libs', uselib_store='x11')
 

@@ -23,20 +23,14 @@ namespace vb {
         exit(1);
       }
 
-#ifdef HAVE_CAIRO
       stage = surface->get_data();
-#else
-      stage = new unsigned char[wd*ht];
-#endif
 
       for (int i=0; i<wd*ht; i++)
         pic[i]=0;
     }
 
   Image::~Image () {
-#ifdef HAVE_CAIRO
     stage = NULL;
-#endif
   }
 
   std::ostream &operator<< (std::ostream &os, Image &img) {
@@ -173,11 +167,7 @@ namespace vb {
 
   void Image::compute_stage () {
     char D = 255 / ((1<<depth)-1);
-#ifdef HAVE_CAIRO
     int step = 4;
-#else
-    int step = 1;
-#endif
 
     for (int i=0; i<width; ++i) {
       for (int j=0; j<height; ++j) {

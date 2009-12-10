@@ -5,7 +5,7 @@ def build (bld) :
             target = 'vb',
             includes = '.',
             export_incdirs = '.',
-            uselib='FLTK png cairo')
+            uselib='FLTK cairo')
     bld.install_files ('${PREFIX}/include/vb', 'vb/*.h')
 
 # vim: ft=python

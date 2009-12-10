@@ -21,9 +21,7 @@ int main (int argc, char **argv) {
   for (int i=1; i<=5; ++i)
     F.circle (cpx(0,0),i);
 
-#ifdef HAVE_CAIRO
   F.printPNG ("figtest.png");
-#endif
 
 #ifdef HAVE_FLTK
   //F.resizable(&F);

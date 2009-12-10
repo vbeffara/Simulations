@@ -75,12 +75,8 @@ namespace vb {
 #else
     _w = wd; _h = ht; 
 #endif
-#ifdef HAVE_CAIRO
     surface = Cairo::ImageSurface::create (Cairo::FORMAT_RGB24, wd, ht);
     stride = surface->get_stride();
-#else
-    stride = wd;
-#endif
   }
 
   AutoWindow::~AutoWindow () {
@@ -105,12 +101,8 @@ namespace vb {
   }
 
   void AutoWindow::output_png (const std::string &s) {
-#ifdef HAVE_CAIRO
     image_data();
     surface->write_to_png (s);
-#else
-    std::cerr << "libvb: compiled without Cairo, no PNG support." << std::endl;
-#endif
   }
 
   void AutoWindow::snapshot (bool silent) {

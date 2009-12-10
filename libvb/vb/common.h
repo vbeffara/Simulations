@@ -26,10 +26,8 @@
 
 #include <vb/config.h>
 
-#ifdef HAVE_CAIRO
 #include <cairomm/context.h>
 #include <cairomm/surface.h>
-#endif
 
 #ifdef HAVE_CLN
 #define WANT_OBFUSCATING_OPERATORS
@@ -124,11 +122,12 @@ namespace vb {
  * On the other hand, it will give you some sample code, which cannot
  * hurt. See http://www.umpa.ens-lyon.fr/~vbeffara/simu.php for details.
  *
- * The main dependency is on the FLTK toolkit (http://www.fltk.org) for 
- * display - though everything will happily build without it. If libpng 
- * (http://www.libpng.org/pub/png/libpng.html) is installed, most of the 
- * objects can create PNG versions of themselves, and soon movie creation 
- * should be possible.
+ * The main dependencies are on CairoMM for drawing (mandatory)
+ * and the FLTK toolkit (http://www.fltk.org) for display -
+ * though everything will happily build without it. If libpng
+ * (http://www.libpng.org/pub/png/libpng.html) is installed, most of
+ * the objects can create PNG versions of themselves, and soon movie
+ * creation should be possible.
  *
  * I am using waf (http://code.google.com/p/waf/) as a build framework,
  * but if you don't have it installed, there is one included in the

@@ -24,9 +24,7 @@ namespace vb {
 
       virtual std::ostream &printASY (std::ostream &os) =0;   ///< Write ASY code for the shape.
 
-#ifdef HAVE_CAIRO
       virtual void draw (Cairo::RefPtr<Cairo::Context> cr) =0; ///< Draw the shape on a Cairo context.
-#endif
   };
 
   /// Subclass of vb::Shape foe a line segment.
@@ -35,6 +33,7 @@ namespace vb {
     private:
       cpx z1;                                              ///< First endpoint.
       cpx z2;                                              ///< Second endpoint.
+
     public:
       Segment (cpx zz1, cpx zz2) : z1(zz1), z2(zz2) {}     ///< Constructor from two complex numbers.
 
@@ -54,9 +53,7 @@ namespace vb {
 
       virtual std::ostream &printASY (std::ostream &os);   ///< Write ASY code for the shape.
 
-#ifdef HAVE_CAIRO
       virtual void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw the shape on a Cairo context.
-#endif
   };
 
   /// Subclass of vb::Shape for a dot.
@@ -65,6 +62,7 @@ namespace vb {
     private:
       cpx z;                                               ///< The location.
       std::string l;                                       ///< The label of the dot, if any.
+
     public:
       Dot (cpx zz, std::string ll = "") : z(zz), l(ll) {}  ///< Constructor from a position and a label.
 
@@ -84,9 +82,7 @@ namespace vb {
 
       virtual std::ostream &printASY (std::ostream &os);   ///< Write ASY code for the shape.
 
-#ifdef HAVE_CAIRO
       virtual void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw the shape on a Cairo context.
-#endif
   };
 
   /// Subclass of vb::Shape for a circle.
@@ -95,7 +91,7 @@ namespace vb {
     public:
       cpx z;                                               ///< The center.
       double r;                                              ///< The radius.
-    public:
+
       Circle (cpx zz, double rr) : z(zz), r(rr) {}           ///< Constructor from a center and a radius.
 
       /// Get the left boundary of the Shape.
@@ -114,9 +110,7 @@ namespace vb {
 
       virtual std::ostream &printASY (std::ostream &os);   ///< Write ASY code for the shape.
 
-#ifdef HAVE_CAIRO
       virtual void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw the shape on a Cairo context.
-#endif
   };
 
   /** The main Figure class.
@@ -159,12 +153,11 @@ namespace vb {
 #ifdef HAVE_FLTK
       void draw (); ///< Draw it onto the screen.
 #endif
-#ifdef HAVE_CAIRO
+
       void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw it onto a Cairo context.
       void printPNG (const std::string &s);         ///< Output to a PNG file.
     private:
-      Cairo::RefPtr<Cairo::Context> cr;
-#endif
+      Cairo::RefPtr <Cairo::Context> cr;
   };
 }
 
