@@ -95,6 +95,7 @@ namespace vb {
 
   void AutoWindow::output_png (const std::string &s) {
     image_data();
+    paint();
     surface->write_to_png (s);
   }
 

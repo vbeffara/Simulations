@@ -78,7 +78,14 @@ namespace vb {
     }
   }
 
-  void Image::compute_stage () {
+#ifdef HAVE_FLTK
+  void Image::draw() {
+    paint();
+    fl_draw_image_mono (stage,0,0,width,height,4,stride);
+  }
+#endif
+
+  void Image::paint () {
     char D = 255 / ((1<<depth)-1);
 
     for (int i=0; i<width; ++i) {
@@ -87,21 +94,5 @@ namespace vb {
         for (int k=0; k<4; ++k) stage[4*i+stride*j+k] = c;
       }
     }
-
-    for (int i=0; i<width*height; ++i) stage[4*i] = D * pic[i];
   }
-
-  unsigned char * Image::image_data () { 
-    compute_stage();
-    return stage;
-  }
-
-#ifdef HAVE_FLTK
-  void Image::draw() {
-    compute_stage();
-    fl_draw_image_mono (stage,0,0,width,height,4,stride);
-  }
-#endif
-
-  void Image::paint () { }
 }
