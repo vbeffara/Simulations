@@ -56,7 +56,10 @@ namespace vb {
     protected:
       std::priority_queue<Point> q;   ///< The std::priority_queue itself.
 
+      /// Pick a Point from a PointQueue.
       friend inline PointQueue &operator>> (PointQueue &, Point &);
+
+      /// Add a Point to a PointQueue.
       friend inline PointQueue &operator<< (PointQueue &pq, const Point &p);
   };
 

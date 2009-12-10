@@ -66,10 +66,6 @@ namespace vb {
 
       Map (int nn);
 
-      /// The standard destructor.
-
-      ~Map ();
-
       /** Find an edge in the map.
        *
        * Given an edge, find it in one of the adjacency lists of the 

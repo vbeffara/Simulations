@@ -3,8 +3,6 @@
 
 #include <vb/Figure.h>
 
-#include <fstream>
-
 namespace vb {
   bool Segment::operator== (const Shape &other) const {
     if (typeid(*this) != typeid(other)) return false;

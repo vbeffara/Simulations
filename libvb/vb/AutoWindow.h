@@ -29,11 +29,11 @@ namespace vb {
 #endif
     {
     public:
-      virtual void show ();       ///< Show the window on the screen.
+      virtual void show ();             ///< Show the window on the screen.
 
 #ifdef HAVE_FLTK
-      virtual int handle (int event); ///< Handle the events, in particular 'q' and 'x'.
-      void draw ();
+      virtual int handle (int event);   ///< Handle the events, in particular 'q' and 'x'.
+      void draw ();                     ///< Draw the contents of the window (called by FLTK).
 #else
       int _w,_h;
       int w()                { return _w;    }

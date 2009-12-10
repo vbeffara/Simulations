@@ -11,9 +11,6 @@ namespace vb {
     }
   }
 
-  Map::~Map () {
-  }
-
   double Map::left () { 
     double l = 0.0;
     for (int i=0; i<n; ++i) l = min (l, v[i]->z.real());

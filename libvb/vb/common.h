@@ -7,14 +7,15 @@
 #ifndef __VB_COMMON_H
 #define __VB_COMMON_H
 
-#include <assert.h>
-#include <math.h>
-#include <stdlib.h>
-#include <time.h>
-#include <strings.h>
-#include <sys/time.h>
+#include <vb/config.h>
 
+#include <cassert>
+#include <cmath>
 #include <complex>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
+#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <list>
@@ -25,15 +26,10 @@
 #include <typeinfo>
 #include <vector>
 
-#include <vb/config.h>
+#include <sys/time.h>
 
 #include <cairomm/context.h>
 #include <cairomm/surface.h>
-
-#ifdef HAVE_CLN
-#define WANT_OBFUSCATING_OPERATORS
-#include <cln/cln.h>
-#endif
 
 #ifdef HAVE_FLTK
 #include <FL/Fl.H>

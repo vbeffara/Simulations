@@ -4,10 +4,6 @@
 
 #include <vb/AutoWindow.h>
 
-#include <iostream>
-#include <sstream>
-#include <iomanip>
-
 namespace vb {
 #ifdef HAVE_FLTK
   void close_window (Fl_Widget *w) { exit(1); }
@@ -28,7 +24,6 @@ namespace vb {
 #endif
     surface = Cairo::ImageSurface::create (Cairo::FORMAT_RGB24, wd, ht);
     cr      = Cairo::Context::create (surface);
-
     stride  = surface->get_stride();
     stage   = surface->get_data();
   }
@@ -66,6 +61,11 @@ namespace vb {
     }
     return 1;
   }
+
+  void AutoWindow::draw () {
+    paint ();
+    fl_draw_image_mono (stage+1,0,0,w(),h(),4,stride);
+  }
 #endif
 
   void AutoWindow::update () {
@@ -77,13 +77,6 @@ namespace vb {
     }
 #endif
   }  
-
-#ifdef HAVE_FLTK
-  void AutoWindow::draw () {
-    paint ();
-    fl_draw_image_mono (surface->get_data()+1,0,0,w(),h(),4,stride);
-  }
-#endif
 
   void AutoWindow::cycle () {
     long tmp = clock() - saved_clock;

@@ -4,10 +4,6 @@
 
 #include <vb/PRNG.h>
 
-#include <sys/time.h>
-#include <time.h>
-#include <stdlib.h>
-
 namespace vb {
 
   static long getseed() {

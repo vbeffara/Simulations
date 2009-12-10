@@ -4,11 +4,6 @@
 
 #include <vb/CL_Parser.h>
 
-#include <iostream>
-#include <stdlib.h>
-#include <sstream>
-#include <unistd.h>
-
 namespace vb {
   CL_Value::CL_Value (const std::string &s) : value(s) { }
 

@@ -5,14 +5,6 @@
 #include <vb/Image.h>
 
 namespace vb {
-  inline char trans (int i) {
-    static char trans[17] = "0123456789ABCDEF";
-
-    if (i<0) i=0;
-    if (i>15) i=15;
-    return trans[15-i];
-  }
-
   Image::Image (int wd, int ht, int dp, const std::string &tit) : 
     AutoWindow(wd,ht,tit), width(wd), height(ht), depth(dp), 
     cropped(0), pic(stride*ht,0), title(tit) { 

@@ -149,6 +149,7 @@ namespace vb {
         lines[i][j] = t; return this;
       }
 
+      /// Add another matrix to this one.
       virtual MatrixStorage<T> *add (MatrixStorage<T> *M) {
         for (unsigned int i=0; i<this->height; ++i)
           for (unsigned int j=0; j<this->width; ++j)
@@ -156,6 +157,7 @@ namespace vb {
         return this;
       }
 
+      /// Subtract another matrix from this one.
       virtual MatrixStorage<T> *sub (MatrixStorage<T> *M) {
         for (unsigned int i=0; i<this->height; ++i)
           for (unsigned int j=0; j<this->width; ++j)
@@ -163,6 +165,7 @@ namespace vb {
         return this;
       }
 
+      /// Right-multiply this matrix with another one.
       virtual MatrixStorage<T> *mul_right (MatrixStorage<T> *M) {
         MatrixStorage_Plain<T> *tmp = new MatrixStorage_Plain<T> (this->height, M->width);
         for (unsigned int i=0; i<this->height; ++i) {
@@ -262,18 +265,21 @@ namespace vb {
         return tmp;
       }
 
+      /// Add another matrix to this one.
       virtual MatrixStorage<T> *add (MatrixStorage<T> *M) {
         MatrixStorage<T> *tmp = this->compute();
         tmp->add(M);
         return tmp;
       }
 
+      /// Subtract another matrix from this one.
       virtual MatrixStorage<T> *sub (MatrixStorage<T> *M) {
         MatrixStorage<T> *tmp = this->compute();
         tmp->sub(M);
         return tmp;
       }
 
+      /// Right-multiply this matrix with another one.
       virtual MatrixStorage<T> *mul_right (MatrixStorage<T> *M) {
         MatrixStorage<T> *tmp = this->compute();
         tmp->mul(M);
