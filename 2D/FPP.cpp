@@ -76,7 +76,5 @@ int main (int argc, char **argv) {
     }
   }
 
-  std::cout << img;
-
   return 0;
 }

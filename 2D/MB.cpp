@@ -49,6 +49,5 @@ int main(int argc, char ** argv)
   }
 
   img->cropped = 1;
-  std::cout << *img;
   return 0;
 }

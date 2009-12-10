@@ -43,7 +43,6 @@ int main(int argc, char ** argv)
   fprintf (stderr, "Coarse graining with mesh %d.\n", L);
 
   CoarseImage img(n,n,L,title);
-  img.outputsize = 15;
   //img.snapshot_period = t;
 
   img.show();
@@ -65,6 +64,5 @@ int main(int argc, char ** argv)
     }
   }
 
-  std::cout << img;
   return 0;
 }

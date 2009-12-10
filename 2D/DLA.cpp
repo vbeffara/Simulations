@@ -185,8 +185,5 @@ int main(int argc, char ** argv)
   img->show();
   runDLA();
 
-  /* Output the EPS file */
-
-  std::cout << *img;
   return 0;
 }

@@ -51,7 +51,5 @@ int main (int argc, char **argv) {
     if (!(y%100)) img.update();
   }
 
-  cout << img;
-
   return 0;
 }

@@ -77,6 +77,5 @@ int main(int argc, char ** argv)
     for (int y=0; y<n; ++y)
       img.putpoint(x,y,color[cluster[x+n*y]]);
 
-  std::cout << img;
   return 0;
 }

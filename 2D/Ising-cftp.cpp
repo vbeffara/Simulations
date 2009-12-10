@@ -140,6 +140,5 @@ int main(int argc, char *argv[])
     fprintf(stderr,"nstep = %5ld, dist = %ld\n", bla, dist);
   }
 
-  std::cout << img;
   return 0;
 }

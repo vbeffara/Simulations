@@ -146,12 +146,8 @@ int main(int argc, char ** argv)
 
   /*  C'est parti */
 
-  fprintf (stderr, "Doing the hard work ...\n");
-  
   img->tessellate ((smooth?color_smooth:color),0,1,2*wd-1,ht-1);
 
-  fprintf (stderr, "Good bye, have a nice day.\n");
-  
   if (smooth) {
     for (int x=0; x<2*wd; ++x) {
       for (int y=1; y<ht; ++y) {
@@ -161,7 +157,6 @@ int main(int argc, char ** argv)
     }
   } else edge_detect();
 
-  std::cout << (*img);
-
+  delete img;
   return 0;
 }

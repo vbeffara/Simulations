@@ -23,8 +23,5 @@ int main(int argc, char *argv[])
   img.show();
 
   img.tessellate (f, 0,0, n-1,n-1);
-
-  img.output_png ("sample.png");
-  std::cout << img;
   return 0;
 }

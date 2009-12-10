@@ -102,6 +102,5 @@ int main(int argc, char ** argv)
 
   /* affichage du resultat */
 
-  std::cout << *img;
   return 0;
 }

@@ -22,7 +22,5 @@ int main (int argc, char **argv) {
 	if ( ((i>0)&&img(i-1,j)) || ((j>0)&&img(i,j-1)) )
 	  img.putpoint (i,j,1);
 
-  std::cout << img;
-
   return 0;
 }

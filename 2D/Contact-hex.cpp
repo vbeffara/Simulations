@@ -52,7 +52,5 @@ int main(int argc, char *argv[])
     if (total==0) { i=nstep; }
   }
 
-  std::cout << img;
-
   return 0;
 }
