@@ -24,8 +24,6 @@ namespace vb {
    * - image.width and image.height are expressed in blocks;
    * - ((Image)coarseimage)(x,y) should work and return the current
    *   color of the screen pixel;
-   * - you can say os<<coarseimage to get an EPS representation of the
-   *   on-screen version.
    */
 
   class CoarseImage : public vb::Image {

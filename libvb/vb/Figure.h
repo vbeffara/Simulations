@@ -115,9 +115,7 @@ namespace vb {
 
   /** The main Figure class.
    *
-   * Right now it's a list of shapes with an output routine. The only 
-   * output format implemented is .asy (Asymptote), but eventually there 
-   * will be .eps (postscript) and .mp (metapost).
+   * Right now it's a list of shapes with an output routine.
    */
 
   class Figure : public AutoWindow {

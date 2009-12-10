@@ -17,8 +17,7 @@ namespace vb {
   /** The main image class, used for all displays.
    *
    * It is a basic 2D canvas, greyscale (1, 2 or 4 bpp), with methods to
-   * color individual points and to export the contents of an EPS file
-   * to an ostream such as std::cout.
+   * color individual points and to export a PNG file.
    */
 
   class Image : public AutoWindow {
@@ -26,7 +25,6 @@ namespace vb {
       int width;           ///< The width of the image, in pixels.
       int height;          ///< The height of the image, in pixels.
       int depth;           ///< The depth of the image, in bits per pixel (1, 2 or 4).
-      double outputsize;   ///< The size of the EPS output, in centimeters (0.0 to disable).
 
       int cropped;         ///< 1 if the output routine should crop the picture.
 
@@ -137,20 +135,6 @@ namespace vb {
         return pic[xy];
       };
 
-      /** Output the contents of the image when 'q' is pressed. */
-
-      void on_quit () { std::cout << (*this); }
-
-    protected:
-
-      /** Output an EPS representation of the image to an ostream.
-       *
-       * @param os  The target stream.
-       * @param img The image.
-       */
-
-      friend std::ostream &operator<< (std::ostream &os, vb::Image &img);    
-
     private:
       std::vector <unsigned char> pic;  ///< The raw image data
       std::string title;                ///< The title of the image
@@ -169,7 +153,7 @@ namespace vb {
  * A simple example of how to use the libvb library.
  *
  * It does nothing interesting, but demonstrates the vb::Image class,
- * with the vb::Image::tessellate() method and EPS creation. Here is a
+ * with the vb::Image::tessellate() method and PNG creation. Here is a
  * line-by-line description of the main() function:
  *
  * @dontinclude sample.cpp
@@ -184,7 +168,7 @@ namespace vb {
  * @until show
  * Fill it using the coloring function f:
  * @skipline tessellate
- * And finally, export it to std::cout as an EPS file and exit:
+ * And finally, export it to 'output.png' (automatic) and exit:
  * @skip <<
  * @until }
  *

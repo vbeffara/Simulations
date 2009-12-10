@@ -25,14 +25,12 @@ namespace vb {
       virtual void show ();       ///< Show the window on the screen.
 
 #ifdef HAVE_FLTK
-      virtual void on_quit();     ///< The thing to do if the user presses 'q'.
       int handle (int event);     ///< Handle the events, in particular 'q' and 'x'.
 #else
       int _w,_h;
       int w()                { return _w;    }
       int h()                { return _h;    }
       bool visible()         { return false; }
-      virtual void on_quit() { };
 #endif
       
       /** The standard constructor
@@ -43,6 +41,7 @@ namespace vb {
        */
 
       AutoWindow (int wd, int ht, const std::string &t);
+      ~AutoWindow ();
 
       /// Update the screen, handle the events.
       void update ();

@@ -62,7 +62,7 @@ namespace vb {
  *
  * The aim of this library is to provide an easy way for mathematicians
  * (and maybe others) to display 2D graphics for their simulations and
- * to produce EPS files for easy inclusion in a LaTeX document. The main
+ * to produce PNG files for easy inclusion in a LaTeX document. The main
  * design goal is that usage should be as simple as possible; as such,
  * the library is not very efficient (no fancy OpenGL or even hardware
  * acceleration) but the interface is straightforward. Among the useful
@@ -70,8 +70,7 @@ namespace vb {
  *
  * - vb::Image: the main class provided by the library. It centralizes
  *   most of the functionality, can be displayed on the screen by
- *   calling vb::Image::show() and transformed into an EPS file via
- *   an output stream (std::cout << img).
+ *   calling vb::Image::show() and transformed into an PNG file.
  *
  * - Auto-update: the display routine (namely vb::Image::putpoint())
  *   will try to update the screen representation of the image on the

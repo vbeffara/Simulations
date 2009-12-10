@@ -24,10 +24,8 @@ directly.
 2. Some notes about the 'libvb' library
 
 The directory libvb/ contains a small library providing very easy
-display and EPS output for 2D simulations (in greyscale). It is entirely
-composed of header files, so compilation should be very easy.
-
-Up-to-date documentation on the library is at the following webpage:
+display and PNG output for 2D simulations (in greyscale).  Up-to-date 
+documentation on the library is at the following webpage:
 
       http://www.umpa.ens-lyon.fr/~vbeffara/libvb/
 
@@ -35,6 +33,8 @@ It uses a few outside libraries if they are present (but most of the
 code will still compile and work without it):
 
 - FLTK for graphical display
+
+- Cairo for internally drawing objects
 
 - GMP for high-precision computations (in the vb::real type - which is 
   simply an alias for double if GMP is absent)

@@ -9,6 +9,34 @@
 #include <iomanip>
 
 namespace vb {
+#ifdef HAVE_FLTK
+  void close_window (Fl_Widget *w) { exit(1); }
+#endif
+
+  AutoWindow::AutoWindow (int wd, int ht, const std::string &t) : 
+#ifdef HAVE_FLTK
+    Fl_Double_Window (wd, ht, t.c_str()),
+#endif
+    title(t), fps(20), npts(0), delay(1), timer(1),
+    saved_clock(clock()), nb_clock(0), snapshot_prefix("snapshot"),
+    snapshot_number(0), snapshot_period(0.0), snapshot_clock(clock()),
+    paused(false) {
+#ifdef HAVE_FLTK
+    callback(close_window);
+#else
+    _w = wd; _h = ht; 
+#endif
+    surface = Cairo::ImageSurface::create (Cairo::FORMAT_RGB24, wd, ht);
+    stride  = surface->get_stride();
+    stage   = surface->get_data();
+  }
+
+  AutoWindow::~AutoWindow () {
+    std::ostringstream s;
+    s << title << ".png";
+    output_png (s.str());
+  }
+
   void AutoWindow::show () {
 #ifdef HAVE_FLTK
     Fl_Double_Window::show();
@@ -19,13 +47,6 @@ namespace vb {
   }
 
 #ifdef HAVE_FLTK
-  /// Forcefully exit the program if the used closes the window.
-  void close_window (Fl_Widget *w) {
-    exit(1);
-  }
-
-  void AutoWindow::on_quit() { };
-
   int AutoWindow::handle (int event) {
     switch (event) {
       case FL_KEYDOWN:
@@ -33,7 +54,6 @@ namespace vb {
           case FL_Escape:
           case 0x61:             // this is a A (AZERTY for Q)
           case 0x71:             // this is a Q
-            on_quit();
             exit (0);
             break;
           case 0x78:             // this is an X
@@ -61,24 +81,6 @@ namespace vb {
     }
 #endif
   }  
-
-  AutoWindow::AutoWindow (int wd, int ht, const std::string &t) : 
-#ifdef HAVE_FLTK
-    Fl_Double_Window (wd, ht, t.c_str()),
-#endif
-    title(t), fps(20), npts(0), delay(1), timer(1),
-    saved_clock(clock()), nb_clock(0), snapshot_prefix("snapshot"),
-    snapshot_number(0), snapshot_period(0.0), snapshot_clock(clock()),
-    paused(false) {
-#ifdef HAVE_FLTK
-    callback(close_window);
-#else
-    _w = wd; _h = ht; 
-#endif
-    surface = Cairo::ImageSurface::create (Cairo::FORMAT_RGB24, wd, ht);
-    stride  = surface->get_stride();
-    stage   = surface->get_data();
-  }
 
   void AutoWindow::cycle () {
     long tmp = clock() - saved_clock;
