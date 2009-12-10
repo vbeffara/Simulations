@@ -98,9 +98,6 @@ namespace vb {
       /// A staging area intended to contain 8bpp grayscale data.
       unsigned char * stage;
 
-      /// Return a pointer to 8bpp image data (for PNG output).
-      virtual unsigned char * image_data ();
-
       /// Update the contents of surface from a derived class data.
       virtual void paint () =0;
   };

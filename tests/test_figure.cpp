@@ -21,10 +21,7 @@ int main (int argc, char **argv) {
   for (int i=1; i<=5; ++i)
     F.circle (cpx(0,0),i);
 
-#ifdef HAVE_FLTK
-  F.show();
-  Fl::run();
-#endif
+  //F.show();
 
   F.output_png ("figtest.png");
   exit (0);

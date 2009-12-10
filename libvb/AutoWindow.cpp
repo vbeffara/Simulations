@@ -96,7 +96,6 @@ namespace vb {
   }
 
   void AutoWindow::output_png (const std::string &s) {
-    image_data();
     paint();
     surface->write_to_png (s);
   }
@@ -117,23 +116,5 @@ namespace vb {
     snapshot_prefix = prefix;
     snapshot_number = 0;
     if (period>0.0) snapshot (true);
-  }
-
-  unsigned char * AutoWindow::image_data () {
-#ifdef HAVE_FLTK
-    if (raw_image_data.empty()) raw_image_data.resize (w()*h()*3);
-
-    make_current();
-    if (fl_read_image (&raw_image_data.front(), 0, 0, w(), h())) {
-      for (int i=0; i<w()*h(); ++i)
-        for (int k=0; k<4; ++k)
-          stage[4*i+k] = raw_image_data[3*i];
-      return stage;
-    } else {
-      return NULL;
-    }
-#else
-    return NULL;
-#endif
   }
 }
