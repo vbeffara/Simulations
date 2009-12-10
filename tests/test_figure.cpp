@@ -11,7 +11,7 @@ using namespace vb;
 /// The main function.
 int main (int argc, char **argv) {
   Figure F;
-  PRNG prng;
+  PRNG prng (18);
   
   for (int i=0; i<10; ++i) {
     F.segment (cpx(-10+prng.uniform(20.0),-10+prng.uniform(20.0)),
@@ -21,12 +21,11 @@ int main (int argc, char **argv) {
   for (int i=1; i<=5; ++i)
     F.circle (cpx(0,0),i);
 
-  F.printPNG ("figtest.png");
-
 #ifdef HAVE_FLTK
-  //F.resizable(&F);
   F.show();
   Fl::run();
 #endif
+
+  F.output_png ("figtest.png");
   exit (0);
 }

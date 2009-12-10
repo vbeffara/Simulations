@@ -60,11 +60,7 @@ namespace vb {
     cr->arc (z.real(), z.imag(), r, 0, 2*M_PI);
   }
 
-  Figure::Figure () : AutoWindow (400,400,"Figure") {
-#ifdef HAVE_FLTK
-    //resizable (*this);
-#endif
-  }
+  Figure::Figure () : AutoWindow (400,400,"Figure") { }
 
   void Figure::show() {
 #ifdef HAVE_FLTK
@@ -135,14 +131,11 @@ namespace vb {
     return add (new Circle (z,r));
   }
 
-#ifdef HAVE_FLTK
-  void Figure::draw() {
-    Cairo::RefPtr<Cairo::Context> cr = Cairo::Context::create (surface);
+  void Figure::paint () {
+    double width   = right()-left(), mid_x = (right()+left())/2;
+    double height  = top()-bottom(), mid_y = (top()+bottom())/2;
 
-    double width  = right()-left(), mid_x = (right()+left())/2;
-    double height = top()-bottom(), mid_y = (top()+bottom())/2;
     double scale_x = w()/width, scale_y = h()/height;
-
     double scale = min(scale_x, scale_y);
 
     cr->save();
@@ -159,7 +152,11 @@ namespace vb {
     draw(cr);
     cr->stroke();
     cr->restore();
+  }
 
+#ifdef HAVE_FLTK
+  void Figure::draw() {
+    paint ();
     fl_draw_image_mono (surface->get_data()+1,0,0,w(),h(),4,stride);
   }
 #endif
@@ -167,34 +164,6 @@ namespace vb {
   void Figure::draw (Cairo::RefPtr<Cairo::Context> cr) {
     for (std::list<Shape*>::iterator i = contents.begin(); i != contents.end(); ++i)
       (*i)->draw(cr);
-  }
-
-  void Figure::printPNG (const std::string &s) {
-    Cairo::RefPtr<Cairo::ImageSurface> surface = Cairo::ImageSurface::create (Cairo::FORMAT_RGB24, w(), h());
-    Cairo::RefPtr<Cairo::Context> cr = Cairo::Context::create (surface);
-
-    double width  = right()-left(), mid_x = (right()+left())/2;
-    double height = top()-bottom(), mid_y = (top()+bottom())/2;
-    double scale_x = w()/width, scale_y = h()/height;
-
-    double scale = min(scale_x, scale_y);
-
-    cr->save();
-    cr->set_source_rgb (1,1,1);
-    cr->paint();
-    cr->restore();
-
-    cr->save();
-    cr->translate (w()/2,h()/2);
-    cr->scale (scale,scale);
-    cr->translate (-mid_x,-mid_y);
-    cr->set_source_rgb (0,0,0);
-    cr->set_line_width (1.0/scale);
-    draw(cr);
-    cr->stroke();
-    cr->restore();
-
-    surface->write_to_png (s);
   }
 
   std::ostream & Figure::printASY (std::ostream &os) {
@@ -221,6 +190,4 @@ namespace vb {
         while ((j != contents.end()) && ((**i) == (**j)))
           j = contents.erase(j);
   }
-
-  void Figure::paint () { }
 }

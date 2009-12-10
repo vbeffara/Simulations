@@ -151,11 +151,7 @@ namespace vb {
 #ifdef HAVE_FLTK
       void draw (); ///< Draw it onto the screen.
 #endif
-
       void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw it onto a Cairo context.
-      void printPNG (const std::string &s);         ///< Output to a PNG file.
-    private:
-      Cairo::RefPtr <Cairo::Context> cr;
 
     protected:
       virtual void paint ();

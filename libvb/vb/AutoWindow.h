@@ -91,6 +91,7 @@ namespace vb {
 
     protected:
       Cairo::RefPtr <Cairo::ImageSurface> surface; ///< Cairo surface with the same contents.
+      Cairo::RefPtr <Cairo::Context>      cr;      ///< A context to draw onto the surface.
 
       int stride; ///< The size of one line of the image in memory.
 

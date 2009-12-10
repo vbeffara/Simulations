@@ -27,6 +27,8 @@ namespace vb {
     _w = wd; _h = ht; 
 #endif
     surface = Cairo::ImageSurface::create (Cairo::FORMAT_RGB24, wd, ht);
+    cr      = Cairo::Context::create (surface);
+
     stride  = surface->get_stride();
     stage   = surface->get_data();
   }

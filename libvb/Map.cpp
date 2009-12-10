@@ -9,9 +9,6 @@ namespace vb {
       v.push_back(new Vertex(0.0));
       bd.push_back(false);
     }
-#ifdef HAVE_FLTK
-    //resizable (*this);
-#endif
   }
 
   Map::~Map () {
@@ -43,8 +40,6 @@ namespace vb {
 
 #ifdef HAVE_FLTK
   void Map::draw () {
-    Cairo::RefPtr<Cairo::Context> cr = Cairo::Context::create (surface);
-
     double width  = right()-left(), mid_x = (right()+left())/2;
     double height = top()-bottom(), mid_y = (top()+bottom())/2;
     double scale_x = w()/width, scale_y = h()/height;
