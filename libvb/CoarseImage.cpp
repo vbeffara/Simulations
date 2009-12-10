@@ -12,8 +12,8 @@ namespace vb {
   { }    
   
   CoarseImage::~CoarseImage () {
-    for (int i=0; i<width*height;   ++i) delete[] sub[i];
-    for (int i=0; i<storage.size(); ++i) delete[] storage[i];
+    for (int i=0; i<width*height; ++i)            delete[] sub[i];
+    for (unsigned int i=0; i<storage.size(); ++i) delete[] storage[i];
   }
 
   char * CoarseImage::claim (char color) {

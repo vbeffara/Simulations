@@ -69,18 +69,15 @@ namespace vb {
     title(t), fps(20), npts(0), delay(1), timer(1),
     saved_clock(clock()), nb_clock(0), snapshot_prefix("snapshot"),
     snapshot_number(0), snapshot_period(0.0), snapshot_clock(clock()),
-    paused(false), stage(NULL) {
+    paused(false) {
 #ifdef HAVE_FLTK
     callback(close_window);
 #else
     _w = wd; _h = ht; 
 #endif
     surface = Cairo::ImageSurface::create (Cairo::FORMAT_RGB24, wd, ht);
-    stride = surface->get_stride();
-  }
-
-  AutoWindow::~AutoWindow () {
-    delete[] stage;
+    stride  = surface->get_stride();
+    stage   = surface->get_data();
   }
 
   void AutoWindow::cycle () {
@@ -129,8 +126,9 @@ namespace vb {
 
     make_current();
     if (fl_read_image (&raw_image_data.front(), 0, 0, w(), h())) {
-      if (!stage) stage = new unsigned char [w()*h()];
-      for (int i=0; i<w()*h(); ++i) stage[i] = raw_image_data[3*i];
+      for (int i=0; i<w()*h(); ++i)
+        for (int k=0; k<4; ++k)
+          stage[4*i+k] = raw_image_data[3*i];
       return stage;
     } else {
       return NULL;

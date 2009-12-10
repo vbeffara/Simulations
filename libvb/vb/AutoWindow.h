@@ -43,7 +43,6 @@ namespace vb {
        */
 
       AutoWindow (int wd, int ht, const std::string &t);
-      ~AutoWindow ();
 
       /// Update the screen, handle the events.
       void update ();
@@ -67,7 +66,6 @@ namespace vb {
       int fps;                       ///< The target FPS rate.
 
     private:
-
       unsigned long long npts;       ///< The number of actions done since the beginning of time.
       unsigned long delay;
       unsigned long timer;

@@ -7,6 +7,7 @@
 #ifndef __VB_COMMON_H
 #define __VB_COMMON_H
 
+#include <assert.h>
 #include <math.h>
 #include <stdlib.h>
 #include <time.h>

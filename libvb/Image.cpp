@@ -22,16 +22,7 @@ namespace vb {
           << " (only 1, 2, 4 and 8 bpp allowed).\n";
         exit(1);
       }
-
-      stage = surface->get_data();
-
-      for (int i=0; i<wd*ht; i++)
-        pic[i]=0;
     }
-
-  Image::~Image () {
-    stage = NULL;
-  }
 
   std::ostream &operator<< (std::ostream &os, Image &img) {
     long bits;
@@ -167,16 +158,15 @@ namespace vb {
 
   void Image::compute_stage () {
     char D = 255 / ((1<<depth)-1);
-    int step = 4;
 
     for (int i=0; i<width; ++i) {
       for (int j=0; j<height; ++j) {
         unsigned char c = D * pic[i+width*j];
-        for (int k=0; k<step; ++k) stage[step*i+stride*j+k] = c;
+        for (int k=0; k<4; ++k) stage[4*i+stride*j+k] = c;
       }
     }
 
-    for (int i=0; i<width*height; ++i) stage[step*i] = D * pic[i];
+    for (int i=0; i<width*height; ++i) stage[4*i] = D * pic[i];
   }
 
   unsigned char * Image::image_data () { 
