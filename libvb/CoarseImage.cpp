@@ -9,8 +9,8 @@ namespace vb {
     : Image (1+(wd-1)/l,1+(ht-1)/l,8,title),
       true_width(wd), true_height(ht), L(l), LL(l*l),
       fill(width*height,0), sub(width*height,NULL)
-  { }    
-  
+  { }
+
   CoarseImage::~CoarseImage () {
     for (int i=0; i<width*height; ++i)            delete[] sub[i];
     for (unsigned int i=0; i<storage.size(); ++i) delete[] storage[i];
@@ -33,15 +33,15 @@ namespace vb {
   void CoarseImage::release (char *box) {
     storage.push_back(box);
   }
-  
+
   int CoarseImage::putpoint (int x, int y, int c, int dt) {
     int coarse_x = x/L;
     int coarse_y = y/L;
     int coarse_xy = coarse_x + width * coarse_y;
-    
+
     if (fill[coarse_xy] == c*LL) // Nothing to do
       return c;
-    
+
     if (fill[coarse_xy] == (1-c)*LL) { // Need to create the block
       sub[coarse_xy] = claim(1-c);
     }
@@ -67,7 +67,7 @@ namespace vb {
     int coarse_x = x/L;
     int coarse_y = y/L;
     int coarse_xy = coarse_x + width * coarse_y;
-  
+
     if (fill[coarse_xy]==0) return 0;
     if (fill[coarse_xy]==LL) return 1;
 

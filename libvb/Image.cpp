@@ -6,7 +6,7 @@
 
 namespace vb {
   Image::Image (int wd, int ht, int dp, const std::string &tit) : 
-    AutoWindow(wd,ht,tit), width(wd), height(ht), depth(dp), 
+    AutoWindow(wd,ht,tit), depth(dp), 
     cropped(0), pic(stride*ht,0), title(tit) { 
 
       if ((depth!=1)&&(depth!=2)&&(depth!=4)&&(depth!=8)) {

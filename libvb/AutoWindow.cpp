@@ -9,18 +9,16 @@ namespace vb {
   void close_window (Fl_Widget *w) { exit(1); }
 #endif
 
-  AutoWindow::AutoWindow (int wd, int ht, const std::string &t) : 
+  AutoWindow::AutoWindow (int wd, int ht, const std::string &t) :
 #ifdef HAVE_FLTK
     Fl_Double_Window (wd, ht, t.c_str()),
 #endif
-    title(t), fps(20), npts(0), delay(1), timer(1),
+    title(t), width(wd), height(ht), fps(20), npts(0), delay(1), timer(1),
     saved_clock(clock()), nb_clock(0), snapshot_prefix("snapshot"),
     snapshot_number(0), snapshot_period(0.0), snapshot_clock(clock()),
     paused(false) {
 #ifdef HAVE_FLTK
     callback(close_window);
-#else
-    _w = wd; _h = ht; 
 #endif
     surface = Cairo::ImageSurface::create (Cairo::FORMAT_RGB24, wd, ht);
     cr      = Cairo::Context::create (surface);
@@ -64,7 +62,7 @@ namespace vb {
 
   void AutoWindow::draw () {
     paint ();
-    fl_draw_image_mono (stage+1,0,0,w(),h(),4,stride);
+    fl_draw_image_mono (stage+1,0,0,width,height,4,stride);
   }
 #endif
 

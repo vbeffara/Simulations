@@ -22,8 +22,6 @@ namespace vb {
 
   class Image : public AutoWindow {
     public:
-      int width;           ///< The width of the image, in pixels.
-      int height;          ///< The height of the image, in pixels.
       int depth;           ///< The depth of the image, in bits per pixel (1, 2 or 4).
 
       int cropped;         ///< 1 if the output routine should crop the picture.

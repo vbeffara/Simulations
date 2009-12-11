@@ -29,18 +29,11 @@ namespace vb {
 #endif
     {
     public:
-      virtual void show ();             ///< Show the window on the screen.
+      std::string title;       ///< The title of the window.
+      int width;               ///< The width of the image, in pixels.
+      int height;              ///< The height of the image, in pixels.
+      int fps;                 ///< The target FPS rate.
 
-#ifdef HAVE_FLTK
-      virtual int handle (int event);   ///< Handle the events, in particular 'q' and 'x'.
-      void draw ();                     ///< Draw the contents of the window (called by FLTK).
-#else
-      int _w,_h;
-      int w()                { return _w;    }
-      int h()                { return _h;    }
-      bool visible()         { return false; }
-#endif
-      
       /** The standard constructor
        *
        * @param wd The width of the window.
@@ -49,6 +42,9 @@ namespace vb {
        */
 
       AutoWindow (int wd, int ht, const std::string &t);
+
+      /// Show the window on the screen.
+      void show ();
 
       /// Update the screen, handle the events.
       void update ();
@@ -68,8 +64,22 @@ namespace vb {
       /// Initiate automatic snapshots.
       void snapshot_setup (const std::string &prefix, double period = 0.0);
 
-      std::string title;             ///< The title of the window.
-      int fps;                       ///< The target FPS rate.
+#ifdef HAVE_FLTK
+      int handle (int event);  ///< Handle the events, in particular 'q' and 'x'.
+      void draw ();            ///< Draw the contents of the window (called by FLTK).
+#endif
+
+    protected:
+      Cairo::RefPtr <Cairo::ImageSurface> surface; ///< Cairo surface with the same contents.
+      Cairo::RefPtr <Cairo::Context>      cr;      ///< A context to draw onto the surface.
+
+      int stride; ///< The size of one line of the image in memory.
+
+      /// A staging area intended to contain 8bpp grayscale data.
+      unsigned char * stage;
+
+      /// Update the contents of surface from a derived class data.
+      virtual void paint () =0;
 
     private:
       unsigned long long npts;       ///< The number of actions done since the beginning of time.
@@ -87,20 +97,6 @@ namespace vb {
 
       /// Estimate the refresh rate, then call update().
       void cycle();
-
-      std::vector <unsigned char> raw_image_data;
-
-    protected:
-      Cairo::RefPtr <Cairo::ImageSurface> surface; ///< Cairo surface with the same contents.
-      Cairo::RefPtr <Cairo::Context>      cr;      ///< A context to draw onto the surface.
-
-      int stride; ///< The size of one line of the image in memory.
-
-      /// A staging area intended to contain 8bpp grayscale data.
-      unsigned char * stage;
-
-      /// Update the contents of surface from a derived class data.
-      virtual void paint () =0;
   };
 }
 
