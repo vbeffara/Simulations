@@ -140,7 +140,7 @@ int main(int argc, char ** argv)
   
   img = new Image (2*wd,ht,(smooth?8:2),s);
 
-  for (i=0;i<2*wd;i++) (*img)(i) = (smooth?255:INSIDE);
+  for (i=0;i<2*wd;i++) img->putpoint (i,0, (smooth?255:INSIDE));
 
   img->show ();
 
@@ -152,7 +152,7 @@ int main(int argc, char ** argv)
     for (int x=0; x<2*wd; ++x) {
       for (int y=1; y<ht; ++y) {
         if ((*img)(x,y)==1)
-          (*img)(x,y)=0;
+          img->putpoint(x,y,0);
       }
     }
   } else edge_detect();

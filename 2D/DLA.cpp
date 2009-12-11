@@ -178,8 +178,6 @@ int main(int argc, char ** argv)
   img = new Image(n,n,1,title);
   m = new char[n*n];
 
-  img->cropped = 1;
-
   /* Simulation */
 
   img->show();

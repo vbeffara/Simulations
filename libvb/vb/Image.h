@@ -22,9 +22,8 @@ namespace vb {
 
   class Image : public AutoWindow {
     public:
-      int depth;           ///< The depth of the image, in bits per pixel (1, 2 or 4).
-
-      int cropped;         ///< 1 if the output routine should crop the picture.
+      int depth;    ///< The depth of the image, in bits per pixel (1, 2, 4 or 8).
+      char D;       ///< The multiplyer up to 8 bpp;
 
       /** The standard constructor of the Image class.
        *
@@ -50,11 +49,16 @@ namespace vb {
        */
 
       int putpoint (int x, int y, int c, int dt=1) {
-        int xy = x+y*width;
-        if (pic[xy]!=c) {
-          pic[xy] = c;
+        int  xy = 4*x + y*stride;
+        char cD = c*D;
+
+        if (stage[xy] != cD) {
+          stage[xy+0] = cD;
+          stage[xy+1] = cD;
+          stage[xy+2] = cD;
           if (dt) step();
         }
+
         return c;
       }
 
@@ -112,34 +116,16 @@ namespace vb {
        * The implementation is trivial, and the function is inline, so you
        * should always use this - Image::pic[] is protected anyway.
        *
-       * It can also be used as image(x,y)=c but be careful with that.
-       *
        * @param x The first coordinate of the point.
        * @param y The second coordinate of the point.
        */
 
-      unsigned char &operator() (int x, int y) {
-        return pic[x+width*y];
+      unsigned char operator() (int x, int y=0) {
+        return stage[4*x + stride*y] / D;
       };
-
-      /** Return the color of the image at point (xy%width,xy/width).
-       *
-       * This is slightly more efficient than using image(x,y) if the
-       * value of x+width*y is already known.
-       *
-       * @param xy The coordinate of the point.
-       */
-
-      unsigned char &operator() (int xy) {
-        return pic[xy];
-      };
-
-    private:
-      std::vector <unsigned char> pic;  ///< The raw image data
-      std::string title;                ///< The title of the image
 
     protected:
-      virtual void paint ();
+      virtual void paint () {};
   };
 }
 

@@ -31,7 +31,7 @@ namespace vb {
       int true_width;    ///< The true width of the image, in pixels.
       int true_height;   ///< The true height of the image, in pixels.
       int L;             ///< The size of a block, in pixels.
-    
+
       /** The standard constructor of the CoarseImage class.
        *
        * @param wd The width of the image, in pixels.
@@ -41,7 +41,7 @@ namespace vb {
        */
 
       CoarseImage (int wd, int ht, int l, const std::string &tit);
-      
+
       /** The standard destructor of the CoarseImage class. */
 
       ~CoarseImage ();

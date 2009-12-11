@@ -62,7 +62,7 @@ namespace vb {
 
   void AutoWindow::draw () {
     paint ();
-    fl_draw_image_mono (stage+1,0,0,width,height,4,stride);
+    fl_draw_image_mono (stage,0,0,width,height,4,stride);
   }
 #endif
 

@@ -6,8 +6,7 @@
 
 namespace vb {
   Image::Image (int wd, int ht, int dp, const std::string &tit) : 
-    AutoWindow(wd,ht,tit), depth(dp), 
-    cropped(0), pic(stride*ht,0), title(tit) { 
+    AutoWindow(wd,ht,tit), depth(dp), D (255 / ((1<<depth)-1)) {
 
       if ((depth!=1)&&(depth!=2)&&(depth!=4)&&(depth!=8)) {
         std::cerr << "libvb : error : invalid depth"
@@ -66,17 +65,6 @@ namespace vb {
         ymed = (ymin+ymax)>>1;
         tessellate (f,xmin,ymin,xmax,ymed);
         tessellate (f,xmin,ymed,xmax,ymax);
-      }
-    }
-  }
-
-  void Image::paint () {
-    char D = 255 / ((1<<depth)-1);
-
-    for (int i=0; i<width; ++i) {
-      for (int j=0; j<height; ++j) {
-        unsigned char c = D * pic[i+width*j];
-        for (int k=0; k<4; ++k) stage[4*i+stride*j+k] = c;
       }
     }
   }

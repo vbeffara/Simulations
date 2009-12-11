@@ -48,6 +48,5 @@ int main(int argc, char ** argv)
     if ((x==2*n-1)||(y==2*n-1)||(x==0)||(y==0)) done=1;
   }
 
-  img->cropped = 1;
   return 0;
 }
