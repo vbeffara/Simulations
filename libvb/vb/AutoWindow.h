@@ -38,6 +38,7 @@ namespace vb {
       std::string title;       ///< The title of the window.
       int width;               ///< The width of the image, in pixels.
       int height;              ///< The height of the image, in pixels.
+      bool color;              ///< Whether the image is in color or greyscale.
       int fps;                 ///< The target FPS rate.
 
       /** The standard constructor
@@ -47,7 +48,7 @@ namespace vb {
        * @param t  The title of the window.
        */
 
-      AutoWindow (int wd, int ht, const std::string &t);
+      AutoWindow (int wd, int ht, const std::string &t, bool c = false);
 
       /// Show the window on the screen.
       void show ();

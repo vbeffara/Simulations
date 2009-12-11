@@ -52,9 +52,10 @@ namespace vb {
         char cD = c*D;
 
         if (stage[xy] != cD) {
-          stage[xy+0] = cD;
-          stage[xy+1] = cD;
-          stage[xy+2] = cD;
+          stage[xy+0] = cD; //  Blue channel (x86)
+          stage[xy+1] = cD; // Green channel (x86)
+          stage[xy+2] = cD; //   Red channel (x86)
+          // stage[xy+3] = 0; // unused in FORMAT_RGB24
           if (dt) step();
         }
 
