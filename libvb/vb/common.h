@@ -34,9 +34,9 @@
 
 #ifdef BYTE_ORDER
 # if BYTE_ORDER == BIG_ENDIAN
-#  define ENDIANNESS "big"
+#  define VB_BIG_ENDIAN
 # else
-#  define ENDIANNESS "little"
+#  define VB_LITTLE_ENDIAN
 # endif
 #else
 Error: unknown endianness.

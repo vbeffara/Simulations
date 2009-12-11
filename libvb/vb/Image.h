@@ -52,10 +52,14 @@ namespace vb {
         char cD = c*D;
 
         if (stage[xy] != cD) {
+#ifdef VB_LITTLE_ENDIAN
           stage[xy+0] = cD; //  Blue channel (x86)
           stage[xy+1] = cD; // Green channel (x86)
           stage[xy+2] = cD; //   Red channel (x86)
           // stage[xy+3] = 0; // unused in FORMAT_RGB24
+#else
+Error: big indian unimplemented.
+#endif
           if (dt) step();
         }
 

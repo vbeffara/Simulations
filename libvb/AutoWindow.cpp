@@ -9,11 +9,11 @@ namespace vb {
   void close_window (Fl_Widget *w) { exit(1); }
 #endif
 
-  AutoWindow::AutoWindow (int wd, int ht, const std::string &t, bool c) :
+  AutoWindow::AutoWindow (int wd, int ht, const std::string &t) :
 #ifdef HAVE_FLTK
     Fl_Double_Window (wd, ht, t.c_str()),
 #endif
-    title(t), width(wd), height(ht), color(c), fps(20), npts(0), delay(1), timer(1),
+    title(t), width(wd), height(ht), fps(20), npts(0), delay(1), timer(1),
     saved_clock(clock()), nb_clock(0), snapshot_prefix("snapshot"),
     snapshot_number(0), snapshot_period(0.0), snapshot_clock(clock()),
     paused(false) {
@@ -66,10 +66,27 @@ namespace vb {
     return 1;
   }
 
+#ifdef VB_LITTLE_ENDIAN
+  void draw_cb (void * in, int x, int y, int w, unsigned char * out) {
+    const AutoWindow &img = * (AutoWindow*) in;
+    for (int i=0; i<w; ++i) {
+      out[3*i + 0] = img.stage [4*(x+i) + img.stride*y + 2]; //   Red channel
+      out[3*i + 1] = img.stage [4*(x+i) + img.stride*y + 1]; // Green channel
+      out[3*i + 2] = img.stage [4*(x+i) + img.stride*y + 0]; //  Blue channel
+    }
+  }
+
   void AutoWindow::draw () {
     paint ();
-    fl_draw_image_mono (stage,0,0,width,height,4,stride);
+    fl_draw_image (draw_cb,this,0,0,width,height);
   }
+#else
+Error: big indian unimplemented.
+  void AutoWindow::draw () {
+    paint ();
+    fl_draw_image (stage,0,0,width,height,4,stride);
+  }
+#endif
 #endif
 
   void AutoWindow::update () {

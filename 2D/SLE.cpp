@@ -157,6 +157,7 @@ int main(int argc, char ** argv)
     }
   } else edge_detect();
 
+  img->output_png();
   delete img;
   return 0;
 }

@@ -38,7 +38,6 @@ namespace vb {
       std::string title;       ///< The title of the window.
       int width;               ///< The width of the image, in pixels.
       int height;              ///< The height of the image, in pixels.
-      bool color;              ///< Whether the image is in color or greyscale.
       int fps;                 ///< The target FPS rate.
 
       /** The standard constructor
@@ -49,7 +48,7 @@ namespace vb {
        * @param c  Whether the image has color or not.
        */
 
-      AutoWindow (int wd, int ht, const std::string &t, bool c = false);
+      AutoWindow (int wd, int ht, const std::string &t);
 
       /// Show the window on the screen.
       void show ();
@@ -108,6 +107,10 @@ namespace vb {
 
       /// Estimate the refresh rate, then call update().
       void cycle();
+
+#ifdef VB_LITTLE_ENDIAN
+      friend void draw_cb (void *, int, int, int, unsigned char *);
+#endif
   };
 }
 
