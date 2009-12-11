@@ -102,9 +102,6 @@ int main () {
     // do nothing
   }
 
-  Figure f; m.plot_circles (f); f.show(); f.pause();
-
-#ifdef HAVE_FLTK
-  Fl::run();
-#endif
+  Figure f; m.plot_circles (f);
+  f.show(); f.pause(); f.run();
 }

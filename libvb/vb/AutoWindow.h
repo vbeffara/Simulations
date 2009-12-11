@@ -6,21 +6,27 @@
 
 #include <vb/common.h>
 
+#ifdef HAVE_FLTK
+#include <FL/Fl.H>
+#include <FL/Fl_Double_Window.H>
+#include <FL/fl_draw.H>
+#endif
+
 namespace vb {
 
   /** A nice helper class for simulations.
    *
-   * The window should take care of auto-updating, catching keypresses, 
-   * and changing the display approximately 25 times per second. Just 
-   * call step() often enough and provide a draw() method in your 
-   * sub-class, that should be enough.
-   */
-
-  /* A few development nodes:
+   * The AutoWindow class takes care of displaying the window on the 
+   * screen, catching keypresses, and changing the display approximately 
+   * 25 times per second.  A derived class is expected to do two things:
    *
-   * - surface is a CairoMM surface reference of the necessary size;
+   * (i) provide a paint() method to fill in AutoWindow::surface 
+   * (posibly making use of AutoWindow::cr if needed). Updating it 
+   * elsewhere in the code is safe, because paint() will always be 
+   * called just before surface() is used;
    *
-   * - AutoWindow is in charge of displaying thsat to the window
+   * (ii) call AutoWindow::step() often enough, so that the display is 
+   * updated with the correct frequency. But this is not mandatory.
    */
 
   class AutoWindow
@@ -63,6 +69,9 @@ namespace vb {
 
       /// Initiate automatic snapshots.
       void snapshot_setup (const std::string &prefix, double period = 0.0);
+
+      /// If FLTK is present, run Fl::run(); if not, do nothing.
+      void run ();
 
 #ifdef HAVE_FLTK
       int handle (int event);  ///< Handle the events, in particular 'q' and 'x'.

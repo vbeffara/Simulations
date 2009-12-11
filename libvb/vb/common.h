@@ -31,12 +31,6 @@
 #include <cairomm/context.h>
 #include <cairomm/surface.h>
 
-#ifdef HAVE_FLTK
-#include <FL/Fl.H>
-#include <FL/Fl_Double_Window.H>
-#include <FL/fl_draw.H>
-#endif
-
 namespace vb {
   /// Utility type for a complex number.
   typedef std::complex<double> cpx;
