@@ -23,6 +23,8 @@ namespace vb {
       cr->line_to (z2.real(), z2.imag());
   }
 
+  /*********************************************************/
+
   bool Dot::operator== (const Shape &other) const {
     if (typeid(*this) != typeid(other)) return false;
 
@@ -38,6 +40,8 @@ namespace vb {
   }
 
   void Dot::draw (Cairo::RefPtr<Cairo::Context> cr) { }
+
+  /*********************************************************/
 
   bool Circle::operator== (const Shape &other) const {
     if (typeid(*this) != typeid(other)) return false;
@@ -57,6 +61,8 @@ namespace vb {
     cr->begin_new_sub_path ();
     cr->arc (z.real(), z.imag(), r, 0, 2*M_PI);
   }
+
+  /*********************************************************/
 
   Figure::Figure () : AutoWindow (400,400,"Figure") { }
 
@@ -128,24 +134,19 @@ namespace vb {
     double scale = min(scale_x, scale_y);
 
     cr->save();
-    cr->set_source_rgb (1,1,1);
-    cr->paint();
-    cr->restore();
+      cr->set_source_rgb (1,1,1); cr->paint();
 
-    cr->save();
-    cr->translate (w()/2,h()/2);
-    cr->scale (scale,scale);
-    cr->translate (-mid_x,-mid_y);
-    cr->set_source_rgb (0,0,0);
-    cr->set_line_width (1.0/scale);
-    draw(cr);
-    cr->stroke();
-    cr->restore();
-  }
+      cr->translate      (w()/2,h()/2);
+      cr->scale          (scale,scale);
+      cr->translate      (-mid_x,-mid_y);
+      cr->set_source_rgb (0,0,0);
+      cr->set_line_width (1.0/scale);
 
-  void Figure::draw (Cairo::RefPtr<Cairo::Context> cr) {
-    for (std::list<Shape*>::iterator i = contents.begin(); i != contents.end(); ++i)
-      (*i)->draw(cr);
+      for (std::list<Shape*>::iterator i = contents.begin(); i != contents.end(); ++i)
+        (*i)->draw(cr);
+
+      cr->stroke();
+    cr->restore();
   }
 
   std::ostream & Figure::printASY (std::ostream &os) {
