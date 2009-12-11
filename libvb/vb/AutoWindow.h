@@ -62,7 +62,7 @@ namespace vb {
       void pause() { paused=true; update(); }
 
       /// Output the current image to a PNG file of specified name.
-      void output_png (const std::string &s);
+      void output_png (const std::string &s = "");
 
       /// Take a snapshot of the current window as a PNG file.
       void snapshot (bool silent = false);

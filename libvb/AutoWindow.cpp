@@ -101,7 +101,13 @@ namespace vb {
 
   void AutoWindow::output_png (const std::string &s) {
     paint();
-    surface->write_to_png (s);
+    std::string fn = s;
+    if (s=="") {
+      std::ostringstream os;
+      os << title << ".png";
+      fn = os.str();
+    }
+    surface->write_to_png (fn);
   }
 
   void AutoWindow::snapshot (bool silent) {

@@ -9,20 +9,12 @@ namespace vb {
     AutoWindow(wd,ht,tit), depth(dp), D (255 / ((1<<depth)-1)) {
 
       if ((depth!=1)&&(depth!=2)&&(depth!=4)&&(depth!=8)) {
-        std::cerr << "libvb : error : invalid depth"
-          << " (only 1, 2, 4 and 8 bpp allowed).\n";
+        std::cerr << "libvb : error : invalid depth (only 1, 2, 4 and 8 bpp allowed)." << std::endl;
         exit(1);
       }
     }
 
-  Image::~Image () {
-    std::ostringstream s;
-    s << title << ".png";
-    output_png (s.str());
-  }
-
-  char Image::lazy_eval (coloring *f, int x, int y)
-  {
+  char Image::lazy_eval (coloring *f, int x, int y) {
     char tmp = (*this)(x,y);
 
     if (tmp==0) {
