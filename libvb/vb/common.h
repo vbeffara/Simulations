@@ -26,10 +26,21 @@
 #include <typeinfo>
 #include <vector>
 
+#include <sys/param.h>
 #include <sys/time.h>
 
 #include <cairomm/context.h>
 #include <cairomm/surface.h>
+
+#ifdef BYTE_ORDER
+# if BYTE_ORDER == BIG_ENDIAN
+#  define ENDIANNESS "big"
+# else
+#  define ENDIANNESS "little"
+# endif
+#else
+Error: unknown endianness.
+#endif
 
 namespace vb {
   /// Utility type for a complex number.

@@ -46,6 +46,7 @@ namespace vb {
        * @param wd The width of the window.
        * @param ht The height of the window.
        * @param t  The title of the window.
+       * @param c  Whether the image has color or not.
        */
 
       AutoWindow (int wd, int ht, const std::string &t, bool c = false);
