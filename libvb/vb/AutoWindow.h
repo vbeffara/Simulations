@@ -20,38 +20,35 @@ namespace vb {
    * machine as determined at compilation time.
    */
 
+#ifdef VB_LITTLE_ENDIAN
   class Color {
     public:
-#ifdef VB_LITTLE_ENDIAN
       char b; ///< The blue component.
       char g; ///< The green component.
       char r; ///< The red component.
       char a; ///< The alpha channel (for ARGB32).
-#else
-      char b; ///< The blue component.
-      char g; ///< The green component.
-      char r; ///< The red component.
-      char a; ///< The alpha channel (for ARGB32).
-#endif
 
       /// Constructor from RGBA values.
-      Color (char R, char G, char B, char A=255)
-#ifdef VB_LITTLE_ENDIAN
-      : b(B), g(G), r(R), a(A)
-#else
-      : a(A), r(R), g(G), b(B)
-#endif
-      { }
+      Color (char R, char G, char B, char A=255) : b(B), g(G), r(R), a(A) { }
 
       /// Constructor from a greyscale value.
-      Color (char V)
-#ifdef VB_LITTLE_ENDIAN
-      : b(V), g(V), r(V), a(255)
-#else
-      : a(V), r(V), g(V), b(255)
-#endif
-      { }
+      Color (char V) : b(V), g(V), r(V), a(255) { }
   };
+#else
+  class Color {
+    public:
+      char b; ///< The blue component.
+      char g; ///< The green component.
+      char r; ///< The red component.
+      char a; ///< The alpha channel (for ARGB32).
+
+      /// Constructor from RGBA values.
+      Color (char R, char G, char B, char A=255) : a(A), r(R), g(G), b(B) { }
+
+      /// Constructor from a greyscale value.
+      Color (char V) : a(V), r(V), g(V), b(255) { }
+  };
+#endif
 
   /** A nice helper class for simulations.
    *
@@ -150,9 +147,7 @@ namespace vb {
       /// Estimate the refresh rate, then call update().
       void cycle();
 
-#ifdef VB_LITTLE_ENDIAN
       friend void draw_cb (void *, int, int, int, unsigned char *);
-#endif
   };
 }
 

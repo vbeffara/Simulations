@@ -69,13 +69,11 @@ namespace vb {
     return 1;
   }
 
-#ifdef VB_LITTLE_ENDIAN
   void draw_cb (void * in, int x, int y, int w, unsigned char * out) {
     const AutoWindow &img = * (AutoWindow*) in;
     for (int i=0; i<w; ++i) {
-      out[3*i + 0] = img.stage [4*(x+i) + img.stride*y + 2]; //   Red channel
-      out[3*i + 1] = img.stage [4*(x+i) + img.stride*y + 1]; // Green channel
-      out[3*i + 2] = img.stage [4*(x+i) + img.stride*y + 0]; //  Blue channel
+      const Color &C = img.stage_c[x+i + y*img.stride/4];
+      out[3*i] = C.r; out[3*i + 1] = C.g; out[3*i + 2] = C.b;
     }
   }
 
@@ -83,13 +81,6 @@ namespace vb {
     paint ();
     fl_draw_image (draw_cb,this,0,0,width,height);
   }
-#else
-Error: big indian unimplemented.
-  void AutoWindow::draw () {
-    paint ();
-    fl_draw_image (stage,0,0,width,height,4,stride);
-  }
-#endif
 #endif
 
   void AutoWindow::update () {

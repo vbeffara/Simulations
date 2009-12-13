@@ -48,21 +48,8 @@ namespace vb {
        */
 
       int putpoint (int x, int y, int c, int dt=1) {
-        int  xy = 4*x + y*stride;
-        char cD = c*D;
-
-        if (stage[xy] != cD) {
-#ifdef VB_LITTLE_ENDIAN
-          stage[xy+0] = cD; //  Blue channel (x86)
-          stage[xy+1] = cD; // Green channel (x86)
-          stage[xy+2] = cD; //   Red channel (x86)
-          // stage[xy+3] = 0; // unused in FORMAT_RGB24
-#else
-Error: big indian unimplemented.
-#endif
-          if (dt) step();
-        }
-
+        stage_c [x + y*stride/4] = Color(c*D);
+        if (dt) step();
         return c;
       }
 
