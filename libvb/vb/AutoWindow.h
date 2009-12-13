@@ -13,6 +13,45 @@
 #endif
 
 namespace vb {
+  /** A rather stupid class holding color info in Cairo format.
+   *
+   * It is just a 4-char structure with a few convenience methods for 
+   * making it out of components, and it adapts to the endianness of the 
+   * machine as determined at compilation time.
+   */
+
+  class Color {
+    public:
+#ifdef VB_LITTLE_ENDIAN
+      char b; ///< The blue component.
+      char g; ///< The green component.
+      char r; ///< The red component.
+      char a; ///< The alpha channel (for ARGB32).
+#else
+      char b; ///< The blue component.
+      char g; ///< The green component.
+      char r; ///< The red component.
+      char a; ///< The alpha channel (for ARGB32).
+#endif
+
+      /// Constructor from RGBA values.
+      Color (char R, char G, char B, char A=255)
+#ifdef VB_LITTLE_ENDIAN
+      : b(B), g(G), r(R), a(A)
+#else
+      : a(A), r(R), g(G), b(B)
+#endif
+      { }
+
+      /// Constructor from a greyscale value.
+      Color (char V)
+#ifdef VB_LITTLE_ENDIAN
+      : b(V), g(V), r(V), a(255)
+#else
+      : a(V), r(V), g(V), b(255)
+#endif
+      { }
+  };
 
   /** A nice helper class for simulations.
    *
@@ -87,6 +126,9 @@ namespace vb {
 
       /// A staging area intended to contain 8bpp grayscale data.
       unsigned char * stage;
+
+      /// A staging area, same as stage but presented as an array of vb::Color
+      Color * stage_c;
 
       /// Update the contents of surface from a derived class data.
       virtual void paint () =0;

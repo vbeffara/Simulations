@@ -24,6 +24,9 @@ namespace vb {
     cr      = Cairo::Context::create (surface);
     stride  = surface->get_stride();
     stage   = surface->get_data();
+    stage_c = (Color*) stage;
+
+    assert (sizeof(Color) == 4 * sizeof(char));
   }
 
   void AutoWindow::show () {
