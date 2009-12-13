@@ -21,4 +21,15 @@ def build (bld) :
     bld.add_subdirs ('libvb tests 1D 2D 3D trucs geom xtoys')
     bld.install_files ('${PREFIX}/include/vb', 'libvb/vb/config.h')
 
+def check (bld):
+    from os import system;
+
+    system ('./build/default/tests/sample')
+    system ('cat sample.png | md5')
+    print 'e900ff49de69b10d8293aa192992fb81'
+
+    system ('./build/default/tests/test_figure')
+    system ('cat figtest.png | md5')
+    print '7086cede99730506c23719283441ba90'
+
 # vim: ft=python
