@@ -32,4 +32,8 @@ def check (bld):
     system ('cat figtest.png | md5')
     print '7086cede99730506c23719283441ba90'
 
+    system ('./build/default/tests/test_color')
+    system ('cat test_color.png | md5')
+    print '30c0f0b77ab57a9cf688616b73d0579b'
+
 # vim: ft=python

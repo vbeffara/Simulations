@@ -53,6 +53,11 @@ namespace vb {
         return c;
       }
 
+      void putpoint (int x, int y, Color c, int dt=1) {
+        stage[x+stride*y] = c;
+        if (dt) step();
+      }
+
       /** Set the color of a point - with range-checking.
        *
        * dt=0 does not really make sense here - if you want speed, you
