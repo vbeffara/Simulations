@@ -91,9 +91,6 @@ namespace vb {
       /// Update the screen, handle the events.
       void update ();
 
-      /// Increment the clock and call cycle() as needed.
-      void step() { ++npts; --timer; if (timer==0) cycle(); }
-
       /// Put the image on pause, i.e. wait for user input.
       void pause() { paused=true; update(); }
 
@@ -109,10 +106,14 @@ namespace vb {
       /// If FLTK is present, run Fl::run(); if not, do nothing.
       void run ();
 
-#ifdef HAVE_FLTK
-      int handle (int event);  ///< Handle the events, in particular 'q' and 'x'.
-      void draw ();            ///< Draw the contents of the window (called by FLTK).
-#endif
+    protected:
+      int stride;                                  ///< The number of pixels in a line in memory.
+      std::vector <Color> stage;                   ///< The pixel data, presented as a std::vector of vb::Color.
+      Cairo::RefPtr <Cairo::ImageSurface> surface; ///< Cairo surface with the same contents.
+      Cairo::RefPtr <Cairo::Context>      cr;      ///< A context to draw onto the surface.
+
+      /// Increment the clock and call cycle() as needed.
+      void step() { ++npts; --timer; if (timer==0) cycle(); }
 
     private:
       unsigned long long npts;       ///< The number of actions done since the beginning of time.
@@ -128,20 +129,13 @@ namespace vb {
 
       bool paused;
 
-      /// Estimate the refresh rate, then call update().
-      void cycle();
+      void cycle();                  ///< Estimate the refresh rate, then call update().
+#ifdef HAVE_FLTK
+      int handle (int event);        ///< Handle the events, in particular 'q' and 'x'.
+      void draw ();                  ///< Draw the contents of the window (called by FLTK).
+#endif
 
-    protected:
-      int stride; ///< The number of pixels in a line in memory.
-
-      /// The pixel data, presented as a std::vector of vb::Color.
-      std::vector <Color> stage;
-
-      Cairo::RefPtr <Cairo::ImageSurface> surface; ///< Cairo surface with the same contents.
-      Cairo::RefPtr <Cairo::Context>      cr;      ///< A context to draw onto the surface.
-
-      /// Update the contents of surface from a derived class data.
-      virtual void paint () =0;
+      virtual void paint () =0;      /// Update the contents of surface from a derived class data.
 
       /// Shuffle the bytes for FLTK display of a line.
       friend void draw_cb (void *, int, int, int, unsigned char *);

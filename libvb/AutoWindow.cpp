@@ -13,13 +13,15 @@ namespace vb {
 #ifdef HAVE_FLTK
     Fl_Double_Window (wd, ht, t.c_str()),
 #endif
-    title(t), width(wd), height(ht),
-    fps(20), npts(0), delay(1), timer(1), saved_clock(clock()), nb_clock(0),
-    snapshot_prefix("snapshot"), snapshot_number(0), snapshot_period(0.0), snapshot_clock(clock()), paused (false),
+    title(t), width(wd), height(ht), fps(20),
+
     stride  (Cairo::ImageSurface::format_stride_for_width (Cairo::FORMAT_RGB24, width) / 4),
     stage   (stride*height, Color(0)),
     surface (Cairo::ImageSurface::create ((unsigned char *) &stage.front(), Cairo::FORMAT_RGB24, width, height, stride*4)),
-    cr      (Cairo::Context::create (surface)) {
+    cr      (Cairo::Context::create (surface)),
+
+    npts(0), delay(1), timer(1), saved_clock(clock()), nb_clock(0),
+    snapshot_prefix("snapshot"), snapshot_number(0), snapshot_period(0.0), snapshot_clock(clock()), paused (false) {
 #ifdef HAVE_FLTK
       callback(close_window);
 #endif
