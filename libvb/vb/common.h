@@ -32,16 +32,6 @@
 #include <cairomm/context.h>
 #include <cairomm/surface.h>
 
-#ifdef BYTE_ORDER
-# if BYTE_ORDER == BIG_ENDIAN
-#  define VB_BIG_ENDIAN
-# else
-#  define VB_LITTLE_ENDIAN
-# endif
-#else
-Error: unknown endianness.
-#endif
-
 namespace vb {
   /// Utility type for a complex number.
   typedef std::complex<double> cpx;

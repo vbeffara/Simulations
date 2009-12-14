@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
   n = CLP('n');
 
   vb::Image img (n,n,8,"Sample");
-  img.show();
+  //img.show();
 
   img.tessellate (f, 0,0, n-1,n-1);
 

@@ -5,6 +5,7 @@
 #define AUTOWINDOW_H
 
 #include <vb/common.h>
+#include <vb/Color.h>
 
 #ifdef HAVE_FLTK
 #include <FL/Fl.H>
@@ -13,48 +14,6 @@
 #endif
 
 namespace vb {
-  /** A rather stupid class holding color info in Cairo format.
-   *
-   * It is just a 4-char structure with a few convenience methods for 
-   * making it out of components, and it adapts to the endianness of the 
-   * machine as determined at compilation time.
-   */
-
-#ifdef VB_LITTLE_ENDIAN
-  class Color {
-    public:
-      char b; ///< The blue component.
-      char g; ///< The green component.
-      char r; ///< The red component.
-      char a; ///< The alpha channel (for ARGB32).
-
-      /// Constructor from RGBA values.
-      Color (char R, char G, char B, char A=255) : b(B), g(G), r(R), a(A) { }
-
-      /// Constructor from a greyscale value.
-      Color (char V) : b(V), g(V), r(V), a(255) { }
-
-      /// Compare to another color.
-      bool operator== (const Color &o) { return (r==o.r) && (g==o.g) && (b==o.b) && (a==o.a); }
-      /// Compare to another color.
-      bool operator!= (const Color &o) { return ! operator==(o); }
-  };
-#else
-  class Color {
-    public:
-      char b; ///< The blue component.
-      char g; ///< The green component.
-      char r; ///< The red component.
-      char a; ///< The alpha channel (for ARGB32).
-
-      /// Constructor from RGBA values.
-      Color (char R, char G, char B, char A=255) : a(A), r(R), g(G), b(B) { }
-
-      /// Constructor from a greyscale value.
-      Color (char V) : a(V), r(V), g(V), b(255) { }
-  };
-#endif
-
   /** A nice helper class for simulations.
    *
    * The AutoWindow class takes care of displaying the window on the 
