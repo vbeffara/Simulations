@@ -14,7 +14,7 @@ void cnx (Image &img, int ox, int oy, char in, char out)
 
   imin=0; imax=0;
   fifox[0]=ox; fifoy[0]=oy;
-  img(ox,oy)=in; 
+  img.putpoint (ox,oy,in); 
 
   while (imin<=imax) {
     i=fifox[imin];
@@ -24,22 +24,22 @@ void cnx (Image &img, int ox, int oy, char in, char out)
     if ((i<img.width-1)&&(img(k+1)!=in)&&(img(k+1)!=out)) {
       fifox[++imax]=i+1;
       fifoy[imax]=j;
-      img(k+1)=in;
+      img.putpoint (k+1,0,in);
     }
     if ((i>0)&&(img(k-1)!=in)&&(img(k-1)!=out)) {
       fifox[++imax]=i-1;
       fifoy[imax]=j;
-      img(k-1)=in;
+      img.putpoint (k-1,0,in);
     }
     if ((j<img.height-1)&&(img(k+img.width)!=in)&&(img(k+img.width)!=out)) {
       fifox[++imax]=i;
       fifoy[imax]=j+1;
-      img(k+img.width)=in;
+      img.putpoint (k,1,in);
     }
     if ((j>0)&&(img(k-img.width)!=in)&&(img(k-img.width)!=out)) {
       fifox[++imax]=i;
       fifoy[imax]=j-1;
-      img(k-img.width)=in;
+      img.putpoint (k,-1,in);
     }
   }  
 }
@@ -51,7 +51,7 @@ void bndcnx (Image &img, int ox, int oy)
 
   imin=0; imax=0;
   fifox[0]=ox; fifoy[0]=oy;
-  img(ox,oy) |= 3;
+  img.putpoint (ox,oy, img(ox,oy) | 3);
 
   while (imin<=imax) {
     i=fifox[imin];
@@ -61,22 +61,22 @@ void bndcnx (Image &img, int ox, int oy)
     if ((i<img.width-1)&&(img(k)&16)&&!(img(k+1)&2)) {
       fifox[++imax]=i+1;
       fifoy[imax]=j;
-      img(k+1)|=3;
+      img.putpoint (k+1,0, img(k+1,0) | 3);
     }
     if ((j<img.height-1)&&(img(k)&32)&&!(img(k+img.width)&2)) {
       fifox[++imax]=i;
       fifoy[imax]=j+1;
-      img(k+img.width)|=3;
+      img.putpoint (k,1, img(k,1) | 3);
     }
     if ((i>0)&&(img(k-1)&16)&&!(img(k-1)&2)) {
       fifox[++imax]=i-1;
       fifoy[imax]=j;
-      img(k-1)|=3;
+      img.putpoint (k-1,0, img(k-1,0) | 3);
     }
     if ((j>0)&&(img(k-img.width)&32)&&!(img(k-img.width)&2)) {
       fifox[++imax]=i;
       fifoy[imax]=j-1;
-      img(k-img.width)|=3;
+      img.putpoint (k,-1, img(k,-1) | 3);
     }
   }  
 }
@@ -102,8 +102,8 @@ int main(int argc, char ** argv)
 
   for (int x=0;x<2*n;++x)
     for (int y=0;y<2*n;++y) {
-      if ( prng.bernoulli(p) ) img(x,y)=17; else img(x,y)=1;
-      if ( prng.bernoulli(p) ) img(x,y)+=32;
+      if ( prng.bernoulli(p) ) img.putpoint (x,y,17); else img.putpoint (x,y,1);
+      if ( prng.bernoulli(p) ) img.putpoint (x,y,img(x,y)+32);
     }
 
   /* 3=cluster de l'origine */
@@ -116,7 +116,7 @@ int main(int argc, char ** argv)
 
   for (int x=0;x<2*n;++x)
     for (int y=0;y<2*n;++y)
-      img(x,y)&=3;
+      img.putpoint (x,y, img(x,y)&3);
 
   /* "Hull" du cluster */
 

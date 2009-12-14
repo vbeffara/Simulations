@@ -32,21 +32,21 @@ int main(int argc, char *argv[])
   if (beta > log(1+sqrt(2.0))) { /* Basse temp. */
     for (x=1;x<n-1;x++) {
       for (y=1;y<n-1;y++) {
-	img(x,y) = (x<(n>>1)?0:1);
+	img.putpoint (x,y, (x<(n>>1)?0:1));
       }
     }
   } else { /* Haute temp. */
     for (x=1;x<n-1;x++) {
       for (y=1;y<n-1;y++) {
-	img(x,y) = prng.bernoulli(.5);
+	img.putpoint (x,y, prng.bernoulli(.5));
       }
     }
   }
 
-  for (i=0;i<(n>>1);i++) { img(i,0)=LEFT; img(i,n-1)=LEFT; }
-  for (i=0;i<n;i++) { img(0,i)=LEFT; }
-  for (i=(n>>1);i<n;i++) { img(i,0)=RIGHT; img(i,n-1)=RIGHT; }
-  for (i=0;i<n;i++) { img(n-1,i)=RIGHT; }
+  for (i=0;i<(n>>1);i++) { img.putpoint (i,0,LEFT);  img.putpoint (i,n-1,LEFT); }
+  for (i=0;i<n;i++)      { img.putpoint (0,i,LEFT); }
+  for (i=(n>>1);i<n;i++) { img.putpoint (i,0,RIGHT); img.putpoint (i,n-1,RIGHT); }
+  for (i=0;i<n;i++)      { img.putpoint (n-1,i,RIGHT); }
 
   img.show();
 

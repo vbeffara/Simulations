@@ -72,13 +72,13 @@ int main(int argc, char ** argv)
   long i;
   for (i=0;i<w*h;i++) {
     if ( prng.bernoulli( p1 + (p2-p1)*((double)i / (w*h)) )) 
-      (*img)(i)=1;
+      img -> putpoint (i,0,1);
     else
-      (*img)(i)=2;
+      img -> putpoint (i,0,2);
   }
 
   for (i=w*h-w;i<w*h;i++) {
-    (*img)(i)=1;
+    img -> putpoint (i,0,1);
   }
 
   img->show();
@@ -98,7 +98,7 @@ int main(int argc, char ** argv)
   /* for (i=0;i<2*n;i++) if ((*img)(img->width*(i+1)-1)!=3)       cnx(img,img->width-1,i,0,3); */
   /* for (i=0;i<2*n;i++) if ((*img)(img->width*(img->height-1)+i)!=3) cnx(img,i,img->height-1,0,3); */
 
-  for (i=0;i<w*h;i++) if ((*img)(i)==2) (*img)(i)=0;
+  for (i=0;i<w*h;i++) if ((*img)(i,0)==2) img->putpoint (i,0,0);
 
   /* affichage du resultat */
 

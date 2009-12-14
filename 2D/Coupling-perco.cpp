@@ -187,14 +187,14 @@ void monte_carlo (Image *c1, Image *c2, Image *diff, int duration) {
     /*  config 1 : juste cond. a 4 bras entre r1 et r3=(N>>1)=N/2 */
 
     old = (*c1)(x,y);
-    (*c1)(x,y)=z;
-    if (test1(c1)==0) (*c1)(x,y)=old;
+    c1 -> putpoint (x,y,z);
+    if (test1(c1)==0) c1 -> putpoint (x,y,old);
 
     /*  config 1 : juste cond. a 4 bras entre r1 et r3=(N>>1)=N/2 */
 
     old = (*c2)(x,y);
-    (*c2)(x+y)=z;
-    if (test2(c2)==0) (*c2)(x,y)=old;
+    c2 -> putpoint (x,y,z);
+    if (test2(c2)==0) c2 -> putpoint (x,y,old);
 
     /*  affichage de la difference */
 
@@ -237,7 +237,7 @@ int main (int argc, char ** argv) {
   img = new Image(N,N,2,"The difference");
 
   pick (img1,test1);
-  for (i=0;i<N*N;i++) (*img2)(i) = (*img1)(i);
+  for (i=0;i<N*N;i++) img2 -> putpoint (i,0, (*img1)(i,0));
 
   img->show();
   compute_diff(img1,img2,img);
