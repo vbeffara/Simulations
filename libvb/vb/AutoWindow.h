@@ -115,18 +115,6 @@ namespace vb {
       void draw ();            ///< Draw the contents of the window (called by FLTK).
 #endif
 
-    protected:
-      Cairo::RefPtr <Cairo::ImageSurface> surface; ///< Cairo surface with the same contents.
-      Cairo::RefPtr <Cairo::Context>      cr;      ///< A context to draw onto the surface.
-
-      int stride; ///< The number of pixels in a line in memory.
-
-      /// The pixel data, presented as a std::vector of vb::Color.
-      Color * stage;
-
-      /// Update the contents of surface from a derived class data.
-      virtual void paint () =0;
-
     private:
       unsigned long long npts;       ///< The number of actions done since the beginning of time.
       unsigned long delay;
@@ -143,6 +131,18 @@ namespace vb {
 
       /// Estimate the refresh rate, then call update().
       void cycle();
+
+    protected:
+      int stride; ///< The number of pixels in a line in memory.
+
+      /// The pixel data, presented as a std::vector of vb::Color.
+      std::vector <Color> stage;
+
+      Cairo::RefPtr <Cairo::ImageSurface> surface; ///< Cairo surface with the same contents.
+      Cairo::RefPtr <Cairo::Context>      cr;      ///< A context to draw onto the surface.
+
+      /// Update the contents of surface from a derived class data.
+      virtual void paint () =0;
 
       friend void draw_cb (void *, int, int, int, unsigned char *);
   };
