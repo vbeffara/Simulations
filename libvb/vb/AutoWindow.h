@@ -33,6 +33,11 @@ namespace vb {
 
       /// Constructor from a greyscale value.
       Color (char V) : b(V), g(V), r(V), a(255) { }
+
+      /// Compare to another color.
+      bool operator== (const Color &o) { return (r==o.r) && (g==o.g) && (b==o.b) && (a==o.a); }
+      /// Compare to another color.
+      bool operator!= (const Color &o) { return ! operator==(o); }
   };
 #else
   class Color {

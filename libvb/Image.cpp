@@ -14,10 +14,10 @@ namespace vb {
       }
     }
 
-  char Image::lazy_eval (coloring *f, int x, int y) {
-    char tmp = (*this)(x,y);
+  Color Image::lazy_eval (coloring *f, int x, int y) {
+    Color tmp = stage[x+stride*y];
 
-    if (tmp==0) {
+    if (tmp == Color(0,0,0,0)) {
       tmp = f(x,y);
       putpoint (x,y,tmp);
     }
@@ -26,38 +26,31 @@ namespace vb {
   }
 
   void Image::tessellate (coloring *f, int xmin, int ymin, int xmax, int ymax) {
-    int left,right,top,down;
-    int i,j,xmed,ymed;
+    Color tmp = lazy_eval (f,xmin,ymin);
+    bool mono = true;
 
-    left =  lazy_eval (f,xmin,ymin); down=left;
-    right = lazy_eval (f,xmax,ymax); top=right;
-
-    for (i=xmin;i<=xmax;i++) {
-      if (lazy_eval (f,i,ymin) != down) down=0;
-      if (lazy_eval (f,i,ymax) != top) top=0;
+    for (int i=xmin; i<=xmax; ++i) {
+      if (lazy_eval (f,i,ymin) != tmp) mono=false;
+      if (lazy_eval (f,i,ymax) != tmp) mono=false;
     }
 
-    for (i=ymin;i<=ymax;i++) {
-      if (lazy_eval (f,xmin,i) != left) left=0;
-      if (lazy_eval (f,xmax,i) != right) right=0;
+    for (int j=ymin; j<=ymax; ++j) {
+      if (lazy_eval (f,xmin,j) != tmp) mono=false;
+      if (lazy_eval (f,xmax,j) != tmp) mono=false;
     }
 
-    if ((xmax-xmin>1)&&(ymax-ymin>1)) {
-      if (left&&right&&top&&down) {
-        for (i=xmin+1;i<xmax;i++) {
-          for (j=ymin+1;j<ymax;j++) {
-            putpoint (i,j,left,0);
-          }
-        }
-      } else if ((xmax-xmin)>(ymax-ymin)) {
-        xmed = (xmin+xmax)>>1;
-        tessellate (f,xmin,ymin,xmed,ymax);
-        tessellate (f,xmed,ymin,xmax,ymax);
-      } else {
-        ymed = (ymin+ymax)>>1;
-        tessellate (f,xmin,ymin,xmax,ymed);
-        tessellate (f,xmin,ymed,xmax,ymax);
-      }
+    if (mono) {
+      for (int i=xmin+1; i<xmax; ++i)
+        for (int j=ymin+1; j<ymax; ++j)
+          putpoint (i,j,tmp,0);
+    } else if ((xmax-xmin) > max (ymax-ymin, 1)) {
+      int xmed = (xmin+xmax)>>1;
+      tessellate (f,xmin,ymin,xmed,ymax);
+      tessellate (f,xmed,ymin,xmax,ymax);
+    } else if (ymax>ymin+1) {
+      int ymed = (ymin+ymax)>>1;
+      tessellate (f,xmin,ymin,xmax,ymed);
+      tessellate (f,xmin,ymed,xmax,ymax);
     }
   }
 }

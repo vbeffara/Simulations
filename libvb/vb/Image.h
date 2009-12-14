@@ -12,7 +12,7 @@ namespace vb {
    * vb::Image::lazy_eval.
    */
 
-  typedef unsigned char coloring (int,int);
+  typedef Color coloring (int,int);
 
   /** The main image class, used for all displays.
    *
@@ -85,7 +85,7 @@ namespace vb {
        * @param y The second coordinate of the point.
        */
 
-      char lazy_eval (coloring *f, int x, int y);
+      Color lazy_eval (coloring *f, int x, int y);
 
       /** Compute the color of each point using a dyadic algorithm.
        *

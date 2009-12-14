@@ -8,9 +8,9 @@
 int n; ///< The size of the image.
 
 /// A simple coloring function.
-unsigned char f (int x, int y) {
+vb::Color f (int x, int y) {
   int d = (x-n/2)*(x-n/2) + (y-n/2)*(y-n/2);
-  return 1+(2*d*((1<<8)-1))/(n*n);
+  return vb::Color ( 1+(2*d*((1<<8)-1))/(n*n) );
 }
 
 /// The main function.

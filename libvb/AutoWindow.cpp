@@ -16,7 +16,7 @@ namespace vb {
     title(t), width(wd), height(ht), fps(20),
 
     stride  (Cairo::ImageSurface::format_stride_for_width (Cairo::FORMAT_RGB24, width) / 4),
-    stage   (stride*height, Color(0)),
+    stage   (stride*height, Color(0,0,0,0)),
     surface (Cairo::ImageSurface::create ((unsigned char *) &stage.front(), Cairo::FORMAT_RGB24, width, height, stride*4)),
     cr      (Cairo::Context::create (surface)),
 

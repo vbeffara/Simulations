@@ -8,17 +8,17 @@
 
 using namespace vb;
 
-#define DONTKNOW  0
-#define INSIDE    3
-#define LEFTSIDE  1
-#define RIGHTSIDE 2
+#define DONTKNOW  Color(0)
+#define INSIDE    Color(0)
+#define LEFTSIDE  Color(255,0,0)
+#define RIGHTSIDE Color(0,255,0)
 
 int n,nn,wd,ht,jmax;
 Image *img;
 double *c,*cmax,*cmin;
 double kappa;
 
-unsigned char color(int x, int y)
+Color color(int x, int y)
 {
   double a,b,d;
   int k;
@@ -37,7 +37,7 @@ unsigned char color(int x, int y)
   else return RIGHTSIDE;
 }
 
-unsigned char color_smooth(int x, int y)
+Color color_smooth(int x, int y)
 {
   double a,b,d;
   int k;
@@ -57,7 +57,7 @@ unsigned char color_smooth(int x, int y)
   double t = (a+b)/(2*b);
   t = t*t*(3-2*t);
 
-  return (unsigned char) (1 + 254*t);
+  return Color (1 + 254*t);
 } 
 
 void edge_detect(void)
