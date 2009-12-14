@@ -119,13 +119,10 @@ namespace vb {
       Cairo::RefPtr <Cairo::ImageSurface> surface; ///< Cairo surface with the same contents.
       Cairo::RefPtr <Cairo::Context>      cr;      ///< A context to draw onto the surface.
 
-      int stride_c; ///< The same, in terms of Color slots.
+      int stride; ///< The number of pixels in a line in memory.
 
-      /// A staging area intended to contain 8bpp grayscale data.
-      unsigned char * stage;
-
-      /// A staging area, same as stage but presented as an array of vb::Color
-      Color * stage_c;
+      /// The pixel data, presented as a std::vector of vb::Color.
+      Color * stage;
 
       /// Update the contents of surface from a derived class data.
       virtual void paint () =0;

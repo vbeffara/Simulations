@@ -48,7 +48,7 @@ namespace vb {
        */
 
       int putpoint (int x, int y, int c, int dt=1) {
-        stage_c [x + y*stride_c] = Color(c*D);
+        stage[x+stride*y] = Color(c*D);
         if (dt) step();
         return c;
       }
@@ -111,8 +111,10 @@ namespace vb {
        * @param y The second coordinate of the point.
        */
 
+      // TODO : fix that instead of returning the red channel.
+
       unsigned char operator() (int x, int y=0) {
-        return stage[4*x + 4*stride_c*y] / D;
+        return stage[x+stride*y].r / D;
       };
 
     protected:
