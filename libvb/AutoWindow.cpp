@@ -22,11 +22,12 @@ namespace vb {
 #endif
     surface = Cairo::ImageSurface::create (Cairo::FORMAT_RGB24, wd, ht);
     cr      = Cairo::Context::create (surface);
-    stride  = surface->get_stride();
+
     stage   = surface->get_data();
     stage_c = (Color*) stage;
 
-    assert (sizeof(Color) == 4 * sizeof(char));
+    assert (sizeof(Color) == 4*sizeof(char));
+    stride_c = surface->get_stride() / 4;
   }
 
   void AutoWindow::show () {
@@ -72,7 +73,7 @@ namespace vb {
   void draw_cb (void * in, int x, int y, int w, unsigned char * out) {
     const AutoWindow &img = * (AutoWindow*) in;
     for (int i=0; i<w; ++i) {
-      const Color &C = img.stage_c[x+i + y*img.stride/4];
+      const Color &C = img.stage_c[x+i + y*img.stride_c];
       out[3*i] = C.r; out[3*i + 1] = C.g; out[3*i + 2] = C.b;
     }
   }

@@ -48,7 +48,7 @@ namespace vb {
        */
 
       int putpoint (int x, int y, int c, int dt=1) {
-        stage_c [x + y*stride/4] = Color(c*D);
+        stage_c [x + y*stride_c] = Color(c*D);
         if (dt) step();
         return c;
       }
@@ -112,7 +112,7 @@ namespace vb {
        */
 
       unsigned char operator() (int x, int y=0) {
-        return stage[4*x + stride*y] / D;
+        return stage[4*x + 4*stride_c*y] / D;
       };
 
     protected:

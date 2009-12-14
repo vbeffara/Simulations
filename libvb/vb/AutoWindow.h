@@ -119,7 +119,7 @@ namespace vb {
       Cairo::RefPtr <Cairo::ImageSurface> surface; ///< Cairo surface with the same contents.
       Cairo::RefPtr <Cairo::Context>      cr;      ///< A context to draw onto the surface.
 
-      int stride; ///< The size of one line of the image in memory.
+      int stride_c; ///< The same, in terms of Color slots.
 
       /// A staging area intended to contain 8bpp grayscale data.
       unsigned char * stage;
