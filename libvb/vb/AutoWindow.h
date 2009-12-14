@@ -81,7 +81,6 @@ namespace vb {
        * @param wd The width of the window.
        * @param ht The height of the window.
        * @param t  The title of the window.
-       * @param c  Whether the image has color or not.
        */
 
       AutoWindow (int wd, int ht, const std::string &t);
@@ -144,6 +143,7 @@ namespace vb {
       /// Update the contents of surface from a derived class data.
       virtual void paint () =0;
 
+      /// Shuffle the bytes for FLTK display of a line.
       friend void draw_cb (void *, int, int, int, unsigned char *);
   };
 }
