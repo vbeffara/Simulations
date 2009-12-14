@@ -125,6 +125,7 @@ namespace vb {
       void draw (Cairo::RefPtr<Cairo::Context> cr);             ///< Draw it onto a Cairo context.
 
     protected:
+      /// Update the contents of AutoWindow::stage (i.e., do nothing).
       void paint ();
   };
 }

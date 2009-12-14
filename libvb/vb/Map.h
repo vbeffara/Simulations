@@ -344,6 +344,7 @@ namespace vb {
       double bottom ();
 
     protected:
+      /// Update the contents of AutoWindow::stage.
       virtual void paint ();
   };
 

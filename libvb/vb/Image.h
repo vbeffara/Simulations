@@ -37,9 +37,9 @@ namespace vb {
 
       /** Set the color of a point in the image.
        *
-       * If the previous color was different and dt is set to 1 (default),
-       * then it increments the clock and takes care of updating the
-       * screen representation approximately 25 times per second.
+       * If dt is set to 1 (default), then it increments the clock and
+       * takes care of updating the screen representation approximately
+       * 25 times per second.
        *
        * @param x  The first coordinate of the point.
        * @param y  The second coordinate of the point.
@@ -52,6 +52,18 @@ namespace vb {
         if (dt) step();
         return c;
       }
+
+      /** Set the color of a point in the image.
+       *
+       * If dt is set to 1 (default), then it increments the clock and
+       * takes care of updating the screen representation approximately
+       * 25 times per second.
+       *
+       * @param x  The first coordinate of the point.
+       * @param y  The second coordinate of the point.
+       * @param c  The vb::Color to put there.
+       * @param dt Whether to increment the clock.
+       */
 
       void putpoint (int x, int y, Color c, int dt=1) {
         stage[x+stride*y] = c;
@@ -123,6 +135,7 @@ namespace vb {
       };
 
     protected:
+      /// Update the contents of AutoWindow::stage (i.e., do nothing).
       virtual void paint () {};
   };
 }
