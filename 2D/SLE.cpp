@@ -152,9 +152,10 @@ int main(int argc, char ** argv)
     for (int x=0; x<2*wd; ++x) {
       for (int y=1; y<ht; ++y) {
         if ((*img)(x,y)==1)
-          img->putpoint(x,y,0);
+          img->putpoint(x,y,0,0);
       }
     }
+    img->update();
   } else edge_detect();
 
   img->output_png();
