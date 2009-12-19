@@ -133,7 +133,7 @@ int main (int argc, char **argv) {
   }
 
   snprintf (title,99, "A glass process of parameter %g (conditioning: '%s')", p, c.c_str());
-  Image img (n,n,2,title);
+  Image img (n,n,title);
 
   for (i=0;i<n;i++) {
     img.putpoint (i,n/2,3);

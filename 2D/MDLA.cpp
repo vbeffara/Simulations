@@ -42,7 +42,7 @@ int main(int argc, char ** argv)
   PRNG prng;
 
   sprintf(title,"A MDLA in density %.2f",p);
-  img = new Image(2*n,2*n,2,title);
+  img = new Image(2*n,2*n,title);
   img->snapshot_setup ("MDLA",t);
 
   ngrey = 0;

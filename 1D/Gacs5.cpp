@@ -90,7 +90,7 @@ int main (int argc, char **argv) {
   const double e = CLP('e');
   const double r = CLP('r');
 
-  Image img (n,n,1,"Cellular automaton");
+  Image img (n,n,"Cellular automaton");
   img.show();
 
   Automaton a(n);
@@ -101,7 +101,7 @@ int main (int argc, char **argv) {
   for (int i=0; ; ++i) {
     int nb=0;
     for (int x=0; x<n; ++x) {
-      img.putpoint (x,i%n,(a.main[x]>>0)&1);
+      img.putpoint (x,i%n,255 * ((a.main[x]>>0)&1));
       nb += a.main[x]&1;
     }
     //    img.update();

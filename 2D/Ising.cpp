@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
   long n = CLP('n');
 
   sprintf(title,"An Ising configuration (beta=%6f)",beta);
-  Image img(n,n,1,title);
+  Image img(n,n,title);
 
   PRNG prng;
 

@@ -15,7 +15,7 @@ int main (int argc, char **argv) {
 
   PRNG prng;
 
-  Image img (n,n,1,"Broken line process");
+  Image img (n,n,"Broken line process");
   img.show();
 
   vector <int> field (n);

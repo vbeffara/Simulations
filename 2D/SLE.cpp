@@ -138,7 +138,7 @@ int main(int argc, char ** argv)
 
   /* Image */
   
-  img = new Image (2*wd,ht,(smooth?8:2),s);
+  img = new Image (2*wd,ht,s);
 
   for (i=0;i<2*wd;i++) img->putpoint (i,0, (smooth?255:INSIDE));
 

@@ -175,7 +175,7 @@ int main(int argc, char ** argv)
   /* Initialisations */
 
   sprintf(title,"A DLA cluster of size %ld",n);
-  img = new Image(n,n,1,title);
+  img = new Image(n,n,title);
   m = new char[n*n];
 
   /* Simulation */

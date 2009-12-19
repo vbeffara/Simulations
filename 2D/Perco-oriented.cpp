@@ -9,18 +9,18 @@ int main (int argc, char **argv) {
   const int n = CLP('n');
   const double p = CLP('p');
 
-  vb::Image img (n,n,1,"Oriented site-percolation");
+  vb::Image img (n,n,"Oriented site-percolation");
   img.show();
 
   vb::PRNG prng;
 
-  img.putpoint(0,0,1);
+  img.putpoint(0,0,255);
 
   for (int i=0;i<n;++i)
     for (int j=0;j<n;++j)
       if (prng.bernoulli(p))
 	if ( ((i>0)&&img(i-1,j)) || ((j>0)&&img(i,j-1)) )
-	  img.putpoint (i,j,1);
+	  img.putpoint (i,j,255);
 
   return 0;
 }

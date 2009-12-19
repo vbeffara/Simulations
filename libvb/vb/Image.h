@@ -7,13 +7,6 @@
 #include <vb/AutoWindow.h>
 
 namespace vb {
-  /** Compute an 8bpp value from another depth.
-   */
-
-  inline unsigned char bpp_adapt (unsigned char c, int depth) {
-    return c * 255 / ((1<<depth)-1);
-  }
-
   /** Helper type for use in vb::Image::tessellate and
    * vb::Image::lazy_eval.
    */
@@ -28,17 +21,14 @@ namespace vb {
 
   class Image : public AutoWindow {
     public:
-      int depth;    ///< The depth of the image, in bits per pixel (1, 2, 4 or 8).
-
       /** The standard constructor of the Image class.
        *
        * @param wd The width in pixels.
        * @param ht The height in pixels.
-       * @param dp The depth of the created bitmap (1, 2, 4 or 8, in bpp).
        * @param tit The title of the image.
        */
 
-      Image (int wd, int ht, int dp, const std::string &tit);
+      Image (int wd, int ht, const std::string &tit);
 
       /** Set the color of a point in the image.
        *
@@ -53,7 +43,7 @@ namespace vb {
        */
 
       int putpoint (int x, int y, int c, int dt=1) {
-        stage[x+stride*y] = bpp_adapt (c,depth);
+        stage[x+stride*y] = c;
         if (dt) step();
         return c;
       }
@@ -136,7 +126,7 @@ namespace vb {
       // TODO : fix that instead of returning the red channel.
 
       unsigned char operator() (int x, int y=0) {
-        return stage[x+stride*y].r / bpp_adapt(1,depth);
+        return stage[x+stride*y].r;
       };
 
     protected:

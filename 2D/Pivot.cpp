@@ -45,7 +45,7 @@ int main(int argc, char ** argv)
   }
   sscanf (argv[1],"%d",&nn); nn=(nn>>3)<<3; n=nn*nn;
 
-  img = new Image (2*nn,2*nn,2,"A pivoting point of angle pi/2");
+  img = new Image (2*nn,2*nn,"A pivoting point of angle pi/2");
 
   x = new int[n];
   y = new int[n];

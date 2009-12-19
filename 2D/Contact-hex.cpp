@@ -18,14 +18,14 @@ int main(int argc, char *argv[])
 
   sprintf(title,"Discrete-time contact process on the tri/hex lattice (p=%f)",p);
 
-  Image img (n,n,1,title);
+  Image img (n,n,title);
   PRNG prng;
 
   /* conditions initiales */
 
   for (int x=0;x<n;++x)
     for (int y=0;y<n/2;++y)
-      img.putpoint(x,y,1,0);
+      img.putpoint(x,y,255,0);
 
   img.show();
 
@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
         if ((x+y+i)%3 == 0) {
           if ((img(x-1,y-1)||img(x,y+1)||img(x+1,y)) &&
               (prng.bernoulli(p))) {
-            img.putpoint(x,y,1);
+            img.putpoint(x,y,255);
             total++;
           } else {
             img.putpoint(x,y,0);

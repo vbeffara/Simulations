@@ -232,9 +232,9 @@ int main (int argc, char ** argv) {
   int i;
   Image *img,*img1,*img2;
 
-  img1 = new Image (N,N,1,"The first configuration");
-  img2 = new Image (N,N,1,"The second configuration");
-  img = new Image(N,N,2,"The difference");
+  img1 = new Image (N,N,"The first configuration");
+  img2 = new Image (N,N,"The second configuration");
+  img = new Image(N,N,"The difference");
 
   pick (img1,test1);
   for (i=0;i<N*N;i++) img2 -> putpoint (i,0, (*img1)(i,0));

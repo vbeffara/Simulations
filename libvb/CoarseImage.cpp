@@ -6,7 +6,7 @@
 
 namespace vb {
   CoarseImage::CoarseImage (int wd, int ht, int l, const std::string &title) 
-    : Image (1+(wd-1)/l,1+(ht-1)/l,8,title),
+    : Image (1+(wd-1)/l,1+(ht-1)/l,title),
       true_width(wd), true_height(ht), L(l), LL(l*l),
       fill(width*height,0), sub(width*height,NULL)
   { }

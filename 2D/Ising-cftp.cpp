@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
   n = CLP('n');
 
   sprintf(title,"An Ising configuration (beta=%6f)",beta);
-  Image img (n,n,2,title);
+  Image img (n,n,title);
 
   low = new char[n*n];
   high = new char[n*n];

@@ -107,7 +107,7 @@ int main(int argc, char ** argv)
   }
 
   sprintf(title,"Asymmetric bond-percolation cluster (epsilon=%f)",epsilon);
-  img = new Image(n,n,2,title);
+  img = new Image(n,n,title);
 
   /* OnScreen (img); */
 

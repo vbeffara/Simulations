@@ -5,14 +5,7 @@
 #include <vb/Image.h>
 
 namespace vb {
-  Image::Image (int wd, int ht, int dp, const std::string &tit) : 
-    AutoWindow(wd,ht,tit), depth(dp) {
-
-      if ((depth!=1)&&(depth!=2)&&(depth!=4)&&(depth!=8)) {
-        std::cerr << "libvb : error : invalid depth (only 1, 2, 4 and 8 bpp allowed)." << std::endl;
-        exit(1);
-      }
-    }
+  Image::Image (int wd, int ht, const std::string &tit) : AutoWindow(wd,ht,tit) { }
 
   Color Image::lazy_eval (coloring *f, int x, int y) {
     Color tmp = stage[x+stride*y];

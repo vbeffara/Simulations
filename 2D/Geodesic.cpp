@@ -223,7 +223,7 @@ int main (int argc, char **argv) {
   }
   cerr << "Distance to the boundary : " << radius << endl;
 
-  Image img (nn,nn,8,"A dyadic GFF");
+  Image img (nn,nn,"A dyadic GFF");
   for (int i=0; i<nn; ++i)
     for (int j=0; j<nn; ++j) {
       double renorm = log(field[i+nn*j])/(g*sqrt((double)n));

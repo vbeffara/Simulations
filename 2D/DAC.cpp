@@ -71,7 +71,7 @@ int main(int argc, char ** argv)
 
   char title[100];
   sprintf(title,"Divide-and-color model (p=%.3f,q=%.3f)",p,q);
-  Image img (n,n,1,title);
+  Image img (n,n,title);
 
   for (int x=0; x<n; ++x)
     for (int y=0; y<n; ++y)

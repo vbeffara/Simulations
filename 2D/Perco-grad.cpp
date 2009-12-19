@@ -63,7 +63,7 @@ int main(int argc, char ** argv)
   char title[80];
   sprintf(title,"Gradient percolation cluster");
 
-  Image *img = new Image(w,h,2,title);
+  Image *img = new Image(w,h,title);
 
   PRNG prng;
 

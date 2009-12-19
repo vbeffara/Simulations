@@ -94,7 +94,7 @@ int main(int argc, char ** argv)
   p = CLP('p');
 
   sprintf(title,"Bond-percolation cluster (p=%f)",p);
-  Image img (2*n,2*n,2,title);
+  Image img (2*n,2*n,title);
 
   PRNG prng;
 

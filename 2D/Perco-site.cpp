@@ -58,7 +58,7 @@ int main(int argc, char ** argv)
   p = CLP('p');
 
   sprintf(title,"Site-percolation cluster (p=%f)",p);
-  img=new Image(2*n,2*n,2,title);
+  img=new Image(2*n,2*n,title);
 
   PRNG prng;
 

@@ -3,7 +3,7 @@
 using namespace vb;
 
 int main () {
-  Image img (256,256,8,"test_color");
+  Image img (256,256,"test_color");
 
   for (int i=0; i<256; ++i)
     for (int j=0; j<256; ++j)

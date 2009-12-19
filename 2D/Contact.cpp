@@ -18,13 +18,13 @@ int main(int argc, char *argv[])
 
   sprintf(title,"Discrete-time contact process on Z^2 (p=%f)",p);
 
-  Image img (n,n,1,title);
+  Image img (n,n,title);
   PRNG prng;
 
   /* conditions initiales */
 
   for (int x=0;x<n;++x) {
-    img.putpoint(x,0,1,0);
+    img.putpoint(x,0,255,0);
     for (int y=1;y<n;++y)
       img.putpoint(x,y,0,0);
   }
@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 	if ((x+y+i)%2) {
 	  if ((img(x-1,y)||img(x+1,y)||img(x,y-1)||img(x,y+1)) &&
 	      (prng.bernoulli(p))) {
-	    img.putpoint(x,y,1);
+	    img.putpoint(x,y,255);
 	    total++;
 	  } else {
 	    img.putpoint(x,y,0);

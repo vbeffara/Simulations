@@ -15,7 +15,7 @@ int main (int argc, char **argv) {
 
   PRNG prng;
 
-  Image img (n,n,1,"RPNG Process");
+  Image img (n,n,"RPNG Process");
 
   int h[n];
   for (int i=0; i<n; ++i) {

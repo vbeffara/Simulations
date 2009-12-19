@@ -11,7 +11,7 @@ int main (int argc, char **argv) {
   double p = CLP('p');
   int d = CLP('d');
 
-  Image img (n,n,d,"Voter model");
+  Image img (n,n,"Voter model");
 
   PRNG prng;
 
