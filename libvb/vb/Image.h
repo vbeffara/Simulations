@@ -11,7 +11,7 @@ namespace vb {
    * vb::Image::lazy_eval.
    */
 
-  typedef Color coloring (int,int);
+  typedef Color coloring (int,int,void*);
 
   /** The main image class, used for all displays.
    *
@@ -74,7 +74,7 @@ namespace vb {
        * @param y The second coordinate of the point.
        */
 
-      Color lazy_eval (coloring *f, int x, int y);
+      Color lazy_eval (coloring *f, int x, int y, void *data = NULL);
 
       /** Compute the color of each point using a dyadic algorithm.
        *
@@ -94,7 +94,7 @@ namespace vb {
        * @param ymax The second coordinate of the bottom-right corner.
        */
 
-      void tessellate (coloring *f, int xmin, int ymin, int xmax, int ymax);
+      void tessellate (coloring *f, int xmin, int ymin, int xmax, int ymax, void *data = NULL);
 
       /** Return the color of the image at point (x,y).
        *
