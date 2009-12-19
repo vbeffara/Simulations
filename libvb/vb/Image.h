@@ -38,24 +38,6 @@ namespace vb {
        *
        * @param x  The first coordinate of the point.
        * @param y  The second coordinate of the point.
-       * @param c  The color to put there.
-       * @param dt Whether to increment the clock.
-       */
-
-      int putpoint (int x, int y, int c, int dt=1) {
-        stage[x+stride*y] = c;
-        if (dt) step();
-        return c;
-      }
-
-      /** Set the color of a point in the image.
-       *
-       * If dt is set to 1 (default), then it increments the clock and
-       * takes care of updating the screen representation approximately
-       * 25 times per second.
-       *
-       * @param x  The first coordinate of the point.
-       * @param y  The second coordinate of the point.
        * @param c  The vb::Color to put there.
        * @param dt Whether to increment the clock.
        */
@@ -75,10 +57,9 @@ namespace vb {
        * @param c  The color to put there.
        */
 
-      int putpoint_safe (int x, int y, int c) {
+      void putpoint_safe (int x, int y, Color c, int dt=1) {
         if ( (x>=0) && (y>=0) && (x<width) && (y<height) )
-          return putpoint (x,y,c);
-        return -1;
+          putpoint (x,y,c,dt);
       }
 
       /** Lazy evaluation of f at point (x,y).
