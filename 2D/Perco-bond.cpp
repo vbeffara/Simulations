@@ -7,7 +7,7 @@ using namespace vb;
 
 int *fifox,*fifoy;
 
-void cnx (Image &img, int ox, int oy, char in, char out)
+void cnx (Image &img, int ox, int oy, Color in, Color out)
 {
   int imin,imax;
   int i,j,k;
@@ -120,13 +120,13 @@ int main(int argc, char ** argv)
 
   /* "Hull" du cluster */
 
-  for (i=0;i<2*n;i++) if (img(i,0)!=3)
+  for (i=0;i<2*n;i++) if (img(i,0)!=Color(3))
 			cnx(img,i,0,0,3);
-  for (i=0;i<2*n;i++) if (img(0,i)!=3)
+  for (i=0;i<2*n;i++) if (img(0,i)!=Color(3))
 			cnx(img,0,i,0,3);
-  for (i=0;i<2*n;i++) if (img(2*n-1,i)!=3)
+  for (i=0;i<2*n;i++) if (img(2*n-1,i)!=Color(3))
 			cnx(img,img.width-1,i,0,3);
-  for (i=0;i<2*n;i++) if (img(i,2*n-1)!=3)
+  for (i=0;i<2*n;i++) if (img(i,2*n-1)!=Color(3))
 			cnx(img,i,img.height-1,0,3);
 
   /* affichage du resultat */

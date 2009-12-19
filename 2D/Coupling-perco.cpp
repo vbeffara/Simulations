@@ -58,7 +58,7 @@ void compute_cpts (Image *c, int *cpts, int r1, int r2) {
   t=0;
   for (x=0;x<N;x++) {
     for (y=0;y<N;y++) {
-      if ((*c)(x,y)==1) {
+      if ((*c)(x,y) == Color(1)) {
 	cpts[x+N*y]=(++t);
       } else {
 	cpts[x+N*y]=-(++t);

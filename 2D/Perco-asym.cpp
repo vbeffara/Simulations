@@ -121,7 +121,7 @@ int main(int argc, char ** argv)
 
   hcross=0;
   for (i=0;i<n;i++)
-    if ((*img)((n-1)+n*i)==1)
+    if ((*img)((n-1)+n*i)==Color(1))
       hcross=1;
   
   if (hcross==0) {

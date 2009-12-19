@@ -8,7 +8,7 @@ using namespace vb;
 int *fifox,*fifoy;
 Image *img;
 
-void cnx (int ox, int oy, char in, char out)
+void cnx (int ox, int oy, Color in, Color out)
 {
   int imin,imax;
   int i,j,k;
@@ -119,10 +119,10 @@ int main(int argc, char ** argv)
 
   /* "Hull" du cluster */
 
-  for (i=0;i<2*n;i++) if ((*img)(i)!=3)                     cnx(i,0,0,3);
-  for (i=0;i<2*n;i++) if ((*img)(img->width*i)!=3)             cnx(0,i,0,3);
-  for (i=0;i<2*n;i++) if ((*img)(img->width*(i+1)-1)!=3)       cnx(img->width-1,i,0,3);
-  for (i=0;i<2*n;i++) if ((*img)(img->width*(img->height-1)+i)!=3) cnx(i,img->height-1,0,3);
+  for (i=0;i<2*n;i++) if ((*img)(i)!=Color(3))                            cnx(i,0,0,3);
+  for (i=0;i<2*n;i++) if ((*img)(img->width*i)!=Color(3))                 cnx(0,i,0,3);
+  for (i=0;i<2*n;i++) if ((*img)(img->width*(i+1)-1)!=Color(3))           cnx(img->width-1,i,0,3);
+  for (i=0;i<2*n;i++) if ((*img)(img->width*(img->height-1)+i)!=Color(3)) cnx(i,img->height-1,0,3);
 
   /* affichage du resultat */
 

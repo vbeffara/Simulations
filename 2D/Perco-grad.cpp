@@ -7,7 +7,7 @@ using namespace vb;
 
 int *fifox,*fifoy;
 
-void cnx (Image *img, long ox, long oy, long in, long out)
+void cnx (Image *img, long ox, long oy, Color in, Color out)
 {
   long imin,imax;
   long i,j,k;
@@ -98,7 +98,7 @@ int main(int argc, char ** argv)
   /* for (i=0;i<2*n;i++) if ((*img)(img->width*(i+1)-1)!=3)       cnx(img,img->width-1,i,0,3); */
   /* for (i=0;i<2*n;i++) if ((*img)(img->width*(img->height-1)+i)!=3) cnx(img,i,img->height-1,0,3); */
 
-  for (i=0;i<w*h;i++) if ((*img)(i,0)==2) img->putpoint (i,0,0);
+  for (i=0;i<w*h;i++) if ((*img)(i,0)==Color(2)) img->putpoint (i,0,0);
 
   /* affichage du resultat */
 

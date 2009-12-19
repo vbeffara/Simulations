@@ -54,7 +54,8 @@ namespace vb {
        *
        * @param x  The first coordinate of the point.
        * @param y  The second coordinate of the point.
-       * @param c  The color to put there.
+       * @param c  The vb::Color to put there.
+       * @param dt Whether to increment the clock.
        */
 
       void putpoint_safe (int x, int y, Color c, int dt=1) {
@@ -97,18 +98,11 @@ namespace vb {
 
       /** Return the color of the image at point (x,y).
        *
-       * The implementation is trivial, and the function is inline, so you
-       * should always use this - Image::pic[] is protected anyway.
-       *
        * @param x The first coordinate of the point.
        * @param y The second coordinate of the point.
        */
 
-      // TODO : fix that instead of returning the red channel.
-
-      unsigned char operator() (int x, int y=0) {
-        return stage[x+stride*y].r;
-      };
+      Color & operator() (int x, int y=0) { return stage[x+stride*y]; };
 
     protected:
       /// Update the contents of AutoWindow::stage (i.e., do nothing).

@@ -78,7 +78,7 @@ int main(int argc, char ** argv)
       if (piv) {
 	img->putpoint (COO(x[k],y[k]),0,2);
 	p=k; cont=0;
-      } else if ((*img)(COO(x[k],y[k]),0)==0) img->putpoint(COO(x[k],y[k]),0,1);
+      } else if ((*img)(COO(x[k],y[k]),0)==Color(0)) img->putpoint(COO(x[k],y[k]),0,1);
     }
     if (cont) fprintf(stderr, ".");
   }
@@ -88,7 +88,7 @@ int main(int argc, char ** argv)
   for (k=0; k<4*n; k++) img->putpoint (k,0,0);
   for (k=0; k<n; k++)   img->putpoint (COO(x[k]-x[p],y[k]-y[p]),0,3);
   for (k=p+1; k<n; k++) {
-    if ((*img)(RCOO(x[k]-x[p],y[k]-y[p],0,0)) != 3) {
+    if ((*img)(RCOO(x[k]-x[p],y[k]-y[p],0,0)) != Color(3)) {
       img->putpoint (RCOO(x[k]-x[p],y[k]-y[p],0,0),0,1);
     }
   }

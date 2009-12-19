@@ -140,7 +140,7 @@ int main(int argc, char ** argv)
   
   img = new Image (2*wd,ht,s);
 
-  for (i=0;i<2*wd;i++) img->putpoint (i,0, (smooth?255:INSIDE));
+  for (i=0;i<2*wd;i++) img->putpoint (i,0, (smooth?Color(255):INSIDE));
 
   img->show ();
 
@@ -148,15 +148,7 @@ int main(int argc, char ** argv)
 
   img->tessellate ((smooth?color_smooth:color),0,1,2*wd-1,ht-1);
 
-  if (smooth) {
-    for (int x=0; x<2*wd; ++x) {
-      for (int y=1; y<ht; ++y) {
-        if ((*img)(x,y)==1)
-          img->putpoint(x,y,0,0);
-      }
-    }
-    img->update();
-  } else edge_detect();
+  if (!smooth) edge_detect();
 
   img->output_png();
   delete img;

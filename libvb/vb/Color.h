@@ -51,6 +51,8 @@ namespace vb {
       bool operator== (const Color &o) { return (r==o.r) && (g==o.g) && (b==o.b) && (a==o.a); }
       /// Compare to another color.
       bool operator!= (const Color &o) { return ! operator==(o); }
+      /// Convert to greyscale as an integer.
+      operator int () { return (r+g+b)/3; }
   };
 }
 

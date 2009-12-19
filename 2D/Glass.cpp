@@ -157,7 +157,7 @@ int main (int argc, char **argv) {
 
     if (ok[nb]) {
       if (prng.bernoulli(p)) {
-	if (img(x,y)==0) {
+	if (img(x,y) == Color(0)) {
           int tmp = img(x+1,y);
           tmp |= img (x-1,y);
           tmp |= img (x,y+1);

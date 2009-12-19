@@ -80,7 +80,7 @@ void fill_free (vector<double> &f, int n) {
 void trace (Image &img, vector<int> &direction, int x, int y) {
   int nn = img.width;
 
-  while (img(x,y) != 255) {
+  while (img(x,y) != Color(255)) {
     img.putpoint (x,y,255);
     int xy = direction[x+nn*y];
     x = xy%nn;
