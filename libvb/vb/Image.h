@@ -7,6 +7,12 @@
 #include <vb/AutoWindow.h>
 
 namespace vb {
+  /** Compute an 8bpp value from another depth.
+   */
+
+  inline unsigned char bpp_adapt (unsigned char c, int depth) {
+    return c * 255 / ((1<<depth)-1);
+  }
 
   /** Helper type for use in vb::Image::tessellate and
    * vb::Image::lazy_eval.
@@ -23,7 +29,6 @@ namespace vb {
   class Image : public AutoWindow {
     public:
       int depth;    ///< The depth of the image, in bits per pixel (1, 2, 4 or 8).
-      char D;       ///< The multiplyer up to 8 bpp;
 
       /** The standard constructor of the Image class.
        *
@@ -48,7 +53,7 @@ namespace vb {
        */
 
       int putpoint (int x, int y, int c, int dt=1) {
-        stage[x+stride*y] = Color(c*D);
+        stage[x+stride*y] = bpp_adapt (c,depth);
         if (dt) step();
         return c;
       }
@@ -131,7 +136,7 @@ namespace vb {
       // TODO : fix that instead of returning the red channel.
 
       unsigned char operator() (int x, int y=0) {
-        return stage[x+stride*y].r / D;
+        return stage[x+stride*y].r / bpp_adapt(1,depth);
       };
 
     protected:
