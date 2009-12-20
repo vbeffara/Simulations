@@ -4,7 +4,7 @@
 #include <vb/Map.h>
 
 namespace vb {
-  Map::Map (int nn) : AutoWindow (400,400,"A planar map"), n(nn), zero(-1), one(-1), infinity(-1) {
+  Map::Map (int nn) : AutoWindow (600,600,"A planar map"), n(nn), zero(-1), one(-1), infinity(-1) {
     for (int i=0; i<n; ++i) {
       v.push_back(new Vertex(0.0));
       bd.push_back(false);
@@ -156,7 +156,6 @@ namespace vb {
         v[i]->z /= v[i]->adj.size();
         if (v[i]->z != old) dirty = true;
       }
-      step();
     }
     update();
   }
