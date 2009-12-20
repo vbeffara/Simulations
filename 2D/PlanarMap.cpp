@@ -1,6 +1,7 @@
 #include <vb/CL_Parser.h>
 #include <vb/Map.h>
 #include <vb/PRNG.h>
+#include <vb/ProgressBar.h>
 
 using namespace vb;
 
@@ -60,14 +61,17 @@ bool Triangulation::flip (Edge e) {
 int main (int argc, char ** argv) {
   CL_Parser CLP (argc, argv, "n=10,t=-1");
   int n = CLP('n');
-  int t = CLP('t'); if (t==-1) t=n*n;
+  int t = CLP('t'); if (t==-1) t=50*n*n;
 
   Triangulation T (n);
   T.inscribe (T.face (Edge(0,1)));
 
+  ProgressBar P (t);
   for (int i=0; i<t; ++i) {
     T.flip (T.random_edge());
+    P.update(i);
   }
+  P.die();
 
   T.show();
   T.inscribe (T.face (Edge (0,*(T.v[0]->adj.begin()))));
