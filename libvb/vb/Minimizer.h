@@ -21,7 +21,7 @@ namespace vb {
 
       /** A pointer to the function to be minimized.
        *
-       * That function should take a vb::Vector<T> as the point at which 
+       * That function should take a vb::Vector as the point at which 
        * it is to be computed, and a void* representing the "context" in 
        * which it is defined (typically a pointer to an object 
        * containing additional information, as in the case of graph 
@@ -32,27 +32,27 @@ namespace vb {
        * be quicker.
        */
 
-      T (*f) (const Vector<T> &, void *);
+      T (*f) (const Vector &, void *);
       
       /** A pointer to the gradient of the function.
        *
        * Same remarks as for vb::Minimizer::f.
        */
       
-      Vector<T> (*g) (const Vector<T> &, void *);
+      Vector (*g) (const Vector &, void *);
 
       /** A pointer to joint computation of the function and its gradient.
        *
-       * The function itself takes 3 arguments : a vb::Vector<T> as the 
+       * The function itself takes 3 arguments : a vb::Vector as the 
        * point at which the function is to be computed, a reference to a 
-       * vb::Vector<T> where it should store the computed gradient, and 
+       * vb::Vector where it should store the computed gradient, and 
        * a void* pointing to the context of the computation, if any.
        *
        * This is the prefered way to specify the function to be 
        * minimized.
        */
 
-      T (*fg) (const Vector<T> &, Vector<T> &, void *);
+      T (*fg) (const Vector &, Vector &, void *);
 
       /** The context of all f and g computations.
        *
@@ -68,13 +68,13 @@ namespace vb {
 
       void *context;
 
-      Vector<T> x;      ///< The current point of interest.
-      T fx;             ///< The value of the function at x.
-      Vector<T> gx;     ///< The gradient of the function at x.
+      Vector x;      ///< The current point of interest.
+      T fx;          ///< The value of the function at x.
+      Vector gx;     ///< The gradient of the function at x.
 
-      Vector<T> old_x;  ///< The previous value of x, before the last line_search().
-      T old_fx;         ///< The value of the function at old_x.
-      Vector<T> old_gx; ///< The gradient of the function at old_x.
+      Vector old_x;  ///< The previous value of x, before the last line_search().
+      T old_fx;      ///< The value of the function at old_x.
+      Vector old_gx; ///< The gradient of the function at old_x.
 
       /** A pointer to a logging std::ostream.
        *
@@ -100,7 +100,7 @@ namespace vb {
        * @param x_ The point at which the computation is to be done.
        */
 
-      T compute (const Vector<T> &x_ = Vector<T>(0));
+      T compute (const Vector &x_ = Vector(0));
 
       /** Perform a few initialization.
        *
@@ -122,7 +122,7 @@ namespace vb {
        */
 
       Minimizer (unsigned int n_,
-                 T fg_ (const Vector<T> &, Vector<T> &, void *),
+                 T fg_ (const Vector &, Vector &, void *),
                  void *context_ = NULL) :
         n(n_), f(NULL), g(NULL), fg(fg_), context(context_) { init(); };
 
@@ -138,8 +138,8 @@ namespace vb {
        */
 
       Minimizer (unsigned int n_,
-                 T f_ (const Vector<T> &, void *),
-                 Vector<T> g_ (const Vector<T> &, void *),
+                 T f_ (const Vector &, void *),
+                 Vector g_ (const Vector &, void *),
                  void *context_ = NULL) :
         n(n_), f(f_), g(g_), fg(NULL), context(context_) { init(); };
 
@@ -153,7 +153,7 @@ namespace vb {
        * Careful if d is gx (for steepest gradient), because the 
        * algorith _will_ change the value of gx as it goes so it might 
        * lead to trouble ... That's why vb::Minimizer::minimize_grad 
-       * calls it as line_search(Vector<T>(gx)).
+       * calls it as line_search(Vector(gx)).
        *
        * @todo Improve the choice of the new point using polynomial 
        * interpolation instead of linear ? Not sure whether it actually 
@@ -162,7 +162,7 @@ namespace vb {
        * @param d The direction of the search.
        */
 
-      void line_search (const Vector<T> &d);
+      void line_search (const Vector &d);
 
       /** Function minimization by a steepest-descent algorithm.
        *
@@ -173,7 +173,7 @@ namespace vb {
        * @param x0 The point from which to start.
        */
 
-      T minimize_grad (const Vector<T> &x0);
+      T minimize_grad (const Vector &x0);
 
       /** A quasi-Newtonian minimization algorithm.
        *
@@ -192,7 +192,7 @@ namespace vb {
        * @param W0 The initial estimate for the inverse Hessian (as a * diagonal matrix).
        */
 
-      T minimize_bfgs (const Vector<T> &x0, const Vector<T> &W0 = Vector<T>(0));
+      T minimize_bfgs (const Vector &x0, const Vector &W0 = Vector(0));
 
       /** The Fletcher-Reeves conjugate gradient algorithm.
        *
@@ -202,7 +202,7 @@ namespace vb {
        * @param x0 The point from which to start.
        */
 
-      T minimize_fr (const Vector<T> &x0);
+      T minimize_fr (const Vector &x0);
 
       /** The Pollak-Ribiere conjugate gradient algorithm.
        *
@@ -212,7 +212,7 @@ namespace vb {
        * @param x0 The point from which to start.
        */
 
-      T minimize_pr (const Vector<T> &x0);
+      T minimize_pr (const Vector &x0);
 
       /** The mixed quasi-Newton / conjugate gradient method.
        *
@@ -224,12 +224,12 @@ namespace vb {
        * @param x0 The point from which to start.
        */
 
-      T minimize_qn (const Vector<T> &x0);
+      T minimize_qn (const Vector &x0);
   };
 
   /****************************************************/
 
-  template <typename T> inline T Minimizer<T>::compute (const Vector<T> &x_) {
+  template <typename T> inline T Minimizer<T>::compute (const Vector &x_) {
     if ((!x_.empty()) && (&x != &x_)) x.assign (x_.begin(), x_.end());
 
     if (fg) {
@@ -247,13 +247,13 @@ namespace vb {
     er = 1.0;
     ler = 0;
 
-    x = Vector<T> (n);
-    gx = Vector<T> (n);
-    old_x = Vector<T> (n);
-    old_gx = Vector<T> (n);
+    x = Vector (n);
+    gx = Vector (n);
+    old_x = Vector (n);
+    old_gx = Vector (n);
   }
 
-  template <typename T> void Minimizer<T>::line_search (const Vector<T> &d) {
+  template <typename T> void Minimizer<T>::line_search (const Vector &d) {
     old_x.swap(x); old_fx=fx; old_gx.swap(gx);
 
     T qq_0 = .8 * scalar_product (old_gx,d);
@@ -288,30 +288,30 @@ namespace vb {
     }
   }
 
-  template <typename T> T Minimizer<T>::minimize_grad (const Vector<T> &x0) {
+  template <typename T> T Minimizer<T>::minimize_grad (const Vector &x0) {
     compute(x0);
     old_x  = x;
     old_fx = fx+1;
     old_gx = gx;
 
     while (fx < old_fx) {
-      line_search (Vector<T>(gx));
+      line_search (Vector(gx));
     }
     return fx;
   }
 
-  template <typename T> T Minimizer<T>::minimize_bfgs (const Vector<T> &x0, const Vector<T> &W0) {
+  template <typename T> T Minimizer<T>::minimize_bfgs (const Vector &x0, const Vector &W0) {
     compute (x0);
 
     old_x  = x;
     old_fx = fx+1;
     old_gx = gx;
 
-    Vector<T> dx,dg,Wdg;
+    Vector dx,dg,Wdg;
     T dgdx,u;
 
-    Vector<T> diag = W0;
-    if (diag.size() == 0) diag = Vector<T> (x0.size(), T(1.0));
+    Vector diag = W0;
+    if (diag.size() == 0) diag = Vector (x0.size(), T(1.0));
     Matrix<T> W(x0.size(),x0.size(),diag);
 
     while (fx < old_fx) {
@@ -332,14 +332,14 @@ namespace vb {
     return fx;
   }
 
-  template <typename T> T Minimizer<T>::minimize_fr (const Vector<T> &x0) {
+  template <typename T> T Minimizer<T>::minimize_fr (const Vector &x0) {
     compute(x0);
     old_x  = x;
     old_fx = fx+1;
     old_gx = gx;
 
-    Vector<T> d(n);
-    Vector<T> old_d(n);
+    Vector d(n);
+    Vector old_d(n);
     bool first = true;
 
     while (fx < old_fx) {
@@ -355,15 +355,15 @@ namespace vb {
     return fx;
   }
 
-  template <typename T> T Minimizer<T>::minimize_pr (const Vector<T> &x0) {
+  template <typename T> T Minimizer<T>::minimize_pr (const Vector &x0) {
     compute(x0);
     old_x  = x;
     old_fx = fx+1;
     old_gx = gx;
 
-    Vector<T> d(n);
-    Vector<T> old_d(n);
-    Vector<T> y(n);
+    Vector d(n);
+    Vector old_d(n);
+    Vector y(n);
 
     bool first = true;
 
@@ -390,15 +390,15 @@ namespace vb {
     return fx;
   }
 
-  template <typename T> T Minimizer<T>::minimize_qn (const Vector<T> &x0) {
+  template <typename T> T Minimizer<T>::minimize_qn (const Vector &x0) {
     compute(x0);
     old_x  = x;
     old_fx = fx+1;
     old_gx = gx;
 
-    Vector<T> d(n);
-    Vector<T> old_d(n);
-    Vector<T> y(n);
+    Vector d(n);
+    Vector old_d(n);
+    Vector y(n);
 
     bool first = true;
 

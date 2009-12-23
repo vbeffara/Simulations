@@ -101,14 +101,14 @@ namespace vb {
        * @param B The line vector of the rank-one matrix.
        */
 
-      virtual MatrixStorage<T> *rank1update (const Vector<T> &A, const Vector<T> &B) =0;
+      virtual MatrixStorage<T> *rank1update (const Vector &A, const Vector &B) =0;
 
       /** Map a vector by the current matrix.
        *
        * @param X The vector to map.
        */
 
-      virtual Vector<T> map_right (const Vector<T> &X) =0;
+      virtual Vector map_right (const Vector &X) =0;
   };
 
   /** Plain old matrix, storing each entry separately.
@@ -122,7 +122,7 @@ namespace vb {
     public:
       /// The lines of the matrix.
 
-      std::vector< Vector<T> > lines;
+      std::vector<Vector> lines;
 
       /** The standard constructor of a zero matrix.
        *
@@ -130,7 +130,7 @@ namespace vb {
        * @param w The width of the matrix.
        */
 
-      MatrixStorage_Plain (unsigned int h, unsigned int w) : MatrixStorage<T> (h,w), lines (std::vector< Vector<T> > (h,Vector<T>(w))) { }
+      MatrixStorage_Plain (unsigned int h, unsigned int w) : MatrixStorage<T> (h,w), lines (std::vector<Vector> (h,Vector(w))) { }
 
       /// The standard destructor.
       virtual ~MatrixStorage_Plain () {}
@@ -178,15 +178,15 @@ namespace vb {
         return tmp;
       }
 
-      virtual MatrixStorage<T> *rank1update (const Vector<T> &A, const Vector<T> &B) {
+      virtual MatrixStorage<T> *rank1update (const Vector &A, const Vector &B) {
         for (unsigned int i=0; i<this->height; ++i)
           for (unsigned int j=0; j<this->width; ++j)
             lines[i][j] += A[i]*B[j];
         return this;
       }
 
-      virtual Vector<T> map_right (const Vector<T> &X) {
-        Vector<T> Y(this->height);
+      virtual Vector map_right (const Vector &X) {
+        Vector Y(this->height);
         for (unsigned int i=0; i<this->height; ++i)
           Y[i] = scalar_product (lines[i],X);
         return Y;
@@ -207,11 +207,11 @@ namespace vb {
     public:
       /// The diagonal of the unperturbed matrix.
 
-      Vector<T> diag;
+      Vector diag;
 
       /// The list of rank-one updates performed to the matrix.
 
-      Vector< std::pair< Vector<T>,Vector<T> > > updates;
+      std::vector < std::pair<Vector,Vector> > updates;
 
       /** Standard constructor of a zero matrix.
        *
@@ -220,7 +220,7 @@ namespace vb {
        */
 
       MatrixStorage_DiagSmallRank (unsigned int h, unsigned int w) : MatrixStorage<T> (h,w) {
-        diag = Vector<T> (h);
+        diag = Vector (h);
         for (unsigned int i=0; i<h; ++i) diag[i]=0;
       }
 
@@ -231,7 +231,7 @@ namespace vb {
        * @param d The diagonal of the matrix.
        */
 
-      MatrixStorage_DiagSmallRank (unsigned int h, unsigned int w, const Vector<T> &d) : MatrixStorage<T> (h,w), diag(d) { }
+      MatrixStorage_DiagSmallRank (unsigned int h, unsigned int w, const Vector &d) : MatrixStorage<T> (h,w), diag(d) { }
 
       /// The standard destructor.
       virtual ~MatrixStorage_DiagSmallRank () {}
@@ -286,8 +286,8 @@ namespace vb {
         return tmp;
       }
 
-      virtual MatrixStorage<T> *rank1update (const Vector<T> &A, const Vector<T> &B) {
-        updates.push_back (std::pair< Vector<T>,Vector<T> > (A,B));
+      virtual MatrixStorage<T> *rank1update (const Vector &A, const Vector &B) {
+        updates.push_back (std::pair<Vector,Vector> (A,B));
         if (updates.size() > this->height/10) {
           return this->compute();
         } else {
@@ -295,8 +295,8 @@ namespace vb {
         }
       }
 
-      virtual Vector<T> map_right (const Vector<T> &X) {
-        Vector<T> tmp(this->width);
+      virtual Vector map_right (const Vector &X) {
+        Vector tmp(this->width);
         for (unsigned int i=0; i<(this->width<this->height?this->width:this->height); ++i) tmp[i] = diag[i]*X[i];
         for (unsigned int i=0; i<updates.size(); ++i) tmp += updates[i].first * scalar_product(updates[i].second,X);
         return tmp;

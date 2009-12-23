@@ -41,7 +41,7 @@ namespace vb {
        * @param d The diagonal of the matrix.
        */
 
-      Matrix (unsigned int h, unsigned int w, const Vector<T> &d) :
+      Matrix (unsigned int h, unsigned int w, const Vector &d) :
         width(w), height(h), data (new MatrixStorage_DiagSmallRank<T> (h,w,d)) {}
 
       /** Copy constructor.
@@ -140,7 +140,7 @@ namespace vb {
        * @param B The horizontal vector of the update.
        */
 
-      Matrix &rank1update (const Vector<T> &A, const Vector<T> &B) {
+      Matrix &rank1update (const Vector &A, const Vector &B) {
         MatrixStorage<T> *tmp = data->rank1update(A,B);
         if (data != tmp) { delete data; data = tmp; }
         return (*this);
@@ -189,7 +189,7 @@ namespace vb {
    * @param X The vector.
    */
 
-  template <typename T> Vector<T> operator* (const Matrix<T> &M, const Vector<T> &X) {
+  template <typename T> Vector operator* (const Matrix<T> &M, const Vector &X) {
     return M.data->map_right(X);
   }
 

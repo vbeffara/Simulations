@@ -24,3 +24,4 @@ amc.*
 *.svg
 .lock-wscript
 tools/.waf*
+*.asy

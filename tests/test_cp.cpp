@@ -38,7 +38,7 @@ int main () {
   m.show();
   m.pause();
 
-  Vector<double> x(3*m.n);
+  Vector x(3*m.n);
 
   double r = 1.0/sqrt((double)m.n);
 

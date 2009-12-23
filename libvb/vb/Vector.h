@@ -10,7 +10,7 @@ namespace vb {
 
   /// A vector template class.
 
-  template <typename T> class Vector : public std::vector<T> {
+  class Vector : public std::vector<double> {
     public:
       /** Constructor.
        *
@@ -18,14 +18,14 @@ namespace vb {
        * @param t    The value of the entries of the vector.
        */
 
-      Vector (unsigned int size = 0, const T &t = T()) : std::vector<T> (size,t) { };
+      Vector (unsigned int size = 0, const double &t = 0) : std::vector<double> (size,t) { };
 
       /** Add a vector to this one.
        *
        * @param O The vector to add.
        */
 
-      Vector<T> &operator+= (const Vector<T> &O) {
+      Vector &operator+= (const Vector &O) {
         for (unsigned int i=0; i<this->size(); ++i) (*this)[i] += O[i];
         return *this;
       }
@@ -35,7 +35,7 @@ namespace vb {
        * @param O The vector to subtract.
        */
 
-      Vector<T> &operator-= (const Vector<T> &O) {
+      Vector &operator-= (const Vector &O) {
         for (unsigned int i=0; i<this->size(); ++i) (*this)[i] -= O[i];
         return *this;
       }
@@ -45,7 +45,7 @@ namespace vb {
        * @param l The scalar by which to multiply.
        */
 
-      Vector<T> &operator*= (const T &l) {
+      Vector &operator*= (double l) {
         for (unsigned int i=0; i<this->size(); ++i) (*this)[i] *= l;
         return *this;
       }
@@ -55,14 +55,14 @@ namespace vb {
        * @param l The scalar by which to divide.
        */
 
-      Vector<T> &operator/= (const T &l) {
+      Vector &operator/= (double l) {
         for (unsigned int i=0; i<this->size(); ++i) (*this)[i] /= l;
         return *this;
       }
 
       /// Compute the opposite of a vector.
 
-      Vector<T> operator- () const {
+      Vector operator- () const {
         Vector O(this->size());
         for (unsigned int i=0; i<this->size(); ++i) O[i] = -(*this)[i];
         return O;
@@ -78,10 +78,10 @@ namespace vb {
    * @param Y The second vector.
    */
 
-  template <typename T> T scalar_product (const Vector<T> &X, const Vector<T> &Y) {
+  double scalar_product (const Vector &X, const Vector &Y) {
     if (X.size() != Y.size()) throw std::runtime_error("vb::Vector : wrong dimension.");
 
-    T t = X[0]*Y[0];
+    double t = X[0]*Y[0];
     for (unsigned int i=1; i<X.size(); ++i) t += X[i]*Y[i];
     return t;
   }
@@ -92,8 +92,8 @@ namespace vb {
    * @param l The scalar.
    */
 
-  template <typename T> Vector<T> operator* (const T &l, const Vector<T> &X) {
-    Vector<T> Y = X;
+  Vector operator* (double l, const Vector &X) {
+    Vector Y = X;
     Y *= l;
     return Y;
   }
@@ -104,7 +104,7 @@ namespace vb {
    * @param l The scalar.
    */
 
-  template <typename T> Vector<T> operator* (const Vector<T> &X, const T &l) {
+  Vector operator* (const Vector &X, double l) {
     return l*X;
   }
 
@@ -114,8 +114,8 @@ namespace vb {
    * @param l The scalar.
    */
 
-  template <typename T> Vector<T> operator/ (const Vector<T> &X, const T &l) {
-    Vector<T> Y = X;
+  Vector operator/ (const Vector &X, double l) {
+    Vector Y = X;
     Y /= l;
     return Y;
   }
@@ -126,8 +126,8 @@ namespace vb {
    * @param Y The second vector.
    */
 
-  template <typename T> Vector<T> operator+ (const Vector<T> &X, const Vector<T> &Y) {
-    Vector<T> Z = X;
+  Vector operator+ (const Vector &X, const Vector &Y) {
+    Vector Z = X;
     Z += Y;
     return Z;
   }
@@ -138,8 +138,8 @@ namespace vb {
    * @param Y The second vector.
    */
 
-  template <typename T> Vector<T> operator- (const Vector<T> &X, const Vector<T> &Y) {
-    Vector<T> Z = X;
+  Vector operator- (const Vector &X, const Vector &Y) {
+    Vector Z = X;
     Z -= Y;
     return Z;
   }
@@ -150,7 +150,7 @@ namespace vb {
    * @param V  The vector to output.
    */
 
-  template <typename T> std::ostream &operator<< (std::ostream &os, const Vector<T> &V) {
+  std::ostream &operator<< (std::ostream &os, const Vector &V) {
     os << "[";
     for (unsigned int i=0; i<V.size(); ++i) {
       os << V[i];

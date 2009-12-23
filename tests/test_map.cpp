@@ -12,7 +12,7 @@ template <typename T1, typename T2> ostream &operator<< (ostream &os, pair<T1,T2
   return os;
 }
 
-double fg (const Vector<double> &x, Vector<double> &g, void *context) {
+double fg (const Vector &x, Vector &g, void *context) {
   Map *m = (Map *) context;
   double c = 0.0;
 
@@ -83,7 +83,7 @@ int main () {
       m.bd[*i] = true;
     }
 
-    Vector<double> x(3*m.n);
+    Vector x(3*m.n);
 
     for (int i=0; i<m.n; ++i) {
       x[3*i]   = m.v[i]->z.real();
