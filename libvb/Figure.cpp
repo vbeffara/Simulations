@@ -64,7 +64,7 @@ namespace vb {
 
   /*********************************************************/
 
-  Figure::Figure () : AutoWindow (400,400,"Figure") { }
+  Figure::Figure () : AutoWindow (600,600,"Figure") { }
 
   void Figure::clean() {
     std::list<Shape*>::iterator i;

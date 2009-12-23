@@ -30,7 +30,7 @@ def check (bld):
 
     system ('./build/default/tests/test_figure')
     system ('cat figtest.png | md5')
-    print '7086cede99730506c23719283441ba90'
+    print 'd18249b693b4b674f6c869af7779068c'
 
     system ('./build/default/tests/test_color')
     system ('cat test_color.png | md5')
