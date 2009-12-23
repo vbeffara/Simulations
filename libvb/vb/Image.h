@@ -72,6 +72,7 @@ namespace vb {
        * @param f The function to evaluate if needed.
        * @param x The first coordinate of the point.
        * @param y The second coordinate of the point.
+       * @param data A pointer to additional data needed by the function.
        */
 
       Color lazy_eval (coloring *f, int x, int y, void *data = NULL);
@@ -92,6 +93,7 @@ namespace vb {
        * @param ymin The second coordinate of the top-left corner.
        * @param xmax The first coordinate of the bottom-right corner.
        * @param ymax The second coordinate of the bottom-right corner.
+       * @param data A pointer to additional data needed by the coloring function.
        */
 
       void tessellate (coloring *f, int xmin, int ymin, int xmax, int ymax, void *data = NULL);
