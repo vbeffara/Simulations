@@ -18,55 +18,39 @@ namespace vb {
        * @param t    The value of the entries of the vector.
        */
 
-      Vector (unsigned int size = 0, const double &t = 0) : std::vector<double> (size,t) { };
+      Vector (unsigned int size = 0, double t = 0);
 
       /** Add a vector to this one.
        *
        * @param O The vector to add.
        */
 
-      Vector &operator+= (const Vector &O) {
-        for (unsigned int i=0; i<this->size(); ++i) (*this)[i] += O[i];
-        return *this;
-      }
+      void operator+= (const Vector &O);
 
       /** Subtract a vector from this one.
        *
        * @param O The vector to subtract.
        */
 
-      Vector &operator-= (const Vector &O) {
-        for (unsigned int i=0; i<this->size(); ++i) (*this)[i] -= O[i];
-        return *this;
-      }
+      void operator-= (const Vector &O);
 
       /** Multiply a vector by a scalar.
        *
        * @param l The scalar by which to multiply.
        */
 
-      Vector &operator*= (double l) {
-        for (unsigned int i=0; i<this->size(); ++i) (*this)[i] *= l;
-        return *this;
-      }
+      void operator*= (double l);
 
       /** Divide a vector by a scalar.
        *
        * @param l The scalar by which to divide.
        */
 
-      Vector &operator/= (double l) {
-        for (unsigned int i=0; i<this->size(); ++i) (*this)[i] /= l;
-        return *this;
-      }
+      void operator/= (double l);
 
       /// Compute the opposite of a vector.
 
-      Vector operator- () const {
-        Vector O(this->size());
-        for (unsigned int i=0; i<this->size(); ++i) O[i] = -(*this)[i];
-        return O;
-      }
+      Vector operator- ();
   };
 
   /** Compute the scalar product of two vectors.
@@ -78,13 +62,7 @@ namespace vb {
    * @param Y The second vector.
    */
 
-  double scalar_product (const Vector &X, const Vector &Y) {
-    if (X.size() != Y.size()) throw std::runtime_error("vb::Vector : wrong dimension.");
-
-    double t = X[0]*Y[0];
-    for (unsigned int i=1; i<X.size(); ++i) t += X[i]*Y[i];
-    return t;
-  }
+  double scalar_product (const Vector &X, const Vector &Y);
 
   /** Multiply a vector by a scalar.
    *
@@ -92,11 +70,7 @@ namespace vb {
    * @param l The scalar.
    */
 
-  Vector operator* (double l, const Vector &X) {
-    Vector Y = X;
-    Y *= l;
-    return Y;
-  }
+  Vector operator* (double l, const Vector &X);
 
   /** Multiply a vector by a scalar.
    *
@@ -104,9 +78,7 @@ namespace vb {
    * @param l The scalar.
    */
 
-  Vector operator* (const Vector &X, double l) {
-    return l*X;
-  }
+  Vector operator* (const Vector &X, double l);
 
   /** Divide a vector by a scalar.
    *
@@ -114,11 +86,7 @@ namespace vb {
    * @param l The scalar.
    */
 
-  Vector operator/ (const Vector &X, double l) {
-    Vector Y = X;
-    Y /= l;
-    return Y;
-  }
+  Vector operator/ (const Vector &X, double l);
 
   /** Compute the sum of two vectors.
    *
@@ -126,11 +94,7 @@ namespace vb {
    * @param Y The second vector.
    */
 
-  Vector operator+ (const Vector &X, const Vector &Y) {
-    Vector Z = X;
-    Z += Y;
-    return Z;
-  }
+  Vector operator+ (const Vector &X, const Vector &Y);
 
   /** Compute the difference between two vectors.
    *
@@ -138,11 +102,7 @@ namespace vb {
    * @param Y The second vector.
    */
 
-  Vector operator- (const Vector &X, const Vector &Y) {
-    Vector Z = X;
-    Z -= Y;
-    return Z;
-  }
+  Vector operator- (const Vector &X, const Vector &Y);
 
   /** Output a vector to an output stream.
    *
@@ -150,15 +110,7 @@ namespace vb {
    * @param V  The vector to output.
    */
 
-  std::ostream &operator<< (std::ostream &os, const Vector &V) {
-    os << "[";
-    for (unsigned int i=0; i<V.size(); ++i) {
-      os << V[i];
-      if (i < V.size()-1) os << ",";
-    }
-    os << "]";
-    return os;
-  }
+  std::ostream &operator<< (std::ostream &os, const Vector &V);
 }
 
 #endif
