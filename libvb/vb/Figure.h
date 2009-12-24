@@ -21,8 +21,6 @@ namespace vb {
 
       virtual bool operator== (const Shape&) const =0;          ///< Test for equality between two shapes.
 
-      virtual std::ostream &printASY (std::ostream &os) =0;     ///< Write ASY code for the shape.
-
       virtual void draw (Cairo::RefPtr<Cairo::Context> cr) =0;  ///< Draw the shape on a Cairo context.
   };
 
@@ -37,8 +35,6 @@ namespace vb {
       double bottom () { return min(z1.imag(),z2.imag()); }     ///< Get the bottom boundary of the Shape.
 
       bool operator== (const Shape&) const;                     ///< Test for equality between two shapes.
-
-      std::ostream &printASY (std::ostream &os);                ///< Write ASY code for the shape.
 
       void draw (Cairo::RefPtr<Cairo::Context> cr);             ///< Draw the shape on a Cairo context.
 
@@ -58,8 +54,6 @@ namespace vb {
 
       bool operator== (const Shape&) const;                     ///< Test for equality between two shapes.
 
-      std::ostream &printASY (std::ostream &os);                ///< Write ASY code for the shape.
-
       void draw (Cairo::RefPtr<Cairo::Context> cr);             ///< Draw the shape on a Cairo context.
 
     private:
@@ -78,8 +72,6 @@ namespace vb {
       double bottom () { return z.imag() - r; };                ///< Get the bottom boundary of the Shape.
 
       bool operator== (const Shape&) const;                     ///< Test for equality between two shapes.
-
-      std::ostream &printASY (std::ostream &os);                ///< Write ASY code for the shape.
 
       void draw (Cairo::RefPtr<Cairo::Context> cr);             ///< Draw the shape on a Cairo context.
 
@@ -109,9 +101,6 @@ namespace vb {
       Figure &segment (cpx z1, cpx z2);                         ///< Add a segment to the figure.
       Figure &dot (cpx z, std::string l = "");                  ///< Add a dot to the figure.
       Figure &circle (cpx z, double r);                         ///< Add a circle to the figure.
-
-      std::ostream &printASY (std::ostream &os);                ///< Output as ASY to a stream.
-      void printASY (const char *s);                            ///< Output as ASY to a file.
 
       /** Remove duplicate entries.
        *

@@ -68,7 +68,8 @@ int main () {
   f.circle(cpx(0.0,0.0),1.0);
   f.show();
   f.pause();
-  f.printASY ("cp.asy");
+
+  f.output ("A big circle packing");
 
   return 0;
 }

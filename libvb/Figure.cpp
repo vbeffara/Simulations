@@ -14,10 +14,6 @@ namespace vb {
     return true;
   }
 
-  std::ostream & Segment::printASY (std::ostream &os) {
-    return os << "draw (" << z1 << "--" << z2 << ");" << std::endl;
-  }
-
   void Segment::draw (Cairo::RefPtr<Cairo::Context> cr){
       cr->move_to (z1.real(), z1.imag());
       cr->line_to (z2.real(), z2.imag());
@@ -34,11 +30,6 @@ namespace vb {
     return true;
   }
 
-  std::ostream & Dot::printASY (std::ostream &os) {
-    if (l.length()) os << "label(\"" << l << "\"," << z << ",NE);";
-    return os << "dot(" << z << ");" << std::endl;
-  }
-
   void Dot::draw (Cairo::RefPtr<Cairo::Context> cr) { }
 
   /*********************************************************/
@@ -51,10 +42,6 @@ namespace vb {
     if (r != o->r) return false;
 
     return true;
-  }
-
-  std::ostream & Circle::printASY (std::ostream &os) {
-    return os << "draw (circle(" << z << "," << r << "));" << std::endl;
   }
 
   void Circle::draw (Cairo::RefPtr<Cairo::Context> cr) {
@@ -153,28 +140,12 @@ namespace vb {
     paint (cr);
   }
 
-  std::ostream & Figure::printASY (std::ostream &os) {
-    os << "unitsize(1000);" << std::endl;
-
-    std::list<Shape*>::iterator i;
-    for (i = contents.begin(); i != contents.end(); ++i) {
-      (*i)->printASY(os);
-    }
-    return os;
-  }
-
-  void Figure::printASY (const char *s) {
-    std::ofstream f(s);
-    printASY(f);
-    f.close();
-  }
-
   void Figure::output_pdf (const std::string &s) {
     std::ostringstream os;
     if (s == "") os << title; else os << s;
     os << ".pdf";
 
-    Cairo::RefPtr<Cairo::PdfSurface> pdf = Cairo::PdfSurface::create (os.str(), 600, 600);
+    Cairo::RefPtr<Cairo::PdfSurface> pdf = Cairo::PdfSurface::create (os.str(), width, height);
     Cairo::RefPtr<Cairo::Context>    pcr = Cairo::Context::create (pdf);
     paint (pcr);
     pcr->show_page();
