@@ -126,7 +126,7 @@ namespace vb {
     return add (new Circle (z,r));
   }
 
-  void Figure::paint () {
+  void Figure::paint (Cairo::RefPtr<Cairo::Context> cr) {
     double w = right()-left(), mid_x = (right()+left())/2;
     double h = top()-bottom(), mid_y = (top()+bottom())/2;
 
@@ -149,6 +149,10 @@ namespace vb {
     cr->restore();
   }
 
+  void Figure::paint () {
+    paint (cr);
+  }
+
   std::ostream & Figure::printASY (std::ostream &os) {
     os << "unitsize(1000);" << std::endl;
 
@@ -164,6 +168,19 @@ namespace vb {
     printASY(f);
     f.close();
   }
+
+  void Figure::output_pdf (const std::string &s) {
+    std::ostringstream os;
+    if (s == "") os << title; else os << s;
+    os << ".pdf";
+
+    Cairo::RefPtr<Cairo::PdfSurface> pdf = Cairo::PdfSurface::create (os.str(), 600, 600);
+    Cairo::RefPtr<Cairo::Context>    pcr = Cairo::Context::create (pdf);
+    paint (pcr);
+    pcr->show_page();
+  }
+
+  void Figure::output (const std::string &s) { output_pdf (s); }
 
   void Figure::unique() {
     std::list<Shape*>::iterator i,j;

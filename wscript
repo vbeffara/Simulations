@@ -29,8 +29,8 @@ def check (bld):
     print 'e900ff49de69b10d8293aa192992fb81'
 
     system ('./build/default/tests/test_figure')
-    system ('cat figtest.png | md5')
-    print 'd18249b693b4b674f6c869af7779068c'
+    system ('cat figtest.pdf | md5')
+    print '03a8b8b072f37ae06dbd9bc6b8f96725'
 
     system ('./build/default/tests/test_color')
     system ('cat test_color.png | md5')

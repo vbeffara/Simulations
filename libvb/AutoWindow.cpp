@@ -118,9 +118,7 @@ namespace vb {
     surface->write_to_png (os.str());
   }
 
-  void AutoWindow::output (const std::string &s) {
-    output_png (s);
-  }
+  void AutoWindow::output (const std::string &s) { output_png (s); }
 
   void AutoWindow::snapshot (bool silent) {
     std::ostringstream fn_s;

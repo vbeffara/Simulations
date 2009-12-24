@@ -124,9 +124,25 @@ namespace vb {
 
       void draw (Cairo::RefPtr<Cairo::Context> cr);             ///< Draw it onto a Cairo context.
 
+      /** Output the image as a PDF file.
+       *
+       * @param s The base name of the output file, defaults to Image::title.
+       */
+
+      virtual void output (const std::string &s = "");
+
+      /** Output the image as a PDF file.
+       *
+       * @param s The base name of the output file, defaults to Image::title.
+       */
+
+      void output_pdf (const std::string &s = "");
+
     protected:
-      /// Update the contents of AutoWindow::stage (i.e., do nothing).
+      /// Update the contents of AutoWindow::stage.
       void paint ();
+      /// Draw the contents of the figure to a Cairo context.
+      void paint (Cairo::RefPtr<Cairo::Context> cr);
   };
 }
 
