@@ -312,7 +312,7 @@ namespace vb {
 
     Vector diag = W0;
     if (diag.size() == 0) diag = Vector (x0.size(), T(1.0));
-    Matrix<T> W(x0.size(),x0.size(),diag);
+    Matrix W(x0.size(),x0.size(),diag);
 
     while (fx < old_fx) {
       line_search(W*gx);

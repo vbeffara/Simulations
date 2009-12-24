@@ -16,7 +16,7 @@ namespace vb {
    * storage to the next ...
    */
 
-  template <typename T> class Matrix {
+  class Matrix {
     public:
       unsigned int width;      ///< The width of the matrix.
       unsigned int height;     ///< The height of the matrix.
@@ -49,14 +49,14 @@ namespace vb {
        * @param M The matrix to copy.
        */
 
-      Matrix (const Matrix<T> &M) : width(M.width), height(M.height), data(M.data->copy()) {}
+      Matrix (const Matrix &M) : width(M.width), height(M.height), data(M.data->copy()) {}
 
       /** Assignment operator.
        *
        * @param M The matrix to copy.
        */
 
-      Matrix &operator= (const Matrix<T> &M) {
+      Matrix &operator= (const Matrix &M) {
         if (&M != this) {
           width=M.width;
           height=M.height;
@@ -72,7 +72,7 @@ namespace vb {
        * @param j The column of the entry.
        */
 
-      T at (unsigned int i, unsigned int j) const {
+      double at (unsigned int i, unsigned int j) const {
         return data->at(i,j);
       }
 
@@ -82,7 +82,7 @@ namespace vb {
        * @param j The column of the entry.
        */
 
-      T operator() (unsigned int i, unsigned int j) const {
+      double operator() (unsigned int i, unsigned int j) const {
         return this->at(i,j);
       }
 
@@ -93,7 +93,7 @@ namespace vb {
        * @param t The new value of the entry.
        */
 
-      Matrix &put (unsigned int i, unsigned int j, const T &t) { 
+      Matrix &put (unsigned int i, unsigned int j, double t) { 
         MatrixStorage *tmp = data->put(i,j,t);
         if (data != tmp) { delete data; data = tmp; }
         return (*this);
@@ -153,8 +153,8 @@ namespace vb {
    * @param N The second matrix to add.
    */
 
-  template <typename T> Matrix<T> operator+ (const Matrix<T> &M, const Matrix<T> &N) {
-    Matrix<T> O=M;
+  Matrix operator+ (const Matrix &M, const Matrix &N) {
+    Matrix O=M;
     O+=N;
     return O;
   }
@@ -165,8 +165,8 @@ namespace vb {
    * @param N The second matrix.
    */
 
-  template <typename T> Matrix<T> operator- (const Matrix<T> &M, const Matrix<T> &N) {
-    Matrix<T> O=M;
+  Matrix operator- (const Matrix &M, const Matrix &N) {
+    Matrix O=M;
     O-=N;
     return O;
   }
@@ -177,8 +177,8 @@ namespace vb {
    * @param N The right matrix.
    */
 
-  template <typename T> Matrix<T> operator* (const Matrix<T> &M, const Matrix<T> &N) {
-    Matrix<T> O=M;
+  Matrix operator* (const Matrix &M, const Matrix &N) {
+    Matrix O=M;
     O*=N;
     return O;
   }
@@ -189,7 +189,7 @@ namespace vb {
    * @param X The vector.
    */
 
-  template <typename T> Vector operator* (const Matrix<T> &M, const Vector &X) {
+  Vector operator* (const Matrix &M, const Vector &X) {
     return M.data->map_right(X);
   }
 
@@ -199,7 +199,7 @@ namespace vb {
    * @param M  The matrix.
    */
 
-  template <typename T> std::ostream &operator<< (std::ostream &os, const Matrix<T> &M) {
+  std::ostream &operator<< (std::ostream &os, const Matrix &M) {
     os << "[";
     for (unsigned int i=0; i<M.height; ++i) {
       os << "[";
