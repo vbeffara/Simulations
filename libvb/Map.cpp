@@ -72,14 +72,14 @@ namespace vb {
     return (adj_list::iterator) NULL;
   }
 
-  Edge Map::turn_left (const Edge &e) {
+  Edge Map::turn_left (const Edge &e) const {
     adj_list::iterator ee = find_edge (Edge(e.second,e.first));
     if (ee == v[e.second]->adj.begin()) ee = v[e.second]->adj.end();
     --ee;
     return Edge(e.second,*ee);
   }
 
-  Edge Map::turn_right (const Edge &e) {
+  Edge Map::turn_right (const Edge &e) const {
     adj_list::iterator ee = find_edge (Edge(e.second,e.first));
     ++ee;
     if (ee == v[e.second]->adj.end()) ee = v[e.second]->adj.begin();

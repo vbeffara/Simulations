@@ -8,12 +8,8 @@
 #include <vb/Minimizer.h>
 
 namespace vb {
-
-  /// A simple alias for map edges.
-  typedef std::pair<int,int> Edge;
-
-  /// A simple alias for adjacency lists.
-  typedef std::list<int>     adj_list;
+  typedef std::pair<int,int> Edge;     ///< A simple alias for map edges.
+  typedef std::list<int>     adj_list; ///< A simple alias for adjacency lists.
 
   /** A vertex of a vb::Map.
    *
@@ -25,8 +21,7 @@ namespace vb {
 
   class Vertex : public Circle {
     public:
-      /// The list of adjacent vertices.
-      adj_list adj;
+      adj_list adj; ///< The list of adjacent vertices.
 
       /// The default constructor.
       Vertex (const cpx &z = cpx(0.0,0.0), const double &r = 0.0) : Circle(z,r) {};
@@ -46,14 +41,14 @@ namespace vb {
 
   class Map : public AutoWindow {
     public:
-      int n;                       ///< The number of vertices.
-      std::vector<Vertex*> v;      ///< The graph structure.
-      std::vector<bool> bd;        ///< The boundary vertices.
+      int n;                  ///< The number of vertices.
+      std::vector<Vertex*> v; ///< The graph structure.
+      std::vector<bool> bd;   ///< The boundary vertices.
 
-      int zero;                    ///< The index of a vertex to locate at the origin.
-      int one;                     ///< The index of a vertex to locate on the real axis.
-      int infinity;                ///< The index of a vertex "at infinity" (when that makes sense).
-      double scale;                  ///< The scale of the embedding.
+      int zero;               ///< The index of a vertex to locate at the origin.
+      int one;                ///< The index of a vertex to locate on the real axis.
+      int infinity;           ///< The index of a vertex "at infinity" (when that makes sense).
+      double scale;           ///< The scale of the embedding.
 
       /** The constructor for a vb::MAp with no edges.
        *
@@ -77,13 +72,8 @@ namespace vb {
 
       adj_list::iterator find_edge (const Edge &e) const;
 
-      /// Walk on the map, turning left.
-
-      Edge turn_left (const Edge &e);
-
-      /// Walk on the map, turning right.
-
-      Edge turn_right (const Edge &e);
+      Edge turn_left  (const Edge &e) const; ///< Walk on the map, turning left.
+      Edge turn_right (const Edge &e) const; ///< Walk on the map, turning right.
 
       /** Add an edge to the map.
        *
