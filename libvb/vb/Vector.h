@@ -1,5 +1,5 @@
 /// @file Vector.h
-/// Definitions of a vector template class.
+/// Definitions of a vector class.
 
 #ifndef __VB_VECTOR_H
 #define __VB_VECTOR_H
@@ -8,7 +8,7 @@
 
 namespace vb {
 
-  /// A vector template class.
+  /// A vector class.
 
   class Vector : public std::vector<double> {
     public:

@@ -16,9 +16,6 @@ namespace vb {
    * is such a wonderful way of doing it, but it works pretty well and 
    * is transparent to the user.
    *
-   * One assumption is that the default value of the template parameter 
-   * T is neutral for addition.
-   *
    * @todo Add in-place versions of as many things as possible.
    */
 

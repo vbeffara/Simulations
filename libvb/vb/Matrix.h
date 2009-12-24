@@ -1,5 +1,5 @@
 /// @file Matrix.h
-/// Definitions of a matrix template class.
+/// Definitions of a matrix class.
 
 #ifndef __VB_MATRIX_H
 #define __VB_MATRIX_H
@@ -8,7 +8,7 @@
 
 namespace vb {
 
-  /** A template matrix class.
+  /** A matrix class.
    *
    * It is just some bookkeeping logic on top of MatrixStorage, which 
    * does all the heavy lifting. Ideally MatrixStorage should never have 
