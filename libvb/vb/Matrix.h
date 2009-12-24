@@ -7,7 +7,6 @@
 #include <vb/MatrixStorage.h>
 
 namespace vb {
-
   /** A matrix class.
    *
    * It is just some bookkeeping logic on top of MatrixStorage, which 
@@ -18,8 +17,8 @@ namespace vb {
 
   class Matrix {
     public:
-      unsigned int width;      ///< The width of the matrix.
-      unsigned int height;     ///< The height of the matrix.
+      unsigned int width;   ///< The width of the matrix.
+      unsigned int height;  ///< The height of the matrix.
       MatrixStorage *data;  ///< The underlying storage of the matrix.
 
       /** Standard constructor of a zero matrix.
@@ -28,8 +27,7 @@ namespace vb {
        * @param w The width of the matrix.
        */
 
-      Matrix (unsigned int h, unsigned int w) :
-        width(w), height(h), data (new MatrixStorage_DiagSmallRank (h,w)) {}
+      Matrix (unsigned int h, unsigned int w);
 
       /** Constructor from a diagonal vector.
        *
@@ -41,30 +39,26 @@ namespace vb {
        * @param d The diagonal of the matrix.
        */
 
-      Matrix (unsigned int h, unsigned int w, const Vector &d) :
-        width(w), height(h), data (new MatrixStorage_DiagSmallRank (h,w,d)) {}
+      Matrix (unsigned int h, unsigned int w, const Vector &d);
 
       /** Copy constructor.
        *
        * @param M The matrix to copy.
        */
 
-      Matrix (const Matrix &M) : width(M.width), height(M.height), data(M.data->copy()) {}
+      Matrix (const Matrix &M);
+
+      /** Destructor.
+       */
+
+      ~Matrix ();
 
       /** Assignment operator.
        *
        * @param M The matrix to copy.
        */
 
-      Matrix &operator= (const Matrix &M) {
-        if (&M != this) {
-          width=M.width;
-          height=M.height;
-          delete data;
-          data=M.data->copy();
-        }
-        return (*this);
-      }
+      Matrix &operator= (const Matrix &M);
 
       /** Return a particular rntry of the matrix.
        *
@@ -72,9 +66,7 @@ namespace vb {
        * @param j The column of the entry.
        */
 
-      double at (unsigned int i, unsigned int j) const {
-        return data->at(i,j);
-      }
+      double at (unsigned int i, unsigned int j) const;
 
       /** Return a particular rntry of the matrix.
        *
@@ -82,9 +74,7 @@ namespace vb {
        * @param j The column of the entry.
        */
 
-      double operator() (unsigned int i, unsigned int j) const {
-        return this->at(i,j);
-      }
+      double operator() (unsigned int i, unsigned int j) const;
 
       /** Set a particular entry of the matrix.
        *
@@ -93,44 +83,28 @@ namespace vb {
        * @param t The new value of the entry.
        */
 
-      Matrix &put (unsigned int i, unsigned int j, double t) { 
-        MatrixStorage *tmp = data->put(i,j,t);
-        if (data != tmp) { delete data; data = tmp; }
-        return (*this);
-      }
+      Matrix & put (unsigned int i, unsigned int j, double t);
 
       /** Add another matrix to this one.
        *
        * @param M The matrix to add.
        */
 
-      Matrix &operator+= (const Matrix &M) {
-        MatrixStorage *tmp = data->add(M.data);
-        if (data != tmp) { delete data; data = tmp; }
-        return (*this);
-      }
+      Matrix & operator+= (const Matrix &M);
 
       /** Subtract another matrix from this one.
        *
        * @param M The matrix to subtract.
        */
 
-      Matrix &operator-= (const Matrix &M) {
-        MatrixStorage *tmp = data->sub(M.data);
-        if (data != tmp) { delete data; data = tmp; }
-        return (*this);
-      }
+      Matrix & operator-= (const Matrix &M);
 
       /** Right-multiply by another matrix.
        *
        * @param M The right multiplicator.
        */
 
-      Matrix &operator*= (const Matrix &M) {
-        MatrixStorage *tmp = data->mul_right (M.data);
-        if (data != tmp) { delete data; data = tmp; }
-        return (*this);
-      }
+      Matrix & operator*= (const Matrix &M);
 
       /** Perform a rank-one update.
        *
@@ -140,11 +114,7 @@ namespace vb {
        * @param B The horizontal vector of the update.
        */
 
-      Matrix &rank1update (const Vector &A, const Vector &B) {
-        MatrixStorage *tmp = data->rank1update(A,B);
-        if (data != tmp) { delete data; data = tmp; }
-        return (*this);
-      }
+      Matrix & rank1update (const Vector &A, const Vector &B);
   };
 
   /** Add two matrices.
@@ -153,11 +123,7 @@ namespace vb {
    * @param N The second matrix to add.
    */
 
-  Matrix operator+ (const Matrix &M, const Matrix &N) {
-    Matrix O=M;
-    O+=N;
-    return O;
-  }
+  Matrix operator+ (const Matrix &M, const Matrix &N);
 
   /** Compute the difference between two matrices.
    *
@@ -165,11 +131,7 @@ namespace vb {
    * @param N The second matrix.
    */
 
-  Matrix operator- (const Matrix &M, const Matrix &N) {
-    Matrix O=M;
-    O-=N;
-    return O;
-  }
+  Matrix operator- (const Matrix &M, const Matrix &N);
 
   /** Compute the product of two matrices.
    *
@@ -177,11 +139,7 @@ namespace vb {
    * @param N The right matrix.
    */
 
-  Matrix operator* (const Matrix &M, const Matrix &N) {
-    Matrix O=M;
-    O*=N;
-    return O;
-  }
+  Matrix operator* (const Matrix &M, const Matrix &N);
 
   /** Compute the product of a matrix and a vector.
    *
@@ -189,9 +147,7 @@ namespace vb {
    * @param X The vector.
    */
 
-  Vector operator* (const Matrix &M, const Vector &X) {
-    return M.data->map_right(X);
-  }
+  Vector operator* (const Matrix &M, const Vector &X);
 
   /** Output a matrix to an output stream.
    *
@@ -199,20 +155,7 @@ namespace vb {
    * @param M  The matrix.
    */
 
-  std::ostream &operator<< (std::ostream &os, const Matrix &M) {
-    os << "[";
-    for (unsigned int i=0; i<M.height; ++i) {
-      os << "[";
-      for (unsigned int j=0; j<M.width; ++j) {
-        os << M(i,j);
-        if (j < M.width-1) os << ",";
-      }
-      os << "]";
-      if (i < M.height-1) os << ",";
-    }
-    return os << "]";
-  }
+  std::ostream &operator<< (std::ostream &os, const Matrix &M);
 }
 
 #endif
-
