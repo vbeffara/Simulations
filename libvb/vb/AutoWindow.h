@@ -58,6 +58,13 @@ namespace vb {
       /// Put the image on pause, i.e. wait for user input.
       void pause() { paused=true; update(); }
 
+      /** Output the image in the preferred format (PNG by default).
+       *
+       * @param s The base name of the output file, defaults to Image::title.
+       */
+
+      virtual void output (const std::string &s = "");
+
       /// Output the current image to a PNG file of specified name.
       void output_png (const std::string &s = "");
 

@@ -110,13 +110,16 @@ namespace vb {
 
   void AutoWindow::output_png (const std::string &s) {
     paint();
-    std::string fn = s;
-    if (s=="") {
-      std::ostringstream os;
-      os << title << ".png";
-      fn = os.str();
-    }
-    surface->write_to_png (fn);
+
+    std::ostringstream os;
+    if (s == "") os << title; else os << s;
+    os << ".png";
+
+    surface->write_to_png (os.str());
+  }
+
+  void AutoWindow::output (const std::string &s) {
+    output_png (s);
   }
 
   void AutoWindow::snapshot (bool silent) {
