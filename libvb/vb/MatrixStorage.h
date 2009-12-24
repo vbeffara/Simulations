@@ -22,7 +22,7 @@ namespace vb {
    * @todo Add in-place versions of as many things as possible.
    */
 
-  template <typename T> class MatrixStorage {
+  class MatrixStorage {
     public:
       unsigned int width;  ///< The width of the matrix;
       unsigned int height; ///< The height of the matrix.
@@ -41,11 +41,11 @@ namespace vb {
 
       /// Produce a copy of the object and return it.
 
-      virtual MatrixStorage<T> *copy () =0;
+      virtual MatrixStorage *copy () =0;
 
       /// Compute each of the entry, converting to MatrixStorage_Plain.
 
-      virtual MatrixStorage<T> *compute () =0;
+      virtual MatrixStorage *compute () =0;
 
       /** Return the entry at the given coordinates.
        *
@@ -53,7 +53,7 @@ namespace vb {
        * @param j The column of the entry.
        */
 
-      virtual T at (unsigned int i, unsigned int j) const =0;
+      virtual double at (unsigned int i, unsigned int j) const =0;
 
       /** Set the value of a particular matrix entry.
        *
@@ -62,7 +62,7 @@ namespace vb {
        * @param t The new value of the entry.
        */
 
-      virtual MatrixStorage<T> *put (unsigned int i, unsigned int j, const T &t) =0;
+      virtual MatrixStorage *put (unsigned int i, unsigned int j, double t) =0;
 
       /** Add a MatrixStorage to the current one.
        *
@@ -73,7 +73,7 @@ namespace vb {
        * @param M The MatrixStorage to add.
        */
 
-      virtual MatrixStorage<T> *add (MatrixStorage<T> *M) =0;
+      virtual MatrixStorage *add (MatrixStorage *M) =0;
 
       /** Subtract a MatrixStorage from the current one.
        *
@@ -84,14 +84,14 @@ namespace vb {
        * @param M The MatrixStorage to subtract.
        */
 
-      virtual MatrixStorage<T> *sub (MatrixStorage<T> *M) =0;
+      virtual MatrixStorage *sub (MatrixStorage *M) =0;
 
       /** Right-multiply the current matrix by another one.
        *
        * @param M The (right) multiplicator.
        */
 
-      virtual MatrixStorage<T> *mul_right (MatrixStorage<T> *M) =0;
+      virtual MatrixStorage *mul_right (MatrixStorage *M) =0;
 
       /** Make a rank-one update of the matrix.
        *
@@ -101,7 +101,7 @@ namespace vb {
        * @param B The line vector of the rank-one matrix.
        */
 
-      virtual MatrixStorage<T> *rank1update (const Vector &A, const Vector &B) =0;
+      virtual MatrixStorage *rank1update (const Vector &A, const Vector &B) =0;
 
       /** Map a vector by the current matrix.
        *
@@ -118,7 +118,7 @@ namespace vb {
    * multiplication.
    */
 
-  template <typename T> class MatrixStorage_Plain : public MatrixStorage<T> {
+  class MatrixStorage_Plain : public MatrixStorage {
     public:
       /// The lines of the matrix.
 
@@ -130,27 +130,27 @@ namespace vb {
        * @param w The width of the matrix.
        */
 
-      MatrixStorage_Plain (unsigned int h, unsigned int w) : MatrixStorage<T> (h,w), lines (std::vector<Vector> (h,Vector(w))) { }
+      MatrixStorage_Plain (unsigned int h, unsigned int w) : MatrixStorage (h,w), lines (std::vector<Vector> (h,Vector(w))) { }
 
       /// The standard destructor.
       virtual ~MatrixStorage_Plain () {}
 
-      virtual MatrixStorage<T> *copy () {
-        return new MatrixStorage_Plain<T> (*this);
+      virtual MatrixStorage *copy () {
+        return new MatrixStorage_Plain (*this);
       }
 
-      virtual MatrixStorage<T> *compute () { return this; }
+      virtual MatrixStorage *compute () { return this; }
 
-      virtual T at (unsigned int i, unsigned int j) const {
+      virtual double at (unsigned int i, unsigned int j) const {
         return lines[i][j];
       }
 
-      virtual MatrixStorage<T> *put (unsigned int i, unsigned int j, const T &t) {
+      virtual MatrixStorage *put (unsigned int i, unsigned int j, double t) {
         lines[i][j] = t; return this;
       }
 
       /// Add another matrix to this one.
-      virtual MatrixStorage<T> *add (MatrixStorage<T> *M) {
+      virtual MatrixStorage *add (MatrixStorage *M) {
         for (unsigned int i=0; i<this->height; ++i)
           for (unsigned int j=0; j<this->width; ++j)
             lines[i][j] += M->at(i,j);
@@ -158,7 +158,7 @@ namespace vb {
       }
 
       /// Subtract another matrix from this one.
-      virtual MatrixStorage<T> *sub (MatrixStorage<T> *M) {
+      virtual MatrixStorage *sub (MatrixStorage *M) {
         for (unsigned int i=0; i<this->height; ++i)
           for (unsigned int j=0; j<this->width; ++j)
             lines[i][j] -= M->at(i,j);
@@ -166,8 +166,8 @@ namespace vb {
       }
 
       /// Right-multiply this matrix with another one.
-      virtual MatrixStorage<T> *mul_right (MatrixStorage<T> *M) {
-        MatrixStorage_Plain<T> *tmp = new MatrixStorage_Plain<T> (this->height, M->width);
+      virtual MatrixStorage *mul_right (MatrixStorage *M) {
+        MatrixStorage_Plain *tmp = new MatrixStorage_Plain (this->height, M->width);
         for (unsigned int i=0; i<this->height; ++i) {
           for (unsigned int j=0; j<M->width; ++j) {
             tmp->lines[i][j] = lines[i][0] * M->at(0,j);
@@ -178,7 +178,7 @@ namespace vb {
         return tmp;
       }
 
-      virtual MatrixStorage<T> *rank1update (const Vector &A, const Vector &B) {
+      virtual MatrixStorage *rank1update (const Vector &A, const Vector &B) {
         for (unsigned int i=0; i<this->height; ++i)
           for (unsigned int j=0; j<this->width; ++j)
             lines[i][j] += A[i]*B[j];
@@ -203,7 +203,7 @@ namespace vb {
    * @todo Generalize it as any matrix storage plus rank-1 updates ?
    */
 
-  template <typename T> class MatrixStorage_DiagSmallRank : public MatrixStorage<T> {
+  class MatrixStorage_DiagSmallRank : public MatrixStorage {
     public:
       /// The diagonal of the unperturbed matrix.
 
@@ -219,7 +219,7 @@ namespace vb {
        * @param w The width of the matrix.
        */
 
-      MatrixStorage_DiagSmallRank (unsigned int h, unsigned int w) : MatrixStorage<T> (h,w) {
+      MatrixStorage_DiagSmallRank (unsigned int h, unsigned int w) : MatrixStorage (h,w) {
         diag = Vector (h);
         for (unsigned int i=0; i<h; ++i) diag[i]=0;
       }
@@ -231,17 +231,17 @@ namespace vb {
        * @param d The diagonal of the matrix.
        */
 
-      MatrixStorage_DiagSmallRank (unsigned int h, unsigned int w, const Vector &d) : MatrixStorage<T> (h,w), diag(d) { }
+      MatrixStorage_DiagSmallRank (unsigned int h, unsigned int w, const Vector &d) : MatrixStorage (h,w), diag(d) { }
 
       /// The standard destructor.
       virtual ~MatrixStorage_DiagSmallRank () {}
 
-      virtual MatrixStorage<T> *copy () {
+      virtual MatrixStorage *copy () {
         return new MatrixStorage_DiagSmallRank (*this);
       }
 
-      MatrixStorage<T> *compute () {
-        MatrixStorage_Plain<T> *tmp = new MatrixStorage_Plain<T> (this->height, this->width);
+      MatrixStorage *compute () {
+        MatrixStorage_Plain *tmp = new MatrixStorage_Plain (this->height, this->width);
         for (unsigned int i=0; i<this->height; ++i) {
           for (unsigned int j=0; j<updates.size(); ++j)
             tmp->lines[i] += updates[j].first[i] * updates[j].second;
@@ -251,42 +251,42 @@ namespace vb {
         return tmp;
       }
 
-      virtual T at (unsigned int i, unsigned int j) const {
-        T tmp = 0;
+      virtual double at (unsigned int i, unsigned int j) const {
+        double tmp = 0;
         if (i==j) tmp += diag[i];
         for (unsigned int k=0; k<updates.size(); ++k)
           tmp += updates[k].first[i] * updates[k].second[j];
         return tmp;
       }
 
-      virtual MatrixStorage<T> *put (unsigned int i, unsigned int j, const T &t) {
-        MatrixStorage<T> *tmp = this->compute();
+      virtual MatrixStorage *put (unsigned int i, unsigned int j, double t) {
+        MatrixStorage *tmp = this->compute();
         tmp->put (i,j,t);
         return tmp;
       }
 
       /// Add another matrix to this one.
-      virtual MatrixStorage<T> *add (MatrixStorage<T> *M) {
-        MatrixStorage<T> *tmp = this->compute();
+      virtual MatrixStorage *add (MatrixStorage *M) {
+        MatrixStorage *tmp = this->compute();
         tmp->add(M);
         return tmp;
       }
 
       /// Subtract another matrix from this one.
-      virtual MatrixStorage<T> *sub (MatrixStorage<T> *M) {
-        MatrixStorage<T> *tmp = this->compute();
+      virtual MatrixStorage *sub (MatrixStorage *M) {
+        MatrixStorage *tmp = this->compute();
         tmp->sub(M);
         return tmp;
       }
 
       /// Right-multiply this matrix with another one.
-      virtual MatrixStorage<T> *mul_right (MatrixStorage<T> *M) {
-        MatrixStorage<T> *tmp = this->compute();
-        tmp->mul(M);
+      virtual MatrixStorage *mul_right (MatrixStorage *M) {
+        MatrixStorage *tmp = this->compute();
+        tmp->mul_right(M);
         return tmp;
       }
 
-      virtual MatrixStorage<T> *rank1update (const Vector &A, const Vector &B) {
+      virtual MatrixStorage *rank1update (const Vector &A, const Vector &B) {
         updates.push_back (std::pair<Vector,Vector> (A,B));
         if (updates.size() > this->height/10) {
           return this->compute();

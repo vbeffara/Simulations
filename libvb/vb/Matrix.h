@@ -20,7 +20,7 @@ namespace vb {
     public:
       unsigned int width;      ///< The width of the matrix.
       unsigned int height;     ///< The height of the matrix.
-      MatrixStorage<T> *data;  ///< The underlying storage of the matrix.
+      MatrixStorage *data;  ///< The underlying storage of the matrix.
 
       /** Standard constructor of a zero matrix.
        *
@@ -29,7 +29,7 @@ namespace vb {
        */
 
       Matrix (unsigned int h, unsigned int w) :
-        width(w), height(h), data (new MatrixStorage_DiagSmallRank<T> (h,w)) {}
+        width(w), height(h), data (new MatrixStorage_DiagSmallRank (h,w)) {}
 
       /** Constructor from a diagonal vector.
        *
@@ -42,7 +42,7 @@ namespace vb {
        */
 
       Matrix (unsigned int h, unsigned int w, const Vector &d) :
-        width(w), height(h), data (new MatrixStorage_DiagSmallRank<T> (h,w,d)) {}
+        width(w), height(h), data (new MatrixStorage_DiagSmallRank (h,w,d)) {}
 
       /** Copy constructor.
        *
@@ -94,7 +94,7 @@ namespace vb {
        */
 
       Matrix &put (unsigned int i, unsigned int j, const T &t) { 
-        MatrixStorage<T> *tmp = data->put(i,j,t);
+        MatrixStorage *tmp = data->put(i,j,t);
         if (data != tmp) { delete data; data = tmp; }
         return (*this);
       }
@@ -105,7 +105,7 @@ namespace vb {
        */
 
       Matrix &operator+= (const Matrix &M) {
-        MatrixStorage<T> *tmp = data->add(M.data);
+        MatrixStorage *tmp = data->add(M.data);
         if (data != tmp) { delete data; data = tmp; }
         return (*this);
       }
@@ -116,7 +116,7 @@ namespace vb {
        */
 
       Matrix &operator-= (const Matrix &M) {
-        MatrixStorage<T> *tmp = data->sub(M.data);
+        MatrixStorage *tmp = data->sub(M.data);
         if (data != tmp) { delete data; data = tmp; }
         return (*this);
       }
@@ -127,7 +127,7 @@ namespace vb {
        */
 
       Matrix &operator*= (const Matrix &M) {
-        MatrixStorage<T> *tmp = data->mul(M.data);
+        MatrixStorage *tmp = data->mul_right (M.data);
         if (data != tmp) { delete data; data = tmp; }
         return (*this);
       }
@@ -141,7 +141,7 @@ namespace vb {
        */
 
       Matrix &rank1update (const Vector &A, const Vector &B) {
-        MatrixStorage<T> *tmp = data->rank1update(A,B);
+        MatrixStorage *tmp = data->rank1update(A,B);
         if (data != tmp) { delete data; data = tmp; }
         return (*this);
       }
