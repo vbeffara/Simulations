@@ -91,7 +91,7 @@ int main () {
       x[3*i+2] = 1.0 / sqrt(double(m.n));
     }
 
-    Minimizer<double> M (3*m.n, fg, &m);
+    Minimizer M (3*m.n, fg, &m);
     M.os = &cerr;
     M.minimize_qn (x);
 

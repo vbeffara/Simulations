@@ -15,7 +15,7 @@ namespace vb {
    * of them, they are named minimize_*.
    */
 
-  template <typename T> class Minimizer {
+  class Minimizer {
     public:
       unsigned int n; ///< The dimension of the space.
 
@@ -32,7 +32,7 @@ namespace vb {
        * be quicker.
        */
 
-      T (*f) (const Vector &, void *);
+      double (*f) (const Vector &, void *);
       
       /** A pointer to the gradient of the function.
        *
@@ -52,7 +52,7 @@ namespace vb {
        * minimized.
        */
 
-      T (*fg) (const Vector &, Vector &, void *);
+      double (*fg) (const Vector &, Vector &, void *);
 
       /** The context of all f and g computations.
        *
@@ -69,11 +69,11 @@ namespace vb {
       void *context;
 
       Vector x;      ///< The current point of interest.
-      T fx;          ///< The value of the function at x.
+      double fx;     ///< The value of the function at x.
       Vector gx;     ///< The gradient of the function at x.
 
       Vector old_x;  ///< The previous value of x, before the last line_search().
-      T old_fx;      ///< The value of the function at old_x.
+      double old_fx; ///< The value of the function at old_x.
       Vector old_gx; ///< The gradient of the function at old_x.
 
       /** A pointer to a logging std::ostream.
@@ -85,8 +85,8 @@ namespace vb {
 
       std::ostream *os;
 
-      T er;    ///< An indicator of the current error, for logging.
-      int ler; ///< The base-10 0logarithm of er.
+      double er; ///< An indicator of the current error, for logging.
+      int ler;   ///< The base-10 0logarithm of er.
 
       /** Compute the value of the function and its gradient.
        *
@@ -100,7 +100,7 @@ namespace vb {
        * @param x_ The point at which the computation is to be done.
        */
 
-      T compute (const Vector &x_ = Vector(0));
+      double compute (const Vector &x_ = Vector(0));
 
       /** Perform a few initialization.
        *
@@ -122,7 +122,7 @@ namespace vb {
        */
 
       Minimizer (unsigned int n_,
-                 T fg_ (const Vector &, Vector &, void *),
+                 double fg_ (const Vector &, Vector &, void *),
                  void *context_ = NULL) :
         n(n_), f(NULL), g(NULL), fg(fg_), context(context_) { init(); };
 
@@ -138,7 +138,7 @@ namespace vb {
        */
 
       Minimizer (unsigned int n_,
-                 T f_ (const Vector &, void *),
+                 double f_ (const Vector &, void *),
                  Vector g_ (const Vector &, void *),
                  void *context_ = NULL) :
         n(n_), f(f_), g(g_), fg(NULL), context(context_) { init(); };
@@ -173,7 +173,7 @@ namespace vb {
        * @param x0 The point from which to start.
        */
 
-      T minimize_grad (const Vector &x0);
+      double minimize_grad (const Vector &x0);
 
       /** A quasi-Newtonian minimization algorithm.
        *
@@ -192,7 +192,7 @@ namespace vb {
        * @param W0 The initial estimate for the inverse Hessian (as a * diagonal matrix).
        */
 
-      T minimize_bfgs (const Vector &x0, const Vector &W0 = Vector(0));
+      double minimize_bfgs (const Vector &x0, const Vector &W0 = Vector(0));
 
       /** The Fletcher-Reeves conjugate gradient algorithm.
        *
@@ -202,7 +202,7 @@ namespace vb {
        * @param x0 The point from which to start.
        */
 
-      T minimize_fr (const Vector &x0);
+      double minimize_fr (const Vector &x0);
 
       /** The Pollak-Ribiere conjugate gradient algorithm.
        *
@@ -212,7 +212,7 @@ namespace vb {
        * @param x0 The point from which to start.
        */
 
-      T minimize_pr (const Vector &x0);
+      double minimize_pr (const Vector &x0);
 
       /** The mixed quasi-Newton / conjugate gradient method.
        *
@@ -224,12 +224,12 @@ namespace vb {
        * @param x0 The point from which to start.
        */
 
-      T minimize_qn (const Vector &x0);
+      double minimize_qn (const Vector &x0);
   };
 
   /****************************************************/
 
-  template <typename T> inline T Minimizer<T>::compute (const Vector &x_) {
+  inline double Minimizer::compute (const Vector &x_) {
     if ((!x_.empty()) && (&x != &x_)) x.assign (x_.begin(), x_.end());
 
     if (fg) {
@@ -242,7 +242,7 @@ namespace vb {
     return fx;
   }
 
-  template <typename T> void Minimizer<T>::init () {
+  void Minimizer::init () {
     os = NULL;
     er = 1.0;
     ler = 0;
@@ -253,13 +253,13 @@ namespace vb {
     old_gx = Vector (n);
   }
 
-  template <typename T> void Minimizer<T>::line_search (const Vector &d) {
+  void Minimizer::line_search (const Vector &d) {
     old_x.swap(x); old_fx=fx; old_gx.swap(gx);
 
-    T qq_0 = .8 * scalar_product (old_gx,d);
-    T dir = (qq_0>0 ? -1 : 1);
-    T t_l = 0.0, t_r = 0.0, t = dir;
-    T y;
+    double qq_0 = .8 * scalar_product (old_gx,d);
+    double dir = (qq_0>0 ? -1 : 1);
+    double t_l = 0.0, t_r = 0.0, t = dir;
+    double y;
 
     bool refining = false;
 
@@ -279,7 +279,7 @@ namespace vb {
     }
 
     if (os) {
-      T tmp = scalar_product (gx,gx);
+      double tmp = scalar_product (gx,gx);
       while (tmp<er) {
         er /= 10.0;
         ++ler;
@@ -288,7 +288,7 @@ namespace vb {
     }
   }
 
-  template <typename T> T Minimizer<T>::minimize_grad (const Vector &x0) {
+  double Minimizer::minimize_grad (const Vector &x0) {
     compute(x0);
     old_x  = x;
     old_fx = fx+1;
@@ -300,7 +300,7 @@ namespace vb {
     return fx;
   }
 
-  template <typename T> T Minimizer<T>::minimize_bfgs (const Vector &x0, const Vector &W0) {
+  double Minimizer::minimize_bfgs (const Vector &x0, const Vector &W0) {
     compute (x0);
 
     old_x  = x;
@@ -308,10 +308,10 @@ namespace vb {
     old_gx = gx;
 
     Vector dx,dg,Wdg;
-    T dgdx,u;
+    double dgdx,u;
 
     Vector diag = W0;
-    if (diag.size() == 0) diag = Vector (x0.size(), T(1.0));
+    if (diag.size() == 0) diag = Vector (x0.size(), double(1.0));
     Matrix W(x0.size(),x0.size(),diag);
 
     while (fx < old_fx) {
@@ -332,7 +332,7 @@ namespace vb {
     return fx;
   }
 
-  template <typename T> T Minimizer<T>::minimize_fr (const Vector &x0) {
+  double Minimizer::minimize_fr (const Vector &x0) {
     compute(x0);
     old_x  = x;
     old_fx = fx+1;
@@ -345,7 +345,7 @@ namespace vb {
     while (fx < old_fx) {
       old_d = d; d = -gx;
       if (!first) {
-        T c = scalar_product(gx,gx) / scalar_product(old_gx,old_gx);
+        double c = scalar_product(gx,gx) / scalar_product(old_gx,old_gx);
         d += c * old_d;
       }
       line_search(d);
@@ -355,7 +355,7 @@ namespace vb {
     return fx;
   }
 
-  template <typename T> T Minimizer<T>::minimize_pr (const Vector &x0) {
+  double Minimizer::minimize_pr (const Vector &x0) {
     compute(x0);
     old_x  = x;
     old_fx = fx+1;
@@ -373,11 +373,11 @@ namespace vb {
       d *= -1.0;
 
       if (!first) {
-        T c1 = scalar_product(old_gx,old_gx);
+        double c1 = scalar_product(old_gx,old_gx);
         
         old_gx -= gx;
 
-        T c = scalar_product(old_gx,gx) / c1;
+        double c = scalar_product(old_gx,gx) / c1;
 
         old_d *= c;
         d -= old_d;
@@ -390,7 +390,7 @@ namespace vb {
     return fx;
   }
 
-  template <typename T> T Minimizer<T>::minimize_qn (const Vector &x0) {
+  double Minimizer::minimize_qn (const Vector &x0) {
     compute(x0);
     old_x  = x;
     old_fx = fx+1;
@@ -410,7 +410,7 @@ namespace vb {
       if (!first) {
         y.assign (gx.begin(), gx.end());
         y -= old_gx;
-        T c = scalar_product(y,gx) / scalar_product(y,old_d);
+        double c = scalar_product(y,gx) / scalar_product(y,old_d);
         old_d *= c;
         d += old_d;
       }
