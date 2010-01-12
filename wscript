@@ -25,17 +25,18 @@ def unit_test (prog, file, checksum):
     import os
     from subprocess import call
     from hashlib import md5
+    from Utils import pprint
 
-    print ("Running " + prog).ljust(40), ':',
+    pprint ('NORMAL', "Running %s :" % prog.ljust(32), sep='')
 
     if os.path.exists(file): os.remove(file)
     call ('./build/default/' + prog)
     sum = md5 (open(file,'rb').read()).hexdigest()
 
-    if sum == checksum: print "ok"
+    if sum == checksum: pprint ('GREEN', "ok")
     else:
-        print "failed"
-        print "  (returned %s, should be %s)" % (sum,checksum)
+        pprint ('RED', "failed")
+        pprint ('YELLOW', "  (returned %s, should be %s)" % (sum,checksum))
         exit (1)
 
 def check (bld):
