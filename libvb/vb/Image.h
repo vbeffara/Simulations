@@ -104,7 +104,17 @@ namespace vb {
        * @param y The second coordinate of the point.
        */
 
-      Color & operator() (int x, int y=0) { return stage[x+stride*y]; };
+      Color & at (int x, int y=0) { return stage[x+stride*y]; };
+
+      /** Return the color of the image at point (x,y).
+       *
+       * This is exactly equivalent to Image::at.
+       *
+       * @param x The first coordinate of the point.
+       * @param y The second coordinate of the point.
+       */
+
+      Color & operator() (int x, int y=0) { return at(x,y); };
 
     protected:
       /// Update the contents of AutoWindow::stage (i.e., do nothing).
