@@ -21,19 +21,26 @@ def build (bld) :
     bld.add_subdirs ('libvb tests 1D 2D 3D xtoys')
     bld.install_files ('${PREFIX}/include/vb', 'libvb/vb/config.h')
 
+def unit_test (prog, file, checksum):
+    import os
+    from subprocess import call
+    from hashlib import md5
+
+    print ("Running " + prog).ljust(40), ':',
+
+    if os.path.exists(file): os.remove(file)
+    call ('./build/default/' + prog)
+    sum = md5 (open(file,'rb').read()).hexdigest()
+
+    if sum == checksum: print "ok"
+    else:
+        print "failed"
+        print "  (returned %s, should be %s)" % (sum,checksum)
+        exit (1)
+
 def check (bld):
-    from os import system;
-
-    system ('./build/default/tests/sample')
-    system ('cat sample.png | md5')
-    print 'e900ff49de69b10d8293aa192992fb81'
-
-    system ('./build/default/tests/test_figure')
-    system ('cat figtest.pdf | md5')
-    print '03a8b8b072f37ae06dbd9bc6b8f96725'
-
-    system ('./build/default/tests/test_color')
-    system ('cat test_color.png | md5')
-    print '30c0f0b77ab57a9cf688616b73d0579b'
+    unit_test ('tests/sample',      'Sample.png',     'e900ff49de69b10d8293aa192992fb81')
+    unit_test ('tests/test_figure', 'figtest.pdf',    '03a8b8b072f37ae06dbd9bc6b8f96725')
+    unit_test ('tests/test_color',  'test_color.png', '30c0f0b77ab57a9cf688616b73d0579b')
 
 # vim: ft=python
