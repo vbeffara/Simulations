@@ -1,9 +1,7 @@
-
 #include <vb/CL_Parser.h>
 #include <vb/PRNG.h>
 #include <vb/Image.h>
 
-using namespace std;
 using namespace vb;
 
 PRNG prng;
@@ -11,54 +9,43 @@ PRNG prng;
 class Snake : public Image {
   public:
     Snake (int n_);
-    void step (int x, int y);
+    void step (int dx, int dy);
     void shrink ();
-    bool alive ();
-
-    int x,y;
+    bool alive () const;
   private:
-    int n,l;
-    vector<int> path_x;
-    vector<int> path_y;
+    std::vector<int> x,y;
 };
 
-Snake::Snake (int n_) : Image(2*n_, 2*n_, "Self-avoiding snake"), x(n_), y(n_), n(n_), l(0), path_x(1,n_), path_y(1,n_) {
-  putpoint (x,y,255);
+Snake::Snake (int n_) : Image(2*n_, 2*n_, "Self-avoiding snake"), x(1,n_), y(1,n_) {
+  putpoint (n_, n_, 255);
 }
 
-void Snake::step (int nx, int ny) {
+void Snake::step (int dx, int dy) {
+  int nx=x.back()+dx, ny=y.back()+dy;
   if (at(nx,ny) == Color(255)) return;
-  x=nx; y=ny;
-  putpoint (x,y,255);
-  path_x.push_back(x);
-  path_y.push_back(y);
-  ++l;
+  x.push_back(nx); y.push_back(ny);
+  putpoint (nx,ny,255);
 }
 
 void Snake::shrink () {
-  if (l==0) return;
-
-  putpoint (x,y,0);
-  path_x.pop_back(); path_y.pop_back();
-  x=path_x.back(); y=path_y.back();
-  --l;
+  if (x.size() == 1) return;
+  putpoint (x.back(), y.back(), 0);
+  x.pop_back(); y.pop_back();
 }
 
-bool Snake::alive () {
-  return ( (x>0) && (x<2*n-1) && (y>0) && (y<2*n-1) );
+bool Snake::alive () const {
+  int lx=x.back(), ly=y.back();
+  return ((lx>0) && (lx<width-1) && (ly>0) && (ly<height-1));
 }
 
 int main (int argc, char ** argv) {
   CL_Parser CLP (argc, argv, "n=300,e=.5");
-  int    n = CLP('n');
   double e = CLP('e');
 
-  Snake S(n);
-  S.show();
+  Snake S(CLP('n')); S.show();
 
   while (S.alive()) {
-    if (prng.bernoulli(e)) S.shrink();
-    else {
+    if (prng.bernoulli(e)) S.shrink(); else {
       int dx=0, dy=0;
       switch ((int) prng.uniform(4)) {
         case 0: dx=1;  break;
@@ -66,9 +53,8 @@ int main (int argc, char ** argv) {
         case 2: dy=1;  break;
         case 3: dy=-1; break;
       }
-      S.step (S.x+dx, S.y+dy);
+      S.step (dx,dy);
     }
   }
-  S.output();
-  return 0;
+  S.output(); return 0;
 }
