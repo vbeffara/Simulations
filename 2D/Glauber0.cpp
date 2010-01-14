@@ -4,8 +4,6 @@
 
 using namespace vb;
 
-PRNG prng;
-
 class Glauber : public Image {
   public:
     Glauber (int n_) : Image(n_,n_,"Glauber dynamics at zero temperature"), n(n_) { };

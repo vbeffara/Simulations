@@ -12,8 +12,6 @@
 using namespace std;
 using namespace vb;
 
-PRNG prng;
-
 void fill_dyadic (vector<double> &f, int n, int n0) {
   int nn = 1<<n;
   for (int l=n-1; l>=n0; --l) {

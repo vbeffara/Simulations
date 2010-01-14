@@ -17,8 +17,6 @@ double p;
 bool s;
 bool t;
 
-PRNG prng;
-
 void addapoint (int x, int y) {
   img->putpoint(x,y,1);
   if ( (x>0) && (y<n-1) && ((*img)(x-1,y+1)==1) && ((*img)(x-1,y)==0) )

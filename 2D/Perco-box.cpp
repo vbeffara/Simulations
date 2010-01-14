@@ -10,7 +10,6 @@ using namespace vb;
 
 int *fifox,*fifoy;
 Image *img;
-PRNG prng;
 
 void bndcnx (int ox, int oy) {
   int imin,imax;

@@ -256,6 +256,8 @@ namespace vb {
    */
 
   typedef PRNG_MT PRNG;
+
+  extern PRNG prng; ///< A global PRNG instance for convenience. */
 }
 
 #endif

@@ -116,4 +116,6 @@ namespace vb {
   void PRNG_Rewindable::rewind (long time1, long time2) {
     iterate (r_a, r_b, (long long)time1 * (long long)time2);
   }
+
+  PRNG prng;
 }

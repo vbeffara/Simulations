@@ -13,8 +13,6 @@ long minx,maxx,miny,maxy,mx,my;
 long dx[4] = {1,0,-1,0};  /* 0=est, 1=nord ... */
 long dy[4] = {0,1,0,-1};
 
-PRNG prng;
-
 void putPoint(long x, long y)
 {
   long t,cx,cy;

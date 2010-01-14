@@ -9,7 +9,7 @@ char *high, *low;
 long n;
 long p[3];
 
-PRNG_Rewindable prng;
+PRNG_Rewindable rng;
 
 void one_step (void) {
   int x,y,xy,sgn,delta;
@@ -18,8 +18,8 @@ void one_step (void) {
   for (x=1;x<n-1;x++) {
     xy=x;
     for (y=1;y<n-1;y++) {
-      sgn = (prng.rand() & 32) / 32;
-      rdm = prng.rand();
+      sgn = (rng.rand() & 32) / 32;
+      rdm = rng.rand();
       
       xy += n;
       
@@ -104,13 +104,13 @@ int main(int argc, char *argv[])
   /* Initialisations */
 
   p[0]=1;
-  p[1]=(long)(exp(-2*beta) * (double)prng.max);
-  p[2]=(long)(exp(-4*beta) * (double)prng.max);
+  p[1]=(long)(exp(-2*beta) * (double)rng.max);
+  p[2]=(long)(exp(-4*beta) * (double)rng.max);
 
   /* Simulation */
 
   for (bla=1;dist>0;bla*=2) {
-    prng.rewind (2*bla,(n-2)*(n-2));
+    rng.rewind (2*bla,(n-2)*(n-2));
     for (i=0;i<n*n;i++) {
       low[i]=0;
       high[i]=1;

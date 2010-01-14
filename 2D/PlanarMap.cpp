@@ -5,8 +5,6 @@
 
 using namespace vb;
 
-PRNG prng;
-
 class Triangulation : public Map {
   public:
     Triangulation (int);

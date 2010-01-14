@@ -9,8 +9,6 @@ int n,nn;
 Image *img;
 int *x,*y;
 
-PRNG prng;
-
 inline int COO(int i, int j)
 {
   int k;

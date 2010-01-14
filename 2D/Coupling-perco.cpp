@@ -23,8 +23,6 @@ using namespace vb;
 
 typedef int testfunction (Image*);
 
-PRNG prng;
-
 int compute_diff (Image *c1, Image *c2, Image *d) {
   int i,j,n;
 

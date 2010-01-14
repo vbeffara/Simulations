@@ -12,8 +12,6 @@
 
 using namespace vb;
 
-PRNG prng;
-
 class Automaton {
 public:
   Automaton (int);
