@@ -69,5 +69,6 @@ int main (int argc, char ** argv) {
       S.step (S.x+dx, S.y+dy);
     }
   }
+  S.output();
   return 0;
 }
