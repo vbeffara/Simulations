@@ -4,8 +4,6 @@
 
 using namespace vb;
 
-PRNG prng;
-
 class Snake : public Image {
   public:
     Snake (int n_);
