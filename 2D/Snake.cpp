@@ -1,10 +1,10 @@
 #include <vb/CL_Parser.h>
 #include <vb/PRNG.h>
-#include <vb/Image.h>
+#include <vb/CoarseImage.h>
 
 using namespace vb;
 
-class Snake : public Image {
+class Snake : public CoarseImage {
   public:
     Snake (int n_);
     void step (int dx, int dy);
@@ -14,15 +14,15 @@ class Snake : public Image {
     std::vector<int> x,y;
 };
 
-Snake::Snake (int n_) : Image(2*n_, 2*n_, "Self-avoiding snake"), x(1,n_), y(1,n_) {
-  putpoint (n_, n_, 255);
+Snake::Snake (int n_) : CoarseImage (2*n_, 2*n_, pow(n_,.333), "Self-avoiding snake"), x(1,n_), y(1,n_) {
+  putpoint (n_, n_, 1);
 }
 
 void Snake::step (int dx, int dy) {
   int nx=x.back()+dx, ny=y.back()+dy;
-  if (at(nx,ny) == Color(255)) return;
+  if (at(nx,ny) == 1) return;
   x.push_back(nx); y.push_back(ny);
-  putpoint (nx,ny,255);
+  putpoint (nx,ny,1);
 }
 
 void Snake::shrink () {
@@ -33,11 +33,11 @@ void Snake::shrink () {
 
 bool Snake::alive () const {
   int lx=x.back(), ly=y.back();
-  return ((lx>0) && (lx<width-1) && (ly>0) && (ly<height-1));
+  return ((lx>0) && (lx<true_width-1) && (ly>0) && (ly<true_height-1));
 }
 
 int main (int argc, char ** argv) {
-  CL_Parser CLP (argc, argv, "n=300,e=.5");
+  CL_Parser CLP (argc, argv, "n=1000,e=.5");
   double e = CLP('e');
 
   Snake S(CLP('n')); S.show();

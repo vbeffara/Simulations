@@ -63,7 +63,7 @@ namespace vb {
     return c;
   }
 
-  char CoarseImage::operator() (int x, int y) const {
+  char CoarseImage::at (int x, int y) const {
     int coarse_x = x/L;
     int coarse_y = y/L;
     int coarse_xy = coarse_x + width * coarse_y;

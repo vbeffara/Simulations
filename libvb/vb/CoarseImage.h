@@ -91,8 +91,12 @@ namespace vb {
        * @param y The second coordinate of the point.
        */
 
-      char operator() (int x, int y) const;
-    
+      char at (int x, int y) const;
+
+      /** Syntactic shortcut for operator(). */
+
+      char operator() (int x, int y) const { return at(x,y); }
+
     private:
       int LL;
     

@@ -122,10 +122,10 @@ namespace vb {
 
   void AutoWindow::snapshot (bool silent) {
     std::ostringstream fn_s;
-    fn_s << snapshot_prefix << "_" << std::setw(4) << std::setfill('0') << snapshot_number++ << ".png";
+    fn_s << snapshot_prefix << "_" << std::setw(4) << std::setfill('0') << snapshot_number++;
     std::string fn = fn_s.str();
 
-    if (!silent) std::cerr << "Taking a snapshot as " << fn << std::endl;
+    if (!silent) std::cerr << "Taking a snapshot as " << fn << ".png" << std::endl;
     output_png (fn);
 
     snapshot_clock = clock();
