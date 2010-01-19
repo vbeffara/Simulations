@@ -3,56 +3,44 @@ Simulations and stuff - Vincent Beffara <vbeffara@ens-lyon.fr>
 
   http://www.umpa.ens-lyon.fr/~vbeffara/libvb/
 
-0. Executive simmary
+0. Executive summary
 
-Compile typing either 'tools/waf' or 'make' (or just 'waf' if you have 
-it somewhere in your $PATH). Don't forget to add build/libvb to your 
+Compile typing 'tools/waf' (or just 'waf' if you have it somewhere in 
+your $PATH). Don't forget to add build/default/libvb to your 
 LD_LIBRARY_PATH variable if necessary.
 
 
 1. Compilation
 
-I am using the very nice waf framework for my simulations, because
-it has a lot of cool features (such as automatic dependency tracking, 
-and most of all portability). It is very easy to install, if you already 
+I am using the very nice waf framework for my simulations, because it 
+has a lot of cool features (such as automatic dependency tracking, and 
+most of all portability). It is very easy to install, if you already 
 have Python, because it is a single file; there is a copy in the tools/ 
 directory, which you can copy somewhere in your $PATH for convenience 
-(somewhere where you have write priviledges while running it), ore use 
+(somewhere where you have write privileges while running it), or use 
 directly.
 
 
 2. Some notes about the 'libvb' library
 
-The directory libvb/ contains a small library providing very easy
-display and PNG output for 2D simulations (in greyscale).  Up-to-date 
-documentation on the library is at the following webpage:
+The directory libvb/ contains a small library providing very easy 
+display and PNG output for 2D simulations, plus convenience classes for 
+simulations.  Up-to-date documentation on the library is at the 
+above-mentioned web page.  It uses a few outside libraries:
 
-      http://www.umpa.ens-lyon.fr/~vbeffara/libvb/
+- Cairo [mandatory] : for internally drawing objects (via CairoMM)
 
-It uses a few outside libraries if they are present (but most of the 
-code will still compile and work without it):
-
-- FLTK for graphical display
-
-- Cairo for internally drawing objects
-
-- GMP for high-precision computations (in the vb::real type - which is 
-  simply an alias for double if GMP is absent)
-
-- Boost for a few graph-related algorithms.
+- FLTK  [optional]  : for graphical display 
 
 
 3. About the 'xtoys' directory:
 
-These programs are not mine at all, they were written by Michael Creutz
-(see the webpage at http://thy.phy.bnl.gov/www/xtoys/xtoys.html). I
-include them because they are somehow related to the others, and because
-I had to rewrite the Makefile to compile them on Mac OS X, now they
-should compile everywhere (as long as the X11 include files are present,
+These programs are not mine at all, they were written by Michael Creutz 
+(see the web page at http://thy.phy.bnl.gov/www/xtoys/xtoys.html). I 
+include them because they are somehow related to the others, and because 
+I had to rewrite the Makefile to compile them on Mac OS X, now they 
+should compile everywhere (as long as the X11 include files are present, 
 of course).
 
-If there is any legal problem about their presence here, I will remove
+If there is any legal problem about their presence here, I will remove 
 them at once.
-
-
-Have fun.
