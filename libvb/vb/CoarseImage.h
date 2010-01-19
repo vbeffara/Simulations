@@ -93,7 +93,11 @@ namespace vb {
 
       char at (int x, int y) const;
 
-      /** Syntactic shortcut for operator(). */
+      /** Syntactic shortcut for operator().
+       *
+       * @param x The first coordinate of the point.
+       * @param y The second coordinate of the point.
+       */
 
       char operator() (int x, int y) const { return at(x,y); }
 
