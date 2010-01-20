@@ -11,8 +11,6 @@ int main (int argc, char **argv) {
 
   double sd=0.0, sd2=0.0;
 
-  PRNG prng;
-
   for (int u=0; u<N; ++u) {
     int x=0, y=0, right=0, top=0, t=0;
     while (t<T) {

@@ -19,7 +19,6 @@ int main(int argc, char *argv[])
   sprintf(title,"Discrete-time contact process on the tri/hex lattice (p=%f)",p);
 
   Image img (n,n,title);
-  PRNG prng;
 
   /* conditions initiales */
 

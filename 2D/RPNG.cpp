@@ -4,6 +4,8 @@
 #include <vb/PRNG.h>
 #include <vb/CoarseImage.h>
 
+using namespace vb;
+
 int main (int argc, char **argv) {
   vb::CL_Parser CLP(argc,argv,"n=500,e=0.01,f,c=0");
   const int n = CLP('n');
@@ -11,7 +13,7 @@ int main (int argc, char **argv) {
   const bool f = CLP('f');
   const double c = CLP('c');
 
-  vb::CoarseImage img (n,n,10,"RPNG");
+  CoarseImage img (n,n,10,"RPNG");
   img.show();
 
   int *height = new int[n];
@@ -19,8 +21,6 @@ int main (int argc, char **argv) {
     height[i]=0;
     img.putpoint(i,0,1);
   }
-
-  vb::PRNG prng;
 
   bool running = true;
   while (running) {

@@ -65,8 +65,6 @@ int main(int argc, char ** argv)
 
   Image *img = new Image(w,h,title);
 
-  PRNG prng;
-
   /* Site-percolation --- 1=dedans, 2=dehors */
 
   long i;

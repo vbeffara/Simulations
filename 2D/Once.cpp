@@ -35,8 +35,6 @@ int main(int argc, char ** argv)
 
   /* Initialisations */
 
-  PRNG prng;
-
   sprintf(title,"A vertex once-reinforced random walk (size=%d, a=%.2f)",n,1/a-1);
 
   L = (int) pow((double)n,1./3.);

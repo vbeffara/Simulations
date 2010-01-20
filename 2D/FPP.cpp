@@ -11,10 +11,8 @@ using namespace vb;
 
 PointQueue pqueue;
 
-PRNG PR;
-
 double cost (void) {
-  return PR.exponential();
+  return prng.exponential();
 }
 
 void spread (CoarseImage &img, double t, int x, int y) {

@@ -95,7 +95,6 @@ int main(int argc, char ** argv) {
 
   sprintf(s,"Schramm's SLE Process (kappa=%f)",kappa);
 
-  PRNG prng;
   if (r) prng.srand(r);
 
   n=nn*nn; kappa=2/kappa;

@@ -13,6 +13,7 @@
 
 using namespace boost;
 using namespace std;
+using namespace vb;
 
 typedef adjacency_list_traits < listS, vecS, directedS > Traits;
 typedef Traits::edge_descriptor edge_descriptor;
@@ -35,7 +36,7 @@ void add_one (Graph &g, int i, int j) {
 }
 
 int main(int argc, char **argv) {
-  vb::CL_Parser CLP(argc,argv,"n=100,t=1,p=.5");
+  CL_Parser CLP(argc,argv,"n=100,t=1,p=.5");
   int n = CLP('n');
   int n_iter = CLP('t');
   double p = CLP('p');
@@ -43,8 +44,7 @@ int main(int argc, char **argv) {
   int stats[5];
   for (int i=0;i<5;++i) stats[i]=0;
 
-  vb::PRNG prng;
-  vb::ProgressBar PB (n_iter);
+  ProgressBar PB (n_iter);
 
   // Create the graph once and for all
 

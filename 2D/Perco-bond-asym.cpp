@@ -98,8 +98,6 @@ int main(int argc, char ** argv)
   sprintf(title,"Bond-percolation cluster (p1=%f, p2=%f)",p1,p2);
   img = new Image(2*n,2*n,title);
 
-  PRNG prng;
-
   /* Bond-percolation --- 16->est, 32->nord */
 
   for (i=0;i<4*n*n;i++) {

@@ -13,8 +13,6 @@ int main (int argc, char **argv) {
   double l = CLP('l');
   double d = CLP('d');
 
-  PRNG prng;
-
   Image img (n,n,"Broken line process");
   img.show();
 

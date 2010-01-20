@@ -36,8 +36,6 @@ int main(int argc, char ** argv)
 
   /* Initialisations */
 
-  PRNG prng;
-
   sprintf(title,"A loop-erased walk of size %d",n);
   img = new Image(2*n,2*n,title);
   if (!img) exit(1);

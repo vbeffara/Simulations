@@ -13,8 +13,6 @@ int main (int argc, char **argv) {
   int b = clp('b');
   l = l/(1+l);
 
-  PRNG prng;
-
   Image img (n,n,"RPNG Process");
 
   int h[n];

@@ -22,8 +22,6 @@ int main(int argc, char *argv[])
   sprintf(title,"An Ising configuration (beta=%6f)",beta);
   Image img(n,n,title);
 
-  PRNG prng;
-
   /* conditions initiales / au bord */
 
 #define LEFT 0

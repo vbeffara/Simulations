@@ -20,8 +20,6 @@ int main(int argc, char ** argv)
 
   // Connectivity (&1 -> to the right, &2 -> downwards)
 
-  PRNG prng;
-
   char *connect = new char[n*n];
   for (int i=0; i<n*n; ++i)
     connect[i] = prng.bernoulli(p) + 2*prng.bernoulli(p);

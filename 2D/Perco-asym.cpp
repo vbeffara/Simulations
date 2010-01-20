@@ -94,8 +94,6 @@ int main(int argc, char ** argv)
   n = CLP('n');
   epsilon = CLP('e');
 
-  PRNG prng;
-
   /* Percolation ... */
 
   right = new char[n*n];

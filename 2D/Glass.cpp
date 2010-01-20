@@ -113,7 +113,6 @@ void init_ok_connect6 (void) {
 
 int main (int argc, char **argv) {
   long x,y,i;
-  PRNG prng;
 
   CL_Parser CLP (argc,argv,"n=300,p=.5,c=none",
       "Syntax: Glass [-n size] [-p p] [-c conditioning]\n\

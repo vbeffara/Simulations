@@ -39,8 +39,6 @@ int main(int argc, char ** argv)
 
   /* Initialisations */
 
-  PRNG prng;
-
   sprintf(title,"A MDLA in density %.2f",p);
   img = new Image(2*n,2*n,title);
   img->snapshot_setup ("MDLA",t);

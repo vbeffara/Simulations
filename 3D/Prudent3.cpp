@@ -71,7 +71,6 @@ int main (int argc, char **argv) {
 
   vector <int> ends (l,0);
 
-  PRNG prng;
   ProgressBar PB ((n>1 ? n : l));
 
   for (int i=0; i<n; ++i) {

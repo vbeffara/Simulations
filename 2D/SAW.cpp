@@ -5,8 +5,6 @@
 
 using namespace vb;
 
-#define EC fprintf(stderr,"<%d>\n",__LINE__);
-
 int dx[4] = {1,0,-1,0};  /*  0=est, 1=nord ... */
 int dy[4] = {0,1,0,-1};
 char dir[5] = "ENWS";
@@ -76,8 +74,6 @@ int main(int argc, char ** argv)
   t = CLP('t');
 
   /* Initialisations */
-
-  PRNG prng;
 
   d = new char[n];
   for (int i=0; i<n; i++)

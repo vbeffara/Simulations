@@ -60,8 +60,6 @@ int main(int argc, char ** argv)
   sprintf(title,"Site-percolation cluster (p=%f)",p);
   img=new Image(2*n,2*n,title);
 
-  PRNG prng;
-
   /* Site-percolation --- 1=dedans, 2=dehors */
 
   for (i=0;i<4*n*n;i++) {

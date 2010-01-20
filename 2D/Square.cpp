@@ -184,8 +184,6 @@ set<pt> connections (const vector<double> &o, ostream *os = NULL) {
 }
 
 int main (int argc, char **argv) {
-  PRNG prng;
-
   CL_Parser CLP (argc, argv, "n=20");
   N = CLP('n');
 

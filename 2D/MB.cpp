@@ -30,8 +30,6 @@ int main(int argc, char ** argv)
 
   /* Initialisations */
 
-  PRNG prng;
-
   sprintf(title,"A Brownian path of size %d",n);
   img = new Image(2*n,2*n,title);
 

@@ -13,8 +13,6 @@ int main (int argc, char **argv) {
 
   Image img (n,n,"Voter model");
 
-  PRNG prng;
-
   for (int i=0;i<n;++i) {
     for (int j=0;j<n;++j) {
       if (d>1) img.putpoint(i,j,(int)prng.uniform((1<<d)));
