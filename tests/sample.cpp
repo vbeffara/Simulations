@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
   vb::CL_Parser CLP (argc,argv,"n=500");
   n = CLP('n');
 
-  vb::Image img (n,n,"Sample");
+  vb::Image img (n,n,"sample");
   //img.show();
 
   img.tessellate (f, 0,0, n-1,n-1);

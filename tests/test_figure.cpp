@@ -23,6 +23,6 @@ int main (int argc, char **argv) {
 
   //F.show();
 
-  F.output ("figtest");
+  F.output ("output/test_figure");
   exit (0);
 }

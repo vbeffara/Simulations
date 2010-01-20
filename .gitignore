@@ -18,5 +18,6 @@ amc.*
 build
 doc
 out*
+output
 tags
 tools/.waf*

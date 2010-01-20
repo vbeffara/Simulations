@@ -112,7 +112,7 @@ namespace vb {
     paint();
 
     std::ostringstream os;
-    if (s == "") os << title; else os << s;
+    if (s == "") os << "output/" << title; else os << s;
     os << ".png";
 
     surface->write_to_png (os.str());
