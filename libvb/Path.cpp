@@ -2,6 +2,7 @@
 /// Implementation of the vb::Path class.
 
 #include <vb/Path.h>
+#include <vb/TriMatrix.h>
 
 static const char dirs [4] = {'E','N','W','S'};
 static const int  dx   [4] = { 1,  0, -1,  0 };
@@ -11,26 +12,14 @@ namespace vb {
   Path::Path (int l, const std::string & title_) : std::vector<char> (l), title(title_) { };
 
   bool Path::self_avoiding () {
-    int n = size();
-    std::vector<int> x_hash(2*n), y_hash(2*n);
+    vb::TriMatrix<char> T;
+    int l=0, x=0, y=0;
 
-    int x=n+1, y=3*n+1, l=0, k=(x*y)%(2*n);
-
-    x_hash[k]=x; y_hash[k]=y;
-
-    for (int i=0; i<n; i++) {
-      l  = (l+at(i)) % 4;
-      x += dx[l]; y += dy[l];
-      k  = (x*y)%(2*n);
-
-      while ((x_hash[k]!=0)&&(y_hash[k]!=0)) {
-        if ((x_hash[k]==x)&&(y_hash[k]==y)) return false;
-        else k=(k+1)%(2*n);
-      }
-
-      x_hash[k]=x; y_hash[k]=y;
+    T.put(x,y,1);
+    for (int i=0; i<size(); ++i) {
+      l  = (l+at(i)) % 4; x += dx[l]; y += dy[l];
+      if (T.get(x,y)) return false; else T.put(x,y,1);
     }
-
     return true;
   }
 
