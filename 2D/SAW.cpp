@@ -67,7 +67,8 @@ int main(int argc, char ** argv)
   n = CLP('n');
   t = CLP('t');
 
-  vector<char> d(n);
+  sprintf (title,"A self-avoiding walk of length %d",n);
+  Path P (n,title);
 
   /* Initialisations */
 
@@ -82,21 +83,19 @@ int main(int argc, char ** argv)
 
     j = prng.rand()%n;         /*  Position du pivot */
     k = 1+(prng.rand()%3);     /*  Rotation = 1, 2 ou 3 mod 4 */
-    l = d[j]; d[j]=(d[j]+k)%4;
+    l = P[j]; P[j]=(P[j]+k)%4;
     
-    if (is_self_avoiding(d,n)) i++;
-    else d[j]=l;
+    if (is_self_avoiding(P,n)) i++;
+    else P[j]=l;
   }
 
   PB.die();
 
   for (i=0;i<n;i++) {
-    l=(l+d[i])%4;
-    d[i]=l;
+    l=(l+P[i])%4;
+    P[i]=l;
   }
 
-  sprintf (title,"A self-avoiding walk of length %d",n);
-  Path P (d,title);
   P.printout ();
 
   return 0;

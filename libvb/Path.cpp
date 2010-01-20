@@ -4,10 +4,11 @@
 #include <vb/Path.h>
 
 namespace vb {
-  Path::Path (const std::vector<char> & p_, const std::string & title_) :
-    p(p_), title(title_) { };
+  Path::Path (int l, const std::string & title_) :
+    std::vector<char> (l), title(title_) { };
 
   void Path::printout () {
+    char * p = (char*) &at(0);
     const char *dirs = "ENWS";
     const long dx[4] = {1,0,-1,0};
     const long dy[4] = {0,1,0,-1};
@@ -18,7 +19,7 @@ namespace vb {
     /* Step 1 = cropping */
 
     imin=0; imax=0; jmin=0; jmax=0; x=0; y=0;
-    for (i=0;i<p.size();i++) {
+    for (i=0;i<size();i++) {
       x+=dx[(int)p[(int)i]];
       y+=dy[(int)p[(int)i]];
       if (x<imin) imin=x;
@@ -46,7 +47,7 @@ namespace vb {
     std::cout << "/N {0 3 rlineto} bind def /S {0 -3 rlineto} bind def\n";
     std::cout << "newpath " << 3-3*imin << " " << 3-3*jmin << " moveto\n";
 
-    for (i=0;i<p.size();) {
+    for (i=0;i<size();) {
       std::cout << dirs[(int)p[(int)i]];
       if (!(++i%40)) std::cout << "\n";
       else std::cout << " ";

@@ -6,12 +6,11 @@
 namespace vb {
   /// A class to describe a path in Z^2.
 
-  class Path {
+  class Path : public std::vector<char> {
     public:
-      Path (const std::vector<char> & p_, const std::string & title_);
+      Path (int l, const std::string & title_);
       void printout ();
     private:
-      std::vector<char> p;
       std::string       title;
   };
 }
