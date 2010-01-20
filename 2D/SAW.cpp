@@ -1,7 +1,7 @@
 
 #include <vb/CL_Parser.h>
 #include <vb/PRNG.h>
-#include <vb/cruft.h>
+#include <vb/Path.h>
 
 using namespace vb;
 
@@ -100,7 +100,8 @@ int main(int argc, char ** argv)
   }
 
   sprintf (title,"A self-avoiding walk of length %d",n);
-  printout_path (d,n,title);
+  Path P (n,d,title);
+  P.printout ();
 
   return 0;
 }

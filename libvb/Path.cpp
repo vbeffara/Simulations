@@ -1,10 +1,13 @@
-/// @file cruft.cpp
-/// Old C stuff that should belong in a separate C++ class.
+/// @file Path.cpp
+/// Implementation of the vb::Path class.
 
-#include <vb/common.h>
+#include <vb/Path.h>
 
 namespace vb {
-  int printout_path (char *p, long l, const std::string &title) {
+  Path::Path (long l_, char * p_, const std::string & title_) :
+    l(l_), p(p_), title(title_) { };
+
+  void Path::printout () {
     const char *dirs = "ENWS";
     const long dx[4] = {1,0,-1,0};
     const long dy[4] = {0,1,0,-1};
@@ -50,6 +53,5 @@ namespace vb {
     if (i%40) std::cout << "\n";
 
     std::cout << "stroke end restore\n";
-    return 0;
   }
 }
