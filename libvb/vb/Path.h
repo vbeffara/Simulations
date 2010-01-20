@@ -25,14 +25,20 @@ namespace vb {
 
       /** Output the path as an image.
        *
-       * This outputs a representation of the path as an EPS file to the 
-       * standard output. This is a remainder of previous times and 
-       * should be updated to PDF.
+       * This uses the default format (i.e., PDF), and the file name 
+       * defaults to the title of the vb::Path opbject.
        *
-       * @todo Change that to a PDF generated through vb::Figure.
+       * @param s The filename of the output.
        */
 
-      void printout      () const;
+      void output (const std::string &s = "") const;
+
+      /** Output the path as a PDF file.
+       *
+       * @param s The filename of the output.
+       */
+
+      void output_pdf (const std::string &s = "") const;
 
       /** Check whether the path is self-avoiding. */
 
