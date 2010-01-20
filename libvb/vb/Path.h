@@ -8,11 +8,11 @@ namespace vb {
 
   class Path {
     public:
-      Path (long l_, char * p_, const std::string & title_);
+      Path (long l_, const std::vector<char> & p_, const std::string & title_);
       void printout ();
     private:
-      long l;
-      char *p;
-      std::string title;
+      long              l;
+      std::vector<char> p;
+      std::string       title;
   };
 }

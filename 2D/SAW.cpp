@@ -1,16 +1,13 @@
-
 #include <vb/CL_Parser.h>
 #include <vb/PRNG.h>
 #include <vb/Path.h>
+#include <vb/ProgressBar.h>
 
+using namespace std;
 using namespace vb;
 
 int dx[4] = {1,0,-1,0};  /*  0=est, 1=nord ... */
 int dy[4] = {0,1,0,-1};
-char dir[5] = "ENWS";
-char prog[5] = "-\\|/";
-
-/*  Puisque les headers ne marchent pas de toute façon ... */
 
 int hash_function (int x, int y, int nmax)
 {
@@ -20,7 +17,7 @@ int hash_function (int x, int y, int nmax)
   return (x*y)%nmax;
 }
 
-int is_self_avoiding (char *w, int n)
+int is_self_avoiding (const vector<char> & w, int n)
 {
   static int *x_hash;
   static int *y_hash;
@@ -60,39 +57,38 @@ int is_self_avoiding (char *w, int n)
 int main(int argc, char ** argv)
 {
   int n;                   /*  Nombre de pas */
-  char *d;                 /*  La chaine */
   int t;                   /*  Durée de la simulation */
   char title[100];
 
   int i,j,k,done;
   char l=0;
 
-  /* arguments -> nb de pas */
-
   CL_Parser CLP (argc,argv,"n=500,t=5000");
   n = CLP('n');
   t = CLP('t');
 
+  vector<char> d(n);
+
   /* Initialisations */
 
-  d = new char[n];
-  for (int i=0; i<n; i++)
-    d[i]=0;
   done = 0;
 
   /* Simulation par Monte-Carlo */
 
+  ProgressBar PB (t);
+
   for (i=0;i<t;) {
+    PB.update(i);
+
     j = prng.rand()%n;         /*  Position du pivot */
     k = 1+(prng.rand()%3);     /*  Rotation = 1, 2 ou 3 mod 4 */
     l = d[j]; d[j]=(d[j]+k)%4;
     
     if (is_self_avoiding(d,n)) i++;
     else d[j]=l;
-    
-    if (!(i%128))
-      fprintf (stderr,"\r%c (%d/%d)",prog[(i>>7)&3],i,t);
   }
+
+  PB.die();
 
   for (i=0;i<n;i++) {
     l=(l+d[i])%4;

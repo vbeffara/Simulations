@@ -4,7 +4,7 @@
 #include <vb/Path.h>
 
 namespace vb {
-  Path::Path (long l_, char * p_, const std::string & title_) :
+  Path::Path (long l_, const std::vector<char> & p_, const std::string & title_) :
     l(l_), p(p_), title(title_) { };
 
   void Path::printout () {
