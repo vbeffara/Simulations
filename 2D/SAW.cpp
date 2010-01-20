@@ -96,7 +96,7 @@ int main(int argc, char ** argv)
   }
 
   sprintf (title,"A self-avoiding walk of length %d",n);
-  Path P (n,d,title);
+  Path P (d,title);
   P.printout ();
 
   return 0;
