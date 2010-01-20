@@ -3,20 +3,52 @@
 
 #include <vb/Path.h>
 
+static const char *dirs = "ENWS";
+static const int dx[4] = {1,0,-1,0};  /*  0=est, 1=nord ... */
+static const int dy[4] = {0,1,0,-1};
+
 namespace vb {
   Path::Path (int l, const std::string & title_) :
     std::vector<char> (l), title(title_) { };
 
-  void Path::printout () {
+  bool Path::self_avoiding () {
+    int n=size();
+    char * w = &at(0);
+
+    std::vector<int> x_hash(2*n);
+    std::vector<int> y_hash(2*n);
+
+    int x,y,l,i,k;
+    bool ok;
+
+    x=n+1; y=n+(n<<1)+1; l=0; ok=1;
+    k=(x*y)%(2*n);
+    x_hash[k]=x;
+    y_hash[k]=y;
+
+    for (i=0;(i<n)&&(ok==1);i++) {
+      l=(l+w[i])%4;
+      x+=dx[l];
+      y+=dy[l];
+      k=(x*y)%(2*n);
+
+      while ((ok)&&(x_hash[k]!=0)&&(y_hash[k]!=0)) {
+        if ((x_hash[k]==x)&&(y_hash[k]==y)) ok=0;
+        else k=(k+1)%(2*n);
+      }
+
+      x_hash[k]=x;
+      y_hash[k]=y;
+    }
+
+    return ok;
+  }
+
+  void Path::printout () const {
     char * p = (char*) &at(0);
-    const char *dirs = "ENWS";
-    const long dx[4] = {1,0,-1,0};
-    const long dy[4] = {0,1,0,-1};
 
     long imin,imax,  jmin,jmax, x,y;
     unsigned i;
-
-    /* Step 1 = cropping */
 
     imin=0; imax=0; jmin=0; jmax=0; x=0; y=0;
     for (i=0;i<size();i++) {
@@ -28,10 +60,6 @@ namespace vb {
       if (y>jmax) jmax=y;
     }
 
-    /* Step 2 = printing */
-
-    /* Header */
-
     std::cout << "%!PS-Adobe-2.0 EPSF-2.0\n";
     std::cout << "%%Title: " << title << "\n";
     std::cout << "%%Creator: libvb - © 2001-2008 Vincent Beffara - GPL v3\n";
@@ -39,8 +67,6 @@ namespace vb {
     std::cout << "%%Creator:   Web:  <http://www.umpa.ens-lyon.fr/~vbeffara/>\n";
     std::cout << "%%BoundingBox: 0 0 " 
       << 3*(imax-imin)+6 << " " << 3*(jmax-jmin)+6 << "\n\n";
-
-    /* "Code" ;-) */
 
     std::cout << "save 20 dict begin\n";
     std::cout << "/E {3 0 rlineto} bind def /W {-3 0 rlineto} bind def\n";

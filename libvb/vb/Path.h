@@ -9,7 +9,9 @@ namespace vb {
   class Path : public std::vector<char> {
     public:
       Path (int l, const std::string & title_);
-      void printout ();
+
+      void printout      () const;
+      bool self_avoiding ();
     private:
       std::string       title;
   };
