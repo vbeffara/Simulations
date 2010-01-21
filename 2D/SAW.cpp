@@ -14,7 +14,7 @@ int main(int argc, char ** argv)
 
   char title[100]; sprintf (title,"A self-avoiding walk of length %d",n);
 
-  Path P (n,title);
+  Path P (n,title,true);
   ProgressBar PB (t);
 
   for (int i=0;i<t;) {

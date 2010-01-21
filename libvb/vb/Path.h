@@ -5,12 +5,6 @@
 
 namespace vb {
   /** A class to describe a path in Z^2.
-   *
-   * The path is implemented in terms of turns, each location in the 
-   * vector being 0 for going straight, 1 for turning left, -1 for 
-   * turning right and 2 for doing a half-turn (all of this understood 
-   * as mod 4). This is to facilitate things like the pivot algorithm 
-   * for random walks.
    */
 
   class Path : public std::vector<char> {
@@ -19,9 +13,10 @@ namespace vb {
        *
        * @param l      The length of the path.
        * @param title_ The title of the generated image.
+       * @param rel    Whether the path is stored as relative or absolute jumps.
        */
 
-      Path (int l, const std::string & title_);
+      Path (int l, const std::string & title_, bool rel = false);
 
       /** Output the path as an image.
        *
@@ -45,6 +40,7 @@ namespace vb {
       bool self_avoiding ();
 
     private:
-      std::string       title;
+      std::string title;
+      bool        relative;
   };
 }

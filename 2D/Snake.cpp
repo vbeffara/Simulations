@@ -1,6 +1,7 @@
 #include <vb/CL_Parser.h>
 #include <vb/PRNG.h>
 #include <vb/CoarseImage.h>
+#include <vb/Path.h>
 
 using namespace vb;
 
@@ -10,6 +11,7 @@ class Snake : public CoarseImage {
     void step (int dx, int dy);
     void shrink ();
     bool alive () const;
+    void output () const;
   private:
     std::vector<int> x,y;
 };
@@ -34,6 +36,17 @@ void Snake::shrink () {
 bool Snake::alive () const {
   int lx=x.back(), ly=y.back();
   return ((lx>0) && (lx<true_width-1) && (ly>0) && (ly<true_height-1));
+}
+
+void Snake::output () const {
+  Path P (x.size()-1, title);
+  for (unsigned i=0; i<x.size()-1; ++i) {
+    if (x[i+1]>x[i]) P[i]=0;
+    if (x[i+1]<x[i]) P[i]=2;
+    if (y[i+1]>y[i]) P[i]=1;
+    if (y[i+1]<y[i]) P[i]=3;
+  }
+  P.output();
 }
 
 int main (int argc, char ** argv) {
