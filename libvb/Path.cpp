@@ -13,7 +13,7 @@ namespace vb {
     : std::vector<char> (l), title(title_), relative(rel) { };
 
   bool Path::self_avoiding () {
-    vb::TriMatrix<char> T;
+    TriMatrix<char> T;
     int l=0, x=0, y=0;
 
     T.put(x,y,1);
@@ -28,7 +28,7 @@ namespace vb {
   void Path::output (const std::string &s) const { output_pdf (s); }
 
   void Path::output_pdf (const std::string &s) const {
-    vb::Figure F;
+    Figure F;
 
     int l=0, x=0, y=0;
     for (unsigned i=0; i<size(); ++i) {
