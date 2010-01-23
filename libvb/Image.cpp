@@ -49,39 +49,28 @@ namespace vb {
 
   void Image::fill (int x, int y, Color in, Color out, unsigned char adj) {
     if (at(x,y) != in) return;
-
-    std::vector<int> fifox;
-    std::vector<int> fifoy;
-
-    unsigned imin=0;
-
-    fifox.push_back(x);
-    fifoy.push_back(y);
     putpoint(x,y,out,0); 
 
-    while (imin <= fifox.size() - 1) {
-      int i=fifox[imin];
-      int j=fifoy[imin];
-      int k=i+j*stride;
-      imin++;
+    std::vector<int> xy; xy.push_back(x); xy.push_back(y);
+
+    while (xy.size()) {
+      int j=xy.back(); xy.pop_back();
+      int i=xy.back(); xy.pop_back();
+
       if ((i<width-1)&&(at(i+1,j)==in)) {
-        fifox.push_back(i+1);
-        fifoy.push_back(j);
+        xy.push_back(i+1); xy.push_back(j);
         putpoint (i+1,j,out,0);
       }
-      if ((i>0)&&(at(k-1)==in)) {
-        fifox.push_back(i-1);
-        fifoy.push_back(j);
+      if ((i>0)&&(at(i-1,j)==in)) {
+        xy.push_back(i-1); xy.push_back(j);
         putpoint (i-1,j,out,0);
       }
-      if ((j<height-1)&&(at(k+stride)==in)) {
-        fifox.push_back(i);
-        fifoy.push_back(j+1);
+      if ((j<height-1)&&(at(i,j+1)==in)) {
+        xy.push_back(i); xy.push_back(j+1);
         putpoint (i,j+1,out,0);
       }
-      if ((j>0)&&(at(k-stride)==in)) {
-        fifox.push_back(i);
-        fifoy.push_back(j-1);
+      if ((j>0)&&(at(i,j-1)==in)) {
+        xy.push_back(i); xy.push_back(j-1);
         putpoint (i,j-1,out,0);
       }
     }  
