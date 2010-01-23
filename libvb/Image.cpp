@@ -46,4 +46,44 @@ namespace vb {
       tessellate (f,xmin,ymed,xmax,ymax,data);
     }
   }
+
+  void Image::fill (int x, int y, Color in, Color out, unsigned char adj) {
+    if (at(x,y) != in) return;
+
+    std::vector<int> fifox(4*width*height);
+    std::vector<int> fifoy(4*width*height);
+
+    long imin,imax;
+
+    imin=0; imax=0;
+    fifox[0]=x; fifoy[0]=y;
+    putpoint(x,y,out); 
+
+    while (imin<=imax) {
+      int i=fifox[imin];
+      int j=fifoy[imin];
+      int k=i+j*stride;
+      imin++;
+      if ((i<width-1)&&(at(i+1,j)==in)) {
+        fifox[++imax]=i+1;
+        fifoy[imax]=j;
+        putpoint (i+1,j,out);
+      }
+      if ((i>0)&&(at(k-1)==in)) {
+        fifox[++imax]=i-1;
+        fifoy[imax]=j;
+        putpoint (i-1,j,out);
+      }
+      if ((j<height-1)&&(at(k+stride)==in)) {
+        fifox[++imax]=i;
+        fifoy[imax]=j+1;
+        putpoint (i,j+1,out);
+      }
+      if ((j>0)&&(at(k-stride)==in)) {
+        fifox[++imax]=i;
+        fifoy[imax]=j-1;
+        putpoint (i,j-1,out);
+      }
+    }  
+  }
 }

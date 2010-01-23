@@ -116,6 +116,17 @@ namespace vb {
 
       Color & operator() (int x, int y=0) { return at(x,y); };
 
+      /** Fill a connected region in the image.
+       *
+       * @param x   The first coordinate of the zone to fill.
+       * @param y   The second coordinate of the zone to fill.
+       * @param in  The color to replace.
+       * @param out The color to put in the region.
+       * @param adj The adjacency to use when filling (defaults to Z^2).
+       */
+
+      void fill (int x, int y, Color in, Color out, unsigned char adj = 1+4+16+64);
+
     protected:
       /// Update the contents of AutoWindow::stage (i.e., do nothing).
       virtual void paint () {};
