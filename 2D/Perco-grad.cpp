@@ -32,7 +32,7 @@ int main (int argc, char ** argv) {
   for (int i=0; i<w; ++i) img.putpoint (i,h-1,200);
 
   img.show();
-  img.fill (0,h-1, 200,Color(255,0,0));
+  img.fill (0,h-1,Color(255,0,0));
   img.update();
   img.output();
   return 0;

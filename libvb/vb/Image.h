@@ -118,14 +118,17 @@ namespace vb {
 
       /** Fill a connected region in the image.
        *
+       * If the color at coordinates (x,y) is already equal to c, then 
+       * do nothing; if not, paint its connected component (defined 
+       * according to adj) using color c.
+       *
        * @param x   The first coordinate of the zone to fill.
        * @param y   The second coordinate of the zone to fill.
-       * @param in  The color to replace.
-       * @param out The color to put in the region.
+       * @param c   The color to put in the region.
        * @param adj The adjacency to use when filling (defaults to Z^2).
        */
 
-      void fill (int x, int y, Color in, Color out, unsigned char adj = 1+4+16+64);
+      void fill (int x, int y, Color c, unsigned char adj = 1+4+16+64);
 
     protected:
       /// Update the contents of AutoWindow::stage (i.e., do nothing).

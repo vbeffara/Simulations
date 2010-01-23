@@ -47,9 +47,9 @@ namespace vb {
     }
   }
 
-  void Image::fill (int x, int y, Color in, Color out, unsigned char adj) {
-    if (at(x,y) != in) return;
-    putpoint(x,y,out,0); 
+  void Image::fill (int x, int y, Color c, unsigned char adj) {
+    Color in = at(x,y); if (in == c) return;
+    putpoint(x,y,c,0);
 
     std::vector<int> xy; xy.push_back(x); xy.push_back(y);
 
@@ -59,19 +59,19 @@ namespace vb {
 
       if ((i<width-1)&&(at(i+1,j)==in)) {
         xy.push_back(i+1); xy.push_back(j);
-        putpoint (i+1,j,out,0);
+        putpoint (i+1,j,c,0);
       }
       if ((i>0)&&(at(i-1,j)==in)) {
         xy.push_back(i-1); xy.push_back(j);
-        putpoint (i-1,j,out,0);
+        putpoint (i-1,j,c,0);
       }
       if ((j<height-1)&&(at(i,j+1)==in)) {
         xy.push_back(i); xy.push_back(j+1);
-        putpoint (i,j+1,out,0);
+        putpoint (i,j+1,c,0);
       }
       if ((j>0)&&(at(i,j-1)==in)) {
         xy.push_back(i); xy.push_back(j-1);
-        putpoint (i,j-1,out,0);
+        putpoint (i,j-1,c,0);
       }
     }  
     step();
