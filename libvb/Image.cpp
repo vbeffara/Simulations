@@ -57,22 +57,14 @@ namespace vb {
       int j=xy.back(); xy.pop_back();
       int i=xy.back(); xy.pop_back();
 
-      if ((i<width-1)&&(at(i+1,j)==in)) {
-        xy.push_back(i+1); xy.push_back(j);
-        putpoint (i+1,j,c,0);
-      }
-      if ((i>0)&&(at(i-1,j)==in)) {
-        xy.push_back(i-1); xy.push_back(j);
-        putpoint (i-1,j,c,0);
-      }
-      if ((j<height-1)&&(at(i,j+1)==in)) {
-        xy.push_back(i); xy.push_back(j+1);
-        putpoint (i,j+1,c,0);
-      }
-      if ((j>0)&&(at(i,j-1)==in)) {
-        xy.push_back(i); xy.push_back(j-1);
-        putpoint (i,j-1,c,0);
-      }
+      if ((adj&1)   && (i<width-1)                 && (at(i+1,j  )==in)) { xy.push_back(i+1); xy.push_back(j  ); putpoint (i+1,j  ,c,0); }
+      if ((adj&2)   && (i<width-1) && (j<height-1) && (at(i+1,j+1)==in)) { xy.push_back(i+1); xy.push_back(j+1); putpoint (i+1,j+1,c,0); }
+      if ((adj&4)   &&                (j<height-1) && (at(i  ,j+1)==in)) { xy.push_back(i  ); xy.push_back(j+1); putpoint (i  ,j+1,c,0); }
+      if ((adj&8)   && (i>0)       && (j<height-1) && (at(i-1,j+1)==in)) { xy.push_back(i-1); xy.push_back(j+1); putpoint (i-1,j+1,c,0); }
+      if ((adj&16)  && (i>0)                       && (at(i-1,j  )==in)) { xy.push_back(i-1); xy.push_back(j  ); putpoint (i-1,j  ,c,0); }
+      if ((adj&32)  && (i>0)       && (j>0)        && (at(i-1,j-1)==in)) { xy.push_back(i-1); xy.push_back(j-1); putpoint (i-1,j-1,c,0); }
+      if ((adj&64)  &&                (j>0)        && (at(i  ,j-1)==in)) { xy.push_back(i  ); xy.push_back(j-1); putpoint (i  ,j-1,c,0); }
+      if ((adj&128) && (i<width-1) && (j>0)        && (at(i+1,j-1)==in)) { xy.push_back(i+1); xy.push_back(j-1); putpoint (i+1,j-1,c,0); }
     }  
     step();
   }

@@ -128,7 +128,7 @@ namespace vb {
        * @param adj The adjacency to use when filling (defaults to Z^2).
        */
 
-      void fill (int x, int y, Color c, unsigned char adj = 1+4+16+64);
+      void fill (int x, int y, Color c, unsigned char adj = 85);
 
     protected:
       /// Update the contents of AutoWindow::stage (i.e., do nothing).
