@@ -85,7 +85,6 @@ void explore (long x0, long y0, long d0, long xf, long yf, char c)
 int main(int argc, char ** argv)
 {
   long i,j,hcross;
-  char title[80];
   double epsilon;
 
   /* arguments -> p et n */
@@ -104,8 +103,7 @@ int main(int argc, char ** argv)
     if (prng.bernoulli(.5-epsilon)) down[i]=1;
   }
 
-  sprintf(title,"Asymmetric bond-percolation cluster (epsilon=%f)",epsilon);
-  img = new Image(n,n,title);
+  img = new Image(n,n,fmt("Asymmetric bond-percolation cluster (epsilon=%)")%epsilon);
 
   /* OnScreen (img); */
 

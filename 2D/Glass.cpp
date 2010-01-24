@@ -104,8 +104,7 @@ int main (int argc, char **argv) {
     exit (1);
   }
 
-  snprintf (title,99, "A glass process of parameter %g (conditioning: '%s')", p, c.c_str());
-  Image img (n,n,title);
+  Image img (n,n, fmt("A glass process of parameter % (conditioning: '%')") % p % c);
 
   img.fill(0,0,0);
   for (int i=0; i<n; i++) img.putpoint (i,n/2,255);

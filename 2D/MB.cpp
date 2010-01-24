@@ -17,7 +17,6 @@ int dy[4] = {0,1,0,-1};
 int main(int argc, char ** argv)
 {
   Image *img;              /* L image */
-  char title[80];          /* Titre ... */
   int n;                   /* Taille du carré */
   char d;                  /* La chaine */
   
@@ -30,8 +29,7 @@ int main(int argc, char ** argv)
 
   /* Initialisations */
 
-  sprintf(title,"A Brownian path of size %d",n);
-  img = new Image(2*n,2*n,title);
+  img = new Image(2*n,2*n,"A Brownian path of size " + str(n));
 
   /* Simulation */
 

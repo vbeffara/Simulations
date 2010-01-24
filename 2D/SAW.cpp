@@ -12,9 +12,7 @@ int main(int argc, char ** argv)
   int n = CLP('n');
   int t = CLP('t');
 
-  char title[100]; sprintf (title,"A self-avoiding walk of length %d",n);
-
-  Path P (n,title,true);
+  Path P (n, "A self-avoiding walk of length "+str(n), true);
   ProgressBar PB (t);
 
   for (int i=0;i<t;) {

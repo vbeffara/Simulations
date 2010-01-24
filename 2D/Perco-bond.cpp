@@ -84,7 +84,6 @@ void bndcnx (Image &img, int ox, int oy)
 int main(int argc, char ** argv)
 {
   int n,i;
-  char title[80];
   double p;
 
   /* arguments -> p et n */
@@ -93,8 +92,7 @@ int main(int argc, char ** argv)
   n = CLP('n');
   p = CLP('p');
 
-  sprintf(title,"Bond-percolation cluster (p=%f)",p);
-  Image img (2*n,2*n,title);
+  Image img (2*n,2*n,fmt("Bond-percolation cluster (p=%)")%p);
 
   /* Bond-percolation --- 16->est, 32->nord */
 

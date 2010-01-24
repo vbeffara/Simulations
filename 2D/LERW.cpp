@@ -21,7 +21,6 @@ char TRANS[] = "ENWS";
 int main(int argc, char ** argv)
 {
   Image *img;              /* L image */
-  char title[80];          /* Titre ... */
   int n;                   /* Taille du carré */
   char d;                  /* La chaine */
   
@@ -36,8 +35,7 @@ int main(int argc, char ** argv)
 
   /* Initialisations */
 
-  sprintf(title,"A loop-erased walk of size %d",n);
-  img = new Image(2*n,2*n,title);
+  img = new Image(2*n,2*n,"A loop-erased walk of size " + str(n));
   if (!img) exit(1);
 
   /* Simulation */
@@ -72,7 +70,7 @@ int main(int argc, char ** argv)
   /* Affichage */
 
   printf ("%%!PS-Adobe-2.0 EPSF-2.0\n");
-  printf ("%%%%Title: %s\n",title);
+  printf ("%%%%Title: %s\n",img->title.c_str());
   printf ("%%%%Creator: LERW.c (VB)\n");
   printf ("%%%%BoundingBox: 0 0 %d %d\n", 3*(imax-imin)+6, 3*(jmax-jmin)+6);
 

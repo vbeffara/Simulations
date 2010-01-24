@@ -9,7 +9,6 @@ int main(int argc, char *argv[])
 {
   long i,x,y,xy,f1,f2,nstep;
   unsigned long p[5];
-  char title[80];
 
   /* arguments -> beta et n
    * beta_critical = log(1+sqrt(2)) = 0.88137359...
@@ -19,8 +18,7 @@ int main(int argc, char *argv[])
   double beta = CLP('b');
   long n = CLP('n');
 
-  sprintf(title,"An Ising configuration (beta=%6f)",beta);
-  Image img(n,n,title);
+  Image img(n,n,fmt("An Ising configuration (beta=%6f)")%beta);
 
   /* conditions initiales / au bord */
 

@@ -24,7 +24,6 @@ int dy[4] = {0,1,0,-1};
 int main(int argc, char ** argv)
 {
   Image *img;              /* L image */
-  char title[80];          /* Titre ... */
   char d;                  /* La chaine */
   
   long x,y,nx,ny,done,ndraw,ngrey;
@@ -39,8 +38,7 @@ int main(int argc, char ** argv)
 
   /* Initialisations */
 
-  sprintf(title,"A MDLA in density %.2f",p);
-  img = new Image(2*n,2*n,title);
+  img = new Image(2*n,2*n,"A MDLA in density " + str(p));
   img->snapshot_setup ("MDLA",t);
 
   ngrey = 0;

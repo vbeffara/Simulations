@@ -163,8 +163,6 @@ void runDLA(){
 
 int main(int argc, char ** argv)
 {
-  char title[80];          /* Titre ... */
-  
   /* arguments -> taille du terrain */
 
   CL_Parser CLP (argc,argv,"n=8");
@@ -172,8 +170,7 @@ int main(int argc, char ** argv)
 
   /* Initialisations */
 
-  sprintf(title,"A DLA cluster of size %ld",n);
-  img = new Image(n,n,title);
+  img = new Image(n,n,"A DLA cluster of size "+str(n));
   m = new char[n*n];
 
   /* Simulation */

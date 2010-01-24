@@ -67,9 +67,7 @@ int main(int argc, char ** argv)
   for (int i=0; i<n*n; ++i)
     color[i] = (char) prng.bernoulli(q);
 
-  char title[100];
-  sprintf(title,"Divide-and-color model (p=%.3f,q=%.3f)",p,q);
-  Image img (n,n,title);
+  Image img (n,n,fmt("Divide-and-color model (p=%,q=%)")%p%q);
 
   for (int x=0; x<n; ++x)
     for (int y=0; y<n; ++y)

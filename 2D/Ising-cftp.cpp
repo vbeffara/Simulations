@@ -60,7 +60,6 @@ long paint (Image &img) {
 int main(int argc, char *argv[])
 {
   long i,j,bla;
-  char title[80];
   long dist;
 
   /* arguments -> beta et n
@@ -71,8 +70,7 @@ int main(int argc, char *argv[])
   double beta = CLP('b');
   n = CLP('n');
 
-  sprintf(title,"An Ising configuration (beta=%6f)",beta);
-  Image img (n,n,title);
+  Image img (n,n,fmt("An Ising configuration (beta=%)")%beta);
 
   low = new char[n*n];
   high = new char[n*n];

@@ -8,7 +8,6 @@ using namespace vb;
 int main(int argc, char *argv[])
 {
   long i,nstep,x,y,total;
-  char title[80];
 
   /* arguments -> p et n */
 
@@ -16,9 +15,7 @@ int main(int argc, char *argv[])
   double p = CLP('p');
   int n = CLP('n');
 
-  sprintf(title,"Discrete-time contact process on Z^2 (p=%f)",p);
-
-  Image img (n,n,title);
+  Image img (n,n,fmt("Discrete-time contact process on Z^2 (p=%)")%p);
 
   /* conditions initiales */
 

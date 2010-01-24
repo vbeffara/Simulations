@@ -82,7 +82,6 @@ void edge_detect(Image &img) {
 
 int main(int argc, char ** argv) {
   int i; 
-  char s[80];
   double d, cd;
   
   /* lecture des arguments */
@@ -92,8 +91,6 @@ int main(int argc, char ** argv) {
   kappa = CLP('k');
   int r = CLP('r');
   int smooth = CLP('s');
-
-  sprintf(s,"Schramm's SLE Process (kappa=%f)",kappa);
 
   if (r) prng.srand(r);
 
@@ -127,7 +124,7 @@ int main(int argc, char ** argv) {
   wd = (int)(-cmin[0]>cmax[0]?-cmin[0]:cmax[0]);
   ht = (int) ( 2*n*sqrt(kappa)/(cmax[0]-cmin[0]) ); /*  TODO : Fix */
 
-  Image img (2*wd,ht,s);
+  Image img (2*wd,ht,fmt("Schramm's SLE Process (kappa=%)") % (2/kappa));
 
   for (i=0;i<2*wd;i++) img.putpoint (i,0, (smooth?Color(255):INSIDE));
 

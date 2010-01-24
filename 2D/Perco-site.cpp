@@ -48,7 +48,6 @@ int main(int argc, char ** argv)
 {
   Image *img;
   int n,i;
-  char title[80];
   double p;
 
   /* arguments -> p et n */
@@ -57,8 +56,7 @@ int main(int argc, char ** argv)
   n = CLP('n');
   p = CLP('p');
 
-  sprintf(title,"Site-percolation cluster (p=%f)",p);
-  img=new Image(2*n,2*n,title);
+  img=new Image(2*n,2*n,fmt("Site-percolation cluster (p=%)")%p);
 
   /* Site-percolation --- 1=dedans, 2=dehors */
 

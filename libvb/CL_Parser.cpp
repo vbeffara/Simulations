@@ -13,27 +13,20 @@ namespace vb {
   CL_Value::operator long()        const { return atoi(value.c_str()); }
   CL_Value::operator double()      const { return atof(value.c_str()); }
 
-  CL_Parser::CL_Parser (int argc, char **argv, std::string syntax,
-                                               const std::string &help) :
+  CL_Parser::CL_Parser (int argc, char **argv, std::string syntax, const std::string &help) :
     getopt_arg("h"), _help(help) {
+      if (help.length()==0) _help = "CL_Parser argument : " + syntax;
 
-    if (help.length()==0) {
-      std::ostringstream os;
-      os << "CL_Parser argument : " << syntax;
-      _help = os.str();
+      size_t cut;
+      while ((cut=syntax.find_first_of(",")) != syntax.npos) {
+        newparam (syntax.substr(0,cut));
+        syntax = syntax.substr(cut+1);
+      }
+      if (syntax.length()) newparam (syntax);
+
+      parse(argc,argv);
     }
 
-    int cut;
-    while ((cut=syntax.find_first_of(",")) != (int) syntax.npos) {
-      newparam (syntax.substr(0,cut));
-      syntax = syntax.substr(cut+1);
-    }
-    if (syntax.length())
-      newparam (syntax);
-    
-    parse(argc,argv);
-  }
-  
   void CL_Parser::newparam (const std::string &s) {
     if (s.length() == 1) {
       getopt_arg.append(1,s[0]);

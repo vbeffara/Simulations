@@ -17,7 +17,6 @@ using namespace vb;
 
 int main(int argc, char ** argv)
 {
-  char title[80];          /* Titre ... */
   char d;                  /* La chaine */
 
   int L;                /* Coarse grain, right now it is n^(1/3) */
@@ -35,12 +34,10 @@ int main(int argc, char ** argv)
 
   /* Initialisations */
 
-  sprintf(title,"A vertex once-reinforced random walk (size=%d, a=%.2f)",n,1/a-1);
-
   L = (int) pow((double)n,1./3.);
-  fprintf (stderr, "Coarse graining with mesh %d.\n", L);
+  std::cerr << "Coarse graining with mesh " << L << ".\n";
 
-  CoarseImage img(n,n,L,title);
+  CoarseImage img(n,n,L,fmt("A vertex once-reinforced random walk (size=%, a=%)") % n % (1/a-1));
   //img.snapshot_period = t;
 
   img.show();
