@@ -5,8 +5,8 @@
 #include <vb/ProgressBar.h>
 
 namespace vb {
-  ProgressBar::ProgressBar (int length) : 
-    final(length), current(0), nchar(0), timer (Timer(1.0)) {
+  ProgressBar::ProgressBar (int length, double pow) : 
+    final(length), current(0), nchar(0), power(pow), timer (Timer(1.0)) {
       display();
     }
 
@@ -16,7 +16,7 @@ namespace vb {
 
     current = pos;
     int dirty = 0;
-    int new_nchar = (pos*50)/final;
+    int new_nchar = (pos*50.0)/final;
 
     if (timer.check()) {
       timer.reset();
@@ -50,8 +50,9 @@ namespace vb {
     // std::cerr << " (" << current << "/" << final << ")";
 
     if (timer.t_elapsed() > 0) {
-      double steps_per_sec = (double)current / timer.t_elapsed();
-      int eta = (int)((double)(final-current)/steps_per_sec);
+      double done = pow(current,power);
+      double todo = pow(final,power);
+      int eta = int (timer.t_elapsed() * (todo/done - 1.0));
 
       bar << " ETA: ";
 

@@ -15,28 +15,26 @@ namespace vb {
 
   class ProgressBar {
     public:
-
       /// The constructor, defaults to a length of 100 steps.
-
-      ProgressBar (int length=100);
+      ProgressBar (int length=100, double pow=1.0);
 
       /// Update the bar on the screen.
-
       void update (int pos);
 
       /// Close the display properly.
-
       void die (void);
 
     private:
-      int final;            ///< The final value for the counter
-      int current;          ///< The current value of the counter
+      int final;            ///< The final value for the counter.
+      int current;          ///< The current value of the counter.
 
-      int nchar;            ///< Number of displayed characters on the screen
+      int nchar;            ///< Number of displayed characters on the screen.
 
-      Timer timer;          ///< Timer for automatic updating
+      double power;         ///< Power law driving the progress.
 
-      void display (void);  ///< Actually draw the bar on the screen
+      Timer timer;          ///< Timer for automatic updating.
+
+      void display (void);  ///< Actually draw the bar on the screen.
   };
 }
 
