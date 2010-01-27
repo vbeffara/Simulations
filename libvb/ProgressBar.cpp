@@ -56,21 +56,11 @@ namespace vb {
 
       bar << " ETA: ";
 
-      if (eta < 60) bar << eta << " second(s)"; else {
-        eta /= 60;
-        if (eta < 60) bar << eta << " minute(s)"; else {
-          eta /= 60;
-          if (eta < 24) bar << eta << " hour(s)"; else {
-            eta /= 24;
-            if (eta < 365) bar << eta << " day(s)"; else {
-              eta /= 365;
-              bar << eta << " year(s)";
-            }
-          }
-        }
-      }
-
-      bar << "     ";
+      int tmp;
+      if ((tmp = eta/3600/24)) { bar << tmp << "d "; eta -= tmp*3600*24; }
+      if ((tmp = eta/3600))    { bar << tmp << "h "; eta -= tmp*3600; }
+      if ((tmp = eta/60))      { bar << tmp << "m "; eta -= tmp*60; }
+      bar << eta << "s     ";
     }
 
     std::cerr << bar.str();
