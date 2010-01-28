@@ -44,8 +44,6 @@ int main(int argc, char **argv) {
   int stats[5];
   for (int i=0;i<5;++i) stats[i]=0;
 
-  ProgressBar PB (n_iter);
-
   // Create the graph once and for all
 
   Graph g (n*n+1);
@@ -97,20 +95,20 @@ int main(int argc, char **argv) {
 
   // Then simulate
 
-  for (int iter=1;iter<=n_iter;++iter) {
-    for (int i=0; i<2*n*(n+1); ++i) {
-      int o = prng.bernoulli(p);
-      cap[all_edges[i]] = o;
-      cap[rev_edges[i]] = o;
+  { ProgressBar PB (n_iter);
+    for (int iter=1;iter<=n_iter;++iter) {
+      for (int i=0; i<2*n*(n+1); ++i) {
+        int o = prng.bernoulli(p);
+        cap[all_edges[i]] = o;
+        cap[rev_edges[i]] = o;
+      }
+
+      long flow = edmonds_karp_max_flow (g,(n>>1)*(n+1),n*n);
+      stats[flow]++;
+
+      PB.update (iter);
     }
-
-    long flow = edmonds_karp_max_flow (g,(n>>1)*(n+1),n*n);
-    stats[flow]++;
-
-    PB.update (iter);
   }
-
-  PB.die();
 
   cout << n << " | " << n_iter;
   for (int i=1; i<=4; ++i) {

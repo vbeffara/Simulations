@@ -64,12 +64,12 @@ int main (int argc, char ** argv) {
   Triangulation T (n);
   T.inscribe (T.face (Edge(0,1)));
 
-  ProgressBar P (t);
-  for (int i=0; i<t; ++i) {
-    T.flip (T.random_edge());
-    P.update(i);
+  { ProgressBar P (t);
+    for (int i=0; i<t; ++i) {
+      T.flip (T.random_edge());
+      P.update(i);
+    }
   }
-  P.die();
 
   T.show();
   T.inscribe (T.face (Edge (0,*(T.v[0]->adj.begin()))));

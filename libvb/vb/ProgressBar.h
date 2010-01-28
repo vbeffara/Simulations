@@ -18,11 +18,11 @@ namespace vb {
       /// The constructor, defaults to a length of 100 steps.
       ProgressBar (int length=100, double pow=1.0);
 
+      /// The destructor, which closes the display properly.
+      ~ProgressBar ();
+
       /// Update the bar on the screen.
       void update (int pos);
-
-      /// Close the display properly.
-      void die (void);
 
     private:
       int final;            ///< The final value for the counter.

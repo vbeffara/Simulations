@@ -23,7 +23,6 @@ int main(int argc, char ** argv)
     if (P.self_avoiding()) i++; else P[j]=l;
   }
 
-  PB.die();
   P.output();
   return 0;
 }

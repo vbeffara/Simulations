@@ -63,24 +63,25 @@ int main (int argc, char **argv) {
   fifoy = new int[m*n];
 
   int ncross = 0;
-  ProgressBar PB (t);
 
-  for (int iter=0; iter<t; ++iter) {
-    PB.update (iter);
+  { ProgressBar PB (t);
 
-    for (int i=0; i<n; ++i)
-      for (int j=0; j<m; ++j)
-        img -> putpoint (i,j, 16*prng.bernoulli(p) + 32*prng.bernoulli(q));
+    for (int iter=0; iter<t; ++iter) {
+      PB.update (iter);
 
-    for (int j=0; j<m; ++j) {
-      img -> putpoint (0,j, (*img)(0,j) | 32);
-      img -> putpoint (n-1,j, (*img)(n-1,j) | 32);
+      for (int i=0; i<n; ++i)
+        for (int j=0; j<m; ++j)
+          img -> putpoint (i,j, 16*prng.bernoulli(p) + 32*prng.bernoulli(q));
+
+      for (int j=0; j<m; ++j) {
+        img -> putpoint (0,j, (*img)(0,j) | 32);
+        img -> putpoint (n-1,j, (*img)(n-1,j) | 32);
+      }
+
+      bndcnx (0,0);
+      if ((*img)(n-1,0) & 3) ++ncross;
     }
-
-    bndcnx (0,0);
-    if ((*img)(n-1,0) & 3) ++ncross;
   }
 
-  PB.die();
   cout << m << " " << n << " " << p << " " << q << " | " << t << " | " << ncross << " " << double(ncross)/double(t) << endl;
 }

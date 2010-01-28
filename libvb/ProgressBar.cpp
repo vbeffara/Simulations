@@ -10,6 +10,11 @@ namespace vb {
       display();
     }
 
+  ProgressBar::~ProgressBar () {
+    update(final);
+    std::cerr << "\n";
+  }
+
   void ProgressBar::update (int pos) {
     if (pos<0) pos=0;
     if (pos>final) pos=final;
@@ -30,11 +35,6 @@ namespace vb {
     }
 
     if (dirty) display();
-  }
-
-  void ProgressBar::die (void) {
-    update(final);
-    std::cerr << "\n";
   }
 
   void ProgressBar::display (void) {

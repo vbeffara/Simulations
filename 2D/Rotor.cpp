@@ -15,18 +15,18 @@ int main (int argc, char ** argv) {
 
   int x=n/2, y=n/2;
 
-  ProgressBar PB (n*n*.785398, 2);
-  int surf=0;
+  { ProgressBar PB (n*n*.785398, 2);
+    int surf=0;
 
-  while ((x>0) && (x<n-1) && (y>0) && (y<n-1)) {
-    Color c = img(x,y);
-    if      (c == C[0]) { img.putpoint (x,y,C[1],0); ++x; }
-    else if (c == C[1]) { img.putpoint (x,y,C[2],0); ++y; }
-    else if (c == C[2]) { img.putpoint (x,y,C[3],0); --x; }
-    else if (c == C[3]) { img.putpoint (x,y,C[0],0); --y; }
-    else                { img.putpoint (x,y,C[0]); x=n/2; y=n/2; PB.update(++surf); }
+    while ((x>0) && (x<n-1) && (y>0) && (y<n-1)) {
+      Color c = img(x,y);
+      if      (c == C[0]) { img.putpoint (x,y,C[1],0); ++x; }
+      else if (c == C[1]) { img.putpoint (x,y,C[2],0); ++y; }
+      else if (c == C[2]) { img.putpoint (x,y,C[3],0); --x; }
+      else if (c == C[3]) { img.putpoint (x,y,C[0],0); --y; }
+      else                { img.putpoint (x,y,C[0]); x=n/2; y=n/2; PB.update(++surf); }
+    }
   }
 
-  PB.die();
   img.output_png();
 }
