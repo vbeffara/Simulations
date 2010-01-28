@@ -6,7 +6,7 @@
 
 namespace vb {
   ProgressBar::ProgressBar (int length, double pow) : 
-    final(length), current(0), nchar(0), power(pow), timer (Timer(1.0)) {
+    final(length), current(0), nchar(0), power(pow), timer(1.0) {
       display();
     }
 
@@ -37,30 +37,30 @@ namespace vb {
     if (dirty) display();
   }
 
-  void ProgressBar::display (void) {
+  void ProgressBar::display () {
     std::ostringstream bar;
 
     bar << "\r[";
-    for (int i=0; i<nchar; ++i)
-      bar << "=";
-    for (int i=nchar; i<50; ++i)
-      bar << " ";
+    for (int i=0; i<nchar; ++i)  bar << "=";
+    for (int i=nchar; i<50; ++i) bar << " ";
     bar << "]";
     
-    // std::cerr << " (" << current << "/" << final << ")";
-
     if (timer.t_elapsed() > 0) {
-      double done = pow(current,power);
-      double todo = pow(final,power);
-      int eta = int (timer.t_elapsed() * (todo/done - 1.0));
+      double done = pow(current,power), todo = pow(final,power);
+      int eta = timer.t_elapsed() * (todo/done - 1.0);
+      bool big=false;
 
-      bar << " ETA: ";
-
-      int tmp;
-      if ((tmp = eta/3600/24)) { bar << tmp << "d "; eta -= tmp*3600*24; }
-      if ((tmp = eta/3600))    { bar << tmp << "h "; eta -= tmp*3600; }
-      if ((tmp = eta/60))      { bar << tmp << "m "; eta -= tmp*60; }
-      bar << eta << "s     ";
+      bar << " (";
+      if (eta >= 3600*24) {
+        bar << eta/3600/24 << "d ";
+        eta = eta % 3600*24;
+        big = true;
+      }
+      if (big || (eta >= 3600)) {
+        bar << eta/3600 << ":" << std::setw(2) << std::setfill('0');
+        eta = eta % 3600;
+      }
+      bar << eta/60 << ":" << std::setw(2) << std::setfill('0') << eta%60 << ")   ";
     }
 
     std::cerr << bar.str();
