@@ -1,6 +1,6 @@
 
 def build (bld) :
     for i in bld.glob('*.cpp'):
-        bld.new_task_gen(features = 'cxx cprogram', source = i, target = i[:-4], uselib = 'fftw3', uselib_local = 'vb')
+        bld.new_task_gen(features = 'cxx cprogram', source = i, target = i[:-4], uselib = 'FFTW3', uselib_local = 'vb')
 
 # vim: ft=python

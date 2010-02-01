@@ -8,8 +8,8 @@ def configure (conf) :
     conf.check_tool ('compiler_cc compiler_cxx')
     conf.check_cxx (header_name='boost/version.hpp', define_name='HAVE_BOOST')
     conf.check_cfg (package='cairomm-1.0', args='--cflags --libs', uselib_store='cairo', mandatory=1)
-    conf.check_cfg (package='fftw3',       args='--cflags --libs', uselib_store='fftw3')
-    conf.check_cfg (package='x11',         args='--cflags --libs', uselib_store='x11')
+    conf.check_cfg (package='fftw3',       args='--cflags --libs')
+    conf.check_cfg (package='x11',         args='--cflags --libs')
 
     if options.gui == 'fltk': conf.check_tool ('fluid')
 
