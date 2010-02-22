@@ -5,6 +5,7 @@
 #define __VB_CL_PARSER_H
 
 #include <vb/common.h>
+#include <vb/Globals.h>
 
 /** The namespace where libvb puts everything it defines. */
 
