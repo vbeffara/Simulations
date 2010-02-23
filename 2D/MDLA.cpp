@@ -11,10 +11,10 @@
 
 #define EC fprintf(stderr,"<%d>\n",__LINE__);
 
-#define EMPTY  Color(3)
-#define AWAY   Color(2)
-#define ALIVE  Color(1)
-#define DEAD   Color(0)
+#define EMPTY  Color(0)
+#define AWAY   Color(50)
+#define ALIVE  Color(0,200,0)
+#define DEAD   Color(255,0,0)
 
 using namespace vb;
 
