@@ -11,7 +11,11 @@
 #  define VB_LITTLE_ENDIAN
 # endif
 #else
+# if defined(__sparc__)
+#  define VB_BIG_ENDIAN
+# else
 Error: unknown endianness.
+# endif
 #endif
 
 namespace vb {
@@ -45,7 +49,7 @@ namespace vb {
       Color (char R, char G, char B, char A=255) : a(A), r(R), g(G), b(B) { }
 
       /// Constructor from a greyscale value.
-      Color (char V = 0) : a(V), r(V), g(V), b(255) { }
+      Color (char V = 0) : a(255), r(V), g(V), b(V) { }
 #endif
       /// Compare to another color.
       bool operator== (const Color &o) { return (r==o.r) && (g==o.g) && (b==o.b) && (a==o.a); }
