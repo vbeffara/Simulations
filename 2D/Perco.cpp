@@ -5,10 +5,11 @@
 using namespace vb;
 
 int main(int argc, char ** argv) {
-  CL_Parser CLP (argc, argv, "n=500,p=.5,d");
+  CL_Parser CLP (argc, argv, "n=500,p=.5,d,s=0");
   int    n = CLP('n'); n -= (n%4);
   double p = CLP('p');
   bool   d = CLP('d');
+  int    s = CLP('s');
 
   Image img (n, n, fmt("Bond percolation (p=%)")%p);
 
@@ -23,7 +24,9 @@ int main(int argc, char ** argv) {
   img.show();
 
   if (d) {
+    int t=0;
     while (true) {
+      if ((s>0) && ((t++%s)==0)) img.snapshot();
       int x = prng.uniform(n);
       int y = prng.uniform(n);
       if ((x+y)%2 == 0) continue;
