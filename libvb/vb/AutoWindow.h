@@ -77,14 +77,14 @@ namespace vb {
       /// If FLTK is present, run Fl::run(); if not, do nothing.
       void run ();
 
+      /// Increment the clock and call cycle() as needed.
+      void step() { ++npts; --timer; if (timer==0) cycle(); }
+
     protected:
       int stride;                                  ///< The number of pixels in a line in memory.
       std::vector <Color> stage;                   ///< The pixel data, presented as a std::vector of vb::Color.
       Cairo::RefPtr <Cairo::ImageSurface> surface; ///< Cairo surface with the same contents.
       Cairo::RefPtr <Cairo::Context>      cr;      ///< A context to draw onto the surface.
-
-      /// Increment the clock and call cycle() as needed.
-      void step() { ++npts; --timer; if (timer==0) cycle(); }
 
     private:
       unsigned long long npts;       ///< The number of actions done since the beginning of time.

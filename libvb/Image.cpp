@@ -51,7 +51,7 @@ namespace vb {
     Color in = at(x,y); if (in == c) return;
     putpoint(x,y,c,0);
 
-    std::vector<int> xy; xy.push_back(x); xy.push_back(y);
+    static std::vector<int> xy; xy.push_back(x); xy.push_back(y);
 
     while (xy.size()) {
       int j=xy.back(); xy.pop_back();
@@ -65,7 +65,6 @@ namespace vb {
       if ((adj&32)  && (i>0)       && (j>0)        && (at(i-1,j-1)==in)) { xy.push_back(i-1); xy.push_back(j-1); putpoint (i-1,j-1,c,0); }
       if ((adj&64)  &&                (j>0)        && (at(i  ,j-1)==in)) { xy.push_back(i  ); xy.push_back(j-1); putpoint (i  ,j-1,c,0); }
       if ((adj&128) && (i<width-1) && (j>0)        && (at(i+1,j-1)==in)) { xy.push_back(i+1); xy.push_back(j-1); putpoint (i+1,j-1,c,0); }
-    }  
-    step();
+    }
   }
 }
