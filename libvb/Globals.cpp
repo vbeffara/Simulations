@@ -1,5 +1,4 @@
-
-/// @file globals.cpp
+/// @file
 /// Implementation of the global state variables.
 
 #include <vb/Globals.h>

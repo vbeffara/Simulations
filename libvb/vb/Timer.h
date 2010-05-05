@@ -1,5 +1,4 @@
-
-/// @file Timer.h
+/// @file
 /// Definitions for the vb::Timer class
 
 #ifndef __VB_TIMER_H

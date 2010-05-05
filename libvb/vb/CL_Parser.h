@@ -1,10 +1,9 @@
-/// @file CL_Parser.h
+/// @file
 /// Definitions for the vb::CL_Parser class
 
 #ifndef __VB_CL_PARSER_H
 #define __VB_CL_PARSER_H
 
-#include <vb/common.h>
 #include <vb/Globals.h>
 
 /** The namespace where libvb puts everything it defines. */

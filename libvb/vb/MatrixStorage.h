@@ -1,4 +1,4 @@
-/// @file MatrixStorage.h
+/// @file
 /// Definitions of various kinds of matrix storage.
 
 #ifndef __VB_MATRIXSTORAGE_H

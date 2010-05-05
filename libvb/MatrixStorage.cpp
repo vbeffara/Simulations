@@ -1,3 +1,6 @@
+/// @file
+/// Implementation of the MatrixStorage helper class.
+
 #include <vb/MatrixStorage.h>
 
 namespace vb {

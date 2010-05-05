@@ -1,5 +1,4 @@
-
-/// @file CoarseImage.cpp
+/// @file
 /// Implementation of the vb::CoarseImage class
 
 #include <vb/CoarseImage.h>

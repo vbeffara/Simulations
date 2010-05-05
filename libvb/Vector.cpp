@@ -1,3 +1,5 @@
+/// @file
+/// Implementation of the vb::Vector class.
 
 #include <vb/Vector.h>
 

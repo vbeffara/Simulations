@@ -1,3 +1,6 @@
+/// @file
+/// Implementation os the vb::Matrix class and helpers.
+
 #include <vb/Matrix.h>
 
 namespace vb {

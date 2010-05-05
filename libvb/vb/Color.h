@@ -1,8 +1,10 @@
-/// @file Color.h
+/// @file
 /// Adapter class to fit in between Cairo and FLTK.
 
 #ifndef __VB_COLOR_H
 #define __VB_COLOR_H
+
+#include <vb/common.h>
 
 #ifdef BYTE_ORDER
 # if BYTE_ORDER == BIG_ENDIAN

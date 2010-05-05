@@ -1,4 +1,4 @@
-/// @file ProgressBar.h
+/// @file
 /// Definitions for the vb::ProgressBar class
 
 #ifndef __VB_PROGRESS_BAR_H

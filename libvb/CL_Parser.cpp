@@ -1,5 +1,4 @@
-
-/// @file CL_Parser.cpp
+/// @file
 /// Implementation of the vb::CL_Parser class
 
 #include <vb/CL_Parser.h>

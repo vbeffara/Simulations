@@ -1,4 +1,4 @@
-/// @file Image.h
+/// @file
 /// Definitions for the vb::Image class
 
 #ifndef __VB_IMAGE_H

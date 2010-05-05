@@ -1,4 +1,4 @@
-/// @file Figure.cpp
+/// @file
 /// Implementation of the vb::Figure and related classes.
 
 #include <vb/Figure.h>

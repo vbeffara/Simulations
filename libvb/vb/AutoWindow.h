@@ -1,17 +1,10 @@
-/// @file AutoWindow.h
+/// @file
 /// Definitions for the vb::AutoWindow class.
 
 #ifndef AUTOWINDOW_H
 #define AUTOWINDOW_H
 
-#include <vb/common.h>
 #include <vb/Color.h>
-
-#ifdef HAVE_FLTK
-#include <FL/Fl.H>
-#include <FL/Fl_Double_Window.H>
-#include <FL/fl_draw.H>
-#endif
 
 namespace vb {
   /** A nice helper class for simulations.

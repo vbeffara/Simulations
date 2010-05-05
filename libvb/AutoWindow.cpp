@@ -1,5 +1,4 @@
-
-/// @file AutoWindow.cpp
+/// @file
 /// Implementation of the vb::AutoWindow class
 
 #include <vb/AutoWindow.h>

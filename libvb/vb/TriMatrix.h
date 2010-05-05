@@ -1,4 +1,4 @@
-/// @file TriMatrix.h
+/// @file
 /// Definitions for the vb::TriMatrix class
 
 #ifndef __VB_TRIMATRIX_H

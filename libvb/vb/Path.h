@@ -1,4 +1,4 @@
-/// @file Path.h
+/// @file
 /// Description of the vb::Path class
 
 #include <vb/common.h>

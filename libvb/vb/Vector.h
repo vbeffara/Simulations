@@ -1,4 +1,4 @@
-/// @file Vector.h
+/// @file
 /// Definitions of a vector class.
 
 #ifndef __VB_VECTOR_H

@@ -1,4 +1,4 @@
-/// @file Point.h
+/// @file
 /// Definitions for the vb::Point and vb::PointQueue classes
 
 #ifndef __VB_POINT_H

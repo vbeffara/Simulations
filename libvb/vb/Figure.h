@@ -1,4 +1,4 @@
-/// @file Figure.h
+/// @file
 /// Definitions for the vb::Figure and related classes.
 /// @example test_figure.cpp
 

@@ -1,4 +1,4 @@
-/// @file PRNG.h
+/// @file
 /// Definitions for the vb::PRNG class
 
 #ifndef __VB_PRNG_H

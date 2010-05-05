@@ -1,4 +1,4 @@
-/// @file Minimizer.h
+/// @file
 /// Algorithms for function minimization.
 
 #ifndef __VB_MINIMIZER_H

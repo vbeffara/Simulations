@@ -1,4 +1,4 @@
-/// @file Matrix.h
+/// @file
 /// Definitions of a matrix class.
 
 #ifndef __VB_MATRIX_H

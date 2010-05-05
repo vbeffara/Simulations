@@ -1,5 +1,4 @@
-
-/// @file PRNG.cpp
+/// @file
 /// Implementation of the vb::PRNG class
 
 #include <vb/PRNG.h>

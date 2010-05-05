@@ -1,4 +1,4 @@
-/// @file common.h
+/// @file
 /// Utility include file importing external resources (plus vb/config.h) 
 /// needed by all the others. Exactly which ones is hidden from the 
 /// documentation, but you can have a look at the source. You should never 
@@ -31,6 +31,12 @@
 
 #include <cairomm/context.h>
 #include <cairomm/surface.h>
+
+#ifdef HAVE_FLTK
+#include <FL/Fl.H>
+#include <FL/Fl_Double_Window.H>
+#include <FL/fl_draw.H>
+#endif
 
 namespace vb {
   /// Utility type for a complex number.

@@ -1,3 +1,6 @@
+/// @file
+/// Implementation of minimizer algorithms.
+
 #include <vb/Minimizer.h>
 
 namespace vb {

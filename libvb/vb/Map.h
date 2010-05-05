@@ -1,4 +1,4 @@
-/// @file Map.h
+/// @file
 /// A class for (periodic) planar maps.
 
 #ifndef MAP_H

@@ -1,4 +1,4 @@
-/// @file CoarseImage.h
+/// @file
 /// Definitions for the vb::CoarseImage class
 
 #ifndef __VB_COARSEIMAGE_H

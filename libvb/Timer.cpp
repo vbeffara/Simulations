@@ -1,5 +1,4 @@
-
-/// @file Timer.cpp
+/// @file
 /// Implementation of the vb::Timer class
 
 #include <vb/Timer.h>

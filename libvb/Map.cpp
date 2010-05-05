@@ -1,4 +1,4 @@
-/// @file Map.cpp
+/// @file
 /// Implementation of the vb::Map class.
 
 #include <vb/Map.h>

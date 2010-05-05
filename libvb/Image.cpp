@@ -1,5 +1,4 @@
-
-/// @file Image.cpp
+/// @file
 /// Implementation of the vb::Image and vb::Window classes.
 
 #include <vb/Image.h>
