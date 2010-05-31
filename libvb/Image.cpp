@@ -4,7 +4,7 @@
 #include <vb/Image.h>
 
 namespace vb {
-  Image::Image (int wd, int ht, const std::string &tit) : AutoWindow(wd,ht,tit) { }
+  Image::Image (int wd, int ht, const std::string &tit) : Bitmap(wd,ht,tit) { }
 
   Color Image::lazy_eval (coloring *f, int x, int y, void *data) {
     Color tmp = stage[x+stride*y];
@@ -66,4 +66,6 @@ namespace vb {
       if ((adj&128) && (i<width-1) && (j>0)        && (at(i+1,j-1)==in)) { xy.push_back(i+1); xy.push_back(j-1); putpoint (i+1,j-1,c,0); }
     }
   }
+
+  void Image::paint () {};
 }

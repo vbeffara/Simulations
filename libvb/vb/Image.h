@@ -4,7 +4,7 @@
 #ifndef __VB_IMAGE_H
 #define __VB_IMAGE_H
 
-#include <vb/AutoWindow.h>
+#include <vb/Bitmap.h>
 
 namespace vb {
   /** Helper type for use in vb::Image::tessellate and
@@ -19,7 +19,7 @@ namespace vb {
    * color individual points and to export a PNG file.
    */
 
-  class Image : public AutoWindow {
+  class Image : public Bitmap {
     public:
       /** The standard constructor of the Image class.
        *
@@ -106,6 +106,8 @@ namespace vb {
 
       Color & at (int x, int y=0) { return stage[x+stride*y]; };
 
+      virtual Color color_at (int x, int y) { return at(x,y); };
+
       /** Return the color of the image at point (x,y).
        *
        * This is exactly equivalent to Image::at.
@@ -132,7 +134,7 @@ namespace vb {
 
     protected:
       /// Update the contents of AutoWindow::stage (i.e., do nothing).
-      virtual void paint () {};
+      virtual void paint ();
   };
 }
 

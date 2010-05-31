@@ -67,9 +67,11 @@ namespace vb {
   }
 
   void draw_cb (void * in, int x, int y, int w, unsigned char * out) {
-    const AutoWindow &img = * (AutoWindow*) in;
+    const AutoWindow         & img   = * (AutoWindow*) in;
+    const std::vector<Color> & stage = img.stage;
+
     for (int i=0; i<w; ++i) {
-      const Color &C = img.stage[x+i + img.stride*y];
+      const Color &C = stage [x+i + img.stride*y];
       out[3*i] = C.r; out[3*i + 1] = C.g; out[3*i + 2] = C.b;
     }
   }

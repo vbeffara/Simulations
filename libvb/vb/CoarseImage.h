@@ -4,7 +4,7 @@
 #ifndef __VB_COARSEIMAGE_H
 #define __VB_COARSEIMAGE_H
 
-#include <vb/Image.h>
+#include <vb/Bitmap.h>
 
 namespace vb {
 
@@ -26,7 +26,7 @@ namespace vb {
    *   color of the screen pixel;
    */
 
-  class CoarseImage : public Image {
+  class CoarseImage : public Bitmap {
     public:
       int true_width;    ///< The true width of the image, in pixels.
       int true_height;   ///< The true height of the image, in pixels.
@@ -100,6 +100,11 @@ namespace vb {
        */
 
       char operator() (int x, int y) const { return at(x,y); }
+
+      /** Return the vb::Color of the block at macroscopic coordinates x and x.
+       */
+
+      virtual Color color_at (int x, int y);
 
     private:
       int LL;

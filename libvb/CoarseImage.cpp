@@ -5,7 +5,7 @@
 
 namespace vb {
   CoarseImage::CoarseImage (int wd, int ht, int l, const std::string &title) 
-    : Image (1+(wd-1)/l,1+(ht-1)/l,title),
+    : Bitmap (1+(wd-1)/l,1+(ht-1)/l,title),
       true_width(wd), true_height(ht), L(l), LL(l*l),
       fill(width*height,0), sub(width*height,(char*)NULL)
   { }
@@ -38,6 +38,8 @@ namespace vb {
     int coarse_y = y/L;
     int coarse_xy = coarse_x + width * coarse_y;
 
+    if (dt) step();
+
     if (fill[coarse_xy] == c*LL) // Nothing to do
       return c;
 
@@ -52,7 +54,7 @@ namespace vb {
       fill[coarse_xy] += 2*c-1;
     }
 
-    this->Image::putpoint (coarse_x,coarse_y,fill[coarse_xy]*255/LL,dt);
+    //this->Image::putpoint (coarse_x,coarse_y,fill[coarse_xy]*255/LL,dt);
 
     if ((fill[coarse_xy]==0)||(fill[coarse_xy]==LL)) {
       release (sub[coarse_xy]);
@@ -72,5 +74,9 @@ namespace vb {
 
     int sub_xy = (x%L) + L * (y%L); 
     return sub[coarse_xy][sub_xy];
+  }
+
+  Color CoarseImage::color_at (int x, int y) {
+    return fill[x+width*y]*255/LL;
   }
 }
