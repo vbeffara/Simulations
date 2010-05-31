@@ -14,9 +14,8 @@ namespace vb {
 #endif
     title(t), width(wd), height(ht), fps(20),
 
-    stride  (Cairo::ImageSurface::format_stride_for_width (Cairo::FORMAT_RGB24, width) / 4),
-    stage   (stride*height, Color(0,0,0,0)),
-    surface (Cairo::ImageSurface::create ((unsigned char *) &stage.front(), Cairo::FORMAT_RGB24, width, height, stride*4)),
+    surface (Cairo::ImageSurface::create (Cairo::FORMAT_RGB24, width, height)),
+    stride  (surface -> get_stride() / sizeof(Color)),
     cr      (Cairo::Context::create (surface)),
 
     npts(0), delay(1), timer(1), saved_clock(clock()), nb_clock(0),
@@ -67,11 +66,11 @@ namespace vb {
   }
 
   void draw_cb (void * in, int x, int y, int w, unsigned char * out) {
-    const AutoWindow         & img   = * (AutoWindow*) in;
-    const std::vector<Color> & stage = img.stage;
+    AutoWindow & img  = * (AutoWindow*) in;
+    Color      * data = (Color*) img.surface -> get_data();
 
     for (int i=0; i<w; ++i) {
-      const Color &C = stage [x+i + img.stride*y];
+      Color &C = data [x+i + img.stride*y];
       out[3*i] = C.r; out[3*i + 1] = C.g; out[3*i + 2] = C.b;
     }
   }

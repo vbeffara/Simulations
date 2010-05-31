@@ -4,7 +4,9 @@
 #include <vb/Bitmap.h>
 
 namespace vb {
-  Bitmap::Bitmap (int wd, int ht, const std::string &tit) : AutoWindow(wd,ht,tit) { }
+  Bitmap::Bitmap (int wd, int ht, const std::string &tit)
+    : AutoWindow(wd,ht,tit), stage ((Color *) (surface -> get_data()))
+  { }
 
   void Bitmap::paint () {
     for (int x=0; x<width; ++x)

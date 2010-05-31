@@ -25,7 +25,9 @@ namespace vb {
    *
    * It is just a 4-char structure with a few convenience methods for 
    * making it out of components, and it adapts to the endianness of the 
-   * machine as determined at compilation time.
+   * machine as determined at compilation time. The point is to be able 
+   * to cast the output of Cairo::ImageSurface::get_data() to Color* to 
+   * access components without caring about endianness.
    */
 
   class Color {

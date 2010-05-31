@@ -36,6 +36,8 @@ namespace vb {
 
       virtual Color color_at (int x, int y) =0;
 
+      Color * stage; ///< The raw pixel data of the screen representation.
+
     private:
       virtual void paint ();
   };

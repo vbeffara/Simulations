@@ -74,9 +74,9 @@ namespace vb {
       void step() { ++npts; --timer; if (timer==0) cycle(); }
 
     protected:
-      int stride;                                  ///< The number of pixels in a line in memory.
-      std::vector <Color> stage;                   ///< The pixel data, presented as a std::vector of vb::Color.
       Cairo::RefPtr <Cairo::ImageSurface> surface; ///< Cairo surface with the same contents.
+      Color * stage;                               ///< The pixel data, presented as a std::vector of vb::Color.
+      int stride;                                  ///< The number of pixels in a line in memory.
       Cairo::RefPtr <Cairo::Context>      cr;      ///< A context to draw onto the surface.
 
     private:
