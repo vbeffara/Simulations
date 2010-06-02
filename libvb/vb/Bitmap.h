@@ -26,7 +26,7 @@ namespace vb {
        * @param tit The title of the image.
        */
 
-      Bitmap (int wd, int ht, const std::string &tit);
+      Bitmap (int wd, int ht, const std::string &tit, int d=0);
 
       /** Return an alias to the element at coordinates (x,y).
        */
@@ -51,10 +51,10 @@ namespace vb {
       virtual void paint ();
   };
 
-  template<typename T> Bitmap<T>::Bitmap (int wd, int ht, const std::string &tit) :
+  template<typename T> Bitmap<T>::Bitmap (int wd, int ht, const std::string &tit, int d) :
     AutoWindow(wd,ht,tit),
     stage ((Color *) (surface -> get_data())),
-    data (stride*ht)
+    data (stride*ht,d)
   { }
 
   template<typename T> void Bitmap<T>::paint () {
@@ -63,7 +63,7 @@ namespace vb {
         stage[x+stride*y] = color_at(x,y);
   }
 
-  template<> Bitmap<Color>::Bitmap (int wd, int ht, const std::string &tit);
+  template<> Bitmap<Color>::Bitmap (int wd, int ht, const std::string &tit, int d);
   template<> Color & Bitmap<Color>::at (int x, int y);
   template<> Color Bitmap<Color>::color_at (int x, int y);
 }

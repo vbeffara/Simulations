@@ -7,6 +7,17 @@
 #include <vb/Bitmap.h>
 
 namespace vb {
+  /** A single cell of a CoarseImage.
+   */
+
+  class CoarseCell {
+    public:
+      CoarseCell (int _L) : L(_L), LL(L*L) { }
+      operator Color() { return fill*255/LL; }
+      int fill;
+    private:
+      int L,LL;
+  };
 
   /** A multi-scale version of Image.
    *
@@ -26,7 +37,7 @@ namespace vb {
    *   color of the screen pixel;
    */
 
-  class CoarseImage : public Bitmap<char> {
+  class CoarseImage : public Bitmap<CoarseCell> {
     public:
       int true_width;    ///< The true width of the image, in pixels.
       int true_height;   ///< The true height of the image, in pixels.
@@ -100,11 +111,6 @@ namespace vb {
        */
 
       char operator() (int x, int y) const { return at(x,y); }
-
-      /** Return the vb::Color of the block at macroscopic coordinates x and x.
-       */
-
-      virtual Color color_at (int x, int y);
 
     private:
       int LL;

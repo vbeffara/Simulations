@@ -4,7 +4,7 @@
 #include <vb/Bitmap.h>
 
 namespace vb {
-  template<> Bitmap<Color>::Bitmap (int wd, int ht, const std::string &tit) :
+  template<> Bitmap<Color>::Bitmap (int wd, int ht, const std::string &tit, int d) :
     AutoWindow(wd,ht,tit),
     stage ((Color *) (surface -> get_data())),
     data (0)
