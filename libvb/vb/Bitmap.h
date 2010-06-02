@@ -12,6 +12,9 @@ namespace vb {
    * It provides the general machinery for drawing a picture onto the 
    * screen, kind of an adaptor between vb::AutoWindow and things like 
    * vb::Image, vb::CoarseImage etc.
+   *
+   * vb::Bitmap<Color> is handled in a special way, data is not 
+   * initialized and the image data is handled directly.
    */
 
   template <typename T> class Bitmap : public AutoWindow {
@@ -25,6 +28,11 @@ namespace vb {
 
       Bitmap (int wd, int ht, const std::string &tit);
 
+      /** Return an alias to the element at coordinates (x,y).
+       */
+
+      T & at (int x, int y) { return data[x+stride*y]; }
+
       /** Return the vb::Color of the image at point (x,y).
        *
        * The goal of a subclass is just to provide an implementation of 
@@ -36,15 +44,17 @@ namespace vb {
 
       virtual Color color_at (int x, int y) { return data[x+stride*y]; }
 
-      Color * stage; ///< The raw pixel data of the screen representation.
-      T * data;      ///< The actual data.
+      Color * stage;       ///< The raw pixel data of the screen representation.
+      std::vector<T> data; ///< The actual data.
 
     private:
       virtual void paint ();
   };
 
-  template<typename T> Bitmap<T>::Bitmap (int wd, int ht, const std::string &tit)
-    : AutoWindow(wd,ht,tit), stage ((Color *) (surface -> get_data())), data(NULL)
+  template<typename T> Bitmap<T>::Bitmap (int wd, int ht, const std::string &tit) :
+    AutoWindow(wd,ht,tit),
+    stage ((Color *) (surface -> get_data())),
+    data (stride*ht)
   { }
 
   template<typename T> void Bitmap<T>::paint () {
@@ -53,7 +63,9 @@ namespace vb {
         stage[x+stride*y] = color_at(x,y);
   }
 
-  template<> Color Bitmap<void>::color_at (int x, int y);
+  template<> Bitmap<Color>::Bitmap (int wd, int ht, const std::string &tit);
+  template<> Color & Bitmap<Color>::at (int x, int y);
+  template<> Color Bitmap<Color>::color_at (int x, int y);
 }
 
 #endif
