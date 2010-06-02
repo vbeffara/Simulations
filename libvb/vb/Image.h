@@ -19,7 +19,7 @@ namespace vb {
    * color individual points and to export a PNG file.
    */
 
-  class Image : public Bitmap {
+  class Image : public Bitmap<void> {
     public:
       /** The standard constructor of the Image class.
        *

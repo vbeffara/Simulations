@@ -4,7 +4,7 @@
 #include <vb/Image.h>
 
 namespace vb {
-  Image::Image (int wd, int ht, const std::string &tit) : Bitmap(wd,ht,tit) { }
+  Image::Image (int wd, int ht, const std::string &tit) : Bitmap<void> (wd,ht,tit) { }
 
   Color Image::lazy_eval (coloring *f, int x, int y, void *data) {
     Color tmp = stage[x+stride*y];

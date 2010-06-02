@@ -26,7 +26,7 @@ namespace vb {
    *   color of the screen pixel;
    */
 
-  class CoarseImage : public Bitmap {
+  class CoarseImage : public Bitmap<void> {
     public:
       int true_width;    ///< The true width of the image, in pixels.
       int true_height;   ///< The true height of the image, in pixels.

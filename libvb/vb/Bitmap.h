@@ -7,14 +7,14 @@
 #include <vb/AutoWindow.h>
 
 namespace vb {
-  /** An abstract base class for all bitmap pictures.
+  /** A templated base class for all bitmap pictures.
    *
    * It provides the general machinery for drawing a picture onto the 
    * screen, kind of an adaptor between vb::AutoWindow and things like 
    * vb::Image, vb::CoarseImage etc.
    */
 
-  class Bitmap : public AutoWindow {
+  template <typename T> class Bitmap : public AutoWindow {
     public:
       /** The standard constructor of the Image class.
        *
@@ -34,13 +34,26 @@ namespace vb {
        * @param y The second coordinate of the point.
        */
 
-      virtual Color color_at (int x, int y) =0;
+      virtual Color color_at (int x, int y) { return data[x+stride*y]; }
 
       Color * stage; ///< The raw pixel data of the screen representation.
+      T * data;      ///< The actual data.
 
     private:
       virtual void paint ();
   };
+
+  template<typename T> Bitmap<T>::Bitmap (int wd, int ht, const std::string &tit)
+    : AutoWindow(wd,ht,tit), stage ((Color *) (surface -> get_data())), data(NULL)
+  { }
+
+  template<typename T> void Bitmap<T>::paint () {
+    for (int x=0; x<width; ++x)
+      for (int y=0; y<height; ++y)
+        stage[x+stride*y] = color_at(x,y);
+  }
+
+  template<> Color Bitmap<void>::color_at (int x, int y);
 }
 
 #endif
