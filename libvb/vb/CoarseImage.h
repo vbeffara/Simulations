@@ -12,7 +12,7 @@ namespace vb {
 
   class CoarseCell {
     public:
-      CoarseCell (int _L) : L(_L), LL(L*L) { }
+      CoarseCell (int _L) : fill(0), L(_L), LL(L*L) { }
       operator Color() { return fill*255/LL; }
       int fill;
     private:
@@ -114,8 +114,7 @@ namespace vb {
 
     private:
       int LL;
-    
-      std::vector <int>    fill;
+
       std::vector <char *> sub;
       std::vector <char *> storage;
   };
