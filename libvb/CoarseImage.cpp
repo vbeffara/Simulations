@@ -4,14 +4,12 @@
 #include <vb/CoarseImage.h>
 
 namespace vb {
-  CoarseImage::CoarseImage (int wd, int ht, int l, const std::string &title) 
+  CoarseImage::CoarseImage (int wd, int ht, int l, const std::string &title)
     : Bitmap<CoarseCell> (1+(wd-1)/l,1+(ht-1)/l,title,l),
-      true_width(wd), true_height(ht), L(l), LL(l*l),
-      sub(width*height,(char*)NULL)
+      true_width(wd), true_height(ht), L(l), LL(l*l)
   { }
 
   CoarseImage::~CoarseImage () {
-    for (int i=0; i<width*height; ++i)            delete[] sub[i];
     for (unsigned int i=0; i<storage.size(); ++i) delete[] storage[i];
   }
 
@@ -34,43 +32,37 @@ namespace vb {
   }
 
   int CoarseImage::putpoint (int x, int y, int c, int dt) {
-    int coarse_x = x/L;
-    int coarse_y = y/L;
-    int coarse_xy = coarse_x + width * coarse_y;
-
     if (dt) step();
 
-    if (data[coarse_x + stride * coarse_y].fill == c*LL) // Nothing to do
-      return c;
+    CoarseCell & d = data[(x/L) + stride*(y/L)];
 
-    if (data[coarse_x + stride * coarse_y].fill == (1-c)*LL) { // Need to create the block
-      sub[coarse_xy] = claim(1-c);
+    if (d.fill == c*LL) return c;
+
+    if (d.fill == (1-c)*LL) { // Need to create the block
+      d.sub = claim(1-c);
     }
 
-    int sub_xy = (x%L) + L * (y%L); 
+    int sub_xy = (x%L) + L * (y%L);
 
-    if (sub[coarse_xy][sub_xy] != c) {
-      sub[coarse_xy][sub_xy] = c;
-      data[coarse_x + stride * coarse_y].fill += 2*c-1;
+    if (d.sub[sub_xy] != c) {
+      d.sub[sub_xy] = c;
+      d.fill += 2*c-1;
     }
 
-    if ((data[coarse_x + stride * coarse_y].fill==0)||(data[coarse_x + stride * coarse_y].fill==LL)) {
-      release (sub[coarse_xy]);
-      sub[coarse_xy]=NULL;
+    if ((d.fill==0)||(d.fill==LL)) {
+      release (d.sub);
+      d.sub = NULL;
     }
 
     return c;
   }
 
   char CoarseImage::at (int x, int y) const {
-    int coarse_x = x/L;
-    int coarse_y = y/L;
-    int coarse_xy = coarse_x + width * coarse_y;
+    const CoarseCell & d = data[(x/L) + stride*(y/L)];
 
-    if (data[coarse_x + stride * coarse_y].fill==0) return 0;
-    if (data[coarse_x + stride * coarse_y].fill==LL) return 1;
+    if (d.fill==0) return 0;
+    if (d.fill==LL) return 1;
 
-    int sub_xy = (x%L) + L * (y%L); 
-    return sub[coarse_xy][sub_xy];
+    return d.sub[(x%L) + L*(y%L)];
   }
 }

@@ -12,11 +12,13 @@ namespace vb {
 
   class CoarseCell {
     public:
-      CoarseCell (int _L) : fill(0), L(_L), LL(L*L) { }
+      CoarseCell (int L) : fill(0), sub((char*)NULL), LL(L*L) { }
+      ~CoarseCell () { delete[] sub; }
       operator Color() { return fill*255/LL; }
       int fill;
+      char *sub;
     private:
-      int L,LL;
+      int LL;
   };
 
   /** A multi-scale version of Image.
@@ -115,7 +117,6 @@ namespace vb {
     private:
       int LL;
 
-      std::vector <char *> sub;
       std::vector <char *> storage;
   };
 }
