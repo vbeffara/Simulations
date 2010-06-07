@@ -136,11 +136,6 @@ namespace vb {
  *   (Fletcher-Reeves, BFGS ... see the documentation for the whole 
  *   list).
  *
- * And once again: this is all supposed to be very easy to use:
- * everything resides in header files for easy inclusion. If it
- * isn't, please let me know (vbeffara@ens-lyon.fr) ! See the sample
- * code included in the documentation for an easy way to get started.
- *
  * @section sec_install Installation
  *
  * There is no separate package for the library (though I might produce

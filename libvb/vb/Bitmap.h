@@ -21,9 +21,10 @@ namespace vb {
     public:
       /** The standard constructor of the Image class.
        *
-       * @param wd The width in pixels.
-       * @param ht The height in pixels.
+       * @param  wd The width in pixels.
+       * @param  ht The height in pixels.
        * @param tit The title of the image.
+       * @param   d The default value at a pixel.
        */
 
       Bitmap (int wd, int ht, const std::string &tit, int d=0);
@@ -63,8 +64,39 @@ namespace vb {
         stage[x+stride*y] = color_at(x,y);
   }
 
+  /** The special-case constructor for Bitmap<Color>.
+   *
+   * For Bitmap<Color>, data is left empty and the underlying Cairo 
+   * surface is accessed directly through stage.
+   *
+   * @param  wd The width in pixels.
+   * @param  ht The height in pixels.
+   * @param tit The title of the image.
+   * @param   d The default color.
+   */
+
   template<> Bitmap<Color>::Bitmap (int wd, int ht, const std::string &tit, int d);
+
+  /** Return an alias to the element at coordinates (x,y).
+   *
+   * For Bitmap<Color>, it points directly to the underlying Cairo 
+   * surface and allows for direct manipulation.
+   *
+   * @param x The first coordinate of the point.
+   * @param y The second coordinate of the point.
+   */
+
   template<> Color & Bitmap<Color>::at (int x, int y);
+
+  /** Return the vb::Color of the image at point (x,y).
+   *
+   * This is a special case for Bitmap<Color>, it accesses the 
+   * underlying Cairo surface directly, ignoring data.
+   *
+   * @param x The first coordinate of the point.
+   * @param y The second coordinate of the point.
+   */
+
   template<> Color Bitmap<Color>::color_at (int x, int y);
 }
 

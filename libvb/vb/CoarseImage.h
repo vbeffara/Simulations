@@ -12,13 +12,26 @@ namespace vb {
 
   class CoarseCell {
     public:
+
+      /** Constructor for a cell of a given size.
+       *
+       * @param L The side length of the cell.
+       */
+
       CoarseCell (int L) : fill(0), sub((char*)NULL), LL(L*L) { }
+
+      /** Standard destructor of a CoarseCell. */
+
       ~CoarseCell () { delete[] sub; }
+
+      /** Return the Color of the cell (proportion of white). */
+
       operator Color() { return fill*255/LL; }
-      int fill;
-      char *sub;
+
+      int fill;   ///< The number of pixels with value 1 in the cell.
+      char *sub;  ///< The actual contents of the cell, if not constant.
     private:
-      int LL;
+      int LL;     ///< The number of vertices in the cell.
   };
 
   /** A multi-scale version of Image.
