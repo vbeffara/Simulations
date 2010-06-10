@@ -2,7 +2,7 @@ Simulations and stuff
 =====================
 
 * Author : [Vincent Beffara](mailto:vbeffara@ens-lyon.fr)
-* [Documentation](http://www.umpa.ens-lyon.fr/~vbeffara/libvb/)
+* [Documentation](http://vbeffara.github.com/Simulations/)
 * [Development](http://github.com/vbeffara/Simulations)
 
 Compilation
