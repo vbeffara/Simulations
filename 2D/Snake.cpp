@@ -50,8 +50,9 @@ void Snake::output () const {
 }
 
 int main (int argc, char ** argv) {
-  CL_Parser CLP (argc, argv, "n=1000,e=.5");
-  double e = CLP('e');
+  CL_Parser CLP (argc, argv, "n=1000,a=.38");
+  double a = CLP('a');
+  double e = 1.0 / (1.0 + 4*a);
 
   Snake S(CLP('n')); S.show();
 
