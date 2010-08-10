@@ -1,11 +1,12 @@
 
 def build (bld) :
-    bld.new_task_gen(features = 'cxx cshlib',
-            source = bld.glob('*.cpp'),
+    bld.shlib(features = 'cxx',
+            source = bld.path.ant_glob('*.cpp'),
             target = 'vb',
             includes = '.',
-            export_incdirs = '.',
-            uselib='FLTK cairo')
+            install_path = 'libvb.dylib',
+            export_incdirs = ('..', bld.path),
+            use = 'FFTW3 FLTK cairo')
     bld.install_files ('${PREFIX}/include/vb', 'vb/*.h')
 
 # vim: ft=python
