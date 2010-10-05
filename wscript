@@ -12,13 +12,14 @@ def configure (conf) :
     conf.check_cfg (package='fftw3',       args='--cflags --libs')
     conf.check_cfg (package='x11',         args='--cflags --libs', mandatory=0)
 
-    if options.gui == 'fltk': conf.check_tool ('fluid')
+    if options.gui == 'fltk':
+        conf.check_cfg (path='fltk-config', package='', args='--cflags --ldflags', uselib_store='FLTK')
 
-    conf.write_config_header ('vb/config.h')
+    conf.write_config_header ('libvb/vb/config.h')
 
 def build (bld) :
     bld.recurse ('libvb tests 1D 2D 3D xtoys')
-    bld.install_files ('${PREFIX}/include/vb', 'vb/config.h')
+    bld.install_files ('${PREFIX}/include/vb', 'libvb/vb/config.h')
 
 def unit_test (prog, ext, checksum):
     import os,subprocess,hashlib,Utils

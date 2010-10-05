@@ -4,8 +4,7 @@ def build (bld) :
             source = bld.path.ant_glob('*.cpp'),
             target = 'vb',
             includes = '.',
-            install_path = 'libvb.dylib',
-            export_incdirs = ('..', bld.path),
+            export_includes = '.',
             use = 'FFTW3 FLTK cairo')
     bld.install_files ('${PREFIX}/include/vb', 'vb/*.h')
 
