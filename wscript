@@ -22,9 +22,9 @@ def build (bld) :
     bld.install_files ('${PREFIX}/include/vb', 'libvb/vb/config.h')
 
 def unit_test (prog, ext, checksum):
-    import os,subprocess,hashlib,Utils
+    import os,subprocess,hashlib,Logs
 
-    Utils.pprint ('NORMAL', "Running %s :" % prog.ljust(32), sep='')
+    Logs.pprint ('NORMAL', "Running %s :" % prog.ljust(32), sep='')
 
     file = "output/%s.%s" % (prog,ext)
     if os.path.exists(file): os.remove(file)
@@ -32,10 +32,10 @@ def unit_test (prog, ext, checksum):
     sum = hashlib.md5 (open(file).read()).hexdigest()
 
     if sum == checksum:
-        Utils.pprint ('GREEN',  "ok")
+        Logs.pprint ('GREEN',  "ok")
     else:
-        Utils.pprint ('RED',    "failed")
-        Utils.pprint ('YELLOW', "  (returned %s, should be %s)" % (sum,checksum))
+        Logs.pprint ('RED',    "failed")
+        Logs.pprint ('YELLOW', "  (returned %s, should be %s)" % (sum,checksum))
         exit (1)
 
 def check (bld):
