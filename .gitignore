@@ -15,6 +15,7 @@
 .DS_Store
 /.lock-wafbuild
 /.lock-wscript
+/.waf*
 /00_Results
 /build
 /doc
@@ -22,4 +23,3 @@
 /webpage
 amc.*
 out*
-tools/.waf*

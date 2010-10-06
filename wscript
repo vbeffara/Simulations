@@ -28,7 +28,7 @@ def unit_test (prog, ext, checksum):
 
     file = "output/%s.%s" % (prog,ext)
     if os.path.exists(file): os.remove(file)
-    subprocess.call ('./build/default/tests/' + prog)
+    subprocess.call ('./build/tests/' + prog)
     sum = hashlib.md5 (open(file).read()).hexdigest()
 
     if sum == checksum:
