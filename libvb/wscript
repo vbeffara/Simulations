@@ -1,11 +1,10 @@
 
-def build (bld) :
-    bld.shlib(features = 'cxx',
-            source = bld.path.ant_glob('*.cpp'),
-            target = 'vb',
-            includes = '.',
-            export_includes = '.',
-            use = 'FFTW3 FLTK cairo')
-    bld.install_files ('${PREFIX}/include/vb', 'vb/*.h')
+def build (ctx) :
+    ctx.shlib(source = ctx.path.ant_glob('*.cpp'),
+              target = 'vb',
+              includes = '.',
+              export_includes = '.',
+              use = 'FFTW3 FLTK cairo')
+    ctx.install_files ('${PREFIX}/include/vb', 'vb/*.h')
 
 # vim: ft=python
