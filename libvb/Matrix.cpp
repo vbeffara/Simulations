@@ -32,31 +32,31 @@ namespace vb {
   double Matrix::operator() (unsigned int i, unsigned int j) const { return this->at(i,j); }
 
   Matrix & Matrix::put (unsigned int i, unsigned int j, double t) { 
-    MatrixStorage * tmp = data->put(i,j,t);
+    MatrixStorage_Plain * tmp = data->put(i,j,t);
     if (data != tmp) { delete data; data = tmp; }
     return (*this);
   }
 
   Matrix & Matrix::operator+= (const Matrix &M) {
-    MatrixStorage *tmp = data->add (M.data);
+    MatrixStorage_Plain *tmp = data->add (M.data);
     if (data != tmp) { delete data; data = tmp; }
     return (*this);
   }
 
   Matrix & Matrix::operator-= (const Matrix &M) {
-    MatrixStorage *tmp = data->sub(M.data);
+    MatrixStorage_Plain *tmp = data->sub(M.data);
     if (data != tmp) { delete data; data = tmp; }
     return (*this);
   }
 
   Matrix & Matrix::operator*= (const Matrix &M) {
-    MatrixStorage *tmp = data->mul_right (M.data);
+    MatrixStorage_Plain *tmp = data->mul_right (M.data);
     if (data != tmp) { delete data; data = tmp; }
     return (*this);
   }
 
   Matrix & Matrix::rank1update (const Vector &A, const Vector &B) {
-    MatrixStorage *tmp = data->rank1update(A,B);
+    MatrixStorage_Plain *tmp = data->rank1update(A,B);
     if (data != tmp) { delete data; data = tmp; }
     return (*this);
   }

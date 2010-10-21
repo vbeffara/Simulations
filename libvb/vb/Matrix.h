@@ -19,7 +19,7 @@ namespace vb {
     public:
       unsigned int width;   ///< The width of the matrix.
       unsigned int height;  ///< The height of the matrix.
-      MatrixStorage *data;  ///< The underlying storage of the matrix.
+      MatrixStorage_Plain *data;  ///< The underlying storage of the matrix.
 
       /** Standard constructor of a zero matrix.
        *
