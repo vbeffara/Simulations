@@ -4,9 +4,52 @@
 #ifndef __VB_MATRIX_H
 #define __VB_MATRIX_H
 
-#include <vb/MatrixStorage.h>
+#include <boost/numeric/ublas/vector.hpp>
 
 namespace vb {
+  typedef boost::numeric::ublas::vector<double> Vector;
+
+  /** Plain old matrix, storing each entry separately.
+   *
+   * Internally it is just a vector of lines, themselves being vectors. 
+   * This is so that inner_prod() can be used for matrix 
+   * multiplication.
+   */
+
+  class MatrixStorage_Plain {
+    public:
+      unsigned int width;
+      unsigned int height;
+
+      /// The lines of the matrix.
+
+      std::vector<Vector> lines;
+
+      /** The standard constructor of a zero matrix.
+       *
+       * @param h The height of the matrix.
+       * @param w The width of the matrix.
+       */
+
+      MatrixStorage_Plain (unsigned int h, unsigned int w);
+
+      MatrixStorage_Plain *copy ();
+
+      double at (unsigned int i, unsigned int j) const;
+
+      MatrixStorage_Plain *put (unsigned int i, unsigned int j, double t);
+
+      MatrixStorage_Plain *add (MatrixStorage_Plain *M);
+
+      MatrixStorage_Plain *sub (MatrixStorage_Plain *M);
+
+      MatrixStorage_Plain *mul_right (MatrixStorage_Plain *M);
+
+      MatrixStorage_Plain *rank1update (const Vector &A, const Vector &B);
+
+      Vector map_right (const Vector &X);
+  };
+
   /** A matrix class.
    *
    * It is just some bookkeeping logic on top of MatrixStorage, which 
@@ -83,7 +126,7 @@ namespace vb {
        * @param t The new value of the entry.
        */
 
-      Matrix & put (unsigned int i, unsigned int j, double t);
+      void put (unsigned int i, unsigned int j, double t);
 
       /** Add another matrix to this one.
        *

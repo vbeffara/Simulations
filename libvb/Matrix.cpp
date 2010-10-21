@@ -4,6 +4,63 @@
 #include <vb/Matrix.h>
 
 namespace vb {
+  MatrixStorage_Plain::MatrixStorage_Plain (unsigned int h, unsigned int w) :
+    width(w), height(h), lines (std::vector<Vector> (h,Vector(w))) { }
+
+  MatrixStorage_Plain * MatrixStorage_Plain::copy () {
+    return new MatrixStorage_Plain (*this);
+  }
+
+  double  MatrixStorage_Plain::at (unsigned int i, unsigned int j) const {
+    return lines[i][j];
+  }
+
+  MatrixStorage_Plain * MatrixStorage_Plain::put (unsigned int i, unsigned int j, double t) {
+    lines[i][j] = t; return this;
+  }
+
+  MatrixStorage_Plain * MatrixStorage_Plain::add (MatrixStorage_Plain *M) {
+    for (unsigned int i=0; i<this->height; ++i)
+      for (unsigned int j=0; j<this->width; ++j)
+        lines[i][j] += M->at(i,j);
+    return this;
+  }
+
+  MatrixStorage_Plain * MatrixStorage_Plain::sub (MatrixStorage_Plain *M) {
+    for (unsigned int i=0; i<this->height; ++i)
+      for (unsigned int j=0; j<this->width; ++j)
+        lines[i][j] -= M->at(i,j);
+    return this;
+  }
+
+  MatrixStorage_Plain * MatrixStorage_Plain::mul_right (MatrixStorage_Plain *M) {
+    MatrixStorage_Plain *tmp = new MatrixStorage_Plain (this->height, M->width);
+    for (unsigned int i=0; i<this->height; ++i) {
+      for (unsigned int j=0; j<M->width; ++j) {
+        tmp->lines[i][j] = lines[i][0] * M->at(0,j);
+        for (unsigned int k=1; k<this->width; ++k) 
+          tmp->lines[i][j] += lines[i][k] * M->at(k,j);
+      }
+    }
+    return tmp;
+  }
+
+  MatrixStorage_Plain * MatrixStorage_Plain::rank1update (const Vector &A, const Vector &B) {
+    for (unsigned int i=0; i<this->height; ++i)
+      for (unsigned int j=0; j<this->width; ++j)
+        lines[i][j] += A[i]*B[j];
+    return this;
+  }
+
+  Vector MatrixStorage_Plain::map_right (const Vector &X) {
+    Vector Y(this->height);
+    for (unsigned int i=0; i<this->height; ++i)
+      Y[i] = inner_prod (lines[i],X);
+    return Y;
+  }
+
+  /******************************************/
+
   Matrix::Matrix (unsigned int h, unsigned int w)
     : width(w), height(h), data (new MatrixStorage_Plain (h,w)) {}
 
@@ -31,21 +88,17 @@ namespace vb {
 
   double Matrix::operator() (unsigned int i, unsigned int j) const { return this->at(i,j); }
 
-  Matrix & Matrix::put (unsigned int i, unsigned int j, double t) { 
-    MatrixStorage_Plain * tmp = data->put(i,j,t);
-    if (data != tmp) { delete data; data = tmp; }
-    return (*this);
+  void Matrix::put (unsigned int i, unsigned int j, double t) { 
+    data->put(i,j,t);
   }
 
   Matrix & Matrix::operator+= (const Matrix &M) {
-    MatrixStorage_Plain *tmp = data->add (M.data);
-    if (data != tmp) { delete data; data = tmp; }
+    data->add (M.data);
     return (*this);
   }
 
   Matrix & Matrix::operator-= (const Matrix &M) {
-    MatrixStorage_Plain *tmp = data->sub(M.data);
-    if (data != tmp) { delete data; data = tmp; }
+    data->sub(M.data);
     return (*this);
   }
 
