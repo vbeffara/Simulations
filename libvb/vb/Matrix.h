@@ -10,13 +10,6 @@
 namespace vb {
   typedef boost::numeric::ublas::vector<double> Vector;
 
-  /** Plain old matrix, storing each entry separately.
-   *
-   * Internally it is just a vector of lines, themselves being vectors. 
-   * This is so that inner_prod() can be used for matrix 
-   * multiplication.
-   */
-
   class MatrixStorage_Plain {
     public:
       unsigned int width;
@@ -34,9 +27,7 @@ namespace vb {
 
       MatrixStorage_Plain (unsigned int h, unsigned int w);
 
-      MatrixStorage_Plain *copy ();
-
-      MatrixStorage_Plain *put (unsigned int i, unsigned int j, double t);
+      void put (unsigned int i, unsigned int j, double t);
 
       MatrixStorage_Plain *add (MatrixStorage_Plain *M);
 
@@ -101,14 +92,6 @@ namespace vb {
        */
 
       Matrix &operator= (const Matrix &M);
-
-      /** Return a particular rntry of the matrix.
-       *
-       * @param i The line of the entry.
-       * @param j The column of the entry.
-       */
-
-      double at (unsigned int i, unsigned int j) const;
 
       /** Return a particular rntry of the matrix.
        *

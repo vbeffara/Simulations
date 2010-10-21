@@ -7,12 +7,8 @@ namespace vb {
   MatrixStorage_Plain::MatrixStorage_Plain (unsigned int h, unsigned int w) :
     width(w), height(h), lines (std::vector<Vector> (h,Vector(w))) { }
 
-  MatrixStorage_Plain * MatrixStorage_Plain::copy () {
-    return new MatrixStorage_Plain (*this);
-  }
-
-  MatrixStorage_Plain * MatrixStorage_Plain::put (unsigned int i, unsigned int j, double t) {
-    lines[i][j] = t; return this;
+  void MatrixStorage_Plain::put (unsigned int i, unsigned int j, double t) {
+    lines[i][j] = t;
   }
 
   MatrixStorage_Plain * MatrixStorage_Plain::add (MatrixStorage_Plain *M) {
@@ -65,8 +61,11 @@ namespace vb {
       for (int i=0; i<d.size(); ++i) data -> put (i,i,d[i]);
     }
 
-  Matrix::Matrix (const Matrix &M)
-    : width(M.width), height(M.height), data(M.data->copy()) {}
+  Matrix::Matrix (const Matrix &M) : width(M.width), height(M.height) {
+    for (int i=0; i<height; ++i)
+      for (int j=0; j<width; ++j)
+        data->lines[i][j] = M.data->lines[i][j];
+  }
 
   Matrix::~Matrix () {
     delete data;
@@ -75,7 +74,10 @@ namespace vb {
   Matrix & Matrix::operator= (const Matrix &M) {
     if (&M != this) {
       width = M.width; height = M.height;
-      delete data; data = M.data->copy();
+      delete data; data = new MatrixStorage_Plain (M.height, M.width);
+      for (int i=0; i<height; ++i)
+        for (int j=0; j<width; ++j)
+          data->lines[i][j] = M.data->lines[i][j];
     }
     return (*this);
   }
