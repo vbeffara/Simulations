@@ -147,65 +147,6 @@ namespace vb {
 
       virtual Vector map_right (const Vector &X);
   };
-
-  /** Clever storage as a diagonal matrix plus rank-1 perturbations.
-   *
-   * It is extremely useful for BFGS algorithms and the like; 
-   * rank1update() works in linear time (copy of the arguments) instead 
-   * of quadratic, except whenever the matrix upgrades itself to 
-   * MatrixStorage_Plain.
-   *
-   * @todo Generalize it as any matrix storage plus rank-1 updates ?
-   */
-
-  class MatrixStorage_DiagSmallRank : public MatrixStorage {
-    public:
-      /// The diagonal of the unperturbed matrix.
-
-      Vector diag;
-
-      /// The list of rank-one updates performed to the matrix.
-
-      std::vector < std::pair<Vector,Vector> > updates;
-
-      /** Standard constructor of a zero matrix.
-       *
-       * @param h The height of the matrix.
-       * @param w The width of the matrix.
-       */
-
-      MatrixStorage_DiagSmallRank (unsigned int h, unsigned int w);
-
-      /** Constructor from a diagonal vector.
-       *
-       * @param h The height of the matrix.
-       * @param w The width of the matrix.
-       * @param d The diagonal of the matrix.
-       */
-
-      MatrixStorage_DiagSmallRank (unsigned int h, unsigned int w, const Vector &d);
-
-      virtual MatrixStorage *copy ();
-
-      MatrixStorage *compute ();
-
-      virtual double at (unsigned int i, unsigned int j) const;
-
-      virtual MatrixStorage *put (unsigned int i, unsigned int j, double t);
-
-      /// Add another matrix to this one.
-      virtual MatrixStorage *add (MatrixStorage *M);
-
-      /// Subtract another matrix from this one.
-      virtual MatrixStorage *sub (MatrixStorage *M);
-
-      /// Right-multiply this matrix with another one.
-      virtual MatrixStorage *mul_right (MatrixStorage *M);
-
-      virtual MatrixStorage *rank1update (const Vector &A, const Vector &B);
-
-      virtual Vector map_right (const Vector &X);
-  };
 }
 
 #endif

@@ -5,10 +5,12 @@
 
 namespace vb {
   Matrix::Matrix (unsigned int h, unsigned int w)
-    : width(w), height(h), data (new MatrixStorage_DiagSmallRank (h,w)) {}
+    : width(w), height(h), data (new MatrixStorage_Plain (h,w)) {}
 
   Matrix::Matrix (unsigned int h, unsigned int w, const Vector &d)
-    : width(w), height(h), data (new MatrixStorage_DiagSmallRank (h,w,d)) {}
+    : width(w), height(h), data (new MatrixStorage_Plain (h,w)) {
+      for (int i=0; i<d.size(); ++i) data -> put (i,i,d[i]);
+    }
 
   Matrix::Matrix (const Matrix &M)
     : width(M.width), height(M.height), data(M.data->copy()) {}
