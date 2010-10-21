@@ -5,12 +5,13 @@
 #define __VB_VECTOR_H
 
 #include <vb/common.h>
+#include <boost/numeric/ublas/vector.hpp>
 
 namespace vb {
 
   /// A vector class.
 
-  class Vector : public std::vector<double> {
+  class Vector : public boost::numeric::ublas::vector<double> {
     public:
       /** Constructor.
        *

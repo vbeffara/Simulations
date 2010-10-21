@@ -55,7 +55,7 @@ namespace vb {
 
     while (true) {
       // Compute old_x+t*d in-place :
-      x.assign (d.begin(), d.end());
+      for (int i=0; i<n; ++i) x[i] = d[i];
       x *= t; x += old_x;
 
       compute();
@@ -158,7 +158,7 @@ namespace vb {
 
     while (fx < old_fx) {
       old_d.swap(d);
-      d.assign(gx.begin(), gx.end());
+      for (int i=0; i<n; ++i) d[i] = gx[i];
       d *= -1.0;
 
       if (!first) {
@@ -193,11 +193,11 @@ namespace vb {
 
     while (fx < old_fx) {
       old_d.swap(d);
-      d.assign(gx.begin(), gx.end());
+      for (int i=0; i<n; ++i) d[i] = gx[i];
       d *= -1.0;
 
       if (!first) {
-        y.assign (gx.begin(), gx.end());
+        for (int i=0; i<n; ++i) y[i] = gx[i];
         y -= old_gx;
         double c = scalar_product(y,gx) / scalar_product(y,old_d);
         old_d *= c;

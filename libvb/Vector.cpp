@@ -4,7 +4,7 @@
 #include <vb/Vector.h>
 
 namespace vb {
-  Vector::Vector (unsigned int size, double t) : std::vector<double> (size,t) { };
+  Vector::Vector (unsigned int size, double t) : boost::numeric::ublas::vector<double> (size,t) { };
 
   void Vector::operator+= (const Vector &O) {
     for (unsigned int i=0; i<this->size(); ++i) (*this)[i] += O[i];
