@@ -20,38 +20,6 @@ namespace vb {
        */
 
       Vector (unsigned int size = 0, double t = 0);
-
-      /** Add a vector to this one.
-       *
-       * @param O The vector to add.
-       */
-
-      void operator+= (const Vector &O);
-
-      /** Subtract a vector from this one.
-       *
-       * @param O The vector to subtract.
-       */
-
-      void operator-= (const Vector &O);
-
-      /** Multiply a vector by a scalar.
-       *
-       * @param l The scalar by which to multiply.
-       */
-
-      void operator*= (double l);
-
-      /** Divide a vector by a scalar.
-       *
-       * @param l The scalar by which to divide.
-       */
-
-      void operator/= (double l);
-
-      /// Compute the opposite of a vector.
-
-      Vector operator- ();
   };
 
   /** Compute the scalar product of two vectors.

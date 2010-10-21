@@ -6,28 +6,6 @@
 namespace vb {
   Vector::Vector (unsigned int size, double t) : boost::numeric::ublas::vector<double> (size,t) { };
 
-  void Vector::operator+= (const Vector &O) {
-    for (unsigned int i=0; i<this->size(); ++i) (*this)[i] += O[i];
-  }
-
-  void Vector::operator-= (const Vector &O) {
-    for (unsigned int i=0; i<this->size(); ++i) (*this)[i] -= O[i];
-  }
-
-  void Vector::operator*= (double l) {
-    for (unsigned int i=0; i<this->size(); ++i) (*this)[i] *= l;
-  }
-
-  void Vector::operator/= (double l) {
-    for (unsigned int i=0; i<this->size(); ++i) (*this)[i] /= l;
-  }
-
-  Vector Vector::operator- () {
-    Vector O(this->size());
-    for (unsigned int i=0; i<this->size(); ++i) O[i] = -(*this)[i];
-    return O;
-  }
-
   double scalar_product (const Vector &X, const Vector &Y) {
     assert (X.size() == Y.size());
 
