@@ -5,6 +5,7 @@
 #define __VB_MATRIX_H
 
 #include <boost/numeric/ublas/vector.hpp>
+#include <boost/numeric/ublas/matrix.hpp>
 
 namespace vb {
   typedef boost::numeric::ublas::vector<double> Vector;
@@ -34,8 +35,6 @@ namespace vb {
       MatrixStorage_Plain (unsigned int h, unsigned int w);
 
       MatrixStorage_Plain *copy ();
-
-      double at (unsigned int i, unsigned int j) const;
 
       MatrixStorage_Plain *put (unsigned int i, unsigned int j, double t);
 

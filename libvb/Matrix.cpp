@@ -11,10 +11,6 @@ namespace vb {
     return new MatrixStorage_Plain (*this);
   }
 
-  double  MatrixStorage_Plain::at (unsigned int i, unsigned int j) const {
-    return lines[i][j];
-  }
-
   MatrixStorage_Plain * MatrixStorage_Plain::put (unsigned int i, unsigned int j, double t) {
     lines[i][j] = t; return this;
   }
@@ -22,14 +18,14 @@ namespace vb {
   MatrixStorage_Plain * MatrixStorage_Plain::add (MatrixStorage_Plain *M) {
     for (unsigned int i=0; i<this->height; ++i)
       for (unsigned int j=0; j<this->width; ++j)
-        lines[i][j] += M->at(i,j);
+        lines[i][j] += (M->lines)[i][j];
     return this;
   }
 
   MatrixStorage_Plain * MatrixStorage_Plain::sub (MatrixStorage_Plain *M) {
     for (unsigned int i=0; i<this->height; ++i)
       for (unsigned int j=0; j<this->width; ++j)
-        lines[i][j] -= M->at(i,j);
+        lines[i][j] -= (M->lines)[i][j];
     return this;
   }
 
@@ -37,9 +33,9 @@ namespace vb {
     MatrixStorage_Plain *tmp = new MatrixStorage_Plain (this->height, M->width);
     for (unsigned int i=0; i<this->height; ++i) {
       for (unsigned int j=0; j<M->width; ++j) {
-        tmp->lines[i][j] = lines[i][0] * M->at(0,j);
+        tmp->lines[i][j] = lines[i][0] * (M->lines)[0][j];
         for (unsigned int k=1; k<this->width; ++k) 
-          tmp->lines[i][j] += lines[i][k] * M->at(k,j);
+          tmp->lines[i][j] += lines[i][k] * (M->lines)[k][j];
       }
     }
     return tmp;
@@ -84,9 +80,7 @@ namespace vb {
     return (*this);
   }
 
-  double Matrix::at (unsigned int i, unsigned int j) const { return data->at(i,j); }
-
-  double Matrix::operator() (unsigned int i, unsigned int j) const { return this->at(i,j); }
+  double Matrix::operator() (unsigned int i, unsigned int j) const { return data->lines[i][j]; }
 
   void Matrix::put (unsigned int i, unsigned int j, double t) { 
     data->put(i,j,t);
