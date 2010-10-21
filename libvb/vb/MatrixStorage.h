@@ -107,7 +107,7 @@ namespace vb {
   /** Plain old matrix, storing each entry separately.
    *
    * Internally it is just a vector of lines, themselves being vectors. 
-   * This is so that scalar_product() can be used for matrix 
+   * This is so that inner_prod() can be used for matrix 
    * multiplication.
    */
 

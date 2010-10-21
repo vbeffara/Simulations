@@ -6,14 +6,6 @@
 namespace vb {
   Vector::Vector (unsigned int size, double t) : boost::numeric::ublas::vector<double> (size,t) { };
 
-  double scalar_product (const Vector &X, const Vector &Y) {
-    assert (X.size() == Y.size());
-
-    double t = X[0]*Y[0];
-    for (unsigned int i=1; i<X.size(); ++i) t += X[i]*Y[i];
-    return t;
-  }
-
   Vector operator* (double l, const Vector &X) {
     Vector Y = X;
     Y *= l;

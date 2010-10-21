@@ -22,17 +22,6 @@ namespace vb {
       Vector (unsigned int size = 0, double t = 0);
   };
 
-  /** Compute the scalar product of two vectors.
-   *
-   * Maybe it should be simply written as operator*, but I'm not sure 
-   * it's such a good idea ...
-   *
-   * @param X The first vector.
-   * @param Y The second vector.
-   */
-
-  double scalar_product (const Vector &X, const Vector &Y);
-
   /** Multiply a vector by a scalar.
    *
    * @param X The vector.

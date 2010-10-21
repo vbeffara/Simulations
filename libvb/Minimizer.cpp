@@ -46,7 +46,7 @@ namespace vb {
   void Minimizer::line_search (const Vector &d) {
     old_x.swap(x); old_fx=fx; old_gx.swap(gx);
 
-    double qq_0 = .8 * scalar_product (old_gx,d);
+    double qq_0 = .8 * inner_prod (old_gx,d);
     double dir = (qq_0>0 ? -1 : 1);
     double t_l = 0.0, t_r = 0.0, t = dir;
     double y;
@@ -62,14 +62,14 @@ namespace vb {
 
       y = old_fx + .3 * t * qq_0;
 
-      if ((fx<=y) && (dir*scalar_product (gx,d) >= dir*qq_0)) break;
+      if ((fx<=y) && (dir*inner_prod (gx,d) >= dir*qq_0)) break;
       if (fx>y) { t_r=t; refining = true; } else t_l = t;
       if (refining) t = (t_r+t_l)/2.0; else t *= 2.0;
       if (t-t_l+1.0 == 1.0) break;
     }
 
     if (os) {
-      double tmp = scalar_product (gx,gx);
+      double tmp = inner_prod (gx,gx);
       while (tmp<er) {
         er /= 10.0;
         ++ler;
@@ -111,9 +111,9 @@ namespace vb {
       dg = gx - old_gx;
       Wdg = W*dg;
       Wdg *= -1; // XXX temporary fix XXX
-      dgdx = scalar_product(dg,dx);
+      dgdx = inner_prod(dg,dx);
       dx /= dgdx;
-      u = dgdx - scalar_product(dg,Wdg);
+      u = dgdx - inner_prod(dg,Wdg);
 
       W.rank1update(u*dx+Wdg,dx);
       W.rank1update(dx,Wdg);
@@ -135,7 +135,7 @@ namespace vb {
     while (fx < old_fx) {
       old_d = d; d = gx; d *= -1; // XXX temporary fix XXX
       if (!first) {
-        double c = scalar_product(gx,gx) / scalar_product(old_gx,old_gx);
+        double c = inner_prod(gx,gx) / inner_prod(old_gx,old_gx);
         d += c * old_d;
       }
       line_search(d);
@@ -163,11 +163,11 @@ namespace vb {
       d *= -1.0;
 
       if (!first) {
-        double c1 = scalar_product(old_gx,old_gx);
+        double c1 = inner_prod(old_gx,old_gx);
 
         old_gx -= gx;
 
-        double c = scalar_product(old_gx,gx) / c1;
+        double c = inner_prod(old_gx,gx) / c1;
 
         old_d *= c;
         d -= old_d;
@@ -200,7 +200,7 @@ namespace vb {
       if (!first) {
         for (int i=0; i<n; ++i) y[i] = gx[i];
         y -= old_gx;
-        double c = scalar_product(y,gx) / scalar_product(y,old_d);
+        double c = inner_prod(y,gx) / inner_prod(y,old_d);
         old_d *= c;
         d += old_d;
       }

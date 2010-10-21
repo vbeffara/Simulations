@@ -64,7 +64,7 @@ namespace vb {
   Vector MatrixStorage_Plain::map_right (const Vector &X) {
     Vector Y(this->height);
     for (unsigned int i=0; i<this->height; ++i)
-      Y[i] = scalar_product (lines[i],X);
+      Y[i] = inner_prod (lines[i],X);
     return Y;
   }
 
@@ -135,7 +135,7 @@ namespace vb {
   Vector MatrixStorage_DiagSmallRank::map_right (const Vector &X) {
     Vector tmp(this->width);
     for (unsigned int i=0; i<(this->width<this->height?this->width:this->height); ++i) tmp[i] = diag[i]*X[i];
-    for (unsigned int i=0; i<updates.size(); ++i) tmp += updates[i].first * scalar_product(updates[i].second,X);
+    for (unsigned int i=0; i<updates.size(); ++i) tmp += updates[i].first * inner_prod(updates[i].second,X);
     return tmp;
   }
 }
