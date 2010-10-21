@@ -54,9 +54,8 @@ namespace vb {
     bool refining = false;
 
     while (true) {
-      // Compute old_x+t*d in-place :
-      for (int i=0; i<n; ++i) x[i] = d[i];
-      x *= t; x += old_x;
+      // Compute old_x+t*d in-place : XXX check if boost's way is really worse.
+      x = d; x *= t; x += old_x;
 
       compute();
 
@@ -158,8 +157,7 @@ namespace vb {
 
     while (fx < old_fx) {
       old_d.swap(d);
-      for (int i=0; i<n; ++i) d[i] = gx[i];
-      d *= -1.0;
+      d = -gx;
 
       if (!first) {
         double c1 = inner_prod(old_gx,old_gx);
@@ -193,11 +191,10 @@ namespace vb {
 
     while (fx < old_fx) {
       old_d.swap(d);
-      for (int i=0; i<n; ++i) d[i] = gx[i];
-      d *= -1.0;
+      d = -gx;
 
       if (!first) {
-        for (int i=0; i<n; ++i) y[i] = gx[i];
+        y = gx;
         y -= old_gx;
         double c = inner_prod(y,gx) / inner_prod(y,old_d);
         old_d *= c;
