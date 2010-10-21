@@ -110,13 +110,12 @@ namespace vb {
       dx = x - old_x;
       dg = gx - old_gx;
       Wdg = W*dg;
-      Wdg *= -1; // XXX temporary fix XXX
       dgdx = inner_prod(dg,dx);
       dx /= dgdx;
-      u = dgdx - inner_prod(dg,Wdg);
+      u = dgdx + inner_prod(dg,Wdg);
 
-      W.rank1update(u*dx+Wdg,dx);
-      W.rank1update(dx,Wdg);
+      W.rank1update(u*dx-Wdg,dx);
+      W.rank1update(dx,-Wdg);
     }
 
     return fx;
@@ -133,7 +132,7 @@ namespace vb {
     bool first = true;
 
     while (fx < old_fx) {
-      old_d = d; d = gx; d *= -1; // XXX temporary fix XXX
+      old_d = d; d = -gx;
       if (!first) {
         double c = inner_prod(gx,gx) / inner_prod(old_gx,old_gx);
         d += c * old_d;

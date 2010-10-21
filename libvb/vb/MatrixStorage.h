@@ -4,9 +4,10 @@
 #ifndef __VB_MATRIXSTORAGE_H
 #define __VB_MATRIXSTORAGE_H
 
-#include <vb/Vector.h>
+#include <boost/numeric/ublas/vector.hpp>
 
 namespace vb {
+  typedef boost::numeric::ublas::vector<double> Vector;
 
   /** Abstract base class for a general matrix storage class.
    *
