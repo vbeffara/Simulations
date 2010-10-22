@@ -12,9 +12,6 @@ namespace vb {
 
   class Matrix : public boost::numeric::ublas::matrix<double> {
     public:
-      unsigned int width;   ///< The width of the matrix.
-      unsigned int height;  ///< The height of the matrix.
-
       /** Standard constructor of a zero matrix.
        *
        * @param h The height of the matrix.
@@ -41,33 +38,7 @@ namespace vb {
        */
 
       Matrix & operator*= (const Matrix &M);
-
-      /** Perform a rank-one update.
-       *
-       * This adds the rank-one matrix A^t.B to the current matrix.
-       *
-       * @param A The vertical vector of the update.
-       * @param B The horizontal vector of the update.
-       */
-
-      Matrix & rank1update (const Vector &A, const Vector &B);
   };
-
-  /** Add two matrices.
-   *
-   * @param M The first matrix to add.
-   * @param N The second matrix to add.
-   */
-
-  Matrix operator+ (const Matrix &M, const Matrix &N);
-
-  /** Compute the difference between two matrices.
-   *
-   * @param M The first matrix.
-   * @param N The second matrix.
-   */
-
-  Matrix operator- (const Matrix &M, const Matrix &N);
 
   /** Compute the product of two matrices.
    *

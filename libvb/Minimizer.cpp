@@ -113,8 +113,8 @@ namespace vb {
       dx /= dgdx;
       u = dgdx + inner_prod(dg,Wdg);
 
-      W.rank1update(u*dx-Wdg,dx);
-      W.rank1update(dx,-Wdg);
+      W += outer_prod (u*dx-Wdg,dx);
+      W -= outer_prod (dx,Wdg);
     }
 
     return fx;
