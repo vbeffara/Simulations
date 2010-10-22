@@ -10,14 +10,10 @@
 namespace vb {
   typedef boost::numeric::ublas::vector<double> Vector;
 
-  class MatrixStorage_Plain {
+  class MatrixStorage_Plain : public boost::numeric::ublas::matrix<double> {
     public:
       unsigned int width;
       unsigned int height;
-
-      /// The lines of the matrix.
-
-      boost::numeric::ublas::matrix<double> lines;
 
       /** The standard constructor of a zero matrix.
        *

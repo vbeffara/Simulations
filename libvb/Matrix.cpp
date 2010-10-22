@@ -5,33 +5,33 @@
 
 namespace vb {
   MatrixStorage_Plain::MatrixStorage_Plain (unsigned int h, unsigned int w) :
-    width(w), height(h), lines (h,w) { }
+    boost::numeric::ublas::matrix<double> (h,w), width(w), height(h) { }
 
   void MatrixStorage_Plain::put (unsigned int i, unsigned int j, double t) {
-    lines(i,j) = t;
+    (*this)(i,j) = t;
   }
 
   MatrixStorage_Plain * MatrixStorage_Plain::add (MatrixStorage_Plain *M) {
-    for (unsigned int i=0; i<this->height; ++i)
-      for (unsigned int j=0; j<this->width; ++j)
-        lines(i,j) += (M->lines)(i,j);
+    for (unsigned int i=0; i<height; ++i)
+      for (unsigned int j=0; j<width; ++j)
+        (*this)(i,j) += (*M)(i,j);
     return this;
   }
 
   MatrixStorage_Plain * MatrixStorage_Plain::sub (MatrixStorage_Plain *M) {
-    for (unsigned int i=0; i<this->height; ++i)
-      for (unsigned int j=0; j<this->width; ++j)
-        lines(i,j) -= (M->lines)(i,j);
+    for (unsigned int i=0; i<height; ++i)
+      for (unsigned int j=0; j<width; ++j)
+        (*this)(i,j) -= (*M)(i,j);
     return this;
   }
 
   MatrixStorage_Plain * MatrixStorage_Plain::mul_right (MatrixStorage_Plain *M) {
     MatrixStorage_Plain *tmp = new MatrixStorage_Plain (this->height, M->width);
-    for (unsigned int i=0; i<this->height; ++i) {
+    for (unsigned int i=0; i<height; ++i) {
       for (unsigned int j=0; j<M->width; ++j) {
-        tmp->lines(i,j) = lines(i,0) * (M->lines)(0,j);
-        for (unsigned int k=1; k<this->width; ++k) 
-          tmp->lines(i,j) += lines(i,k) * (M->lines)(k,j);
+        (*tmp)(i,j) = (*this)(i,0) * (*M)(0,j);
+        for (unsigned int k=1; k<width; ++k) 
+          (*tmp)(i,j) += (*this)(i,k) * (*M)(k,j);
       }
     }
     return tmp;
@@ -40,12 +40,12 @@ namespace vb {
   MatrixStorage_Plain * MatrixStorage_Plain::rank1update (const Vector &A, const Vector &B) {
     for (unsigned int i=0; i<this->height; ++i)
       for (unsigned int j=0; j<this->width; ++j)
-        lines(i,j) += A[i]*B[j];
+        (*this)(i,j) += A[i]*B[j];
     return this;
   }
 
   Vector MatrixStorage_Plain::map_right (const Vector &X) {
-    return prod (lines, X);
+    return prod (*this, X);
   }
 
   /******************************************/
@@ -61,7 +61,7 @@ namespace vb {
   Matrix::Matrix (const Matrix &M) : width(M.width), height(M.height) {
     for (int i=0; i<height; ++i)
       for (int j=0; j<width; ++j)
-        data->lines(i,j) = M.data->lines(i,j);
+        (*data)(i,j) = (*M.data)(i,j);
   }
 
   Matrix::~Matrix () {
@@ -74,12 +74,12 @@ namespace vb {
       delete data; data = new MatrixStorage_Plain (M.height, M.width);
       for (int i=0; i<height; ++i)
         for (int j=0; j<width; ++j)
-          data->lines(i,j) = M.data->lines(i,j);
+          (*data)(i,j) = (*M.data)(i,j);
     }
     return (*this);
   }
 
-  double Matrix::operator() (unsigned int i, unsigned int j) const { return data->lines(i,j); }
+  double Matrix::operator() (unsigned int i, unsigned int j) const { return (*data)(i,j); }
 
   void Matrix::put (unsigned int i, unsigned int j, double t) { 
     data->put(i,j,t);
