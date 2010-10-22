@@ -25,12 +25,6 @@ namespace vb {
 
       void put (unsigned int i, unsigned int j, double t);
 
-      MatrixStorage_Plain *add (MatrixStorage_Plain *M);
-
-      MatrixStorage_Plain *sub (MatrixStorage_Plain *M);
-
-      MatrixStorage_Plain *mul_right (MatrixStorage_Plain *M);
-
       MatrixStorage_Plain *rank1update (const Vector &A, const Vector &B);
 
       Vector map_right (const Vector &X);
@@ -48,7 +42,7 @@ namespace vb {
     public:
       unsigned int width;   ///< The width of the matrix.
       unsigned int height;  ///< The height of the matrix.
-      MatrixStorage_Plain *data;  ///< The underlying storage of the matrix.
+      MatrixStorage_Plain data;  ///< The underlying storage of the matrix.
 
       /** Standard constructor of a zero matrix.
        *
