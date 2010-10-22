@@ -12,20 +12,6 @@ namespace vb {
       for (int i=0; i<d.size(); ++i) (*this)(i,i) = d[i];
     }
 
-  void Matrix::put (unsigned int i, unsigned int j, double t) { 
-    (*this)(i,j) = t;
-  }
-
-  Matrix & Matrix::operator+= (const Matrix &M) {
-    (*this) += M;
-    return (*this);
-  }
-
-  Matrix & Matrix::operator-= (const Matrix &M) {
-    (*this) -= M;
-    return (*this);
-  }
-
   Matrix & Matrix::operator*= (const Matrix &M) {
     (boost::numeric::ublas::matrix<double>)((*this)) = prod (*this, M);
     return *this;
@@ -56,19 +42,5 @@ namespace vb {
 
   Vector operator* (const Matrix &M, const Vector &X) {
     return prod (M, X);
-  }
-
-  std::ostream &operator<< (std::ostream &os, const Matrix &M) {
-    os << "[";
-    for (unsigned int i=0; i<M.height; ++i) {
-      os << "[";
-      for (unsigned int j=0; j<M.width; ++j) {
-        os << M(i,j);
-        if (j < M.width-1) os << ",";
-      }
-      os << "]";
-      if (i < M.height-1) os << ",";
-    }
-    return os << "]";
   }
 }

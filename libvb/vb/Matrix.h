@@ -35,29 +35,6 @@ namespace vb {
 
       Matrix (unsigned int h, unsigned int w, const Vector &d);
 
-      /** Set a particular entry of the matrix.
-       *
-       * @param i The line of the entry.
-       * @param j The column of the entry.
-       * @param t The new value of the entry.
-       */
-
-      void put (unsigned int i, unsigned int j, double t);
-
-      /** Add another matrix to this one.
-       *
-       * @param M The matrix to add.
-       */
-
-      Matrix & operator+= (const Matrix &M);
-
-      /** Subtract another matrix from this one.
-       *
-       * @param M The matrix to subtract.
-       */
-
-      Matrix & operator-= (const Matrix &M);
-
       /** Right-multiply by another matrix.
        *
        * @param M The right multiplicator.
@@ -107,14 +84,6 @@ namespace vb {
    */
 
   Vector operator* (const Matrix &M, const Vector &X);
-
-  /** Output a matrix to an output stream.
-   *
-   * @param os The output stream.
-   * @param M  The matrix.
-   */
-
-  std::ostream &operator<< (std::ostream &os, const Matrix &M);
 }
 
 #endif
