@@ -17,7 +17,7 @@ namespace vb {
 
       /// The lines of the matrix.
 
-      std::vector<Vector> lines;
+      boost::numeric::ublas::matrix<double> lines;
 
       /** The standard constructor of a zero matrix.
        *
