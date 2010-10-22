@@ -10,9 +10,6 @@
 namespace vb {
   typedef boost::numeric::ublas::vector<double> Vector;
   typedef boost::numeric::ublas::matrix<double> Matrix;
-
-  inline Matrix operator* (const Matrix &M, const Matrix &N) { return prod(M,N); }
-  inline Vector operator* (const Matrix &M, const Vector &X) { return prod(M,X); }
 }
 
 #endif

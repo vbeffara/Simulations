@@ -105,11 +105,11 @@ namespace vb {
     for (int i=0; i<x0.size(); ++i) W(i,i) = diag[i];
 
     while (fx < old_fx) {
-      line_search(W*gx);
+      line_search(prod(W,gx));
 
       dx = x - old_x;
       dg = gx - old_gx;
-      Wdg = W*dg;
+      Wdg = prod(W,dg);
       dgdx = inner_prod(dg,dx);
       dx /= dgdx;
       u = dgdx + inner_prod(dg,Wdg);
