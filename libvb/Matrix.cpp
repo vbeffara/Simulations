@@ -5,36 +5,34 @@
 
 namespace vb {
   Matrix::Matrix (unsigned int h, unsigned int w)
-    : width(w), height(h), data (h,w) {}
+    : boost::numeric::ublas::matrix<double>(h,w), width(w), height(h) {}
 
   Matrix::Matrix (unsigned int h, unsigned int w, const Vector &d)
-    : width(w), height(h), data (h,w) {
-      for (int i=0; i<d.size(); ++i) data(i,i) = d[i];
+    : boost::numeric::ublas::matrix<double>(h,w), width(w), height(h) {
+      for (int i=0; i<d.size(); ++i) (*this)(i,i) = d[i];
     }
 
-  double Matrix::operator() (unsigned int i, unsigned int j) const { return data(i,j); }
-
   void Matrix::put (unsigned int i, unsigned int j, double t) { 
-    data(i,j) = t;
+    (*this)(i,j) = t;
   }
 
   Matrix & Matrix::operator+= (const Matrix &M) {
-    data += M.data;
+    (*this) += M;
     return (*this);
   }
 
   Matrix & Matrix::operator-= (const Matrix &M) {
-    data -= M.data;
+    (*this) -= M;
     return (*this);
   }
 
   Matrix & Matrix::operator*= (const Matrix &M) {
-    (boost::numeric::ublas::matrix<double>)(data) = prod (data, M.data);
+    (boost::numeric::ublas::matrix<double>)((*this)) = prod (*this, M);
     return *this;
   }
 
   Matrix & Matrix::rank1update (const Vector &A, const Vector &B) {
-    data += outer_prod(A,B);
+    (boost::numeric::ublas::matrix<double>)(*this) += outer_prod(A,B);
     return (*this);
   }
 
@@ -57,7 +55,7 @@ namespace vb {
   }
 
   Vector operator* (const Matrix &M, const Vector &X) {
-    return prod (M.data, X);
+    return prod (M, X);
   }
 
   std::ostream &operator<< (std::ostream &os, const Matrix &M) {

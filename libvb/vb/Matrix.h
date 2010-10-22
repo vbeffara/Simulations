@@ -10,11 +10,10 @@
 namespace vb {
   typedef boost::numeric::ublas::vector<double> Vector;
 
-  class Matrix {
+  class Matrix : public boost::numeric::ublas::matrix<double> {
     public:
       unsigned int width;   ///< The width of the matrix.
       unsigned int height;  ///< The height of the matrix.
-      boost::numeric::ublas::matrix<double> data;  ///< The underlying storage of the matrix.
 
       /** Standard constructor of a zero matrix.
        *
@@ -35,14 +34,6 @@ namespace vb {
        */
 
       Matrix (unsigned int h, unsigned int w, const Vector &d);
-
-      /** Return a particular rntry of the matrix.
-       *
-       * @param i The line of the entry.
-       * @param j The column of the entry.
-       */
-
-      double operator() (unsigned int i, unsigned int j) const;
 
       /** Set a particular entry of the matrix.
        *
