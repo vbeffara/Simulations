@@ -4,52 +4,18 @@
 #include <vb/Matrix.h>
 
 namespace vb {
-  MatrixStorage_Plain::MatrixStorage_Plain (unsigned int h, unsigned int w) :
-    boost::numeric::ublas::matrix<double> (h,w), width(w), height(h) { }
-
-  void MatrixStorage_Plain::put (unsigned int i, unsigned int j, double t) {
-    (*this)(i,j) = t;
-  }
-
-  MatrixStorage_Plain * MatrixStorage_Plain::rank1update (const Vector &A, const Vector &B) {
-    for (unsigned int i=0; i<this->height; ++i)
-      for (unsigned int j=0; j<this->width; ++j)
-        (*this)(i,j) += A[i]*B[j];
-    return this;
-  }
-
-  Vector MatrixStorage_Plain::map_right (const Vector &X) {
-    return prod (*this, X);
-  }
-
-  /******************************************/
-
   Matrix::Matrix (unsigned int h, unsigned int w)
     : width(w), height(h), data (h,w) {}
 
   Matrix::Matrix (unsigned int h, unsigned int w, const Vector &d)
     : width(w), height(h), data (h,w) {
-      for (int i=0; i<d.size(); ++i) data.put (i,i,d[i]);
+      for (int i=0; i<d.size(); ++i) data(i,i) = d[i];
     }
-
-  Matrix::Matrix (const Matrix &M) : width(M.width), height(M.height),
-    data (M.data) { }
-
-  Matrix::~Matrix () {
-  }
-
-  Matrix & Matrix::operator= (const Matrix &M) {
-    if (&M != this) {
-      width = M.width; height = M.height;
-      data = M.data;
-    }
-    return (*this);
-  }
 
   double Matrix::operator() (unsigned int i, unsigned int j) const { return data(i,j); }
 
   void Matrix::put (unsigned int i, unsigned int j, double t) { 
-    data.put(i,j,t);
+    data(i,j) = t;
   }
 
   Matrix & Matrix::operator+= (const Matrix &M) {
@@ -68,7 +34,7 @@ namespace vb {
   }
 
   Matrix & Matrix::rank1update (const Vector &A, const Vector &B) {
-    data.rank1update(A,B);
+    data += outer_prod(A,B);
     return (*this);
   }
 
@@ -91,7 +57,7 @@ namespace vb {
   }
 
   Vector operator* (const Matrix &M, const Vector &X) {
-    return M.data.map_right(X);
+    return prod (M.data, X);
   }
 
   std::ostream &operator<< (std::ostream &os, const Matrix &M) {

@@ -10,39 +10,11 @@
 namespace vb {
   typedef boost::numeric::ublas::vector<double> Vector;
 
-  class MatrixStorage_Plain : public boost::numeric::ublas::matrix<double> {
-    public:
-      unsigned int width;
-      unsigned int height;
-
-      /** The standard constructor of a zero matrix.
-       *
-       * @param h The height of the matrix.
-       * @param w The width of the matrix.
-       */
-
-      MatrixStorage_Plain (unsigned int h, unsigned int w);
-
-      void put (unsigned int i, unsigned int j, double t);
-
-      MatrixStorage_Plain *rank1update (const Vector &A, const Vector &B);
-
-      Vector map_right (const Vector &X);
-  };
-
-  /** A matrix class.
-   *
-   * It is just some bookkeeping logic on top of MatrixStorage, which 
-   * does all the heavy lifting. Ideally MatrixStorage should never have 
-   * to manage dynamic memory, except possibly for switching from one 
-   * storage to the next ...
-   */
-
   class Matrix {
     public:
       unsigned int width;   ///< The width of the matrix.
       unsigned int height;  ///< The height of the matrix.
-      MatrixStorage_Plain data;  ///< The underlying storage of the matrix.
+      boost::numeric::ublas::matrix<double> data;  ///< The underlying storage of the matrix.
 
       /** Standard constructor of a zero matrix.
        *
@@ -63,25 +35,6 @@ namespace vb {
        */
 
       Matrix (unsigned int h, unsigned int w, const Vector &d);
-
-      /** Copy constructor.
-       *
-       * @param M The matrix to copy.
-       */
-
-      Matrix (const Matrix &M);
-
-      /** Destructor.
-       */
-
-      ~Matrix ();
-
-      /** Assignment operator.
-       *
-       * @param M The matrix to copy.
-       */
-
-      Matrix &operator= (const Matrix &M);
 
       /** Return a particular rntry of the matrix.
        *
