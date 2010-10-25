@@ -54,8 +54,7 @@ namespace vb {
     bool refining = false;
 
     while (true) {
-      // Compute old_x+t*d in-place : XXX check if boost's way is really worse.
-      x = d; x *= t; x += old_x;
+      x = old_x + t*d;
 
       compute();
 
@@ -114,8 +113,7 @@ namespace vb {
       dx /= dgdx;
       u = dgdx + inner_prod(dg,Wdg);
 
-      W += outer_prod (u*dx-Wdg,dx);
-      W -= outer_prod (dx,Wdg);
+      W += outer_prod (u*dx-Wdg,dx) - outer_prod (dx,Wdg);
     }
 
     return fx;
@@ -165,9 +163,7 @@ namespace vb {
 
         old_gx -= gx;
 
-        double c = inner_prod(old_gx,gx) / c1;
-
-        old_d *= c;
+        old_d *= inner_prod(old_gx,gx) / c1;
         d -= old_d;
       }
 
@@ -195,11 +191,8 @@ namespace vb {
       d = -gx;
 
       if (!first) {
-        y = gx;
-        y -= old_gx;
-        double c = inner_prod(y,gx) / inner_prod(y,old_d);
-        old_d *= c;
-        d += old_d;
+        y = gx - old_gx;
+        d += old_d * inner_prod(y,gx) / inner_prod(y,old_d);
       }
 
       line_search(d);
