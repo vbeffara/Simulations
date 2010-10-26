@@ -16,11 +16,9 @@ namespace vb {
    * Some of them are inlined for better performance.
    */
 
-  class PRNG_base {
+  template <typename G = boost::mt19937> class PRNG_base : public G {
     public:
       unsigned long max; ///< The range of the operator() method.
-
-      virtual ~PRNG_base (); ///< The standard destructor.
 
       /** Initialize the PRNG from a seed.
        *
@@ -102,7 +100,7 @@ namespace vb {
    * having to store the random numbers.
    */
 
-  class PRNG_Rewindable : public PRNG_base {
+  class PRNG_Rewindable : public PRNG_base <> {
     public:
       /** The standard constructor.
        *
@@ -157,7 +155,7 @@ namespace vb {
       long long rdmbuf;
   };
 
-  class PRNG_MT : public PRNG_base {
+  class PRNG_MT : public PRNG_base <> {
     public:
       PRNG_MT (unsigned long seed = 0); ///< The standard constructor.
 
@@ -190,6 +188,12 @@ namespace vb {
   typedef PRNG_MT PRNG;
 
   extern PRNG prng; ///< A global PRNG instance for convenience. */
+
+  template <typename G> double PRNG_base<G>::gaussian (double m, double sigma2) {
+    double modulus = exponential();
+    double angle = uniform(1000.0*3.14159265358979);
+    return m + sqrt(sigma2)*modulus*cos(angle);
+  }
 }
 
 #endif

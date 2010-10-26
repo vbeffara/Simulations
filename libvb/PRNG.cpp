@@ -17,15 +17,7 @@ namespace vb {
     return usec;
   }
 
-  PRNG_base::~PRNG_base () {};
-
-  double PRNG_base::gaussian (double m, double sigma2) {
-    double modulus = exponential();
-    double angle = uniform(1000.0*3.14159265358979);
-    return m + sqrt(sigma2)*modulus*cos(angle);
-  }
-
-  int PRNG_base::poisson (double lambda) {
+  template <typename G> int PRNG_base<G>::poisson (double lambda) {
     double u = uniform(exp(lambda));
     int k=0;
     double fk=1;
