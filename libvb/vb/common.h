@@ -32,6 +32,8 @@
 #include <cairomm/context.h>
 #include <cairomm/surface.h>
 
+#include <boost/foreach.hpp>
+
 #ifdef HAVE_FLTK
 #include <FL/Fl.H>
 #include <FL/Fl_Double_Window.H>
@@ -77,6 +79,7 @@ namespace vb {
     return ss.str();
   }
 
+#define foreach BOOST_FOREACH
 #define TWO_PI (6.28318530717958)
 };
 
