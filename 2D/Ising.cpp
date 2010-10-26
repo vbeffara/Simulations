@@ -49,10 +49,10 @@ int main(int argc, char *argv[])
   /* Initialisations */
 
   p[0]=0;
-  p[1]=(long)(exp(-beta) * prng.max);
-  p[2]=(long)(exp(-2*beta) * prng.max);
-  p[3]=(long)(exp(-3*beta) * prng.max);
-  p[4]=(long)(exp(-4*beta) * prng.max);
+  p[1]=(long)(exp(-beta) * prng.max());
+  p[2]=(long)(exp(-2*beta) * prng.max());
+  p[3]=(long)(exp(-3*beta) * prng.max());
+  p[4]=(long)(exp(-4*beta) * prng.max());
 
   /* Simulation */
 

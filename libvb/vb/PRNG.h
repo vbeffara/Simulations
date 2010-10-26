@@ -22,15 +22,13 @@ namespace vb {
         if (s) G::seed(s);
       }
 
-      unsigned long max; ///< The range of the operator() method.
-
       /** Return a bernoulli variable in {0,1}
        *
        * @param p The parameter of the distribution.
        */
 
       int bernoulli (double p) {
-        return (*this)() < p*(double)max ? 1 : 0;
+        return (*this)() < p*(double)G::max() ? 1 : 0;
       }
 
       /** Return a uniformly distributed real between 0 and range
@@ -39,7 +37,7 @@ namespace vb {
        */
 
       double uniform (double range=1.0) {
-        return range * ( (double)(*this)() / (double)max );
+        return range * ( (double)(*this)() / (double)G::max() );
       }
 
       /** Return an exponential random variable of parameter lambda.
@@ -133,26 +131,11 @@ namespace vb {
         return (unsigned long) rdmbuf;
       }
 
+      unsigned long max;
+
     private:
       long a,b, r_a,r_b;
       long long rdmbuf;
-  };
-
-  class PRNG_MT : public PRNG_base <boost::mt19937> {
-    public:
-      PRNG_MT (unsigned long seed = 0); ///< The standard constructor.
-
-      /** Initialize the PRNG from an integer seed.
-       * 
-       * @param seed The initialization seed.
-       */
-
-      void srand (unsigned long seed = 0);
-
-      /// Return an integer between 0 and max.
-
-    private:
-      int mti;
   };
 
   /** The default pseudo-random number generator.
@@ -165,7 +148,7 @@ namespace vb {
    * being a better random number generator.
    */
 
-  typedef PRNG_MT PRNG;
+  typedef PRNG_base <boost::mt19937> PRNG;
 
   extern PRNG prng; ///< A global PRNG instance for convenience. */
 

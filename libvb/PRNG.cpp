@@ -4,18 +4,6 @@
 #include <vb/PRNG.h>
 
 namespace vb {
-  static long getseed() {
-    struct timeval tv;
-    time_t curtime;
-    long usec;
-
-    gettimeofday (&tv, NULL); 
-    curtime = tv.tv_sec;
-    usec = tv.tv_usec;
-
-    return usec;
-  }
-
   template <typename G> int PRNG_base<G>::poisson (double lambda) {
     double u = uniform(exp(lambda));
     int k=0;
@@ -26,11 +14,6 @@ namespace vb {
       fk *= k;
     }
     return k-1;
-  }
-
-  PRNG_MT::PRNG_MT (unsigned long seed) {
-    max = 0xffffffffUL;
-    this->seed(seed);
   }
 
   PRNG_Rewindable::PRNG_Rewindable (long aa, long bb, long mm) {
@@ -52,8 +35,13 @@ namespace vb {
       r_a = t_u;
       r_b = (long) ( (- (long long)b * (long long)r_a ) % (long long)max );
 
-      rdmbuf = getseed();
-    }
+    struct timeval tv;
+    time_t curtime;
+
+    gettimeofday (&tv, NULL); 
+    curtime = tv.tv_sec;
+    rdmbuf = tv.tv_usec;
+  }
 
   void PRNG_Rewindable::iterate (long long aa, long long bb, long long n) {
     while (n>0) {
