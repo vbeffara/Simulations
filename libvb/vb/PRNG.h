@@ -6,25 +6,44 @@
 
 #include <vb/common.h>
 
-#include <boost/random/mersenne_twister.hpp>
-
-#include <boost/random/variate_generator.hpp>
-
-#include <boost/random/bernoulli_distribution.hpp>
-#include <boost/random/uniform_int.hpp>
-#include <boost/random/uniform_real.hpp>
+#include <boost/random.hpp>
 
 namespace vb {
   template <typename G> class PRNG_base : public G {
     public:
       PRNG_base (unsigned long s=0) { if (s) G::seed(s); }
 
-      int bernoulli (double p) {
-        return (*this)() < p*(double)G::max() ? 1 : 0;
+      double bernoulli (double p=0.5) {
+        boost::bernoulli_distribution<> dist(p);
+        boost::variate_generator<G&, boost::bernoulli_distribution<> > die (*this, dist);
+        return die();
       }
 
-      double uniform_real (double min=1.0, double max=0.0) {
-        if (min>max) std::swap(min,max);
+      double exponential (double lambda=1.0) {
+        boost::exponential_distribution<> dist(lambda);
+        boost::variate_generator<G&, boost::exponential_distribution<> > die (*this, dist);
+        return die();
+      }
+
+      double gaussian (double m=0.0, double sigma=1.0) {
+        boost::normal_distribution<> dist(m,sigma);
+        boost::variate_generator<G&, boost::normal_distribution<> > die (*this, dist);
+        return die();
+      }
+
+      double geometric (double p=1.0) {
+        boost::geometric_distribution<> dist(p);
+        boost::variate_generator<G&, boost::geometric_distribution<> > die (*this, dist);
+        return die();
+      }
+
+      double poisson (double lambda=1.0) {
+        boost::poisson_distribution<> dist(lambda);
+        boost::variate_generator<G&, boost::poisson_distribution<> > die (*this, dist);
+        return die();
+      }
+
+      double uniform_real (double min=0.0, double max=1.0) {
         boost::uniform_real<> dist(min, max);
         boost::variate_generator<G&, boost::uniform_real<> > die (*this, dist);
         return die();
@@ -35,41 +54,6 @@ namespace vb {
         boost::variate_generator<G&, boost::uniform_int<> > die (*this, dist);
         return die();
       }
-
-      /** Return an exponential random variable of parameter lambda.
-       *
-       * @param lambda The parameter of the distribution.
-       */
-
-      double exponential (double lambda=1.0) {
-        return -log(uniform_real())/lambda;
-      }
-
-      /** Return a Gaussian variable.
-       *
-       * Caution : it calls (*this)() twice, if you rewind you should know it.
-       *
-       * @param m      The mean of the distribution.
-       * @param sigma2 The variance of the distribution.
-       */
-
-      double gaussian (double m=0.0, double sigma2=1.0);
-
-      /** Return a geometric variable (in Z_+).
-       *
-       * @param p The parameter of the distribution.
-       */
-
-      int geometric (double p) {
-        return (int) floor(exponential(-log(1-p)));
-      }
-
-      /** Return a Poisson variable of parameter lambda.
-       *
-       * @param lambda The parameter of the distribution.
-       */
-
-      int poisson (double lambda = 1.0);
   };
 
   /** A rewindable pseudo-random number generator.
@@ -146,13 +130,7 @@ namespace vb {
 
   typedef PRNG_base <boost::mt19937> PRNG;
 
-  extern PRNG prng; ///< A global PRNG instance for convenience. */
-
-  template <typename G> double PRNG_base<G>::gaussian (double m, double sigma2) {
-    double modulus = exponential();
-    double angle = uniform_real(0, 1000.0*3.14159265358979);
-    return m + sqrt(sigma2)*modulus*cos(angle);
-  }
+  extern PRNG prng;
 }
 
 #endif

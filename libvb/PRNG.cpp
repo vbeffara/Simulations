@@ -4,18 +4,6 @@
 #include <vb/PRNG.h>
 
 namespace vb {
-  template <typename G> int PRNG_base<G>::poisson (double lambda) {
-    double u = uniform_real(0, exp(lambda));
-    int k=0;
-    double fk=1;
-    while (u>0) {
-      u -= pow(lambda,k)/fk;
-      ++k;
-      fk *= k;
-    }
-    return k-1;
-  }
-
   PRNG_Rewindable::PRNG_Rewindable (long aa, long bb, long mm) {
       max = mm; a = aa; b = bb;
       long long  t_a=a, t_b=max, t_u=1, t_v=0, t_s=0, t_t=1;
