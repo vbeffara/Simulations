@@ -39,41 +39,11 @@ namespace vb {
 
   PRNG_MT::PRNG_MT (unsigned long seed) {
     max = 0xffffffffUL;
-    mt = new unsigned long [PRNG_MT_N];
     srand(seed);
   }
 
   void PRNG_MT::srand (unsigned long seed) {
     if (!seed) seed = getseed();
-    mt[0] = seed & 0xffffffffUL;
-    for (mti = 1; mti < PRNG_MT_N; mti++) {
-      mt[mti] = (1812433253UL * (mt[mti - 1] ^ (mt[mti - 1] >> 30)) + mti);
-      mt[mti] &= 0xffffffffUL;
-    }
-  }
-
-  void PRNG_MT::twist () {
-    unsigned long y;
-    static unsigned long mag01[2] = { 0x0UL, PRNG_MT_MATRIX_A };
-
-    if (mti >= PRNG_MT_N) {
-      int kk;
-
-      for (kk = 0; kk < PRNG_MT_N - PRNG_MT_M; kk++) {
-        y = (mt[kk] & PRNG_MT_UPPER_MASK) | (mt[kk + 1] & PRNG_MT_LOWER_MASK);
-        mt[kk] = mt[kk + PRNG_MT_M] ^ (y >> 1) ^ mag01[y & 0x1UL];
-      }
-
-      for (; kk < PRNG_MT_N - 1; kk++) {
-        y = (mt[kk] & PRNG_MT_UPPER_MASK) | (mt[kk + 1] & PRNG_MT_LOWER_MASK);
-        mt[kk] = mt[kk + (PRNG_MT_M - PRNG_MT_N)] ^ (y >> 1) ^ mag01[y & 0x1UL];
-      }
-
-      y = (mt[PRNG_MT_N - 1] & PRNG_MT_UPPER_MASK) | (mt[0] & PRNG_MT_LOWER_MASK);
-      mt[PRNG_MT_N - 1] = mt[PRNG_MT_M - 1] ^ (y >> 1) ^ mag01[y & 0x1UL];
-
-      mti = 0;
-    }
   }
 
   PRNG_Rewindable::PRNG_Rewindable (long aa, long bb, long mm) {

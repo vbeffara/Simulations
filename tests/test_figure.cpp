@@ -20,7 +20,7 @@ int main (int argc, char **argv) {
 
   for (int i=1; i<=5; ++i) F.circle (cpx(0,0),i);
 
-  //F.show();
+  F.show(); F.pause();
 
   F.output ("output/test_figure");
   exit (0);

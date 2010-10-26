@@ -6,6 +6,8 @@
 
 #include <vb/common.h>
 
+#include <boost/random/mersenne_twister.hpp>
+
 namespace vb {
   /** A general-purpose pseudo-random number generator framework.
    *
@@ -225,24 +227,11 @@ namespace vb {
 
       /// Return an integer between 0 and max.
 
-      unsigned long rand () {
-        if (mti >= PRNG_MT_N) twist();
-
-        unsigned long y = mt[mti++];
-
-        y ^= (y >> 11);
-        y ^= (y << 7) & 0x9d2c5680UL;
-        y ^= (y << 15) & 0xefc60000UL;
-        y ^= (y >> 18);
-
-        return y;
-      }
+      unsigned long rand () { return gen(); }
 
     private:
-      unsigned long *mt;
       int mti;
-
-      void twist();  ///< Perform pseudo-random black magic.
+      boost::mt19937 gen;
   };
 
   /** The default pseudo-random number generator.
