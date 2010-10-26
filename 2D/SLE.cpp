@@ -92,7 +92,7 @@ int main(int argc, char ** argv) {
   int r = CLP('r');
   int smooth = CLP('s');
 
-  if (r) prng.srand(r);
+  if (r) prng.seed(r);
 
   n=nn*nn; kappa=2/kappa;
 

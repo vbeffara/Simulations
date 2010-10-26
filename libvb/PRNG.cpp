@@ -4,7 +4,6 @@
 #include <vb/PRNG.h>
 
 namespace vb {
-
   static long getseed() {
     struct timeval tv;
     time_t curtime;
@@ -31,11 +30,7 @@ namespace vb {
 
   PRNG_MT::PRNG_MT (unsigned long seed) {
     max = 0xffffffffUL;
-    srand(seed);
-  }
-
-  void PRNG_MT::srand (unsigned long seed) {
-    if (!seed) seed = getseed();
+    this->seed(seed);
   }
 
   PRNG_Rewindable::PRNG_Rewindable (long aa, long bb, long mm) {
@@ -57,7 +52,7 @@ namespace vb {
       r_a = t_u;
       r_b = (long) ( (- (long long)b * (long long)r_a ) % (long long)max );
 
-      srand();
+      rdmbuf = getseed();
     }
 
   void PRNG_Rewindable::iterate (long long aa, long long bb, long long n) {
@@ -67,11 +62,6 @@ namespace vb {
       aa = (aa*aa)%max;
       n >>= 1;
     }
-  }
-
-  void PRNG_Rewindable::srand (unsigned long seed) {
-    if (!seed) seed = getseed();
-    rdmbuf = seed;
   }
 
   void PRNG_Rewindable::rewind (long time1, long time2) {

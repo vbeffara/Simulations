@@ -10,7 +10,7 @@ using namespace vb;
 
 /// The main function.
 int main (int argc, char **argv) {
-  prng.srand(18);
+  prng.seed(18);
 
   Figure F;
   for (int i=0; i<10; ++i) {

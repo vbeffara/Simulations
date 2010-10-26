@@ -16,23 +16,13 @@ namespace vb {
    * Some of them are inlined for better performance.
    */
 
-  template <typename G = boost::mt19937> class PRNG_base : public G {
+  template <typename G> class PRNG_base : public G {
     public:
+      PRNG_base (unsigned long s=0) {
+        if (s) G::seed(s);
+      }
+
       unsigned long max; ///< The range of the operator() method.
-
-      /** Initialize the PRNG from a seed.
-       *
-       * @param seed The initialization seed.
-       */
-
-      virtual void srand (unsigned long seed) =0;
-
-      /** Produce a pseudo-random number generator.
-       *
-       * If possible, the implementation should be mostly inlined.
-       */
-
-      virtual unsigned long operator() () =0;
 
       /** Return a bernoulli variable in {0,1}
        *
@@ -100,7 +90,7 @@ namespace vb {
    * having to store the random numbers.
    */
 
-  class PRNG_Rewindable : public PRNG_base <> {
+  class PRNG_Rewindable : public PRNG_base <boost::mt19937> {
     public:
       /** The standard constructor.
        *
@@ -113,13 +103,6 @@ namespace vb {
        */
 
       PRNG_Rewindable (long aa=13, long bb=257, long mm=2147483647);
-
-      /** Seed the PRNG with an initial value.
-       *
-       * @param seed The initialization value to use.
-       */
-
-      void srand (unsigned long seed = 0);
 
       /** Iterate x -> a*x+b, n times.
        *
@@ -155,7 +138,7 @@ namespace vb {
       long long rdmbuf;
   };
 
-  class PRNG_MT : public PRNG_base <> {
+  class PRNG_MT : public PRNG_base <boost::mt19937> {
     public:
       PRNG_MT (unsigned long seed = 0); ///< The standard constructor.
 
@@ -168,11 +151,8 @@ namespace vb {
 
       /// Return an integer between 0 and max.
 
-      unsigned long operator() () { return gen(); }
-
     private:
       int mti;
-      boost::mt19937 gen;
   };
 
   /** The default pseudo-random number generator.

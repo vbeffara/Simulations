@@ -174,7 +174,7 @@ int main (int argc, char **argv) {
   double g = CLP('g');
   int s = CLP('s');
   int z = CLP('z');
-  if (s) prng.srand(s);
+  if (s) prng.seed(s);
   string noise = CLP('w');
 
   vector<double> field;

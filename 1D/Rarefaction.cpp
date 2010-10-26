@@ -17,8 +17,6 @@ int main (int argc, char **argv) {
   int i,t,running;
   char ch;
 
-  srand(time(0));
-
   n = 20;
   
   while ((ch = getopt(argc,argv,"hn:")) != -1) {
