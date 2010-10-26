@@ -14,8 +14,8 @@ int main (int argc, char **argv) {
 
   Figure F;
   for (int i=0; i<10; ++i) {
-    F.segment (cpx(-10+prng.uniform(20.0),-10+prng.uniform(20.0)),
-               cpx(-10+prng.uniform(20.0),-10+prng.uniform(20.0)));
+    F.segment (cpx(prng.uniform_real(-10,10),prng.uniform_real(-10,10)),
+               cpx(prng.uniform_real(-10,10),prng.uniform_real(-10,10)));
   }
 
   for (int i=1; i<=5; ++i) F.circle (cpx(0,0),i);

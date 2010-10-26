@@ -21,8 +21,8 @@ Triangulation::Triangulation (int n) : Map(n) {
 }
 
 Edge Triangulation::random_edge () const {
-  int i = prng.uniform (n);
-  int j = prng.uniform (v[i]->adj.size());
+  int i = prng.uniform_int (n);
+  int j = prng.uniform_int (v[i]->adj.size());
   adj_list::iterator k;
 
   for (k=v[i]->adj.begin(); j>0; ++k, --j) { };

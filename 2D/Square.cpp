@@ -188,7 +188,7 @@ int main (int argc, char **argv) {
   N = CLP('n');
 
   vector<double> o (N*N);
-  for (int i=0; i<N*N; ++i) o[i] = tan(prng.uniform(PI));
+  for (int i=0; i<N*N; ++i) o[i] = tan(prng.uniform_real(0,PI));
 
   cout << setprecision(10);
   cerr << setprecision(10);

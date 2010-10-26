@@ -32,7 +32,7 @@ void fill_boolean (vector<double> &f, int n, int n0) {
     int ll = 1<<l;
     for (int i=0; i<nn/ll; ++i)
       for (int j=0; j<nn/ll; ++j) {
-        double g = 2*prng.uniform() - 1;
+        double g = prng.uniform_real(-1,1);
         for (int x=i*ll; x<(i+1)*ll; ++x)
           for (int y=j*ll; y<(j+1)*ll; ++y)
             f[x+nn*y] += g;

@@ -27,8 +27,8 @@ int main(int argc, char ** argv) {
     int t=0;
     while (true) {
       if ((s>0) && ((t++%s)==0)) img.snapshot();
-      int x = prng.uniform(n);
-      int y = prng.uniform(n);
+      int x = prng.uniform_int(n);
+      int y = prng.uniform_int(n);
       if ((x+y)%2 == 0) continue;
       bool on_it = (img(x,y) == Color(255,0,0));
 

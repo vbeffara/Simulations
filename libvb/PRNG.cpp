@@ -5,7 +5,7 @@
 
 namespace vb {
   template <typename G> int PRNG_base<G>::poisson (double lambda) {
-    double u = uniform(exp(lambda));
+    double u = uniform_real(0, exp(lambda));
     int k=0;
     double fk=1;
     while (u>0) {

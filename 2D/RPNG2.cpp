@@ -25,7 +25,7 @@ int main (int argc, char **argv) {
   unsigned long e=0;
 
   for (unsigned long t=0;;++t) {
-    int x = (int)prng.uniform(n);
+    int x = (int)prng.uniform_int(n);
     int xd = (x+1)%n;
     int xg = (x+n-1)%n;
     int nx,delta;

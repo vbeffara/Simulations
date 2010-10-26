@@ -21,8 +21,8 @@ void Glauber::fill (double p) {
 }
 
 void Glauber::step (int i, int j) {
-  if (i==-1) i=prng.uniform(n);
-  if (j==-1) j=prng.uniform(n);
+  if (i==-1) i=prng.uniform_int(n);
+  if (j==-1) j=prng.uniform_int(n);
 
   int c=0;
   if (at((i+1)%n,   j) == Color(255)) ++c;

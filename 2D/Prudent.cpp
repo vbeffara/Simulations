@@ -14,7 +14,7 @@ int main (int argc, char **argv) {
   for (int u=0; u<N; ++u) {
     int x=0, y=0, right=0, top=0, t=0;
     while (t<T) {
-      switch (int(prng.uniform(4))) {
+      switch (prng.uniform_int(4)) {
         case 0:
           if ((x==right) || (laststep!=2)) {
             ++x; ++t; laststep=0;

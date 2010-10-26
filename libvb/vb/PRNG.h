@@ -8,36 +8,32 @@
 
 #include <boost/random/mersenne_twister.hpp>
 
-namespace vb {
-  /** A general-purpose pseudo-random number generator framework.
-   *
-   * Several classical distributions are implemented, see the
-   * documentation for a complete list (I add them as I need them ...). 
-   * Some of them are inlined for better performance.
-   */
+#include <boost/random/variate_generator.hpp>
 
+#include <boost/random/bernoulli_distribution.hpp>
+#include <boost/random/uniform_int.hpp>
+#include <boost/random/uniform_real.hpp>
+
+namespace vb {
   template <typename G> class PRNG_base : public G {
     public:
-      PRNG_base (unsigned long s=0) {
-        if (s) G::seed(s);
-      }
-
-      /** Return a bernoulli variable in {0,1}
-       *
-       * @param p The parameter of the distribution.
-       */
+      PRNG_base (unsigned long s=0) { if (s) G::seed(s); }
 
       int bernoulli (double p) {
         return (*this)() < p*(double)G::max() ? 1 : 0;
       }
 
-      /** Return a uniformly distributed real between 0 and range
-       *
-       * @param range The length of the range.
-       */
+      double uniform_real (double min=1.0, double max=0.0) {
+        if (min>max) std::swap(min,max);
+        boost::uniform_real<> dist(min, max);
+        boost::variate_generator<G&, boost::uniform_real<> > die (*this, dist);
+        return die();
+      }
 
-      double uniform (double range=1.0) {
-        return range * ( (double)(*this)() / (double)G::max() );
+      unsigned int uniform_int (unsigned int range) {
+        boost::uniform_int<> dist(0, range-1);
+        boost::variate_generator<G&, boost::uniform_int<> > die (*this, dist);
+        return die();
       }
 
       /** Return an exponential random variable of parameter lambda.
@@ -46,7 +42,7 @@ namespace vb {
        */
 
       double exponential (double lambda=1.0) {
-        return -log(uniform())/lambda;
+        return -log(uniform_real())/lambda;
       }
 
       /** Return a Gaussian variable.
@@ -154,7 +150,7 @@ namespace vb {
 
   template <typename G> double PRNG_base<G>::gaussian (double m, double sigma2) {
     double modulus = exponential();
-    double angle = uniform(1000.0*3.14159265358979);
+    double angle = uniform_real(0, 1000.0*3.14159265358979);
     return m + sqrt(sigma2)*modulus*cos(angle);
   }
 }
