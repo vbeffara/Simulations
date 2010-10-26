@@ -78,10 +78,8 @@ int main () {
     m.circlepack (6,0,bord);
   } else {
     // 3.6 seconds total on seltz.
-    fill (m.bd.begin(), m.bd.end(), false);
-    for (std::list<int>::iterator i = bord.begin(); i != bord.end(); ++i) {
-      m.bd[*i] = true;
-    }
+    foreach (bool b, m.bd) b = false;
+    foreach (int i, bord) m.bd[i] = true;
 
     Vector x(3*m.n);
 
