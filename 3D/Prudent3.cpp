@@ -78,7 +78,7 @@ int main (int argc, char **argv) {
       while (W.length < l) {
         if (n==1) cout << W;
         ends[W.length] += W.norm1();
-        while (0 == W.step (prng.rand()%3, 2*(prng.rand()%2) - 1)) { };
+        while (0 == W.step (prng()%3, 2*(prng()%2) - 1)) { };
         if (n==1) PB.update (W.length);
       }
 

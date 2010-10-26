@@ -18,8 +18,8 @@ void one_step (void) {
   for (x=1;x<n-1;x++) {
     xy=x;
     for (y=1;y<n-1;y++) {
-      sgn = (rng.rand() & 32) / 32;
-      rdm = rng.rand();
+      sgn = (rng() & 32) / 32;
+      rdm = rng();
       
       xy += n;
       

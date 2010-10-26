@@ -18,7 +18,7 @@ namespace vb {
 
   class PRNG_base {
     public:
-      unsigned long max; ///< The range of the rand() method.
+      unsigned long max; ///< The range of the operator() method.
 
       virtual ~PRNG_base (); ///< The standard destructor.
 
@@ -34,7 +34,7 @@ namespace vb {
        * If possible, the implementation should be mostly inlined.
        */
 
-      virtual unsigned long rand (void) =0;
+      virtual unsigned long operator() () =0;
 
       /** Return a bernoulli variable in {0,1}
        *
@@ -42,7 +42,7 @@ namespace vb {
        */
 
       int bernoulli (double p) {
-        return rand() < p*(double)max ? 1 : 0;
+        return (*this)() < p*(double)max ? 1 : 0;
       }
 
       /** Return a uniformly distributed real between 0 and range
@@ -51,7 +51,7 @@ namespace vb {
        */
 
       double uniform (double range=1.0) {
-        return range * ( (double)rand() / (double)max );
+        return range * ( (double)(*this)() / (double)max );
       }
 
       /** Return an exponential random variable of parameter lambda.
@@ -65,7 +65,7 @@ namespace vb {
 
       /** Return a Gaussian variable.
        *
-       * Caution : it calls rand() twice, if you rewind you should know it.
+       * Caution : it calls (*this)() twice, if you rewind you should know it.
        *
        * @param m      The mean of the distribution.
        * @param sigma2 The variance of the distribution.
@@ -107,7 +107,7 @@ namespace vb {
       /** The standard constructor.
        *
        * Default values of the parameters are the same as in standard Unix
-       * rand(), i.e. a=13, b=257, modulo 2**31-1.
+       * (*this)(), i.e. a=13, b=257, modulo 2**31-1.
        *
        * @param aa The multipplicator.
        * @param bb The shift.
@@ -147,7 +147,7 @@ namespace vb {
 
       /** Return a pseudo-random number. */
 
-      unsigned long rand (void) {
+      unsigned long operator() () {
         rdmbuf = (a*rdmbuf+b)%max;
         return (unsigned long) rdmbuf;
       }
@@ -156,63 +156,6 @@ namespace vb {
       long a,b, r_a,r_b;
       long long rdmbuf;
   };
-
-#define PRNG_MT_N 624                   ///< Size of the buffer
-#define PRNG_MT_M 397                   ///< Size of the shift (?)
-#define PRNG_MT_MATRIX_A 0x9908b0dfUL	///< Constant vector a
-#define PRNG_MT_UPPER_MASK 0x80000000UL	///< Most significant w-r bits
-#define PRNG_MT_LOWER_MASK 0x7fffffffUL	///< Least significant r bits
-
-  /** Mersenne Twister pseudo-random number generator engine.
-   *
-   * Original version : mt19937ar.c by Takuji Nishimura and Makoto
-   * Matsumoto - see original copyright notice below.
-   *
-   * Translated to C++ by Vincent Beffara - I also removed the
-   * initialization by an array (at least for now).
-   *
-   * ORIGINAL COPYRIGHT NOTICE FROM mt19937ar.c:
-   *
-   * A C-program for MT19937, with initialization improved 2002/1/26.
-   * Coded by Takuji Nishimura and Makoto Matsumoto.
-   *
-   * Before using, initialize the state by using init_genrand(seed)  
-   * or init_by_array(init_key, key_length).
-   *
-   * Copyright (C) 1997 - 2002, Makoto Matsumoto and Takuji Nishimura,
-   * All rights reserved.                          
-   *
-   * Redistribution and use in source and binary forms, with or without
-   * modification, are permitted provided that the following conditions
-   * are met:
-   *
-   * 1. Redistributions of source code must retain the above copyright
-   * notice, this list of conditions and the following disclaimer.
-   *
-   * 2. Redistributions in binary form must reproduce the above copyright
-   * notice, this list of conditions and the following disclaimer in the
-   * documentation and/or other materials provided with the distribution.
-   *
-   * 3. The names of its contributors may not be used to endorse or promote 
-   * products derived from this software without specific prior written 
-   * permission.
-   *
-   * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-   * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-   * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-   * A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
-   * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-   * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-   * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-   * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-   * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-   * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-   * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-   *
-   * Any feedback is very welcome.
-   *     http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html
-   *     email: m-mat @ math.sci.hiroshima-u.ac.jp (remove space)
-   */
 
   class PRNG_MT : public PRNG_base {
     public:
@@ -227,7 +170,7 @@ namespace vb {
 
       /// Return an integer between 0 and max.
 
-      unsigned long rand () { return gen(); }
+      unsigned long operator() () { return gen(); }
 
     private:
       int mti;

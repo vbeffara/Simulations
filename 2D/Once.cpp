@@ -49,7 +49,7 @@ int main(int argc, char ** argv)
   while ((x>0)&&(y>0)&&(x<n-1)&&(y<n-1)) {
     img.putpoint (x,y,1);
 
-    d = prng.rand()&3;
+    d = prng()&3;
     nx = x + dx[(int)d];
     ny = y + dy[(int)d];
     newcol = img(nx,ny);

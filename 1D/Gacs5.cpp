@@ -34,7 +34,7 @@ Automaton::Automaton (int n) : size(n), main (n,0), alt (n) { }
 void Automaton::randomize (double e) {
   for (int i=0; i<size; ++i)
     if (prng.bernoulli(e))
-      main[i] = prng.rand() & ALL_BITS;
+      main[i] = prng() & ALL_BITS;
 }
 
 void Automaton::shift () {
@@ -94,7 +94,7 @@ int main (int argc, char **argv) {
   Automaton a(n);
 
   for (int x=0; x<n; ++x)
-    a.main[x] = prng.rand()&31;
+    a.main[x] = prng()&31;
 
   for (int i=0; ; ++i) {
     int nb=0;

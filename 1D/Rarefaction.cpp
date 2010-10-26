@@ -8,6 +8,8 @@
 #include <string.h>
 #include <time.h>
 
+#include <vb/PRNG.h>
+
 int n;
 
 int main (int argc, char **argv) {
@@ -37,7 +39,7 @@ int main (int argc, char **argv) {
 
   running=1;
   while (running) {
-    i = rand()%(2*n-1);
+    i = vb::prng()%(2*n-1);
     if (field[i]>field[i+1]) {
       t = field[i];
       field[i] = field[i+1];

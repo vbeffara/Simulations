@@ -17,8 +17,8 @@ int main(int argc, char ** argv)
 
   for (int i=0;i<t;) {
     PB.update(i);
-    int j = prng.rand()%n;
-    int k = 1+(prng.rand()%3);
+    int j = prng()%n;
+    int k = 1+(prng()%3);
     int l = P[j]; P[j]=(P[j]+k)%4;
     if (P.self_avoiding()) i++; else P[j]=l;
   }

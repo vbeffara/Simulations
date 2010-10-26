@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
 	if (img(xy) == img(xy+1)) { f2++; } else { f1++; } 
 	if (img(xy) == img(xy+n)) { f2++; } else { f1++; } 
 	
-	if ( (f2<=f1) || (prng.rand() < p[f2-f1]) ) {
+	if ( (f2<=f1) || (prng() < p[f2-f1]) ) {
 	  img.putpoint(x,y,(1-img(xy)));
 	}
       }

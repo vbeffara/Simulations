@@ -111,8 +111,8 @@ int main (int argc, char **argv) {
   img.show();
 
   for (int i=2000*n*n; ; i--) {
-    int x = 1 + (prng.rand()%(n-2));
-    int y = 1 + (prng.rand()%(n-2));
+    int x = 1 + (prng()%(n-2));
+    int y = 1 + (prng()%(n-2));
     int nb = 0;
     if (img(x+1,y  ) != Color(0)) nb += 1; 
     if (img(x+1,y+1) != Color(0)) nb += 2; 
