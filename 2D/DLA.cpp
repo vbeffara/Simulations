@@ -170,7 +170,7 @@ int main(int argc, char ** argv)
 
   /* Initialisations */
 
-  img = new Image(n,n,"A DLA cluster of size "+str(n));
+  img = new Image(n,n, str(fmt("A DLA cluster of size %d")%n));
   m = new char[n*n];
 
   /* Simulation */

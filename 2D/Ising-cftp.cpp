@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
   double beta = CLP('b');
   n = CLP('n');
 
-  Image img (n,n,fmt("An Ising configuration (beta=%)")%beta);
+  Image img (n,n, str(fmt("An Ising configuration (beta=%f)")%beta));
 
   low = new char[n*n];
   high = new char[n*n];

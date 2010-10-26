@@ -124,7 +124,7 @@ int main(int argc, char ** argv) {
   wd = (int)(-cmin[0]>cmax[0]?-cmin[0]:cmax[0]);
   ht = (int) ( 2*n*sqrt(kappa)/(cmax[0]-cmin[0]) ); /*  TODO : Fix */
 
-  Image img (2*wd,ht,fmt("Schramm's SLE Process (kappa=%)") % (2/kappa));
+  Image img (2*wd, ht, str(fmt("Schramm's SLE Process (kappa=%f)") % (2/kappa)));
 
   for (i=0;i<2*wd;i++) img.putpoint (i,0, (smooth?Color(255):INSIDE));
 

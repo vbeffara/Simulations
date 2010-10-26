@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
   double p = CLP('p');
   int n = CLP('n');
 
-  Image img (n,n,fmt("Discrete-time contact process on the tri/hex lattice (p=%)")%p);
+  Image img (n,n, str(fmt("Discrete-time contact process on the tri/hex lattice (p=%f)")%p));
 
   /* conditions initiales */
 

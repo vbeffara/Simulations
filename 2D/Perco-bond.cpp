@@ -92,7 +92,7 @@ int main(int argc, char ** argv)
   n = CLP('n');
   p = CLP('p');
 
-  Image img (2*n,2*n,fmt("Bond-percolation cluster (p=%)")%p);
+  Image img (2*n,2*n, str(fmt("Bond-percolation cluster (p=%)")%p));
 
   /* Bond-percolation --- 16->est, 32->nord */
 

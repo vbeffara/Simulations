@@ -33,6 +33,7 @@
 #include <cairomm/surface.h>
 
 #include <boost/foreach.hpp>
+#include <boost/format.hpp>
 
 #ifdef HAVE_FLTK
 #include <FL/Fl.H>
@@ -50,34 +51,11 @@ namespace vb {
   /// Return the larger of two real numbers.
   template <typename T> T max (T x, T y) { return (x>y?x:y); }
 
-  /// A very simple utility class for string formating.
-  class fmt : public std::string {
+  class fmt : public boost::format {
     public:
-      fmt (const std::string &s) : std::string(s) { };
+      fmt (const std::string &s) : boost::format(s) { }
+      operator std::string() const { return boost::format::str(); }
   };
-
-  /// Append any object to a vb::fmt string.
-  template <typename T> fmt operator+ (const fmt &f, const T &t) {
-    std::ostringstream ss;
-    ss << f << t;
-    return ss.str();
-  }
-
-  /// Replace the first '%' sign of the vb::fmt string by something.
-  template <typename T> fmt operator% (const fmt &f, const T &t) {
-    std::ostringstream ss;
-    size_t p = f.find('%');
-    ss << f.substr(0,p) << t;
-    if (p != f.npos) ss << f.substr(p+1);
-    return ss.str();
-  }
-
-  /// Transform anything into a string.
-  template <typename T> std::string str (const T &t) {
-    std::ostringstream ss;
-    ss << t;
-    return ss.str();
-  }
 
 #define foreach BOOST_FOREACH
 #define TWO_PI (6.28318530717958)

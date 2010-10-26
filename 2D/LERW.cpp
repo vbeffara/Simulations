@@ -35,7 +35,7 @@ int main(int argc, char ** argv)
 
   /* Initialisations */
 
-  img = new Image(2*n,2*n,"A loop-erased walk of size " + str(n));
+  img = new Image(2*n,2*n, str(fmt("A loop-erased walk of size %d")%n));
   if (!img) exit(1);
 
   /* Simulation */
