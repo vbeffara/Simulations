@@ -56,6 +56,10 @@ namespace vb {
       }
   };
 
+  typedef PRNG_base <boost::mt19937> PRNG;
+
+  extern PRNG prng;
+
   /** A rewindable pseudo-random number generator.
    *
    * The point is to have a bad, but rewindable random number source.
@@ -68,7 +72,7 @@ namespace vb {
    * having to store the random numbers.
    */
 
-  class PRNG_Rewindable : public PRNG_base <boost::mt19937> {
+  class PRNG_Rewindable {
     public:
       /** The standard constructor.
        *
@@ -80,7 +84,32 @@ namespace vb {
        * @param mm The modulus.
        */
 
-      PRNG_Rewindable (long aa=13, long bb=257, long mm=2147483647);
+      PRNG_Rewindable (long aa=13, long bb=257, long mm=2147483647) {
+        max = mm; a = aa; b = bb;
+        long long  t_a=a, t_b=max, t_u=1, t_v=0, t_s=0, t_t=1;
+
+        while (t_b != 0) {
+          long long  t_q = t_a/t_b;
+          long long  t_r = t_a - t_b*t_q;
+          t_a = t_b; t_b = t_r;
+
+          long long  r1 = t_u - t_q*t_s;
+          t_u = t_s; t_s = r1;
+
+          long long  r2 = t_v - t_q*t_t;
+          t_v = t_t; t_t = r2;
+        }
+
+        r_a = t_u;
+        r_b = (long) ( (- (long long)b * (long long)r_a ) % (long long)max );
+
+        struct timeval tv;
+        time_t curtime;
+
+        gettimeofday (&tv, NULL); 
+        curtime = tv.tv_sec;
+        rdmbuf = tv.tv_usec;
+      }
 
       /** Iterate x -> a*x+b, n times.
        *
@@ -92,7 +121,14 @@ namespace vb {
        * @param n The number of iterations to perform.
        */
 
-      void iterate (long long a, long long b, long long n);
+      void iterate (long long a, long long b, long long n) {
+        while (n>0) {
+          if (n%2) rdmbuf = (a*rdmbuf+b) % max;
+          b = ((a+1)*b) % max;
+          a = (a*a) % max;
+          n >>= 1;
+        }
+      }
 
       /** Rewind the renerator, time1*time2 times.
        *
@@ -102,7 +138,9 @@ namespace vb {
        * @param time2 The second factor of the number of iterations.
        */
 
-      void rewind (long time1, long time2);
+      void rewind (long time1, long time2) {
+        iterate (r_a, r_b, (long long)time1 * (long long)time2);
+      }
 
       /** Return a pseudo-random number. */
 
@@ -117,20 +155,9 @@ namespace vb {
       long a,b, r_a,r_b;
       long long rdmbuf;
   };
-
-  /** The default pseudo-random number generator.
-   *
-   * It uses the Mersenne twister engine and implements all the
-   * distributions provided by PRNG_template.
-   *
-   * If you can, use this one. On my system (PPC G4), it is faster than
-   * the standard rand() and lrand48() system functions, in addition to
-   * being a better random number generator.
-   */
-
-  typedef PRNG_base <boost::mt19937> PRNG;
-
-  extern PRNG prng;
 }
 
+namespace vb {
+
+}
 #endif
