@@ -53,38 +53,23 @@ namespace vb {
   /** A wrapper around a priority_queue of Point elements. */
 
   class PointQueue {
-    protected:
-      std::priority_queue<Point> q;   ///< The std::priority_queue itself.
-
-      /// Pick a Point from a PointQueue.
-      friend inline PointQueue &operator>> (PointQueue &, Point &);
-
-      /// Add a Point to a PointQueue.
-      friend inline PointQueue &operator<< (PointQueue &pq, const Point &p);
+  public:
+    /// Pick a Point from a PointQueue.
+    Point &operator>> (Point &p) {
+      p = q.top();
+      q.pop();
+      return p;
+    }
+    
+    /// Add a Point to a PointQueue.
+    PointQueue &operator<< (const Point &p) {
+      q.push(p);
+      return *this;
+    }
+    
+  private:
+    std::priority_queue<Point> q;   ///< The std::priority_queue itself.
   };
-
-  /** Put a Point in a PointQueue.
-   * 
-   * @param pq The vb::PointQueue in which to put the point.
-   * @param p  The vb::Point to insert.
-   */
-
-  inline PointQueue &operator<< (PointQueue &pq, const Point &p) {
-    pq.q.push(p);
-    return pq;
-  }
-
-  /** Take a Point from a PointQueue.
-   *
-   * @param pq The vb::PointQueue from which to extract the point.
-   * @param p  The vb::Point to fill with the extractd point.
-   */
-
-  inline PointQueue &operator>> (PointQueue &pq, Point &p) {
-    p = pq.q.top();
-    pq.q.pop();
-    return pq;
-  }
 
   Point::Point (PointQueue &pq) { 
     pq >> *this; 
@@ -99,7 +84,7 @@ namespace vb {
    * @param p   The point to inset.
    */
 
-  inline Image &operator<< (Image &img, const Point &p) {
+  Image &operator<< (Image &img, const Point &p) {
     img.putpoint (p.x,p.y,p.c);
     return img;
   }
@@ -113,7 +98,7 @@ namespace vb {
    * @param p   The point to inset.
    */
 
-  inline CoarseImage &operator<< (CoarseImage &img, const Point &p) {
+  CoarseImage &operator<< (CoarseImage &img, const Point &p) {
     img.putpoint (p.x,p.y,p.c);
     return img;
   }
