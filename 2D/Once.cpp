@@ -37,7 +37,7 @@ int main(int argc, char ** argv)
   L = (int) pow((double)n,1./3.);
   std::cerr << "Coarse graining with mesh " << L << ".\n";
 
-  CoarseImage img(n,n,L,fmt("A vertex once-reinforced random walk (size=%, a=%)") % n % (1/a-1));
+  CoarseImage img(n,n,L, str(fmt("A vertex once-reinforced random walk (size=%d, a=%f)") % n % (1/a-1)));
   //img.snapshot_period = t;
 
   img.show();
@@ -49,7 +49,7 @@ int main(int argc, char ** argv)
   while ((x>0)&&(y>0)&&(x<n-1)&&(y<n-1)) {
     img.putpoint (x,y,1);
 
-    d = prng.rand()&3;
+    d = prng()&3;
     nx = x + dx[(int)d];
     ny = y + dy[(int)d];
     newcol = img(nx,ny);

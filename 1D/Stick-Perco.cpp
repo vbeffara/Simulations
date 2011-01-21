@@ -8,15 +8,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
+
+#include <vb/PRNG.h>
 
 int main() {
   double h,x;
   long i,j;
 
   h=0;
-
-  srand48(time(0));
 
   for (i=0;i<NSTEPS;i++) {
     for (j=0;j<STEPSIZE;j++) {

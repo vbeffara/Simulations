@@ -104,15 +104,15 @@ int main (int argc, char **argv) {
     exit (1);
   }
 
-  Image img (n,n, fmt("A glass process of parameter % (conditioning: '%')") % p % c);
+  Image img (n,n, str(fmt("A glass process of parameter %f (conditioning: %s)")%p%c));
 
   img.fill(0,0,0);
   for (int i=0; i<n; i++) img.putpoint (i,n/2,255);
   img.show();
 
   for (int i=2000*n*n; ; i--) {
-    int x = 1 + (prng.rand()%(n-2));
-    int y = 1 + (prng.rand()%(n-2));
+    int x = 1 + (prng()%(n-2));
+    int y = 1 + (prng()%(n-2));
     int nb = 0;
     if (img(x+1,y  ) != Color(0)) nb += 1; 
     if (img(x+1,y+1) != Color(0)) nb += 2; 

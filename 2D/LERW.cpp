@@ -35,14 +35,14 @@ int main(int argc, char ** argv)
 
   /* Initialisations */
 
-  img = new Image(2*n,2*n,"A loop-erased walk of size " + str(n));
+  img = new Image(2*n,2*n, str(fmt("A loop-erased walk of size %d")%n));
   if (!img) exit(1);
 
   /* Simulation */
 
   i=0; done=0; x=n; y=n;
   while (!done) {
-    d = prng.rand()&3;
+    d = prng()&3;
     img -> putpoint (x,y,d);
     x += dx[(int)d];
     y += dy[(int)d];

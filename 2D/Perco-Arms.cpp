@@ -1,8 +1,6 @@
 #include <iostream>
 #include <vb/config.h>
 
-#ifdef HAVE_BOOST
-
 #include <boost/config.hpp>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/edmonds_karp_max_flow.hpp>
@@ -118,10 +116,3 @@ int main(int argc, char **argv) {
   }
   cout << endl;
 }
-
-#else
-int main() {
-  std::cerr << "Nothing I can do without Boost !" << std::endl;
-  return 1;
-}
-#endif

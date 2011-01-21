@@ -37,7 +37,7 @@ bool ddla (int x, int y) {
   int ans=-1;
 
   while (ans == -1) {
-    if (prng.uniform()<p) ++xx; else ++yy;
+    if (prng.bernoulli(p)) ++xx; else ++yy;
 
     if ((xx>=n) || (yy>=n) || (xx+yy > cursum)) ans = 1;
     if ((*img)(xx,yy) == 1) ans = 0;
@@ -52,7 +52,7 @@ bool ddla (int x, int y) {
     if ((x>0) && ((*img)(x-1,y)==1)) w=1;
     if ((y>0) && ((*img)(x,y-1)==1)) s=1;
 
-    if ( (s==0) || ((w==1) && prng.uniform()<p) )
+    if ( (s==0) || ((w==1) && prng.bernoulli(p)) )
       cerr << x << " " << y << endl << x-1 << " " << y << endl << endl;
     else
       cerr << x << " " << y << endl << x << " " << y-1 << endl << endl;

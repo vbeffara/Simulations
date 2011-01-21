@@ -19,11 +19,11 @@ double fg (const Vector &x, Vector &g, void *context) {
   fill (g.begin(), g.end(), 0.0);
 
   for (int i=0; i < m->n; ++i) {
-    for (adj_list::iterator j = m->v[i]->adj.begin(); j != m->v[i]->adj.end(); ++j) {
-      double dx = x[3*(*j)]-x[3*i];
-      double dy = x[3*(*j)+1]-x[3*i+1];
+    foreach (int j, m->v[i]->adj) {
+      double dx = x[3*j]-x[3*i];
+      double dy = x[3*j+1]-x[3*i+1];
       double l = sqrt(dx*dx + dy*dy);
-      double sr = x[3*i+2] + x[3*(*j)+2];
+      double sr = x[3*i+2] + x[3*j+2];
       double lsr = l-sr;
       double lsrl = lsr/l;
 
@@ -68,7 +68,7 @@ int main () {
   m.barycentric(); m.inscribe(m.face(Edge(0,m.v[0]->adj.back()))); m.balance();
   m.barycentric(); m.inscribe(m.face(Edge(0,m.v[0]->adj.back()))); m.balance();
   m.barycentric(); m.inscribe(m.face(Edge(0,m.v[0]->adj.back()))); m.balance();
-  m.barycentric(); m.inscribe(m.face(Edge(0,m.v[0]->adj.back()))); m.balance();
+  //m.barycentric(); m.inscribe(m.face(Edge(0,m.v[0]->adj.back()))); m.balance();
 
   std::list<int> bord = m.face (Edge(0,m.v[0]->adj.back()));
 
@@ -78,10 +78,8 @@ int main () {
     m.circlepack (6,0,bord);
   } else {
     // 3.6 seconds total on seltz.
-    fill (m.bd.begin(), m.bd.end(), false);
-    for (std::list<int>::iterator i = bord.begin(); i != bord.end(); ++i) {
-      m.bd[*i] = true;
-    }
+    foreach (bool b, m.bd) b = false;
+    foreach (int i, bord) m.bd[i] = true;
 
     Vector x(3*m.n);
 

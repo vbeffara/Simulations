@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
   double beta = CLP('b');
   long n = CLP('n');
 
-  Image img(n,n,fmt("An Ising configuration (beta=%6f)")%beta);
+  Image img(n,n, str(fmt("An Ising configuration (beta=%f)")%beta));
 
   /* conditions initiales / au bord */
 
@@ -49,10 +49,10 @@ int main(int argc, char *argv[])
   /* Initialisations */
 
   p[0]=0;
-  p[1]=(long)(exp(-beta) * prng.max);
-  p[2]=(long)(exp(-2*beta) * prng.max);
-  p[3]=(long)(exp(-3*beta) * prng.max);
-  p[4]=(long)(exp(-4*beta) * prng.max);
+  p[1]=(long)(exp(-beta) * prng.max());
+  p[2]=(long)(exp(-2*beta) * prng.max());
+  p[3]=(long)(exp(-3*beta) * prng.max());
+  p[4]=(long)(exp(-4*beta) * prng.max());
 
   /* Simulation */
 
@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
 	if (img(xy) == img(xy+1)) { f2++; } else { f1++; } 
 	if (img(xy) == img(xy+n)) { f2++; } else { f1++; } 
 	
-	if ( (f2<=f1) || (prng.rand() < p[f2-f1]) ) {
+	if ( (f2<=f1) || (prng() < p[f2-f1]) ) {
 	  img.putpoint(x,y,(1-img(xy)));
 	}
       }

@@ -188,7 +188,7 @@ int main (int argc, char **argv) {
   N = CLP('n');
 
   vector<double> o (N*N);
-  for (int i=0; i<N*N; ++i) o[i] = tan(prng.uniform(PI));
+  for (int i=0; i<N*N; ++i) o[i] = tan(prng.uniform_real(0,PI));
 
   cout << setprecision(10);
   cerr << setprecision(10);
@@ -206,14 +206,14 @@ int main (int argc, char **argv) {
   set<pt> P = connections(o,&cout);
   set<pt> E;
 
-  for (set<pt>::iterator i = P.begin(); i != P.end(); ++i) {
-    pair<pt,pt> pp = leaf(*i,o,NULL);
+  foreach (pt i, P) {
+    pair<pt,pt> pp = leaf(i,o,NULL);
     E.insert (pp.first); E.insert (pp.second);
   }
 
-  for (set<pt>::iterator i = E.begin(); i != E.end(); ++i) {
-    geodesique (*i,o,NULL);
-    cerr << *i << endl;
+  foreach (pt i, E) {
+    geodesique (i,o,NULL);
+    cerr << i << endl;
   }
   */
 }

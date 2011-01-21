@@ -59,7 +59,7 @@ int main (int argc, char ** argv) {
   while (S.alive()) {
     if (prng.bernoulli(e)) S.shrink(); else {
       int dx=0, dy=0;
-      switch ((int) prng.uniform(4)) {
+      switch ((int) prng.uniform_int(4)) {
         case 0: dx=1;  break;
         case 1: dx=-1; break;
         case 2: dy=1;  break;

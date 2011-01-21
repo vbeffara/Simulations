@@ -24,9 +24,9 @@ int main (int argc, char **argv) {
 
   bool running = true;
   while (running) {
-    int x = 1 + prng.rand()%(n-2);
+    int x = 1 + prng()%(n-2);
     int h = height[x];
-    int d = prng.rand()&(1<<14);
+    int d = prng()&(1<<14);
 
     if (d) { // If trying to grow
       if ( (height[x-1]>h) || (height[x+1]>h)  || (prng.bernoulli(e)) ||

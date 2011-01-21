@@ -103,7 +103,7 @@ int main(int argc, char ** argv)
     if (prng.bernoulli(.5-epsilon)) down[i]=1;
   }
 
-  img = new Image(n,n,fmt("Asymmetric bond-percolation cluster (epsilon=%)")%epsilon);
+  img = new Image(n,n, str(fmt("Asymmetric bond-percolation cluster (epsilon=%)")%epsilon));
 
   /* OnScreen (img); */
 

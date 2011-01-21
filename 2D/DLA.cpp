@@ -88,7 +88,7 @@ long dist (long x, long y)
 
 long bigrand (long s)
 {
-  return -s + ((prng.rand()) % (2*s+1));
+  return -s + ((prng()) % (2*s+1));
 }
 	
 void runDLA(){
@@ -106,7 +106,7 @@ void runDLA(){
   while ((x>0)&&(x<n-1)&&(y>0)&&(y<n-1)) {
     sradius = 2*radius + 5; /* Mouais bof ... */
 
-    switch (prng.rand() & 3) {
+    switch (prng() & 3) {
     case 0:
       x = mx + bigrand(sradius);
       y = my - sradius;
@@ -127,13 +127,13 @@ void runDLA(){
     
     while ((d=dist(x,y))) {
       if (d==1) {
-	r = prng.rand()%4;
+	r = prng()%4;
 	x += dx[r];
 	y += dy[r];
       } else {
 	step = (d>>2) + 1; /* Mouais bof ... */
 	/* fprintf(stderr,"%10ld%10ld\r",d,step); */
-	switch (rand()%4) {
+	switch (prng()%4) {
 	case 0:
 	  x += step;
 	  y += bigrand(step);
@@ -170,7 +170,7 @@ int main(int argc, char ** argv)
 
   /* Initialisations */
 
-  img = new Image(n,n,"A DLA cluster of size "+str(n));
+  img = new Image(n,n, str(fmt("A DLA cluster of size %d")%n));
   m = new char[n*n];
 
   /* Simulation */

@@ -176,9 +176,9 @@ void monte_carlo (Image *c1, Image *c2, Image *diff, int duration) {
   for (t=0;t<duration;t++) {
     good=0;
     while (good==0) {
-      x = prng.rand()%N;
-      y = prng.rand()%N;
-      z = prng.rand()%2;
+      x = prng()%N;
+      y = prng()%N;
+      z = prng()%2;
       if ((x<(N>>1)-RAD1) || (x>=(N>>1)+RAD1) || (y<(N>>1)-RAD1) || (y>=(N>>1)+RAD1)) good=1;
     }
 

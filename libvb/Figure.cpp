@@ -54,9 +54,7 @@ namespace vb {
   Figure::Figure () : AutoWindow (600,600,"Figure") { }
 
   void Figure::clean() {
-    std::list<Shape*>::iterator i;
-    for (i=contents.begin(); i!=contents.end(); ++i)
-      delete *i;
+    foreach (Shape *i, contents) delete i;
     contents.clear();
   }
 
@@ -66,33 +64,25 @@ namespace vb {
 
   double Figure::left () {
     double l = 0.0;
-    std::list<Shape*>::iterator i;
-    for (i=contents.begin(); i!=contents.end(); ++i)
-      l = min (l,(*i)->left());
+    foreach (Shape *i, contents) l = min (l,i->left());
     return l;
   }
 
   double Figure::right () {
     double l = 0.0;
-    std::list<Shape*>::iterator i;
-    for (i=contents.begin(); i!=contents.end(); ++i)
-      l = max (l,(*i)->right());
+    foreach (Shape *i, contents) l = max (l,i->right());
     return l;
   }
 
   double Figure::top () {
     double l = 0.0;
-    std::list<Shape*>::iterator i;
-    for (i=contents.begin(); i!=contents.end(); ++i)
-      l = max (l,(*i)->top());
+    foreach (Shape *i, contents) l = max (l,i->top());
     return l;
   }
 
   double Figure::bottom () {
     double l = 0.0;
-    std::list<Shape*>::iterator i;
-    for (i=contents.begin(); i!=contents.end(); ++i)
-      l = min (l,(*i)->bottom());
+    foreach (Shape *i, contents) l = min (l,i->bottom());
     return l;
   }
 
@@ -129,8 +119,7 @@ namespace vb {
       cr->set_source_rgb (0,0,0);
       cr->set_line_width (1.0/scale);
 
-      for (std::list<Shape*>::iterator i = contents.begin(); i != contents.end(); ++i)
-        (*i)->draw(cr);
+      foreach (Shape *i, contents) i->draw(cr);
 
       cr->stroke();
     cr->restore();

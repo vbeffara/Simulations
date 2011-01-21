@@ -38,7 +38,7 @@ int main(int argc, char ** argv)
 
   /* Initialisations */
 
-  img = new Image(2*n,2*n,"A MDLA in density " + str(p));
+  img = new Image(2*n,2*n, str(fmt("A MDLA in density %f")%p));
   img->snapshot_setup ("MDLA",t);
 
   ngrey = 0;
@@ -69,10 +69,10 @@ int main(int argc, char ** argv)
   bool running = true;
   while (running) {
     bool flag = false;
-    x = prng.rand() % (2*n);
-    y = prng.rand() % (2*n);
+    x = prng() % (2*n);
+    y = prng() % (2*n);
 
-    d = prng.rand() &3;
+    d = prng() &3;
     nx = x + dx[(int)d]; if ((nx<0)||(nx>=2*n)) continue;
     ny = y + dy[(int)d]; if ((ny<0)||(ny>=2*n)) continue;
 

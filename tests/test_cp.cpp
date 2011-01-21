@@ -56,7 +56,7 @@ int main () {
 
   std::cerr << "Number of vertices:    " << m.n << std::endl;
   std::cerr << "Final value of f:      " << MM.fx << std::endl;
-  std::cerr << "Final square gradient: " << scalar_product(MM.gx,MM.gx) << std::endl;
+  std::cerr << "Final square gradient: " << inner_prod(MM.gx,MM.gx) << std::endl;
 
   for (int i=0; i<m.n; ++i) {
     m.v[i]->z = cpx (x[3*i], x[3*i+1]);

@@ -29,13 +29,13 @@ int main(int argc, char ** argv)
 
   /* Initialisations */
 
-  img = new Image(2*n,2*n,"A Brownian path of size " + str(n));
+  img = new Image(2*n,2*n, str(fmt("A Brownian path of size %d")%n));
 
   /* Simulation */
 
   i=0; done=0; x=n; y=n;
   while (!done) {
-    d = prng.rand()&3;
+    d = prng()&3;
     img->putpoint (x,y,1);
     x += dx[(int)d];
     y += dy[(int)d];

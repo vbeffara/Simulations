@@ -1,7 +1,7 @@
 
-def build (bld) :
-    if bld.env['HAVE_X11']:
-        for i in bld.glob('*.c'):
-            bld.new_task_gen(features = 'cc cprogram', source = i, target = i[:-2], uselib='X11', includes='/usr/include/sys', lib='m')
+def build (ctx) :
+    if 'LIB_X11' in ctx.env:
+        for i in ctx.path.ant_glob('*.c'):
+            ctx.program (source = [i], target = str(i)[:-2], use='X11', includes='/usr/include/sys', lib='m')
 
 # vim: ft=python

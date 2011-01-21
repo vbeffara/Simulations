@@ -54,10 +54,10 @@ int main(int argc, char ** argv)
   while(cont) {
     x[0]=0; y[0]=0; i=0; j=0;
     for(k=1;k<n;k++) {
-      if (prng.rand()&16) {
-	i += (prng.rand()&64?1:-1);
+      if (prng()&16) {
+	i += (prng()&64?1:-1);
       } else {
-	j += (prng.rand()&4?1:-1);
+	j += (prng()&4?1:-1);
       }
       x[k]=i; y[k]=j;
     }

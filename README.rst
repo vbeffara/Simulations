@@ -2,7 +2,7 @@
 Simulations and stuff
 =====================
 
-:Author:        `Vincent Beffara <mailto:vbeffara@ens-lyon.fr>`_
+:Author:        `Vincent Beffara`_
 :Documentation:  http://vbeffara.github.com/Simulations/
 :Development:    http://github.com/vbeffara/Simulations
 
@@ -12,10 +12,10 @@ Compilation
 I am using the very nice waf_ framework for my simulations, because it 
 has a lot of cool features (such as automatic dependency tracking, and 
 most of all portability). It is very easy to install, if you already 
-have Python, because it is a single file; there is a copy in the 
-``tools/`` directory, which you can copy somewhere in your ``$PATH`` for 
+have Python, because it is a single file; there is a copy in the root 
+directory, which you can copy somewhere in your ``$PATH`` for 
 convenience (somewhere where you have write privileges while running 
-it), or use directly.
+it), or use directly as ``./waf``.
 
 Some notes about the ``libvb`` library
 --------------------------------------
@@ -38,5 +38,6 @@ now they should compile everywhere (as long as the X11 include files are
 present, of course).  If there is any (legal or other) problem about 
 their presence here, I will remove them at once.
 
-.. _Michael Creutz: http://thy.phy.bnl.gov/www/xtoys/xtoys.html
-.. _waf:            http://code.google.com/p/waf/
+.. _Vincent Beffara: mailto:vbeffara@ens-lyon.fr
+.. _Michael Creutz:  http://thy.phy.bnl.gov/www/xtoys/xtoys.html
+.. _waf:             http://code.google.com/p/waf/
