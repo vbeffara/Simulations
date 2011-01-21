@@ -1,0 +1,17 @@
+* 1D/BiTree
+
+The idea is that adding dub-trees of different (lower) branching should
+exhibit interesting phenomena at the "second critical point".
+
+| n | m |  d |    a | drift | remarks                            |
+|---+---+----+------+-------+------------------------------------|
+| 3 | 0 |  5 |   .4 |  .091 | defaults                           |
+| 3 | 2 |  5 |   .4 |  .117 | a in between both critical         |
+| 3 | 2 |  5 |  .35 |  .071 | a barely super for base tree       |
+| 3 | 2 |  5 |  .32 |  .039 | barely sub-critical for base       |
+| 3 | 2 |  5 |  .49 |  .192 | barely sub-critical for additional |
+| 3 | 2 |  5 |  .51 |  .206 | super-critical for both            |
+| 3 | 2 | 50 |  .51 |  .036 | larger sub-trees                   |
+| 3 | 2 | 50 |  .49 |  .024 | sub-critical                       |
+| 3 | 2 | 50 | .501 |  .029 | just over the cut                  |
+| 3 | 2 | 50 | .499 |  .028 | Damn it, it fails ...              |
