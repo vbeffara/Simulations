@@ -56,7 +56,7 @@ int main(int argc, char ** argv)
   n = CLP('n');
   p = CLP('p');
 
-  img=new Image(2*n,2*n,fmt("Site-percolation cluster (p=%)")%p);
+  img=new Image(2*n,2*n, str(fmt("Site-percolation cluster (p=%)")%p));
 
   /* Site-percolation --- 1=dedans, 2=dehors */
 

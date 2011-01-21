@@ -29,7 +29,7 @@ int main(int argc, char ** argv)
 
   /* Initialisations */
 
-  img = new Image(2*n,2*n,"A Brownian path of size " + str(n));
+  img = new Image(2*n,2*n, str(fmt("A Brownian path of size %d")%n));
 
   /* Simulation */
 

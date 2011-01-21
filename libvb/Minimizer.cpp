@@ -101,7 +101,7 @@ namespace vb {
     Vector diag = W0;
     if (diag.size() == 0) diag = Vector (x0.size(), double(1.0));
     Matrix W(x0.size(),x0.size());
-    for (int i=0; i<x0.size(); ++i) W(i,i) = diag[i];
+    for (unsigned int i=0; i<x0.size(); ++i) W(i,i) = diag[i];
 
     while (fx < old_fx) {
       line_search(prod(W,gx));

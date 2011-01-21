@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
   double beta = CLP('b');
   long n = CLP('n');
 
-  Image img(n,n,fmt("An Ising configuration (beta=%6f)")%beta);
+  Image img(n,n, str(fmt("An Ising configuration (beta=%f)")%beta));
 
   /* conditions initiales / au bord */
 
