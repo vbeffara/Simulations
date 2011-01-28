@@ -1,13 +1,13 @@
-=====================
-Simulations and stuff
-=====================
+=======================
+ Simulations and stuff
+=======================
 
 :Author:        `Vincent Beffara`_
 :Documentation:  http://vbeffara.github.com/Simulations/
 :Development:    http://github.com/vbeffara/Simulations
 
 Compilation
------------
+===========
 
 I am using the very nice waf_ framework for my simulations, because it 
 has a lot of cool features (such as automatic dependency tracking, and 
@@ -18,7 +18,7 @@ convenience (somewhere where you have write privileges while running
 it), or use directly as ``./waf``.
 
 Some notes about the ``libvb`` library
---------------------------------------
+======================================
 
 The directory ``libvb/`` contains a small (but steadily growing) library 
 providing very easy display and PNG output for 2D simulations, plus a 
@@ -29,7 +29,7 @@ the above-mentioned web page.  It depends on a few outside libraries:
 * ``FLTK`` for graphical display
 
 About the ``xtoys`` directory
------------------------------
+=============================
 
 These programs are not mine at all, they were written by `Michael 
 Creutz`_. I include them because they are somehow related to the others, 
