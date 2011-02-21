@@ -1,10 +1,12 @@
+# -*- mode: python; -*-
+
 def options (ctx) :
-    ctx.load ('compiler_c compiler_cxx')
+    ctx.load ('compiler_c compiler_cxx boost')
     ctx.add_option ('--gui', default='fltk', help='Build to use the specified GUI')
 
 def configure (ctx) :
-    ctx.load ('compiler_c compiler_cxx')
-    ctx.check_cxx (header_name='boost/version.hpp')
+    ctx.load ('compiler_c compiler_cxx boost')
+    ctx.check_boost ()
     ctx.check_cfg (package='sigc++-2.0',  args='--cflags --libs')
     ctx.check_cfg (package='cairomm-1.0', args='--cflags --libs', uselib_store='cairo')
     ctx.check_cfg (package='fftw3',       args='--cflags --libs', mandatory=0)
@@ -39,5 +41,3 @@ def unit_test (ctx, prog, ext, checksum):
 def check (ctx):
     unit_test (ctx, 'sample',     'png', 'e900ff49de69b10d8293aa192992fb81')
     unit_test (ctx, 'test_color', 'png', '30c0f0b77ab57a9cf688616b73d0579b')
-
-# vim: ft=python
