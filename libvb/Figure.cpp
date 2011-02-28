@@ -114,7 +114,7 @@ namespace vb {
       cr->set_source_rgb (1,1,1); cr->paint();
 
       cr->translate      (width/2,height/2);
-      cr->scale          (scale,scale);
+      cr->scale          (scale,-scale);
       cr->translate      (-mid_x,-mid_y);
       cr->set_source_rgb (0,0,0);
       cr->set_line_width (1.0/scale);
