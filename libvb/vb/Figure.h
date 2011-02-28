@@ -87,7 +87,7 @@ namespace vb {
 
   class Figure : public AutoWindow {
     public:
-      Figure ();                                                ///< Constructor, reserves a window for display.
+      Figure (bool ortho = true);                               ///< Constructor, reserves a window for display.
       ~Figure ();                                               ///< Destructor, also destroys the contents nodes.
       void clean ();                                            ///< Destroy all the contents nodes.
 
@@ -132,6 +132,8 @@ namespace vb {
       void paint ();
       /// Draw the contents of the figure to a Cairo context.
       void paint (Cairo::RefPtr<Cairo::Context> cr);
+
+      bool ortho; ///< Whether to force the unit square to be a square.
   };
 }
 

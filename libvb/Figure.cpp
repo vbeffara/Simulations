@@ -51,7 +51,7 @@ namespace vb {
 
   /*********************************************************/
 
-  Figure::Figure () : AutoWindow (600,600,"Figure") { }
+  Figure::Figure (bool _o) : AutoWindow (600,600,"Figure"), ortho(_o) { }
 
   void Figure::clean() {
     foreach (Shape *i, contents) delete i;
@@ -108,20 +108,22 @@ namespace vb {
     double h = top()-bottom(), mid_y = (top()+bottom())/2;
 
     double scale_x = width/w, scale_y = height/h;
-    double scale = min(scale_x, scale_y);
+    double scale = min(scale_x,scale_y);
+    if (ortho) scale_x = scale_y = scale;
 
     cr->save();
-      cr->set_source_rgb (1,1,1); cr->paint();
-
-      cr->translate      (width/2,height/2);
-      cr->scale          (scale,-scale);
-      cr->translate      (-mid_x,-mid_y);
-      cr->set_source_rgb (0,0,0);
-      cr->set_line_width (1.0/scale);
-
-      foreach (Shape *i, contents) i->draw(cr);
-
-      cr->stroke();
+    cr->set_source_rgb (1,1,1);
+    cr->paint();
+    
+    cr->translate      (width/2,height/2);
+    cr->scale          (scale_x,-scale_y);
+    cr->translate      (-mid_x,-mid_y);
+    cr->set_source_rgb (0,0,0);
+    cr->set_line_width (1.0/scale);
+    
+    foreach (Shape *i, contents) i->draw(cr);
+    
+    cr->stroke();
     cr->restore();
   }
 

@@ -15,12 +15,13 @@ int dy[8] = {0,1,1,1,0,-1,-1,-1};
 typedef std::pair<cpx,cpx> bicpx;
 
 int main(int argc, char ** argv) {
-  CL_Parser CLP (argc, argv, "a=85,c,v");
+  CL_Parser CLP (argc, argv, "a=85,c,v,o=1");
   int  adj    = CLP('a');
   bool center = CLP('c');
   bool video  = CLP('v');
+  bool ortho  = CLP('o');
   
-  Figure f;
+  Figure f(ortho);
   std::vector < bicpx > t;
   PRNG prng(0);
   
