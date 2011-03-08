@@ -7,6 +7,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -14,20 +15,31 @@ using namespace std;
 //
 // Poor man's PS emulation, good enough here.
 
-double x=0, y=0;
+typedef pair<double,double> coo;
 
-void moveto (double xx, double yy) {
-  cout << "moveto (" << xx << "," << yy << ")" << endl;
-  x=xx; y=yy;
+coo operator+ (coo a, coo b) {
+  return coo (a.first+b.first, a.second+b.second);
 }
 
-void lineto (double xx, double yy) {
-  cout << "lineto (" << x << "," << y << ") -> ("<< xx << "," << yy << ")" << endl;
-  x=xx; y=yy;
+ostream &operator<< (ostream &o, coo c) {
+  o << "(" << c.first << "," << c.second << ")";
+  return o;
 }
 
-void rmoveto (double xx, double yy) { moveto (x+xx, y+yy); }
-void rlineto (double xx, double yy) { lineto (x+xx, y+yy); }
+coo pos;
+
+void moveto (coo xy) {
+  cout << "moveto " << xy << endl;
+  pos = xy;
+}
+
+void lineto (coo xy) {
+  cout << "lineto " << pos << " -> "<< xy << endl;
+  pos = xy;
+}
+
+void rmoveto (coo xy) { moveto (pos+xy); }
+void rlineto (coo xy) { lineto (pos+xy); }
 
 //
 ////////////////////////////////////////////////////////////////
@@ -52,10 +64,10 @@ int numh = (ymax-ymin)/(eachhex*omx) + marginhexes;
 // /outbox { xmin ymin xmax ymax box } def
 
 void outbox () {
-  moveto (xmin,ymin);
-  lineto (xmin,ymax);
-  lineto (xmax,ymax);
-  lineto (xmax,ymin);
+  moveto (coo(xmin,ymin));
+  lineto (coo(xmin,ymax));
+  lineto (coo(xmax,ymax));
+  lineto (coo(xmax,ymin));
 }
 
 // Setgraphics : purely PS stuff, see later, covered by libvb.
@@ -80,15 +92,15 @@ void outbox () {
 //   omx neg 0.5 neg rlineto
 //   closepath} bind def
 
-void hex (double d0, double d1) {
-  moveto (d1,d0); // swapped between moveto and the others !
-  rmoveto (-omx,-.5);
-  rlineto (0,1);
-  rlineto (omx,.5);
-  rlineto (omx,-.5);
-  rlineto (0,-1);
-  rlineto (-omx,-.5);
-  rlineto (-omx,.5);
+void hex (coo xy) {
+  moveto (xy);
+  rmoveto (coo(-omx,-.5));
+  rlineto (coo(0,1));
+  rlineto (coo(omx,.5));
+  rlineto (coo(omx,-.5));
+  rlineto (coo(0,-1));
+  rlineto (coo(-omx,-.5));
+  rlineto (coo(-omx,.5));
 }
 
 // /setbits
@@ -96,23 +108,85 @@ void hex (double d0, double d1) {
 // 	   numw 2 idiv {false} repeat
 // 	   numw 1 sub numh mul  {rand rand lt} repeat ] def} def
 
+vector<bool> cols;
+
+void setbits () {
+  cols.clear();
+  for (int i=0; i < numw/2; ++i)        cols.push_back(true);
+  for (int i=0; i < numw/2; ++i)        cols.push_back(false);
+  for (int i=0; i < (numw-1)*numh; ++i) cols.push_back(rand()<rand());  
+}
+
 // /thebit { cols exch get } def
+
+bool thebit (int i) { return cols[i]; }
+
+// /rowparity { numw idiv 2 mod } def
+
+int rowparity (int i) { return (i/numw)%2; }
 
 // /thepos {dup dup numw mod 2 mul exch rowparity  add omx mul 
 //          exch numw idiv  3 2 div mul } def
 
-// /rowparity { numw idiv 2 mod } def
+coo thepos (int i) {
+  return coo(omx*(((i/numw)%2)+2*(i%numw)) , 1.5*(i/numw));
+}
 
 // /drawhexes { 0 1 numw numh mul 1 sub  {thepos hex stroke } for} def
+
+void drawhexes () {
+  for (int i=0; i<numw*numh; ++i) {
+    hex(thepos(i));
+  }
+}
 
 // /perc { 0 1 numw numh mul 1 sub 
 // 	{dup thebit { thepos hex fill} {pop} ifelse  } for} def
 
+void perc () {
+  for (int i=0; i<numw*numh; ++i) {
+    if (thebit(i)) true; // fill the hex at i
+  }
+}
+
 // /rotleft {1 add 6 mod} def
+
+int rotleft (int d) { return (d+1)%6; }
 
 // /rotright {5 add 6 mod} def
 
+int rotright (int d) { return (d+5)%6; }
+
+// /spillout { base 1 add numw mod 2 lt 
+//             base numw div numh 2 sub gt
+// 	    or } def
+
+int base;
+
+bool spillout () {
+  return (((base+1)%numw)<2) || ((base/numw)>(numh-2));
+}
+
+// /fola [ 1  numw  numw 1 sub  1 neg  numw neg 1 sub  numw neg ] def
+
+// /folb [ 1  numw 1 add  numw  -1  numw neg  numw neg 1 add ] def
+
+// /follow { /dirf exch def /basef exch def
+//          base rowparity 0 eq { fola } { folb } ifelse dirf get basef add} def
+
+int follow (int dirf, int basef) {
+  int fola[6] = { 1, numw, numw-1, -1, -numw-1, -numh };
+  int folb[6] = { 1, numw+1, numw, -1, -numw, -numw+1 };
+  return (rowparity(base)==0 ? fola : folb) [dirf] + basef;
+}
+
 // /thenext { base dir rotleft follow } def
+
+int dir;
+
+int thenext() {
+  return follow (base, rotleft(dir));
+}
 
 // /segment {/therot exch def
 // 	base thepos /y1 exch def /x1 exch def
@@ -126,16 +200,8 @@ void hex (double d0, double d1) {
 // 	lineto
 // 	stroke } def
 
-// /spillout { base 1 add numw mod 2 lt 
-//             base numw div numh 2 sub gt
-// 	    or } def
-
-// /fola [ 1 numw numw 1 sub 1 neg numw neg 1 sub numw neg  ] def
-
-// /folb [ 1   numw 1 add    numw  -1  numw neg numw neg 1 add ] def
-
-// /follow { /dirf exch def /basef exch def
-//          base rowparity 0 eq { fola } { folb } ifelse dirf get basef add} def
+void segment (...) {
+}
 
 // /walk { /base numw 2 idiv 1 sub def
 //   	/dir 0 def
@@ -151,7 +217,7 @@ void hex (double d0, double d1) {
 // 		{rotright} segment
 // 	} loop
 //   } def
-
+//
 // /picture 
 //   {
 //   outbox clip 
@@ -173,5 +239,6 @@ void hex (double d0, double d1) {
 // picture
 
 int main (int argc, char ** argv) {
+  drawhexes();
   return 0;
 }
