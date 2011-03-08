@@ -43,6 +43,7 @@ int    numw        = 100;                                 // Must be even
 double marginhexes = 1.2;
 double picwidth    = 440;
 double eachhex     = picwidth / (numw-(marginhexes*2)-1); // The width of each hexagon
+// double picwidth    = eachhex * (numw-(marginhexes*2)-1); // The width of each hexagon
 double omx         = sqrt(3.0)/2;
 int    numh        = 290/(eachhex*omx) + marginhexes;
 
@@ -120,6 +121,7 @@ void walk () {
 }
 
 int main (int argc, char ** argv) {
+  cerr << eachhex << endl;
   for (int i=0; i < numw/2; ++i)        cols.push_back(true);
   for (int i=0; i < numw/2; ++i)        cols.push_back(false);
   for (int i=0; i < (numw-1)*numh; ++i) cols.push_back(rand()<rand());
