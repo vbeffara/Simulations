@@ -33,19 +33,17 @@ ostream &operator<< (ostream &o, coo c) {
 coo pos;
 
 void moveto (coo xy) {
-  cout << "moveto " << xy << endl;
   pos = xy;
 }
 
 void lineto (coo xy) {
-  cout << "lineto " << pos << " -> "<< xy << endl;
+  cout << "draw(" << pos << "--"<< xy << ");" << endl;
   pos = xy;
 }
 
 void rmoveto (coo xy) { moveto (pos+xy); }
 void rlineto (coo xy) { lineto (pos+xy); }
 
-//
 ////////////////////////////////////////////////////////////////
 
 double xmin = 60;
