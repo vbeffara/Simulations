@@ -21,6 +21,10 @@ coo operator+ (coo a, coo b) {
   return coo (a.first+b.first, a.second+b.second);
 }
 
+coo operator/ (coo a, double l) {
+  return coo (a.first/l, a.second/l);
+}
+
 ostream &operator<< (ostream &o, coo c) {
   o << "(" << c.first << "," << c.second << ")";
   return o;
@@ -145,7 +149,7 @@ void drawhexes () {
 
 void perc () {
   for (int i=0; i<numw*numh; ++i) {
-    if (thebit(i)) true; // fill the hex at i
+    if (thebit(i)) hex(thepos(i));
   }
 }
 
@@ -175,7 +179,7 @@ bool spillout () {
 //          base rowparity 0 eq { fola } { folb } ifelse dirf get basef add} def
 
 int follow (int dirf, int basef) {
-  int fola[6] = { 1, numw, numw-1, -1, -numw-1, -numh };
+  int fola[6] = { 1, numw, numw-1, -1, -numw-1, -numw };
   int folb[6] = { 1, numw+1, numw, -1, -numw, -numw+1 };
   return (rowparity(base)==0 ? fola : folb) [dirf] + basef;
 }
@@ -200,7 +204,12 @@ int thenext() {
 // 	lineto
 // 	stroke } def
 
-void segment (...) {
+void segment (int therot(int)) {
+  coo x1y1 = thepos(base);
+  coo x2y2 = thepos(follow(dir,base));
+  coo x3y3 = thepos(follow(therot(dir),base));
+  moveto ((x1y1+x2y2)/2);
+  lineto ((x1y1+x2y2+x3y3)/3);
 }
 
 // /walk { /base numw 2 idiv 1 sub def
@@ -217,7 +226,23 @@ void segment (...) {
 // 		{rotright} segment
 // 	} loop
 //   } def
-//
+
+void walk () {
+  base = numw/2-1;
+  dir = 0;
+  bool basebit = thebit(base);
+  while (!spillout()) {
+    segment(rotleft);
+    if (thebit(thenext())==basebit) {
+      base = thenext();
+      dir = rotright(dir);
+    } else {
+      dir = rotleft(dir);
+    }
+    segment(rotright);
+  }
+}
+
 // /picture 
 //   {
 //   outbox clip 
@@ -234,11 +259,19 @@ void segment (...) {
 //   walk
 //   showpage
 //   } def
+
+void picture () {
+  setbits();
+  //  perc();
+  //  drawhexes();
+  walk();
+}
+
 //
 // 26 srand
 // picture
 
 int main (int argc, char ** argv) {
-  drawhexes();
+  picture();
   return 0;
 }
