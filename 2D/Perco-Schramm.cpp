@@ -189,7 +189,7 @@ int follow (int dirf, int basef) {
 int dir;
 
 int thenext() {
-  return follow (base, rotleft(dir));
+  return follow (rotleft(dir), base);
 }
 
 // /segment {/therot exch def
