@@ -14,7 +14,7 @@ double omx = sqrt(3.0);
 
 class Perco_Schramm : public Figure {
 public:
-  int w, h, base, dir;
+  int w, h;
   vector<bool> cols;
   cpx pos;
   
@@ -25,16 +25,14 @@ public:
   }
   
   void lineto (cpx xy) {
-    Figure::segment (pos,xy);
+    segment (pos,xy);
     pos = xy;
   }
   
-  void rlineto (cpx xy) { lineto (pos+xy); }
-
   void hex (cpx xy) {
     pos = xy + cpx(-omx,-1);
-    rlineto (cpx(0,2));  rlineto (cpx(omx,1));   rlineto (cpx(omx,-1));
-    rlineto (cpx(0,-2)); rlineto (cpx(-omx,-1)); rlineto (cpx(-omx,1));
+    lineto (pos + cpx(0,2));  lineto (pos + cpx(omx,1));   lineto (pos + cpx(omx,-1));
+    lineto (pos + cpx(0,-2)); lineto (pos + cpx(-omx,-1)); lineto (pos + cpx(-omx,1));
   }
   
   cpx thepos (int i) {
@@ -51,9 +49,9 @@ public:
     return ((base/w)%2 ? folb : fola) [dir] + base;
   }
   
-  int thenext() { return follow ((dir+1)%6, base); }
+  int thenext(int dir, int base) { return follow ((dir+1)%6, base); }
   
-  void segment (int rot) {
+  void seg (int base, int dir, int rot) {
     cpx x1y1 = thepos(base);
     cpx x2y2 = thepos(follow(dir,base));
     cpx x3y3 = thepos(follow((dir+rot)%6,base));
@@ -62,13 +60,13 @@ public:
   }
 
   void walk () {
-    base = w/2-1;
-    dir = 0;
+    int base = w/2-1;
+    int dir = 0;
     while (((base+1)%w >= 2) && (base/w <= h-2)) {
-      segment (1);
-      if (cols[thenext()]) { base = thenext(); dir = (dir+5)%6; }
-      else                 {                   dir = (dir+1)%6; }
-      segment (5);
+      seg (base,dir,1);
+      if (cols[thenext(dir,base)]) { base = thenext(dir,base); dir = (dir+5)%6; }
+      else                         {                           dir = (dir+1)%6; }
+      seg (base,dir,5);
     }
   }  
 };
