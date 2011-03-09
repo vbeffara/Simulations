@@ -239,20 +239,20 @@ namespace vb {
 
   void Map::plot_vertices (Figure &F) {
     for (int i=0; i<n; ++i) {
-      F.dot(v[i]->z);
+      F.add (new Dot(v[i]->z));
     }
   }
 
   void Map::plot_edges (Figure &F) {
     for (int i=0; i<n; ++i) {
       foreach (int j, v[i]->adj)
-        if ((i<j) || (find_edge(Edge(j,i)) == (adj_list::iterator) NULL)) F.segment(v[i]->z,v[j]->z);
+        if ((i<j) || (find_edge(Edge(j,i)) == (adj_list::iterator) NULL)) F.add (new Segment(v[i]->z,v[j]->z));
     }
   }
 
   void Map::plot_circles (Figure &F) {
     for (int i=0; i<n; ++i) {
-      if (v[i]->r>0) F.circle(v[i]->z,v[i]->r);
+      if (v[i]->r>0) F.add (new Circle(v[i]->z,v[i]->r));
     }
   }
 

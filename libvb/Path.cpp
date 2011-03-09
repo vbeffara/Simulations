@@ -33,7 +33,7 @@ namespace vb {
     int l=0, x=0, y=0;
     for (unsigned i=0; i<size(); ++i) {
       l = (relative ? l+at(i) : at(i)) % 4;
-      F.segment ( cpx(x,y), cpx(x+dx[l],y+dy[l]) );
+      F.add (new Segment ( cpx(x,y), cpx(x+dx[l],y+dy[l]) ));
       x += dx[l]; y += dy[l];
     }
 

@@ -28,7 +28,7 @@ int main(int argc, char ** argv) {
   int x=0, y=0;
   int xmax=0, ymax=0, xmin=0, ymin=0;
 
-  f.circle(0,.5);  
+  f.add (new Circle(0,.5));
   f.show();
   f.pause();
 
@@ -54,13 +54,13 @@ int main(int argc, char ** argv) {
     }
     
     f.clean();
-    f.circle(cpx(x,y),.5);
-    f.dot(cpx(xmax+1,ymax+1));
-    f.dot(cpx(xmax+1,ymin-1));
-    f.dot(cpx(xmin-1,ymax+1));
-    f.dot(cpx(xmin-1,ymin-1));
+    f.add (new Circle(cpx(x,y),.5));
+    f.add (new Dot(cpx(xmax+1,ymax+1)));
+    f.add (new Dot(cpx(xmax+1,ymin-1)));
+    f.add (new Dot(cpx(xmin-1,ymax+1)));
+    f.add (new Dot(cpx(xmin-1,ymin-1)));
     for (unsigned i=0; i<t.size(); ++i)
-      f.segment(t[i].first,t[i].second);
+      f.add (new Segment(t[i].first,t[i].second));
     f.show();
     if (video) f.snapshot();
   }

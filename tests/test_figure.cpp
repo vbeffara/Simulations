@@ -14,11 +14,11 @@ int main (int argc, char **argv) {
 
   Figure F;
   for (int i=0; i<10; ++i) {
-    F.segment (cpx(prng.uniform_real(-10,10),prng.uniform_real(-10,10)),
-               cpx(prng.uniform_real(-10,10),prng.uniform_real(-10,10)));
+    F.add (new Segment (cpx(prng.uniform_real(-10,10),prng.uniform_real(-10,10)),
+                        cpx(prng.uniform_real(-10,10),prng.uniform_real(-10,10))));
   }
 
-  for (int i=1; i<=5; ++i) F.circle (cpx(0,0),i);
+  for (int i=1; i<=5; ++i) F.add (new Circle (cpx(0,0),i));
 
   F.show(); F.pause();
 

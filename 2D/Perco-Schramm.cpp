@@ -23,7 +23,7 @@ public:
     for (int i=0; i < (w-1)*h; ++i) cols.push_back (rand()<rand());
   }
   
-  void lineto (cpx xy) { segment (pos,xy); pos = xy; }
+  void lineto (cpx xy) { add (new Segment (pos,xy)); pos = xy; }
   
   void hex (cpx xy) {
     pos = xy + cpx(-omx,-1);
@@ -47,7 +47,7 @@ public:
     cpx x1y1 = thepos(base);
     cpx x2y2 = thepos(follow(base,dir));
     cpx x3y3 = thepos(follow(base,(dir+rot)%6));
-    segment ((x1y1+x2y2)*.5, (x1y1+x2y2+x3y3)*(1.0/3));
+    add (new Segment ((x1y1+x2y2)*.5, (x1y1+x2y2+x3y3)*(1.0/3)));
   }
 
   void walk () {

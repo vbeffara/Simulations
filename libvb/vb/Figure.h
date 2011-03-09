@@ -98,10 +98,6 @@ namespace vb {
 
       Figure &add (Shape *S);                                   ///< Add an element to the figure.
 
-      Figure &segment (cpx z1, cpx z2);                         ///< Add a segment to the figure.
-      Figure &dot (cpx z, std::string l = "");                  ///< Add a dot to the figure.
-      Figure &circle (cpx z, double r);                         ///< Add a circle to the figure.
-
       /** Remove duplicate entries.
        *
        * That's using an ugly n^2 algorithm for now.

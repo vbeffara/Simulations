@@ -65,7 +65,7 @@ int main () {
 
   Figure f;
   m.plot_circles(f);
-  f.circle(cpx(0.0,0.0),1.0);
+  f.add (new Circle(cpx(0.0,0.0),1.0));
   f.show();
   f.pause();
 

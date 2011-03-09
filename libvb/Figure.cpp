@@ -91,18 +91,6 @@ namespace vb {
     return (*this);
   }
 
-  Figure & Figure::segment (cpx z1, cpx z2) {
-    return add (new Segment (z1,z2));
-  }
-
-  Figure & Figure::dot (cpx z, std::string l) {
-    return add (new Dot (z,l));
-  }
-
-  Figure & Figure::circle (cpx z, double r) {
-    return add (new Circle (z,r));
-  }
-
   void Figure::paint (Cairo::RefPtr<Cairo::Context> cr) {
     double w = right()-left(), mid_x = (right()+left())/2;
     double h = top()-bottom(), mid_y = (top()+bottom())/2;
