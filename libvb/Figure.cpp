@@ -17,6 +17,38 @@ namespace vb {
     cr->arc (z.real(), z.imag(), r, 0, 2*M_PI);
   }
 
+  double Polygon::left () {
+    double m=z[0].real();
+    for (unsigned int i=1; i<z.size(); ++i) m = min (m, z[i].real());
+    return m;
+  }
+  
+  double Polygon::right () {
+    double m=z[0].real();
+    for (unsigned int i=1; i<z.size(); ++i) m = max (m, z[i].real());
+    return m;
+  }
+  
+  double Polygon::top () {
+    double m=z[0].imag();
+    for (unsigned int i=1; i<z.size(); ++i) m = max (m, z[i].imag());
+    return m;
+  }
+  
+  double Polygon::bottom () {
+    double m=z[0].imag();
+    for (unsigned int i=1; i<z.size(); ++i) m = min (m, z[i].imag());
+    return m;
+  }
+  
+  void Polygon::draw (Cairo::RefPtr<Cairo::Context> cr) {
+    cr->move_to (z.back().real(), z.back().imag());
+    for (unsigned int i=0; i<z.size(); ++i) cr->line_to (z[i].real(), z[i].imag());
+    cr->stroke_preserve();    
+    cr->set_source_rgb (fill.r/255.0, fill.g/255.0, fill.b/255.0);
+    cr->fill();
+  };
+
   /*********************************************************/
 
   Figure::Figure (bool _o) : AutoWindow (600,600,"Figure"), ortho(_o) { }
@@ -77,9 +109,11 @@ namespace vb {
     cr->set_line_width (1.0/scale);
     
     foreach (Shape *i, contents) {
+      cr->save();
       cr->set_source_rgb (i->color.r/255.0, i->color.g/255.0, i->color.b/255.0);
       i->draw(cr);
       cr->stroke();
+      cr->restore();
     }
     
     cr->restore();

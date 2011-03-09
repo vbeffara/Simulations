@@ -73,12 +73,28 @@ namespace vb {
     double bottom () { return z.imag() - r; } ///< Get the bottom boundary of the Shape.
 
     void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw the shape on a Cairo context.
-    
+
   public:
     cpx z;    ///< The center.
     double r; ///< The radius.
   };
 
+  /// Subclass of vb::Shape for a polygon.
+  class Polygon : public Shape {
+  public:
+    Polygon (std::vector<cpx> zz, Color c = 0, Color f = 255) : Shape(c), z(zz), fill(f) {}
+    
+    double left ();   ///< Get the left boundary of the Shape.
+    double right ();  ///< Get the right boundary of the Shape.
+    double top ();    ///< Get the top boundary of the Shape.
+    double bottom (); ///< Get the bottom boundary of the Shape.
+
+    void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw the shape on a Cairo context.
+  private:
+    std::vector<cpx> z;
+    Color fill;
+  };
+  
   /** The main Figure class.
    *
    * Right now it's a list of shapes with an output routine.

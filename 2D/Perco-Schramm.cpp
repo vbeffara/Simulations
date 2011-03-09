@@ -11,29 +11,31 @@ using namespace vb;
 
 double omx = sqrt(3.0);
 
+Color cc[2] = { Color(64,64,255), Color(255,255,0) };
+
 class Perco_Schramm : public vb::Figure {
 public:
   int w, h;
   std::vector<bool> cols;
-  cpx pos;
   
   Perco_Schramm (int w_, int h_) : w(w_), h(h_) {
+    title = "Perco_Schramm";
     for (int i=0; i < w/2; ++i)     cols.push_back (true);
     for (int i=0; i < w/2; ++i)     cols.push_back (false);
     for (int i=0; i < (w-1)*h; ++i) cols.push_back (rand()<rand());
   }
   
-  void lineto (cpx xy) { add (new Segment (pos,xy)); pos = xy; }
-  
-  void hex (cpx xy) {
-    pos = xy + cpx(-omx,-1);
-    lineto (pos + cpx(0,2));  lineto (pos + cpx(omx,1));   lineto (pos + cpx(omx,-1));
-    lineto (pos + cpx(0,-2)); lineto (pos + cpx(-omx,-1)); lineto (pos + cpx(-omx,1));
+  void hex (cpx xy, Color c) {
+    std::vector<cpx> coo;
+    coo.push_back(xy + cpx(omx,1));  coo.push_back(xy + cpx(0,2));
+    coo.push_back(xy + cpx(-omx,1)); coo.push_back(xy + cpx(-omx,-1));
+    coo.push_back(xy + cpx(0,-2));   coo.push_back(xy + cpx(omx,-1));
+    add (new Polygon(coo, 0, c));
   }
   
   cpx thepos (int i) { return cpx(omx*(((i/w)%2)+2*(i%w)) , 3*(i/w)); }
   
-  void perc () { for (int i=0; i<w*h; ++i) if (cols[i]) hex(thepos(i)); }
+  void perc () { for (int i=0; i<w*h; ++i) hex(thepos(i), cc[cols[i]]); }
   
   int follow (int base, int dir) {
     static int fola[6] = { 1, w, w-1, -1, -w-1, -w };
@@ -63,6 +65,6 @@ public:
 
 int main (int argc, char ** argv) {
   Perco_Schramm RS (60,70);
-  RS.walk(); RS.show(); RS.pause();
+  RS.perc(); RS.walk(); RS.show(); RS.pause(); RS.output();
   return 0;
 }
