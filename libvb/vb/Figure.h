@@ -19,8 +19,6 @@ namespace vb {
       virtual double top () =0;                                 ///< Get the top boundary of the Shape.
       virtual double bottom () =0;                              ///< Get the bottom boundary of the Shape.
 
-      virtual bool operator== (const Shape&) const =0;          ///< Test for equality between two shapes.
-
       virtual void draw (Cairo::RefPtr<Cairo::Context> cr) =0;  ///< Draw the shape on a Cairo context.
   };
 
@@ -33,8 +31,6 @@ namespace vb {
       double right ()  { return max(z1.real(),z2.real()); }     ///< Get the right boundary of the Shape.
       double top ()    { return max(z1.imag(),z2.imag()); }     ///< Get the top boundary of the Shape.
       double bottom () { return min(z1.imag(),z2.imag()); }     ///< Get the bottom boundary of the Shape.
-
-      bool operator== (const Shape&) const;                     ///< Test for equality between two shapes.
 
       void draw (Cairo::RefPtr<Cairo::Context> cr);             ///< Draw the shape on a Cairo context.
 
@@ -52,8 +48,6 @@ namespace vb {
       double top ()    { return z.imag(); };                    ///< Get the top boundary of the Shape.
       double bottom () { return z.imag(); };                    ///< Get the bottom boundary of the Shape.
 
-      bool operator== (const Shape&) const;                     ///< Test for equality between two shapes.
-
       void draw (Cairo::RefPtr<Cairo::Context> cr);             ///< Draw the shape on a Cairo context.
 
     private:
@@ -70,8 +64,6 @@ namespace vb {
       double right ()  { return z.real() + r; };                ///< Get the right boundary of the Shape.
       double top ()    { return z.imag() + r; };                ///< Get the top boundary of the Shape.
       double bottom () { return z.imag() - r; };                ///< Get the bottom boundary of the Shape.
-
-      bool operator== (const Shape&) const;                     ///< Test for equality between two shapes.
 
       void draw (Cairo::RefPtr<Cairo::Context> cr);             ///< Draw the shape on a Cairo context.
 
@@ -97,13 +89,6 @@ namespace vb {
       double bottom ();                                         ///< Get the bottom boundary of the Figure.
 
       Figure &add (Shape *S);                                   ///< Add an element to the figure.
-
-      /** Remove duplicate entries.
-       *
-       * That's using an ugly n^2 algorithm for now.
-       */
-
-      void unique();
 
       std::list<Shape*> contents;                               ///< The elements of the figure.
 

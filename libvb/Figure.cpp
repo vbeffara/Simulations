@@ -4,45 +4,13 @@
 #include <vb/Figure.h>
 
 namespace vb {
-  bool Segment::operator== (const Shape &other) const {
-    if (typeid(*this) != typeid(other)) return false;
-
-    Segment *o = (Segment*)(&other);
-    if (z1 != o->z1) return false;
-    if (z2 != o->z2) return false;
-
-    return true;
-  }
 
   void Segment::draw (Cairo::RefPtr<Cairo::Context> cr){
       cr->move_to (z1.real(), z1.imag());
       cr->line_to (z2.real(), z2.imag());
   }
 
-  /*********************************************************/
-
-  bool Dot::operator== (const Shape &other) const {
-    if (typeid(*this) != typeid(other)) return false;
-
-    Dot *o = (Dot*)(&other);
-    if (z != o->z) return false;
-
-    return true;
-  }
-
   void Dot::draw (Cairo::RefPtr<Cairo::Context> cr) { }
-
-  /*********************************************************/
-
-  bool Circle::operator== (const Shape &other) const {
-    if (typeid(*this) != typeid(other)) return false;
-
-    Circle *o = (Circle*)(&other);
-    if (z != o->z) return false;
-    if (r != o->r) return false;
-
-    return true;
-  }
 
   void Circle::draw (Cairo::RefPtr<Cairo::Context> cr) {
     cr->begin_new_sub_path ();
@@ -131,13 +99,4 @@ namespace vb {
   }
 
   void Figure::output (const std::string &s) { output_pdf (s); }
-
-  void Figure::unique() {
-    std::list<Shape*>::iterator i,j;
-
-    for (i = contents.begin(); i != contents.end(); ++i)
-      for (j = i, ++j; j != contents.end(); ++j)
-        while ((j != contents.end()) && ((**i) == (**j)))
-          j = contents.erase(j);
-  }
 }
