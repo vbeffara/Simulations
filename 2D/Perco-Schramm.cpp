@@ -11,18 +11,27 @@ using namespace vb;
 
 double omx = sqrt(3.0);
 
-Color cc[2] = { Color(64,64,255), Color(255,255,0) };
+Color cc[2] = { Color(128,128,255), Color(255,255,0) };
 
 class Perco_Schramm : public vb::Figure {
 public:
   int w, h;
-  std::vector<bool> cols;
+  std::vector<bool> cols,mask;
   
-  Perco_Schramm (int w_, int h_) : w(w_), h(h_) {
+  Perco_Schramm (int w_, int h_) : w(w_), h(h_), mask(w*h,true) {
     title = "Perco_Schramm";
     for (int i=0; i < w/2; ++i)     cols.push_back (true);
     for (int i=0; i < w/2; ++i)     cols.push_back (false);
     for (int i=0; i < (w-1)*h; ++i) cols.push_back (rand()<rand());
+  }
+
+  void tri_boundary () {
+    for (int j=0; j<h; ++j) {
+      for (int i=0; i<w; ++i)
+        mask[i+w*j] = (i <= (w+j)/2) && (i >= (w-j)/2-1);
+      cols[(w-j)/2 + w*j - 1] = true;
+      cols[(w+j)/2 + w*j] = false;
+    }
   }
   
   void hex (cpx xy, Color c) {
@@ -35,7 +44,7 @@ public:
   
   cpx thepos (int i) { return cpx(omx*(((i/w)%2)+2*(i%w)) , 3*(i/w)); }
   
-  void perc () { for (int i=0; i<w*h; ++i) hex(thepos(i), cc[cols[i]]); }
+  void perc () { for (int i=0; i<w*h; ++i) if (mask[i]) hex(thepos(i), cc[cols[i]]); }
   
   int follow (int base, int dir) {
     static int fola[6] = { 1, w, w-1, -1, -w-1, -w };
@@ -64,7 +73,8 @@ public:
 };
 
 int main (int argc, char ** argv) {
-  Perco_Schramm RS (60,70);
-  RS.perc(); RS.walk(); RS.show(); RS.pause(); RS.output();
+  Perco_Schramm RS (60,59);
+  RS.tri_boundary(); RS.perc();
+  RS.walk(); RS.show(); RS.pause(); RS.output();
   return 0;
 }
