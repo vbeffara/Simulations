@@ -74,12 +74,14 @@ namespace vb {
     cr->translate      (width/2,height/2);
     cr->scale          (scale_x,-scale_y);
     cr->translate      (-mid_x,-mid_y);
-    cr->set_source_rgb (0,0,0);
     cr->set_line_width (1.0/scale);
     
-    foreach (Shape *i, contents) i->draw(cr);
+    foreach (Shape *i, contents) {
+      cr->set_source_rgb (i->color.r/255.0, i->color.g/255.0, i->color.b/255.0);
+      i->draw(cr);
+      cr->stroke();
+    }
     
-    cr->stroke();
     cr->restore();
   }
 

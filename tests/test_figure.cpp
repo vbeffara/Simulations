@@ -8,6 +8,12 @@
 using namespace std;
 using namespace vb;
 
+Color randomcolor() {
+  return Color (prng.uniform_int(256),
+                prng.uniform_int(256),
+                prng.uniform_int(256));
+}
+
 /// The main function.
 int main (int argc, char **argv) {
   prng.seed(18);
@@ -15,10 +21,12 @@ int main (int argc, char **argv) {
   Figure F;
   for (int i=0; i<10; ++i) {
     F.add (new Segment (cpx(prng.uniform_real(-10,10),prng.uniform_real(-10,10)),
-                        cpx(prng.uniform_real(-10,10),prng.uniform_real(-10,10))));
+                        cpx(prng.uniform_real(-10,10),prng.uniform_real(-10,10)),
+                        randomcolor()));
   }
 
-  for (int i=1; i<=5; ++i) F.add (new Circle (cpx(0,0),i));
+  for (int i=1; i<=5; ++i)
+    F.add (new Circle (cpx(0,0), i, randomcolor()));
 
   F.show(); F.pause();
 

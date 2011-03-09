@@ -33,27 +33,29 @@ namespace vb {
   class Color {
     public:
 #ifdef VB_LITTLE_ENDIAN
-      char b; ///< The blue component.
-      char g; ///< The green component.
-      char r; ///< The red component.
-      char a; ///< The alpha channel (for ARGB32).
+      unsigned char b; ///< The blue component.
+      unsigned char g; ///< The green component.
+      unsigned char r; ///< The red component.
+      unsigned char a; ///< The alpha channel (for ARGB32).
 
       /// Constructor from RGBA values.
-      Color (char R, char G, char B, char A=255) : b(B), g(G), r(R), a(A) { }
+      Color (unsigned char R, unsigned char G, unsigned char B, unsigned char A=255) :
+      b(B), g(G), r(R), a(A) { }
 
       /// Constructor from a greyscale value.
-      Color (char V = 0) : b(V), g(V), r(V), a(255) { }
+      Color (unsigned char V = 0) : b(V), g(V), r(V), a(255) { }
 #else
-      char a; ///< The alpha channel (for ARGB32).
-      char r; ///< The red component.
-      char g; ///< The green component.
-      char b; ///< The blue component.
+      unsigned char a; ///< The alpha channel (for ARGB32).
+      unsigned char r; ///< The red component.
+      unsigned char g; ///< The green component.
+      unsigned char b; ///< The blue component.
 
       /// Constructor from RGBA values.
-      Color (char R, char G, char B, char A=255) : a(A), r(R), g(G), b(B) { }
+      Color (unsigned char R, unsigned char G, unsigned char B, unsigned char A=255) :
+      a(A), r(R), g(G), b(B) { }
 
       /// Constructor from a greyscale value.
-      Color (char V = 0) : a(255), r(V), g(V), b(V) { }
+      Color (unsigned char V = 0) : a(255), r(V), g(V), b(V) { }
 #endif
       /// Compare to another color.
       bool operator== (const Color &o) { return (r==o.r) && (g==o.g) && (b==o.b) && (a==o.a); }
