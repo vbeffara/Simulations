@@ -8,11 +8,22 @@
 #include <vb/AutoWindow.h>
 
 namespace vb {
+
+  /// Class to store the features of a picture element.
+  class Pen {
+  public:
+    Pen (Color c_=0, Color f_=255, double w_=1.0) : c(c_), f(f_), w(w_) { }
+    
+    Color c;  ///< The color of the stroke.
+    Color f;  ///< The fill color (when applicable).
+    double w; ///< The stroke width.
+  };
   
   /// Base class for the elements of a figure.
   class Shape {
   public:
-    Shape (Color c = 0) : color(c) { }
+    Shape (Color c = 0) : p(c) { }
+    Shape (Pen p_)      : p(p_) { }
     
     virtual ~Shape() {} ///< Empty destructor to make the compiler happy.
     
@@ -23,14 +34,14 @@ namespace vb {
     
     virtual void draw (Cairo::RefPtr<Cairo::Context> cr) =0;  ///< Draw the shape on a Cairo context.
     
-    Color color;
+    Pen p;
   };
 
   /// Subclass of vb::Shape foe a line segment.
   class Segment : public Shape {
   public:
-    Segment (cpx zz1, cpx zz2, Color c = 0) :
-    Shape(c), z1(zz1), z2(zz2) {} ///< Constructor from two complex numbers.
+    Segment (cpx zz1, cpx zz2, Color c = 0, double w = 1.0) :
+    Shape(Pen(c,c,w)), z1(zz1), z2(zz2) {} ///< Constructor from two complex numbers.
 
     double left ()   { return min(z1.real(),z2.real()); } ///< Get the left boundary of the Shape.
     double right ()  { return max(z1.real(),z2.real()); } ///< Get the right boundary of the Shape.
@@ -82,7 +93,8 @@ namespace vb {
   /// Subclass of vb::Shape for a polygon.
   class Polygon : public Shape {
   public:
-    Polygon (std::vector<cpx> zz, Color c = 0, Color f = 255) : Shape(c), z(zz), fill(f) {}
+    Polygon (std::vector<cpx> zz, Color c = 0, Color f = 255)
+      : Shape(Pen(c,f)), z(zz) {}
     
     double left ();   ///< Get the left boundary of the Shape.
     double right ();  ///< Get the right boundary of the Shape.
@@ -92,7 +104,6 @@ namespace vb {
     void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw the shape on a Cairo context.
   private:
     std::vector<cpx> z;
-    Color fill;
   };
   
   /** The main Figure class.
@@ -138,6 +149,8 @@ namespace vb {
     void paint (Cairo::RefPtr<Cairo::Context> cr);
     
     bool ortho; ///< Whether to force the unit square to be a square.
+
+    double basewidth; ///< Width in real plane to get 1px.
   };
 }
 

@@ -45,7 +45,7 @@ namespace vb {
     cr->move_to (z.back().real(), z.back().imag());
     for (unsigned int i=0; i<z.size(); ++i) cr->line_to (z[i].real(), z[i].imag());
     cr->stroke_preserve();    
-    cr->set_source_rgb (fill.r/255.0, fill.g/255.0, fill.b/255.0);
+    cr->set_source_rgb (p.f.r/255.0, p.f.g/255.0, p.f.b/255.0);
     cr->fill();
   };
 
@@ -98,6 +98,7 @@ namespace vb {
     double scale_x = width/w, scale_y = height/h;
     double scale = min(scale_x,scale_y);
     if (ortho) scale_x = scale_y = scale;
+    basewidth = 1.0/scale;
 
     cr->save();
     cr->set_source_rgb (1,1,1);
@@ -106,11 +107,12 @@ namespace vb {
     cr->translate      (width/2,height/2);
     cr->scale          (scale_x,-scale_y);
     cr->translate      (-mid_x,-mid_y);
-    cr->set_line_width (1.0/scale);
+    cr->set_line_width (basewidth);
     
     foreach (Shape *i, contents) {
       cr->save();
-      cr->set_source_rgb (i->color.r/255.0, i->color.g/255.0, i->color.b/255.0);
+      cr->set_source_rgb (i->p.c.r/255.0, i->p.c.g/255.0, i->p.c.b/255.0);
+      cr->set_line_width (basewidth * i->p.w);
       i->draw(cr);
       cr->stroke();
       cr->restore();

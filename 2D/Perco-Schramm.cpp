@@ -58,7 +58,7 @@ public:
     cpx x1y1 = thepos(base);
     cpx x2y2 = thepos(follow(base,dir));
     cpx x3y3 = thepos(follow(base,(dir+rot)%6));
-    add (new Segment ((x1y1+x2y2)*.5, (x1y1+x2y2+x3y3)*(1.0/3), Color(255,0,0)));
+    add (new Segment ((x1y1+x2y2)*.5, (x1y1+x2y2+x3y3)*(1.0/3), Color(255,0,0), 3));
   }
 
   void walk () {
