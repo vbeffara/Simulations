@@ -7,7 +7,7 @@ namespace vb {
   /** A class to describe a path in Z^2.
    */
 
-  class Path : public std::vector<char> {
+  class OldPath : public std::vector<char> {
     public:
       /** Create a vb::Path of a given length.
        *
@@ -16,7 +16,7 @@ namespace vb {
        * @param rel    Whether the path is stored as relative or absolute jumps.
        */
 
-      Path (int l, const std::string & title_, bool rel = false);
+      OldPath (int l, const std::string & title_, bool rel = false);
 
       /** Output the path as an image.
        *

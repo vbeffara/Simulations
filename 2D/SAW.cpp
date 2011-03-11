@@ -12,7 +12,7 @@ int main(int argc, char ** argv)
   int n = CLP('n');
   int t = CLP('t');
 
-  Path P (n, str(fmt("A self-avoiding walk of length %d")%n), true);
+  OldPath P (n, str(fmt("A self-avoiding walk of length %d")%n), true);
   ProgressBar PB (t);
 
   for (int i=0;i<t;) {

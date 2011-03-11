@@ -90,7 +90,23 @@ namespace vb {
     double r; ///< The radius.
   };
 
-  /// Subclass of vb::Shape for a polygon.
+  /// Subclass of vb::Shape for a path.
+  class Path : public Shape {
+  public:
+    Path (std::vector<cpx> zz, Color c = 0, Color f = 255)
+      : Shape(Pen(c,f)), z(zz) {}
+    
+    double left ();   ///< Get the left boundary of the Shape.
+    double right ();  ///< Get the right boundary of the Shape.
+    double top ();    ///< Get the top boundary of the Shape.
+    double bottom (); ///< Get the bottom boundary of the Shape.
+
+    void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw the shape on a Cairo context.
+    
+    std::vector<cpx> z;
+  };
+  
+  /// Subclass of vb::Shape for a polygon (XXX it should be a closed Path).
   class Polygon : public Shape {
   public:
     Polygon (std::vector<cpx> zz, Color c = 0, Color f = 255)

@@ -17,6 +17,35 @@ namespace vb {
     cr->arc (z.real(), z.imag(), r, 0, 2*M_PI);
   }
 
+  double Path::left () {
+    double m=z[0].real();
+    for (unsigned int i=1; i<z.size(); ++i) m = min (m, z[i].real());
+    return m;
+  }
+  
+  double Path::right () {
+    double m=z[0].real();
+    for (unsigned int i=1; i<z.size(); ++i) m = max (m, z[i].real());
+    return m;
+  }
+  
+  double Path::top () {
+    double m=z[0].imag();
+    for (unsigned int i=1; i<z.size(); ++i) m = max (m, z[i].imag());
+    return m;
+  }
+  
+  double Path::bottom () {
+    double m=z[0].imag();
+    for (unsigned int i=1; i<z.size(); ++i) m = min (m, z[i].imag());
+    return m;
+  }
+  
+  void Path::draw (Cairo::RefPtr<Cairo::Context> cr) {
+    cr->move_to (z[0].real(), z[0].imag());
+    for (unsigned int i=1; i<z.size(); ++i) cr->line_to (z[i].real(), z[i].imag());
+  };
+
   double Polygon::left () {
     double m=z[0].real();
     for (unsigned int i=1; i<z.size(); ++i) m = min (m, z[i].real());

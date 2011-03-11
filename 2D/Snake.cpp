@@ -39,7 +39,7 @@ bool Snake::alive () const {
 }
 
 void Snake::output () const {
-  Path P (x.size()-1, title);
+  OldPath P (x.size()-1, title);
   for (unsigned i=0; i<x.size()-1; ++i) {
     if (x[i+1]>x[i]) P[i]=0;
     if (x[i+1]<x[i]) P[i]=2;

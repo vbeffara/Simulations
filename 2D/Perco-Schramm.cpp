@@ -17,8 +17,10 @@ class Perco_Schramm : public vb::Figure {
 public:
   int w, h;
   std::vector<bool> cols,mask;
+  Path *p;
   
-  Perco_Schramm (int w_, int h_) : w(w_), h(h_), mask(w*h,true) {
+  Perco_Schramm (int w_, int h_)
+    : w(w_), h(h_), mask(w*h,true), p(new Path(std::vector<cpx>(0), Color(255,0,0))) {
     title = "Perco_Schramm";
     for (int i=0; i < w/2; ++i)     cols.push_back (true);
     for (int i=0; i < w/2; ++i)     cols.push_back (false);
@@ -58,11 +60,13 @@ public:
     cpx x1y1 = thepos(base);
     cpx x2y2 = thepos(follow(base,dir));
     cpx x3y3 = thepos(follow(base,(dir+rot)%6));
-    add (new Segment ((x1y1+x2y2)*.5, (x1y1+x2y2+x3y3)*(1.0/3), Color(255,0,0), 3));
+    p->z.push_back ((x1y1+x2y2+x3y3)*(1.0/3));
   }
 
   void walk () {
     int base = w/2-1, dir = 0;
+    p->z.push_back (thepos(base) + cpx(omx,-1));
+    add(p);
     while (((base+1)%w >= 2) && (base/w <= h-2)) {
       seg (base,dir,1);
       if (cols[thenext(base,dir)]) { base = thenext(base,dir); dir = (dir+5)%6; }

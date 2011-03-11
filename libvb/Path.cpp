@@ -9,10 +9,10 @@ static const int dx[4] = { 1, 0,-1, 0 };
 static const int dy[4] = { 0, 1, 0,-1 };
 
 namespace vb {
-  Path::Path (int l, const std::string & title_, bool rel)
+  OldPath::OldPath (int l, const std::string & title_, bool rel)
     : std::vector<char> (l), title(title_), relative(rel) { };
 
-  bool Path::self_avoiding () {
+  bool OldPath::self_avoiding () {
     TriMatrix<char> T;
     int l=0, x=0, y=0;
 
@@ -25,9 +25,9 @@ namespace vb {
     return true;
   }
 
-  void Path::output (const std::string &s) const { output_pdf (s); }
+  void OldPath::output (const std::string &s) const { output_pdf (s); }
 
-  void Path::output_pdf (const std::string &s) const {
+  void OldPath::output_pdf (const std::string &s) const {
     Figure F;
 
     int l=0, x=0, y=0;
