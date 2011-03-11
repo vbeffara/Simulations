@@ -12,7 +12,7 @@ namespace vb {
   /// Class to store the features of a picture element.
   class Pen {
   public:
-    Pen (Color c_=0, Color f_=255, double w_=1.0) : c(c_), f(f_), w(w_) { }
+    Pen (Color c_=0, double w_=1.0, Color f_=255) : c(c_), f(f_), w(w_) { }
     
     Color c;  ///< The color of the stroke.
     Color f;  ///< The fill color (when applicable).
