@@ -101,19 +101,12 @@ namespace vb {
     std::vector<cpx> z;
   };
   
-  /// Subclass of vb::Shape for a polygon (XXX it should be a closed Path).
-  class Polygon : public Shape {
+  /// Subclass of vb::Path for a closed polygon.
+  class Polygon : public Path {
   public:
-    Polygon (std::vector<cpx> z_, Pen p = Color(0)) : Shape(p), z(z_) {}
+    Polygon (std::vector<cpx> z, Pen p = Color(0)) : Path(z,p) {}
     
-    double left ();   ///< Get the left boundary of the Shape.
-    double right ();  ///< Get the right boundary of the Shape.
-    double top ();    ///< Get the top boundary of the Shape.
-    double bottom (); ///< Get the bottom boundary of the Shape.
-
     void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw the shape on a Cairo context.
-  private:
-    std::vector<cpx> z;
   };
   
   /** The main Figure class.

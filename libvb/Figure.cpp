@@ -46,30 +46,6 @@ namespace vb {
     for (unsigned int i=1; i<z.size(); ++i) cr->line_to (z[i].real(), z[i].imag());
   };
 
-  double Polygon::left () {
-    double m=z[0].real();
-    for (unsigned int i=1; i<z.size(); ++i) m = min (m, z[i].real());
-    return m;
-  }
-  
-  double Polygon::right () {
-    double m=z[0].real();
-    for (unsigned int i=1; i<z.size(); ++i) m = max (m, z[i].real());
-    return m;
-  }
-  
-  double Polygon::top () {
-    double m=z[0].imag();
-    for (unsigned int i=1; i<z.size(); ++i) m = max (m, z[i].imag());
-    return m;
-  }
-  
-  double Polygon::bottom () {
-    double m=z[0].imag();
-    for (unsigned int i=1; i<z.size(); ++i) m = min (m, z[i].imag());
-    return m;
-  }
-  
   void Polygon::draw (Cairo::RefPtr<Cairo::Context> cr) {
     cr->move_to (z.back().real(), z.back().imag());
     for (unsigned int i=0; i<z.size(); ++i) cr->line_to (z[i].real(), z[i].imag());
