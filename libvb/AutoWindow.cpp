@@ -25,6 +25,16 @@ namespace vb {
 #endif
   }
 
+  void AutoWindow::resize (int w, int h) {
+#ifdef HAVE_FLTK
+    Fl_Double_Window::resize (0,0,w,h);
+#endif
+    width=w; height=h;
+    surface = Cairo::ImageSurface::create (Cairo::FORMAT_RGB24, width, height);
+    stride = surface -> get_stride() / sizeof(Color);
+    cr = Cairo::Context::create (surface);
+  }
+  
   void AutoWindow::show () {
 #ifdef HAVE_FLTK
     Fl_Double_Window::show();

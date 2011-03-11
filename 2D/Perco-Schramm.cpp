@@ -31,7 +31,7 @@ public:
   void tri_boundary () {
     for (int j=0; j<h; ++j) {
       for (int i=0; i<w; ++i)
-        mask[i+w*j] = (i <= (w+j)/2) && (i >= (w-j)/2-1);
+        mask[i+w*j] = (i <= (w+j)/2) && (i >= (w-j)/2-1) && (j<h-1);
       cols[(w-j)/2 + w*j - 1] = true;
       cols[(w+j)/2 + w*j] = false;
     }
@@ -79,6 +79,7 @@ public:
 
 int main (int argc, char ** argv) {
   Perco_Schramm RS (60,59);
+  RS.resize (700,600);
   RS.tri_boundary(); RS.perc();
   RS.walk(); RS.show(); RS.pause(); RS.output();
   return 0;
