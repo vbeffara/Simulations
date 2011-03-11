@@ -22,8 +22,7 @@ namespace vb {
   /// Base class for the elements of a figure.
   class Shape {
   public:
-    Shape (Color c = 0) : p(c) { }
-    Shape (Pen p_)      : p(p_) { }
+    Shape (Pen p_) : p(p_) { }
     
     virtual ~Shape() {} ///< Empty destructor to make the compiler happy.
     
@@ -40,8 +39,7 @@ namespace vb {
   /// Subclass of vb::Shape foe a line segment.
   class Segment : public Shape {
   public:
-    Segment (cpx zz1, cpx zz2, Color c = 0, double w = 1.0) :
-    Shape(Pen(c,c,w)), z1(zz1), z2(zz2) {} ///< Constructor from two complex numbers.
+    Segment (cpx zz1, cpx zz2, Pen p = Color(0)) : Shape(p), z1(zz1), z2(zz2) {}
 
     double left ()   { return min(z1.real(),z2.real()); } ///< Get the left boundary of the Shape.
     double right ()  { return max(z1.real(),z2.real()); } ///< Get the right boundary of the Shape.
@@ -57,8 +55,7 @@ namespace vb {
   /// Subclass of vb::Shape for a dot.
   class Dot : public Shape {
   public:
-    Dot (cpx zz, Color c = 0, std::string ll = "") :
-    Shape(c), z(zz), l(ll) {} ///< Constructor from a position and a label.
+    Dot (cpx zz, Pen p = Color(0), std::string ll = "") : Shape(p), z(zz), l(ll) {}
 
     double left ()   { return z.real(); } ///< Get the left boundary of the Shape.
     double right ()  { return z.real(); } ///< Get the right boundary of the Shape.
@@ -75,8 +72,7 @@ namespace vb {
   /// Subclass of vb::Shape for a circle.
   class Circle : public Shape {
   public:
-    Circle (cpx zz, double rr, Color c = 0) :
-    Shape(c), z(zz), r(rr) {} ///< Constructor from a center and a radius.
+    Circle (cpx z_, double r_, Pen p = Color(0)) : Shape(p), z(z_), r(r_) {}
 
     double left ()   { return z.real() - r; } ///< Get the left boundary of the Shape.
     double right ()  { return z.real() + r; } ///< Get the right boundary of the Shape.
@@ -93,8 +89,7 @@ namespace vb {
   /// Subclass of vb::Shape for a path.
   class Path : public Shape {
   public:
-    Path (std::vector<cpx> zz, Color c = 0, Color f = 255)
-      : Shape(Pen(c,f)), z(zz) {}
+    Path (std::vector<cpx> z_, Pen p = Color(0)) : Shape(p), z(z_) {}
     
     double left ();   ///< Get the left boundary of the Shape.
     double right ();  ///< Get the right boundary of the Shape.
@@ -109,8 +104,7 @@ namespace vb {
   /// Subclass of vb::Shape for a polygon (XXX it should be a closed Path).
   class Polygon : public Shape {
   public:
-    Polygon (std::vector<cpx> zz, Color c = 0, Color f = 255)
-      : Shape(Pen(c,f)), z(zz) {}
+    Polygon (std::vector<cpx> z_, Pen p = Color(0)) : Shape(p), z(z_) {}
     
     double left ();   ///< Get the left boundary of the Shape.
     double right ();  ///< Get the right boundary of the Shape.

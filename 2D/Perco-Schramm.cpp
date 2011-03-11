@@ -19,9 +19,10 @@ public:
   std::vector<bool> cols,mask;
   Path *p;
   
-  Perco_Schramm (int w_, int h_)
-    : w(w_), h(h_), mask(w*h,true), p(new Path(std::vector<cpx>(0), Color(255,0,0))) {
+  Perco_Schramm (int w_, int h_) : w(w_), h(h_), mask(w*h,true) {
     title = "Perco_Schramm";
+    p = new Path (std::vector<cpx>(0), Pen(Color(255,0,0),255,4));
+
     for (int i=0; i < w/2; ++i)     cols.push_back (true);
     for (int i=0; i < w/2; ++i)     cols.push_back (false);
     for (int i=0; i < (w-1)*h; ++i) cols.push_back (rand()<rand());
@@ -41,7 +42,7 @@ public:
     coo.push_back(xy + cpx(omx,1));  coo.push_back(xy + cpx(0,2));
     coo.push_back(xy + cpx(-omx,1)); coo.push_back(xy + cpx(-omx,-1));
     coo.push_back(xy + cpx(0,-2));   coo.push_back(xy + cpx(omx,-1));
-    add (new Polygon(coo, 0, c));
+    add (new Polygon(coo, Pen(0,c)));
   }
   
   cpx thepos (int i) { return cpx(omx*(((i/w)%2)+2*(i%w)) , 3*(i/w)); }
