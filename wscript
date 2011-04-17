@@ -1,7 +1,7 @@
 # -*- mode: python; -*-
 
 def options (ctx) :
-    ctx.load ('compiler_c compiler_cxx boost')
+    ctx.load ('compiler_c compiler_cxx')
     ctx.add_option ('--gui', default='fltk', help='Build to use the specified GUI')
 
 def configure (ctx) :
