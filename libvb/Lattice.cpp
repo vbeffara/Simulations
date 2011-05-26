@@ -13,7 +13,7 @@ namespace vb {
     return tmp;
   }
 
-  Lattice::Lattice (int _n, cpx _tau) : n(_n), adj(_n), tau(_tau), z(_n) { }
+  Lattice::Lattice (int _n, cpx _tau) : n(_n), adj(_n), tau(_tau), z(_n), r(_n) { }
 
   cpx Lattice::operator() (int x, int y, int k) const {
     const cpx &t = z[k];
@@ -81,5 +81,71 @@ namespace vb {
     cpx delta = b*b - 4*a*c;
     cpx t = (-b + sqrt(delta))/(2*a);
     return (t.imag()>0 ? t : conj(t));
+  }
+
+  double Lattice::cost_cp () const {
+    double t=0;
+    for (int k=0; k<n; ++k)
+      for (int l=0; l<adj[k].size(); ++l) {
+        cpx s = shift(k,l);
+        double d = sqrt(norm(s));
+        double rr = r[k] + r[adj[k][l].k];
+        t += (d-rr)*(d-rr);
+      }
+    return t;
+  }
+
+  void Lattice::optimize (LatticeCostFunction f, double eps) {
+    double cost = eval(f);
+    double old_cost = cost + eps + 1;
+    double tmp_cost = cost;
+    while (old_cost - cost > eps) {
+      old_cost = cost;
+      double delta = sqrt(cost)/10;
+
+      tau += cpx(delta,0); tmp_cost = eval(f);
+      if (tmp_cost < cost) cost = tmp_cost;
+      else {
+        tau -= cpx(2*delta,0); tmp_cost = eval(f);
+        if (tmp_cost < cost) cost = tmp_cost;
+        else tau += cpx(delta,0);
+      }
+
+      tau += cpx(0,delta); tmp_cost = eval(f);
+      if (tmp_cost < cost) cost = tmp_cost;
+      else {
+        tau -= cpx(0,2*delta); tmp_cost = eval(f);
+        if (tmp_cost < cost) cost = tmp_cost;
+        else tau += cpx(0,delta);
+      }
+
+      for (int i=0; i<n; ++i) {
+        if (i>0) {
+          z[i] += cpx(delta,0); tmp_cost = eval(f);
+          if (tmp_cost < cost) cost = tmp_cost;
+          else {
+            z[i] -= cpx(2*delta,0); tmp_cost = eval(f);
+            if (tmp_cost < cost) cost = tmp_cost;
+            else z[i] += cpx(delta,0);
+          }
+
+          z[i] += cpx(0,delta); tmp_cost = eval(f);
+          if (tmp_cost < cost) cost = tmp_cost;
+          else {
+            z[i] -= cpx(0,2*delta); tmp_cost = eval(f);
+            if (tmp_cost < cost) cost = tmp_cost;
+            else z[i] += cpx(0,delta);
+          }
+        }
+
+        r[i] += delta; tmp_cost = eval(f);
+        if (tmp_cost < cost) cost = tmp_cost;
+        else {
+          r[i] -= 2*delta; tmp_cost = eval(f);
+          if (tmp_cost < cost) cost = tmp_cost;
+          else r[i] += delta;
+        }
+      }
+    }
   }
 }

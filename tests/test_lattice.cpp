@@ -207,10 +207,10 @@ int main (int argc, char ** argv) {
 
   // Random stuff on a chosen lattice:
 
-  Lattice &L = SV;
+  Lattice &L = G67;
   L.relax(1e-14);
   L.tau = L.tau_rw();
-  cerr << "RW-adapted modulus: " << L.tau << endl;
+  L.optimize (&Lattice::cost_cp);
 
   Lattice_rectangle<Shape*> R(L,4,4);
   Pen p (Color(255,0,0),1,Color(255,255,0));
@@ -218,7 +218,7 @@ int main (int argc, char ** argv) {
   for (int i=0; i<R.w; ++i)
     for (int j=0; j<R.h; ++j)
       for (int k=0; k<L.n; ++k)
-        R(i,j,k) = new Circle (L(i,j,k), prng.uniform_real(0,0.1), p);
+        R(i,j,k) = new Circle (L(i,j,k), L.r[k], p);
 
   // Make a figure out of it
 
@@ -229,18 +229,18 @@ int main (int argc, char ** argv) {
   fd.push_back(L(2,1));
   fd.push_back(L(2,2));
   fd.push_back(L(1,2));
-  F.add (new Polygon(fd, Pen(192,0,192)));
+  F.add (new Polygon(fd, Pen(0,.5,192)));
+
+  for (int i=0; i<R.w; ++i)
+    for (int j=0; j<R.h; ++j)
+      for (int k=0; k<L.n; ++k)
+        F.add (new Circle (L(i,j,k), L.r[k]));
 
   for (int i=0; i<R.w; ++i)
     for (int j=0; j<R.h; ++j)
       for (int k=0; k<L.n; ++k)
         for (int l=0; l<L.adj[k].size(); ++l)
           F.add (new Segment (L(i,j,k), L(i,j,k) + L.shift(k,l)));
-
-  for (int i=0; i<R.w; ++i)
-    for (int j=0; j<R.h; ++j)
-      for (int k=0; k<L.n; ++k)
-        F.add (R(i,j,k));
 
   F.show(); F.pause();
   return 0;

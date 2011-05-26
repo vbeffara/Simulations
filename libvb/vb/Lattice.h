@@ -23,6 +23,9 @@ namespace vb {
     int x,y,k;
   };
 
+  class Lattice;
+  typedef double (Lattice::*LatticeCostFunction)() const;
+
   class Lattice {
   public:
     Lattice (int _n, cpx _tau = cpx(0,1));
@@ -38,11 +41,16 @@ namespace vb {
     double relax_once ();
     void relax (double eps=0);
     cpx tau_rw () const;
+    double cost_cp () const;
+
+    double eval (LatticeCostFunction f) const { return (this->*f)(); };
+    void optimize (LatticeCostFunction f, double eps=0);
 
     unsigned int n;                                ///< Number of vertices in a fundamental domain
     std::vector < std::vector<Lattice_move> > adj; ///< Adjacency lists
     cpx tau;                                       ///< Modulus of embedding in the complex plane
     std::vector<cpx> z;                            ///< Displacement of each vertex
+    std::vector<double> r;                         ///< The radius of the disk at each point
   };
 
   template <typename T> class Lattice_rectangle {
@@ -65,77 +73,6 @@ namespace vb {
  *       cpx cp_tau (double eps = 0) {
  *         return optimize(cost_cp);
  *       }
- *
- *       cpx optimize (double func(PerioCell), double eps = 0) {
- *         double cost = func(*this);
- *         double old_cost = cost + eps + 1;
- *         double tmp_cost = cost;
- *         while (old_cost - cost > eps) {
- *           old_cost = cost;
- *           double delta = sqrt(cost)/10;
- *
- *           tau += cpx(delta,0); tmp_cost = func(*this);
- *           if (tmp_cost < cost) cost = tmp_cost;
- *           else {
- *             tau -= cpx(2*delta,0); tmp_cost = func(*this);
- *             if (tmp_cost < cost) cost = tmp_cost;
- *             else tau += cpx(delta,0);
- *           }
- *
- *           tau += cpx(0,delta); tmp_cost = func(*this);
- *           if (tmp_cost < cost) cost = tmp_cost;
- *           else {
- *             tau -= cpx(0,2*delta); tmp_cost = func(*this);
- *             if (tmp_cost < cost) cost = tmp_cost;
- *             else tau += cpx(0,delta);
- *           }
- *
- *           for (int i=0; i<n; ++i) {
- *             if (i>0) {
- *               (*this)(i) += cpx(delta,0); tmp_cost = func(*this);
- *               if (tmp_cost < cost) cost = tmp_cost;
- *               else {
- *                 (*this)(i) -= cpx(2*delta,0); tmp_cost = func(*this);
- *                 if (tmp_cost < cost) cost = tmp_cost;
- *                 else (*this)(i) += cpx(delta,0);
- *               }
- *
- *               (*this)(i) += cpx(0,delta); tmp_cost = func(*this);
- *               if (tmp_cost < cost) cost = tmp_cost;
- *               else {
- *                 (*this)(i) -= cpx(0,2*delta); tmp_cost = func(*this);
- *                 if (tmp_cost < cost) cost = tmp_cost;
- *                 else (*this)(i) += cpx(0,delta);
- *               }
- *             }
- *
- *             R[i] += delta; tmp_cost = func(*this);
- *             if (tmp_cost < cost) cost = tmp_cost;
- *             else {
- *               R[i] -= 2*delta; tmp_cost = func(*this);
- *               if (tmp_cost < cost) cost = tmp_cost;
- *               else R[i] += delta;
- *             }
- *           }
- *         }
- *
- *         return tau;
- *       }
- *   };
- *
- *   double cost_cp (PerioCell C) {
- *     double t=0;
- *     for (int i=0; i<C.n; ++i)
- *       for (int j=0; j<C.n; ++j)
- *         for (int k=0; k<=8; ++k)
- *           if (C(i,j,k)) {
- *             cpx e = actual ( C(j)+PG_SHIFT[k]-C(i), C.tau );
- *             double d = sqrt ( e.real()*e.real() + e.imag()*e.imag() );
- *             double r = C.R[i]+C.R[j];
- *             t += (d-r)*(d-r);
- *           }
- *     return t/2.0;
- *   }
  *
  *   template <class T> class DecoratedCell {
  *     private:
