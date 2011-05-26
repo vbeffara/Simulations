@@ -12,27 +12,28 @@ namespace vb {
   /// Class to store the features of a picture element.
   class Pen {
   public:
-    Pen (Color c_=0, double w_=1.0, Color f_=255) : c(c_), f(f_), w(w_) { }
-    
+    Pen (Color c_=0, double w_=1.0, Color f_=255, bool ff_=false) : c(c_), f(f_), w(w_), ff(ff_) { }
+
     Color c;  ///< The color of the stroke.
     Color f;  ///< The fill color (when applicable).
     double w; ///< The stroke width.
+    bool ff;  ///< Whether the shape is filled.
   };
-  
+
   /// Base class for the elements of a figure.
   class Shape {
   public:
     Shape (Pen p_) : p(p_) { }
-    
+
     virtual ~Shape() {} ///< Empty destructor to make the compiler happy.
-    
+
     virtual double left () =0;    ///< Get the left boundary of the Shape.
     virtual double right () =0;   ///< Get the right boundary of the Shape.
     virtual double top () =0;     ///< Get the top boundary of the Shape.
     virtual double bottom () =0;  ///< Get the bottom boundary of the Shape.
-    
+
     virtual void draw (Cairo::RefPtr<Cairo::Context> cr) =0;  ///< Draw the shape on a Cairo context.
-    
+
     Pen p;
   };
 
@@ -45,13 +46,13 @@ namespace vb {
     double right ()  { return max(z1.real(),z2.real()); } ///< Get the right boundary of the Shape.
     double top ()    { return max(z1.imag(),z2.imag()); } ///< Get the top boundary of the Shape.
     double bottom () { return min(z1.imag(),z2.imag()); } ///< Get the bottom boundary of the Shape.
-    
+
     void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw the shape on a Cairo context.
 
   private:
     cpx z1,z2;
   };
-  
+
   /// Subclass of vb::Shape for a dot.
   class Dot : public Shape {
   public:
@@ -68,7 +69,7 @@ namespace vb {
     cpx z;
     std::string l;
   };
-  
+
   /// Subclass of vb::Shape for a circle.
   class Circle : public Shape {
   public:
@@ -90,25 +91,26 @@ namespace vb {
   class Path : public Shape {
   public:
     Path (std::vector<cpx> z_, Pen p = Color(0)) : Shape(p), z(z_) {}
-    
+
     double left ();   ///< Get the left boundary of the Shape.
     double right ();  ///< Get the right boundary of the Shape.
     double top ();    ///< Get the top boundary of the Shape.
     double bottom (); ///< Get the bottom boundary of the Shape.
 
     void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw the shape on a Cairo context.
-    
+
     std::vector<cpx> z;
   };
-  
+
   /// Subclass of vb::Path for a closed polygon.
   class Polygon : public Path {
   public:
     Polygon (std::vector<cpx> z, Pen p = Color(0)) : Path(z,p) {}
-    
+
     void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw the shape on a Cairo context.
   };
-  
+
+
   /** The main Figure class.
    *
    * Right now it's a list of shapes with an output routine.
@@ -119,14 +121,14 @@ namespace vb {
     Figure (bool ortho = true); ///< Constructor, reserves a window for display.
     ~Figure ();                 ///< Destructor, also destroys the contents nodes.
     void clean ();              ///< Destroy all the contents nodes.
-    
+
     double left ();             ///< Get the left boundary of the Figure.
     double right ();            ///< Get the right boundary of the Figure.
     double top ();              ///< Get the top boundary of the Figure.
     double bottom ();           ///< Get the bottom boundary of the Figure.
-    
+
     Figure &add (Shape *S);     ///< Add an element to the figure.
-    
+
     std::list<Shape*> contents; ///< The elements of the figure.
 
     void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw it onto a Cairo context.
@@ -135,22 +137,22 @@ namespace vb {
      *
      * @param s The base name of the output file, defaults to Image::title.
      */
-    
+
     virtual void output (const std::string &s = "");
-    
+
     /** Output the image as a PDF file.
      *
      * @param s The base name of the output file, defaults to Image::title.
      */
-    
+
     void output_pdf (const std::string &s = "");
-    
+
   protected:
     /// Update the contents of AutoWindow::stage.
     void paint ();
     /// Draw the contents of the figure to a Cairo context.
     void paint (Cairo::RefPtr<Cairo::Context> cr);
-    
+
     bool ortho; ///< Whether to force the unit square to be a square.
 
     double basewidth; ///< Width in real plane to get 1px.

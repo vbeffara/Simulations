@@ -57,7 +57,7 @@ private:
     coo.push_back(xy + cpx(omx,1));  coo.push_back(xy + cpx(0,2));
     coo.push_back(xy + cpx(-omx,1)); coo.push_back(xy + cpx(-omx,-1));
     coo.push_back(xy + cpx(0,-2));   coo.push_back(xy + cpx(omx,-1));
-    add (new Polygon(coo, Pen(0,1,c)));
+    add (new Polygon(coo, Pen(0,1,c,1)));
   }
 
   cpx thepos (int i) { return cpx(omx*(((i/w)%2)+2*(i%w)) , 3*(i/w)); }

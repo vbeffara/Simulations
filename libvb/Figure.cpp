@@ -15,9 +15,6 @@ namespace vb {
   void Circle::draw (Cairo::RefPtr<Cairo::Context> cr) {
     cr->begin_new_sub_path ();
     cr->arc (z.real(), z.imag(), r, 0, 2*M_PI);
-    cr->stroke_preserve();
-    cr->set_source_rgb (p.f.r/255.0, p.f.g/255.0, p.f.b/255.0);
-    cr->fill();
   }
 
   double Path::left () {
@@ -25,25 +22,25 @@ namespace vb {
     for (unsigned int i=1; i<z.size(); ++i) m = min (m, z[i].real());
     return m;
   }
-  
+
   double Path::right () {
     double m=z[0].real();
     for (unsigned int i=1; i<z.size(); ++i) m = max (m, z[i].real());
     return m;
   }
-  
+
   double Path::top () {
     double m=z[0].imag();
     for (unsigned int i=1; i<z.size(); ++i) m = max (m, z[i].imag());
     return m;
   }
-  
+
   double Path::bottom () {
     double m=z[0].imag();
     for (unsigned int i=1; i<z.size(); ++i) m = min (m, z[i].imag());
     return m;
   }
-  
+
   void Path::draw (Cairo::RefPtr<Cairo::Context> cr) {
     cr->move_to (z[0].real(), z[0].imag());
     for (unsigned int i=1; i<z.size(); ++i) cr->line_to (z[i].real(), z[i].imag());
@@ -52,9 +49,6 @@ namespace vb {
   void Polygon::draw (Cairo::RefPtr<Cairo::Context> cr) {
     cr->move_to (z.back().real(), z.back().imag());
     for (unsigned int i=0; i<z.size(); ++i) cr->line_to (z[i].real(), z[i].imag());
-    cr->stroke_preserve();    
-    cr->set_source_rgb (p.f.r/255.0, p.f.g/255.0, p.f.b/255.0);
-    cr->fill();
   };
 
   /*********************************************************/
@@ -111,21 +105,26 @@ namespace vb {
     cr->save();
     cr->set_source_rgb (1,1,1);
     cr->paint();
-    
+
     cr->translate      (width/2,height/2);
     cr->scale          (scale_x*.98, -scale_y*.98); // A tiny margin for stoke width.
     cr->translate      (-mid_x,-mid_y);
     cr->set_line_width (basewidth);
-    
+
     foreach (Shape *i, contents) {
       cr->save();
       cr->set_source_rgb (i->p.c.r/255.0, i->p.c.g/255.0, i->p.c.b/255.0);
       cr->set_line_width (basewidth * i->p.w);
       i->draw(cr);
+      if (i->p.ff) {
+        cr->stroke_preserve();
+        cr->set_source_rgb (i->p.f.r/255.0, i->p.f.g/255.0, i->p.f.b/255.0);
+        cr->fill();
+      }
       cr->stroke();
       cr->restore();
     }
-    
+
     cr->restore();
   }
 

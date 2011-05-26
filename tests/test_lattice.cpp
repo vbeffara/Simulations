@@ -207,12 +207,12 @@ int main (int argc, char ** argv) {
 
   // Random stuff on a chosen lattice:
 
-  Lattice &L = G67;
+  Lattice &L = C5;
   L.relax(1e-14);
   L.tau = L.tau_rw();
   L.optimize (&Lattice::cost_cp);
 
-  Lattice_rectangle<Shape*> R(L,4,4);
+  Lattice_rectangle<Shape*> R(L,3,3);
   Pen p (Color(255,0,0),1,Color(255,255,0));
 
   for (int i=0; i<R.w; ++i)
@@ -229,7 +229,7 @@ int main (int argc, char ** argv) {
   fd.push_back(L(2,1));
   fd.push_back(L(2,2));
   fd.push_back(L(1,2));
-  F.add (new Polygon(fd, Pen(0,.5,192)));
+  F.add (new Polygon(fd, Pen(0,0,200,1)));
 
   for (int i=0; i<R.w; ++i)
     for (int j=0; j<R.h; ++j)
