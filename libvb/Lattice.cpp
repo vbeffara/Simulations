@@ -42,8 +42,16 @@ namespace vb {
     return t;
   }
 
+  cpx Lattice::shear () const {
+    cpx t=0;
+    for (int k=0; k<n; ++k)
+      for (int l=0; l<adj[k].size(); ++l)
+        t += shift(k,l) * shift(k,l);
+    return t;
+  }
+
   double Lattice::relax_once () {
-    double diff=1;
+    double diff=0;
     for (int k=1; k<n; ++k) { // Vertex 0 is pinned to ensure uniqueness
       if (int d = adj[k].size()) {
         cpx s(0);
@@ -53,10 +61,10 @@ namespace vb {
         z[k] += s;
       }
     }
-    return diff-1;
+    return diff;
   }
 
   void Lattice::relax (double eps) {
-    while (relax_once()>eps) {std::cerr << relax_once() << std::endl;}
+    while (relax_once()>eps) {}
   }
 }

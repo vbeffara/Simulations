@@ -34,6 +34,7 @@ namespace vb {
     cpx shift (int k, int l) const;
 
     double energy () const;
+    cpx shear () const;
     double relax_once ();
     void relax (double eps=0);
 
@@ -59,19 +60,6 @@ namespace vb {
  *   cpx actual (cpx z, cpx tau = cpx(0,1)) {
  *     return z.real() + tau * z.imag();
  *   }
- *
- *       cpx rw_shear () {
- *         cpx t=0;
- *         for (int i=0; i<n; ++i)
- *           for (int j=0; j<n; ++j)
- *             for (int k=0; k<=8; ++k)
- *               if ((*this)(i,j,k)) {
- *                 cpx u = (*this)(j)+PG_SHIFT[k]-(*this)(i);
- *                 cpx e = u.real() + tau*u.imag();
- *                 t += e*e;
- *               }
- *         return t/(double)2;
- *       }
  *
  *       cpx rw_tau () {
  *         double a=0, b=0, c=0;

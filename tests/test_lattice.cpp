@@ -141,7 +141,7 @@ int main (int argc, char ** argv) {
 
   // The \sqrt{6/7} graph:
 
-  Lattice G67(3);
+  Lattice G67(3, cpx(0,sqrt(6.0/7)));
 
   G67.bond (0,1);
   G67.bond (0,2);
@@ -207,8 +207,9 @@ int main (int argc, char ** argv) {
 
   // Random stuff on a chosen lattice:
 
-  Lattice &L = SV;
-  L.relax();
+  Lattice &L = G67;
+  L.relax(1e-14);
+  cerr << "Random walk shear: " << L.shear() << endl;
 
   Lattice_rectangle<Shape*> R(L,4,4);
   Pen p (Color(255,0,0),1,Color(255,255,0));
