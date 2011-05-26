@@ -17,6 +17,9 @@ namespace vb {
   class Lattice {
   public:
     Lattice (int _n, cpx _tau = cpx(0,1));
+
+    cpx operator() (int x, int y, int k=0) const;
+
     void bond (int k1, int k2, int dx=0, int dy=0);
 
     unsigned int n;                                ///< Number of vertices in a fundamental domain
@@ -33,7 +36,7 @@ namespace vb {
     Lattice_vertex & operator+= (const Lattice_move &m);
     Lattice_vertex   operator+  (const Lattice_move &m) const;
 
-    operator cpx ();
+    operator cpx () { return L(x,y,k); };
 
     const Lattice &L;
     int x,y,k;

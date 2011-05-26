@@ -10,9 +10,9 @@ int main (int argc, char ** argv) {
 
   cpx tau (.5, sqrt(3.0)/2);
 
-  // The square lattice
+  // The square lattice:
 
-  Lattice Z2(1,cpx(0,1));
+  Lattice Z2(1);
 
   Z2.bond (0,0,1,0);
   Z2.bond (0,0,0,1);
@@ -70,7 +70,7 @@ int main (int argc, char ** argv) {
   T2.z[0]=0;
   T2.z[1]=cpx(.5,.5);
 
-  // The Kagome lattice
+  // The Kagome lattice:
 
   Lattice K(3,tau);
 
@@ -109,9 +109,9 @@ int main (int argc, char ** argv) {
   K2.z[4]=cpx(.5,.5);
   K2.z[5]=cpx(.75,.75);
 
-  // The square-octogon lattice
+  // The square-octogon lattice:
 
-  Lattice SO(4,cpx(0,1));
+  Lattice SO(4);
 
   SO.bond (0,1);
   SO.bond (1,2);
@@ -125,21 +125,108 @@ int main (int argc, char ** argv) {
   SO.z[2]=cpx(.5,.75);
   SO.z[3]=cpx(.25,.5);
 
+  // The centered square lattice:
+
+  Lattice Z2C(2);
+
+  Z2C.bond (0,0,1,0);
+  Z2C.bond (0,0,0,1);
+  Z2C.bond (0,1);
+  Z2C.bond (0,1,-1,0);
+  Z2C.bond (0,1,0,-1);
+  Z2C.bond (0,1,-1,-1);
+
+  Z2C.z[0]=0;
+  Z2C.z[1]=cpx(.5,.5);
+
+  // The \sqrt{6/7} graph:
+
+  Lattice G67(3);
+
+  G67.bond (0,1);
+  G67.bond (0,2);
+  G67.bond (1,2);
+  G67.bond (0,0,1,0);
+  G67.bond (0,0,0,1);
+  G67.bond (0,1,-1,0);
+  G67.bond (0,1,0,-1);
+  G67.bond (0,1,-1,-1);
+  G67.bond (2,0,0,1);
+
+  G67.z[0]=0;
+  G67.z[1]=cpx(.5,.5);
+  G67.z[2]=cpx(1.0/6,.5);
+
+  // The Shabat-Voevodsky graph:
+
+  Lattice SV(4);
+
+  SV.bond (0,1);
+  SV.bond (1,2);
+  SV.bond (2,3);
+  SV.bond (3,0);
+  SV.bond (1,3);
+  SV.bond (1,0,1,0);
+  SV.bond (2,3,1,0);
+  SV.bond (1,3,1,0);
+  SV.bond (0,3,0,-1);
+  SV.bond (1,2,0,-1);
+  SV.bond (2,0,1,1);
+  SV.bond (3,1,0,1);
+
+  SV.z[0]=0;
+  SV.z[1]=.5;
+  SV.z[2]=cpx(.5,.5);
+  SV.z[3]=cpx(0,.5);
+
+  // The C5 graph, such that Aut(lattice)=Z^2:
+
+  Lattice C5(5);
+
+  C5.bond (1,0);
+  C5.bond (1,4);
+  C5.bond (0,2);
+  C5.bond (0,3);
+  C5.bond (0,4);
+  C5.bond (2,3);
+  C5.bond (3,4);
+  C5.bond (2,1,1,0);
+  C5.bond (2,4,1,0);
+  C5.bond (3,4,1,0);
+  C5.bond (3,1,1,1);
+  C5.bond (3,0,1,1);
+  C5.bond (3,2,0,1);
+  C5.bond (3,0,0,1);
+  C5.bond (4,0,0,1);
+
+  C5.z[1]=cpx(0,.125);
+  C5.z[0]=.25;
+  C5.z[2]=cpx(.75,.25);
+  C5.z[3]=cpx(.75,.75);
+  C5.z[4]=cpx(.25,.5);
+
   // Random stuff on a chosen lattice:
 
-  Lattice &L = SO;
+  Lattice &L = C5;
 
-  Lattice_rectangle<Shape*> R(L,9,5);
+  Lattice_rectangle<Shape*> R(L,4,4);
   Pen p (Color(255,0,0),1,Color(255,255,0));
 
   for (int i=0; i<R.w; ++i)
     for (int j=0; j<R.h; ++j)
       for (int k=0; k<L.n; ++k)
-        R(i,j,k) = new Circle (Lattice_vertex(L,i,j,k), prng.uniform_real(0,0.3), p);
+        R(i,j,k) = new Circle (Lattice_vertex(L,i,j,k), prng.uniform_real(0,0.1), p);
 
   // Make a figure out of it
 
   Figure F;
+
+  vector<cpx> fd;
+  fd.push_back(L(1,1));
+  fd.push_back(L(2,1));
+  fd.push_back(L(2,2));
+  fd.push_back(L(1,2));
+  F.add (new Polygon(fd, Pen(192,0,192)));
 
   for (int i=0; i<R.w; ++i)
     for (int j=0; j<R.h; ++j)
