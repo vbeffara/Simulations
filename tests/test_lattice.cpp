@@ -24,7 +24,7 @@ int main (int argc, char ** argv) {
   Lattice_vertex P(H);
 
   for (int i=0; i<10000; ++i) {
-    cpx z=P.z();
+    cpx z(P);
     cout << z.real() << " " << z.imag() << endl;
     P += H.adj[P.k][prng.uniform_int(3)];
   }

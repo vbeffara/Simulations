@@ -26,8 +26,7 @@ namespace vb {
     return tmp;
   }
 
-
-  cpx Lattice_vertex::z () {
+  Lattice_vertex::operator cpx () {
     return cpx(x,0) + cpx(y,0)*L.tau + L.z[k];
   }
 }
