@@ -39,6 +39,18 @@ namespace vb {
     int x,y,k;
   };
 
+  template <typename T> class Lattice_rectangle {
+  public:
+    Lattice_rectangle (const Lattice &_L, int _w, int _h) : L(_L), w(_w), h(_h), data(w*h*L.n) {};
+
+    T & operator[] (const Lattice_vertex &v) { return data[v.k + L.n*(v.x + w*v.y)]; }
+    T & operator() (int x, int y, int k) { return (*this)[Lattice_vertex(L,x,y,k)]; }
+
+    const Lattice &L;
+    const int w,h;
+    std::vector<T> data;
+  };
+
 /*
  *   /\** Template for a decorated cell, to be used in vb::PerioGraph.
  *    *
