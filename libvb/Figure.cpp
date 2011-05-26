@@ -15,6 +15,9 @@ namespace vb {
   void Circle::draw (Cairo::RefPtr<Cairo::Context> cr) {
     cr->begin_new_sub_path ();
     cr->arc (z.real(), z.imag(), r, 0, 2*M_PI);
+    cr->stroke_preserve();
+    cr->set_source_rgb (p.f.r/255.0, p.f.g/255.0, p.f.b/255.0);
+    cr->fill();
   }
 
   double Path::left () {
