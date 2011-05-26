@@ -52,11 +52,151 @@ namespace vb {
   };
 
 /*
- *   /\** Template for a decorated cell, to be used in vb::PerioGraph.
- *    *
- *    * It will only work if T implements a copy constructor and can be
- *    * output to a std::ostream via operator<< overload.
- *    *\/
+ *   cpx actual (cpx z, cpx tau = cpx(0,1)) {
+ *     return z.real() + tau * z.imag();
+ *   }
+ *
+ *       double energy (void) {
+ *         double t = 0;
+ *         for (int i=0; i<n; ++i)
+ *           for (int j=0; j<n; ++j)
+ *             for (int k=0; k<=8; ++k)
+ *               if ((*this)(i,j,k))
+ *                 t += norm ((*this)(j)+PG_SHIFT[k]-(*this)(i));
+ *         return t/2;
+ *       }
+ *
+ *       double relax_once (void) {
+ *         double diff=0;
+ *         for (int i=1; i<n; ++i) { // Z[0] is pinned for uniqueness
+ *           cpx z(0,0);
+ *           double degree=0;
+ *           for (int j=0; j<n; ++j)
+ *             //if (i!=j)
+ *               for (int k=0; k<=8; ++k)
+ *                 if ((*this)(i,j,k)) {
+ *                   z += (*this)(j)+PG_SHIFT[k];
+ *                   degree += 1;
+ *                 }
+ *           if (degree>0) {
+ *             diff += abs((*this)(i)*degree - z);
+ *             (*this)(i) = z/degree;
+ *           }
+ *         }
+ *         return diff;
+ *       }
+ *
+ *       void relax (double eps=0) {
+ *         while (relax_once()>eps) { }
+ *       }
+ *
+ *       cpx rw_shear () {
+ *         cpx t=0;
+ *         for (int i=0; i<n; ++i)
+ *           for (int j=0; j<n; ++j)
+ *             for (int k=0; k<=8; ++k)
+ *               if ((*this)(i,j,k)) {
+ *                 cpx u = (*this)(j)+PG_SHIFT[k]-(*this)(i);
+ *                 cpx e = u.real() + tau*u.imag();
+ *                 t += e*e;
+ *               }
+ *         return t/(double)2;
+ *       }
+ *
+ *       cpx rw_tau () {
+ *         double a=0, b=0, c=0;
+ *         for (int i=0; i<n; ++i)
+ *           for (int j=0; j<n; ++j)
+ *             for (int k=0; k<=8; ++k)
+ *               if ((*this)(i,j,k)) {
+ *                 cpx u = (*this)(j)+PG_SHIFT[k]-(*this)(i);
+ *                 a += u.imag()*u.imag();
+ *                 b += 2*u.real()*u.imag();
+ *                 c += u.real()*u.real();
+ *               }
+ *         if (a==(double)0.0) return cpx(0,0);
+ *         cpx delta = b*b - 4*a*c;
+ *         cpx t = (-b + sqrt(delta))/(a*(double)2);
+ *         if (t.imag()<0) t = conj(t);
+ *         tau = t;
+ *         return t;
+ *       }
+ *
+ *       cpx cp_tau (double eps = 0) {
+ *         return optimize(cost_cp);
+ *       }
+ *
+ *       cpx optimize (double func(PerioCell), double eps = 0) {
+ *         double cost = func(*this);
+ *         double old_cost = cost + eps + 1;
+ *         double tmp_cost = cost;
+ *         while (old_cost - cost > eps) {
+ *           old_cost = cost;
+ *           double delta = sqrt(cost)/10;
+ *
+ *           tau += cpx(delta,0); tmp_cost = func(*this);
+ *           if (tmp_cost < cost) cost = tmp_cost;
+ *           else {
+ *             tau -= cpx(2*delta,0); tmp_cost = func(*this);
+ *             if (tmp_cost < cost) cost = tmp_cost;
+ *             else tau += cpx(delta,0);
+ *           }
+ *
+ *           tau += cpx(0,delta); tmp_cost = func(*this);
+ *           if (tmp_cost < cost) cost = tmp_cost;
+ *           else {
+ *             tau -= cpx(0,2*delta); tmp_cost = func(*this);
+ *             if (tmp_cost < cost) cost = tmp_cost;
+ *             else tau += cpx(0,delta);
+ *           }
+ *
+ *           for (int i=0; i<n; ++i) {
+ *             if (i>0) {
+ *               (*this)(i) += cpx(delta,0); tmp_cost = func(*this);
+ *               if (tmp_cost < cost) cost = tmp_cost;
+ *               else {
+ *                 (*this)(i) -= cpx(2*delta,0); tmp_cost = func(*this);
+ *                 if (tmp_cost < cost) cost = tmp_cost;
+ *                 else (*this)(i) += cpx(delta,0);
+ *               }
+ *
+ *               (*this)(i) += cpx(0,delta); tmp_cost = func(*this);
+ *               if (tmp_cost < cost) cost = tmp_cost;
+ *               else {
+ *                 (*this)(i) -= cpx(0,2*delta); tmp_cost = func(*this);
+ *                 if (tmp_cost < cost) cost = tmp_cost;
+ *                 else (*this)(i) += cpx(0,delta);
+ *               }
+ *             }
+ *
+ *             R[i] += delta; tmp_cost = func(*this);
+ *             if (tmp_cost < cost) cost = tmp_cost;
+ *             else {
+ *               R[i] -= 2*delta; tmp_cost = func(*this);
+ *               if (tmp_cost < cost) cost = tmp_cost;
+ *               else R[i] += delta;
+ *             }
+ *           }
+ *         }
+ *
+ *         return tau;
+ *       }
+ *   };
+ *
+ *   double cost_cp (PerioCell C) {
+ *     double t=0;
+ *     for (int i=0; i<C.n; ++i)
+ *       for (int j=0; j<C.n; ++j)
+ *         for (int k=0; k<=8; ++k)
+ *           if (C(i,j,k)) {
+ *             cpx e = actual ( C(j)+PG_SHIFT[k]-C(i), C.tau );
+ *             double d = sqrt ( e.real()*e.real() + e.imag()*e.imag() );
+ *             double r = C.R[i]+C.R[j];
+ *             t += (d-r)*(d-r);
+ *           }
+ *     return t/2.0;
+ *   }
+ *
  *   template <class T> class DecoratedCell {
  *     private:
  *       int n;                ///< The number of vertices.
@@ -77,8 +217,6 @@ namespace vb {
  *       }
  *   };
  *
- *   /\** The main class template for a (decorated) periodic graph.
- *    *\/
  *   template <class T> class PerioGraph {
  *     private:
  *       PerioCell C;                               ///< The repeated pattern.
@@ -118,5 +256,4 @@ namespace vb {
  *   };
  */
 }
-
 #endif
