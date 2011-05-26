@@ -7,11 +7,20 @@
 #include <vb/common.h>
 
 namespace vb {
-
   class Lattice_move {
   public:
     Lattice_move (int _k, int _dx, int _dy) : k(_k), dx(_dx), dy(_dy) {}
     int k,dx,dy;
+  };
+
+  class Lattice_vertex {
+  public:
+    Lattice_vertex (int _x=0, int _y=0, int _k=0) : x(_x), y(_y), k(_k) {};
+
+    Lattice_vertex & operator+= (const Lattice_move &m);
+    Lattice_vertex   operator+  (const Lattice_move &m) const;
+
+    int x,y,k;
   };
 
   class Lattice {
@@ -19,8 +28,10 @@ namespace vb {
     Lattice (int _n, cpx _tau = cpx(0,1));
 
     cpx operator() (int x, int y, int k=0) const;
+    cpx operator() (const Lattice_vertex &v) const;
 
     void bond (int k1, int k2, int dx=0, int dy=0);
+    cpx shift (int k, int l) const;
 
     unsigned int n;                                ///< Number of vertices in a fundamental domain
     std::vector < std::vector<Lattice_move> > adj; ///< Adjacency lists
@@ -28,25 +39,11 @@ namespace vb {
     std::vector<cpx> z;                            ///< Displacement of each vertex
   };
 
-  class Lattice_vertex {
-  public:
-    Lattice_vertex (const Lattice &_L, int _x=0, int _y=0, int _k=0) : L(_L), x(_x), y(_y), k(_k) {};
-
-    Lattice_vertex & operator=  (const Lattice_vertex &v);
-    Lattice_vertex & operator+= (const Lattice_move &m);
-    Lattice_vertex   operator+  (const Lattice_move &m) const;
-
-    operator cpx () { return L(x,y,k); };
-
-    const Lattice &L;
-    int x,y,k;
-  };
-
   template <typename T> class Lattice_rectangle {
   public:
     Lattice_rectangle (const Lattice &_L, int _w, int _h) : L(_L), w(_w), h(_h), data(w*h*L.n) {};
 
-    T & operator() (int x, int y, int k=0) { return data[k + L.n*(x+w*y)]; }
+    T & operator() (int x, int y, int k) { return data[k + L.n*(x+w*y)]; }
     T & operator[] (const Lattice_vertex &v) { return (*this)(v.x,v.y,v.k); }
 
     const Lattice &L;

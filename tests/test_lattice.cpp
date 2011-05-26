@@ -215,7 +215,7 @@ int main (int argc, char ** argv) {
   for (int i=0; i<R.w; ++i)
     for (int j=0; j<R.h; ++j)
       for (int k=0; k<L.n; ++k)
-        R(i,j,k) = new Circle (Lattice_vertex(L,i,j,k), prng.uniform_real(0,0.1), p);
+        R(i,j,k) = new Circle (L(i,j,k), prng.uniform_real(0,0.1), p);
 
   // Make a figure out of it
 
@@ -232,7 +232,7 @@ int main (int argc, char ** argv) {
     for (int j=0; j<R.h; ++j)
       for (int k=0; k<L.n; ++k)
         for (int l=0; l<L.adj[k].size(); ++l)
-          F.add (new Segment (Lattice_vertex(L,i,j,k), Lattice_vertex(L,i,j,k) + L.adj[k][l]));
+          F.add (new Segment (L(i,j,k), L(i,j,k) + L.shift(k,l)));
 
   for (int i=0; i<R.w; ++i)
     for (int j=0; j<R.h; ++j)
