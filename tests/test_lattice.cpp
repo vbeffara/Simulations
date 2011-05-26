@@ -28,7 +28,7 @@ int main (int argc, char ** argv) {
   H.bond (0,1,0,-1);
 
   H.z[0]=0;
-  H.z[1]=(cpx(1)+tau)/cpx(3);
+  H.z[1]=cpx(1,1)/cpx(3);
 
   // The hexagonal lattice with a rectangular fundamental domain:
 
@@ -42,9 +42,9 @@ int main (int argc, char ** argv) {
   H2.bond (3,0,1,1);
 
   H2.z[0]=0;
-  H2.z[1]=cpx(0,sqrt(3)/3);
-  H2.z[2]=cpx(.5,sqrt(3)/2);
-  H2.z[3]=cpx(.5,5*sqrt(3)/6);
+  H2.z[1]=cpx(0,1.0/3);
+  H2.z[2]=cpx(.5,.5);
+  H2.z[3]=cpx(.5,5.0/6);
 
   // The triangular lattice:
 
@@ -68,7 +68,7 @@ int main (int argc, char ** argv) {
   T2.bond (1,1,1,0);
 
   T2.z[0]=0;
-  T2.z[1]=cpx(.5,sqrt(3.0)/2);
+  T2.z[1]=cpx(.5,.5);
 
   // The Kagome lattice
 
@@ -83,7 +83,7 @@ int main (int argc, char ** argv) {
 
   K.z[0]=0;
   K.z[1]=.5;
-  K.z[2]=tau/cpx(2);
+  K.z[2]=cpx(0,.5);
 
   // The Kagome lattice with a rectangular fundamental domain:
 
@@ -104,10 +104,10 @@ int main (int argc, char ** argv) {
 
   K2.z[0]=0;
   K2.z[1]=.5;
-  K2.z[2]=cpx(.25,sqrt(3)/4);
-  K2.z[3]=cpx(0,sqrt(3)/2);
-  K2.z[4]=cpx(.5,sqrt(3)/2);
-  K2.z[5]=cpx(.75,3*sqrt(3)/4);
+  K2.z[2]=cpx(.25,.25);
+  K2.z[3]=cpx(0,.5);
+  K2.z[4]=cpx(.5,.5);
+  K2.z[5]=cpx(.75,.75);
 
   // The square-octogon lattice
 
@@ -127,7 +127,7 @@ int main (int argc, char ** argv) {
 
   // Random stuff on a chosen lattice:
 
-  Lattice &L = K2;
+  Lattice &L = SO;
 
   Lattice_rectangle<Shape*> R(L,9,5);
   Pen p (Color(255,0,0),1,Color(255,255,0));
