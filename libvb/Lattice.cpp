@@ -43,7 +43,7 @@ namespace vb {
   }
 
   double Lattice::relax_once () {
-    double diff=0;
+    double diff=1;
     for (int k=1; k<n; ++k) { // Vertex 0 is pinned to ensure uniqueness
       if (int d = adj[k].size()) {
         cpx s(0);
@@ -53,6 +53,10 @@ namespace vb {
         z[k] += s;
       }
     }
-    return diff;
+    return diff-1;
+  }
+
+  void Lattice::relax (double eps) {
+    while (relax_once()>eps) {std::cerr << relax_once() << std::endl;}
   }
 }

@@ -199,15 +199,16 @@ int main (int argc, char ** argv) {
   C5.bond (3,0,0,1);
   C5.bond (4,0,0,1);
 
-  C5.z[1]=cpx(0,.125);
   C5.z[0]=.25;
+  C5.z[1]=cpx(0,.125);
   C5.z[2]=cpx(.75,.25);
   C5.z[3]=cpx(.75,.75);
   C5.z[4]=cpx(.25,.5);
 
   // Random stuff on a chosen lattice:
 
-  Lattice &L = C5;
+  Lattice &L = SV;
+  L.relax();
 
   Lattice_rectangle<Shape*> R(L,4,4);
   Pen p (Color(255,0,0),1,Color(255,255,0));

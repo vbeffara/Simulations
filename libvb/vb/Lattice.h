@@ -35,6 +35,7 @@ namespace vb {
 
     double energy () const;
     double relax_once ();
+    void relax (double eps=0);
 
     unsigned int n;                                ///< Number of vertices in a fundamental domain
     std::vector < std::vector<Lattice_move> > adj; ///< Adjacency lists
@@ -58,10 +59,6 @@ namespace vb {
  *   cpx actual (cpx z, cpx tau = cpx(0,1)) {
  *     return z.real() + tau * z.imag();
  *   }
- *
- *       void relax (double eps=0) {
- *         while (relax_once()>eps) { }
- *       }
  *
  *       cpx rw_shear () {
  *         cpx t=0;
