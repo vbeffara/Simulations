@@ -7,6 +7,7 @@
 #include <vb/common.h>
 
 namespace vb {
+
   class Lattice_move {
   public:
     Lattice_move (int _k, int _dx, int _dy) : k(_k), dx(_dx), dy(_dy) {}
@@ -65,65 +66,6 @@ namespace vb {
     const int w,h;
     std::vector<T> data;
   };
-
-/*
- *   template <class T> class DecoratedCell {
- *     private:
- *       int n;                ///< The number of vertices.
- *       PerioCell *C;         ///< The base pattern.
- *       std::vector<T> D;     ///< The decorations.
- *
- *     public:
- *       /\** Constructor from a PerioCell and a default element.
- *        *\/
- *       DecoratedCell (PerioCell &CC, T t) : n(CC.n), C(&CC) {
- *         for (int i=0; i<n; ++i) D.push_back(t);
- *       }
- *
- *       /\** Access the labels via an operator.
- *        *\/
- *       T &operator() (int i) {
- *         return D[i];
- *       }
- *   };
- *
- *   template <class T> class PerioGraph {
- *     private:
- *       PerioCell C;                               ///< The repeated pattern.
- *       std::vector < DecoratedCell<T> > field;    ///< The data.
- *
- *     public:
- *       int wd;                                    ///< The number of periods in the horizontal direction.
- *       int ht;                                    ///< The number of periods in the vertical direction.
- *
- *       /\** The constructor from a PerioCell.
- *        *
- *        * @param width  The width (in periods) of the graph.
- *        * @param height The height (in periods) of the graph.
- *        * @param cell   The repeated cell.
- *        * @param t      The default value of the label.
- *        *\/
- *       PerioGraph (int width, int height, PerioCell cell, T t) : C(cell), wd(width), ht(height) {
- *         for (int i=0; i<wd; ++i)
- *           for (int j=0; j<ht; ++j)
- *             field.push_back(DecoratedCell<T> (C,t));
- *       }
- *
- *       /\** Access the labels via an operator.
- *        *\/
- *       T &operator() (int x, int y, int i) {
- *         return field[wd*x+y](i);
- *       }
- *
- *       /\** Nice output to a stream.
- *        *\/
- *       std::ostream &printOn (std::ostream &os) {
- *         for (int i=0; i<wd; ++i)
- *           for (int j=0; j<ht; ++j)
- *             field[wd*i+j].printOn(os, actual(cpx(i,j),C.tau));
- *         return os;
- *       }
- *   };
- */
 }
+
 #endif
