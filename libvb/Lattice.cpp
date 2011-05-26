@@ -9,13 +9,25 @@ namespace vb {
     adj[k2].push_back (Lattice_move(k1,-dx,-dy));
   }
 
-  cpx Lattice_vertex::z () {
-    return cpx(x,0) + cpx(y,0)*L.tau + L.z[k];
+  Lattice_vertex & Lattice_vertex::operator= (const Lattice_vertex &v) {
+    assert (&L == &(v.L));
+    x=v.x; y=v.y; k=v.k;
+    return *this;
   }
 
-  void Lattice_vertex::move (const Lattice_move m) {
-    x += m.dx;
-    y += m.dy;
-    k = m.k;
+  Lattice_vertex & Lattice_vertex::operator+= (const Lattice_move &m) {
+    x+=m.dx; y+=m.dy; k=m.k;
+    return *this;
+  }
+
+  Lattice_vertex Lattice_vertex::operator+ (const Lattice_move &m) const {
+    Lattice_vertex tmp (L,x,y,k);
+    tmp += m;
+    return tmp;
+  }
+
+
+  cpx Lattice_vertex::z () {
+    return cpx(x,0) + cpx(y,0)*L.tau + L.z[k];
   }
 }

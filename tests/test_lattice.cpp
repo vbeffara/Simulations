@@ -26,7 +26,7 @@ int main (int argc, char ** argv) {
   for (int i=0; i<10000; ++i) {
     cpx z=P.z();
     cout << z.real() << " " << z.imag() << endl;
-    P.move (H.adj[P.k][prng.uniform_int(3)]);
+    P += H.adj[P.k][prng.uniform_int(3)];
   }
 
   return 0;

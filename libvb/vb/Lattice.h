@@ -28,8 +28,13 @@ namespace vb {
   class Lattice_vertex {
   public:
     Lattice_vertex (const Lattice &_L, int _x=0, int _y=0, int _k=0) : L(_L), x(_x), y(_y), k(_k) {};
+
+    Lattice_vertex & operator= (const Lattice_vertex &v);
+    Lattice_vertex & operator+= (const Lattice_move &m);
+
+    Lattice_vertex operator+ (const Lattice_move &m) const;
+
     cpx z();
-    void move (const Lattice_move m);
 
     const Lattice &L;
     int x,y,k;
