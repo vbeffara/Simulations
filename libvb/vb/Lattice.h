@@ -30,6 +30,7 @@ namespace vb {
   public:
     Lattice (int _n, cpx _tau = cpx(0,1));
 
+    cpx actual (cpx xy) const;
     cpx operator() (int x, int y, int k=0) const;
     cpx operator() (const Lattice_vertex &v) const;
 
@@ -66,14 +67,6 @@ namespace vb {
   };
 
 /*
- *   cpx actual (cpx z, cpx tau = cpx(0,1)) {
- *     return z.real() + tau * z.imag();
- *   }
- *
- *       cpx cp_tau (double eps = 0) {
- *         return optimize(cost_cp);
- *       }
- *
  *   template <class T> class DecoratedCell {
  *     private:
  *       int n;                ///< The number of vertices.

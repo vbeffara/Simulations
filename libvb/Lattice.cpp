@@ -15,9 +15,12 @@ namespace vb {
 
   Lattice::Lattice (int _n, cpx _tau) : n(_n), adj(_n), tau(_tau), z(_n), r(_n) { }
 
+  cpx Lattice::actual (cpx xy) const {
+    return xy.real() + tau*xy.imag();
+  }
+
   cpx Lattice::operator() (int x, int y, int k) const {
-    const cpx &t = z[k];
-    return cpx(x,0)+t.real() + (cpx(y,0)+t.imag()) * tau;
+    return actual (cpx(x,y)+z[k]);
   }
 
   cpx Lattice::operator() (const Lattice_vertex &v) const {
