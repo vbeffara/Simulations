@@ -37,6 +37,7 @@ namespace vb {
     cpx shear () const;
     double relax_once ();
     void relax (double eps=0);
+    cpx tau_rw () const;
 
     unsigned int n;                                ///< Number of vertices in a fundamental domain
     std::vector < std::vector<Lattice_move> > adj; ///< Adjacency lists
@@ -60,25 +61,6 @@ namespace vb {
  *   cpx actual (cpx z, cpx tau = cpx(0,1)) {
  *     return z.real() + tau * z.imag();
  *   }
- *
- *       cpx rw_tau () {
- *         double a=0, b=0, c=0;
- *         for (int i=0; i<n; ++i)
- *           for (int j=0; j<n; ++j)
- *             for (int k=0; k<=8; ++k)
- *               if ((*this)(i,j,k)) {
- *                 cpx u = (*this)(j)+PG_SHIFT[k]-(*this)(i);
- *                 a += u.imag()*u.imag();
- *                 b += 2*u.real()*u.imag();
- *                 c += u.real()*u.real();
- *               }
- *         if (a==(double)0.0) return cpx(0,0);
- *         cpx delta = b*b - 4*a*c;
- *         cpx t = (-b + sqrt(delta))/(a*(double)2);
- *         if (t.imag()<0) t = conj(t);
- *         tau = t;
- *         return t;
- *       }
  *
  *       cpx cp_tau (double eps = 0) {
  *         return optimize(cost_cp);

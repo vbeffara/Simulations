@@ -67,4 +67,19 @@ namespace vb {
   void Lattice::relax (double eps) {
     while (relax_once()>eps) {}
   }
+
+  cpx Lattice::tau_rw () const {
+    double a=0, b=0, c=0;
+    for (int k=0; k<n; ++k)
+      for (int l=0; l<adj[k].size(); ++l) {
+        const Lattice_move &m = adj[k][l];
+        cpx u = cpx(m.dx,m.dy) + z[m.k] - z[k];
+        a += u.imag()*u.imag();
+        b += 2*u.real()*u.imag();
+        c += u.real()*u.real();
+      }
+    cpx delta = b*b - 4*a*c;
+    cpx t = (-b + sqrt(delta))/(2*a);
+    return (t.imag()>0 ? t : conj(t));
+  }
 }

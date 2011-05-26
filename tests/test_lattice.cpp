@@ -207,9 +207,10 @@ int main (int argc, char ** argv) {
 
   // Random stuff on a chosen lattice:
 
-  Lattice &L = G67;
+  Lattice &L = SV;
   L.relax(1e-14);
-  cerr << "Random walk shear: " << L.shear() << endl;
+  L.tau = L.tau_rw();
+  cerr << "RW-adapted modulus: " << L.tau << endl;
 
   Lattice_rectangle<Shape*> R(L,4,4);
   Pen p (Color(255,0,0),1,Color(255,255,0));
