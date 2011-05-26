@@ -35,7 +35,7 @@ namespace vb {
     cpx operator() (int x, int y, int k=0) const;
     cpx operator() (const Lattice_vertex &v) const;
 
-    void bond (int k1, int k2, int dx=0, int dy=0);
+    Lattice &bond (int k1, int k2, int dx=0, int dy=0);
     cpx shift (int k, int l) const;
 
     double energy () const;

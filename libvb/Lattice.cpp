@@ -27,9 +27,10 @@ namespace vb {
     return (*this)(v.x,v.y,v.k);
   }
 
-  void Lattice::bond (int k1, int k2, int dx, int dy) {
+  Lattice & Lattice::bond (int k1, int k2, int dx, int dy) {
     adj[k1].push_back (Lattice_move(k2,dx,dy));
     adj[k2].push_back (Lattice_move(k1,-dx,-dy));
+    return *this;
   }
 
   cpx Lattice::shift (int k, int l) const {
