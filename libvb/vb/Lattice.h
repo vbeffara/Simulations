@@ -34,6 +34,7 @@ namespace vb {
     cpx shift (int k, int l) const;
 
     double energy () const;
+    double relax_once ();
 
     unsigned int n;                                ///< Number of vertices in a fundamental domain
     std::vector < std::vector<Lattice_move> > adj; ///< Adjacency lists
@@ -57,26 +58,6 @@ namespace vb {
  *   cpx actual (cpx z, cpx tau = cpx(0,1)) {
  *     return z.real() + tau * z.imag();
  *   }
- *
- *       double relax_once (void) {
- *         double diff=0;
- *         for (int i=1; i<n; ++i) { // Z[0] is pinned for uniqueness
- *           cpx z(0,0);
- *           double degree=0;
- *           for (int j=0; j<n; ++j)
- *             //if (i!=j)
- *               for (int k=0; k<=8; ++k)
- *                 if ((*this)(i,j,k)) {
- *                   z += (*this)(j)+PG_SHIFT[k];
- *                   degree += 1;
- *                 }
- *           if (degree>0) {
- *             diff += abs((*this)(i)*degree - z);
- *             (*this)(i) = z/degree;
- *           }
- *         }
- *         return diff;
- *       }
  *
  *       void relax (double eps=0) {
  *         while (relax_once()>eps) { }

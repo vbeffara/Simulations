@@ -41,4 +41,18 @@ namespace vb {
         t += norm(shift(k,l));
     return t;
   }
+
+  double Lattice::relax_once () {
+    double diff=0;
+    for (int k=1; k<n; ++k) { // Vertex 0 is pinned to ensure uniqueness
+      if (int d = adj[k].size()) {
+        cpx s(0);
+        for (int l=0; l<d; ++l) s += shift(k,l);
+        s /= d;
+        diff += abs(s);
+        z[k] += s;
+      }
+    }
+    return diff;
+  }
 }
