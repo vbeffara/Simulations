@@ -33,6 +33,8 @@ namespace vb {
     void bond (int k1, int k2, int dx=0, int dy=0);
     cpx shift (int k, int l) const;
 
+    double energy () const;
+
     unsigned int n;                                ///< Number of vertices in a fundamental domain
     std::vector < std::vector<Lattice_move> > adj; ///< Adjacency lists
     cpx tau;                                       ///< Modulus of embedding in the complex plane
@@ -55,16 +57,6 @@ namespace vb {
  *   cpx actual (cpx z, cpx tau = cpx(0,1)) {
  *     return z.real() + tau * z.imag();
  *   }
- *
- *       double energy (void) {
- *         double t = 0;
- *         for (int i=0; i<n; ++i)
- *           for (int j=0; j<n; ++j)
- *             for (int k=0; k<=8; ++k)
- *               if ((*this)(i,j,k))
- *                 t += norm ((*this)(j)+PG_SHIFT[k]-(*this)(i));
- *         return t/2;
- *       }
  *
  *       double relax_once (void) {
  *         double diff=0;
