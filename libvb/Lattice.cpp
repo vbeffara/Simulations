@@ -87,65 +87,65 @@ namespace vb {
     return (t.imag()>0 ? t : conj(t));
   }
 
-  double Lattice::cost_cp () const {
+  double cost_cp (Lattice const &L) {
     double t=0;
-    for (int k=0; k<n; ++k)
-      for (int l=0; l<adj[k].size(); ++l) {
-        cpx s = shift(k,l);
+    for (int k=0; k<L.n; ++k)
+      for (int l=0; l<L.adj[k].size(); ++l) {
+        cpx s = L.shift(k,l);
         double d = sqrt(norm(s));
-        double rr = r[k] + r[adj[k][l].k];
+        double rr = L.r[k] + L.r[L.adj[k][l].k];
         t += (d-rr)*(d-rr);
       }
     return t;
   }
 
   void Lattice::optimize (LatticeCostFunction f, double eps) {
-    double cost = eval(f);
+    double cost = f(*this);
     double old_cost = cost + eps + 1;
     double tmp_cost = cost;
     while (old_cost - cost > eps) {
       old_cost = cost;
       double delta = sqrt(cost)/10;
 
-      tau += cpx(delta,0); tmp_cost = eval(f);
+      tau += cpx(delta,0); tmp_cost = f(*this);
       if (tmp_cost < cost) cost = tmp_cost;
       else {
-        tau -= cpx(2*delta,0); tmp_cost = eval(f);
+        tau -= cpx(2*delta,0); tmp_cost = f(*this);
         if (tmp_cost < cost) cost = tmp_cost;
         else tau += cpx(delta,0);
       }
 
-      tau += cpx(0,delta); tmp_cost = eval(f);
+      tau += cpx(0,delta); tmp_cost = f(*this);
       if (tmp_cost < cost) cost = tmp_cost;
       else {
-        tau -= cpx(0,2*delta); tmp_cost = eval(f);
+        tau -= cpx(0,2*delta); tmp_cost = f(*this);
         if (tmp_cost < cost) cost = tmp_cost;
         else tau += cpx(0,delta);
       }
 
       for (int i=0; i<n; ++i) {
         if (i>0) {
-          z[i] += cpx(delta,0); tmp_cost = eval(f);
+          z[i] += cpx(delta,0); tmp_cost = f(*this);
           if (tmp_cost < cost) cost = tmp_cost;
           else {
-            z[i] -= cpx(2*delta,0); tmp_cost = eval(f);
+            z[i] -= cpx(2*delta,0); tmp_cost = f(*this);
             if (tmp_cost < cost) cost = tmp_cost;
             else z[i] += cpx(delta,0);
           }
 
-          z[i] += cpx(0,delta); tmp_cost = eval(f);
+          z[i] += cpx(0,delta); tmp_cost = f(*this);
           if (tmp_cost < cost) cost = tmp_cost;
           else {
-            z[i] -= cpx(0,2*delta); tmp_cost = eval(f);
+            z[i] -= cpx(0,2*delta); tmp_cost = f(*this);
             if (tmp_cost < cost) cost = tmp_cost;
             else z[i] += cpx(0,delta);
           }
         }
 
-        r[i] += delta; tmp_cost = eval(f);
+        r[i] += delta; tmp_cost = f(*this);
         if (tmp_cost < cost) cost = tmp_cost;
         else {
-          r[i] -= 2*delta; tmp_cost = eval(f);
+          r[i] -= 2*delta; tmp_cost = f(*this);
           if (tmp_cost < cost) cost = tmp_cost;
           else r[i] += delta;
         }

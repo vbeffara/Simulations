@@ -116,7 +116,7 @@ int main (int argc, char ** argv) {
   Lattice &L = C5;
   L.relax(1e-14);
   L.tau = L.tau_rw();
-  L.optimize (&Lattice::cost_cp);
+  L.optimize (cost_cp);
 
   Lattice_rectangle<int> R(L,3,3);
   Pen p (Color(255,0,0),1,Color(255,255,0));

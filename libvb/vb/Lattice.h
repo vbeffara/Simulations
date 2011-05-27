@@ -25,7 +25,8 @@ namespace vb {
   };
 
   class Lattice;
-  typedef double (Lattice::*LatticeCostFunction)() const;
+  typedef double LatticeCostFunction (Lattice const &);
+  double cost_cp (Lattice const &L);
 
   class Lattice {
   public:
@@ -43,9 +44,7 @@ namespace vb {
     double relax_once ();
     void relax (double eps=0);
     cpx tau_rw () const;
-    double cost_cp () const;
 
-    double eval (LatticeCostFunction f) const { return (this->*f)(); };
     void optimize (LatticeCostFunction f, double eps=0);
 
     unsigned int n;                                ///< Number of vertices in a fundamental domain
