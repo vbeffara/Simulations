@@ -152,4 +152,117 @@ namespace vb {
       }
     }
   }
+
+  Lattice Z2() {
+    Lattice Z2(2);
+    Z2.bond(0,0,1,0).bond(0,0,0,1);
+    Z2.z[0]=0;
+    return Z2;
+  }
+
+  Lattice H () {
+    Lattice H(2,cpx(.5,sqrt(3)/2));
+    H.bond(0,1).bond(0,1,-1,0).bond(0,1,0,-1);
+    H.z[0]=0;
+    H.z[1]=cpx(1,1)/cpx(3);
+    return H;
+  }
+
+  Lattice H2 () {
+    Lattice H2(4,cpx(0,sqrt(3.0)));
+    H2.bond(0,1).bond(1,2).bond(2,3).bond(3,0,0,1).bond(2,1,1,0).bond(3,0,1,1);
+    H2.z[0]=0;
+    H2.z[1]=cpx(0,1.0/3);
+    H2.z[2]=cpx(.5,.5);
+    H2.z[3]=cpx(.5,5.0/6);
+    return H2;
+  }
+
+  Lattice T() {
+    Lattice T(1,cpx(.5,sqrt(3)/2));
+    T.bond(0,0,1,0).bond(0,0,0,1).bond(0,0,-1,1);
+    T.z[0]=0;
+    return T;
+  }
+
+  Lattice T2 () {
+    Lattice T2(2,cpx(0,sqrt(3.0)));
+    T2.bond(0,1).bond(0,0,1,0).bond(1,0,1,0).bond(1,0,0,1).bond(1,0,1,1).bond(1,1,1,0);
+    T2.z[0]=0;
+    T2.z[1]=cpx(.5,.5);
+    return T2;
+  }
+
+  Lattice K () {
+    Lattice K(3,cpx(.5,sqrt(3)/2));
+    K.bond(0,1).bond(0,2).bond(1,2).bond(1,0,1,0).bond(2,0,0,1).bond(1,2,1,-1);
+    K.z[0]=0;
+    K.z[1]=.5;
+    K.z[2]=cpx(0,.5);
+    return K;
+  }
+
+  Lattice K2 () {
+    Lattice K2(6,cpx(0,sqrt(3)));
+    K2.bond(0,1).bond(0,2).bond(1,2).bond(2,3).bond(2,4).bond(3,4).bond(4,5)
+      .bond(1,0,1,0).bond(4,3,1,0).bond(5,3,1,0).bond(5,1,0,1).bond(5,0,1,1);
+    K2.z[0]=0;
+    K2.z[1]=.5;
+    K2.z[2]=cpx(.25,.25);
+    K2.z[3]=cpx(0,.5);
+    K2.z[4]=cpx(.5,.5);
+    K2.z[5]=cpx(.75,.75);
+    return K2;
+  }
+
+  Lattice SO () {
+    Lattice SO(4);
+    SO.bond(0,1).bond(1,2).bond(2,3).bond(3,0).bond(2,0,0,1).bond(1,3,1,0);
+    SO.z[0]=cpx(.5,.25);
+    SO.z[1]=cpx(.75,.5);
+    SO.z[2]=cpx(.5,.75);
+    SO.z[3]=cpx(.25,.5);
+    return SO;
+  }
+
+  Lattice Z2C () {
+    Lattice Z2C(2);
+    Z2C.bond(0,0,1,0).bond(0,0,0,1).bond(0,1).bond(0,1,-1,0).bond(0,1,0,-1).bond(0,1,-1,-1);
+    Z2C.z[0]=0;
+    Z2C.z[1]=cpx(.5,.5);
+    return Z2C;
+  }
+
+  Lattice G67 () {
+    Lattice G67(3, cpx(0,sqrt(6.0/7)));
+    G67.bond(0,1).bond(0,2).bond(1,2).bond(0,0,1,0).bond(0,0,0,1).bond(0,1,-1,0)
+      .bond(0,1,0,-1).bond(0,1,-1,-1).bond(2,0,0,1);
+    G67.z[0]=0;
+    G67.z[1]=cpx(.5,.5);
+    G67.z[2]=cpx(1.0/6,.5);
+    return G67;
+  }
+
+  Lattice SV () {
+    Lattice SV(4);
+    SV.bond(0,1).bond(1,2).bond(2,3).bond(3,0).bond(1,3).bond(1,0,1,0).bond(2,3,1,0)
+      .bond(1,3,1,0).bond(0,3,0,-1).bond(1,2,0,-1).bond(2,0,1,1).bond(3,1,0,1);
+    SV.z[0]=0;
+    SV.z[1]=.5;
+    SV.z[2]=cpx(.5,.5);
+    SV.z[3]=cpx(0,.5);
+    return SV;
+  }
+
+  Lattice C5 () {
+    Lattice C5(5);
+    C5.bond(1,0).bond(1,4).bond(0,2).bond(0,3).bond(0,4).bond(2,3).bond(3,4).bond(2,1,1,0).bond(2,4,1,0)
+      .bond(3,4,1,0).bond(3,1,1,1).bond(3,0,1,1).bond(3,2,0,1).bond(3,0,0,1).bond(4,0,0,1);
+    C5.z[0]=.25;
+    C5.z[1]=cpx(0,.125);
+    C5.z[2]=cpx(.75,.25);
+    C5.z[3]=cpx(.75,.75);
+    C5.z[4]=cpx(.25,.5);
+    return C5;
+  }
 }

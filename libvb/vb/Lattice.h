@@ -65,6 +65,19 @@ namespace vb {
     const int w,h;
     std::vector<T> data;
   };
+
+  Lattice Z2();  ///< The square lattice.
+  Lattice H();   ///< The hexagonal lattice.
+  Lattice H2();  ///< The hexagonal lattice, rectangular embedding.
+  Lattice T();   ///< The triangular lattice.
+  Lattice T2();  ///< The triangular lattice, rectangular embedding.
+  Lattice K();   ///< The Kagome lattice;
+  Lattice K2();  ///< The Kagome lattice, rectangular embedding.
+  Lattice SO();  ///< The square-octogon lattice.
+  Lattice Z2C(); ///< The square lattice with centered faces.
+  Lattice G67(); ///< The "\sqrt{6/7}" graph.
+  Lattice SV();  ///< The Shabat-Voevodsky graph.
+  Lattice C5();  ///< The C5 graph (automorphism group is Z^2).
 }
 
 #endif
