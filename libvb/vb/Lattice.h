@@ -14,6 +14,8 @@ namespace vb {
     int k,dx,dy;
   };
 
+  /// A utility class to point to a vertex in a libvb::Lattice or a libvb::LatticeRectangle.
+
   class Lattice_vertex {
   public:
     Lattice_vertex (int _x=0, int _y=0, int _k=0) : x(_x), y(_y), k(_k) {};
@@ -23,6 +25,8 @@ namespace vb {
 
     int x,y,k;
   };
+
+  /// A class to represent periodic 2D lattices.
 
   class Lattice;
   typedef double LatticeCostFunction (Lattice const &);
@@ -53,6 +57,12 @@ namespace vb {
     std::vector<cpx> z;                            ///< Displacement of each vertex
     std::vector<double> r;                         ///< The radius of the disk at each point
   };
+
+  /** A class representing a rectangle in a libvb::Lattice.
+   *
+   * The template parameter is the type of data to be put on each vertex
+   * of the rectangle (typically a color or some kind of local information).
+   */
 
   template <typename T> class Lattice_rectangle {
   public:
