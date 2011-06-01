@@ -70,14 +70,12 @@ public:
     char   zp = traj[position.prev -> n].z;
 
     double vxp,vyp;
-    if (zp) // si prev n'est pas à l'infini
-      vxp=xp-x, vyp=yp-y;
-    else
-      vxp=xp, vyp=yp;
+    if (zp) vxp=xp-x, vyp=yp-y;
+    else vxp=xp, vyp=yp;
 
     double u = sqrt(vxp*vxp+vyp*vyp); vxp /= u; vyp /= u;
 
-    double alpha    = prng.uniform_real(0, 2*M_PI+angle(traj[position.n],traj[(*(position.prev)).n],traj[(*(position.suiv)).n]));
+    double alpha    = prng.uniform_real(0, 2*M_PI+angle(traj[position.n], traj[position.prev->n], traj[position.suiv->n]));
     double sinalpha = sin(alpha);
     double cosalpha = cos(alpha);
     newpoint.x = x+vxp*cosalpha-vyp*sinalpha;
