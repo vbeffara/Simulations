@@ -43,27 +43,15 @@ public:
 
 // Angle (O,A), (O,B) entre -pi et pi. Suppose que O n'est pas à
 // l'infini
-double angle (point O, point A, point B) {
-  double vxa,vya,vxb,vyb,u,sina,cosa;
+double angle (point &O, point &A, point &B) {
+  double vxa,vya,vxb,vyb;
 
-  if (A.z) vxa=A.x-O.x, vya=A.y-O.y;
-  else vxa=A.x, vya=A.y;
-  u=sqrt(vxa*vxa+vya*vya);
-  vxa/=u; vya/=u;
+  if (A.z) vxa=A.x-O.x, vya=A.y-O.y; else vxa=A.x, vya=A.y;
+  if (B.z) vxb=B.x-O.x, vyb=B.y-O.y; else vxb=B.x, vyb=B.y;
 
-  if (B.z) vxb=B.x-O.x, vyb=B.y-O.y;
-  else vxb=B.x, vyb=B.y;
-  u=sqrt(vxb*vxb+vyb*vyb);
-  vxb/=u; vyb/=u;
-
-  sina=vxa*vyb-vxb*vya;
-  cosa=vxa*vxb+vya*vyb;
-
-  // Pour éviter les pb d'arrondi avant d'appliquer acos :
-  if (cosa>1) cosa=1;
-  if (cosa<-1) cosa=-1;
-
-  return (sina>=0) ? acos(cosa) : -acos(cosa);
+  double output = atan2(vyb,vxb) - atan2(vya,vxa);
+  if (output>M_PI) output -= 2*M_PI;
+  return output;
 }
 
 class Rancher {
@@ -112,50 +100,46 @@ public:
   // Ajoute le point position à l'enveloppe convexe débutant par debut
   // (traj est le tableau des coordonnées des points) (le paramètre fin
   // est en fait inutile)
-  void insere_maillon(maillon & position, maillon *debut, maillon *fin, vector<point> & traj) {
-    maillon *next, *maillonmax, *maillonmin;
-    float pente,minpente,maxpente;
+  void insere_maillon (maillon & position, maillon *debut) {
+    maillon *maillonmax, *maillonmin;
+    double pente;
 
-    next=debut;
+    maillon *next = debut;
 
-    minpente=+INFINITY; // M_PI devrait suffire
-    maxpente=-INFINITY; // -M_PI devrait suffire
+    double minpente = +INFINITY; // M_PI devrait suffire
+    double maxpente = -INFINITY; // -M_PI devrait suffire
 
-    // le min par défaut doit être fin et le max debut (si confondus, par exemple...)
-
-    // nb : optimisation possible vu les monotonies dues à la convexité
-
-    while(next!=NULL) {
-      pente=angle(traj[position.n],traj[(*debut).n],traj[(*next).n]);
-      if(pente<=minpente) {
-        minpente=pente;
-        maillonmin=next;
+    while (next) {
+      pente = angle (traj[position.n], traj[(*debut).n], traj[(*next).n]);
+      if (pente <= minpente) {
+        minpente = pente;
+        maillonmin = next;
       }
-      next=(*next).suiv;
+      next = next -> suiv;
     }
 
-    next=maillonmin;
+    next = maillonmin;
 
-    while(next!=NULL) {
-      pente=angle(traj[position.n],traj[(*debut).n],traj[(*next).n]);
-      if(pente>=maxpente) {
-        maxpente=pente;
-        maillonmax=next;
+    while (next) {
+      pente = angle (traj[position.n], traj[(*debut).n], traj[(*next).n]);
+      if (pente >= maxpente) {
+        maxpente = pente;
+        maillonmax = next;
       }
-      next=(*next).prev;
+      next= next -> prev;
     }
 
     // Desallocation des chaînons intermédiaires
     libere_maillons(maillonmax,maillonmin);
 
     // Introduction de position dans la chaîne, entre maillonmin et maillonmax
-    position.prev=maillonmax;
-    position.suiv=maillonmin;
-    (*maillonmax).suiv=&position;
-    (*maillonmin).prev=&position;
+    position.prev = maillonmax;
+    position.suiv = maillonmin;
+    maillonmax -> suiv = &position;
+    maillonmin -> prev = &position;
   }
 
-  void dessine_enveloppe(FILE *fichier, maillon *debut, vector<point> & traj) {
+  void dessine_enveloppe (FILE *fichier, maillon *debut) {
     maillon *next;
 
     next=debut;
@@ -177,7 +161,7 @@ public:
     fprintf(fichier,"stroke\n");
   }
 
-  int main(int argc, char *argv[]) {
+  void main (int argc, char ** argv) {
     FILE *fichier, *fichier_final;
 
     time_t t0, t1;
@@ -259,12 +243,11 @@ public:
       printf ("%d\n", n_sides);
 
       // Reste à définir prev et suiv en recalculant l'enveloppe convexe
-      insere_maillon(*position, &debut, &fin, traj);
-      if (!(i%inter)) dessine_enveloppe(fichier, &debut, traj);
+      insere_maillon(*position, &debut);
+      if (!(i%inter)) dessine_enveloppe(fichier, &debut);
     }
     fprintf(fichier, "stroke");
 
-    // Maintenant que l'on connaît les limites du dessin, on peut écrire l'en-tête, dans fichier_final
     rewind(fichier);
 
     fichier_final=fopen(filename,"w");
@@ -301,12 +284,11 @@ public:
 
     time(&t1);
     printf("Temps écoulé : %.0lf s.\n", difftime(t1,t0));
-
-    exit(0);
   }
 };
 
 int main (int argc, char **argv) {
   Rancher R;
-  return R.main(argc,argv);
+  R.main(argc,argv);
+  return 0;
 }
