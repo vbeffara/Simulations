@@ -23,7 +23,7 @@ using namespace vb;
 
 class point {
 public:
-  point (double _x=0, double _y=0, char _z=0) : x(_x), y(_y), z(_z) {};
+  point (double _x, double _y, char _z) : x(_x), y(_y), z(_z) {};
   double x;
   double y;
   char z;   ///< 0 si point à l'infini, 1 si point du plan (cf. plan projectif)
@@ -35,8 +35,8 @@ public:
 
 class maillon {
 public:
-  maillon (int _n=0, maillon *_prev=0, maillon *_suiv=0) : n(_n), prev(_prev), suiv(_suiv) {};
-  int n; // numéro du point
+  maillon (point _p, maillon *_prev=0, maillon *_suiv=0) : p(_p), prev(_prev), suiv(_suiv) {};
+  point p;
   maillon *prev;
   maillon *suiv;
 };
@@ -63,11 +63,11 @@ public:
   // Génère un pas aléatoire à partir de position (ni début ni fin) et le
   // place dans newpoint
   void rand_point (maillon & position, point & newpoint) {
-    double x  = traj[position.n].x;
-    double y  = traj[position.n].y;
-    double xp = traj[position.prev -> n].x;
-    double yp = traj[position.prev -> n].y;
-    char   zp = traj[position.prev -> n].z;
+    double x  = position.p.x;
+    double y  = position.p.y;
+    double xp = position.prev -> p.x;
+    double yp = position.prev -> p.y;
+    char   zp = position.prev -> p.z;
 
     double vxp,vyp;
     if (zp) vxp=xp-x, vyp=yp-y;
@@ -75,7 +75,7 @@ public:
 
     double u = sqrt(vxp*vxp+vyp*vyp); vxp /= u; vyp /= u;
 
-    double alpha    = prng.uniform_real(0, 2*M_PI+angle(traj[position.n], traj[position.prev->n], traj[position.suiv->n]));
+    double alpha    = prng.uniform_real(0, 2*M_PI+angle(position.p, position.prev->p, position.suiv->p));
     double sinalpha = sin(alpha);
     double cosalpha = cos(alpha);
     newpoint.x = x+vxp*cosalpha-vyp*sinalpha;
@@ -108,7 +108,7 @@ public:
     double maxpente = -INFINITY; // -M_PI devrait suffire
 
     while (next) {
-      pente = angle (traj[position.n], traj[(*debut).n], traj[(*next).n]);
+      pente = angle (position.p, debut->p, next->p);
       if (pente <= minpente) {
         minpente = pente;
         maillonmin = next;
@@ -119,7 +119,7 @@ public:
     next = maillonmin;
 
     while (next) {
-      pente = angle (traj[position.n], traj[(*debut).n], traj[(*next).n]);
+      pente = angle (position.p, debut->p, next->p);
       if (pente >= maxpente) {
         maxpente = pente;
         maillonmax = next;
@@ -138,23 +138,21 @@ public:
   }
 
   void dessine_enveloppe (FILE *fichier, maillon *debut) {
-    maillon *next;
-
-    next=debut;
+    maillon *next=debut;
 
     fprintf(fichier,"%f %f %f setrgbcolor\n",prng.uniform_real(),prng.uniform_real(),prng.uniform_real());
-
     fprintf(fichier,"newpath\n");
-    if((traj[(*debut).n]).z) // point de départ dans le plan affine
-      fprintf(fichier,"%f %f moveto\n",traj[(*debut).n].x,traj[(*debut).n].y);
-    else
-      fprintf(fichier,"%f %f moveto\n",(traj[(*((*debut).suiv)).n]).x+(traj[(*debut).n]).x,(traj[(*((*debut).suiv)).n]).y+(traj[(*debut).n]).y);
 
-    while((next=(*next).suiv)!=NULL) {
-      if((traj[(*next).n]).z) // point de départ dans le plan affine
-        fprintf(fichier,"%f %f lineto\n",traj[(*next).n].x,traj[(*next).n].y);
+    if (debut->p.z) // point de départ dans le plan affine
+      fprintf(fichier, "%f %f moveto\n", debut->p.x, debut->p.y);
+    else
+      fprintf(fichier, "%f %f moveto\n", debut->suiv->p.x + debut->p.x, debut->suiv->p.y + debut->p.y);
+
+    while ((next=next->suiv)) {
+      if (next->p.z) // point de départ dans le plan affine
+        fprintf(fichier, "%f %f lineto\n", next->p.x, next->p.y);
       else
-        fprintf(fichier,"%f %f lineto\n",(traj[(*((*next).prev)).n]).x+(traj[(*next).n]).x,(traj[(*((*next).prev)).n]).y+(traj[(*next).n]).y);
+        fprintf(fichier, "%f %f lineto\n", next->prev->p.x + next->p.x, next->prev->p.y + next->p.y);
     }
     fprintf(fichier,"stroke\n");
   }
@@ -170,7 +168,6 @@ public:
 
     n_sides = 0;
 
-    maillon debut, fin; // début et fin de la liste chaînée de l'enveloppe
     maillon *position, *position2; // position en cours et suivante
 
     if (argc<5) {
@@ -189,7 +186,8 @@ public:
     int inter=10; // inverse de la fréquence d'affichage des enveloppes
     sscanf(argv[3],"%d",&inter);
 
-    traj.resize(nb);
+    traj.resize(nb,point(0,0,0));
+    maillon debut(traj[0]), fin(traj[1]);      // début et fin de la liste chaînée de l'enveloppe
 
     // Description de la config initiale
     i=3; // nombre de points au début
@@ -198,7 +196,7 @@ public:
     traj[2].x=0;
     traj[2].y=0;
     traj[2].z=1;
-    position = new maillon (2, &debut, &fin);
+    position = new maillon (traj[2], &debut, &fin);
     n_sides++;
 
     double longueur=(double)nb*2;
@@ -210,7 +208,7 @@ public:
     traj[0].x=-longueur;
     traj[0].y=-pente*longueur;
     traj[0].z=0;
-    debut.n=0;
+    debut.p=traj[0];
     debut.suiv=position;
     debut.prev=NULL;
 
@@ -218,7 +216,7 @@ public:
     traj[1].x=-longueur;
     traj[1].y=pente*longueur;
     traj[1].z=0;
-    fin.n=1;
+    fin.p=traj[1];
     fin.prev=position;
     fin.suiv=NULL;
 
@@ -236,7 +234,7 @@ public:
       if(traj[i].y<miny) miny=traj[i].y;
 
       // Il devient la nouvelle position
-      position = new maillon(i);
+      position = new maillon(traj[i]);
       n_sides++;
       printf ("%d\n", n_sides);
 
