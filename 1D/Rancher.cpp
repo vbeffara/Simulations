@@ -17,6 +17,7 @@
  */
 
 #include <vb/PRNG.h>
+#include <vb/Figure.h>
 
 using namespace std;
 using namespace vb;
@@ -54,46 +55,37 @@ double angle (point &O, point &A, point &B) {
   return output;
 }
 
+point rand_point (maillon & position) {
+  point p = position.p, pp = position.prev->p;
+  double vxp,vyp;
+
+  if (pp.z) vxp = pp.x-p.x, vyp = pp.y-p.y;
+  else      vxp = pp.x,     vyp = pp.y;
+
+  double u = hypot(vxp,vyp); vxp /= u; vyp /= u;
+
+  double alpha    = prng.uniform_real(0, 2*M_PI + angle(position.p, position.prev->p, position.suiv->p));
+  double sinalpha = sin(alpha);
+  double cosalpha = cos(alpha);
+
+  return point (p.x+vxp*cosalpha-vyp*sinalpha, p.y+vxp*sinalpha+vyp*cosalpha, 1);
+}
+
+// Libère (en mémoire) les maillons strictement compris entre début et
+// fin
+void libere_maillons (maillon *debut, maillon *fin) {
+  maillon *m = debut->suiv;
+  while (m!=fin) {
+    maillon *next = m->suiv;
+    delete m;
+    m = next;
+  }
+}
+
 class Rancher {
 public:
   vector<point> traj; ///< Coordonnées des points
-
-  int n_sides;
-
-  // Génère un pas aléatoire à partir de position (ni début ni fin) et le
-  // place dans newpoint
-  void rand_point (maillon & position, point & newpoint) {
-    double x  = position.p.x;
-    double y  = position.p.y;
-    double xp = position.prev -> p.x;
-    double yp = position.prev -> p.y;
-    char   zp = position.prev -> p.z;
-
-    double vxp,vyp;
-    if (zp) vxp=xp-x, vyp=yp-y;
-    else vxp=xp, vyp=yp;
-
-    double u = sqrt(vxp*vxp+vyp*vyp); vxp /= u; vyp /= u;
-
-    double alpha    = prng.uniform_real(0, 2*M_PI+angle(position.p, position.prev->p, position.suiv->p));
-    double sinalpha = sin(alpha);
-    double cosalpha = cos(alpha);
-    newpoint.x = x+vxp*cosalpha-vyp*sinalpha;
-    newpoint.y = y+vxp*sinalpha+vyp*cosalpha;
-    newpoint.z = 1;
-  }
-
-  // Libère (en mémoire) les maillons strictement compris entre début et
-  // fin
-  void libere_maillons (maillon *debut, maillon *fin) {
-    maillon *next = debut->suiv;
-    while (next!=fin) {
-      maillon *apres = next->suiv;
-      delete next;
-      n_sides--;
-      next = apres;
-    }
-  }
+  Figure F;
 
   // Ajoute le point position à l'enveloppe convexe débutant par debut
   // (traj est le tableau des coordonnées des points) (le paramètre fin
@@ -158,87 +150,47 @@ public:
   }
 
   void main (int argc, char ** argv) {
-    FILE *fichier, *fichier_final;
-
-    time_t t0, t1;
-
-    double minx=+INFINITY,maxx=-INFINITY,miny=+INFINITY,maxy=-INFINITY;
-    double x,y;
-    int i;
-
-    n_sides = 0;
-
-    maillon *position, *position2; // position en cours et suivante
-
     if (argc<5) {
-      printf("Usage : rancher pente nb inter filename [x]\nProduit le fichier filename.pdf (ou .ps si paramètre 'x' présent)\n");
+      printf ("Usage : rancher pente nb inter filename [x]\n");
+      printf ("Produit le fichier filename.pdf (ou .ps si paramètre 'x' présent)\n");
       exit(1);
     }
 
-    char filename[255];
-    sprintf(filename,"%s.ps",argv[4]);
+    double pente;       sscanf(argv[1],"%lf",&pente);
+    int nb;             sscanf(argv[2],"%d",&nb);
+    int inter;          sscanf(argv[3],"%d",&inter);
+    char filename[255]; sprintf(filename,"%s.ps",argv[4]);
 
-    fichier=tmpfile();
+    FILE *fichier = tmpfile();
 
-    int nb=15000; // longueur de la trajectoire
-    sscanf(argv[2],"%d",&nb);
+    double minx=+INFINITY, maxx=-INFINITY, miny=+INFINITY, maxy=-INFINITY;
 
-    int inter=10; // inverse de la fréquence d'affichage des enveloppes
-    sscanf(argv[3],"%d",&inter);
-
-    traj.resize(nb,point(0,0,0));
-    maillon debut(traj[0]), fin(traj[1]);      // début et fin de la liste chaînée de l'enveloppe
-
-    // Description de la config initiale
-    i=3; // nombre de points au début
-
-    // Point de départ en (0,0)
-    traj[2].x=0;
-    traj[2].y=0;
-    traj[2].z=1;
-    position = new maillon (traj[2], &debut, &fin);
-    n_sides++;
-
+    double x,y;
+    maillon *position2; // position en cours et suivante
     double longueur=(double)nb*2;
 
-    double pente;
-    sscanf(argv[1],"%lf",&pente);
+    traj.resize(nb,point(0,0,0));
+    traj[0] = point (-2*nb, -pente*2*nb, 0);
+    traj[1] = point (-2*nb, pente*2*nb, 0);
+    traj[2] = point (0, 0, 1);
 
-    // début vertical
-    traj[0].x=-longueur;
-    traj[0].y=-pente*longueur;
-    traj[0].z=0;
-    debut.p=traj[0];
+    maillon debut (traj[0]), fin (traj[1]);
+
+    maillon * position = new maillon (traj[2], &debut, &fin);
+
     debut.suiv=position;
-    debut.prev=NULL;
-
-    // fin horizontale
-    traj[1].x=-longueur;
-    traj[1].y=pente*longueur;
-    traj[1].z=0;
-    fin.p=traj[1];
     fin.prev=position;
-    fin.suiv=NULL;
 
-    int seed=1234567;
+    for (int i=3; i<nb; i++) {
+      traj[i] = rand_point (*position);
 
-    time(&t0);
+      if (traj[i].x>maxx) maxx=traj[i].x;
+      if (traj[i].x<minx) minx=traj[i].x;
+      if (traj[i].y>maxy) maxy=traj[i].y;
+      if (traj[i].y<miny) miny=traj[i].y;
 
-    for(;i<nb;i++) {
-      // Tire le nouveau point, le place dans traj[i]
-      rand_point(*position,traj[i]);
-
-      if(traj[i].x>maxx) maxx=traj[i].x;
-      if(traj[i].x<minx) minx=traj[i].x;
-      if(traj[i].y>maxy) maxy=traj[i].y;
-      if(traj[i].y<miny) miny=traj[i].y;
-
-      // Il devient la nouvelle position
       position = new maillon(traj[i]);
-      n_sides++;
-      printf ("%d\n", n_sides);
 
-      // Reste à définir prev et suiv en recalculant l'enveloppe convexe
       insere_maillon(*position, &debut);
       if (!(i%inter)) dessine_enveloppe(fichier, &debut);
     }
@@ -246,7 +198,7 @@ public:
 
     rewind(fichier);
 
-    fichier_final=fopen(filename,"w");
+    FILE * fichier_final = fopen(filename,"w");
 
     minx-=(maxx-minx)*0.05; // Pour montrer la situation initiale (cône)
 
@@ -277,9 +229,6 @@ public:
       sprintf(commande,"rm %s",filename);
       system(commande);
     }
-
-    time(&t1);
-    printf("Temps écoulé : %.0lf s.\n", difftime(t1,t0));
   }
 };
 
