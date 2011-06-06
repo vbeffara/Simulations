@@ -23,18 +23,6 @@ public:
   bool k; ///< 0 si point à l'infini, 1 si point du plan (cf. plan projectif)
 };
 
-// L'enveloppe convexe est décrite par une liste doublement chaînée
-// (père & fils), qui la parcourt dans le sens positif (i.e. centre de
-// courbure à gauche)
-
-class maillon {
-public:
-  maillon (point _p, maillon *_prev=0, maillon *_suiv=0) : p(_p), prev(_prev), suiv(_suiv) {};
-  point p;
-  maillon *prev;
-  maillon *suiv;
-};
-
 // Angle (O,A), (O,B) entre -pi et pi. Suppose que O n'est pas à
 // l'infini
 double angle (const point &O, const point &A, const point &B) {
@@ -46,16 +34,6 @@ double angle (const point &O, const point &A, const point &B) {
   return output;
 }
 
-// Libère (en mémoire) les maillons strictement compris entre début et fin
-void libere_maillons (maillon *debut, maillon *fin) {
-  maillon *m = debut->suiv;
-  while (m!=fin) {
-    maillon *next = m->suiv;
-    delete m;
-    m = next;
-  }
-}
-
 class Rancher {
 public:
   vector<point> traj; ///< Coordonnées des points
@@ -63,7 +41,6 @@ public:
   list<point>::iterator cur;
   Figure F;
   Pen P;
-  maillon *debut;
 
   point rand_point () {
     point p = *cur;
@@ -81,37 +58,12 @@ public:
   // Ajoute le point position à l'enveloppe convexe débutant par debut
   // (traj est le tableau des coordonnées des points) (le paramètre fin
   // est en fait inutile)
-  list<point>::iterator insere_maillon (maillon & position, point & p) {
-    maillon *maillonmax, *maillonmin;
+  list<point>::iterator insere_maillon (point & p) {
     list<point>::iterator maillonmin2, maillonmax2;
     list<point>::iterator i;
 
-    maillon *next = debut;
-
-    double minpente = +INFINITY; // M_PI devrait suffire
-    double maxpente = -INFINITY; // -M_PI devrait suffire
     double minpente2 = +INFINITY;
     double maxpente2 = -INFINITY;
-
-    while (next) {
-      double pente = angle (p, *(env.begin()), next->p);
-      if (pente <= minpente) {
-        minpente = pente;
-        maillonmin = next;
-      }
-      next = next -> suiv;
-    }
-
-    next = maillonmin;
-
-    while (next) {
-      double pente = angle (p, *(env.begin()), next->p);
-      if (pente >= maxpente) {
-        maxpente = pente;
-        maillonmax = next;
-      }
-      next = next -> prev;
-    }
 
     i = env.begin();
 
@@ -143,21 +95,12 @@ public:
       }
     }
 
-    // Desallocation des chaînons intermédiaires
-    libere_maillons(maillonmax,maillonmin);
-
     i = maillonmax2; ++i;
     list<point>::iterator j = maillonmin2; // --j;
     env.erase (i,j);
 
-    // Introduction de position dans la chaîne, entre maillonmin et maillonmax
-    position.prev = maillonmax;
-    position.suiv = maillonmin;
-    maillonmax -> suiv = &position;
-    maillonmin -> prev = &position;
-
     i = maillonmax2; ++i;
-    return env.insert (i, position.p);
+    return env.insert (i, p);
   }
 
   void dessine_enveloppe () {
@@ -189,24 +132,15 @@ public:
     traj.push_back (point (cpx(-1, pente), 0));
     traj.push_back (point (cpx(0, 0)));
 
-    maillon deb (traj[0]), fin (traj[1]);
-    debut = &deb;
-
-    maillon * position = new maillon (traj[2], debut, &fin);
-
-    deb.suiv=position; fin.prev=position;
-
-    env.push_back (deb.p);
-    env.push_back (position->p);
-    env.push_back (fin.p);
+    env.push_back (traj[0]);
+    env.push_back (traj[2]);
+    env.push_back (traj[1]);
     cur = env.begin(); ++cur;
 
     for (int i=3; i<nb; i++) {
-      assert (cpx(position->p) == cpx(*cur));
       point p = rand_point();
       traj.push_back (p);
-      position = new maillon(traj[i]);
-      cur = insere_maillon(*position,p);
+      cur = insere_maillon(p);
       if (!((i+1)%inter)) dessine_enveloppe();
     }
 
