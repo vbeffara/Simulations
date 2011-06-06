@@ -3,17 +3,9 @@
  * passée" avec condition initiale donnée par un cône ; avec dessin des
  * enveloppes successives
  *
- * Output vectoriel en PDF (ou PS)
- *
- * gcc -DMEXP=19937 /usr/include/SFMT/SFMT.c rancher.c -o rancher -lm
- *
- * USAGE : rancher pente nb inter filename [x]
- *
  * pente (float) tangente du demi-angle initial
  * nb steps (int)
  * inter (int) : inverse de la fréquence d'affichage des enveloppes
- * filename : nom (sans extension !) du fichier de sortie
- * x : si paramètre présent, output en .ps, sinon en .pdf
  */
 
 #include <vb/CL_Parser.h>
@@ -147,7 +139,6 @@ public:
 
       F.add (new Segment (cpx(ox,oy), cpx(x,y), P));
     }
-    F.step();
   }
 
   void main (int argc, char ** argv) {
@@ -157,15 +148,9 @@ public:
     int nb = CLP('n');
     int inter = CLP('i');
 
-    F.add (new Segment (cpx(0,0), cpx(1,1)));
-    F.show();
-
-    double minx=+INFINITY, maxx=-INFINITY, miny=+INFINITY, maxy=-INFINITY;
-
-    traj.resize(nb,point(0,0,0));
-    traj[0] = point (-1, -pente, 0);
-    traj[1] = point (-1, pente, 0);
-    traj[2] = point (0, 0, 1);
+    traj.push_back (point (-1, -pente, 0));
+    traj.push_back (point (-1, pente, 0));
+    traj.push_back (point (0, 0, 1));
 
     maillon debut (traj[0]), fin (traj[1]);
 
@@ -175,22 +160,18 @@ public:
     fin.prev=position;
 
     for (int i=3; i<nb; i++) {
-      traj[i] = rand_point (*position);
-
-      if (traj[i].x>maxx) maxx=traj[i].x;
-      if (traj[i].x<minx) minx=traj[i].x;
-      if (traj[i].y>maxy) maxy=traj[i].y;
-      if (traj[i].y<miny) miny=traj[i].y;
-
+      traj.push_back (rand_point (*position));
       position = new maillon(traj[i]);
-
       insere_maillon(*position, &debut);
-      if (!(i%inter)) dessine_enveloppe(&debut);
+      if (!((i+1)%inter)) {
+        dessine_enveloppe(&debut);
+      }
     }
 
     vector<cpx> path;
     for (int i=0; i<traj.size(); ++i) path.push_back (cpx(traj[i].x, traj[i].y));
     F.add (new Path(path));
+    F.show();
     F.pause();
     F.output_pdf("Rancher");
   }
