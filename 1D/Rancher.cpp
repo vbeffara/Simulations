@@ -86,6 +86,7 @@ class Rancher {
 public:
   vector<point> traj; ///< Coordonnées des points
   Figure F;
+  Pen P;
 
   // Ajoute le point position à l'enveloppe convexe débutant par debut
   // (traj est le tableau des coordonnées des points) (le paramètre fin
@@ -131,22 +132,28 @@ public:
 
   void dessine_enveloppe (FILE *fichier, maillon *debut) {
     maillon *next=debut;
+    double x,y,ox,oy;
+    double r,g,b;
 
-    fprintf(fichier,"%f %f %f setrgbcolor\n",prng.uniform_real(),prng.uniform_real(),prng.uniform_real());
+    fprintf(fichier,"%f %f %f setrgbcolor\n",r=prng.uniform_real(),g=prng.uniform_real(),b=prng.uniform_real());
+    P = Color (256*r, 256*g, 256*b);
     fprintf(fichier,"newpath\n");
 
-    if (debut->p.z) // point de départ dans le plan affine
-      fprintf(fichier, "%f %f moveto\n", debut->p.x, debut->p.y);
-    else
-      fprintf(fichier, "%f %f moveto\n", debut->suiv->p.x + debut->p.x, debut->suiv->p.y + debut->p.y);
+    if (debut->p.z) x = debut->p.x,                       y = debut->p.y;
+    else            x = debut->suiv->p.x + debut->p.x/10, y = debut->suiv->p.y + debut->p.y/10;
+
+    fprintf(fichier, "%f %f moveto\n", x, y);
 
     while ((next=next->suiv)) {
-      if (next->p.z) // point de départ dans le plan affine
-        fprintf(fichier, "%f %f lineto\n", next->p.x, next->p.y);
-      else
-        fprintf(fichier, "%f %f lineto\n", next->prev->p.x + next->p.x, next->prev->p.y + next->p.y);
+      ox=x; oy=y;
+      if (next->p.z) x = next->p.x,                      y = next->p.y;
+      else           x = next->prev->p.x + next->p.x/10, y = next->prev->p.y + next->p.y/10;
+
+      fprintf(fichier, "%f %f lineto\n", x, y);
+      F.add (new Segment (cpx(ox,oy), cpx(x,y), P));
     }
     fprintf(fichier,"stroke\n");
+    F.step();
   }
 
   void main (int argc, char ** argv) {
@@ -161,13 +168,12 @@ public:
     int inter;          sscanf(argv[3],"%d",&inter);
     char filename[255]; sprintf(filename,"%s.ps",argv[4]);
 
+    F.add (new Segment (cpx(0,0), cpx(1,1)));
+    F.show();
+
     FILE *fichier = tmpfile();
 
     double minx=+INFINITY, maxx=-INFINITY, miny=+INFINITY, maxy=-INFINITY;
-
-    double x,y;
-    maillon *position2; // position en cours et suivante
-    double longueur=(double)nb*2;
 
     traj.resize(nb,point(0,0,0));
     traj[0] = point (-2*nb, -pente*2*nb, 0);
@@ -229,6 +235,9 @@ public:
       sprintf(commande,"rm %s",filename);
       system(commande);
     }
+
+    F.pause();
+    F.output_pdf("toto2");
   }
 };
 
