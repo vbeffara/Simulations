@@ -16,6 +16,7 @@
  * x : si paramètre présent, output en .ps, sinon en .pdf
  */
 
+#include <vb/CL_Parser.h>
 #include <vb/PRNG.h>
 #include <vb/Figure.h>
 
@@ -134,15 +135,15 @@ public:
     maillon *next=debut;
     double x,y,ox,oy;
 
-    P = Color (prng.uniform_int(256), prng.uniform_int(256), prng.uniform_int(256));
+    P = Color (128+prng.uniform_int(128), 128+prng.uniform_int(128), 128+prng.uniform_int(128));
 
-    if (debut->p.z) x = debut->p.x,                       y = debut->p.y;
-    else            x = debut->suiv->p.x + debut->p.x/10, y = debut->suiv->p.y + debut->p.y/10;
+    if (debut->p.z) x = debut->p.x, y = debut->p.y;
+    else            x = 0, y = debut->suiv->p.y + debut->suiv->p.x * debut->p.y;
 
     while ((next=next->suiv)) {
       ox=x; oy=y;
-      if (next->p.z) x = next->p.x,                      y = next->p.y;
-      else           x = next->prev->p.x + next->p.x/10, y = next->prev->p.y + next->p.y/10;
+      if (next->p.z) x = next->p.x, y = next->p.y;
+      else           x = 0, y = next->prev->p.y + next->prev->p.x * next->p.y;
 
       F.add (new Segment (cpx(ox,oy), cpx(x,y), P));
     }
@@ -150,16 +151,11 @@ public:
   }
 
   void main (int argc, char ** argv) {
-    if (argc<5) {
-      printf ("Usage : rancher pente nb inter filename [x]\n");
-      printf ("Produit le fichier filename.pdf (ou .ps si paramètre 'x' présent)\n");
-      exit(1);
-    }
+    CL_Parser CLP (argc, argv, "p=.1,n=1000,i=1");
 
-    double pente;       sscanf(argv[1],"%lf",&pente);
-    int nb;             sscanf(argv[2],"%d",&nb);
-    int inter;          sscanf(argv[3],"%d",&inter);
-    char filename[255]; sprintf(filename,"%s.ps",argv[4]);
+    double pente = CLP('p');
+    int nb = CLP('n');
+    int inter = CLP('i');
 
     F.add (new Segment (cpx(0,0), cpx(1,1)));
     F.show();
@@ -167,8 +163,8 @@ public:
     double minx=+INFINITY, maxx=-INFINITY, miny=+INFINITY, maxy=-INFINITY;
 
     traj.resize(nb,point(0,0,0));
-    traj[0] = point (-2*nb, -pente*2*nb, 0);
-    traj[1] = point (-2*nb, pente*2*nb, 0);
+    traj[0] = point (-1, -pente, 0);
+    traj[1] = point (-1, pente, 0);
     traj[2] = point (0, 0, 1);
 
     maillon debut (traj[0]), fin (traj[1]);
@@ -192,8 +188,11 @@ public:
       if (!(i%inter)) dessine_enveloppe(&debut);
     }
 
+    vector<cpx> path;
+    for (int i=0; i<traj.size(); ++i) path.push_back (cpx(traj[i].x, traj[i].y));
+    F.add (new Path(path));
     F.pause();
-    F.output_pdf("toto2");
+    F.output_pdf("Rancher");
   }
 };
 
