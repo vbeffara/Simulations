@@ -34,6 +34,7 @@
 
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
+#include <boost/utility.hpp>
 
 #ifdef HAVE_FLTK
 #include <FL/Fl.H>

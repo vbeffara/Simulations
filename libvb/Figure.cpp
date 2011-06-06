@@ -110,6 +110,8 @@ namespace vb {
     cr->scale          (scale_x*.98, -scale_y*.98); // A tiny margin for stoke width.
     cr->translate      (-mid_x,-mid_y);
     cr->set_line_width (basewidth);
+    cr->set_line_join  (Cairo::LINE_JOIN_ROUND);
+    cr->set_line_cap   (Cairo::LINE_CAP_ROUND);
 
     foreach (Shape *i, contents) {
       cr->save();
