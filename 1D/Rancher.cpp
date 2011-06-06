@@ -17,7 +17,7 @@ using namespace vb;
 
 class point {
 public:
-  point (cpx _z, bool _k) : z(_z), k(_k) {};
+  point (cpx _z, bool _k=1) : z(_z), k(_k) {};
   cpx z;
   bool k;   ///< 0 si point à l'infini, 1 si point du plan (cf. plan projectif)
 };
@@ -37,12 +37,12 @@ public:
 // Angle (O,A), (O,B) entre -pi et pi. Suppose que O n'est pas à
 // l'infini
 double angle (point &O, point &A, point &B) {
-  double vxa,vya,vxb,vyb;
+  cpx vza, vzb;
 
-  if (A.k) vxa=A.z.real() - O.z.real(), vya=A.z.imag()-O.z.imag(); else vxa=A.z.real(), vya=A.z.imag();
-  if (B.k) vxb=B.z.real()-O.z.real(), vyb=B.z.imag()-O.z.imag(); else vxb=B.z.real(), vyb=B.z.imag();
+  if (A.k) vza=A.z-O.z; else vza=A.z;
+  if (B.k) vzb=B.z-O.z; else vzb=B.z;
 
-  double output = atan2(vyb,vxb) - atan2(vya,vxa);
+  double output = atan2(vzb.imag(),vzb.real()) - atan2(vza.imag(),vza.real());
   if (output>M_PI) output -= 2*M_PI;
   return output;
 }
