@@ -17,10 +17,9 @@ using namespace vb;
 
 class point {
 public:
-  point (double _x, double _y, char _z) : x(_x), y(_y), z(_z) {};
-  double x;
-  double y;
-  char z;   ///< 0 si point à l'infini, 1 si point du plan (cf. plan projectif)
+  point (cpx _z, bool _k) : z(_z), k(_k) {};
+  cpx z;
+  bool k;   ///< 0 si point à l'infini, 1 si point du plan (cf. plan projectif)
 };
 
 // L'enveloppe convexe est décrite par une liste doublement chaînée
@@ -40,8 +39,8 @@ public:
 double angle (point &O, point &A, point &B) {
   double vxa,vya,vxb,vyb;
 
-  if (A.z) vxa=A.x-O.x, vya=A.y-O.y; else vxa=A.x, vya=A.y;
-  if (B.z) vxb=B.x-O.x, vyb=B.y-O.y; else vxb=B.x, vyb=B.y;
+  if (A.k) vxa=A.z.real() - O.z.real(), vya=A.z.imag()-O.z.imag(); else vxa=A.z.real(), vya=A.z.imag();
+  if (B.k) vxb=B.z.real()-O.z.real(), vyb=B.z.imag()-O.z.imag(); else vxb=B.z.real(), vyb=B.z.imag();
 
   double output = atan2(vyb,vxb) - atan2(vya,vxa);
   if (output>M_PI) output -= 2*M_PI;
@@ -52,8 +51,8 @@ point rand_point (maillon & position) {
   point p = position.p, pp = position.prev->p;
   double vxp,vyp;
 
-  if (pp.z) vxp = pp.x-p.x, vyp = pp.y-p.y;
-  else      vxp = pp.x,     vyp = pp.y;
+  if (pp.k) vxp = pp.z.real()-p.z.real(), vyp = pp.z.imag()-p.z.imag();
+  else      vxp = pp.z.real(),     vyp = pp.z.imag();
 
   double u = hypot(vxp,vyp); vxp /= u; vyp /= u;
 
@@ -61,7 +60,7 @@ point rand_point (maillon & position) {
   double sinalpha = sin(alpha);
   double cosalpha = cos(alpha);
 
-  return point (p.x+vxp*cosalpha-vyp*sinalpha, p.y+vxp*sinalpha+vyp*cosalpha, 1);
+  return point (cpx(p.z.real()+vxp*cosalpha-vyp*sinalpha, p.z.imag()+vxp*sinalpha+vyp*cosalpha), 1);
 }
 
 // Libère (en mémoire) les maillons strictement compris entre début et
@@ -129,13 +128,13 @@ public:
 
     P = Color (128+prng.uniform_int(128), 128+prng.uniform_int(128), 128+prng.uniform_int(128));
 
-    if (debut->p.z) x = debut->p.x, y = debut->p.y;
-    else            x = 0, y = debut->suiv->p.y + debut->suiv->p.x * debut->p.y;
+    if (debut->p.k) x = debut->p.z.real(), y = debut->p.z.imag();
+    else            x = 0, y = debut->suiv->p.z.imag() + debut->suiv->p.z.real() * debut->p.z.imag();
 
     while ((next=next->suiv)) {
       ox=x; oy=y;
-      if (next->p.z) x = next->p.x, y = next->p.y;
-      else           x = 0, y = next->prev->p.y + next->prev->p.x * next->p.y;
+      if (next->p.k) x = next->p.z.real(), y = next->p.z.imag();
+      else           x = 0, y = next->prev->p.z.imag() + next->prev->p.z.real() * next->p.z.imag();
 
       F.add (new Segment (cpx(ox,oy), cpx(x,y), P));
     }
@@ -148,9 +147,9 @@ public:
     int nb = CLP('n');
     int inter = CLP('i');
 
-    traj.push_back (point (-1, -pente, 0));
-    traj.push_back (point (-1, pente, 0));
-    traj.push_back (point (0, 0, 1));
+    traj.push_back (point (cpx(-1, -pente), 0));
+    traj.push_back (point (cpx(-1, pente), 0));
+    traj.push_back (point (cpx(0, 0), 1));
 
     maillon debut (traj[0]), fin (traj[1]);
 
@@ -169,7 +168,7 @@ public:
     }
 
     vector<cpx> path;
-    for (int i=0; i<traj.size(); ++i) path.push_back (cpx(traj[i].x, traj[i].y));
+    for (int i=0; i<traj.size(); ++i) path.push_back (cpx(traj[i].z.real(), traj[i].z.imag()));
     F.add (new Path(path));
     F.show();
     F.pause();
