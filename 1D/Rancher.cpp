@@ -46,15 +46,6 @@ double angle (const point &O, const point &A, const point &B) {
   return output;
 }
 
-point rand_point (const maillon & position) {
-  point p = position.p, pp = position.prev->p;
-
-  cpx    vzp   = pp; if (pp.k) vzp -= cpx(p);
-  double alpha = prng.uniform_real(0, 2*M_PI + angle(position.p, position.prev->p, position.suiv->p));
-
-  return cpx(p) + vzp*polar(1.0,alpha)/sqrt(norm(vzp));
-}
-
 // Libère (en mémoire) les maillons strictement compris entre début et fin
 void libere_maillons (maillon *debut, maillon *fin) {
   maillon *m = debut->suiv;
@@ -74,10 +65,23 @@ public:
   Pen P;
   maillon *debut;
 
+  point rand_point () {
+    point p = *cur;
+    list<point>::iterator i = cur; --i;
+    point pp = *i;
+    ++i; ++i;
+    point ppp = *i;
+
+    cpx    vzp   = pp; if (pp.k) vzp -= cpx(p);
+    double alpha = prng.uniform_real(0, 2*M_PI + angle(p, pp, ppp));
+
+    return cpx(p) + vzp*polar(1.0,alpha)/sqrt(norm(vzp));
+  }
+
   // Ajoute le point position à l'enveloppe convexe débutant par debut
   // (traj est le tableau des coordonnées des points) (le paramètre fin
   // est en fait inutile)
-  void insere_maillon (maillon & position) {
+  list<point>::iterator insere_maillon (maillon & position, point & p) {
     maillon *maillonmax, *maillonmin;
     list<point>::iterator maillonmin2, maillonmax2;
     list<point>::iterator i;
@@ -90,7 +94,7 @@ public:
     double maxpente2 = -INFINITY;
 
     while (next) {
-      double pente = angle (position.p, debut->p, next->p);
+      double pente = angle (p, *(env.begin()), next->p);
       if (pente <= minpente) {
         minpente = pente;
         maillonmin = next;
@@ -101,7 +105,7 @@ public:
     next = maillonmin;
 
     while (next) {
-      double pente = angle (position.p, debut->p, next->p);
+      double pente = angle (p, *(env.begin()), next->p);
       if (pente >= maxpente) {
         maxpente = pente;
         maillonmax = next;
@@ -112,7 +116,7 @@ public:
     i = env.begin();
 
     while (i != env.end()) {
-      double pente = angle (position.p, debut->p, *i);
+      double pente = angle (p, *(env.begin()), *i);
       if (pente <= minpente2) {
         minpente2 = pente;
         maillonmin2 = i;
@@ -123,7 +127,7 @@ public:
     i = maillonmin2;
 
     while (i != env.begin()) {
-      double pente = angle (position.p, debut->p, *i);
+      double pente = angle (p, *(env.begin()), *i);
       if (pente >= maxpente2) {
         maxpente2 = pente;
         maillonmax2 = i;
@@ -132,7 +136,7 @@ public:
     }
 
     if (i == env.begin()) {
-      double pente = angle (position.p, debut->p, *i);
+      double pente = angle (p, *(env.begin()), *i);
       if (pente >= maxpente2) {
         maxpente2 = pente;
         maillonmax2 = i;
@@ -153,7 +157,7 @@ public:
     maillonmin -> prev = &position;
 
     i = maillonmax2; ++i;
-    env.insert (i, position.p);
+    return env.insert (i, position.p);
   }
 
   void dessine_enveloppe () {
@@ -198,10 +202,11 @@ public:
     cur = env.begin(); ++cur;
 
     for (int i=3; i<nb; i++) {
-      assert (cpx(*cur) == cpx(position->p));
-      traj.push_back (rand_point (*position));
+      assert (cpx(position->p) == cpx(*cur));
+      point p = rand_point();
+      traj.push_back (p);
       position = new maillon(traj[i]);
-      insere_maillon(*position);
+      cur = insere_maillon(*position,p);
       if (!((i+1)%inter)) dessine_enveloppe();
     }
 
