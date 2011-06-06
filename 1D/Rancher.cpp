@@ -130,29 +130,22 @@ public:
     maillonmin -> prev = &position;
   }
 
-  void dessine_enveloppe (FILE *fichier, maillon *debut) {
+  void dessine_enveloppe (maillon *debut) {
     maillon *next=debut;
     double x,y,ox,oy;
-    double r,g,b;
 
-    fprintf(fichier,"%f %f %f setrgbcolor\n",r=prng.uniform_real(),g=prng.uniform_real(),b=prng.uniform_real());
-    P = Color (256*r, 256*g, 256*b);
-    fprintf(fichier,"newpath\n");
+    P = Color (prng.uniform_int(256), prng.uniform_int(256), prng.uniform_int(256));
 
     if (debut->p.z) x = debut->p.x,                       y = debut->p.y;
     else            x = debut->suiv->p.x + debut->p.x/10, y = debut->suiv->p.y + debut->p.y/10;
-
-    fprintf(fichier, "%f %f moveto\n", x, y);
 
     while ((next=next->suiv)) {
       ox=x; oy=y;
       if (next->p.z) x = next->p.x,                      y = next->p.y;
       else           x = next->prev->p.x + next->p.x/10, y = next->prev->p.y + next->p.y/10;
 
-      fprintf(fichier, "%f %f lineto\n", x, y);
       F.add (new Segment (cpx(ox,oy), cpx(x,y), P));
     }
-    fprintf(fichier,"stroke\n");
     F.step();
   }
 
@@ -170,8 +163,6 @@ public:
 
     F.add (new Segment (cpx(0,0), cpx(1,1)));
     F.show();
-
-    FILE *fichier = tmpfile();
 
     double minx=+INFINITY, maxx=-INFINITY, miny=+INFINITY, maxy=-INFINITY;
 
@@ -198,42 +189,7 @@ public:
       position = new maillon(traj[i]);
 
       insere_maillon(*position, &debut);
-      if (!(i%inter)) dessine_enveloppe(fichier, &debut);
-    }
-    fprintf(fichier, "stroke");
-
-    rewind(fichier);
-
-    FILE * fichier_final = fopen(filename,"w");
-
-    minx-=(maxx-minx)*0.05; // Pour montrer la situation initiale (cône)
-
-    fprintf(fichier_final,"%%!\n%%%%DocumentMedia: A4 595 842 80 white ( )\n%%%%Orientation: Portrait\n");
-    float scale,scalex,scaley,transx,transy;
-    scalex=842./(maxx-minx);
-    scaley=595./(maxy-miny);
-    scale=(scalex<scaley)?scalex:scaley;
-    transx=(595-(maxy-miny)*scale)/2+maxy*scale;
-    transy=(842-(maxx-minx)*scale)/2-minx*scale;
-    fprintf(fichier_final,"%f %f translate\n", transx, transy);
-    fprintf(fichier_final,"%f %f scale\n", scale, scale);
-    fprintf(fichier_final,"90 rotate\n");
-
-    // Copie de fichier vers fichier_final
-    char line[256];
-    while(fgets(line, 256, fichier)!=NULL)
-      fputs(line, fichier_final);
-
-    fclose(fichier);
-    fclose(fichier_final);
-
-    if(argc==5) {
-      char commande[256];
-      sprintf(commande,"ps2pdf %s",filename);
-      system(commande);
-
-      sprintf(commande,"rm %s",filename);
-      system(commande);
+      if (!(i%inter)) dessine_enveloppe(&debut);
     }
 
     F.pause();
