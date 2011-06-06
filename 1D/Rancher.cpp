@@ -16,10 +16,11 @@ using namespace std;
 using namespace vb;
 
 class point {
+  cpx z;
 public:
   point (cpx _z, bool _k=1) : z(_z), k(_k) {};
-  cpx z;
-  bool k;   ///< 0 si point à l'infini, 1 si point du plan (cf. plan projectif)
+  operator cpx() const { return z; }
+  bool k; ///< 0 si point à l'infini, 1 si point du plan (cf. plan projectif)
 };
 
 // L'enveloppe convexe est décrite par une liste doublement chaînée
@@ -36,35 +37,25 @@ public:
 
 // Angle (O,A), (O,B) entre -pi et pi. Suppose que O n'est pas à
 // l'infini
-double angle (point &O, point &A, point &B) {
-  cpx vza, vzb;
+double angle (const point &O, const point &A, const point &B) {
+  cpx vza = A; if (A.k) vza -= cpx(O);
+  cpx vzb = B; if (B.k) vzb -= cpx(O);
 
-  if (A.k) vza=A.z-O.z; else vza=A.z;
-  if (B.k) vzb=B.z-O.z; else vzb=B.z;
-
-  double output = atan2(vzb.imag(),vzb.real()) - atan2(vza.imag(),vza.real());
+  double output = arg(vzb) - arg(vza);
   if (output>M_PI) output -= 2*M_PI;
   return output;
 }
 
-point rand_point (maillon & position) {
+point rand_point (const maillon & position) {
   point p = position.p, pp = position.prev->p;
-  double vxp,vyp;
 
-  if (pp.k) vxp = pp.z.real()-p.z.real(), vyp = pp.z.imag()-p.z.imag();
-  else      vxp = pp.z.real(),     vyp = pp.z.imag();
+  cpx    vzp   = pp; if (pp.k) vzp -= cpx(p);
+  double alpha = prng.uniform_real(0, 2*M_PI + angle(position.p, position.prev->p, position.suiv->p));
 
-  double u = hypot(vxp,vyp); vxp /= u; vyp /= u;
-
-  double alpha    = prng.uniform_real(0, 2*M_PI + angle(position.p, position.prev->p, position.suiv->p));
-  double sinalpha = sin(alpha);
-  double cosalpha = cos(alpha);
-
-  return point (cpx(p.z.real()+vxp*cosalpha-vyp*sinalpha, p.z.imag()+vxp*sinalpha+vyp*cosalpha), 1);
+  return cpx(p) + vzp*polar(1.0,alpha)/sqrt(norm(vzp));
 }
 
-// Libère (en mémoire) les maillons strictement compris entre début et
-// fin
+// Libère (en mémoire) les maillons strictement compris entre début et fin
 void libere_maillons (maillon *debut, maillon *fin) {
   maillon *m = debut->suiv;
   while (m!=fin) {
@@ -85,15 +76,13 @@ public:
   // est en fait inutile)
   void insere_maillon (maillon & position, maillon *debut) {
     maillon *maillonmax, *maillonmin;
-    double pente;
-
     maillon *next = debut;
 
     double minpente = +INFINITY; // M_PI devrait suffire
     double maxpente = -INFINITY; // -M_PI devrait suffire
 
     while (next) {
-      pente = angle (position.p, debut->p, next->p);
+      double pente = angle (position.p, debut->p, next->p);
       if (pente <= minpente) {
         minpente = pente;
         maillonmin = next;
@@ -104,12 +93,12 @@ public:
     next = maillonmin;
 
     while (next) {
-      pente = angle (position.p, debut->p, next->p);
+      double pente = angle (position.p, debut->p, next->p);
       if (pente >= maxpente) {
         maxpente = pente;
         maillonmax = next;
       }
-      next= next -> prev;
+      next = next -> prev;
     }
 
     // Desallocation des chaînons intermédiaires
@@ -122,56 +111,48 @@ public:
     maillonmin -> prev = &position;
   }
 
-  void dessine_enveloppe (maillon *debut) {
-    maillon *next=debut;
-    double x,y,ox,oy;
+  void dessine_enveloppe (maillon *m) {
+    vector<cpx> V;
 
     P = Color (128+prng.uniform_int(128), 128+prng.uniform_int(128), 128+prng.uniform_int(128));
 
-    if (debut->p.k) x = debut->p.z.real(), y = debut->p.z.imag();
-    else            x = 0, y = debut->suiv->p.z.imag() + debut->suiv->p.z.real() * debut->p.z.imag();
+    if (m->p.k) V.push_back (m->p);
+    else V.push_back (cpx(0, cpx(m->suiv->p).imag() + cpx(m->suiv->p).real() * cpx(m->p).imag()));
 
-    while ((next=next->suiv)) {
-      ox=x; oy=y;
-      if (next->p.k) x = next->p.z.real(), y = next->p.z.imag();
-      else           x = 0, y = next->prev->p.z.imag() + next->prev->p.z.real() * next->p.z.imag();
+    while ((m = m->suiv))
+      if (m->p.k) V.push_back (m->p);
+      else V.push_back (cpx(0, cpx(m->prev->p).imag() + cpx(m->prev->p).real() * cpx(m->p).imag()));
 
-      F.add (new Segment (cpx(ox,oy), cpx(x,y), P));
-    }
+    F.add (new Path(V,P));
   }
 
   void main (int argc, char ** argv) {
     CL_Parser CLP (argc, argv, "p=.1,n=1000,i=1");
 
     double pente = CLP('p');
-    int nb = CLP('n');
-    int inter = CLP('i');
+    int    nb    = CLP('n');
+    int    inter = CLP('i');
 
     traj.push_back (point (cpx(-1, -pente), 0));
     traj.push_back (point (cpx(-1, pente), 0));
-    traj.push_back (point (cpx(0, 0), 1));
+    traj.push_back (point (cpx(0, 0)));
 
     maillon debut (traj[0]), fin (traj[1]);
 
     maillon * position = new maillon (traj[2], &debut, &fin);
 
-    debut.suiv=position;
-    fin.prev=position;
+    debut.suiv=position; fin.prev=position;
 
     for (int i=3; i<nb; i++) {
       traj.push_back (rand_point (*position));
       position = new maillon(traj[i]);
       insere_maillon(*position, &debut);
-      if (!((i+1)%inter)) {
-        dessine_enveloppe(&debut);
-      }
+      if (!((i+1)%inter)) dessine_enveloppe(&debut);
     }
 
-    vector<cpx> path;
-    for (int i=0; i<traj.size(); ++i) path.push_back (cpx(traj[i].z.real(), traj[i].z.imag()));
+    vector<cpx> path; for (int i=0; i<traj.size(); ++i) path.push_back (traj[i]);
     F.add (new Path(path));
-    F.show();
-    F.pause();
+    F.show(); F.pause();
     F.output_pdf("Rancher");
   }
 };
