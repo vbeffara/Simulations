@@ -68,18 +68,25 @@ void libere_maillons (maillon *debut, maillon *fin) {
 class Rancher {
 public:
   vector<point> traj; ///< Coordonnées des points
+  list<point>   env;
   Figure F;
   Pen P;
+  maillon *debut;
 
   // Ajoute le point position à l'enveloppe convexe débutant par debut
   // (traj est le tableau des coordonnées des points) (le paramètre fin
   // est en fait inutile)
-  void insere_maillon (maillon & position, maillon *debut) {
+  void insere_maillon (maillon & position) {
     maillon *maillonmax, *maillonmin;
+    list<point>::iterator maillonmin2, maillonmax2;
+    list<point>::iterator i;
+
     maillon *next = debut;
 
     double minpente = +INFINITY; // M_PI devrait suffire
     double maxpente = -INFINITY; // -M_PI devrait suffire
+    double minpente2 = +INFINITY;
+    double maxpente2 = -INFINITY;
 
     while (next) {
       double pente = angle (position.p, debut->p, next->p);
@@ -101,29 +108,71 @@ public:
       next = next -> prev;
     }
 
+    i = env.begin();
+
+    while (i != env.end()) {
+      double pente = angle (position.p, debut->p, *i);
+      if (pente <= minpente2) {
+        minpente2 = pente;
+        maillonmin2 = i;
+      }
+      i++;
+    }
+
+    i = maillonmin2;
+
+    while (i != env.begin()) {
+      double pente = angle (position.p, debut->p, *i);
+      if (pente >= maxpente2) {
+        maxpente2 = pente;
+        maillonmax2 = i;
+      }
+      --i;
+    }
+
+    if (i == env.begin()) {
+      double pente = angle (position.p, debut->p, *i);
+      if (pente >= maxpente2) {
+        maxpente2 = pente;
+        maillonmax2 = i;
+      }
+    }
+
+    assert (maxpente == maxpente2);
+
     // Desallocation des chaînons intermédiaires
     libere_maillons(maillonmax,maillonmin);
+
+    i = maillonmax2; ++i;
+    list<point>::iterator j = maillonmin2; // --j;
+    env.erase (i,j);
 
     // Introduction de position dans la chaîne, entre maillonmin et maillonmax
     position.prev = maillonmax;
     position.suiv = maillonmin;
     maillonmax -> suiv = &position;
     maillonmin -> prev = &position;
+
+    i = maillonmax2; ++i;
+    env.insert (i, position.p);
   }
 
-  void dessine_enveloppe (maillon *m) {
-    vector<cpx> V;
+  void dessine_enveloppe () {
+    vector<cpx> VV;
 
     P = Color (128+prng.uniform_int(128), 128+prng.uniform_int(128), 128+prng.uniform_int(128));
 
-    if (m->p.k) V.push_back (m->p);
-    else V.push_back (cpx(0, cpx(m->suiv->p).imag() + cpx(m->suiv->p).real() * cpx(m->p).imag()));
+    for (list<point>::iterator i = env.begin(); i != env.end(); ++i) {
+      if (i == env.begin()) {
+        list<point>::iterator j = i; ++j;
+        VV.push_back (cpx(0, cpx(*j).imag() + cpx(*j).real() * cpx(*i).imag()));
+      } else if (!(i->k)) {
+        list<point>::iterator j = i; --j;
+        VV.push_back (cpx(0, cpx(*j).imag() + cpx(*j).real() * cpx(*i).imag()));
+      } else VV.push_back (*i);
+    }
 
-    while ((m = m->suiv))
-      if (m->p.k) V.push_back (m->p);
-      else V.push_back (cpx(0, cpx(m->prev->p).imag() + cpx(m->prev->p).real() * cpx(m->p).imag()));
-
-    F.add (new Path(V,P));
+    F.add (new Path(VV,P));
   }
 
   void main (int argc, char ** argv) {
@@ -137,17 +186,22 @@ public:
     traj.push_back (point (cpx(-1, pente), 0));
     traj.push_back (point (cpx(0, 0)));
 
-    maillon debut (traj[0]), fin (traj[1]);
+    maillon deb (traj[0]), fin (traj[1]);
+    debut = &deb;
 
-    maillon * position = new maillon (traj[2], &debut, &fin);
+    maillon * position = new maillon (traj[2], debut, &fin);
 
-    debut.suiv=position; fin.prev=position;
+    deb.suiv=position; fin.prev=position;
+
+    env.push_back (deb.p);
+    env.push_back (position->p);
+    env.push_back (fin.p);
 
     for (int i=3; i<nb; i++) {
       traj.push_back (rand_point (*position));
       position = new maillon(traj[i]);
-      insere_maillon(*position, &debut);
-      if (!((i+1)%inter)) dessine_enveloppe(&debut);
+      insere_maillon(*position);
+      if (!((i+1)%inter)) dessine_enveloppe();
     }
 
     vector<cpx> path; for (int i=0; i<traj.size(); ++i) path.push_back (traj[i]);
