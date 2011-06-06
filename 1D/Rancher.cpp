@@ -69,6 +69,7 @@ class Rancher {
 public:
   vector<point> traj; ///< Coordonnées des points
   list<point>   env;
+  list<point>::iterator cur;
   Figure F;
   Pen P;
   maillon *debut;
@@ -138,8 +139,6 @@ public:
       }
     }
 
-    assert (maxpente == maxpente2);
-
     // Desallocation des chaînons intermédiaires
     libere_maillons(maillonmax,maillonmin);
 
@@ -196,8 +195,10 @@ public:
     env.push_back (deb.p);
     env.push_back (position->p);
     env.push_back (fin.p);
+    cur = env.begin(); ++cur;
 
     for (int i=3; i<nb; i++) {
+      assert (cpx(*cur) == cpx(position->p));
       traj.push_back (rand_point (*position));
       position = new maillon(traj[i]);
       insere_maillon(*position);
