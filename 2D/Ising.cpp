@@ -23,18 +23,18 @@ int main(int argc, char *argv[])
   /* conditions initiales / au bord */
 
 #define LEFT 0
-#define RIGHT 1
+#define RIGHT 255
 
   if (beta > log(1+sqrt(2.0))) { /* Basse temp. */
     for (x=1;x<n-1;x++) {
       for (y=1;y<n-1;y++) {
-	img.putpoint (x,y, (x<(n>>1)?0:1));
+        img.putpoint (x,y, (x<(n>>1)?LEFT:RIGHT));
       }
     }
   } else { /* Haute temp. */
     for (x=1;x<n-1;x++) {
       for (y=1;y<n-1;y++) {
-	img.putpoint (x,y, prng.bernoulli(.5));
+        img.putpoint (x,y, (prng.bernoulli(.5)?LEFT:RIGHT));
       }
     }
   }
@@ -61,19 +61,19 @@ int main(int argc, char *argv[])
   for (i=0;i<nstep;i++) { /* Ouais bof */
     for (x=1;x<n-1;x++) {
       for (y=1;y<n-1;y++) {
-	f1 = 0; f2 = 0; xy = x + n*y;
-	
-	if (img(xy) == img(xy-1)) { f2++; } else { f1++; } 
-	if (img(xy) == img(xy-n)) { f2++; } else { f1++; } 
-	if (img(xy) == img(xy+1)) { f2++; } else { f1++; } 
-	if (img(xy) == img(xy+n)) { f2++; } else { f1++; } 
-	
-	if ( (f2<=f1) || (prng() < p[f2-f1]) ) {
-	  img.putpoint(x,y,(1-img(xy)));
-	}
+        f1 = 0; f2 = 0; xy = x + n*y;
+
+        if (img(xy) == img(xy-1)) { f2++; } else { f1++; }
+        if (img(xy) == img(xy-n)) { f2++; } else { f1++; }
+        if (img(xy) == img(xy+1)) { f2++; } else { f1++; }
+        if (img(xy) == img(xy+n)) { f2++; } else { f1++; }
+
+        if ( (f2<=f1) || (prng() < p[f2-f1]) ) {
+          img.putpoint(x,y,(255-img(xy)));
+        }
       }
     }
   }
-  
+
   return 0;
 }
