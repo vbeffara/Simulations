@@ -11,7 +11,7 @@ namespace vb {
 
   class Task {
   public:
-    Task (long p, callback *t, void *d) : period(p), task(t), data(d) {}
+    Task (long p, callback *t, void *d) : period(p), last(-1), task(t), data(d) {}
     long period;
     long last;
     callback * task;
@@ -25,18 +25,26 @@ namespace vb {
 
   class Clock {
   public:
+    Clock () : next(1), slice(10), n_call(0) {}
+
     long clock ()  { return std::clock(); }
     double time () { return double(clock()) / CLOCKS_PER_SEC; }
     long count ()  { return time() * 100; }
 
+    void step () { ++n_call; --next; if (!next) run(); }
+
     void run () {
       for (std::list<Task>::iterator i = T.begin(); i != T.end(); ++i) {
-        std::cerr << count() << "\r";
         if (count() >= i->last + i->period) {
           (i->task)(i->data);
           i->last = count();
         }
       }
+
+      if (count() <= 100) slice += slice/10;
+      else slice = min (n_call / count(), slice + slice/10);
+
+      next = slice;
     }
 
     void add (long period, callback * task, void *data = 0) {
@@ -44,6 +52,9 @@ namespace vb {
     }
 
   private:
+    long next;
+    unsigned long long slice;
+    unsigned long long n_call;
     std::list <Task> T;
   };
 }
