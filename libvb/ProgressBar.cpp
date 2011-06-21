@@ -4,36 +4,24 @@
 #include <vb/ProgressBar.h>
 
 namespace vb {
-  ProgressBar::ProgressBar (int length, double pow) : 
-    final(length), current(0), nchar(0), power(pow), timer(1.0) {
+  ProgressBar::ProgressBar (int length, double pow) :
+    final(length), current(0), nchar(0), power(pow) {
       display();
+      task = global_clock.add (100, ProgressBar_display, this);
     }
 
   ProgressBar::~ProgressBar () {
     update(final);
+    display();
     std::cerr << "\n";
+    global_clock.remove(task);
   }
 
   void ProgressBar::update (int pos) {
     if (pos<0) pos=0;
     if (pos>final) pos=final;
-
     current = pos;
-    int dirty = 0;
-    int new_nchar = (pos*50.0)/final;
-
-    if (timer.check()) {
-      timer.reset();
-      dirty = 1;
-    }
-
-    if (new_nchar > nchar) {
-      nchar = new_nchar;
-      timer.reset();
-      dirty = 1;
-    }
-
-    if (dirty) display();
+    nchar = (pos*50.0)/final;
   }
 
   void ProgressBar::display () {
@@ -43,10 +31,10 @@ namespace vb {
     for (int i=0; i<nchar; ++i)  bar << "=";
     for (int i=nchar; i<50; ++i) bar << " ";
     bar << "]";
-    
-    if (timer.t_elapsed() > 0) {
+
+    if (global_clock.time() > 3) {
       double done = pow(current,power), todo = pow(final,power);
-      int eta = timer.t_elapsed() * (todo/done - 1.0);
+      int eta = global_clock.time() * (todo/done - 1.0);
       bool big=false;
 
       bar << " (";
@@ -64,4 +52,6 @@ namespace vb {
 
     std::cerr << bar.str();
   }
+
+  void ProgressBar_display (void * PB) { ((ProgressBar*)PB) -> display(); }
 }
