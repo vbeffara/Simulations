@@ -102,7 +102,7 @@ namespace vb {
   }  
 
   void AutoWindow::cycle () {
-    long tmp = clock() - saved_clock;
+    long tmp = C.clock() - saved_clock;
     if (tmp>=0) nb_clock += tmp+1;
     if (nb_clock < CLOCKS_PER_SEC/5)
       delay *= 2;
@@ -111,11 +111,11 @@ namespace vb {
       update();
     }
 
-    if ((snapshot_period > 0.0) && (clock() - snapshot_clock > CLOCKS_PER_SEC * snapshot_period))
+    if ((snapshot_period > 0.0) && (C.clock() - snapshot_clock > CLOCKS_PER_SEC * snapshot_period))
       snapshot(true);
 
     timer = delay;
-    saved_clock = clock();
+    saved_clock = C.clock();
   }
 
   void AutoWindow::output_png (const std::string &s) {
@@ -138,7 +138,7 @@ namespace vb {
     if (!silent) std::cerr << "Taking a snapshot as " << fn << ".png" << std::endl;
     output_png (fn);
 
-    snapshot_clock = clock();
+    snapshot_clock = C.clock();
   }
 
   void AutoWindow::snapshot_setup (const std::string &prefix, double period) {

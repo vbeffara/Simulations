@@ -5,20 +5,21 @@
 #define AUTOWINDOW_H
 
 #include <vb/Color.h>
+#include <vb/Clock.h>
 
 namespace vb {
   /** A nice helper class for simulations.
    *
-   * The AutoWindow class takes care of displaying the window on the 
-   * screen, catching keypresses, and changing the display approximately 
+   * The AutoWindow class takes care of displaying the window on the
+   * screen, catching keypresses, and changing the display approximately
    * 25 times per second.  A derived class is expected to do two things:
    *
-   * (i) provide a paint() method to fill in AutoWindow::surface 
-   * (posibly making use of AutoWindow::cr if needed). Updating it 
-   * elsewhere in the code is safe, because paint() will always be 
+   * (i) provide a paint() method to fill in AutoWindow::surface
+   * (posibly making use of AutoWindow::cr if needed). Updating it
+   * elsewhere in the code is safe, because paint() will always be
    * called just before surface() is used;
    *
-   * (ii) call AutoWindow::step() often enough, so that the display is 
+   * (ii) call AutoWindow::step() often enough, so that the display is
    * updated with the correct frequency. But this is not mandatory.
    */
 
@@ -44,7 +45,7 @@ namespace vb {
 
       /// Resize the window.
       void resize (int w, int h);
-      
+
       /// Show the window on the screen.
       void show ();
 
@@ -106,6 +107,8 @@ namespace vb {
 
       /// Shuffle the bytes for FLTK display of a line.
       friend void draw_cb (void *, int, int, int, unsigned char *);
+
+      Clock C;
   };
 }
 
