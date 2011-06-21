@@ -39,7 +39,7 @@ int main(int argc, char ** argv)
   /* Initialisations */
 
   img = new Image(2*n,2*n, str(fmt("A MDLA in density %f")%p));
-  img->snapshot_setup ("MDLA",t);
+  if (t>0) img->snapshot_setup ("MDLA",t);
 
   ngrey = 0;
 

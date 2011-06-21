@@ -39,7 +39,7 @@ namespace vb {
    * easily I believe.
    */
 
-  class Map : public AutoWindow {
+  class Map : public Picture {
     public:
       int n;                  ///< The number of vertices.
       std::vector<Vertex*> v; ///< The graph structure.

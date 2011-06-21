@@ -5,7 +5,7 @@
 #ifndef __VB_FIGURE_H
 #define __VB_FIGURE_H
 
-#include <vb/AutoWindow.h>
+#include <vb/Picture.h>
 
 namespace vb {
 
@@ -116,7 +116,7 @@ namespace vb {
    * Right now it's a list of shapes with an output routine.
    */
 
-  class Figure : public AutoWindow {
+  class Figure : public Picture {
   public:
     Figure (bool ortho = true); ///< Constructor, reserves a window for display.
     ~Figure ();                 ///< Destructor, also destroys the contents nodes.

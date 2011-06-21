@@ -4,7 +4,7 @@
 #ifndef __VB_BITMAP_H
 #define __VB_BITMAP_H
 
-#include <vb/AutoWindow.h>
+#include <vb/Picture.h>
 
 namespace vb {
   /** A templated base class for all bitmap pictures.
@@ -17,7 +17,7 @@ namespace vb {
    * initialized and the image data is handled directly.
    */
 
-  template <typename T> class Bitmap : public AutoWindow {
+  template <typename T> class Bitmap : public Picture {
     public:
       /** The standard constructor of the Image class.
        *
@@ -53,7 +53,7 @@ namespace vb {
   };
 
   template<typename T> Bitmap<T>::Bitmap (int wd, int ht, const std::string &tit, int d) :
-    AutoWindow(wd,ht,tit),
+    Picture(wd,ht,tit),
     stage ((Color *) (surface -> get_data())),
     data (stride*ht,d)
   { }

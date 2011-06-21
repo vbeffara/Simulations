@@ -64,7 +64,7 @@ namespace vb {
       }
       end();
       Fl_Double_Window::show();
-      global_clock.add (50, Watcher_update, this);
+      global_clock.add (5, Watcher_update, this);
     }
 
     void update() {

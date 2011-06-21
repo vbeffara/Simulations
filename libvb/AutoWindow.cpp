@@ -5,7 +5,6 @@
 
 namespace vb {
   void AutoWindow_update   (void * AW) { ((AutoWindow*)AW) -> update();   }
-  void AutoWindow_snapshot (void * AW) { ((AutoWindow*)AW) -> snapshot(); }
 
 #ifdef HAVE_FLTK
   void close_window (Fl_Widget *w) { exit(1); }
@@ -16,10 +15,6 @@ namespace vb {
     Fl_Double_Window (wd, ht, t.c_str()),
 #endif
     title(t), width(wd), height(ht), fps(20),
-
-    surface (Cairo::ImageSurface::create (Cairo::FORMAT_RGB24, width, height)),
-    stride  (surface -> get_stride() / sizeof(Color)),
-    cr      (Cairo::Context::create (surface)),
 
     snapshot_prefix("snapshot"), snapshot_number(0), snapshot_period(0.0), snapshot_task(-1),
     paused (false) {
@@ -36,12 +31,9 @@ namespace vb {
 
   void AutoWindow::resize (int w, int h) {
 #ifdef HAVE_FLTK
-    Fl_Double_Window::resize (0,0,w,h);
+    Fl_Double_Window::size (w,h);
 #endif
     width=w; height=h;
-    surface = Cairo::ImageSurface::create (Cairo::FORMAT_RGB24, width, height);
-    stride = surface -> get_stride() / sizeof(Color);
-    cr = Cairo::Context::create (surface);
   }
 
   void AutoWindow::show () {
@@ -73,7 +65,7 @@ namespace vb {
             exit (1);
             break;
           case 0x73:             // this is an S
-            snapshot();
+            // snapshot();
             break;
           case 0x20:             // space bar
             paused = !paused;
@@ -84,19 +76,9 @@ namespace vb {
     return 1;
   }
 
-  void draw_cb (void * in, int x, int y, int w, unsigned char * out) {
-    AutoWindow & img  = * (AutoWindow*) in;
-    Color      * data = (Color*) img.surface -> get_data();
-
-    for (int i=0; i<w; ++i) {
-      Color &C = data [x+i + img.stride*y];
-      out[3*i] = C.r; out[3*i + 1] = C.g; out[3*i + 2] = C.b;
-    }
-  }
-
   void AutoWindow::draw () {
     paint ();
-    fl_draw_image (draw_cb,this,0,0,width,height);
+    // fl_draw_image (draw_cb,this,0,0,width,height);
   }
 #endif
 
@@ -108,33 +90,5 @@ namespace vb {
       while (paused) Fl::wait();
     }
 #endif
-  }
-
-  void AutoWindow::output_png (const std::string &s) {
-    paint();
-
-    std::ostringstream os;
-    if (s == "") os << "output/" << title; else os << s;
-    os << ".png";
-
-    surface->write_to_png (os.str());
-  }
-
-  void AutoWindow::output (const std::string &s) { output_png (s); }
-
-  void AutoWindow::snapshot () {
-    std::ostringstream fn_s;
-    fn_s << snapshot_prefix << "_" << std::setw(4) << std::setfill('0') << snapshot_number++;
-    std::string fn = fn_s.str();
-
-    std::cerr << "Taking a snapshot as " << fn << ".png" << std::endl;
-    output_png (fn);
-  }
-
-  void AutoWindow::snapshot_setup (const std::string &prefix, double period) {
-    snapshot_period = period;
-    snapshot_prefix = prefix;
-    snapshot_number = 0;
-    global_clock.add (100*period, AutoWindow_snapshot, this);
   }
 }

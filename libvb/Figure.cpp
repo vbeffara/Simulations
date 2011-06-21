@@ -53,7 +53,7 @@ namespace vb {
 
   /*********************************************************/
 
-  Figure::Figure (bool _o) : AutoWindow (600,600,"Figure"), ortho(_o) {}
+  Figure::Figure (bool _o) : Picture (600,600,"Figure"), ortho(_o) {}
 
   void Figure::clean() {
     foreach (Shape *i, contents) delete i;

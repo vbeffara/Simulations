@@ -4,7 +4,6 @@
 #ifndef AUTOWINDOW_H
 #define AUTOWINDOW_H
 
-#include <vb/Color.h>
 #include <vb/Clock.h>
 
 namespace vb {
@@ -56,22 +55,6 @@ namespace vb {
       /// Put the image on pause, i.e. wait for user input.
       void pause() { paused=true; update(); }
 
-      /** Output the image in the preferred format (PNG by default).
-       *
-       * @param s The base name of the output file, defaults to Image::title.
-       */
-
-      virtual void output (const std::string &s = "");
-
-      /// Output the current image to a PNG file of specified name.
-      void output_png (const std::string &s = "");
-
-      /// Take a snapshot of the current window as a PNG file.
-      void snapshot ();
-
-      /// Initiate automatic snapshots.
-      void snapshot_setup (const std::string &prefix, double period = 0.0);
-
       /// If FLTK is present, run Fl::run(); if not, do nothing.
       void run ();
 
@@ -79,10 +62,6 @@ namespace vb {
       void step() { global_clock.step(); }
 
     protected:
-      Cairo::RefPtr <Cairo::ImageSurface> surface; ///< Cairo surface with the same contents.
-      Color * stage;                               ///< The pixel data, presented as a std::vector of vb::Color.
-      int stride;                                  ///< The number of pixels in a line in memory.
-      Cairo::RefPtr <Cairo::Context>      cr;      ///< A context to draw onto the surface.
 
     private:
       std::string snapshot_prefix;   ///< The filename prefix for PNG snapshots.
@@ -99,9 +78,6 @@ namespace vb {
 #endif
 
       virtual void paint () =0;      /// Update the contents of surface from a derived class data.
-
-      /// Shuffle the bytes for FLTK display of a line.
-      friend void draw_cb (void *, int, int, int, unsigned char *);
   };
 
   void AutoWindow_update (void * AW);
