@@ -66,7 +66,7 @@ namespace vb {
       void output_png (const std::string &s = "");
 
       /// Take a snapshot of the current window as a PNG file.
-      void snapshot (bool silent = false);
+      void snapshot ();
 
       /// Initiate automatic snapshots.
       void snapshot_setup (const std::string &prefix, double period = 0.0);
@@ -75,7 +75,7 @@ namespace vb {
       void run ();
 
       /// Increment the clock and call cycle() as needed.
-      void step() { ++npts; --timer; if (timer==0) cycle(); }
+      void step() { C.step(); }
 
     protected:
       Cairo::RefPtr <Cairo::ImageSurface> surface; ///< Cairo surface with the same contents.
@@ -84,20 +84,12 @@ namespace vb {
       Cairo::RefPtr <Cairo::Context>      cr;      ///< A context to draw onto the surface.
 
     private:
-      unsigned long long npts;       ///< The number of actions done since the beginning of time.
-      unsigned long delay;
-      unsigned long timer;
-      unsigned long saved_clock;
-      unsigned long long nb_clock;
-
       std::string snapshot_prefix;   ///< The filename prefix for PNG snapshots.
       unsigned int snapshot_number;  ///< The number of the current snapshot.
       double snapshot_period;        ///< The time interval between automatic snapshots, in seconds.
-      unsigned long snapshot_clock;  ///< The instant of the last snapshot taken.
 
       bool paused;
 
-      void cycle();                  ///< Estimate the refresh rate, then call update().
 #ifdef HAVE_FLTK
       int handle (int event);        ///< Handle the events, in particular 'q' and 'x'.
       void draw ();                  ///< Draw the contents of the window (called by FLTK).
@@ -110,6 +102,9 @@ namespace vb {
 
       Clock C;
   };
+
+  void AutoWindow_update (void * AW);
+  void AutoWindow_snapshot (void * AW);
 }
 
 #endif

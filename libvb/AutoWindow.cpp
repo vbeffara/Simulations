@@ -4,6 +4,9 @@
 #include <vb/AutoWindow.h>
 
 namespace vb {
+  void AutoWindow_update   (void * AW) { ((AutoWindow*)AW) -> update();   }
+  void AutoWindow_snapshot (void * AW) { ((AutoWindow*)AW) -> snapshot(); }
+
 #ifdef HAVE_FLTK
   void close_window (Fl_Widget *w) { exit(1); }
 #endif
@@ -18,10 +21,10 @@ namespace vb {
     stride  (surface -> get_stride() / sizeof(Color)),
     cr      (Cairo::Context::create (surface)),
 
-    npts(0), delay(1), timer(1), saved_clock(clock()), nb_clock(0),
-    snapshot_prefix("snapshot"), snapshot_number(0), snapshot_period(0.0), snapshot_clock(clock()), paused (false) {
+    snapshot_prefix("snapshot"), snapshot_number(0), snapshot_period(0.0), paused (false) {
 #ifdef HAVE_FLTK
-      callback(close_window);
+    C.add (5,AutoWindow_update,this);
+    callback(close_window);
 #endif
   }
 
@@ -34,7 +37,7 @@ namespace vb {
     stride = surface -> get_stride() / sizeof(Color);
     cr = Cairo::Context::create (surface);
   }
-  
+
   void AutoWindow::show () {
 #ifdef HAVE_FLTK
     Fl_Double_Window::show();
@@ -99,23 +102,6 @@ namespace vb {
       while (paused) Fl::wait();
     }
 #endif
-  }  
-
-  void AutoWindow::cycle () {
-    long tmp = C.clock() - saved_clock;
-    if (tmp>=0) nb_clock += tmp+1;
-    if (nb_clock < CLOCKS_PER_SEC/5)
-      delay *= 2;
-    else {
-      delay = 1 + npts * (CLOCKS_PER_SEC/fps) / nb_clock;
-      update();
-    }
-
-    if ((snapshot_period > 0.0) && (C.clock() - snapshot_clock > CLOCKS_PER_SEC * snapshot_period))
-      snapshot(true);
-
-    timer = delay;
-    saved_clock = C.clock();
   }
 
   void AutoWindow::output_png (const std::string &s) {
@@ -130,21 +116,19 @@ namespace vb {
 
   void AutoWindow::output (const std::string &s) { output_png (s); }
 
-  void AutoWindow::snapshot (bool silent) {
+  void AutoWindow::snapshot () {
     std::ostringstream fn_s;
     fn_s << snapshot_prefix << "_" << std::setw(4) << std::setfill('0') << snapshot_number++;
     std::string fn = fn_s.str();
 
-    if (!silent) std::cerr << "Taking a snapshot as " << fn << ".png" << std::endl;
+    std::cerr << "Taking a snapshot as " << fn << ".png" << std::endl;
     output_png (fn);
-
-    snapshot_clock = C.clock();
   }
 
   void AutoWindow::snapshot_setup (const std::string &prefix, double period) {
     snapshot_period = period;
     snapshot_prefix = prefix;
     snapshot_number = 0;
-    if (period>0.0) snapshot (true);
+    C.add (100*period, AutoWindow_snapshot, this);
   }
 }
