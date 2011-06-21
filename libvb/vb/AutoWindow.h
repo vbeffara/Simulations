@@ -42,6 +42,7 @@ namespace vb {
        */
 
       AutoWindow (int wd, int ht, const std::string &t);
+      ~AutoWindow ();
 
       /// Resize the window.
       void resize (int w, int h);
@@ -75,7 +76,7 @@ namespace vb {
       void run ();
 
       /// Increment the clock and call cycle() as needed.
-      void step() { C.step(); }
+      void step() { global_clock.step(); }
 
     protected:
       Cairo::RefPtr <Cairo::ImageSurface> surface; ///< Cairo surface with the same contents.
@@ -87,8 +88,10 @@ namespace vb {
       std::string snapshot_prefix;   ///< The filename prefix for PNG snapshots.
       unsigned int snapshot_number;  ///< The number of the current snapshot.
       double snapshot_period;        ///< The time interval between automatic snapshots, in seconds.
+      int snapshot_task;
 
       bool paused;
+      int task;
 
 #ifdef HAVE_FLTK
       int handle (int event);        ///< Handle the events, in particular 'q' and 'x'.
@@ -99,8 +102,6 @@ namespace vb {
 
       /// Shuffle the bytes for FLTK display of a line.
       friend void draw_cb (void *, int, int, int, unsigned char *);
-
-      Clock C;
   };
 
   void AutoWindow_update (void * AW);

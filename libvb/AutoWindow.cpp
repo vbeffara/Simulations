@@ -21,11 +21,17 @@ namespace vb {
     stride  (surface -> get_stride() / sizeof(Color)),
     cr      (Cairo::Context::create (surface)),
 
-    snapshot_prefix("snapshot"), snapshot_number(0), snapshot_period(0.0), paused (false) {
+    snapshot_prefix("snapshot"), snapshot_number(0), snapshot_period(0.0), snapshot_task(-1),
+    paused (false) {
 #ifdef HAVE_FLTK
-    C.add (5,AutoWindow_update,this);
+    task = global_clock.add (5,AutoWindow_update,this);
     callback(close_window);
 #endif
+  }
+
+  AutoWindow::~AutoWindow () {
+    global_clock.remove(task);
+    global_clock.remove(snapshot_task);
   }
 
   void AutoWindow::resize (int w, int h) {
@@ -129,6 +135,6 @@ namespace vb {
     snapshot_period = period;
     snapshot_prefix = prefix;
     snapshot_number = 0;
-    C.add (100*period, AutoWindow_snapshot, this);
+    global_clock.add (100*period, AutoWindow_snapshot, this);
   }
 }

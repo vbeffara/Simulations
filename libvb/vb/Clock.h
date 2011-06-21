@@ -11,11 +11,12 @@ namespace vb {
 
   class Task {
   public:
-    Task (long p, callback *t, void *d) : period(p), last(-1), task(t), data(d) {}
+    Task (long p, callback *t, void *d) : period(p), last(-1), task(t), data(d), active(true) {}
     long period;
     long last;
     callback * task;
     void * data;
+    bool active;
   };
 
   /** A class for a programmable clock, to eventually replace Timer().
@@ -34,8 +35,8 @@ namespace vb {
     void step () { ++n_call; --next; if (!next) run(); }
 
     void run () {
-      for (std::list<Task>::iterator i = T.begin(); i != T.end(); ++i) {
-        if (count() >= i->last + i->period) {
+      for (std::vector<Task>::iterator i = T.begin(); i != T.end(); ++i) {
+        if ((i->active) && (count() >= i->last + i->period)) {
           (i->task)(i->data);
           i->last = count();
         }
@@ -47,16 +48,21 @@ namespace vb {
       next = slice;
     }
 
-    void add (long period, callback * task, void *data = 0) {
+    int add (long period, callback * task, void *data = 0) {
       T.push_back (Task(period,task,data));
+      return T.size()-1;
     }
+
+    void remove (int i) { if (i>=0) T[i].active = false; }
 
   private:
     long next;
     unsigned long long slice;
     unsigned long long n_call;
-    std::list <Task> T;
+    std::vector <Task> T;
   };
+
+  extern Clock global_clock;
 }
 
 #endif

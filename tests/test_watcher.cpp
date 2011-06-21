@@ -1,6 +1,5 @@
 
 #include <vb/Watcher.h>
-#include <vb/Clock.h>
 
 using namespace vb;
 using namespace std;
@@ -15,16 +14,21 @@ int main (int argc, char ** argv) {
   Watcher W1;
   W1.add (new Value<double> (x,"x"));
 
-  Watcher W2;
-  W2.add (new Value<double> (x,"xx"));
+  {
+    Watcher W2;
+    W2.add (new Value<double> (x,"xx"));
 
-  Clock C;
-  C.add (10,hello,&W1);
-  C.add (100,hello,&W2);
+    for (unsigned long i=0; i<1e9; ++i) {
+      x = rand();
+      global_clock.step();
+    }
+  }
 
-  while (true) {
+  cerr << "Now W2 does not exist anymore ..." << endl;
+
+  for (unsigned long i=0; i<1e9; ++i) {
     x = rand();
-    C.step();
+    global_clock.step();
   }
 
   return 0;

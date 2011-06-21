@@ -15,5 +15,6 @@
 #include <vb/Point.h>
 #include <vb/ProgressBar.h>
 #include <vb/TriMatrix.h>
+#include <vb/Watcher.h>
 
 #endif

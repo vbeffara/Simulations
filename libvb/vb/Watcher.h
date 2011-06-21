@@ -4,7 +4,7 @@
 #ifndef __VB_WATCHER_H
 #define __VB_WATCHER_H
 
-#include <vb/common.h>
+#include <vb/Clock.h>
 
 /** The namespace where libvb puts everything it defines. */
 
@@ -31,8 +31,13 @@ namespace vb {
     return os;
   }
 
+  void Watcher_show (void *);
+
   class Watcher {
   public:
+    Watcher () { task = global_clock.add (100, Watcher_show, this); }
+    ~Watcher () { global_clock.remove(task); }
+
     void add (Value_base *v) { l.push_back (v); }
 
     void print_on (std::ostream &os) const {
@@ -43,9 +48,12 @@ namespace vb {
 
   private:
     std::list <Value_base *> l;
+    int task;
   };
 
   std::ostream & operator<< (std::ostream &os, const Watcher &W) { W.print_on(os); return os; }
+
+  void Watcher_show (void * W) { std::cerr << *((Watcher*)W); }
 }
 
 #endif
