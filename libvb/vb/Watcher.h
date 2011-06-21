@@ -4,7 +4,7 @@
 #ifndef __VB_WATCHER_H
 #define __VB_WATCHER_H
 
-#include <vb/Globals.h>
+#include <vb/common.h>
 
 /** The namespace where libvb puts everything it defines. */
 
