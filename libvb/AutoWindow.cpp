@@ -16,7 +16,6 @@ namespace vb {
 #endif
     title(t), width(wd), height(ht), fps(20),
 
-    snapshot_prefix("snapshot"), snapshot_number(0), snapshot_period(0.0), snapshot_task(-1),
     paused (false) {
 #ifdef HAVE_FLTK
     task = global_clock.add (5,AutoWindow_update,this);
@@ -26,10 +25,9 @@ namespace vb {
 
   AutoWindow::~AutoWindow () {
     global_clock.remove(task);
-    global_clock.remove(snapshot_task);
   }
 
-  void AutoWindow::resize (int w, int h) {
+  void AutoWindow::size (int w, int h) {
 #ifdef HAVE_FLTK
     Fl_Double_Window::size (w,h);
 #endif
@@ -74,11 +72,6 @@ namespace vb {
         break;
     }
     return 1;
-  }
-
-  void AutoWindow::draw () {
-    paint ();
-    // fl_draw_image (draw_cb,this,0,0,width,height);
   }
 #endif
 

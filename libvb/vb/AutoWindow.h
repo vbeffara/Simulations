@@ -26,62 +26,51 @@ namespace vb {
 #ifdef HAVE_FLTK
     : public Fl_Double_Window
 #endif
-    {
-    public:
-      std::string title;       ///< The title of the window.
-      int width;               ///< The width of the image, in pixels.
-      int height;              ///< The height of the image, in pixels.
-      int fps;                 ///< The target FPS rate.
+  {
+  public:
+    std::string title;       ///< The title of the window.
+    int width;               ///< The width of the image, in pixels.
+    int height;              ///< The height of the image, in pixels.
+    int fps;                 ///< The target FPS rate.
 
-      /** The standard constructor
-       *
-       * @param wd The width of the window.
-       * @param ht The height of the window.
-       * @param t  The title of the window.
-       */
+    /** The standard constructor
+     *
+     * @param wd The width of the window.
+     * @param ht The height of the window.
+     * @param t  The title of the window.
+     */
 
-      AutoWindow (int wd, int ht, const std::string &t);
-      ~AutoWindow ();
+    AutoWindow (int wd, int ht, const std::string &t);
+    ~AutoWindow ();
 
-      /// Resize the window.
-      void resize (int w, int h);
+    /// Resize the window.
+    void size (int w, int h);
 
-      /// Show the window on the screen.
-      void show ();
+    /// Show the window on the screen.
+    void show ();
 
-      /// Update the screen, handle the events.
-      void update ();
+    /// Update the screen, handle the events.
+    void update ();
 
-      /// Put the image on pause, i.e. wait for user input.
-      void pause() { paused=true; update(); }
+    /// Put the image on pause, i.e. wait for user input.
+    void pause() { paused=true; update(); }
 
-      /// If FLTK is present, run Fl::run(); if not, do nothing.
-      void run ();
+    /// If FLTK is present, run Fl::run(); if not, do nothing.
+    void run ();
 
-      /// Increment the clock and call cycle() as needed.
-      void step() { global_clock.step(); }
+    /// Increment the clock and call cycle() as needed.
+    void step() { global_clock.step(); }
 
-    protected:
-
-    private:
-      std::string snapshot_prefix;   ///< The filename prefix for PNG snapshots.
-      unsigned int snapshot_number;  ///< The number of the current snapshot.
-      double snapshot_period;        ///< The time interval between automatic snapshots, in seconds.
-      int snapshot_task;
-
-      bool paused;
-      int task;
+  private:
+    bool paused;
+    int task;
 
 #ifdef HAVE_FLTK
-      int handle (int event);        ///< Handle the events, in particular 'q' and 'x'.
-      void draw ();                  ///< Draw the contents of the window (called by FLTK).
+    int handle (int event);        ///< Handle the events, in particular 'q' and 'x'.
 #endif
-
-      virtual void paint () =0;      /// Update the contents of surface from a derived class data.
   };
 
   void AutoWindow_update (void * AW);
-  void AutoWindow_snapshot (void * AW);
 }
 
 #endif
