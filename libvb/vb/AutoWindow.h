@@ -55,9 +55,6 @@ namespace vb {
     /// Put the image on pause, i.e. wait for user input.
     void pause() { paused=true; update(); }
 
-    /// If FLTK is present, run Fl::run(); if not, do nothing.
-    void run ();
-
     /// Increment the clock and call cycle() as needed.
     void step() { global_clock.step(); }
 

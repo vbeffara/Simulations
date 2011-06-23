@@ -43,12 +43,6 @@ namespace vb {
 #endif
   }
 
-  void AutoWindow::run () {
-#ifdef HAVE_FLTK
-    Fl::run ();
-#endif
-  }
-
 #ifdef HAVE_FLTK
   int AutoWindow::handle (int event) {
     switch (event) {
