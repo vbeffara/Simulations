@@ -94,10 +94,10 @@ namespace vb {
   }
 
   void Figure::paint (Cairo::RefPtr<Cairo::Context> cr) {
-    double w = right()-left(), mid_x = (right()+left())/2;
-    double h = top()-bottom(), mid_y = (top()+bottom())/2;
+    double wd = right()-left(), mid_x = (right()+left())/2;
+    double ht = top()-bottom(), mid_y = (top()+bottom())/2;
 
-    double scale_x = width/w, scale_y = height/h;
+    double scale_x = w()/wd, scale_y = h()/ht;
     double scale = min(scale_x,scale_y);
     if (ortho) scale_x = scale_y = scale;
     basewidth = 1.0/scale;
@@ -106,7 +106,7 @@ namespace vb {
     cr->set_source_rgb (1,1,1);
     cr->paint();
 
-    cr->translate      (width/2,height/2);
+    cr->translate      (w()/2, h()/2);
     cr->scale          (scale_x*.98, -scale_y*.98); // A tiny margin for stoke width.
     cr->translate      (-mid_x,-mid_y);
     cr->set_line_width (basewidth);
@@ -139,7 +139,7 @@ namespace vb {
     if (s == "") os << "output/" << title; else os << s;
     os << ".pdf";
 
-    Cairo::RefPtr<Cairo::PdfSurface> pdf = Cairo::PdfSurface::create (os.str(), width, height);
+    Cairo::RefPtr<Cairo::PdfSurface> pdf = Cairo::PdfSurface::create (os.str(), w(), h());
     Cairo::RefPtr<Cairo::Context>    pcr = Cairo::Context::create (pdf);
     paint (pcr);
     pcr->show_page();

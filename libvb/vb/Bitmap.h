@@ -59,8 +59,8 @@ namespace vb {
   { }
 
   template<typename T> void Bitmap<T>::paint () {
-    for (int x=0; x<width; ++x)
-      for (int y=0; y<height; ++y)
+    for (int x=0; x<w(); ++x)
+      for (int y=0; y<h(); ++y)
         stage[x+stride*y] = color_at(x,y);
   }
 

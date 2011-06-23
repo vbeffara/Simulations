@@ -29,8 +29,10 @@ namespace vb {
   {
   public:
     std::string title;       ///< The title of the window.
+#ifndef HAVE_FLTK
     int width;               ///< The width of the image, in pixels.
     int height;              ///< The height of the image, in pixels.
+#endif
     int fps;                 ///< The target FPS rate.
 
     /** The standard constructor
@@ -43,8 +45,10 @@ namespace vb {
     AutoWindow (int wd, int ht, const std::string &t);
     ~AutoWindow ();
 
+#ifndef HAVE_FLTK
     /// Resize the window.
     void size (int w, int h);
+#endif
 
     /// Show the window on the screen.
     void show ();

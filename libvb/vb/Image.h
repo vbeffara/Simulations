@@ -59,7 +59,7 @@ namespace vb {
        */
 
       void putpoint_safe (int x, int y, Color c, int dt=1) {
-        if ( (x>=0) && (y>=0) && (x<width) && (y<height) )
+        if ( (x>=0) && (y>=0) && (x<w()) && (y<h()) )
           putpoint (x,y,c,dt);
       }
 

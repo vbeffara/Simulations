@@ -14,7 +14,11 @@ namespace vb {
 #ifdef HAVE_FLTK
     Fl_Double_Window (wd, ht, t.c_str()),
 #endif
-    title(t), width(wd), height(ht), fps(20),
+    title(t),
+#ifndef HAVE_FLTK
+    width(wd), height(ht),
+#endif
+    fps(20),
 
     paused (false) {
 #ifdef HAVE_FLTK
@@ -27,12 +31,12 @@ namespace vb {
     global_clock.remove(task);
   }
 
+#ifndef HAVE_FLTK
   void AutoWindow::size (int w, int h) {
-#ifdef HAVE_FLTK
     Fl_Double_Window::size (w,h);
-#endif
     width=w; height=h;
   }
+#endif
 
   void AutoWindow::show () {
 #ifdef HAVE_FLTK

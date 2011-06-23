@@ -10,7 +10,7 @@ namespace vb {
   Picture::Picture (int wd, int ht, const std::string &t) :
     AutoWindow (wd, ht, t.c_str()),
 
-    surface (Cairo::ImageSurface::create (Cairo::FORMAT_RGB24, width, height)),
+    surface (Cairo::ImageSurface::create (Cairo::FORMAT_RGB24, w(), h())),
     stride  (surface -> get_stride() / sizeof(Color)),
     cr      (Cairo::Context::create (surface)),
 
@@ -21,9 +21,9 @@ namespace vb {
     global_clock.remove(snapshot_task);
   }
 
-  void Picture::size (int w, int h) {
-    AutoWindow::size (w,h);
-    surface = Cairo::ImageSurface::create (Cairo::FORMAT_RGB24, width, height);
+  void Picture::size (int wd, int ht) {
+    AutoWindow::size (wd,ht);
+    surface = Cairo::ImageSurface::create (Cairo::FORMAT_RGB24, w(), h());
     stride = surface -> get_stride() / sizeof(Color);
     cr = Cairo::Context::create (surface);
   }
@@ -41,7 +41,7 @@ namespace vb {
 
   void Picture::draw () {
     paint ();
-    fl_draw_image (draw_cb,this,0,0,width,height);
+    fl_draw_image (draw_cb,this,0,0,w(),h());
   }
 #endif
 
