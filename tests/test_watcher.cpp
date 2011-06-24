@@ -14,22 +14,25 @@ int main (int argc, char ** argv) {
   Watcher W1;
   W1.add (new Value<double> (x,"x"));
   W1.add (new Value<double> (x,"x alias"));
+  W1.show();
+
+  for (unsigned long i=0; i<3e8; ++i) {
+    x = rand();
+    global_clock.step();
+  }
 
   {
     Watcher W2;
     W2.add (new Value<double> (x,"xx"));
+    W2.show();
 
-    for (unsigned long i=0; i<1e8; ++i) {
+    for (unsigned long i=0; i<3e8; ++i) {
       x = rand();
       global_clock.step();
     }
   }
 
-  cerr << "Now W2 does not exist anymore ..." << endl;
-
-  W1.show();
-
-  for (unsigned long i=0; i<1e9; ++i) {
+  for (unsigned long i=0; i<3e8; ++i) {
     x = rand();
     global_clock.step();
   }

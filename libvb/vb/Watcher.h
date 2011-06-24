@@ -20,12 +20,12 @@ namespace vb {
 
   template <typename T> class Value : public Value_base {
   public:
-    Value (T &t_, const std::string &n = "") : t(t_) { name = n; }
+    Value (const T & t_, const std::string & n = "") : t(t_) { name = n; }
     virtual void print_on (std::ostream &os) const {
       os << t;
     }
   private:
-    T &t;
+    const T & t;
   };
 
   std::ostream & operator<< (std::ostream &os, const Value_base *V) {
@@ -34,14 +34,25 @@ namespace vb {
   }
 
   void Watcher_show (void *);
-  void Watcher_update (void *);
 
-  class Watcher : public Fl_Double_Window {
+  class Watcher : public AutoWindow {
   public:
-    Watcher () : Fl_Double_Window (400,0) { task = global_clock.add (100, Watcher_show, this); }
-    ~Watcher () { global_clock.remove(task); }
+    Watcher () : AutoWindow (400,0,"Watcher") {
+      task = global_clock.add (100, Watcher_show, this);
+    }
 
-    void add (Value_base *v) { l.push_back (v); }
+    ~Watcher () {
+      global_clock.remove(task);
+    }
+
+    void add (Value_base *v) {
+      l.push_back (v);
+      size (w(), h()+30);
+      begin();
+      new Fl_Button (0,h()-30, 150,30, v->name.c_str());
+      o.push_back (new Fl_Output (150,h()-30, 250,30));
+      end();
+    }
 
     void print_on (std::ostream &os) const {
       for (int i = 0; i < l.size(); ++i) {
@@ -52,28 +63,12 @@ namespace vb {
       os << " |" << std::endl;
     }
 
-    void show () {
-      int n = l.size();
-      size (400,30*n);
-      begin();
-      for (int i = 0; i < n; ++i) {
-        new Fl_Button (0,30*i,   150,30, l[i]->name.c_str());
-        o.push_back (new Fl_Output (150,30*i, 250,30));
-        std::ostringstream os; os << l[i];
-        o[i]->value(os.str().c_str());
-      }
-      end();
-      Fl_Double_Window::show();
-      global_clock.add (5, Watcher_update, this);
-    }
-
-    void update() {
+    void draw () {
       for (int i = 0; i < l.size(); ++i) {
         std::ostringstream os; os << l[i];
         o[i]->value(os.str().c_str());
       }
-      redraw();
-      Fl::check();
+      AutoWindow::draw();
     }
 
   private:
@@ -85,7 +80,6 @@ namespace vb {
   std::ostream & operator<< (std::ostream &os, const Watcher &W) { W.print_on(os); return os; }
 
   void Watcher_show (void * W) { std::cerr << *((Watcher*)W); }
-  void Watcher_update (void * W) { ((Watcher*)W) -> update(); }
 }
 
 #endif
