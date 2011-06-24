@@ -21,9 +21,19 @@ namespace vb {
   template <typename T> class Value : public Value_base {
   public:
     Value (const T & t_, const std::string & n = "") : t(t_) { name = n; }
-    virtual void print_on (std::ostream &os) const { os << t; }
+    void print_on (std::ostream &os) const { os << t; }
   private:
     const T & t;
+  };
+
+  template <typename T> class Value_calc : public Value_base {
+    typedef T calc_function (void*);
+  public:
+    Value_calc (calc_function f_, void *data, const std::string & n = "") : f(f_), d(data) { name = n; }
+    void print_on (std::ostream &os) const { os << f(d); }
+  private:
+    calc_function *f;
+    void *d;
   };
 
   std::ostream & operator<< (std::ostream &os, const Value_base *V);

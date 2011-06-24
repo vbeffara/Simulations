@@ -11,6 +11,7 @@
 #include <vb/CL_Parser.h>
 #include <vb/PRNG.h>
 #include <vb/Figure.h>
+#include <vb/Watcher.h>
 
 using namespace std;
 using namespace vb;
@@ -30,6 +31,8 @@ double angle (const point &O, const point &A, const point &B) {
   if (output>M_PI) output -= 2*M_PI;
   return output;
 }
+
+int env_size (void*);
 
 class Rancher {
 public:
@@ -97,6 +100,13 @@ public:
     int    nb    = CLP('n');
     int    inter = CLP('i');
 
+    int i=0;
+
+    Watcher *W = new Watcher;
+    W->add (new Value<int> (i,"Path length"));
+    W->add (new Value_calc<int> (env_size,this,"Envelope size"));
+    W->show();
+
     traj.push_back (point (cpx(-1, -pente), 0));
     traj.push_back (point (cpx(-1, pente), 0));
     traj.push_back (point (cpx(0, 0)));
@@ -107,12 +117,15 @@ public:
 
     cur = env.begin(); ++cur;
 
-    for (int i=3; i<nb; i++) {
+    for (i=3; i<nb; i++) {
       point p = rand_point();
       traj.push_back (p);
       cur = insere_maillon(p);
       if (!((i+1)%inter)) dessine_enveloppe();
+      W->step();
     }
+
+    delete W;
 
     vector<cpx> path; for (int i=2; i<traj.size(); ++i) path.push_back (traj[i]);
     F.add (new Path(path));
@@ -120,6 +133,11 @@ public:
     F.output_pdf("Rancher");
   }
 };
+
+int env_size (void *R) {
+  Rancher & RR = * (Rancher*) R;
+  return RR.env.size();
+}
 
 int main (int argc, char **argv) {
   Rancher().main(argc,argv);
