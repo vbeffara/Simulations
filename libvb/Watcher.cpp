@@ -17,13 +17,16 @@ namespace vb {
 
   void Watcher::add (Value_base *v) {
     l.push_back (v);
+#ifdef HAVE_FLTK
     size (w(), h()+30);
     begin();
     new Fl_Button (0,h()-30, 150,30, v->name.c_str());
     o.push_back (new Fl_Output (150,h()-30, 250,30));
     end();
+#endif
   }
 
+#ifdef HAVE_FLTK
   void Watcher::draw () {
     for (int i = 0; i < l.size(); ++i) {
       std::ostringstream os; os << l[i];
@@ -31,6 +34,7 @@ namespace vb {
     }
     AutoWindow::draw();
   }
+#endif
 
   std::ostream & operator<< (std::ostream &os, const Watcher &W) {
     for (int i = 0; i < W.l.size(); ++i) {

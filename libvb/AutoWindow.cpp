@@ -41,8 +41,6 @@ namespace vb {
 #ifdef HAVE_FLTK
     Fl_Double_Window::show();
     update();
-#else
-    std::cerr << "libvb: without FLTK, I can't show you this !" << std::endl;
 #endif
   }
 

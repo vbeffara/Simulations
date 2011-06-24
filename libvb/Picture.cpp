@@ -67,9 +67,9 @@ namespace vb {
   }
 
   void Picture::snapshot_setup (const std::string &prefix, double period) {
+    global_clock.remove (snapshot_task);
     snapshot_period = period;
     snapshot_prefix = prefix;
-    snapshot_number = 0;
-    global_clock.add (100*period, Picture_snapshot, this);
+    if (period>0) global_clock.add (100*period, Picture_snapshot, this);
   }
 }

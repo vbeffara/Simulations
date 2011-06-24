@@ -23,7 +23,7 @@ namespace vb {
      * @param t  The title of the window.
      */
 
-    Picture (int wd, int ht, const std::string &t);
+    Picture (int wd, int ht, const std::string &t = "Picture");
     ~Picture ();
 
     /// Resize the window.
@@ -51,15 +51,15 @@ namespace vb {
     int stride;                                  ///< The number of pixels in a line in memory.
     Cairo::RefPtr <Cairo::Context>      cr;      ///< A context to draw onto the surface.
 
+#ifdef HAVE_FLTK
+    void draw ();                  ///< Draw the contents of the window (called by FLTK).
+#endif
+
   private:
     std::string snapshot_prefix;   ///< The filename prefix for PNG snapshots.
     unsigned int snapshot_number;  ///< The number of the current snapshot.
     double snapshot_period;        ///< The time interval between automatic snapshots, in seconds.
     int snapshot_task;
-
-#ifdef HAVE_FLTK
-    void draw ();                  ///< Draw the contents of the window (called by FLTK).
-#endif
 
     virtual void paint () =0;      /// Update the contents of surface from a derived class data.
 

@@ -38,8 +38,10 @@ namespace vb {
     void print_on (std::ostream &os) const;
     friend std::ostream & operator<< (std::ostream &os, const Watcher &W);
 
+#ifdef HAVE_FLTK
   protected:
     void draw ();
+#endif
 
   private:
     std::vector <Value_base *> l;
