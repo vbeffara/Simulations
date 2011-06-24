@@ -19,41 +19,19 @@ namespace vb {
     bool active;
   };
 
-  /** A class for a programmable clock, to eventually replace Timer().
-   *
-   * Planned main feature : callbacks every programmable time.
-   */
-
   class Clock {
   public:
-    Clock () : next(1), slice(10), n_call(0) {}
+    Clock ();
 
-    long clock ()  { return std::clock(); }
-    double time () { return double(clock()) / CLOCKS_PER_SEC; }
-    long count ()  { return time() * 100; }
+    long clock ();
+    double time ();
+    long count ();
 
     void step () { ++n_call; --next; if (!next) run(); }
+    void run ();
 
-    void run () {
-      for (std::vector<Task>::iterator i = T.begin(); i != T.end(); ++i) {
-        if ((i->active) && (count() >= i->last + i->period)) {
-          (i->task)(i->data);
-          i->last = count();
-        }
-      }
-
-      if (count() <= 100) slice += slice/10;
-      else slice = min (n_call / count(), slice + slice/10);
-
-      next = slice;
-    }
-
-    int add (long period, callback * task, void *data = 0) {
-      T.push_back (Task(period,task,data));
-      return T.size()-1;
-    }
-
-    void remove (int i) { if (i>=0) T[i].active = false; }
+    int add (long period, callback * task, void *data = 0);
+    void remove (int i);
 
   private:
     long next;
