@@ -21,16 +21,12 @@ namespace vb {
   template <typename T> class Value : public Value_base {
   public:
     Value (const T & t_, const std::string & n = "") : t(t_) { name = n; }
-    virtual void print_on (std::ostream &os) const {
-      os << t;
-    }
+    virtual void print_on (std::ostream &os) const { os << t; }
   private:
     const T & t;
   };
 
   std::ostream & operator<< (std::ostream &os, const Value_base *V);
-
-  void Watcher_show (void *);
 
   class Watcher : public AutoWindow {
   public:
@@ -40,6 +36,7 @@ namespace vb {
     void add (Value_base *v);
 
     void print_on (std::ostream &os) const;
+    friend std::ostream & operator<< (std::ostream &os, const Watcher &W);
 
   protected:
     void draw ();
@@ -50,8 +47,6 @@ namespace vb {
     int task;
   };
 
-  std::ostream & operator<< (std::ostream &os, const Watcher &W);
-
-  void Watcher_show (void * W);
+  void Watcher_cerr (void * W);
 }
 #endif

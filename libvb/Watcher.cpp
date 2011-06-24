@@ -8,7 +8,7 @@ namespace vb {
   }
 
   Watcher::Watcher () : AutoWindow (400,0,"Watcher") {
-    task = global_clock.add (100, Watcher_show, this);
+    task = global_clock.add (100, Watcher_cerr, this);
   }
 
   Watcher::~Watcher () {
@@ -24,15 +24,6 @@ namespace vb {
     end();
   }
 
-  void Watcher::print_on (std::ostream &os) const {
-    for (int i = 0; i < l.size(); ++i) {
-      os << " | ";
-      if (l[i]->name != "") os << l[i]->name << " = ";
-      os << l[i];
-    }
-    os << " |" << std::endl;
-  }
-
   void Watcher::draw () {
     for (int i = 0; i < l.size(); ++i) {
       std::ostringstream os; os << l[i];
@@ -42,11 +33,13 @@ namespace vb {
   }
 
   std::ostream & operator<< (std::ostream &os, const Watcher &W) {
-    W.print_on(os);
-    return os;
+    for (int i = 0; i < W.l.size(); ++i) {
+      os << " | ";
+      if (W.l[i]->name != "") os << W.l[i]->name << " = ";
+      os << W.l[i];
+    }
+    return os << " |" << std::endl;
   }
 
-  void Watcher_show (void * W) {
-    std::cerr << *((Watcher*)W);
-  }
+  void Watcher_cerr (void * W) { std::cerr << *((Watcher*)W); }
 }
