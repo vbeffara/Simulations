@@ -33,7 +33,6 @@ namespace vb {
 
 #ifndef HAVE_FLTK
   void AutoWindow::size (int w, int h) {
-    Fl_Double_Window::size (w,h);
     width=w; height=h;
   }
 #endif

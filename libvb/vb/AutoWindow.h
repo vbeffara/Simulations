@@ -29,10 +29,6 @@ namespace vb {
   {
   public:
     std::string title;       ///< The title of the window.
-#ifndef HAVE_FLTK
-    int width;               ///< The width of the image, in pixels.
-    int height;              ///< The height of the image, in pixels.
-#endif
     int fps;                 ///< The target FPS rate.
 
     /** The standard constructor
@@ -44,11 +40,6 @@ namespace vb {
 
     AutoWindow (int wd, int ht, const std::string &t);
     ~AutoWindow ();
-
-#ifndef HAVE_FLTK
-    /// Resize the window.
-    void size (int w, int h);
-#endif
 
     /// Show the window on the screen.
     void show ();
@@ -68,6 +59,13 @@ namespace vb {
 
 #ifdef HAVE_FLTK
     int handle (int event);        ///< Handle the events, in particular 'q' and 'x'.
+#else
+    int width;               ///< The width of the image, in pixels.
+    int height;              ///< The height of the image, in pixels.
+  public:
+    int w() const { return width; }
+    int h() const { return height; }
+    void size (int w, int h); ///< Resize the window.
 #endif
   };
 
