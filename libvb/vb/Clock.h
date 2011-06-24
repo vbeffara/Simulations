@@ -11,21 +11,23 @@ namespace vb {
 
   class Task {
   public:
-    Task (long p, callback *t, void *d) : period(p), last(-1), task(t), data(d), active(true) {}
+    Task (long p, callback *t, void *d) : period(p), last(-1), active(true), task(t), data(d) {}
+    void run () { task(data); }
     long period;
     long last;
+    bool active;
+  private:
     callback * task;
     void * data;
-    bool active;
   };
 
   class Clock {
   public:
     Clock ();
 
-    long clock ();
-    double time ();
-    long count ();
+    long clock () const;
+    double time () const;
+    long count () const;
 
     void step () { ++n_call; --next; if (!next) run(); }
     void run ();

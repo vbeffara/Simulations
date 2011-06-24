@@ -9,22 +9,22 @@ namespace vb {
 
   Clock::Clock () : next(1), slice(10), n_call(0) {}
 
-  long Clock::clock () {
+  long Clock::clock () const {
     return std::clock();
   }
 
-  double Clock::time () {
+  double Clock::time () const {
     return double(clock()) / CLOCKS_PER_SEC;
   }
 
-  long Clock::count () {
+  long Clock::count () const {
     return time() * 100;
   }
 
   void Clock::run () {
     for (std::vector<Task>::iterator i = T.begin(); i != T.end(); ++i) {
       if ((i->active) && (count() >= i->last + i->period)) {
-        (i->task)(i->data);
+        i->run();
         i->last = count();
       }
     }
