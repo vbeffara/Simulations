@@ -7,6 +7,20 @@ namespace vb {
     return os;
   }
 
+#ifdef HAVE_FLTK
+  Watcher_slot::Watcher_slot (int xx, int yy, int ww, int hh, Value_base * vv) :
+    Fl_Group (xx,yy,ww,hh), v(vv) {
+    new Fl_Button (x(),y(), 150,30, vv->name.c_str());
+    o = new Fl_Output (x()+150,y(), 250,30);
+  }
+
+  void Watcher_slot::draw () {
+    std::ostringstream os; os << v;
+    o->value(os.str().c_str());
+    Fl_Group::draw();
+  }
+#endif
+
   Watcher::Watcher () : AutoWindow (400,0,"Watcher") {
     task = global_clock.add (100, Watcher_cerr, this);
   }
@@ -15,26 +29,13 @@ namespace vb {
     global_clock.remove(task);
   }
 
-  void Watcher::add (Value_base *v) {
+  void Watcher::watch (Value_base *v) {
     l.push_back (v);
 #ifdef HAVE_FLTK
     size (w(), h()+30);
-    v->position (0,h()-30);
-    Fl_Button * B = new Fl_Button (v->x(),v->y(),     150,30, v->name.c_str()); v->add(B);
-    Fl_Output * O = new Fl_Output (v->x()+150,v->y(), 250,30);                  v->add(O);
-    o.push_back(O);
+    add (new Watcher_slot (0,h()-30, 400,30, v));
 #endif
   }
-
-#ifdef HAVE_FLTK
-  void Watcher::draw () {
-    for (int i = 0; i < l.size(); ++i) {
-      std::ostringstream os; os << l[i];
-      o[i]->value(os.str().c_str());
-    }
-    AutoWindow::draw();
-  }
-#endif
 
   std::ostream & operator<< (std::ostream &os, const Watcher &W) {
     for (int i = 0; i < W.l.size(); ++i) {

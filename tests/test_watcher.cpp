@@ -16,8 +16,8 @@ int main (int argc, char ** argv) {
   double x=1.1;
 
   Watcher W1;
-  W1.add (new Value<double> (x,"x"));
-  W1.add (new Value_calc<double> (x2,&x,"Double of x"));
+  W1.watch (new Value<double> (x,"x"));
+  W1.watch (new Value_calc<double> (x2,&x,"Double of x"));
   W1.show();
 
   for (unsigned long i=0; i<3e8; ++i) {
@@ -27,7 +27,7 @@ int main (int argc, char ** argv) {
 
   {
     Watcher W2;
-    W2.add (new Value<double> (x,"xx"));
+    W2.watch (new Value<double> (x,"xx"));
     W2.show();
 
     for (unsigned long i=0; i<3e8; ++i) {

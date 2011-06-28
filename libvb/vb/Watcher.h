@@ -12,9 +12,8 @@
 /** The namespace where libvb puts everything it defines. */
 
 namespace vb {
-  class Value_base : public Fl_Group {
+  class Value_base {
   public:
-    Value_base () : Fl_Group (0,0, 400,30, "") {};
     virtual void print_on (std::ostream &os) const =0;
     std::string name;
   };
@@ -39,24 +38,30 @@ namespace vb {
 
   std::ostream & operator<< (std::ostream &os, const Value_base *V);
 
+#ifdef HAVE_FLTK
+  class Watcher_slot : public Fl_Group {
+  public:
+    Watcher_slot (int xx, int yy, int ww, int hh, Value_base * vv);
+  protected:
+    void draw ();
+  private:
+    Value_base *v;
+    Fl_Output *o;
+  };
+#endif
+
   class Watcher : public AutoWindow {
   public:
     Watcher ();
     ~Watcher ();
 
-    void add (Value_base *v);
+    void watch (Value_base *v);
 
     void print_on (std::ostream &os) const;
     friend std::ostream & operator<< (std::ostream &os, const Watcher &W);
 
-#ifdef HAVE_FLTK
-  protected:
-    void draw ();
-#endif
-
   private:
     std::vector <Value_base *> l;
-    std::vector <Fl_Output *> o;
     int task;
   };
 

@@ -103,8 +103,8 @@ public:
     int i=0;
 
     Watcher *W = new Watcher;
-    W->add (new Value<int> (i,"Path length"));
-    W->add (new Value_calc<int> (env_size,this,"Envelope size"));
+    W->watch (new Value<int> (i,"Path length"));
+    W->watch (new Value_calc<int> (env_size,this,"Envelope size"));
     W->show();
 
     traj.push_back (point (cpx(-1, -pente), 0));
