@@ -17,7 +17,6 @@ int main (int argc, char ** argv) {
 
   Watcher W1;
   W1.watch (new Value<double> (x,"x"));
-  W1.watch (new Value_calc<double> (x2,&x,"Double of x"));
   W1.show();
 
   for (unsigned long i=0; i<3e8; ++i) {
@@ -35,6 +34,8 @@ int main (int argc, char ** argv) {
       global_clock.step();
     }
   }
+
+  W1.watch (new Value_calc<double> (x2,&x,"Double of x"));
 
   for (unsigned long i=0; i<3e8; ++i) {
     x = rand();
