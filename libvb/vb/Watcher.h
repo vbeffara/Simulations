@@ -12,8 +12,9 @@
 /** The namespace where libvb puts everything it defines. */
 
 namespace vb {
-  class Value_base {
+  class Value_base : public Fl_Group {
   public:
+    Value_base () : Fl_Group (0,0, 400,30, "") {};
     virtual void print_on (std::ostream &os) const =0;
     std::string name;
   };

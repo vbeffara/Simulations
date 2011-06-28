@@ -19,10 +19,10 @@ namespace vb {
     l.push_back (v);
 #ifdef HAVE_FLTK
     size (w(), h()+30);
-    begin();
-    new Fl_Button (0,h()-30, 150,30, v->name.c_str());
-    o.push_back (new Fl_Output (150,h()-30, 250,30));
-    end();
+    v->position (0,h()-30);
+    Fl_Button * B = new Fl_Button (v->x(),v->y(),     150,30, v->name.c_str()); v->add(B);
+    Fl_Output * O = new Fl_Output (v->x()+150,v->y(), 250,30);                  v->add(O);
+    o.push_back(O);
 #endif
   }
 
