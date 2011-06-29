@@ -80,7 +80,7 @@ private:
 
 int main (int argc, char ** argv) {
   Perco_Schramm RS (60,59);
-  RS.resize (700,600);
+  RS.size (700,600);
   RS.tri_boundary(); RS.perc();
   RS.walk(); RS.show(); RS.pause(); RS.output();
   return 0;

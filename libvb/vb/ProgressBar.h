@@ -4,7 +4,7 @@
 #ifndef __VB_PROGRESS_BAR_H
 #define __VB_PROGRESS_BAR_H
 
-#include <vb/Timer.h>
+#include <vb/Clock.h>
 
 namespace vb {
 
@@ -24,6 +24,8 @@ namespace vb {
       /// Update the bar on the screen.
       void update (int pos);
 
+      void display (void);  ///< Actually draw the bar on the screen.
+
     private:
       int final;            ///< The final value for the counter.
       int current;          ///< The current value of the counter.
@@ -32,10 +34,10 @@ namespace vb {
 
       double power;         ///< Power law driving the progress.
 
-      Timer timer;          ///< Timer for automatic updating.
-
-      void display (void);  ///< Actually draw the bar on the screen.
+      int task;
   };
+
+  void ProgressBar_display (void *);
 }
 
 #endif

@@ -76,7 +76,7 @@ void fill_free (vector<double> &f, int n) {
 }
 
 void trace (Image &img, vector<int> &direction, int x, int y) {
-  int nn = img.width;
+  int nn = img.w();
 
   while (img(x,y) != Color(255)) {
     img.putpoint (x,y,255);
@@ -151,7 +151,7 @@ void find_geodesics (const vector<double> &field, vector<double> &distance, vect
 }
 
 void explore (const Image &img, const vector<int> &direction, int x, int y, const vector<double> d, const vector<double> f) {
-  int nn = img.width;
+  int nn = img.w();
 
   double l = d[x+nn*y];
 

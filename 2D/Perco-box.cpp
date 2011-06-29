@@ -22,14 +22,14 @@ void bndcnx (int ox, int oy) {
   while (imin<=imax) {
     i=fifox[imin];
     j=fifoy[imin];
-    k=i+j*img->width;
+    k=i+j*img->w();
     imin++;
-    if ((i<img->width-1)&&((*img)(k)&16)&&!((*img)(k+1)&2)) {
+    if ((i<img->w()-1)&&((*img)(k)&16)&&!((*img)(k+1)&2)) {
       fifox[++imax]=i+1;
       fifoy[imax]=j;
       img -> putpoint (k+1,0, (*img)(k+1,0) | 3);
     }
-    if ((j<img->height-1)&&((*img)(k)&32)&&!((*img)(k+img->width)&2)) {
+    if ((j<img->h()-1)&&((*img)(k)&32)&&!((*img)(k+img->w())&2)) {
       fifox[++imax]=i;
       fifoy[imax]=j+1;
       img -> putpoint (k,1, (*img)(k,1) | 3);
@@ -39,7 +39,7 @@ void bndcnx (int ox, int oy) {
       fifoy[imax]=j;
       img -> putpoint (k-1,0, (*img)(k-1,0) | 3);
     }
-    if ((j>0)&&((*img)(k-img->width)&32)&&!((*img)(k-img->width)&2)) {
+    if ((j>0)&&((*img)(k-img->w())&32)&&!((*img)(k-img->w())&2)) {
       fifox[++imax]=i;
       fifoy[imax]=j-1;
       img -> putpoint (k,-1, (*img)(k,-1) | 3);

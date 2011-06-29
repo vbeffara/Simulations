@@ -20,20 +20,20 @@ void one_step (void) {
     for (y=1;y<n-1;y++) {
       sgn = (rng() & 32) / 32;
       rdm = rng();
-      
+
       xy += n;
-      
+
       delta = 2-(low[xy+1] + low[xy-1] + low[xy+n] + low[xy-n]);
       if (!sgn) delta = -delta;
-      
+
       if ( (delta<=0) || ( rdm < p[delta] ) )
-	{ low[xy]=sgn; }
-      
+        { low[xy]=sgn; }
+
       delta = 2-(high[xy+1] + high[xy-1] + high[xy+n] + high[xy-n]);
       if (!sgn) delta = -delta;
-      
+
       if ( (delta<=0) || ( rdm < p[delta] ) )
-	{ high[xy]=sgn; }      
+        { high[xy]=sgn; }
     }
   }
 }
@@ -41,15 +41,15 @@ void one_step (void) {
 long paint (Image &img) {
   int x,y,xy;
   long dist=0;
-  
+
   for (x=0;x<n;x++) {
     for (y=0;y<n;y++) {
       xy = x + n*y;
       if (low[xy]==high[xy])
-	img.putpoint (x,y,85*3*low[xy],0);
+        img.putpoint (x,y,85*3*low[xy],0);
       else {
-	img.putpoint (x,y,85*2,0);
-	dist++; 
+        img.putpoint (x,y,85*2,0);
+        dist++;
       }
     }
   }
@@ -114,22 +114,22 @@ int main(int argc, char *argv[])
       high[i]=1;
     }
 
-    for (i=0;i<n*img.width;++i) img.putpoint (i,0,85*2);
-    
+    for (i=0;i<n*img.w();++i) img.putpoint (i,0,85*2);
+
     for (i=0;i<n;i++) { img.putpoint(0,i,85*3*LEFT,0); img.putpoint(n-1,i,85*3*RIGHT,0); }
     for (i=0;i<(n>>1);i++) { img.putpoint(i,0,85*3*LEFT,0); img.putpoint(i,n-1,85*3*LEFT,0); }
     for (i=(n>>1);i<n;i++) { img.putpoint(i,0,85*3*RIGHT,0); img.putpoint(i,n-1,85*3*RIGHT,0); }
-    
+
     for (i=0;i<(n>>1);i++) { low[i]=LEFT; low[i+(n-1)*n]=LEFT; }
     for (i=0;i<n;i++) { low[i*n]=LEFT; }
     for (i=(n>>1);i<n;i++) { low[i]=RIGHT; low[i+(n-1)*n]=RIGHT; }
     for (i=0;i<n;i++) { low[i*n+n-1]=RIGHT; }
-    
+
     for (i=0;i<(n>>1);i++) { high[i]=LEFT; high[i+(n-1)*n]=LEFT; }
     for (i=0;i<n;i++) { high[i*n]=LEFT; }
     for (i=(n>>1);i<n;i++) { high[i]=RIGHT; high[i+(n-1)*n]=RIGHT; }
     for (i=0;i<n;i++) { high[i*n+n-1]=RIGHT; }
-    
+
     for (j=0;j<bla;j++) {
       one_step();
     }

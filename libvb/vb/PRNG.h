@@ -156,8 +156,4 @@ namespace vb {
       long long rdmbuf;
   };
 }
-
-namespace vb {
-
-}
 #endif

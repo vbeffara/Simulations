@@ -34,11 +34,21 @@
 
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
+#include <boost/utility.hpp>
 
 #ifdef HAVE_FLTK
 #include <FL/Fl.H>
 #include <FL/Fl_Double_Window.H>
 #include <FL/fl_draw.H>
+#endif
+
+#ifdef __GNUC__
+#define VB_DEPRECATED(func) func __attribute__ ((deprecated))
+#elif defined(_MSC_VER)
+#define VB_DEPRECATED(func) __declspec(deprecated) func
+#else
+#pragma message("WARNING: You need to implement DEPRECATED for this compiler")
+#define VB_DEPRECATED(func) func
 #endif
 
 namespace vb {

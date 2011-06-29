@@ -3,8 +3,7 @@
 /.waf*
 /00_Results
 /build
-/doc
+/doxygen
 /output
-/webpage
 amc.*
 out*

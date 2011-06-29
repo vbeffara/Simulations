@@ -5,7 +5,7 @@
 
 namespace vb {
   template<> Bitmap<Color>::Bitmap (int wd, int ht, const std::string &tit, int d) :
-    AutoWindow(wd,ht,tit),
+    Picture(wd,ht,tit),
     stage ((Color *) (surface -> get_data())),
     data (0)
   { }

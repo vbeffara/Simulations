@@ -14,8 +14,6 @@ namespace vb {
 
   CL_Parser::CL_Parser (int argc, char **argv, std::string syntax, const std::string &help) :
     getopt_arg("h"), _help(help) {
-      globals.init (argc,argv);
-
       if (help.length()==0) _help = "CL_Parser argument : " + syntax;
 
       size_t cut;

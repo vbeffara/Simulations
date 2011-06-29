@@ -4,6 +4,8 @@
 #include <vb/AutoWindow.h>
 
 namespace vb {
+  void AutoWindow_update   (void * AW) { ((AutoWindow*)AW) -> update();   }
+
 #ifdef HAVE_FLTK
   void close_window (Fl_Widget *w) { exit(1); }
 #endif
@@ -12,41 +14,33 @@ namespace vb {
 #ifdef HAVE_FLTK
     Fl_Double_Window (wd, ht, t.c_str()),
 #endif
-    title(t), width(wd), height(ht), fps(20),
+    title(t),
+#ifndef HAVE_FLTK
+    width(wd), height(ht),
+#endif
+    fps(20),
 
-    surface (Cairo::ImageSurface::create (Cairo::FORMAT_RGB24, width, height)),
-    stride  (surface -> get_stride() / sizeof(Color)),
-    cr      (Cairo::Context::create (surface)),
-
-    npts(0), delay(1), timer(1), saved_clock(clock()), nb_clock(0),
-    snapshot_prefix("snapshot"), snapshot_number(0), snapshot_period(0.0), snapshot_clock(clock()), paused (false) {
+    paused (false) {
 #ifdef HAVE_FLTK
-      callback(close_window);
+    task = global_clock.add (5,AutoWindow_update,this);
+    callback(close_window);
 #endif
   }
 
-  void AutoWindow::resize (int w, int h) {
-#ifdef HAVE_FLTK
-    Fl_Double_Window::resize (0,0,w,h);
-#endif
+  AutoWindow::~AutoWindow () {
+    global_clock.remove(task);
+  }
+
+#ifndef HAVE_FLTK
+  void AutoWindow::size (int w, int h) {
     width=w; height=h;
-    surface = Cairo::ImageSurface::create (Cairo::FORMAT_RGB24, width, height);
-    stride = surface -> get_stride() / sizeof(Color);
-    cr = Cairo::Context::create (surface);
   }
-  
+#endif
+
   void AutoWindow::show () {
 #ifdef HAVE_FLTK
     Fl_Double_Window::show();
     update();
-#else
-    std::cerr << "libvb: without FLTK, I can't show you this !" << std::endl;
-#endif
-  }
-
-  void AutoWindow::run () {
-#ifdef HAVE_FLTK
-    Fl::run ();
 #endif
   }
 
@@ -64,7 +58,7 @@ namespace vb {
             exit (1);
             break;
           case 0x73:             // this is an S
-            snapshot();
+            // snapshot();
             break;
           case 0x20:             // space bar
             paused = !paused;
@@ -73,21 +67,6 @@ namespace vb {
         break;
     }
     return 1;
-  }
-
-  void draw_cb (void * in, int x, int y, int w, unsigned char * out) {
-    AutoWindow & img  = * (AutoWindow*) in;
-    Color      * data = (Color*) img.surface -> get_data();
-
-    for (int i=0; i<w; ++i) {
-      Color &C = data [x+i + img.stride*y];
-      out[3*i] = C.r; out[3*i + 1] = C.g; out[3*i + 2] = C.b;
-    }
-  }
-
-  void AutoWindow::draw () {
-    paint ();
-    fl_draw_image (draw_cb,this,0,0,width,height);
   }
 #endif
 
@@ -99,52 +78,5 @@ namespace vb {
       while (paused) Fl::wait();
     }
 #endif
-  }  
-
-  void AutoWindow::cycle () {
-    long tmp = clock() - saved_clock;
-    if (tmp>=0) nb_clock += tmp+1;
-    if (nb_clock < CLOCKS_PER_SEC/5)
-      delay *= 2;
-    else {
-      delay = 1 + npts * (CLOCKS_PER_SEC/fps) / nb_clock;
-      update();
-    }
-
-    if ((snapshot_period > 0.0) && (clock() - snapshot_clock > CLOCKS_PER_SEC * snapshot_period))
-      snapshot(true);
-
-    timer = delay;
-    saved_clock = clock();
-  }
-
-  void AutoWindow::output_png (const std::string &s) {
-    paint();
-
-    std::ostringstream os;
-    if (s == "") os << "output/" << title; else os << s;
-    os << ".png";
-
-    surface->write_to_png (os.str());
-  }
-
-  void AutoWindow::output (const std::string &s) { output_png (s); }
-
-  void AutoWindow::snapshot (bool silent) {
-    std::ostringstream fn_s;
-    fn_s << snapshot_prefix << "_" << std::setw(4) << std::setfill('0') << snapshot_number++;
-    std::string fn = fn_s.str();
-
-    if (!silent) std::cerr << "Taking a snapshot as " << fn << ".png" << std::endl;
-    output_png (fn);
-
-    snapshot_clock = clock();
-  }
-
-  void AutoWindow::snapshot_setup (const std::string &prefix, double period) {
-    snapshot_period = period;
-    snapshot_prefix = prefix;
-    snapshot_number = 0;
-    if (period>0.0) snapshot (true);
   }
 }
