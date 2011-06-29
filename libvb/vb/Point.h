@@ -9,7 +9,7 @@
 namespace vb {
   class PointQueue;
 
-  /** A stupid class for a point with a clock. 
+  /** A stupid class for a point with a clock.
    *
    * The class is completely inlined.
    */
@@ -29,7 +29,7 @@ namespace vb {
        * @param cc The color of the point.
        */
 
-      Point (int xx, int yy, double tt, char cc=1) : 
+      Point (int xx, int yy, double tt, char cc=1) :
         x(xx), y(yy), t(tt), c(cc) {};
 
       /** Another constructor that takes the first point out of a queue.
@@ -45,6 +45,7 @@ namespace vb {
        * pt1.t>pt2.t ...
        *
        * @param pt The vb::Point to compare to.
+       * @return   Whether inequality holds.
        */
 
       bool operator< (const Point &pt) const { return t > pt.t; };
@@ -60,19 +61,19 @@ namespace vb {
       q.pop();
       return p;
     }
-    
+
     /// Add a Point to a PointQueue.
     PointQueue &operator<< (const Point &p) {
       q.push(p);
       return *this;
     }
-    
+
   private:
     std::priority_queue<Point> q;   ///< The std::priority_queue itself.
   };
 
-  Point::Point (PointQueue &pq) { 
-    pq >> *this; 
+  Point::Point (PointQueue &pq) {
+    pq >> *this;
   };
 
   /** Put a Point in an Image.
@@ -82,6 +83,7 @@ namespace vb {
    *
    * @param img The vb::Image in which to put the point.
    * @param p   The point to inset.
+   * @return    A reference to the modified Image (for chaining).
    */
 
   Image &operator<< (Image &img, const Point &p) {
@@ -96,6 +98,7 @@ namespace vb {
    *
    * @param img The vb::CoarseImage in which to put the point.
    * @param p   The point to inset.
+   * @return    A reference to the modified CoarseImage (for chaining).
    */
 
   CoarseImage &operator<< (CoarseImage &img, const Point &p) {
