@@ -37,6 +37,7 @@ namespace vb {
       int task;
   };
 
+  /// Re-display the progress bar given as argument.
   void ProgressBar_display (void *);
 }
 

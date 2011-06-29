@@ -67,6 +67,7 @@ namespace vb {
     friend void draw_cb (void *, int, int, int, unsigned char *);
   };
 
+  /// Take a snapshot of the picture passed as argument.
   void Picture_snapshot (void * AW);
 }
 

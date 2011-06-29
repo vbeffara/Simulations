@@ -58,17 +58,18 @@ namespace vb {
     int task;
 
 #ifdef HAVE_FLTK
-    int handle (int event);        ///< Handle the events, in particular 'q' and 'x'.
+    int handle (int event);           ///< Handle the events, in particular 'q' and 'x'.
 #else
-    int width;               ///< The width of the image, in pixels.
-    int height;              ///< The height of the image, in pixels.
+    int width;                        ///< The width of the image, in pixels.
+    int height;                       ///< The height of the image, in pixels.
   public:
-    int w() const { return width; }
-    int h() const { return height; }
-    void size (int w, int h); ///< Resize the window.
+    int w() const { return width; }   ///< Return the current width of the window.
+    int h() const { return height; }  ///< Return the current height of the window.
+    void size (int w, int h);         ///< Resize the window.
 #endif
   };
 
+  /// Re-draw the vb::AutoWindow passed as parameter.
   void AutoWindow_update (void * AW);
 }
 

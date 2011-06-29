@@ -12,7 +12,9 @@ namespace vb {
   /// Class to store the features of a picture element.
   class Pen {
   public:
-    Pen (Color c_=0, double w_=1.0, Color f_=255, bool ff_=false) : c(c_), f(f_), w(w_), ff(ff_) { }
+    /// The constructor:
+    Pen (Color c_=0, double w_=1.0, Color f_=255, bool ff_=false)
+      : c(c_), f(f_), w(w_), ff(ff_) { }
 
     Color c;  ///< The color of the stroke.
     Color f;  ///< The fill color (when applicable).
@@ -23,6 +25,7 @@ namespace vb {
   /// Base class for the elements of a figure.
   class Shape {
   public:
+    /// The constructor.
     Shape (Pen p_) : p(p_) { }
 
     virtual ~Shape() {} ///< Empty destructor to make the compiler happy.
@@ -34,12 +37,13 @@ namespace vb {
 
     virtual void draw (Cairo::RefPtr<Cairo::Context> cr) =0;  ///< Draw the shape on a Cairo context.
 
-    Pen p;
+    Pen p; ///< The vb::Pen to use to draw the current vb::Shape.
   };
 
   /// Subclass of vb::Shape foe a line segment.
   class Segment : public Shape {
   public:
+    /// The constructor.
     Segment (cpx zz1, cpx zz2, Pen p = Color(0)) : Shape(p), z1(zz1), z2(zz2) {}
 
     double left ()   { return min(z1.real(),z2.real()); } ///< Get the left boundary of the Shape.
@@ -56,6 +60,7 @@ namespace vb {
   /// Subclass of vb::Shape for a dot.
   class Dot : public Shape {
   public:
+    /// The constructor.
     Dot (cpx zz, Pen p = Color(0), std::string ll = "") : Shape(p), z(zz), l(ll) {}
 
     double left ()   { return z.real(); } ///< Get the left boundary of the Shape.
@@ -73,6 +78,7 @@ namespace vb {
   /// Subclass of vb::Shape for a circle.
   class Circle : public Shape {
   public:
+    /// The constructor.
     Circle (cpx z_, double r_, Pen p = Color(0)) : Shape(p), z(z_), r(r_) {}
 
     double left ()   { return z.real() - r; } ///< Get the left boundary of the Shape.
@@ -90,6 +96,7 @@ namespace vb {
   /// Subclass of vb::Shape for a path.
   class Path : public Shape {
   public:
+    /// The constructor.
     Path (std::vector<cpx> z_, Pen p = Color(0)) : Shape(p), z(z_) {}
 
     double left ();   ///< Get the left boundary of the Shape.
@@ -99,12 +106,13 @@ namespace vb {
 
     void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw the shape on a Cairo context.
 
-    std::vector<cpx> z;
+    std::vector<cpx> z; ///< The location of the vertices of the vb::Path.
   };
 
   /// Subclass of vb::Path for a closed polygon.
   class Polygon : public Path {
   public:
+    /// The constructor.
     Polygon (std::vector<cpx> z, Pen p = Color(0)) : Path(z,p) {}
 
     void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw the shape on a Cairo context.
