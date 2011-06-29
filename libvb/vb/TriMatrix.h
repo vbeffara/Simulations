@@ -54,6 +54,7 @@ namespace vb {
        *
        * @param i The first coordinate of the entry.
        * @param j The second coordinate of the entry.
+       * @return The value of the entry at (i,j).
        */
 
       T get (int i, int j) const;
@@ -80,6 +81,7 @@ namespace vb {
        *
        * @param i The first coordinate of the entry.
        * @param j The second coordinate of the entry.
+       * @return The value of the entry at (i,j).
        */
 
       T operator() (int i, int j) const { return get(i,j); };
