@@ -20,7 +20,7 @@ namespace vb {
 
       /** Output the path as an image.
        *
-       * This uses the default format (i.e., PDF), and the file name 
+       * This uses the default format (i.e., PDF), and the file name
        * defaults to the title of the vb::Path opbject.
        *
        * @param s The filename of the output.
@@ -35,8 +35,7 @@ namespace vb {
 
       void output_pdf (const std::string &s = "") const;
 
-      /** Check whether the path is self-avoiding. */
-
+      /// Check whether the path is self-avoiding.
       bool self_avoiding ();
 
     private:
