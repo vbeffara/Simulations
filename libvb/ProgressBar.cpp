@@ -7,7 +7,7 @@ namespace vb {
   ProgressBar::ProgressBar (int length, double pow) :
     final(length), current(0), nchar(0), power(pow) {
       display();
-      task = global_clock.add (100, ProgressBar_display, this);
+      task = global_clock.add (10, ProgressBar_display, this);
     }
 
   ProgressBar::~ProgressBar () {
@@ -22,6 +22,7 @@ namespace vb {
     if (pos>final) pos=final;
     current = pos;
     nchar = (pos*50.0)/final;
+    global_clock.step();
   }
 
   void ProgressBar::display () {
