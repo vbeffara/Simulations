@@ -67,7 +67,7 @@ int main (int argc, char ** argv) {
   { ProgressBar P (t);
     for (int i=0; i<t; ++i) {
       T.flip (T.random_edge());
-      P.update(i);
+      P.set(i);
     }
   }
 

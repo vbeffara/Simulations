@@ -16,7 +16,7 @@ int main(int argc, char ** argv)
   ProgressBar PB (t);
 
   for (int i=0;i<t;) {
-    PB.update(i);
+    PB.set(i);
     int j = prng()%n;
     int k = 1+(prng()%3);
     int l = P[j]; P[j]=(P[j]+k)%4;

@@ -67,7 +67,7 @@ int main (int argc, char **argv) {
   { ProgressBar PB (t);
 
     for (int iter=0; iter<t; ++iter) {
-      PB.update (iter);
+      PB.set (iter);
 
       for (int i=0; i<n; ++i)
         for (int j=0; j<m; ++j)

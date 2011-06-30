@@ -4,7 +4,7 @@
 #include <vb/AutoWindow.h>
 
 namespace vb {
-  void AutoWindow_update   (void * AW) { ((AutoWindow*)AW) -> update();   }
+  void AutoWindow_update   (void * AW) { ((AutoWindow*)AW) -> update(); }
 
 #ifdef HAVE_FLTK
   void close_window (Fl_Widget *w) { exit(1); }
