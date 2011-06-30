@@ -24,7 +24,7 @@ int main (int argc, char ** argv) {
       else if (c == C[1]) { img.putpoint (x,y,C[2],0); ++y; }
       else if (c == C[2]) { img.putpoint (x,y,C[3],0); --x; }
       else if (c == C[3]) { img.putpoint (x,y,C[0],0); --y; }
-      else                { img.putpoint (x,y,C[0]); x=n/2; y=n/2; PB.update(++surf); }
+      else                { img.putpoint (x,y,C[0]); x=n/2; y=n/2; PB.set(++surf); }
     }
   }
 

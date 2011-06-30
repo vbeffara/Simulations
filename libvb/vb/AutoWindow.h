@@ -45,7 +45,7 @@ namespace vb {
     void show ();
 
     /// Update the screen, handle the events.
-    void update ();
+    virtual void update ();
 
     /// Put the image on pause, i.e. wait for user input.
     void pause() { paused=true; update(); }

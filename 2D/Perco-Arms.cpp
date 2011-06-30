@@ -104,7 +104,7 @@ int main(int argc, char **argv) {
       long flow = edmonds_karp_max_flow (g,(n>>1)*(n+1),n*n);
       stats[flow]++;
 
-      PB.update (iter);
+      PB.set (iter);
     }
   }
 

@@ -4,7 +4,7 @@
 #ifndef __VB_PROGRESS_BAR_H
 #define __VB_PROGRESS_BAR_H
 
-#include <vb/Clock.h>
+#include <vb/AutoWindow.h>
 
 namespace vb {
 
@@ -13,32 +13,27 @@ namespace vb {
    * It will output to the standard error stream.
    */
 
-  class ProgressBar {
-    public:
-      /// The constructor, defaults to a length of 100 steps.
-      ProgressBar (int length=100, double pow=1.0);
+  class ProgressBar : public AutoWindow {
+  public:
+    /// The constructor, defaults to a length of 100 steps.
+    ProgressBar (int length=100, double pow=1.0);
 
-      /// The destructor, which closes the display properly.
-      ~ProgressBar ();
+    /// The destructor, which closes the display properly.
+    ~ProgressBar ();
 
-      /// Update the bar on the screen.
-      void update (int pos);
+    /// Update the bar on the screen.
+    void set (int pos);
 
-      void display (void);  ///< Actually draw the bar on the screen.
+  private:
+    void update();        ///< Display the bar on screen.
 
-    private:
-      int final;            ///< The final value for the counter.
-      int current;          ///< The current value of the counter.
+    int final;            ///< The final value for the counter.
+    int current;          ///< The current value of the counter.
 
-      int nchar;            ///< Number of displayed characters on the screen.
+    int nchar;            ///< Number of displayed characters on the screen.
 
-      double power;         ///< Power law driving the progress.
-
-      int task;
+    double power;         ///< Power law driving the progress.
   };
-
-  /// Re-display the progress bar given as argument.
-  void ProgressBar_display (void *);
 }
 
 #endif
