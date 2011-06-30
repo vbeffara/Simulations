@@ -101,7 +101,7 @@ namespace vb {
    * of the rectangle (typically a color or some kind of local information).
    */
 
-  template <typename T> class Lattice_rectangle {
+  template <typename T> class Lattice_rectangle : public Lattice {
   public:
 
     /** The constructor.
@@ -114,15 +114,14 @@ namespace vb {
      * @param _h The height of the rectangle, measured in terms of the fundamental domain.
      */
 
-    Lattice_rectangle (const Lattice &_L, int _w, int _h) : L(_L), w(_w), h(_h), data(w*h*L.n) {};
+    Lattice_rectangle (const Lattice &_L, int _w, int _h) : Lattice(_L), w(_w), h(_h), data(w*h*n) {};
 
     /// Return the label at a given vertex.
-    T & operator() (int x, int y, int k) { return data[k + L.n*(x+w*y)]; }
+    T & operator() (int x, int y, int k) { return data[k + n*(x+w*y)]; }
 
     /// Return the label at a given vertex.
     T & operator[] (const Lattice_vertex &v) { return (*this)(v.x,v.y,v.k); }
 
-    const Lattice &L;    ///< The adjacency structure of the graph.
     const int w;         ///< The width of the rectangle.
     const int h;         ///< The height of the rectangle.
     std::vector<T> data; ///< The labels.
