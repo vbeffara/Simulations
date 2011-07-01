@@ -33,6 +33,7 @@ double angle (const point &O, const point &A, const point &B) {
 }
 
 int env_size (void*);
+double env_width (void*);
 
 class Rancher {
 public:
@@ -95,16 +96,18 @@ public:
   }
 
   void main (int argc, char ** argv) {
-    CL_Parser CLP (argc, argv, "p=.1,n=1000,i=1");
+    CL_Parser CLP (argc, argv, "p=.1,n=1000,i=1,o");
     double pente = CLP('p');
     int    nb    = CLP('n');
     int    inter = CLP('i');
+    bool   plot  = CLP('o');
 
     int i=0;
 
     Watcher *W = new Watcher;
     W->watch (new Value<int> (i,"Path length"));
     W->watch (new Value_calc<int> (env_size,this,"Envelope size"));
+    W->watch (new Value_calc<double> (env_width,this,"Envelope width"));
     W->show();
 
     traj.push_back (point (cpx(-1, -pente), 0));
@@ -127,16 +130,28 @@ public:
 
     delete W;
 
-    vector<cpx> path; for (int i=2; i<traj.size(); ++i) path.push_back (traj[i]);
-    F.add (new Path(path));
-    F.show(); F.pause();
-    F.output_pdf("Rancher");
+    if (plot) {
+      vector<cpx> path; for (int i=2; i<traj.size(); ++i) path.push_back (traj[i]);
+      F.add (new Path(path));
+      F.show(); F.pause();
+      F.output_pdf("Rancher");
+    }
   }
 };
 
 int env_size (void *R) {
   Rancher & RR = * (Rancher*) R;
   return RR.env.size();
+}
+
+double env_width (void *R) {
+  Rancher & RR = * (Rancher*) R;
+  list<point> L = RR.env;
+  list<point>::iterator i = L.begin(); ++i;
+  point p1 = *i;
+  i = L.end(); --i; --i;
+  point p2 = *i;
+  return sqrt (norm (cpx(p1) - cpx(p2)));
 }
 
 int main (int argc, char **argv) {
