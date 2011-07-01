@@ -8,10 +8,10 @@ namespace vb {
   }
 
 #ifdef HAVE_FLTK
-  Watcher_slot::Watcher_slot (int xx, int yy, int ww, int hh, Value_base * vv) :
-    Fl_Group (xx,yy,ww,hh), v(vv) {
-    new Fl_Button (x(),y(), 150,30, vv->name.c_str());
-    o = new Fl_Output (x()+150,y(), 250,30);
+  Watcher_slot::Watcher_slot (int ww, Value_base * vv) :
+    Fl_Group (0,0,ww,30), v(vv) {
+    new Fl_Button (x(),y(), 150,h(), vv->name.c_str());
+    o = new Fl_Output (x()+150,y(), w()-150,h());
   }
 
   void Watcher_slot::draw () {
@@ -32,8 +32,10 @@ namespace vb {
   void Watcher::watch (Value_base *v) {
     l.push_back (v);
 #ifdef HAVE_FLTK
-    size (w(), h()+30);
-    add (new Watcher_slot (0,h()-30, 400,30, v));
+    Watcher_slot * W = new Watcher_slot (w(),v);
+    W -> position (0,h());
+    size (w(), h()+W->h());
+    add (W);
 #endif
   }
 

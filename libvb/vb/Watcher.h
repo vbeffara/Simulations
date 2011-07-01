@@ -6,9 +6,6 @@
 
 #include <vb/AutoWindow.h>
 
-#include <FL/Fl_Button.H>
-#include <FL/Fl_Output.H>
-
 /** The namespace where libvb puts everything it defines. */
 
 namespace vb {
@@ -64,7 +61,7 @@ namespace vb {
 #ifdef HAVE_FLTK
   class Watcher_slot : public Fl_Group {
   public:
-    Watcher_slot (int xx, int yy, int ww, int hh, Value_base * vv);
+    Watcher_slot (int ww, Value_base * vv);
   protected:
     void draw ();
   private:
