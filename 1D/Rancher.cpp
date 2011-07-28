@@ -122,9 +122,9 @@ public:
 
     for (i=3; i<nb; i++) {
       point p = rand_point();
-      traj.push_back (p);
+      if (plot) traj.push_back (p);
       cur = insere_maillon(p);
-      if (!((i+1)%inter)) dessine_enveloppe();
+      if (plot && !((i+1)%inter)) dessine_enveloppe();
       W->step();
     }
 

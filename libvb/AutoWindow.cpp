@@ -50,17 +50,16 @@ namespace vb {
       case FL_KEYDOWN:
         switch (Fl::event_key()) {
           case FL_Escape:
-          case 0x61:             // this is a A (AZERTY for Q)
-          case 0x71:             // this is a Q
+          case 'q':
             exit (0);
             break;
-          case 0x78:             // this is an X
+          case 'x':             // this is an X
             exit (1);
             break;
-          case 0x73:             // this is an S
+          case 's':             // this is an S
             // snapshot();
             break;
-          case 0x20:             // space bar
+          case ' ':             // space bar
             paused = !paused;
             break;
         }
