@@ -7,7 +7,6 @@ def options (ctx) :
 def configure (ctx) :
     ctx.load ('compiler_c compiler_cxx')
     ctx.check (header_name='boost/graph/edmonds_karp_max_flow.hpp')
-    ctx.check_cfg (package='sigc++-2.0',  args='--cflags --libs')
     ctx.check_cfg (package='cairomm-1.0', args='--cflags --libs', uselib_store='cairo')
     ctx.check_cfg (package='fftw3',       args='--cflags --libs', mandatory=0)
     ctx.check_cfg (package='x11',         args='--cflags --libs', mandatory=0)
