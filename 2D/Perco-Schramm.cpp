@@ -11,13 +11,15 @@ using namespace vb;
 
 double omx = sqrt(3.0);
 
-Color cc[2] = { Color(128,128,255), Color(255,255,0) };
+Color cc[2] = { Color(160,160,255), Color(255,255,100) };
 
 class Perco_Schramm : public Figure {
 public:
   Perco_Schramm (int w_, int h_) : w(w_), h(h_), mask(w*h,true) {
     title = "Perco_Schramm";
-    p = new Path (std::vector<cpx>(0), Pen(Color(255,0,0),4));
+
+    // Ipe7's mediumorchid4 : 0.478 0.216 0.545
+    p = new Path (std::vector<cpx>(0), Pen(Color(122,55,139),4));
 
     for (int i=0; i < w/2; ++i)     cols.push_back (true);
     for (int i=0; i < w/2; ++i)     cols.push_back (false);
@@ -30,6 +32,13 @@ public:
         mask[i+w*j] = (i <= (w+j)/2) && (i >= (w-j)/2-1) && (j<h-1);
       cols[(w-j)/2 + w*j - 1] = true;
       cols[(w+j)/2 + w*j] = false;
+    }
+  }
+
+  void rect_boundary () {
+    for (int j=0; j<h-1; ++j) {
+      cols[w*j] = true;
+      cols[w*j+h] = false;
     }
   }
 
@@ -81,7 +90,9 @@ private:
 int main (int argc, char ** argv) {
   Perco_Schramm RS (60,59);
   RS.size (700,600);
-  RS.tri_boundary(); RS.perc();
+  //RS.tri_boundary();
+  RS.rect_boundary();
+  RS.perc();
   RS.walk(); RS.show(); RS.pause(); RS.output();
   return 0;
 }
