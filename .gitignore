@@ -1,5 +1,4 @@
-/.lock-wafbuild
-/.lock-wscript
+/.lock*
 /.waf*
 /00_Results
 /build
