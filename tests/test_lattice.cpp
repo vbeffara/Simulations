@@ -7,12 +7,12 @@ using namespace vb;
 using namespace std;
 
 int main (int argc, char ** argv) {
-  Lattice L = H2();
+  Lattice L = SV();
   L.relax(1e-14);
   L.tau = L.tau_rw();
-  //L.optimize (cost_cp);
+  L.optimize (cost_cp);
 
-  Lattice_rectangle<int> R(L,50,20);
+  Lattice_rectangle<int> R(L,5,3);
   Pen p (Color(255,0,0),1,Color(255,255,0));
 
   // Make a figure out of it

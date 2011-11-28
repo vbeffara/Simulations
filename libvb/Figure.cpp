@@ -93,7 +93,7 @@ namespace vb {
     return (*this);
   }
 
-  void Figure::paint (Cairo::RefPtr<Cairo::Context> cr) {
+  void Figure::paint (Cairo::RefPtr<Cairo::Context> cr, bool fill) {
     double wd = right()-left(), mid_x = (right()+left())/2;
     double ht = top()-bottom(), mid_y = (top()+bottom())/2;
 
@@ -103,8 +103,10 @@ namespace vb {
     basewidth = 1.0/scale;
 
     cr->save();
-    cr->set_source_rgb (1,1,1);
-    cr->paint();
+    if (fill) {
+      cr->set_source_rgb (1,1,1);
+      cr->paint();
+    }
 
     cr->translate      (w()/2, h()/2);
     cr->scale          (scale_x*.98, -scale_y*.98); // A tiny margin for stoke width.
@@ -141,7 +143,7 @@ namespace vb {
 
     Cairo::RefPtr<Cairo::PdfSurface> pdf = Cairo::PdfSurface::create (os.str(), w(), h());
     Cairo::RefPtr<Cairo::Context>    pcr = Cairo::Context::create (pdf);
-    paint (pcr);
+    paint (pcr, false);
     pcr->show_page();
   }
 
