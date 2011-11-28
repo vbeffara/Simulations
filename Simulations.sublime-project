@@ -1,0 +1,10 @@
+{
+	"folders":
+	[
+		{
+			"path": "/Users/vincent/Dropbox/Boulot/Simulations",
+			"folder_exclude_patterns": [".waf-*", "build", "output", "00_Results"],
+			"file_exclude_patterns": [".lock*", "waf", "doxygen"]
+		}
+	]
+}
