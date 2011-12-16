@@ -102,12 +102,14 @@ namespace vb {
     if (ortho) scale_x = scale_y = scale;
     basewidth = 1.0/scale;
 
-    cr->save();
     if (fill) {
+      cr->save();
       cr->set_source_rgb (1,1,1);
       cr->paint();
+      cr->restore();
     }
 
+    cr->save();
     cr->translate      (w()/2, h()/2);
     cr->scale          (scale_x*.98, -scale_y*.98); // A tiny margin for stoke width.
     cr->translate      (-mid_x,-mid_y);
@@ -117,8 +119,10 @@ namespace vb {
 
     foreach (Shape *i, contents) {
       cr->save();
-      cr->set_source_rgb (i->p.c.r/255.0, i->p.c.g/255.0, i->p.c.b/255.0);
-      cr->set_line_width (basewidth * i->p.w);
+      if (i->p.set) {
+        cr->set_source_rgb (i->p.c.r/255.0, i->p.c.g/255.0, i->p.c.b/255.0);
+        cr->set_line_width (basewidth * i->p.w);
+      }
       i->draw(cr);
       if (i->p.ff) {
         cr->stroke_preserve();

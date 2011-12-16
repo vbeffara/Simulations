@@ -26,7 +26,7 @@ int main (int argc, char **argv) {
   }
 
   for (int i=1; i<=5; ++i)
-    F.add (new Circle (cpx(0,0), i, randomcolor()));
+    F.add (new Circle (cpx(0,0), i));
 
   F.show(); F.pause();
 

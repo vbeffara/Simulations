@@ -12,10 +12,14 @@ namespace vb {
   /// Class to store the features of a picture element.
   class Pen {
   public:
-    /// The constructor:
-    Pen (Color c_=0, double w_=1.0, Color f_=255, bool ff_=false)
-      : c(c_), f(f_), w(w_), ff(ff_) { }
+    /// The default constructor:
+    Pen () : set(false), c(0), f(255), w(1), ff(false) { };
 
+    /// The complete constructor:
+    Pen (Color c_, double w_=1.0, Color f_=255, bool ff_=false)
+      : set(true), c(c_), f(f_), w(w_), ff(ff_) { }
+
+    bool set; ///< Whether the pen color is set.
     Color c;  ///< The color of the stroke.
     Color f;  ///< The fill color (when applicable).
     double w; ///< The stroke width.
@@ -44,7 +48,7 @@ namespace vb {
   class Segment : public Shape {
   public:
     /// The constructor.
-    Segment (cpx zz1, cpx zz2, Pen p = Color(0)) : Shape(p), z1(zz1), z2(zz2) {}
+    Segment (cpx zz1, cpx zz2, Pen p = Pen()) : Shape(p), z1(zz1), z2(zz2) {}
 
     double left ()   { return min(z1.real(),z2.real()); } ///< Get the left boundary of the Shape.
     double right ()  { return max(z1.real(),z2.real()); } ///< Get the right boundary of the Shape.
@@ -61,7 +65,7 @@ namespace vb {
   class Dot : public Shape {
   public:
     /// The constructor.
-    Dot (cpx zz, Pen p = Color(0), std::string ll = "") : Shape(p), z(zz), l(ll) {}
+    Dot (cpx zz, Pen p = Pen(), std::string ll = "") : Shape(p), z(zz), l(ll) {}
 
     double left ()   { return z.real(); } ///< Get the left boundary of the Shape.
     double right ()  { return z.real(); } ///< Get the right boundary of the Shape.
@@ -79,7 +83,7 @@ namespace vb {
   class Circle : public Shape {
   public:
     /// The constructor.
-    Circle (cpx z_, double r_, Pen p = Color(0)) : Shape(p), z(z_), r(r_) {}
+    Circle (cpx z_, double r_, Pen p = Pen()) : Shape(p), z(z_), r(r_) {}
 
     double left ()   { return z.real() - r; } ///< Get the left boundary of the Shape.
     double right ()  { return z.real() + r; } ///< Get the right boundary of the Shape.
@@ -97,7 +101,7 @@ namespace vb {
   class Path : public Shape {
   public:
     /// The constructor.
-    Path (std::vector<cpx> z_, Pen p = Color(0)) : Shape(p), z(z_) {}
+    Path (std::vector<cpx> z_, Pen p = Pen()) : Shape(p), z(z_) {}
 
     double left ();   ///< Get the left boundary of the Shape.
     double right ();  ///< Get the right boundary of the Shape.
@@ -113,7 +117,7 @@ namespace vb {
   class Polygon : public Path {
   public:
     /// The constructor.
-    Polygon (std::vector<cpx> z, Pen p = Color(0)) : Path(z,p) {}
+    Polygon (std::vector<cpx> z, Pen p = Pen()) : Path(z,p) {}
 
     void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw the shape on a Cairo context.
   };
