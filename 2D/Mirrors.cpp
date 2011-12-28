@@ -33,16 +33,24 @@ int dy[4] = {0,1,0,-1};
 int flip_ne[4] = {1,0,3,2};
 int flip_nw[4] = {3,2,1,0};
 
+class Mirror {
+public:
+  Mirror (unsigned char s_ = 0) : s(s_) {}
+  unsigned char s;
+  operator unsigned char () { return s; }
+  operator Color () { return colors[s]; }
+};
+
 class Mirrors : public Image {
 public:
-  Mirrors (int n_, double p_, double q_, double f_) : Image(n_,n_,"The mirror model"), n(n_), p(p_), q(q_), f(f_) {}
+  Mirrors (CL_Parser &CLP) : Image(CLP('n'),CLP('n'),"The mirror model"), n(CLP('n')), p(CLP('p')), q(CLP('q')), f(CLP('f')) {}
   int main ();
   int n;
   double p, q, f;
 };
 
 int Mirrors::main () {
-  vector<unsigned char> state (n*n);
+  vector<Mirror> state (n*n);
 
   show();
 
@@ -52,9 +60,9 @@ int Mirrors::main () {
         state[i+n*j] = STATE_NONE;
         putpoint (i,j,0);
         if (prng.bernoulli(1-q)) {
-          state[i+n*j] |= STATE_PRESENT;
-          if (prng.bernoulli(p)) state[i+n*j] |= STATE_NE;
-          if (prng.bernoulli(f)) state[i+n*j] |= STATE_FLIP;
+          state[i+n*j].s |= STATE_PRESENT;
+          if (prng.bernoulli(p)) state[i+n*j].s |= STATE_NE;
+          if (prng.bernoulli(f)) state[i+n*j].s |= STATE_FLIP;
           putpoint (i,j,colors[state[i+n*j]%8]);
         }
       }
@@ -64,14 +72,14 @@ int Mirrors::main () {
 
     while ((t<8*n*n)&&(x>0)&&(y>0)&&(x<n-1)&&(y<n-1)) {
       ++t;
-      state[x+n*y] |= STATE_VISITED;
-      if (state[x+n*y] & STATE_PRESENT) putpoint (x,y,colors[state[x+n*y]%8]);
+      state[x+n*y].s |= STATE_VISITED;
+      if (state[x+n*y].s & STATE_PRESENT) putpoint (x,y,colors[state[x+n*y]%8]);
 
       x += dx[d]; y += dy[d];
 
       if (state[x+n*y] & STATE_PRESENT) {
-        if (state[x+n*y] & STATE_NE) d = flip_ne[d]; else d = flip_nw[d];
-        if (state[x+n*y] & STATE_FLIP) state[x+n*y] ^= STATE_NE;
+        if (state[x+n*y].s & STATE_NE) d = flip_ne[d]; else d = flip_nw[d];
+        if (state[x+n*y].s & STATE_FLIP) state[x+n*y].s ^= STATE_NE;
         putpoint (x,y, colors[state[x+n*y]%8]);
       }
     }
@@ -84,9 +92,6 @@ int Mirrors::main () {
 
 int main (int argc, char ** argv) {
   CL_Parser CLP (argc, argv, "n=200,p=.5,q=0,f=0,s=0");
-
   prng.seed((int)CLP('s'));
-
-  Mirrors M (CLP('n'), CLP('p'), CLP('q'), CLP('f'));
-  return M.main();
+  return Mirrors(CLP).main();
 }
