@@ -22,7 +22,7 @@ using namespace std;
 #define MIRROR_FLIP_NE_VISITED Color(0,0,128)
 #define MIRROR_FLIP_NW_VISITED Color(0,128,0)
 
-Color color[8] = {
+Color colors[8] = {
   MIRROR_NW, MIRROR_NE, MIRROR_FLIP_NW, MIRROR_FLIP_NE,
   MIRROR_NW_VISITED, MIRROR_NE_VISITED, MIRROR_FLIP_NW_VISITED, MIRROR_FLIP_NE_VISITED,
 };
@@ -33,32 +33,29 @@ int dy[4] = {0,1,0,-1};
 int flip_ne[4] = {1,0,3,2};
 int flip_nw[4] = {3,2,1,0};
 
-int main (int argc, char ** argv) {
-  CL_Parser CLP (argc, argv, "n=200,p=.5,q=0,f=0,s=0");
-  
-  int n = CLP('n'); // Size of the box
-  double p = CLP('p'); // Initial asymmetry of the mirrors
-  double q = CLP('q'); // Density of holes
-  double f = CLP('f'); // Density of flippable among mirrors
-  int s = CLP('s'); // The initial seed of the prng
+class Mirrors : public Image {
+public:
+  Mirrors (int n_, double p_, double q_, double f_) : Image(n_,n_,"The mirror model"), n(n_), p(p_), q(q_), f(f_) {}
+  int main ();
+  int n;
+  double p, q, f;
+};
 
-  prng.seed(s);
-
-  Image img (n,n, "The mirror model");
+int Mirrors::main () {
   vector<unsigned char> state (n*n);
 
-  img.show();
+  show();
 
   while (true) {
     for (int i=0; i<n; ++i) {
       for (int j=0; j<n; ++j) {
         state[i+n*j] = STATE_NONE;
-        img.putpoint (i,j,0);
+        putpoint (i,j,0);
         if (prng.bernoulli(1-q)) {
           state[i+n*j] |= STATE_PRESENT;
           if (prng.bernoulli(p)) state[i+n*j] |= STATE_NE;
           if (prng.bernoulli(f)) state[i+n*j] |= STATE_FLIP;
-          img.putpoint (i,j,color[state[i+n*j]%8]);
+          putpoint (i,j,colors[state[i+n*j]%8]);
         }
       }
     }
@@ -68,19 +65,28 @@ int main (int argc, char ** argv) {
     while ((t<8*n*n)&&(x>0)&&(y>0)&&(x<n-1)&&(y<n-1)) {
       ++t;
       state[x+n*y] |= STATE_VISITED;
-      if (state[x+n*y] & STATE_PRESENT) img.putpoint (x,y,color[state[x+n*y]%8]);
+      if (state[x+n*y] & STATE_PRESENT) putpoint (x,y,colors[state[x+n*y]%8]);
 
       x += dx[d]; y += dy[d];
 
       if (state[x+n*y] & STATE_PRESENT) {
         if (state[x+n*y] & STATE_NE) d = flip_ne[d]; else d = flip_nw[d];
         if (state[x+n*y] & STATE_FLIP) state[x+n*y] ^= STATE_NE;
-        img.putpoint (x,y,color[state[x+n*y]%8]);
+        putpoint (x,y, colors[state[x+n*y]%8]);
       }
     }
 
-    img.pause();
+    pause();
   }
 
   return 0;
+}
+
+int main (int argc, char ** argv) {
+  CL_Parser CLP (argc, argv, "n=200,p=.5,q=0,f=0,s=0");
+
+  prng.seed((int)CLP('s'));
+
+  Mirrors M (CLP('n'), CLP('p'), CLP('q'), CLP('f'));
+  return M.main();
 }
