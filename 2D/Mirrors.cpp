@@ -38,32 +38,33 @@ public:
   Mirror (unsigned char s_ = 0) : s(s_) {}
   unsigned char s;
   operator unsigned char () { return s; }
-  operator Color () { return colors[s]; }
+  operator Color () {
+    if (s==0) return 0;
+    if (s==STATE_VISITED) return 128;
+    return colors[s%8];
+  }
 };
 
-class Mirrors : public Image {
+class Mirrors : public Bitmap<Mirror> {
 public:
-  Mirrors (CL_Parser &CLP) : Image(CLP('n'),CLP('n'),"The mirror model"), n(CLP('n')), p(CLP('p')), q(CLP('q')), f(CLP('f')) {}
+  Mirrors (CL_Parser &CLP) : Bitmap<Mirror> (CLP('n'),CLP('n'),"The mirror model"),
+                             n(CLP('n')), p(CLP('p')), q(CLP('q')), f(CLP('f')) {}
   int main ();
   int n;
   double p, q, f;
 };
 
 int Mirrors::main () {
-  vector<Mirror> state (n*n);
-
   show();
 
   while (true) {
     for (int i=0; i<n; ++i) {
       for (int j=0; j<n; ++j) {
-        state[i+n*j] = STATE_NONE;
-        putpoint (i,j,0);
+        at(i,j) = STATE_NONE;
         if (prng.bernoulli(1-q)) {
-          state[i+n*j].s |= STATE_PRESENT;
-          if (prng.bernoulli(p)) state[i+n*j].s |= STATE_NE;
-          if (prng.bernoulli(f)) state[i+n*j].s |= STATE_FLIP;
-          putpoint (i,j,colors[state[i+n*j]%8]);
+          at(i,j).s |= STATE_PRESENT;
+          if (prng.bernoulli(p)) at(i,j).s |= STATE_NE;
+          if (prng.bernoulli(f)) at(i,j).s |= STATE_FLIP;
         }
       }
     }
@@ -72,26 +73,22 @@ int Mirrors::main () {
 
     while ((t<8*n*n)&&(x>0)&&(y>0)&&(x<n-1)&&(y<n-1)) {
       ++t;
-      state[x+n*y].s |= STATE_VISITED;
-      if (state[x+n*y].s & STATE_PRESENT) putpoint (x,y,colors[state[x+n*y]%8]);
+      at(x,y).s |= STATE_VISITED;
 
       x += dx[d]; y += dy[d];
 
-      if (state[x+n*y] & STATE_PRESENT) {
-        if (state[x+n*y].s & STATE_NE) d = flip_ne[d]; else d = flip_nw[d];
-        if (state[x+n*y].s & STATE_FLIP) state[x+n*y].s ^= STATE_NE;
-        putpoint (x,y, colors[state[x+n*y]%8]);
+      if (at(x,y) & STATE_PRESENT) {
+        if (at(x,y).s & STATE_NE) d = flip_ne[d]; else d = flip_nw[d];
+        if (at(x,y).s & STATE_FLIP) at(x,y).s ^= STATE_NE;
       }
     }
 
     pause();
   }
-
-  return 0;
 }
 
 int main (int argc, char ** argv) {
   CL_Parser CLP (argc, argv, "n=200,p=.5,q=0,f=0,s=0");
   prng.seed((int)CLP('s'));
-  return Mirrors(CLP).main();
+  Mirrors(CLP).main();
 }
