@@ -11,7 +11,7 @@ int main(int argc, char ** argv) {
   bool   d = CLP('d');
   int    s = CLP('s');
 
-  Image img (n, n, str(fmt("Bond percolation (p=%)")%p));
+  Image img (n, n, "Bond percolation");
 
   for (int x=0; x<n; ++x) {
     for (int y=0; y<n; ++y) {
