@@ -6,20 +6,6 @@
 
 #include <vb/common.h>
 
-#ifdef BYTE_ORDER
-# if BYTE_ORDER == BIG_ENDIAN
-#  define VB_BIG_ENDIAN
-# else
-#  define VB_LITTLE_ENDIAN
-# endif
-#else
-# if defined(__sparc__)
-#  define VB_BIG_ENDIAN
-# else
-Error: unknown endianness.
-# endif
-#endif
-
 namespace vb {
   /** A rather stupid class holding color info in Cairo format.
    *
@@ -32,7 +18,7 @@ namespace vb {
 
   class Color {
     public:
-#ifdef VB_LITTLE_ENDIAN
+#if VB_ENDIAN == little
       unsigned char b; ///< The blue component.
       unsigned char g; ///< The green component.
       unsigned char r; ///< The red component.

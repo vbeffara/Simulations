@@ -6,11 +6,11 @@ def options (ctx) :
 
 def configure (ctx) :
     ctx.load ('compiler_c compiler_cxx boost')
-    ctx.check_boost ()
-    ctx.check_endianness ()
+    ctx.define ('VB_ENDIAN', ctx.check_endianness(), 0)
     ctx.check_cfg (package='cairomm-1.0', args='--cflags --libs', uselib_store='cairo')
     ctx.check_cfg (package='fftw3',       args='--cflags --libs', mandatory=0)
     ctx.check_cfg (package='x11',         args='--cflags --libs', mandatory=0)
+    ctx.check_boost ()
 
     if ctx.options.gui == 'fltk':
         ctx.check_cfg (path='fltk-config', package='', args='--cflags --ldflags', uselib_store='FLTK')
