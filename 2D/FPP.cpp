@@ -3,76 +3,72 @@
  */
 
 #include <vb/CL_Parser.h>
-#include <vb/Image.h>
 #include <vb/PRNG.h>
 #include <vb/Point.h>
 
 using namespace vb;
 
-PointQueue pqueue;
-
 double cost (void) {
   return prng.exponential();
 }
 
-void spread (CoarseImage &img, double t, int x, int y) {
-  if (!(img(x+1,y)))
-    pqueue << Point(x+1,y,t+cost());
-  if (!(img(x-1,y)))
-    pqueue << Point(x-1,y,t+cost());
-  if (!(img(x,y+1)))
-    pqueue << Point(x,y+1,t+cost());
-  if (!(img(x,y-1)))
-    pqueue << Point(x,y-1,t+cost());
-}
+class FPP : public CoarseImage {
+public:
+  FPP (int n, CL_Parser &CLP) : CoarseImage (n,n, pow(n,.33), "First-Passage Percolation"), area(0) {
+    invasion = CLP('i');
+    twostep  = CLP('2');
+    trace    = CLP('t');
 
-int main (int argc, char **argv) {
-  char title[100];
-  double curtime;
+    pqueue << Point(n>>1,n>>1,cost());
+    if (twostep) pqueue << Point ((true_width>>1)+1, true_height>>1, cost());
+  };
 
-  CL_Parser CLP (argc,argv,"n=1000,i,2",
-      "-n <size>, -i for invasion percolation, -2 for the two-step Eden model");
-  int n = CLP('n');
-  bool invasion = CLP('i');
-  bool twostep = CLP('2');
+  void spread (double t, int x, int y) {
+    if (!(at(x+1,y))) pqueue << Point(x+1,y,t+cost());
+    if (!(at(x-1,y))) pqueue << Point(x-1,y,t+cost());
+    if (!(at(x,y+1))) pqueue << Point(x,y+1,t+cost());
+    if (!(at(x,y-1))) pqueue << Point(x,y-1,t+cost());
+  }
 
-  snprintf (title,99,"A First-Passage Percolation cluster of radius %d", n);
+  void run () {
+    while (1) {
+      if (trace) std::cout << area << " " << pqueue.size() << std::endl;
 
-  CoarseImage img (n,n,(int)pow((double)n,.33),title);
+      Point pt(pqueue);
 
-  img.show();
+      if (!(at(pt.x,pt.y))) {
+        (*this) << pt; ++area;
 
-  Point pt(n>>1,n>>1,+cost());
-  pqueue << pt;
-  if (twostep) pqueue << Point((n>>1)+1,n>>1,cost());
+        double curtime = invasion ? 0.0 : pt.t;
 
-  curtime = 0;
+        int deg=1;
+        if (twostep) deg = at(pt.x-1,pt.y) + at(pt.x+1,pt.y) + at(pt.x,pt.y+1) + at(pt.x,pt.y-1);
+        for (int i=0; i<deg; ++i) spread (curtime,pt.x,pt.y);
 
-  while (1) {
-    pqueue >> pt;
+        if (twostep) {
+          if (at(pt.x-1,pt.y)) spread(curtime,pt.x-1,pt.y);
+          if (at(pt.x+1,pt.y)) spread(curtime,pt.x+1,pt.y);
+          if (at(pt.x,pt.y-1)) spread(curtime,pt.x,pt.y-1);
+          if (at(pt.x,pt.y+1)) spread(curtime,pt.x,pt.y+1);
+        }
 
-    if (!(img(pt.x,pt.y))) {
-      img << pt;
-
-      curtime = (invasion==1) ? 0.0 : pt.t;
-      int deg=1;
-      if (twostep)
-        deg = img(pt.x-1,pt.y) + img(pt.x+1,pt.y) + img(pt.x,pt.y+1) + img(pt.x,pt.y-1);
-
-      for (int i=0; i<deg; ++i)
-        spread (img,curtime,pt.x,pt.y);
-      
-      if (twostep) {
-        if (img(pt.x-1,pt.y)) spread(img,curtime,pt.x-1,pt.y);
-        if (img(pt.x+1,pt.y)) spread(img,curtime,pt.x+1,pt.y);
-        if (img(pt.x,pt.y-1)) spread(img,curtime,pt.x,pt.y-1);
-        if (img(pt.x,pt.y+1)) spread(img,curtime,pt.x,pt.y+1);
+        if ( (pt.x==1) || (pt.y==1) || (pt.x==true_width-2) || (pt.y==true_height-2) ) break;
       }
-      
-      if ( (pt.x==1) || (pt.y==1) || (pt.x==n-2) || (pt.y==n-2) )
-	break;
     }
   }
+
+  int area;
+  bool trace, invasion, twostep;
+
+  PointQueue pqueue;
+};
+
+int main (int argc, char **argv) {
+  CL_Parser CLP (argc,argv,"n=5000,i,2,t");
+
+  FPP F (CLP('n'), CLP);
+  F.show();
+  F.run();
 
   return 0;
 }

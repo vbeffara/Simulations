@@ -4,6 +4,7 @@
 #ifndef __VB_POINT_H
 #define __VB_POINT_H
 
+#include <vb/Image.h>
 #include <vb/CoarseImage.h>
 
 namespace vb {
@@ -29,7 +30,7 @@ namespace vb {
        * @param cc The color of the point.
        */
 
-      Point (int xx, int yy, double tt, char cc=1) :
+      Point (int xx=0, int yy=0, double tt=0, char cc=1) :
         x(xx), y(yy), t(tt), c(cc) {};
 
       /** Another constructor that takes the first point out of a queue.
@@ -53,23 +54,20 @@ namespace vb {
 
   /** A wrapper around a priority_queue of Point elements. */
 
-  class PointQueue {
+  class PointQueue : public std::priority_queue<Point> {
   public:
     /// Pick a Point from a PointQueue.
     Point &operator>> (Point &p) {
-      p = q.top();
-      q.pop();
+      p = top();
+      pop();
       return p;
     }
 
     /// Add a Point to a PointQueue.
     PointQueue &operator<< (const Point &p) {
-      q.push(p);
+      push(p);
       return *this;
     }
-
-  private:
-    std::priority_queue<Point> q;   ///< The std::priority_queue itself.
   };
 
   Point::Point (PointQueue &pq) {
