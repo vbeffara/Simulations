@@ -1,11 +1,10 @@
 
 #include <vb/Bitmap.h>
+#include <vb/CL_Parser.h>
 #include <vb/PRNG.h>
 
 using namespace vb;
 using namespace std;
-
-#define N 500
 
 #define EAST  0
 #define NORTH 1
@@ -17,9 +16,7 @@ using namespace std;
 #define C_WEST  Color(0,0,255)
 #define C_SOUTH Color(255,255,0)
 
-Color colors[4] = {
-  C_EAST, C_NORTH, C_WEST, C_SOUTH
-}; //
+Color colors[4] = { C_EAST, C_NORTH, C_WEST, C_SOUTH }; //
 
 int dx[4] = { 1,0,-1,0 };
 int dy[4] = { 0,1,0,-1 };
@@ -35,49 +32,50 @@ public:
 
 class World : public Bitmap<Site> {
 public:
-  World () : Bitmap<Site> (N,N,"The Swiss journalist model") {}
+  World (CL_Parser &CLP) : Bitmap<Site> (CLP('n'),CLP('n'),"The Swiss journalist model") {
+    int mid = (w()+h())/2;
+    for (int x=0; x<w(); ++x) {
+      for (int y=0; y<h(); ++y) {
+        if (y>x) {
+          if (x+y<mid) at(x,y) = EAST;
+          else at(x,y) = SOUTH;
+        } else {
+          if (x+y<mid) at(x,y) = NORTH;
+          else at(x,y) = WEST;
+        }
+        if (prng.bernoulli(0)) at(x,y) = prng.uniform_int(4);
+      }
+    }
+
+    for (int x=100; x<w()-100; ++x)
+      for (int y=100; y<h()-100; ++y)
+        at(x,y) = prng.uniform_int(4);
+  }
 };
 
 int main (int argc, char ** argv) {
-  World w;
-  for (int x=0; x<N; ++x) {
-    for (int y=0; y<N; ++y) {
-      if (y>x) {
-        if (x+y<N) w.at(x,y) = EAST;
-        else w.at(x,y) = SOUTH;
-      } else {
-        if (x+y<N) w.at(x,y) = NORTH;
-        else w.at(x,y) = WEST;
-      }
-      if (prng.bernoulli(.9)) w.at(x,y) = prng.uniform_int(4);
-    }
-  }
+  CL_Parser CLP (argc,argv,"n=1000");
+  World w(CLP);
 
   w.show();
   //  w.pause();
 
-  int x=N/2, y=N/2;
+  int x=w.w()/2, y=w.h()/2;
 
-  while ((x>0)&&(x<N-1)&&(y>0)&&(y<N-1)) {
-    int state = w.at(x,y);
+  while ((x>0)&&(x<w.w()-1)&&(y>0)&&(y<w.h()-1)) {
+    int nb[4] = { 0,0,0,0 };
+    nb[w.at(x+1,y)] += 1;
+    nb[w.at(x-1,y)] += 1;
+    nb[w.at(x,y+1)] += 1;
+    nb[w.at(x,y-1)] += 1;
+    int max = 0;
+    for (int i=0; i<4; ++i) if (nb[i]>max) max=nb[i];
+
     int d = prng.uniform_int(4);
-    if (prng.bernoulli(.1)) {
-      w.at(x,y) = d;
-    } else {
-      int nb[4] = { 0,0,0,0 };
-      nb[w.at(x+1,y)] += 1;
-      nb[w.at(x-1,y)] += 1;
-      nb[w.at(x,y+1)] += 1;
-      nb[w.at(x,y-1)] += 1;
-      int max = 0;
-      for (int i=0; i<4; ++i) if (nb[i]>max) max=nb[i];
+    if (prng.bernoulli(1))
       while (nb[d]<max) d = prng.uniform_int(4);
-      w.at(x,y) = d;
-    }
 
-    //    state = w.at(x,y);
-    x += dx[state]; y += dy[state];
+    w.at(x,y) = d; x += dx[d]; y += dy[d];
     w.step();
-    //    cerr << x << " " << y << endl;
   }
 }
