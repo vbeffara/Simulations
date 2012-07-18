@@ -56,26 +56,24 @@ public:
 int main (int argc, char ** argv) {
   CL_Parser CLP (argc,argv,"n=1000");
   World w(CLP);
-
   w.show();
-  //  w.pause();
 
   int x=w.w()/2, y=w.h()/2;
 
-  while ((x>0)&&(x<w.w()-1)&&(y>0)&&(y<w.h()-1)) {
+  while (true) {
     int nb[4] = { 0,0,0,0 };
-    nb[w.at(x+1,y)] += 1;
-    nb[w.at(x-1,y)] += 1;
-    nb[w.at(x,y+1)] += 1;
-    nb[w.at(x,y-1)] += 1;
+    nb[w.at((x+1)%(w.w()),y)] += 1;
+    nb[w.at((x+w.w()-1)%(w.w()),y)] += 1;
+    nb[w.at(x,(y+1)%(w.h()))] += 1;
+    nb[w.at(x,(y+w.h()-1)%(w.h()))] += 1;
     int max = 0;
     for (int i=0; i<4; ++i) if (nb[i]>max) max=nb[i];
 
     int d = prng.uniform_int(4);
-    if (prng.bernoulli(1))
+    if (prng.bernoulli(.3))
       while (nb[d]<max) d = prng.uniform_int(4);
 
-    w.at(x,y) = d; x += dx[d]; y += dy[d];
+    w.at(x,y) = d; x = (x+dx[d]+w.w())%(w.w()); y = (y+dy[d]+w.h())%(w.h());
     w.step();
   }
 }
