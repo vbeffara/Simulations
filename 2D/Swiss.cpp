@@ -32,29 +32,28 @@ public:
 
 class World : public Bitmap<Site> {
 public:
-  World (CL_Parser &CLP) : Bitmap<Site> (CLP('n'),CLP('n'),"The Swiss journalist model") {
+  int c;
+  double p,q;
+
+  World (CL_Parser &CLP) : Bitmap<Site> (CLP('n'),CLP('n'),"The Swiss journalist model"),
+                           c(CLP('c')), p(CLP('p')), q(CLP('q')) {
     int mid = (w()+h())/2;
     for (int x=0; x<w(); ++x) {
       for (int y=0; y<h(); ++y) {
-        if (y>x) {
-          if (x+y<mid) at(x,y) = EAST;
-          else at(x,y) = SOUTH;
-        } else {
-          if (x+y<mid) at(x,y) = NORTH;
-          else at(x,y) = WEST;
-        }
-        if (prng.bernoulli(0)) at(x,y) = prng.uniform_int(4);
+        if (y>x) { if (x+y<mid) at(x,y) = EAST;  else at(x,y) = SOUTH; }
+        else     { if (x+y<mid) at(x,y) = NORTH; else at(x,y) = WEST;  }
+        if (prng.bernoulli(p)) at(x,y) = prng.uniform_int(4);
       }
     }
 
-    for (int x=100; x<w()-100; ++x)
-      for (int y=100; y<h()-100; ++y)
+    for (int x=c; x<w()-c; ++x)
+      for (int y=c; y<h()-c; ++y)
         at(x,y) = prng.uniform_int(4);
   }
 };
 
 int main (int argc, char ** argv) {
-  CL_Parser CLP (argc,argv,"n=1000");
+  CL_Parser CLP (argc,argv,"n=600,c=0,p=.8,q=.35");
   World w(CLP);
   w.show();
 
@@ -70,7 +69,7 @@ int main (int argc, char ** argv) {
     for (int i=0; i<4; ++i) if (nb[i]>max) max=nb[i];
 
     int d = prng.uniform_int(4);
-    if (prng.bernoulli(.3))
+    if (prng.bernoulli(1-w.q))
       while (nb[d]<max) d = prng.uniform_int(4);
 
     w.at(x,y) = d; x = (x+dx[d]+w.w())%(w.w()); y = (y+dy[d]+w.h())%(w.h());
