@@ -75,5 +75,7 @@ int main(int argc, char *argv[])
     }
   }
 
+  img.output();
+
   return 0;
 }
