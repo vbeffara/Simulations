@@ -56,6 +56,7 @@ int main (int argc, char ** argv) {
   CL_Parser CLP (argc,argv,"n=600,c=0,p=.8,q=.35");
   World w(CLP);
   w.show();
+  w.pause();
 
   int x=w.w()/2, y=w.h()/2;
 
