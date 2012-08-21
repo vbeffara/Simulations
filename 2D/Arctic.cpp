@@ -39,6 +39,14 @@ public:
       for (int x=w()/2; x<w(); ++x)
         for (int y=x-w()/2; y<h()+w()/2-x; ++y)
           at(x,y)=V2;
+    } else if (string(CLP('o')) == "heart") {
+      int sh = h()/8 - ((h()/8)%2);
+      for (int y=0; y<h()/4; ++y) {
+        for (int x=-y+w()/4-1; x<w()/4+1+y; ++x) at(x,y+sh)=H1;
+        for (int x=-y+w()/4+w()/2-1; x<w()/4+w()/2+1+y; ++x) at(x,y+sh)=H1;
+      }
+      for (int y=h()/4; y<h()/4+h()/2; ++y)
+        for (int x=y-h()/4; x<w()+h()/4-y; ++x) at(x,y+sh) = H2;
     } else {
       for (int x=0; x<w(); ++x) {
         for (int y=0; y<h(); ++y) {
