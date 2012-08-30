@@ -63,7 +63,7 @@ int main (int argc, char ** argv) {
   w.show();
   w.pause();
 
-  w.snapshot_setup("arctic",5.0);
+  w.snapshot_setup("arctic",1.0);
 
   while (true) {
     int x = prng.uniform_int(w.w()-1);

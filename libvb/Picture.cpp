@@ -70,6 +70,7 @@ namespace vb {
     global_clock.remove (snapshot_task);
     snapshot_period = period;
     snapshot_prefix = prefix;
+    snapshot();
     if (period>0) global_clock.add (100*period, Picture_snapshot, this);
   }
 }
