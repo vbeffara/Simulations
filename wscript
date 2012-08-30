@@ -1,7 +1,7 @@
 # -*- mode: python; -*-
 
 def options (ctx) :
-    ctx.load ('compiler_c compiler_cxx boost')
+    ctx.load ('compiler_c compiler_cxx')
     ctx.add_option ('--gui', default='fltk', help='Build to use the specified GUI')
 
 def configure (ctx) :
@@ -22,9 +22,10 @@ def build (ctx) :
     ctx.install_files ('${PREFIX}/include/vb', 'libvb/vb/config.h')
 
 def unit_test (ctx, prog, ext, checksum):
-    import os,subprocess,hashlib,Logs
+    import os,subprocess,hashlib
+    from waflib.Logs import pprint
 
-    Logs.pprint ('NORMAL', "Running %s :" % prog.ljust(32), sep='')
+    pprint ('NORMAL', "Running %s :" % prog.ljust(32), sep='')
 
     file = "output/%s.%s" % (prog,ext)
     if os.path.exists(file): os.remove(file)
@@ -32,10 +33,10 @@ def unit_test (ctx, prog, ext, checksum):
     sum = hashlib.md5 (open(file).read()).hexdigest()
 
     if sum == checksum:
-        Logs.pprint ('GREEN',  "ok")
+        pprint ('GREEN',  "ok")
     else:
-        Logs.pprint ('RED',    "failed")
-        Logs.pprint ('YELLOW', "  (returned %s, should be %s)" % (sum,checksum))
+        pprint ('RED',    "failed")
+        pprint ('YELLOW', "  (returned %s, should be %s)" % (sum,checksum))
         exit (1)
 
 def check (ctx):
