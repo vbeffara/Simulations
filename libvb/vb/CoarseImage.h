@@ -66,7 +66,7 @@ namespace vb {
        * @param tit The title of the image.
        */
 
-      CoarseImage (int wd, int ht, int l, const std::string &tit);
+      CoarseImage (int wd, int ht, const std::string &tit, int l);
 
       /** The standard destructor of the CoarseImage class. */
 

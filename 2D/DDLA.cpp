@@ -88,7 +88,7 @@ int main (int argc, char **argv) {
 
   maxx=1; maxy=1; cursum=0;
 
-  img = new CoarseImage (n,n,(int)pow((double)n,.33),"A directed DLA cluster");
+  img = new CoarseImage (n,n,"A directed DLA cluster",(int)pow((double)n,.33));
   img->show();
 
   img->putpoint(0,0,1);

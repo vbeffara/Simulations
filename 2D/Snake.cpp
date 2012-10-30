@@ -16,7 +16,7 @@ class Snake : public CoarseImage {
     std::vector<int> x,y;
 };
 
-Snake::Snake (int n_) : CoarseImage (2*n_, 2*n_, pow(n_,.333), "Self-avoiding snake"), x(1,n_), y(1,n_) {
+Snake::Snake (int n_) : CoarseImage (2*n_, 2*n_, "Self-avoiding snake", pow(n_,.333)), x(1,n_), y(1,n_) {
   putpoint (n_, n_, 1);
 }
 

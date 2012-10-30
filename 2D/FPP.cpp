@@ -14,7 +14,7 @@ double cost (void) {
 
 class FPP : public CoarseImage {
 public:
-  FPP (int n, CL_Parser &CLP) : CoarseImage (n,n, pow(n,.33), "First-Passage Percolation"), area(0) {
+  FPP (int n, CL_Parser &CLP) : CoarseImage (n,n, "First-Passage Percolation", pow(n,.33)), area(0) {
     invasion = CLP('i');
     twostep  = CLP('2');
     trace    = CLP('t');
