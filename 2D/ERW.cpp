@@ -13,7 +13,9 @@ using namespace vb;
 
 class ERW : public CoarseImage {
 public:
-  ERW (int n, CL_Parser CLP) : CoarseImage (n,n, str(fmt("An excited random walk (size=%d)") % n), pow(n,.33)) {};
+  double p,q;
+
+  ERW (int n, CL_Parser CLP) : CoarseImage (n,n, str(fmt("An excited random walk (size=%d)") % n), pow(n,.33)), p(double(CLP('p'))), q(double(CLP('q'))) {};
 
   void run () {
     int x=0, y=0, n=true_width;
@@ -22,15 +24,15 @@ public:
       int first = 1 - at(x+n/2,y+n/2);
       putpoint (x+n/2,y+n/2,1);
 
-      if (first) {
+      if ((first == 1) && (prng.bernoulli(p))) {
         if (abs(x)==abs(y)) {
           if ((x==y)  && (x>0)) y--;
-          if ((x==-y) && (x>0)) x--;
+          if ((x==-y) && (x>0)) if (prng.bernoulli(q)) x--;
           if ((x==y)  && (x<0)) y++;
-          if ((x==-y) && (x>0)) x++;
+          if ((x==-y) && (x>0)) if (prng.bernoulli(q)) x++;
         } else {
-          if (x>abs(y))  --x;
-          if (x<-abs(y)) ++x;
+          if (x>abs(y))  if (prng.bernoulli(q)) --x;
+          if (x<-abs(y)) if (prng.bernoulli(q)) ++x;
           if (y>abs(x))  --y;
           if (y<-abs(x)) ++y;
         }
@@ -44,7 +46,7 @@ public:
 
 int main(int argc, char ** argv)
 {
-  CL_Parser CLP (argc,argv,"n=1000,s=1");
+  CL_Parser CLP (argc,argv,"n=1000,s=1,p=1,q=1");
   int n = CLP('n');
   ERW img(n,CLP);
 
