@@ -23,10 +23,17 @@ public:
       putpoint (x+n/2,y+n/2,1);
 
       if (first) {
-        if (x>abs(y))  --x;
-        if (x<-abs(y)) ++x;
-        if (y>abs(x))  --y;
-        if (y<-abs(x)) ++y;
+        if (abs(x)==abs(y)) {
+          if ((x==y)  && (x>0)) y--;
+          if ((x==-y) && (x>0)) x--;
+          if ((x==y)  && (x<0)) y++;
+          if ((x==-y) && (x>0)) x++;
+        } else {
+          if (x>abs(y))  --x;
+          if (x<-abs(y)) ++x;
+          if (y>abs(x))  --y;
+          if (y<-abs(x)) ++y;
+        }
       } else {
         int d = prng()&3;
         x += dx[d]; y += dy[d];
@@ -37,10 +44,11 @@ public:
 
 int main(int argc, char ** argv)
 {
-  CL_Parser CLP (argc,argv,"n=1000");
+  CL_Parser CLP (argc,argv,"n=1000,s=1");
   int n = CLP('n');
   ERW img(n,CLP);
 
+  prng.seed(int(CLP('s')));
   img.show();
   img.run();
   return 0;
