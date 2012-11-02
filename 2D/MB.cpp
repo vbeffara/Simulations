@@ -11,15 +11,12 @@
 
 using namespace vb;
 
-int dx[4] = {1,0,-1,0};  /* 0=est, 1=nord ... */
-int dy[4] = {0,1,0,-1};
-
 int main(int argc, char ** argv)
 {
   Image *img;              /* L image */
   int n;                   /* Taille du carré */
   char d;                  /* La chaîne */
-  
+
   long i,x,y,done;
 
   /* arguments -> taille du terrain */

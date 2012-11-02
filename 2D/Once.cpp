@@ -10,9 +10,6 @@
 #include <stdlib.h>
 #include <math.h>
 
-int dx[4] = {1,0,-1,0};  /* 0=est, 1=nord ... */
-int dy[4] = {0,1,0,-1};
-
 using namespace vb;
 
 int main(int argc, char ** argv)
@@ -20,7 +17,7 @@ int main(int argc, char ** argv)
   char d;                  /* La chaine */
 
   int L;                /* Coarse grain, right now it is n^(1/3) */
-  
+
   long x,y,nx,ny;
 
   char newcol;

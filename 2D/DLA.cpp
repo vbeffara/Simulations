@@ -10,9 +10,6 @@ char *m;
 long n,radius;
 long minx,maxx,miny,maxy,mx,my;
 
-long dx[4] = {1,0,-1,0};  /* 0=est, 1=nord ... */
-long dy[4] = {0,1,0,-1};
-
 void putPoint(long x, long y)
 {
   long t,cx,cy;
@@ -51,20 +48,20 @@ long dist (long x, long y)
   if ((t=y-maxy)>d) d=t;
   if ((t=minx-x)>d) d=t;
   if ((t=miny-y)>d) d=t;
-  
+
   if (d>1) return d;
 
   /* Hence now we are in the big box. */
 
   point = x+y*n;
-  
+
   if (((*img)(point))&1) return -1; /* Should not happen  */
-  
+
   if ((x>0) && (((*img)(point-1))&1)) { return 0; } /* = neighbour */
   if ((y>0) && (((*img)(point-n))&1)) { return 0; } /* = neighbour */
   if ((x<n-1) && (((*img)(point+1))&1)) { return 0; } /* = neighbour */
   if ((y<n-1) && (((*img)(point+n))&1)) { return 0; } /* = neighbour */
-  
+
   /* OK we are in the big box but not neighbour. */
 
   t=n>>1; cx=0; cy=0; close=1;
@@ -82,7 +79,7 @@ long dist (long x, long y)
   if ((u=abs(y-cy-t))>d) d=u;
   d = t-d;
   if (d==0) d=1; /* Can this happen ? Who knows ... */
-    
+
   return d;
 }
 
@@ -90,7 +87,7 @@ long bigrand (long s)
 {
   return -s + ((prng()) % (2*s+1));
 }
-	
+
 void runDLA(){
   long x,y,pts;
   long sradius;
@@ -124,33 +121,33 @@ void runDLA(){
       x = mx + sradius;
       break;
     }
-    
+
     while ((d=dist(x,y))) {
       if (d==1) {
-	r = prng()%4;
-	x += dx[r];
-	y += dy[r];
+        r = prng()%4;
+        x += dx[r];
+        y += dy[r];
       } else {
-	step = (d>>2) + 1; /* Mouais bof ... */
-	/* fprintf(stderr,"%10ld%10ld\r",d,step); */
-	switch (prng()%4) {
-	case 0:
-	  x += step;
-	  y += bigrand(step);
-	  break;
-	case 1:
-	  x -= step;
-	  y += bigrand(step);
-	  break;
-	case 2:
-	  y += step;
-	  x += bigrand(step);
-	  break;
-	case 3:
-	  y -= step;
-	  x += bigrand(step);
-	  break;
-	}
+        step = (d>>2) + 1; /* Mouais bof ... */
+        /* fprintf(stderr,"%10ld%10ld\r",d,step); */
+        switch (prng()%4) {
+        case 0:
+          x += step;
+          y += bigrand(step);
+          break;
+        case 1:
+          x -= step;
+          y += bigrand(step);
+          break;
+        case 2:
+          y += step;
+          x += bigrand(step);
+          break;
+        case 3:
+          y -= step;
+          x += bigrand(step);
+          break;
+        }
       }
     }
 

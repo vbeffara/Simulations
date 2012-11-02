@@ -6,9 +6,6 @@
 #include <vb/PRNG.h>
 #include <vb/CoarseImage.h>
 
-int dx[4] = {1,0,-1,0};
-int dy[4] = {0,1,0,-1};
-
 using namespace vb;
 
 int bump_square (int x, int y, double p, double q);

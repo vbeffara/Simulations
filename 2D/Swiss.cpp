@@ -18,9 +18,6 @@ using namespace std;
 
 Color colors[4] = { C_EAST, C_NORTH, C_WEST, C_SOUTH }; //
 
-int dx[4] = { 1,0,-1,0 };
-int dy[4] = { 0,1,0,-1 };
-
 class Site {
 public:
   unsigned char s;

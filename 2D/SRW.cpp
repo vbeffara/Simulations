@@ -9,8 +9,8 @@
 
 using namespace vb;
 
-int dx[8] = {1,1,0,-1,-1,-1,0,1};
-int dy[8] = {0,1,1,1,0,-1,-1,-1};
+int dx8[8] = {1,1,0,-1,-1,-1,0,1};
+int dy8[8] = {0,1,1,1,0,-1,-1,-1};
 
 typedef std::pair<cpx,cpx> bicpx;
 
@@ -36,8 +36,8 @@ int main(int argc, char ** argv) {
     for (int b=0; b<a; ++b) {
       int d = 9; while (((1<<d) & adj) == 0) d = prng.uniform_int(8);
       
-      int nx = x + dx[d]; if (nx>xmax) ++xmax; if (nx<xmin) --xmin;
-      int ny = y + dy[d]; if (ny>ymax) ++ymax; if (ny<ymin) --ymin;
+      int nx = x + dx8[d]; if (nx>xmax) ++xmax; if (nx<xmin) --xmin;
+      int ny = y + dy8[d]; if (ny>ymax) ++ymax; if (ny<ymin) --ymin;
       
       std::pair<cpx,cpx> step (cpx(x,y),cpx(nx,ny));
       

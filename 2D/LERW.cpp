@@ -11,9 +11,6 @@ using namespace vb;
 
 #define EC fprintf(stderr,"<%d>\n",__LINE__);
 
-int dx[4] = {1,0,-1,0};  /* 0=est, 1=nord ... */
-int dy[4] = {0,1,0,-1};
-
 long l;
 
 char TRANS[] = "ENWS";
@@ -23,7 +20,7 @@ int main(int argc, char ** argv)
   Image *img;              /* L image */
   int n;                   /* Taille du carré */
   char d;                  /* La chaine */
-  
+
   long i,x,y,done;
 
   int imin,imax,jmin,jmax;
@@ -65,7 +62,7 @@ int main(int argc, char ** argv)
     if (y<jmin) jmin=y;
 
     if ((x==2*n-1)||(y==2*n-1)||(x==0)||(y==0)) done=1;
-  }  
+  }
 
   /* Affichage */
 
@@ -90,7 +87,7 @@ int main(int argc, char ** argv)
     x += dx[(int)d];
     y += dy[(int)d];
     if ((x==2*n-1)||(y==2*n-1)||(x==0)||(y==0)) done=1;
-  }  
+  }
 
   printf ("\nstroke end restore\n");
 

@@ -27,9 +27,6 @@ Color colors[8] = {
   MIRROR_NW_VISITED, MIRROR_NE_VISITED, MIRROR_FLIP_NW_VISITED, MIRROR_FLIP_NE_VISITED,
 };
 
-int dx[4] = {1,0,-1,0};
-int dy[4] = {0,1,0,-1};
-
 int flip_ne[4] = {1,0,3,2};
 int flip_nw[4] = {3,2,1,0};
 

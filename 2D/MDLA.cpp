@@ -18,14 +18,10 @@
 
 using namespace vb;
 
-int dx[4] = {1,0,-1,0};  /* 0=est, 1=nord ... */
-int dy[4] = {0,1,0,-1};
-
-int main(int argc, char ** argv)
-{
+int main(int argc, char ** argv) {
   Image *img;              /* L image */
   char d;                  /* La chaine */
-  
+
   long x,y,nx,ny,done,ndraw,ngrey;
 
   CL_Parser CLP (argc, argv, "n=250,p=.5,g,a=1.0,t=0.0,s");
@@ -50,7 +46,7 @@ int main(int argc, char ** argv)
   } else {
     for (x=0;x<2*n;x++) {
       for (y=0;y<2*n;y++) {
-        if (prng.bernoulli(p)) { 
+        if (prng.bernoulli(p)) {
           img->putpoint (x,y,ALIVE);
           if ((x!=n)||(y!=n)) ngrey++;
         } else
@@ -65,7 +61,7 @@ int main(int argc, char ** argv)
   /* Simulation */
 
   done=0; ndraw=0;
-  
+
   bool running = true;
   while (running) {
     bool flag = false;
@@ -102,6 +98,6 @@ int main(int argc, char ** argv)
       --ngrey;
     }
   }
-  
+
   return 0;
 }
