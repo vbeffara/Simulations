@@ -11,27 +11,27 @@ namespace vb {
     }
   }
 
-  double Map::left () { 
+  double Map::left () {
     double l = 0.0;
-    for (int i=0; i<n; ++i) l = min (l, v[i]->z.real());
+    for (int i=0; i<n; ++i) l = std::min (l, v[i]->z.real());
     return l;
   }
 
-  double Map::right () { 
+  double Map::right () {
     double l = 0.0;
-    for (int i=0; i<n; ++i) l = max (l, v[i]->z.real());
+    for (int i=0; i<n; ++i) l = std::max (l, v[i]->z.real());
     return l;
   }
 
-  double Map::top () { 
+  double Map::top () {
     double l = 0.0;
-    for (int i=0; i<n; ++i) l = max (l, v[i]->z.imag());
+    for (int i=0; i<n; ++i) l = std::max (l, v[i]->z.imag());
     return l;
   }
 
-  double Map::bottom () { 
+  double Map::bottom () {
     double l = 0.0;
-    for (int i=0; i<n; ++i) l = min (l, v[i]->z.imag());
+    for (int i=0; i<n; ++i) l = std::min (l, v[i]->z.imag());
     return l;
   }
 
@@ -40,7 +40,7 @@ namespace vb {
     double height = top()-bottom(), mid_y = (top()+bottom())/2;
     double scale_x = w()/width, scale_y = h()/height;
 
-    double scale = min(scale_x, scale_y);
+    double scale = std::min (scale_x, scale_y);
 
     cr->save();
     cr->set_source_rgb (1,1,1);
@@ -563,11 +563,11 @@ namespace vb {
 
     return c;
   }
-  
+
   double Map_fg_circle_base (const Vector &x, Vector &g, void *context) {
     Map *m = (Map *) context;
     double c = 0.0;
-    
+
     fill (g.begin(), g.end(), 0.0);
 
     for (int i=0; i < m->n; ++i) {

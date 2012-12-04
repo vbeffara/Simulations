@@ -1,7 +1,7 @@
 /// @file
-/// Utility include file importing external resources (plus vb/config.h) 
-/// needed by all the others. Exactly which ones is hidden from the 
-/// documentation, but you can have a look at the source. You should never 
+/// Utility include file importing external resources (plus vb/config.h)
+/// needed by all the others. Exactly which ones is hidden from the
+/// documentation, but you can have a look at the source. You should never
 /// have to include this file directly.
 
 #ifndef __VB_COMMON_H
@@ -9,6 +9,7 @@
 
 #include <vb/config.h>
 
+#include <algorithm>
 #include <cassert>
 #include <cmath>
 #include <complex>
@@ -57,12 +58,6 @@ namespace vb {
   /// Utility type for a complex number.
   typedef std::complex<double> cpx;
 
-  /// Return the smaller of two real numbers.
-  template <typename T> T min (T x, T y) { return (x<y?x:y); }
-
-  /// Return the larger of two real numbers.
-  template <typename T> T max (T x, T y) { return (x>y?x:y); }
-
   class fmt : public boost::format {
     public:
       fmt (const std::string &s) : boost::format(s) { }
@@ -98,8 +93,8 @@ namespace vb {
  *   will try to update the screen representation of the image on the
  *   screen about 25 times per second. It works best if the computation
  *   time is roughly the same for all the points displayed. This is
- *   extremely practical. This is wrapped into a class called 
- *   vb::AutoWindow so that it can be re-used (by vb::Figure for 
+ *   extremely practical. This is wrapped into a class called
+ *   vb::AutoWindow so that it can be re-used (by vb::Figure for
  *   instance).
  *
  * - vb::Image::tessellate(): a quick way to fill an image according to
@@ -120,16 +115,16 @@ namespace vb {
  *   and much better than the standard rand(). Implements various
  *   standard distributions.
  *
- * - vb::Figure: a class for building figures from a program, and 
- *   exporting it as an Asymptote file. Right now it is embryonic (only 
+ * - vb::Figure: a class for building figures from a program, and
+ *   exporting it as an Asymptote file. Right now it is embryonic (only
  *   dots, line segments and circles) but already functional.
  *
- * - vb::Map: a class to encode planar maps, implementing various 
+ * - vb::Map: a class to encode planar maps, implementing various
  *   algorithms as I need them (circle packing for instance).
  *
- * - vb::Minimizer: to minimize a function of potentially many 
- *   variables, using one of a few available algorithms 
- *   (Fletcher-Reeves, BFGS ... see the documentation for the whole 
+ * - vb::Minimizer: to minimize a function of potentially many
+ *   variables, using one of a few available algorithms
+ *   (Fletcher-Reeves, BFGS ... see the documentation for the whole
  *   list).
  *
  * @section sec_install Installation
@@ -151,10 +146,10 @@ namespace vb {
  * source and a Makefile that will use it, so typing 'make' will work -
  * provided you at least have Python, which is very likely.
  *
- * Everything I wrote in the package is distributed under the terms of 
- * the GNU GPL license, version 3 (a copy of which is contained in the 
- * archive of the library). The contents of the xtoys/ directory are not 
- * written by me, and the license on it is not clear, I am only 
- * including it for convenience (so that it can benefit from the waf 
+ * Everything I wrote in the package is distributed under the terms of
+ * the GNU GPL license, version 3 (a copy of which is contained in the
+ * archive of the library). The contents of the xtoys/ directory are not
+ * written by me, and the license on it is not clear, I am only
+ * including it for convenience (so that it can benefit from the waf
  * framework). I will remove it if asked.
  */

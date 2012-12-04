@@ -50,10 +50,10 @@ namespace vb {
     /// The constructor.
     Segment (cpx zz1, cpx zz2, Pen p = Pen()) : Shape(p), z1(zz1), z2(zz2) {}
 
-    double left ()   { return min(z1.real(),z2.real()); } ///< Get the left boundary of the Shape.
-    double right ()  { return max(z1.real(),z2.real()); } ///< Get the right boundary of the Shape.
-    double top ()    { return max(z1.imag(),z2.imag()); } ///< Get the top boundary of the Shape.
-    double bottom () { return min(z1.imag(),z2.imag()); } ///< Get the bottom boundary of the Shape.
+    double left ()   { return std::min(z1.real(),z2.real()); } ///< Get the left boundary of the Shape.
+    double right ()  { return std::max(z1.real(),z2.real()); } ///< Get the right boundary of the Shape.
+    double top ()    { return std::max(z1.imag(),z2.imag()); } ///< Get the top boundary of the Shape.
+    double bottom () { return std::min(z1.imag(),z2.imag()); } ///< Get the bottom boundary of the Shape.
 
     void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw the shape on a Cairo context.
 

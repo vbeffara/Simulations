@@ -19,25 +19,25 @@ namespace vb {
 
   double Path::left () {
     double m=z[0].real();
-    for (unsigned int i=1; i<z.size(); ++i) m = min (m, z[i].real());
+    for (unsigned int i=1; i<z.size(); ++i) m = std::min (m, z[i].real());
     return m;
   }
 
   double Path::right () {
     double m=z[0].real();
-    for (unsigned int i=1; i<z.size(); ++i) m = max (m, z[i].real());
+    for (unsigned int i=1; i<z.size(); ++i) m = std::max (m, z[i].real());
     return m;
   }
 
   double Path::top () {
     double m=z[0].imag();
-    for (unsigned int i=1; i<z.size(); ++i) m = max (m, z[i].imag());
+    for (unsigned int i=1; i<z.size(); ++i) m = std::max (m, z[i].imag());
     return m;
   }
 
   double Path::bottom () {
     double m=z[0].imag();
-    for (unsigned int i=1; i<z.size(); ++i) m = min (m, z[i].imag());
+    for (unsigned int i=1; i<z.size(); ++i) m = std::min (m, z[i].imag());
     return m;
   }
 
@@ -66,25 +66,25 @@ namespace vb {
 
   double Figure::left () {
     double l = 0.0;
-    foreach (Shape *i, contents) l = min (l,i->left());
+    foreach (Shape *i, contents) l = std::min (l,i->left());
     return l;
   }
 
   double Figure::right () {
     double l = 0.0;
-    foreach (Shape *i, contents) l = max (l,i->right());
+    foreach (Shape *i, contents) l = std::max (l,i->right());
     return l;
   }
 
   double Figure::top () {
     double l = 0.0;
-    foreach (Shape *i, contents) l = max (l,i->top());
+    foreach (Shape *i, contents) l = std::max (l,i->top());
     return l;
   }
 
   double Figure::bottom () {
     double l = 0.0;
-    foreach (Shape *i, contents) l = min (l,i->bottom());
+    foreach (Shape *i, contents) l = std::min (l,i->bottom());
     return l;
   }
 
@@ -98,7 +98,7 @@ namespace vb {
     double ht = top()-bottom(), mid_y = (top()+bottom())/2;
 
     double scale_x = w()/wd, scale_y = h()/ht;
-    double scale = min(scale_x,scale_y);
+    double scale = std::min(scale_x,scale_y);
     if (ortho) scale_x = scale_y = scale;
     basewidth = 1.0/scale;
 

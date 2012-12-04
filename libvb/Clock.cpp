@@ -30,7 +30,7 @@ namespace vb {
     }
 
     if (count() <= 100) slice += slice/10;
-    else slice = min (n_call / count(), slice + slice/10);
+    else slice = std::min (n_call / count(), slice + slice/10);
 
     next = slice;
   }

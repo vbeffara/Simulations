@@ -35,7 +35,7 @@ namespace vb {
       for (int i=xmin+1; i<xmax; ++i)
         for (int j=ymin+1; j<ymax; ++j)
           putpoint (i,j,tmp,0);
-    } else if ((xmax-xmin) > max (ymax-ymin, 1)) {
+    } else if ((xmax-xmin) > std::max (ymax-ymin, 1)) {
       int xmed = (xmin+xmax)>>1;
       tessellate (f,xmin,ymin,xmed,ymax,data);
       tessellate (f,xmed,ymin,xmax,ymax,data);

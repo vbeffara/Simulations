@@ -15,12 +15,12 @@ namespace vb {
 
   /** A class for storing unbounded spatial data.
    *
-   * The structure grows dynamically like a 9-ary tree, tripling its 
-   * size as often as needed, but this is transparent to the user. Just 
+   * The structure grows dynamically like a 9-ary tree, tripling its
+   * size as often as needed, but this is transparent to the user. Just
    * use get() and put() and focus on something more interesting!
    *
-   * The whole class is a template, so the code is inline and 
-   * performance should be quite good, but I didn't test it properly, 
+   * The whole class is a template, so the code is inline and
+   * performance should be quite good, but I didn't test it properly,
    * maybe something more efficient can be done ...
    */
 
@@ -30,7 +30,7 @@ namespace vb {
    * (ii)  Leaf (tile != NULL, sub == NULL),
    * (iii) Node (tile == NULL, sub != NULL).
    *
-   * The square represented is (-size,size), and size==TRIMATRIX_BSIZE 
+   * The square represented is (-size,size), and size==TRIMATRIX_BSIZE
    * iff Leaf.
    */
 
@@ -38,8 +38,8 @@ namespace vb {
     public:
       /** The default creator.
        *
-       * The argument is the default value returned by get() for unset 
-       * entries, it defaults to 0 (meaning that the underlying type T 
+       * The argument is the default value returned by get() for unset
+       * entries, it defaults to 0 (meaning that the underlying type T
        * must be initializable from 0 ...)
        *
        * @param e The value of an empty entry.
@@ -49,7 +49,7 @@ namespace vb {
 
       /** Get the contents of an entry in the matrix.
        *
-       * If the corresponding entry is not set yet, return the default 
+       * If the corresponding entry is not set yet, return the default
        * value as specified to the constructor.
        *
        * @param i The first coordinate of the entry.
@@ -61,8 +61,8 @@ namespace vb {
 
       /** Set the contents of an entry in the matrix.
        *
-       * If the corresponding entry is out of bounds, grow the structure 
-       * accordingly (even if t is the default value, but that might 
+       * If the corresponding entry is out of bounds, grow the structure
+       * accordingly (even if t is the default value, but that might
        * change eventually).
        *
        * @param i The first coordinate of the entry.
@@ -74,7 +74,7 @@ namespace vb {
 
       /** Get the contents of an entry in the matrix.
        *
-       * If the corresponding entry is not set yet, return the default 
+       * If the corresponding entry is not set yet, return the default
        * value as specified to the constructor.
        *
        * This is exactly equivalent to get().
@@ -101,7 +101,7 @@ namespace vb {
     : size(0), sub_size(0), sub_shift(0), empty(e) { }
 
   template <typename T> T TriMatrix<T>::get (int i, int j) const {
-    int target = max (abs(i), abs(j));
+    int target = std::max (abs(i), abs(j));
     if (target >= size) return empty;
 
     // So now, it fits, target<size.
@@ -145,7 +145,7 @@ namespace vb {
       size = TRIMATRIX_BSIZE;
     }
 
-    int target = max (abs(i), abs(j));
+    int target = std::max (abs(i), abs(j));
     while (size <= target) triple();
 
     // So now, it fits, target<size. Two cases:
