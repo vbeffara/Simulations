@@ -21,8 +21,8 @@ namespace vb {
   }
 #endif
 
-  Watcher::Watcher () : AutoWindow (400,0,"Watcher") {
-    task = global_clock.add (100, Watcher_cerr, this);
+  Watcher::Watcher (bool e) : AutoWindow (400,0,"Watcher") {
+    if (e) task = global_clock.add (100, Watcher_cerr, this);
   }
 
   Watcher::~Watcher () {

@@ -68,4 +68,42 @@ namespace vb {
   }
 
   void Image::paint () {};
+
+  Color Image::lazy (int x, int y) {
+    if (int(at(x,y)) == 0) {
+      at(x,y) = compute(x,y);
+      step();
+    }
+
+    return at(x,y);
+  }
+
+  void Image::tessel (int xmin, int ymin, int xmax, int ymax) {
+    Color tmp = lazy (xmin,ymin);
+    bool mono = true;
+
+    for (int i=xmin; i<=xmax; ++i) {
+      if (lazy (i,ymin) != tmp) mono=false;
+      if (lazy (i,ymax) != tmp) mono=false;
+    }
+
+    for (int j=ymin; j<=ymax; ++j) {
+      if (lazy (xmin,j) != tmp) mono=false;
+      if (lazy (xmax,j) != tmp) mono=false;
+    }
+
+    if (mono) {
+      for (int i=xmin+1; i<xmax; ++i)
+        for (int j=ymin+1; j<ymax; ++j)
+          putpoint (i,j,tmp,0);
+    } else if ((xmax-xmin) > std::max (ymax-ymin, 1)) {
+      int xmed = (xmin+xmax)>>1;
+      tessel (xmin,ymin,xmed,ymax);
+      tessel (xmed,ymin,xmax,ymax);
+    } else if (ymax>ymin+1) {
+      int ymed = (ymin+ymax)>>1;
+      tessel (xmin,ymin,xmax,ymed);
+      tessel (xmin,ymed,xmax,ymax);
+    }
+  }
 }

@@ -1,179 +1,108 @@
 
 #include <vb/CL_Parser.h>
-#include <vb/Image.h>
+#include <vb/CoarseImage.h>
 #include <vb/PRNG.h>
+#include <vb/Watcher.h>
 
 using namespace vb;
+using namespace std;
 
-Image *img;
-char *m;
-long n,radius;
-long minx,maxx,miny,maxy,mx,my;
+typedef complex<int> place;
 
-void putPoint(long x, long y)
-{
-  long t,cx,cy;
+place jump (int l) {
+  double theta = prng.uniform_real(0,2*M_PI);
+  return place (l*cos(theta), l*sin(theta));
+}
 
-  if ((x<0) || (x>=n) || (y<0) || (y>=n)) return; /* Should never happen */
+class DLA : public CoarseImage {
+public:
+  int n,r,pts;
+  Watcher W;
 
-  img->putpoint (x,y,1); /* Put the point */
+  DLA (int n) : CoarseImage(n,n, str(fmt("A DLA cluster of size %d")%n), pow(n,.33)),
+                n(n), r(1), pts(0) {
+    W.watch (pts, "Number of particles");
+    W.watch (r,   "Cluster radius");
+  };
 
-  t=n>>1; cx=0; cy=0; /* Do the clever thing */
-  while (t>1) {
-    if (x&t) cx|=t;
-    if (y&t) cy|=t;
-    m[(cx + (t>>1)) + n*(cy + (t>>1))] |= 128;
-    t >>= 1;
+  void show () {
+    W.show();
+    CoarseImage::show();
   }
 
-  if (x<minx) minx=x; /* Update radius & co */
-  if (x>maxx) maxx=x;
-  if (y<miny) miny=y;
-  if (y>maxy) maxy=y;
-  mx = (minx+maxx)>>1;
-  my = (miny+maxy)>>1;
-  if (maxx-minx > maxy-miny)
-    radius = (maxx-minx)>>1;
-  else
-    radius = (maxy-miny)>>1;
-}
-
-long dist (long x, long y)
-{
-  long point,d,t,u,close,cx,cy;
-
-  d=0;
-
-  if ((t=x-maxx)>d) d=t;
-  if ((t=y-maxy)>d) d=t;
-  if ((t=minx-x)>d) d=t;
-  if ((t=miny-y)>d) d=t;
-
-  if (d>1) return d;
-
-  /* Hence now we are in the big box. */
-
-  point = x+y*n;
-
-  if (((*img)(point))&1) return -1; /* Should not happen  */
-
-  if ((x>0) && (((*img)(point-1))&1)) { return 0; } /* = neighbour */
-  if ((y>0) && (((*img)(point-n))&1)) { return 0; } /* = neighbour */
-  if ((x<n-1) && (((*img)(point+1))&1)) { return 0; } /* = neighbour */
-  if ((y<n-1) && (((*img)(point+n))&1)) { return 0; } /* = neighbour */
-
-  /* OK we are in the big box but not neighbour. */
-
-  t=n>>1; cx=0; cy=0; close=1;
-
-  while ((t>1)&&close) {
-    if (x&t) cx|=t;
-    if (y&t) cy|=t;
-    if (!(m[(cx + (t>>1)) + n*(cy + (t>>1))] & 128)) close=0;
-    t >>= 1;
+  void update () {
+    W.update();
+    CoarseImage::update();
   }
 
-  /* We are in an empty box of radius t around (cx+t,cy+t). */
+  char at (place z) {
+    int x=real(z)+n/2, y=imag(z)+n/2;
+    if ((x<0) || (x>=n) || (y<0) || (y>=n)) return 0;
+    else return CoarseImage::at(x,y);
+  }
 
-  d = abs(x-cx-t);
-  if ((u=abs(y-cy-t))>d) d=u;
-  d = t-d;
-  if (d==0) d=1; /* Can this happen ? Who knows ... */
+  void putPoint(place z) {
+    putpoint (real(z)+n/2,imag(z)+n/2, 1);
+    r = max (r, abs(z));
+    pts ++;
+  }
 
-  return d;
-}
-
-long bigrand (long s)
-{
-  return -s + ((prng()) % (2*s+1));
-}
-
-void runDLA(){
-  long x,y,pts;
-  long sradius;
-  long d,r,step;
-
-  minx = n/2; maxx = n/2;
-  miny = n/2; maxy = n/2;
-  mx = n/2; my = n/2;
-  x=n/2; y=n/2;
-  putPoint(n/2,n/2);
-  pts=1;
-
-  while ((x>0)&&(x<n-1)&&(y>0)&&(y<n-1)) {
-    sradius = 2*radius + 5; /* Mouais bof ... */
-
-    switch (prng() & 3) {
-    case 0:
-      x = mx + bigrand(sradius);
-      y = my - sradius;
-      break;
-    case 1:
-      x = mx + bigrand(sradius);
-      y = my + sradius;
-      break;
-    case 2:
-      y = my + bigrand(sradius);
-      x = mx - sradius;
-      break;
-    case 3:
-      y = my + bigrand(sradius);
-      x = mx + sradius;
-      break;
+  bool far (place z, int l) {
+    for (int i=0; i<l; ++i) {
+      if (at(z+place(-l+i,i)))  return false;
+      if (at(z+place(i,l-i)))   return false;
+      if (at(z+place(l-i,-i)))  return false;
+      if (at(z+place(-i,-l+i))) return false;
     }
+    return true;
+  }
 
-    while ((d=dist(x,y))) {
-      if (d==1) {
-        r = prng()%4;
-        x += dx[r];
-        y += dy[r];
-      } else {
-        step = (d>>2) + 1; /* Mouais bof ... */
-        /* fprintf(stderr,"%10ld%10ld\r",d,step); */
-        switch (prng()%4) {
-        case 0:
-          x += step;
-          y += bigrand(step);
-          break;
-        case 1:
-          x -= step;
-          y += bigrand(step);
-          break;
-        case 2:
-          y += step;
-          x += bigrand(step);
-          break;
-        case 3:
-          y -= step;
-          x += bigrand(step);
-          break;
+  int dist (place z, int d = 0) {
+    if (abs(z)>2*r) return abs(z)-r;
+    if (!far(z,1)) return 0;
+    if (d==0) d = abs(real(z)) + abs(imag(z));
+    while ((d>1) && !far(z,d)) d /= 2;
+    return d;
+  }
+
+  void runDLA(){
+    int d=0;
+    place z(0,0);
+
+    putPoint(z);
+
+    while (r<n/2-1) {
+      z = jump (2*r+2);
+
+      while ((d=dist(z,d))>0) {
+        if (d<6) {
+          int dr = prng()%4;
+          z += place (dx[dr],dy[dr]);
+        } else {
+          z += jump(d/2);
+          if (abs(z) > 4*r) {
+            real(z) *= .95;
+            imag(z) *= .95;
+          }
         }
+        d = min (3*d, abs(z));
       }
+
+      putPoint(z);
+      if ((pts%100)==0) update();
     }
-
-    putPoint(x,y);
-    pts++;
-    if ((pts%100)==0) fprintf (stderr,"%ld pts, r=%ld\r",pts,radius);
   }
-  fprintf (stderr,"\n");
-}
+};
 
-int main(int argc, char ** argv)
-{
-  /* arguments -> taille du terrain */
+int main(int argc, char ** argv) {
+  CL_Parser CLP (argc,argv,"n=1000,l");
 
-  CL_Parser CLP (argc,argv,"n=8");
-  n = 1 << int(CLP('n'));
+  DLA dla (CLP('n'));
 
-  /* Initialisations */
-
-  img = new Image(n,n, str(fmt("A DLA cluster of size %d")%n));
-  m = new char[n*n];
-
-  /* Simulation */
-
-  img->show();
-  runDLA();
+  dla.show();
+  if (CLP('l')) for (int i=-dla.n/4; i<dla.n/4; ++i) dla.putPoint(i);
+  dla.runDLA();
+  dla.output();
 
   return 0;
 }

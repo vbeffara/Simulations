@@ -78,11 +78,16 @@ namespace vb {
 
   class Watcher : public AutoWindow {
   public:
-    Watcher ();
+    Watcher (bool e = false);
     ~Watcher ();
 
     /// Add a new thing to watch.
     void watch (Value_base *v);
+
+    /// Shortcut for simple values.
+    template <typename T> void watch (const T & t, const std::string & n) {
+      watch (new Value<T> (t,n));
+    }
 
     /// Output all watched things to a stream.
     void print_on (std::ostream &os) const;

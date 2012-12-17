@@ -9,11 +9,11 @@
 namespace vb {
   /** A templated base class for all bitmap pictures.
    *
-   * It provides the general machinery for drawing a picture onto the 
-   * screen, kind of an adaptor between vb::AutoWindow and things like 
+   * It provides the general machinery for drawing a picture onto the
+   * screen, kind of an adaptor between vb::AutoWindow and things like
    * vb::Image, vb::CoarseImage etc.
    *
-   * vb::Bitmap<Color> is handled in a special way, data is not 
+   * vb::Bitmap<Color> is handled in a special way, data is not
    * initialized and the image data is handled directly.
    */
 
@@ -36,8 +36,10 @@ namespace vb {
 
       /** Return the vb::Color of the image at point (x,y).
        *
-       * The goal of a subclass is just to provide an implementation of 
-       * this, through any means necessary.
+       * The goal of a subclass is just to provide an implementation
+       * of this, through any means necessary. NB this has to be
+       * cheap, it is just for display. for more computationally
+       * intensive coloring, use compute().
        *
        * @param x The first coordinate of the point.
        * @param y The second coordinate of the point.
@@ -66,7 +68,7 @@ namespace vb {
 
   /** The special-case constructor for Bitmap<Color>.
    *
-   * For Bitmap<Color>, data is left empty and the underlying Cairo 
+   * For Bitmap<Color>, data is left empty and the underlying Cairo
    * surface is accessed directly through stage.
    *
    * @param  wd The width in pixels.
@@ -79,7 +81,7 @@ namespace vb {
 
   /** Return an alias to the element at coordinates (x,y).
    *
-   * For Bitmap<Color>, it points directly to the underlying Cairo 
+   * For Bitmap<Color>, it points directly to the underlying Cairo
    * surface and allows for direct manipulation.
    *
    * @param x The first coordinate of the point.
@@ -90,7 +92,7 @@ namespace vb {
 
   /** Return the vb::Color of the image at point (x,y).
    *
-   * This is a special case for Bitmap<Color>, it accesses the 
+   * This is a special case for Bitmap<Color>, it accesses the
    * underlying Cairo surface directly, ignoring data.
    *
    * @param x The first coordinate of the point.

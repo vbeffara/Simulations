@@ -75,6 +75,12 @@ namespace vb {
        * @param data A pointer to additional data needed by the function.
        */
 
+      virtual Color compute (int x, int y) { return 0; }
+
+      Color lazy (int x, int y);
+
+      void tessel (int xmin, int ymin, int xmax, int xmax);
+
       Color lazy_eval (coloring *f, int x, int y, void *data = NULL);
 
       /** Compute the color of each point using a dyadic algorithm.
