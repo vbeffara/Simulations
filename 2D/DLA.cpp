@@ -76,7 +76,7 @@ public:
     return d;
   }
 
-  void runDLA(){
+  void runDLA (){
     putPoint(coo(0,0));
 
     while (r<n/2-1) {
@@ -103,7 +103,7 @@ public:
   }
 };
 
-int main(int argc, char ** argv) {
+int main (int argc, char ** argv) {
   CL_Parser CLP (argc,argv,"n=1000,l,d=4");
 
   DLA dla (CLP('n'));

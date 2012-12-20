@@ -3,12 +3,12 @@
 
 namespace vb {
   Lattice_vertex & Lattice_vertex::operator+= (const Lattice_move &m) {
-    x+=m.dx; y+=m.dy; k=m.k;
+    z+=m.dz; k=m.k;
     return *this;
   }
 
   Lattice_vertex Lattice_vertex::operator+ (const Lattice_move &m) const {
-    Lattice_vertex tmp (x,y,k);
+    Lattice_vertex tmp (z,k);
     tmp += m;
     return tmp;
   }
@@ -19,23 +19,23 @@ namespace vb {
     return xy.real() + tau*xy.imag();
   }
 
-  cpx Lattice::operator() (int x, int y, int k) const {
-    return actual (cpx(x,y)+z[k]);
+  cpx Lattice::operator() (coo zz, int k) const {
+    return actual (cpx(real(zz),imag(zz))+z[k]);
   }
 
   cpx Lattice::operator() (const Lattice_vertex &v) const {
-    return (*this)(v.x,v.y,v.k);
+    return (*this)(v.z,v.k);
   }
 
-  Lattice & Lattice::bond (int k1, int k2, int dx, int dy) {
-    adj[k1].push_back (Lattice_move(k2,dx,dy));
-    adj[k2].push_back (Lattice_move(k1,-dx,-dy));
+  Lattice & Lattice::bond (int k1, int k2, coo dz) {
+    adj[k1].push_back (Lattice_move(k2,dz));
+    adj[k2].push_back (Lattice_move(k1,-dz));
     return *this;
   }
 
   cpx Lattice::shift (int k, int l) const {
     const Lattice_move &m (adj[k][l]);
-    return (*this)(m.dx,m.dy,m.k) - (*this)(0,0,k);
+    return (*this)(m.dz,m.k) - (*this)(coo(0,0),k);
   }
 
   double Lattice::energy () const {
@@ -77,7 +77,7 @@ namespace vb {
     for (int k=0; k<n; ++k)
       for (int l=0; l<adj[k].size(); ++l) {
         const Lattice_move &m = adj[k][l];
-        cpx u = cpx(m.dx,m.dy) + z[m.k] - z[k];
+        cpx u = cpx(std::real(m.dz),std::imag(m.dz)) + z[m.k] - z[k];
         a += u.imag()*u.imag();
         b += 2*u.real()*u.imag();
         c += u.real()*u.real();
@@ -155,14 +155,14 @@ namespace vb {
 
   Lattice Z2() {
     Lattice Z2(2);
-    Z2.bond(0,0,1,0).bond(0,0,0,1);
+    Z2.bond(0,0,coo(1,0)).bond(0,0,coo(0,1));
     Z2.z[0]=0;
     return Z2;
   }
 
   Lattice H () {
     Lattice H(2,cpx(.5,sqrt(3)/2));
-    H.bond(0,1).bond(0,1,-1,0).bond(0,1,0,-1);
+    H.bond(0,1).bond(0,1,coo(-1,0)).bond(0,1,coo(0,-1));
     H.z[0]=0;
     H.z[1]=cpx(1,1)/cpx(3);
     return H;
@@ -170,7 +170,7 @@ namespace vb {
 
   Lattice H2 () {
     Lattice H2(4,cpx(0,sqrt(3.0)));
-    H2.bond(0,1).bond(1,2).bond(2,3).bond(3,0,0,1).bond(2,1,1,0).bond(3,0,1,1);
+    H2.bond(0,1).bond(1,2).bond(2,3).bond(3,0,coo(0,1)).bond(2,1,coo(1,0)).bond(3,0,coo(1,1));
     H2.z[0]=0;
     H2.z[1]=cpx(0,1.0/3);
     H2.z[2]=cpx(.5,.5);
@@ -180,14 +180,14 @@ namespace vb {
 
   Lattice T() {
     Lattice T(1,cpx(.5,sqrt(3)/2));
-    T.bond(0,0,1,0).bond(0,0,0,1).bond(0,0,-1,1);
+    T.bond(0,0,coo(1,0)).bond(0,0,coo(0,1)).bond(0,0,coo(-1,1));
     T.z[0]=0;
     return T;
   }
 
   Lattice T2 () {
     Lattice T2(2,cpx(0,sqrt(3.0)));
-    T2.bond(0,1).bond(0,0,1,0).bond(1,0,1,0).bond(1,0,0,1).bond(1,0,1,1).bond(1,1,1,0);
+    T2.bond(0,1).bond(0,0,coo(1,0)).bond(1,0,coo(1,0)).bond(1,0,coo(0,1)).bond(1,0,coo(1,1)).bond(1,1,coo(1,0));
     T2.z[0]=0;
     T2.z[1]=cpx(.5,.5);
     return T2;
@@ -195,7 +195,7 @@ namespace vb {
 
   Lattice K () {
     Lattice K(3,cpx(.5,sqrt(3)/2));
-    K.bond(0,1).bond(0,2).bond(1,2).bond(1,0,1,0).bond(2,0,0,1).bond(1,2,1,-1);
+    K.bond(0,1).bond(0,2).bond(1,2).bond(1,0,coo(1,0)).bond(2,0,coo(0,1)).bond(1,2,coo(1,-1));
     K.z[0]=0;
     K.z[1]=.5;
     K.z[2]=cpx(0,.5);
@@ -205,7 +205,7 @@ namespace vb {
   Lattice K2 () {
     Lattice K2(6,cpx(0,sqrt(3)));
     K2.bond(0,1).bond(0,2).bond(1,2).bond(2,3).bond(2,4).bond(3,4).bond(4,5)
-      .bond(1,0,1,0).bond(4,3,1,0).bond(5,3,1,0).bond(5,1,0,1).bond(5,0,1,1);
+      .bond(1,0,coo(1,0)).bond(4,3,coo(1,0)).bond(5,3,coo(1,0)).bond(5,1,coo(0,1)).bond(5,0,coo(1,1));
     K2.z[0]=0;
     K2.z[1]=.5;
     K2.z[2]=cpx(.25,.25);
@@ -217,7 +217,7 @@ namespace vb {
 
   Lattice SO () {
     Lattice SO(4);
-    SO.bond(0,1).bond(1,2).bond(2,3).bond(3,0).bond(2,0,0,1).bond(1,3,1,0);
+    SO.bond(0,1).bond(1,2).bond(2,3).bond(3,0).bond(2,0,coo(0,1)).bond(1,3,coo(1,0));
     SO.z[0]=cpx(.5,.25);
     SO.z[1]=cpx(.75,.5);
     SO.z[2]=cpx(.5,.75);
@@ -227,7 +227,7 @@ namespace vb {
 
   Lattice Z2C () {
     Lattice Z2C(2);
-    Z2C.bond(0,0,1,0).bond(0,0,0,1).bond(0,1).bond(0,1,-1,0).bond(0,1,0,-1).bond(0,1,-1,-1);
+    Z2C.bond(0,0,coo(1,0)).bond(0,0,coo(0,1)).bond(0,1).bond(0,1,coo(-1,0)).bond(0,1,coo(0,-1)).bond(0,1,coo(-1,-1));
     Z2C.z[0]=0;
     Z2C.z[1]=cpx(.5,.5);
     return Z2C;
@@ -235,8 +235,8 @@ namespace vb {
 
   Lattice G67 () {
     Lattice G67(3, cpx(0,sqrt(6.0/7)));
-    G67.bond(0,1).bond(0,2).bond(1,2).bond(0,0,1,0).bond(0,0,0,1).bond(0,1,-1,0)
-      .bond(0,1,0,-1).bond(0,1,-1,-1).bond(2,0,0,1);
+    G67.bond(0,1).bond(0,2).bond(1,2).bond(0,0,coo(1,0)).bond(0,0,coo(0,1)).bond(0,1,coo(-1,0))
+      .bond(0,1,coo(0,-1)).bond(0,1,coo(-1,-1)).bond(2,0,coo(0,1));
     G67.z[0]=0;
     G67.z[1]=cpx(.5,.5);
     G67.z[2]=cpx(1.0/6,.5);
@@ -245,8 +245,8 @@ namespace vb {
 
   Lattice SV () {
     Lattice SV(4);
-    SV.bond(0,1).bond(1,2).bond(2,3).bond(3,0).bond(1,3).bond(1,0,1,0).bond(2,3,1,0)
-      .bond(1,3,1,0).bond(0,3,0,-1).bond(1,2,0,-1).bond(2,0,1,1).bond(3,1,0,1);
+    SV.bond(0,1).bond(1,2).bond(2,3).bond(3,0).bond(1,3).bond(1,0,coo(1,0)).bond(2,3,coo(1,0))
+      .bond(1,3,coo(1,0)).bond(0,3,coo(0,-1)).bond(1,2,coo(0,-1)).bond(2,0,coo(1,1)).bond(3,1,coo(0,1));
     SV.z[0]=0;
     SV.z[1]=.5;
     SV.z[2]=cpx(.5,.5);
@@ -256,8 +256,8 @@ namespace vb {
 
   Lattice C5 () {
     Lattice C5(5);
-    C5.bond(1,0).bond(1,4).bond(0,2).bond(0,3).bond(0,4).bond(2,3).bond(3,4).bond(2,1,1,0).bond(2,4,1,0)
-      .bond(3,4,1,0).bond(3,1,1,1).bond(3,0,1,1).bond(3,2,0,1).bond(3,0,0,1).bond(4,0,0,1);
+    C5.bond(1,0).bond(1,4).bond(0,2).bond(0,3).bond(0,4).bond(2,3).bond(3,4).bond(2,1,coo(1,0)).bond(2,4,coo(1,0))
+      .bond(3,4,coo(1,0)).bond(3,1,coo(1,1)).bond(3,0,coo(1,1)).bond(3,2,coo(0,1)).bond(3,0,coo(0,1)).bond(4,0,coo(0,1));
     C5.z[0]=.25;
     C5.z[1]=cpx(0,.125);
     C5.z[2]=cpx(.75,.25);

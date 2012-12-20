@@ -20,22 +20,22 @@ int main (int argc, char ** argv) {
   Figure F;
 
   vector<cpx> fd;
-  fd.push_back(L(1,1));
-  fd.push_back(L(2,1));
-  fd.push_back(L(2,2));
-  fd.push_back(L(1,2));
+  fd.push_back(L(coo(1,1)));
+  fd.push_back(L(coo(2,1)));
+  fd.push_back(L(coo(2,2)));
+  fd.push_back(L(coo(1,2)));
   F.add (new Polygon(fd, Pen(0,0,200,1)));
 
   for (int i=0; i<R.w; ++i)
     for (int j=0; j<R.h; ++j)
       for (int k=0; k<L.n; ++k)
-        F.add (new Circle (L(i,j,k), L.r[k], Pen(0,.2)));
+        F.add (new Circle (L(coo(i,j),k), L.r[k], Pen(0,.2)));
 
   for (int i=0; i<R.w; ++i)
     for (int j=0; j<R.h; ++j)
       for (int k=0; k<L.n; ++k)
         for (int l=0; l<L.adj[k].size(); ++l)
-          F.add (new Segment (L(i,j,k), L(i,j,k) + L.shift(k,l), Pen(0,.1)));
+          F.add (new Segment (L(coo(i,j),k), L(coo(i,j),k) + L.shift(k,l), Pen(0,.1)));
 
   F.show(); F.pause(); F.output_pdf();
   return 0;

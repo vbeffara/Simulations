@@ -11,18 +11,17 @@ namespace vb {
   class Lattice_move {
   public:
     /// The constructor.
-    Lattice_move (int _k, int _dx, int _dy) : k(_k), dx(_dx), dy(_dy) {}
+    Lattice_move (int _k, coo _dz) : k(_k), dz(_dz) {}
 
     int k;  ///< The vertex in the target fundamental domain.
-    int dx; ///< The horizontal displacement.
-    int dy; ///< The vertical displacement.
+    coo dz; ///< The displacement.
   };
 
   /// A utility class to point to a vertex in a libvb::Lattice or a libvb::LatticeRectangle.
   class Lattice_vertex {
   public:
     /// The constructor.
-    Lattice_vertex (int _x=0, int _y=0, int _k=0) : x(_x), y(_y), k(_k) {};
+    Lattice_vertex (coo _z=0, int _k=0) : z(_z), k(_k) {};
 
     /// Move accordint to a vb::Lattice_move (in-place version).
     Lattice_vertex & operator+= (const Lattice_move &m);
@@ -30,8 +29,7 @@ namespace vb {
     /// Move accordint to a vb::Lattice_move.
     Lattice_vertex   operator+  (const Lattice_move &m) const;
 
-    int x; ///< The first coordinate of the fundamental domain containing the point.
-    int y; ///< The second coordinate of the fundamental domain containing the point.
+    coo z; ///< The coordinates of the fundamental domain containing the point.
     int k; ///< The vertex identifying the point within its fundamental domain.
   };
 
@@ -55,17 +53,17 @@ namespace vb {
 
     Lattice (int _n, cpx _tau = cpx(0,1));
 
-    /// Map complex coordintes from lattice relative to absolute.
+    /// Map complex coordinates from lattice relative to absolute.
     cpx actual (cpx xy) const;
 
     /// Compute the affix of the designated vertex.
-    cpx operator() (int x, int y, int k=0) const;
+    cpx operator() (coo z, int k=0) const;
 
     /// Compute the affix of the designated vertex.
     cpx operator() (const Lattice_vertex &v) const;
 
     /// Add a bond to the lattice structure.
-    Lattice &bond (int k1, int k2, int dx=0, int dy=0);
+    Lattice &bond (int k1, int k2, coo dz = coo(0,0));
 
     /// Compute the displacement between two vertices in the same fundamental domain.
     cpx shift (int k, int l) const;
@@ -117,10 +115,10 @@ namespace vb {
     Lattice_rectangle (const Lattice &_L, int _w, int _h) : Lattice(_L), w(_w), h(_h), data(w*h*n) {};
 
     /// Return the label at a given vertex.
-    T & operator() (int x, int y, int k) { return data[k + n*(x+w*y)]; }
+    T & operator() (coo z, int k) { return data[k + n*(real(z)+w*imag(z))]; }
 
     /// Return the label at a given vertex.
-    T & operator[] (const Lattice_vertex &v) { return (*this)(v.x,v.y,v.k); }
+    T & operator[] (const Lattice_vertex &v) { return (*this)(v.z,v.k); }
 
     const int w;         ///< The width of the rectangle.
     const int h;         ///< The height of the rectangle.
