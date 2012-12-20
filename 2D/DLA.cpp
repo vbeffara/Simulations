@@ -7,16 +7,16 @@
 using namespace vb;
 using namespace std;
 
-typedef complex<int> place;
+int l1 (coo z) { return abs(real(z)) + abs(imag(z)); }
 
-place jump (int l, int deg=4) {
+coo jump (int l, int deg=4) {
   double theta = prng.uniform_real(0,2*M_PI);
   double x = l*cos(theta);
   double y = l*sin(theta);
-  if (deg!=6) return place (x,y);
+  if (deg!=6) return coo (x,y);
   double xx = x + y/sqrt(3.0);
   double yy = 2.0*y/sqrt(3.0);
-  return place (xx,yy);
+  return coo (xx,yy);
 }
 
 class DLA : public CoarseImage {
@@ -40,61 +40,61 @@ public:
     CoarseImage::update();
   }
 
-  char at (place z) {
+  char at (coo z) {
     int x=real(z)+n/2, y=imag(z)+n/2;
     if ((x<0) || (x>=n) || (y<0) || (y>=n)) return 0;
     else return CoarseImage::at(x,y);
   }
 
-  void putPoint(place z) {
+  void putPoint (coo z) {
     putpoint (real(z)+n/2,imag(z)+n/2, 1);
-    r = max (r, abs(z));
+    r = max (r, l1(z));
     pts ++;
   }
 
-  bool far (place z, int l) {
+  bool neighbor (coo z) {
+    for (int i=0; i<deg; ++i)
+      if (at(z+dz[i])) return true;
+    return false;
+  }
+
+  bool far (coo z, int l) {
     for (int i=0; i<l; ++i) {
-      if (at(z+place(-l+i,i)))  return false;
-      if (at(z+place(i,l-i)))   return false;
-      if (at(z+place(l-i,-i)))  return false;
-      if (at(z+place(-i,-l+i))) return false;
-    }
-    if ((deg==6) && (l=1)) {
-      if (at(z+place(1,1))) return false;
-      if (at(z-place(1,1))) return false;
+      int j = l-i;
+      if (at(z+coo(i,j)))   return false;
+      if (at(z+coo(j,-i)))  return false;
+      if (at(z+coo(-i,-j))) return false;
+      if (at(z+coo(-j,i)))  return false;
     }
     return true;
   }
 
-  int dist (place z, int d = 0) {
-    if (abs(z)>2*r) return abs(z)-r;
-    if (!far(z,1)) return 0;
-    if (d==0) d = abs(real(z)) + abs(imag(z));
+  int dist (coo z, int d) {
+    int l = l1(z);
+    if (l>2*r) return l-r;
     while ((d>1) && !far(z,d)) d /= 2;
     return d;
   }
 
   void runDLA(){
-    int d=0;
-    place z(0,0);
-
-    putPoint(z);
+    putPoint(coo(0,0));
 
     while (r<n/2-1) {
-      z = jump (3*r+2, deg);
+      coo z = jump (2*r+2, deg);
+      int d = r+2;
 
-      while ((d=dist(z,d))>0) {
-        if (d<6) {
-          int dr = prng()%deg;
-          z += place (dx[dr],dy[dr]);
+      while (!neighbor(z)) {
+        d = dist(z,d);
+        if (d<10) {
+          z += dz[prng()%deg];
         } else {
           z += jump(d/3, deg);
-          if (abs(z) > 4*r) {
-            real(z) *= .95;
-            imag(z) *= .95;
+          if (l1(z) > 100*r) {
+            real(z) *= .9;
+            imag(z) *= .9;
           }
         }
-        d = min (3*d, abs(z));
+        d = min (2*d, l1(z));
       }
 
       putPoint(z);

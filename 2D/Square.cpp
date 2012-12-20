@@ -12,12 +12,12 @@ int N;
 using namespace std;
 using namespace vb;
 
-typedef pair<int,double> coo;
-typedef pair<coo,coo> ptt;
+typedef pair<int,double> cooo;
+typedef pair<cooo,cooo> ptt;
 
 class pt : public ptt {
   public:
-    pt (int i, int j, double x, double y) : ptt(coo(i,x), coo(j,y)) {};
+    pt (int i, int j, double x, double y) : ptt(cooo(i,x), cooo(j,y)) {};
 
     int &xi() { return first.first; }
     double &xf() { return first.second; }
