@@ -67,8 +67,11 @@ namespace vb {
 #define foreach BOOST_FOREACH
 #define TWO_PI (6.28318530717958)
 
-  const int dx[4] = {1,0,-1,0};
-  const int dy[4] = {0,1,0,-1};
+  // Convenient for steps. In order: Z^2, then NE/SW for triangular,
+  // then NW/SE to finish the degree 8 lattice.
+
+  const int dx[8] = {1,0,-1,0,1,-1,-1,1};
+  const int dy[8] = {0,1,0,-1,1,-1,1,-1};
 };
 
 #endif

@@ -9,18 +9,23 @@ using namespace std;
 
 typedef complex<int> place;
 
-place jump (int l) {
+place jump (int l, int deg=4) {
   double theta = prng.uniform_real(0,2*M_PI);
-  return place (l*cos(theta), l*sin(theta));
+  double x = l*cos(theta);
+  double y = l*sin(theta);
+  if (deg!=6) return place (x,y);
+  double xx = x + y/sqrt(3.0);
+  double yy = 2.0*y/sqrt(3.0);
+  return place (xx,yy);
 }
 
 class DLA : public CoarseImage {
 public:
-  int n,r,pts;
+  int n,r,pts,deg;
   Watcher W;
 
   DLA (int n) : CoarseImage(n,n, str(fmt("A DLA cluster of size %d")%n), pow(n,.33)),
-                n(n), r(1), pts(0) {
+                n(n), r(1), pts(0), deg(4) {
     W.watch (pts, "Number of particles");
     W.watch (r,   "Cluster radius");
   };
@@ -54,6 +59,10 @@ public:
       if (at(z+place(l-i,-i)))  return false;
       if (at(z+place(-i,-l+i))) return false;
     }
+    if ((deg==6) && (l=1)) {
+      if (at(z+place(1,1))) return false;
+      if (at(z-place(1,1))) return false;
+    }
     return true;
   }
 
@@ -72,14 +81,14 @@ public:
     putPoint(z);
 
     while (r<n/2-1) {
-      z = jump (2*r+2);
+      z = jump (3*r+2, deg);
 
       while ((d=dist(z,d))>0) {
         if (d<6) {
-          int dr = prng()%4;
+          int dr = prng()%deg;
           z += place (dx[dr],dy[dr]);
         } else {
-          z += jump(d/2);
+          z += jump(d/3, deg);
           if (abs(z) > 4*r) {
             real(z) *= .95;
             imag(z) *= .95;
@@ -95,12 +104,14 @@ public:
 };
 
 int main(int argc, char ** argv) {
-  CL_Parser CLP (argc,argv,"n=1000,l");
+  CL_Parser CLP (argc,argv,"n=1000,l,d=4");
 
   DLA dla (CLP('n'));
+  dla.deg = CLP('d');
 
   dla.show();
   if (CLP('l')) for (int i=-dla.n/4; i<dla.n/4; ++i) dla.putPoint(i);
+
   dla.runDLA();
   dla.output();
 
