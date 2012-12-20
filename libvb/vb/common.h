@@ -45,15 +45,6 @@
 #include <FL/fl_draw.H>
 #endif
 
-#ifdef __GNUC__
-#define VB_DEPRECATED(func) func __attribute__ ((deprecated))
-#elif defined(_MSC_VER)
-#define VB_DEPRECATED(func) __declspec(deprecated) func
-#else
-#pragma message("WARNING: You need to implement DEPRECATED for this compiler")
-#define VB_DEPRECATED(func) func
-#endif
-
 namespace vb {
   /// Utility type for a complex number.
   typedef std::complex<double> cpx;
@@ -68,7 +59,6 @@ namespace vb {
   };
 
 #define foreach BOOST_FOREACH
-#define TWO_PI (6.28318530717958)
 
   // Convenient for steps. In order: Z^2, then NE/SW for triangular,
   // then NW/SE to finish the degree 8 lattice.

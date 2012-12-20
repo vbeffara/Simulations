@@ -381,7 +381,7 @@ namespace vb {
           if (t > +1.0) t = +1.0;
           theta += acos (t);
         }
-        E += (theta - TWO_PI)*(theta - TWO_PI);
+        E += (theta - 2*M_PI)*(theta - 2*M_PI);
 
         beta = sin (theta/(2*k));
 
