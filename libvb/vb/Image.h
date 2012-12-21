@@ -106,16 +106,6 @@ namespace vb {
 
       /** Return the color of the image at point (x,y).
        *
-       * @param x The first coordinate of the point.
-       * @param y The second coordinate of the point.
-       */
-
-      Color & at (int x, int y=0) { return stage[x+stride*y]; };
-
-      virtual Color color_at (int x, int y) { return at(x,y); };
-
-      /** Return the color of the image at point (x,y).
-       *
        * This is exactly equivalent to Image::at.
        *
        * @param x The first coordinate of the point.
