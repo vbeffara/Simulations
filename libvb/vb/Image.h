@@ -7,11 +7,6 @@
 #include <vb/Bitmap.h>
 
 namespace vb {
-  /** Helper type for use in vb::Image::tessellate and
-   * vb::Image::lazy_eval.
-   */
-
-  typedef Color coloring (int,int,void*);
 
   /** The main image class, used for all displays.
    *
@@ -21,6 +16,7 @@ namespace vb {
 
   class Image : public Bitmap<Color> {
     public:
+
       /** The standard constructor of the Image class.
        *
        * @param wd The width in pixels.
@@ -29,6 +25,16 @@ namespace vb {
        */
 
       Image (int wd, int ht, const std::string &tit);
+
+      /** Set the color at a given place in the image.
+       *
+       * It always calls step(); to bypass this, simply use at(x,y)=c.
+       */
+
+      void put (coo z, Color c) {
+        stage [real(z) + stride*imag(z)] = c;
+        step();
+      }
 
       /** Set the color of a point in the image.
        *
@@ -81,29 +87,6 @@ namespace vb {
 
       void tessel (int xmin, int ymin, int xmax, int xmax);
 
-      Color lazy_eval (coloring *f, int x, int y, void *data = NULL);
-
-      /** Compute the color of each point using a dyadic algorithm.
-       *
-       * Ideally, the image after this satisfies image(x,y)==f(x,y). It
-       * assumes that the initial non-0 colors are correct, and may miss
-       * some details.
-       *
-       * One case where it is guaranteed to work is if every connected
-       * component of the target image touches the boundary - e.g. if
-       * the image represents the 2 sides of a Jordan curve, such as in
-       * SLE.cpp.
-       *
-       * @param f    The coloring function.
-       * @param xmin The first coordinate of the top-left corner.
-       * @param ymin The second coordinate of the top-left corner.
-       * @param xmax The first coordinate of the bottom-right corner.
-       * @param ymax The second coordinate of the bottom-right corner.
-       * @param data A pointer to additional data needed by the coloring function.
-       */
-
-      void tessellate (coloring *f, int xmin, int ymin, int xmax, int ymax, void *data = NULL);
-
       /** Return the color of the image at point (x,y).
        *
        * This is exactly equivalent to Image::at.
@@ -133,31 +116,5 @@ namespace vb {
       virtual void paint ();
   };
 }
-
-/** @example sample.cpp
- * A simple example of how to use the libvb library.
- *
- * It does nothing interesting, but demonstrates the vb::Image class,
- * with the vb::Image::tessellate() method and PNG creation. Here is a
- * line-by-line description of the main() function:
- *
- * @dontinclude sample.cpp
- * @skip int main
- * @until {
- * First, create an instance of vb::CL_Parser. Use it to get the value
- * of n, the size of the image (the default is 500 here):
- * @skip CLP
- * @until CLP(
- * Then, create a vb::Image of this size, and display it on the screen:
- * @skip Image
- * @until show
- * Fill it using the coloring function f:
- * @skipline tessellate
- * And finally, export it to 'output.png' (automatic) and exit:
- * @skip <<
- * @until }
- *
- * Full source code of sample.cpp:
- */
 
 #endif

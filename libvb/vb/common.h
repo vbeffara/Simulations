@@ -100,8 +100,8 @@ namespace vb {
  *   vb::AutoWindow so that it can be re-used (by vb::Figure for
  *   instance).
  *
- * - vb::Image::tessellate(): a quick way to fill an image according to
- *   a coloring function (which gives the gray level as a function of
+ * - vb::Image::tessel(): a quick way to fill an image according to a
+ *   coloring function (which gives the gray level as a function of
  *   coordinates) by a dyadic decomposition.
  *
  * - A helper class vb::CL_Parser to access a simple but often

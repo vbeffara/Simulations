@@ -5,25 +5,25 @@
 #include <vb/Image.h>
 #include <vb/CL_Parser.h>
 
-int n; ///< The size of the image.
+using namespace vb;
 
-/// A simple coloring function.
-vb::Color f (int x, int y, void *data) {
-  int d = (x-n/2)*(x-n/2) + (y-n/2)*(y-n/2);
-  return vb::Color ( 1+(2*d*((1<<8)-1))/(n*n) );
-}
+class Sample : public Image {
+public:
+  int n;
 
-/// The main function.
-int main(int argc, char *argv[])
-{
+  Sample (int _n) : Image (_n,_n,"sample"), n(_n) {}
+
+  vb::Color compute (int x, int y) {
+    int d = (x-n/2)*(x-n/2) + (y-n/2)*(y-n/2);
+    return vb::Color ( 1+(2*d*((1<<8)-1))/(n*n) );
+  }
+};
+
+int main (int argc, char *argv[]) {
   vb::CL_Parser CLP (argc,argv,"n=500");
-  n = CLP('n');
-
-  vb::Image img (n,n,"sample");
-  //img.show();
-
-  img.tessellate (f, 0,0, n-1,n-1);
-
-  img.output_png ();
+  int n = CLP ('n');
+  Sample S (n);
+  S.tessel (0,0, n-1,n-1);
+  S.output();
   return 0;
 }
