@@ -19,15 +19,15 @@ public:
     twostep  = CLP('2');
     trace    = CLP('t');
 
-    pqueue << Point(n>>1,n>>1,cost());
-    if (twostep) pqueue << Point ((true_width>>1)+1, true_height>>1, cost());
+    pqueue << Point(coo(n>>1,n>>1),cost());
+    if (twostep) pqueue << Point (coo((true_width>>1)+1, true_height>>1), cost());
   };
 
   void spread (double t, int x, int y) {
-    if (!(at(x+1,y))) pqueue << Point(x+1,y,t+cost());
-    if (!(at(x-1,y))) pqueue << Point(x-1,y,t+cost());
-    if (!(at(x,y+1))) pqueue << Point(x,y+1,t+cost());
-    if (!(at(x,y-1))) pqueue << Point(x,y-1,t+cost());
+    if (!(at(x+1,y))) pqueue << Point(coo(x+1,y),t+cost());
+    if (!(at(x-1,y))) pqueue << Point(coo(x-1,y),t+cost());
+    if (!(at(x,y+1))) pqueue << Point(coo(x,y+1),t+cost());
+    if (!(at(x,y-1))) pqueue << Point(coo(x,y-1),t+cost());
   }
 
   void run () {
@@ -36,23 +36,23 @@ public:
 
       Point pt(pqueue);
 
-      if (!(at(pt.x,pt.y))) {
+      if (!(at(real(pt.z),imag(pt.z)))) {
         (*this) << pt; ++area;
 
         double curtime = invasion ? 0.0 : pt.t;
 
         int deg=1;
-        if (twostep) deg = at(pt.x-1,pt.y) + at(pt.x+1,pt.y) + at(pt.x,pt.y+1) + at(pt.x,pt.y-1);
-        for (int i=0; i<deg; ++i) spread (curtime,pt.x,pt.y);
+        if (twostep) deg = at(real(pt.z)-1,imag(pt.z)) + at(real(pt.z)+1,imag(pt.z)) + at(real(pt.z),imag(pt.z)+1) + at(real(pt.z),imag(pt.z)-1);
+        for (int i=0; i<deg; ++i) spread (curtime,real(pt.z),imag(pt.z));
 
         if (twostep) {
-          if (at(pt.x-1,pt.y)) spread(curtime,pt.x-1,pt.y);
-          if (at(pt.x+1,pt.y)) spread(curtime,pt.x+1,pt.y);
-          if (at(pt.x,pt.y-1)) spread(curtime,pt.x,pt.y-1);
-          if (at(pt.x,pt.y+1)) spread(curtime,pt.x,pt.y+1);
+          if (at(real(pt.z)-1,imag(pt.z))) spread(curtime,real(pt.z)-1,imag(pt.z));
+          if (at(real(pt.z)+1,imag(pt.z))) spread(curtime,real(pt.z)+1,imag(pt.z));
+          if (at(real(pt.z),imag(pt.z)-1)) spread(curtime,real(pt.z),imag(pt.z)-1);
+          if (at(real(pt.z),imag(pt.z)+1)) spread(curtime,real(pt.z),imag(pt.z)+1);
         }
 
-        if ( (pt.x==1) || (pt.y==1) || (pt.x==true_width-2) || (pt.y==true_height-2) ) break;
+        if ( (real(pt.z)==1) || (imag(pt.z)==1) || (real(pt.z)==true_width-2) || (imag(pt.z)==true_height-2) ) break;
       }
     }
   }
@@ -69,6 +69,7 @@ int main (int argc, char **argv) {
   FPP F (CLP('n'), CLP);
   F.show();
   F.run();
+  F.output();
 
   return 0;
 }

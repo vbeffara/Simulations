@@ -17,8 +17,7 @@ namespace vb {
 
   class Point {
     public:
-      int x;      ///< The first coordinate.
-      int y;      ///< The second coordinate.
+      coo z;      ///< The location of the point.
       double t;   ///< The time at which the clock rings.
       char c;     ///< The color of the point.
 
@@ -30,8 +29,8 @@ namespace vb {
        * @param cc The color of the point.
        */
 
-      Point (int xx=0, int yy=0, double tt=0, char cc=1) :
-        x(xx), y(yy), t(tt), c(cc) {};
+      Point (coo zz=0, double tt=0, char cc=1) :
+        z(zz), t(tt), c(cc) {};
 
       /** Another constructor that takes the first point out of a queue.
        *
@@ -85,7 +84,7 @@ namespace vb {
    */
 
   Image &operator<< (Image &img, const Point &p) {
-    img.putpoint (p.x,p.y,p.c);
+    img.putpoint (real(p.z),imag(p.z),p.c);
     return img;
   }
 
@@ -100,7 +99,7 @@ namespace vb {
    */
 
   CoarseImage &operator<< (CoarseImage &img, const Point &p) {
-    img.putpoint (p.x,p.y,p.c);
+    img.putpoint (real(p.z),imag(p.z),p.c);
     return img;
   }
 }

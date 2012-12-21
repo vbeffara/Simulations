@@ -49,8 +49,13 @@ namespace vb {
   /// Utility type for a complex number.
   typedef std::complex<double> cpx;
 
+  const cpx I(0,1);
+
   /// Utility type for integer coordinates.
   typedef std::complex<int> coo;
+
+  const coo E1(1,0);
+  const coo E2(0,1);
 
   class fmt : public boost::format {
     public:
