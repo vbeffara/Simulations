@@ -112,7 +112,7 @@ namespace vb {
        * @param y The second coordinate of the point.
        */
 
-      Color & operator() (int x, int y=0) { return at(x,y); };
+      Color & operator() (int x, int y) { return at(x,y); };
 
       /** Fill a connected region in the image.
        *

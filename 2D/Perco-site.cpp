@@ -21,27 +21,27 @@ void cnx (Image *img, int ox, int oy, Color in, Color out)
     j=fifoy[imin];
     k=i+j*img->w();
     imin++;
-    if ((i<img->w()-1)&&((*img)(k+1)!=in)&&((*img)(k+1)!=out)) {
+    if ((i<img->w()-1)&&((*img)(i+1,j)!=in)&&((*img)(i+1,j)!=out)) {
       fifox[++imax]=i+1;
       fifoy[imax]=j;
-      img -> putpoint (k+1,0,in);
+      img -> putpoint (i+1,j,in);
     }
-    if ((i>0)&&((*img)(k-1)!=in)&&((*img)(k-1)!=out)) {
+    if ((i>0)&&((*img)(i-1,j)!=in)&&((*img)(i-1,j)!=out)) {
       fifox[++imax]=i-1;
       fifoy[imax]=j;
-      img -> putpoint (k-1,0,in);
+      img -> putpoint (i-1,j,in);
     }
-    if ((j<img->h()-1)&&((*img)(k+img->w())!=in)&&((*img)(k+img->w())!=out)) {
+    if ((j<img->h()-1)&&((*img)(i,j+1)!=in)&&((*img)(i,j+1)!=out)) {
       fifox[++imax]=i;
       fifoy[imax]=j+1;
-      img -> putpoint (k,1,in);
+      img -> putpoint (i,j+1,in);
     }
-    if ((j>0)&&((*img)(k-img->w())!=in)&&((*img)(k-img->w())!=out)) {
+    if ((j>0)&&((*img)(i,j-1)!=in)&&((*img)(i,j-1)!=out)) {
       fifox[++imax]=i;
       fifoy[imax]=j-1;
-      img -> putpoint (k,-1,in);
+      img -> putpoint (i,j-1,in);
     }
-  }  
+  }
 }
 
 int main(int argc, char ** argv)
@@ -61,7 +61,7 @@ int main(int argc, char ** argv)
   /* Site-percolation --- 1=dedans, 2=dehors */
 
   for (i=0;i<4*n*n;i++) {
-    if ( prng.bernoulli(p) ) 
+    if ( prng.bernoulli(p) )
       img -> putpoint (i,0,1);
     else
       img -> putpoint (i,0,2);
@@ -75,10 +75,10 @@ int main(int argc, char ** argv)
 
   /* "Hull" du cluster */
 
-  for (i=0;i<2*n;i++) if ((*img)(i)!=Color(3))                            cnx(img,i,0,0,3);
-  for (i=0;i<2*n;i++) if ((*img)(img->w()*i)!=Color(3))                 cnx(img,0,i,0,3);
-  for (i=0;i<2*n;i++) if ((*img)(img->w()*(i+1)-1)!=Color(3))           cnx(img,img->w()-1,i,0,3);
-  for (i=0;i<2*n;i++) if ((*img)(img->w()*(img->h()-1)+i)!=Color(3)) cnx(img,i,img->h()-1,0,3);
+  for (i=0;i<2*n;i++) if ((*img)(i,0)!=Color(3))                            cnx(img,i,0,0,3);
+  for (i=0;i<2*n;i++) if ((*img)(0,i)!=Color(3))                 cnx(img,0,i,0,3);
+  for (i=0;i<2*n;i++) if ((*img)(img->w()*(i+1)-1,0)!=Color(3))           cnx(img,img->w()-1,i,0,3);
+  for (i=0;i<2*n;i++) if ((*img)(img->w()*(img->h()-1)+i,0)!=Color(3)) cnx(img,i,img->h()-1,0,3);
 
   for (i=0;i<4*n*n;i++) if ((*img)(i,0)==Color(2)) img->putpoint(i,0,1);
 

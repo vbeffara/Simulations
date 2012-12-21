@@ -250,7 +250,7 @@ int main (int argc, char **argv) {
     for (int y=0; y<nn; ++y) {
       int i=x+nn*y;
       if (distance[i]<=radius)
-        img.putpoint(x,y,127+img(i)/2);
+        img.putpoint(x,y,127+img(i,0)/2);
       else if (distance[i]-field[i]<=radius)
         img.putpoint(x,y,0);
     }

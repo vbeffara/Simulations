@@ -24,27 +24,27 @@ void bndcnx (int ox, int oy) {
     j=fifoy[imin];
     k=i+j*img->w();
     imin++;
-    if ((i<img->w()-1)&&((*img)(k)&16)&&!((*img)(k+1)&2)) {
+    if ((i<img->w()-1)&&((*img)(i,j)&16)&&!((*img)(i+1,j)&2)) {
       fifox[++imax]=i+1;
       fifoy[imax]=j;
-      img -> putpoint (k+1,0, (*img)(k+1,0) | 3);
+      img -> putpoint (i+1,j, (*img)(i+1,j) | 3);
     }
-    if ((j<img->h()-1)&&((*img)(k)&32)&&!((*img)(k+img->w())&2)) {
+    if ((j<img->h()-1)&&((*img)(i,j)&32)&&!((*img)(i,j+1)&2)) {
       fifox[++imax]=i;
       fifoy[imax]=j+1;
-      img -> putpoint (k,1, (*img)(k,1) | 3);
+      img -> putpoint (i,j+1, (*img)(i,j+1) | 3);
     }
-    if ((i>0)&&((*img)(k-1)&16)&&!((*img)(k-1)&2)) {
+    if ((i>0)&&((*img)(i-1,j)&16)&&!((*img)(i-1,j)&2)) {
       fifox[++imax]=i-1;
       fifoy[imax]=j;
-      img -> putpoint (k-1,0, (*img)(k-1,0) | 3);
+      img -> putpoint (i-1,j, (*img)(i-1,j) | 3);
     }
-    if ((j>0)&&((*img)(k-img->w())&32)&&!((*img)(k-img->w())&2)) {
+    if ((j>0)&&((*img)(i,j-1)&32)&&!((*img)(i,j-1)&2)) {
       fifox[++imax]=i;
       fifoy[imax]=j-1;
-      img -> putpoint (k,-1, (*img)(k,-1) | 3);
+      img -> putpoint (i,j-1, (*img)(i,j-1) | 3);
     }
-  }  
+  }
 }
 
 int main (int argc, char **argv) {

@@ -10,7 +10,7 @@ Image *img;
 long n;
 long pivv,pivh;
 
-void findpiv (long hcross) 
+void findpiv (long hcross)
 {
   int x,y;
 
@@ -18,23 +18,23 @@ void findpiv (long hcross)
   if (hcross==0) {
     for (x=0;x<n-1;x++)
       for (y=0;y<n;y++)
-	if ((*img)(x+n*y)*(*img)(x+1+n*y)==2)
-	  pivh++;
+        if ((*img)(x,y)*(*img)(x+1,y)==2)
+          pivh++;
     for (x=0;x<n;x++)
       for (y=0;y<n-1;y++)
-	if ((*img)(x+n*y)*(*img)(x+n+n*y)==2)
-	  pivv++;
+        if ((*img)(x,y)*(*img)(x,y+1)==2)
+          pivv++;
   } else {
     for (x=0;x<n-1;x++)
       for (y=0;y<n;y++)
-	if ((*img)(x+n*y)*(*img)(x+1+n*y)==9) {
-	  pivh++;
-	}
+        if ((*img)(x,y)*(*img)(x+1,y)==9) {
+          pivh++;
+        }
     for (x=0;x<n;x++)
       for (y=0;y<n-1;y++)
-	if ((*img)(x+n*y)*(*img)(x+n+n*y)==9) {
-	  pivv++;
-	}
+        if ((*img)(x,y)*(*img)(x,y+1)==9) {
+          pivv++;
+        }
   }
 }
 
@@ -48,39 +48,39 @@ void explore (long x0, long y0, long d0, long xf, long yf, char c)
     switch (d) {
     case 0: /* Right */
       if ((x<n-1)&&(right[xy])) {
-	x++; xy++; d=3;
-	img->putpoint (x,y,(c|(*img)(xy)));
+        x++; xy++; d=3;
+        img->putpoint (x,y,(c|(*img)(x,y)));
       } else {
-	d=1;
+        d=1;
       }
       break;
     case 1: /* Top */
       if ((y<n-1)&&(down[xy+n])) {
-	y++; xy+=n; d=0;
-	img->putpoint (x,y,(c|(*img)(xy)));
+        y++; xy+=n; d=0;
+        img->putpoint (x,y,(c|(*img)(x,y)));
       } else {
-	d=2;
+        d=2;
       }
       break;
     case 2: /* Left */
       if ((x>0)&&(right[xy-1])) {
-	x--; xy--; d=1;
-	img->putpoint (x,y,(c|(*img)(xy)));
+        x--; xy--; d=1;
+        img->putpoint (x,y,(c|(*img)(x,y)));
       } else {
-	d=3;
+        d=3;
       }
       break;
     case 3: /* Down */
       if ((y>0)&&(down[xy])) {
-	y--; xy-=n; d=2;
-	img->putpoint (x,y,(c|(*img)(xy)));
+        y--; xy-=n; d=2;
+        img->putpoint (x,y,(c|(*img)(x,y)));
       } else {
-	d=0;
+        d=0;
       }
       break;
     }
   }
-} 
+}
 
 int main(int argc, char ** argv)
 {
@@ -107,8 +107,8 @@ int main(int argc, char ** argv)
 
   /* OnScreen (img); */
 
-  for (i=0;i<n;i++) { 
-    down[n*i]=1; 
+  for (i=0;i<n;i++) {
+    down[n*i]=1;
     down[n*i+n-1]=0;
     right[i]=0;
     right[(n-1)*n+i]=0;
@@ -117,26 +117,26 @@ int main(int argc, char ** argv)
 
   hcross=0;
   for (i=0;i<n;i++)
-    if ((*img)((n-1)+n*i)==Color(1))
+    if ((*img)(n-1,i)==Color(1))
       hcross=1;
-  
+
   if (hcross==0) {
-    for (i=0;i<n;i++) { 
+    for (i=0;i<n;i++) {
       down[n*i+n-1]=1;
     }
     explore (n-1,n-1,2,n-1,0,2);
   } else {
-    for (i=0;i<n;i++) 
+    for (i=0;i<n;i++)
       for (j=0;j<n;j++)
-	img->putpoint (i,j,0);
+        img->putpoint (i,j,0);
 
-    for (i=0;i<n;i++) { 
+    for (i=0;i<n;i++) {
       down[n*i+n-1]=1;
     }
     explore (0,n-1,3,n-1,n-1,1);
     explore (n-1,0,1,0,0,2);
   }
-  
+
   for (i=0;i<n;i++) {
     img->putpoint (0,i,0);
     img->putpoint (n-1,i,0);
