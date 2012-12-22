@@ -84,7 +84,7 @@ namespace vb {
    */
 
   Image &operator<< (Image &img, const Point &p) {
-    img.putpoint (real(p.z),imag(p.z),p.c);
+    img.put (p.z,p.c);
     return img;
   }
 
@@ -99,7 +99,7 @@ namespace vb {
    */
 
   CoarseImage &operator<< (CoarseImage &img, const Point &p) {
-    img.putpoint (real(p.z),imag(p.z),p.c);
+    img.put (p.z,p.c);
     return img;
   }
 }

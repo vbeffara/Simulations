@@ -94,6 +94,8 @@ namespace vb {
 
       void release (char * box);
 
+      void put (coo z, int c);
+
       /** Set the color of the point at (x,y).
        *
        * It takes care of everything : allocate memory if the
@@ -106,7 +108,7 @@ namespace vb {
        * @param dt Whether to increment the clock.
        */
 
-      int putpoint (int x, int y, int c, int dt=1);
+      int putpoint (int x, int y, int c, int dt=1) __attribute__ ((deprecated));
 
       /** Return the color of the point at (x,y).
        *

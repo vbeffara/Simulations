@@ -92,13 +92,13 @@ namespace vb {
  *   most of the functionality, can be displayed on the screen by
  *   calling vb::Image::show() and transformed into an PNG file.
  *
- * - Auto-update: the display routine (namely vb::Image::putpoint())
- *   will try to update the screen representation of the image on the
- *   screen about 25 times per second. It works best if the computation
- *   time is roughly the same for all the points displayed. This is
- *   extremely practical. This is wrapped into a class called
- *   vb::AutoWindow so that it can be re-used (by vb::Figure for
- *   instance).
+ * - Auto-update: the display routine (namely vb::Image::put()) will
+ *   try to update the screen representation of the image on the
+ *   screen about 25 times per second. It works best if the
+ *   computation time is roughly the same for all the points
+ *   displayed. This is extremely practical. This is wrapped into a
+ *   class called vb::AutoWindow so that it can be re-used (by
+ *   vb::Figure for instance).
  *
  * - vb::Image::tessel(): a quick way to fill an image according to a
  *   coloring function (which gives the gray level as a function of

@@ -31,12 +31,13 @@ namespace vb {
     storage.push_back(box);
   }
 
-  int CoarseImage::putpoint (int x, int y, int c, int dt) {
-    if (dt) step();
+  void CoarseImage::put (coo z, int c) {
+    step();
 
+    int x=real(z), y=imag(z);
     CoarseCell & d = data[(x/L) + stride*(y/L)];
 
-    if (d.fill == c*LL) return c;
+    if (d.fill == c*LL) return;
 
     if (d.fill == (1-c)*LL) { // Need to create the block
       d.sub = claim(1-c);
@@ -53,7 +54,10 @@ namespace vb {
       release (d.sub);
       d.sub = NULL;
     }
+  }
 
+  int CoarseImage::putpoint (int x, int y, int c, int dt) {
+    put (coo(x,y),c);
     return c;
   }
 

@@ -48,7 +48,7 @@ namespace vb {
        * @param dt Whether to increment the clock.
        */
 
-      void putpoint (int x, int y, Color c, int dt=1) {
+      void putpoint (int x, int y, Color c, int dt=1) __attribute__ ((deprecated)) {
         stage[x+stride*y] = c;
         if (dt) step();
       }
@@ -65,8 +65,10 @@ namespace vb {
        */
 
       void putpoint_safe (int x, int y, Color c, int dt=1) {
-        if ( (x>=0) && (y>=0) && (x<w()) && (y<h()) )
-          putpoint (x,y,c,dt);
+        if ( (x>=0) && (y>=0) && (x<w()) && (y<h()) ) {
+          if (dt) put (coo(x,y),c);
+          else at(x,y) = c;
+        }
       }
 
       /** Lazy evaluation of f at point (x,y).

@@ -8,7 +8,7 @@ namespace vb {
 
   void Image::fill (int x, int y, Color c, unsigned char adj) {
     Color in = at(x,y); if (in == c) return;
-    putpoint(x,y,c,0);
+    at(x,y) = c;
 
     static std::vector<int> xy; xy.push_back(x); xy.push_back(y);
 
@@ -16,14 +16,14 @@ namespace vb {
       int j=xy.back(); xy.pop_back();
       int i=xy.back(); xy.pop_back();
 
-      if ((adj&1)   && (i<w()-1)              && (at(i+1,j  )==in)) { xy.push_back(i+1); xy.push_back(j  ); putpoint (i+1,j  ,c,0); }
-      if ((adj&2)   && (i<w()-1) && (j<h()-1) && (at(i+1,j+1)==in)) { xy.push_back(i+1); xy.push_back(j+1); putpoint (i+1,j+1,c,0); }
-      if ((adj&4)   &&              (j<h()-1) && (at(i  ,j+1)==in)) { xy.push_back(i  ); xy.push_back(j+1); putpoint (i  ,j+1,c,0); }
-      if ((adj&8)   && (i>0)     && (j<h()-1) && (at(i-1,j+1)==in)) { xy.push_back(i-1); xy.push_back(j+1); putpoint (i-1,j+1,c,0); }
-      if ((adj&16)  && (i>0)                  && (at(i-1,j  )==in)) { xy.push_back(i-1); xy.push_back(j  ); putpoint (i-1,j  ,c,0); }
-      if ((adj&32)  && (i>0)     && (j>0)     && (at(i-1,j-1)==in)) { xy.push_back(i-1); xy.push_back(j-1); putpoint (i-1,j-1,c,0); }
-      if ((adj&64)  &&              (j>0)     && (at(i  ,j-1)==in)) { xy.push_back(i  ); xy.push_back(j-1); putpoint (i  ,j-1,c,0); }
-      if ((adj&128) && (i<w()-1) && (j>0)     && (at(i+1,j-1)==in)) { xy.push_back(i+1); xy.push_back(j-1); putpoint (i+1,j-1,c,0); }
+      if ((adj&1)   && (i<w()-1)              && (at(i+1,j  )==in)) { xy.push_back(i+1); xy.push_back(j  ); at (i+1,j)   = c; }
+      if ((adj&2)   && (i<w()-1) && (j<h()-1) && (at(i+1,j+1)==in)) { xy.push_back(i+1); xy.push_back(j+1); at (i+1,j+1) = c; }
+      if ((adj&4)   &&              (j<h()-1) && (at(i  ,j+1)==in)) { xy.push_back(i  ); xy.push_back(j+1); at (i  ,j+1) = c; }
+      if ((adj&8)   && (i>0)     && (j<h()-1) && (at(i-1,j+1)==in)) { xy.push_back(i-1); xy.push_back(j+1); at (i-1,j+1) = c; }
+      if ((adj&16)  && (i>0)                  && (at(i-1,j  )==in)) { xy.push_back(i-1); xy.push_back(j  ); at (i-1,j)   = c; }
+      if ((adj&32)  && (i>0)     && (j>0)     && (at(i-1,j-1)==in)) { xy.push_back(i-1); xy.push_back(j-1); at (i-1,j-1) = c; }
+      if ((adj&64)  &&              (j>0)     && (at(i  ,j-1)==in)) { xy.push_back(i  ); xy.push_back(j-1); at (i  ,j-1) = c; }
+      if ((adj&128) && (i<w()-1) && (j>0)     && (at(i+1,j-1)==in)) { xy.push_back(i+1); xy.push_back(j-1); at (i+1,j-1) = c; }
     }
   }
 
@@ -55,7 +55,7 @@ namespace vb {
     if (mono) {
       for (int i=xmin+1; i<xmax; ++i)
         for (int j=ymin+1; j<ymax; ++j)
-          putpoint (i,j,tmp,0);
+          at (i,j) = tmp;
     } else if ((xmax-xmin) > std::max (ymax-ymin, 1)) {
       int xmed = (xmin+xmax)>>1;
       tessel (xmin,ymin,xmed,ymax);
