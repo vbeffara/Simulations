@@ -121,6 +121,8 @@ namespace vb {
 
       char at (int x, int y) const;
 
+      char at (coo z) const { return at (real(z), imag(z)); };
+
       /** Syntactic shortcut for operator().
        *
        * @param x The first coordinate of the point.
@@ -128,6 +130,8 @@ namespace vb {
        */
 
       char operator() (int x, int y) const { return at(x,y); }
+
+      char operator() (coo z) const { return at(z); }
 
     private:
       int LL;

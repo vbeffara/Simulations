@@ -10,20 +10,27 @@
 using namespace vb;
 using namespace std;
 
-CoarseImage *img;
 int cursum;
 int n,maxx,maxy;
 double p;
 bool s;
 bool t;
 
-void addapoint (int x, int y) {
-  img->putpoint(x,y,1);
-  if ( (x>0) && (y<n-1) && ((*img)(x-1,y+1)==1) && ((*img)(x-1,y)==0) )
-    addapoint (x-1,y);
-  if ( (y>0) && (x<n-1) && ((*img)(x+1,y-1)==1) && ((*img)(x,y-1)==0) )
-    addapoint (x,y-1);
-}
+class DDLA : public CoarseImage {
+public:
+  DDLA (int n) : CoarseImage (n,n,"A directed DLA cluster", pow(double(n),.33)) {};
+
+  void addapoint (coo z) {
+    put (z,1);
+    int x=real(z), y=imag(z);
+    if ( (x>0) && (y<n-1) && (at(z-E1+E2)==1) && (at(z-E1)==0) )
+      addapoint (z-E1);
+    if ( (y>0) && (x<n-1) && (at(z+E1-E2)==1) && (at(z-E2)==0) )
+      addapoint (z-E2);
+  }
+};
+
+DDLA *img;
 
 void reshape (int x, int y) {
   if (x==maxx) ++maxx;
@@ -88,10 +95,10 @@ int main (int argc, char **argv) {
 
   maxx=1; maxy=1; cursum=0;
 
-  img = new CoarseImage (n,n,"A directed DLA cluster",(int)pow((double)n,.33));
+  img = new DDLA(n);
   img->show();
 
-  img->putpoint(0,0,1);
+  img->put(0,1);
   queue << Point(coo(1,0),prng.exponential())
         << Point(coo(0,1),prng.exponential());
 
@@ -103,7 +110,7 @@ int main (int argc, char **argv) {
     else if ((*img)(real(pt.z),imag(pt.z))==0) {
       double curtime = pt.t;
       if (ok(real(pt.z),imag(pt.z))) {
-        addapoint (real(pt.z),imag(pt.z));
+        img->addapoint (pt.z);
         reshape (real(pt.z),imag(pt.z));
         if ( (real(pt.z)<n-1) && ((*img)(real(pt.z)+1,imag(pt.z))==0) )
           queue << Point(pt.z+E1,curtime+prng.exponential()/p);
