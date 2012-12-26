@@ -14,7 +14,6 @@ int cursum;
 int n,maxx,maxy;
 double p;
 bool s;
-bool t;
 
 class DDLA : public CoarseImage {
 public:
@@ -38,50 +37,25 @@ void reshape (int x, int y) {
   if (x+y>cursum) cursum=x+y;
 }
 
-bool ddla (int x, int y) {
-  int xx=x, yy=y;
+bool ok (coo z) {
+  int xx=real(z), yy=imag(z);
+  coo zz=z;
   bool just_started=true;
   int ans=-1;
 
   while (ans == -1) {
-    if (prng.bernoulli(p)) ++xx; else ++yy;
+    if (prng.bernoulli(p)) { ++xx; zz+=E1; } else { ++yy; zz+=E2; }
+    assert (zz==coo(xx,yy));
 
     if ((xx>=n) || (yy>=n) || (xx+yy > cursum)) ans = 1;
-    if ((*img)(xx,yy) == 1) ans = 0;
+    if (img->at(zz) == 1) ans = 0;
 
     if (s && (!just_started) && (xx<n-1) && (yy<n-1) &&
-        (((*img)(xx+1,yy)==1) || ((*img)(xx,yy+1)==1))) ans = 0;
+        ((img->at(zz+E1)==1) || (img->at(zz+E2)==1))) ans = 0;
     just_started = false;
   }
 
-  if (t && ans == 1) {
-    int w=0, s=0;
-    if ((x>0) && ((*img)(x-1,y)==1)) w=1;
-    if ((y>0) && ((*img)(x,y-1)==1)) s=1;
-
-    if ( (s==0) || ((w==1) && prng.bernoulli(p)) )
-      cerr << x << " " << y << endl << x-1 << " " << y << endl << endl;
-    else
-      cerr << x << " " << y << endl << x << " " << y-1 << endl << endl;
-  }
-
   return ans;
-}
-
-bool corner_plus_top (int x, int y) {
-  if ( (y==maxy) || (x==maxx) ) return true;
-  int bot   = (y==0  ?0:(*img)(x,y-1));
-  int top   = (y==n-1?0:(*img)(x,y+1));
-  int left  = (x==0  ?0:(*img)(x-1,y));
-  int right = (x==n-1?0:(*img)(x+1,y));
-
-  if (bot+top+left+right==2) return true;
-  else return false;
-}
-
-bool ok (int x, int y) {
-  return ddla(x,y);
-  return corner_plus_top(x,y);
 }
 
 int main (int argc, char **argv) {
@@ -89,7 +63,6 @@ int main (int argc, char **argv) {
   n = CLP('n');
   p = CLP('p');
   s = CLP('s');
-  t = CLP('t');
 
   PointQueue queue;
 
@@ -109,7 +82,7 @@ int main (int argc, char **argv) {
     if ((real(pt.z)==n-1) || (imag(pt.z)==n-1)) running=0;
     else if ((*img)(real(pt.z),imag(pt.z))==0) {
       double curtime = pt.t;
-      if (ok(real(pt.z),imag(pt.z))) {
+      if (ok(pt.z)) {
         img->addapoint (pt.z);
         reshape (real(pt.z),imag(pt.z));
         if ( (real(pt.z)<n-1) && ((*img)(real(pt.z)+1,imag(pt.z))==0) )
