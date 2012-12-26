@@ -57,6 +57,7 @@ namespace vb {
       int true_width;    ///< The true width of the image, in pixels.
       int true_height;   ///< The true height of the image, in pixels.
       int L;             ///< The size of a block, in pixels.
+      coo z0;            ///< The coordinates of the origin (hides that of vb::Bitmap).
 
       /** The standard constructor of the CoarseImage class.
        *
@@ -110,6 +111,8 @@ namespace vb {
 
       int putpoint (int x, int y, int c, int dt=1) __attribute__ ((deprecated));
 
+      char at (coo z) const;
+
       /** Return the color of the point at (x,y).
        *
        * Note: contrary to the Image::operator() version, this one is
@@ -119,9 +122,7 @@ namespace vb {
        * @param y The second coordinate of the point.
        */
 
-      char at (int x, int y) const;
-
-      char at (coo z) const { return at (real(z), imag(z)); };
+      char at (int x, int y) const __attribute__ ((deprecated)) { return at(coo(x,y)); }
 
       /** Syntactic shortcut for operator().
        *
@@ -129,7 +130,8 @@ namespace vb {
        * @param y The second coordinate of the point.
        */
 
-      char operator() (int x, int y) const { return at(x,y); }
+      char operator() (int x, int y) const __attribute__ ((deprecated))
+      { return at(coo(x,y)); }
 
       char operator() (coo z) const { return at(z); }
 

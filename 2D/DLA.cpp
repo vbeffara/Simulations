@@ -26,28 +26,22 @@ public:
 
   DLA (int n) : CoarseImage(n,n, str(fmt("A DLA cluster of size %d")%n), pow(n,.33)),
                 n(n), r(1), pts(0), deg(4) {
+    z0 = coo(n/2,n/2);
     W.watch (pts, "Number of particles");
     W.watch (r,   "Cluster radius");
   };
 
-  void show () {
-    W.show();
-    CoarseImage::show();
-  }
-
-  void update () {
-    W.update();
-    CoarseImage::update();
-  }
+  void show ()   { W.show();   CoarseImage::show(); }
+  void update () { W.update(); CoarseImage::update(); }
 
   char at (coo z) {
-    int x=real(z)+n/2, y=imag(z)+n/2;
-    if ((x<0) || (x>=n) || (y<0) || (y>=n)) return 0;
-    else return CoarseImage::at(x,y);
+    int x=real(z), y=imag(z);
+    if ((x<-n/2) || (x>=n/2) || (y<-n/2) || (y>=n/2)) return 0;
+    else return CoarseImage::at(z);
   }
 
-  void putPoint (coo z) {
-    putpoint (real(z)+n/2,imag(z)+n/2, 1);
+  void put (coo z) {
+    CoarseImage::put (z,1);
     r = max (r, l1(z));
     pts ++;
   }
@@ -77,7 +71,7 @@ public:
   }
 
   void runDLA (){
-    putPoint(coo(0,0));
+    put(0);
 
     while (r<n/2-1) {
       coo z = jump (2*r+2, deg);
@@ -97,7 +91,7 @@ public:
         d = min (2*d, l1(z));
       }
 
-      putPoint(z);
+      put(z);
       if ((pts%100)==0) update();
     }
   }
@@ -110,7 +104,7 @@ int main (int argc, char ** argv) {
   dla.deg = CLP('d');
 
   dla.show();
-  if (CLP('l')) for (int i=-dla.n/4; i<dla.n/4; ++i) dla.putPoint(i);
+  if (CLP('l')) for (int i=-dla.n/4; i<dla.n/4; ++i) dla.put(i);
 
   dla.runDLA();
   dla.output();

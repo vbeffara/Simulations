@@ -36,6 +36,7 @@ namespace vb {
 
       Color * stage;       ///< The raw pixel data of the screen representation.
       std::vector<T> data; ///< The actual data.
+      coo z0;              ///< The coordinates of the origin (at(0) is there on screen).
 
     private:
       virtual void paint ();

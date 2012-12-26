@@ -7,7 +7,7 @@ namespace vb {
   template<> Bitmap<Color>::Bitmap (int wd, int ht, const std::string &tit, int d) :
     Picture(wd,ht,tit),
     stage ((Color *) (surface -> get_data())),
-    data (0)
+    data (0), z0(0)
   { }
 
   template<> Color & Bitmap<Color>::at (int x, int y) {

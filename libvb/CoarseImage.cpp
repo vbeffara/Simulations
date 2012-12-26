@@ -6,7 +6,7 @@
 namespace vb {
   CoarseImage::CoarseImage (int wd, int ht, const std::string &title, int l)
     : Bitmap<CoarseCell> (1+(wd-1)/l,1+(ht-1)/l,title,l),
-      true_width(wd), true_height(ht), L(l), LL(l*l)
+      true_width(wd), true_height(ht), L(l), LL(l*l), z0(0)
   { }
 
   CoarseImage::~CoarseImage () {
@@ -34,8 +34,8 @@ namespace vb {
   void CoarseImage::put (coo z, int c) {
     step();
 
-    int x=real(z), y=imag(z);
-    CoarseCell & d = data[(x/L) + stride*(y/L)];
+    int x=real(z+z0), y=imag(z+z0);
+    CoarseCell & d = Bitmap<CoarseCell>::at(x/L,y/L);
 
     if (d.fill == c*LL) return;
 
@@ -61,7 +61,8 @@ namespace vb {
     return c;
   }
 
-  char CoarseImage::at (int x, int y) const {
+  char CoarseImage::at (coo z) const {
+    int x=real(z+z0), y=imag(z+z0);
     const CoarseCell & d = data[(x/L) + stride*(y/L)];
 
     if (d.fill==0) return 0;
