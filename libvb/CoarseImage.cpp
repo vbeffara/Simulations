@@ -9,28 +9,6 @@ namespace vb {
       true_width(wd), true_height(ht), L(l), LL(l*l), z0(0)
   { }
 
-  CoarseImage::~CoarseImage () {
-    for (unsigned int i=0; i<storage.size(); ++i) delete[] storage[i];
-  }
-
-  char * CoarseImage::claim (char color) {
-    char *ret;
-    if (storage.empty())
-      ret = new char[LL];
-    else {
-      ret = storage.back();
-      storage.pop_back();
-    }
-
-    for (int i=0; i<LL; i++) ret[i] = color;
-
-    return ret;
-  }
-
-  void CoarseImage::release (char *box) {
-    storage.push_back(box);
-  }
-
   void CoarseImage::put (coo z, int c) {
     step();
 
@@ -40,7 +18,8 @@ namespace vb {
     if (d.fill == c*LL) return;
 
     if (d.fill == (1-c)*LL) { // Need to create the block
-      d.sub = claim(1-c);
+      d.sub = new char[LL];
+      for (int i=0; i<LL; i++) d.sub[i] = 1-c;
     }
 
     int sub_xy = (x%L) + L * (y%L);
@@ -51,7 +30,7 @@ namespace vb {
     }
 
     if ((d.fill==0)||(d.fill==LL)) {
-      release (d.sub);
+      delete[] d.sub;
       d.sub = NULL;
     }
   }

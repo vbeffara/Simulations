@@ -18,7 +18,7 @@ namespace vb {
        * @param L The side length of the cell.
        */
 
-    CoarseCell (int l) : fill(0), sub((char*)NULL), LL(l*l) { }
+      CoarseCell (int l) : fill(0), sub((char*)NULL), LL(l*l) { }
 
       /** Standard destructor of a CoarseCell. */
 
@@ -69,32 +69,6 @@ namespace vb {
 
       CoarseImage (int wd, int ht, const std::string &tit, int l);
 
-      /** The standard destructor of the CoarseImage class. */
-
-      ~CoarseImage ();
-
-      /** Produce a sub_box of appropriate size.
-       *
-       * We re-use old boxes to get better efficiency, it saves about
-       * 10% I guess.
-       *
-       * @param color The color to fill the box with (0 or 1).
-       */
-
-      char * claim (char color);
-
-      /** Get rid of a full box.
-       *
-       * Rather than delete[]ing it, we save it for later use, that's a
-       * little bit faster given that the boxes are all of the same
-       * size. Still need to put NULL where it was to avoid double
-       * deletes in the destructor.
-       *
-       * @param box The box to get rid of.
-       */
-
-      void release (char * box);
-
       void put (coo z, int c);
 
       /** Set the color of the point at (x,y).
@@ -137,8 +111,6 @@ namespace vb {
 
     private:
       int LL;
-
-      std::vector <char *> storage;
   };
 }
 
