@@ -7,6 +7,39 @@
 using namespace vb;
 using namespace std;
 
+class KDTree {
+public:
+  KDTree () : size(0), children(2) {};
+
+  void insert (coo _z, int d=0) {
+    int c = (d==0 ? real(_z) : imag(_z));
+    ++size;
+    if (size==1) {
+      z = _z;
+      split = c;
+    } else {
+      int side = (c<split ? 0 : 1);
+      if (children[side] == 0) children[side] = new KDTree;
+      children[side] -> insert (_z,1-d);
+    }
+  }
+
+  coo last (coo _z, int d=0, coo a=0) {
+    if (size==0) return a;
+    if (_z == z) return z;
+    int c = (d==0 ? real(_z) : imag(_z));
+    int side = (c<split ? 0 : 1);
+    if (children[side] == 0) return z;
+    return children[side] -> last (_z,1-d,z);
+  }
+
+  coo z;
+  int split;
+  int size;
+private:
+  vector<KDTree *> children;
+};
+
 int l1 (coo z) { return abs(real(z)) + abs(imag(z)); }
 
 coo jump (int l, int deg=4) {
@@ -21,14 +54,15 @@ coo jump (int l, int deg=4) {
 
 class DLA : public CoarseImage {
 public:
-  int n,r,pts,deg;
+  int n,r,deg;
   Watcher W;
+  KDTree T;
 
   DLA (int n) : CoarseImage(n,n, str(fmt("A DLA cluster of size %d")%n), pow(n,.33)),
-                n(n), r(1), pts(0), deg(4) {
+                n(n), r(1), deg(4) {
     z0 = coo(n/2,n/2);
-    W.watch (pts, "Number of particles");
-    W.watch (r,   "Cluster radius");
+    W.watch (T.size, "Number of particles");
+    W.watch (r,      "Cluster radius");
   };
 
   void show ()   { W.show();   CoarseImage::show(); }
@@ -42,8 +76,8 @@ public:
 
   void put (coo z) {
     CoarseImage::put (z,1);
+    T.insert(z);
     r = max (r, l1(z));
-    pts ++;
   }
 
   bool neighbor (coo z) {
@@ -92,7 +126,7 @@ public:
       }
 
       put(z);
-      if ((pts%100)==0) update();
+      if ((T.size%100)==0) update();
     }
   }
 };
