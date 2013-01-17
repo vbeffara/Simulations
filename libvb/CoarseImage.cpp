@@ -18,8 +18,7 @@ namespace vb {
     if (d.fill == c*LL) return;
 
     if (d.fill == (1-c)*LL) { // Need to create the block
-      d.sub = new char[LL];
-      for (int i=0; i<LL; i++) d.sub[i] = 1-c;
+      d.sub.resize (LL,1-c);
     }
 
     int sub_xy = (x%L) + L * (y%L);
@@ -30,8 +29,7 @@ namespace vb {
     }
 
     if ((d.fill==0)||(d.fill==LL)) {
-      delete[] d.sub;
-      d.sub = NULL;
+      std::vector<char>().swap(d.sub);
     }
   }
 

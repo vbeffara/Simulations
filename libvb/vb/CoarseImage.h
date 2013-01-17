@@ -18,20 +18,17 @@ namespace vb {
        * @param L The side length of the cell.
        */
 
-      CoarseCell (int l) : fill(0), sub((char*)NULL), LL(l*l) { }
-
-      /** Standard destructor of a CoarseCell. */
-
-      ~CoarseCell () { delete[] sub; }
+      CoarseCell (int l) : fill(0), LL(l*l) { }
 
       /** Return the Color of the cell (proportion of white). */
 
       operator Color() { return fill*255/LL; }
 
-      int fill;   ///< The number of pixels with value 1 in the cell.
-      char *sub;  ///< The actual contents of the cell, if not constant.
+      int fill;              ///< The number of pixels with value 1 in the cell.
+      std::vector<char> sub; ///< The actual contents of the cell, if not constant.
+
     private:
-      int LL;     ///< The number of vertices in the cell.
+      int LL;                ///< The number of vertices in the cell.
   };
 
   /** A multi-scale version of Image.
