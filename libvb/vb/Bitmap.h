@@ -36,9 +36,8 @@ namespace vb {
 
       T const & at (int x, int y) const { return data[x+stride*y]; }
 
-      Color * stage;       ///< The raw pixel data of the screen representation.
-
     private:
+      Color * stage;       ///< The raw pixel data of the screen representation.
       std::vector<T> data; ///< The actual data.
       coo z0;              ///< The coordinates of the origin (at(0) is there on screen).
 

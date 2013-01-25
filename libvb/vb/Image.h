@@ -32,7 +32,7 @@ namespace vb {
        */
 
       void put (coo z, Color c) {
-        stage [real(z) + stride*imag(z)] = c;
+        at(real(z),imag(z)) = c;
         step();
       }
 
@@ -49,7 +49,7 @@ namespace vb {
        */
 
       void putpoint (int x, int y, Color c, int dt=1) __attribute__ ((deprecated)) {
-        stage[x+stride*y] = c;
+        at(x,y) = c;
         if (dt) step();
       }
 
