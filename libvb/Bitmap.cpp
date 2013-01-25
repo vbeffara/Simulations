@@ -13,4 +13,8 @@ namespace vb {
   template<> Color & Bitmap<Color>::at (int x, int y) {
     return stage[x+stride*y];
   }
+
+  template<> Color const & Bitmap<Color>::at (int x, int y) const {
+    return stage[x+stride*y];
+  }
 }

@@ -34,11 +34,14 @@ namespace vb {
 
       T & at (int x, int y) { return data[x+stride*y]; }
 
+      T const & at (int x, int y) const { return data[x+stride*y]; }
+
       Color * stage;       ///< The raw pixel data of the screen representation.
+
+    private:
       std::vector<T> data; ///< The actual data.
       coo z0;              ///< The coordinates of the origin (at(0) is there on screen).
 
-    private:
       virtual void paint ();
   };
 
@@ -77,6 +80,7 @@ namespace vb {
    */
 
   template<> Color & Bitmap<Color>::at (int x, int y);
+  template<> Color const & Bitmap<Color>::at (int x, int y) const;
 }
 
 #endif
