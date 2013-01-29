@@ -87,7 +87,7 @@ namespace vb {
 
       Color lazy (int x, int y);
 
-      void tessel (int xmin, int ymin, int xmax, int xmax);
+      void tessel (int xmin, int ymin, int xmax, int ymax);
 
       /** Return the color of the image at point (x,y).
        *
