@@ -1,9 +1,9 @@
 Simulations and stuff
 =====================
 
-| Author        | [Vincent Beffara](http://perso.ens-lyon.fr/vincent.beffara/) ([mail](mailto:vbeffara@ens-lyon.fr))
-| Documentation | [http://vbeffara.github.com/Simulations/]()
-| Development   | [http://github.com/vbeffara/Simulations]()
+- **Author:**        [Vincent Beffara](http://perso.ens-lyon.fr/vincent.beffara/) ([mail](mailto:vbeffara@ens-lyon.fr))
+- **Documentation:** [http://vbeffara.github.com/Simulations/]()
+- **Development:**   [http://github.com/vbeffara/Simulations]()
 
 Compilation
 -----------
