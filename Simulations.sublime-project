@@ -1,0 +1,17 @@
+{
+	"folders":
+	[
+		{
+			"path" : ".",
+			"folder_exclude_patterns" : [ ".waf*", "build", "00*", "doxygen", "output" ],
+			"file_exclude_patterns" : [ ".lock*", "*.sublime-workspace" ]
+		}
+	],
+	"build_systems":
+	[
+		{
+			"name": "WAF",
+			"cmd": "$project_path/waf"
+		}
+	]
+}

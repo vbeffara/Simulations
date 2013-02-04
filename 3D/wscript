@@ -1,1 +1,6 @@
-../tests/wscript
+
+def build (ctx) :
+    for i in ctx.path.ant_glob('*.cpp'):
+        ctx.program(source = [i], target = str(i)[:-4], use = 'vb')
+
+# vim: ft=python
