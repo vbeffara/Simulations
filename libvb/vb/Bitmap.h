@@ -29,12 +29,13 @@ namespace vb {
 
       Bitmap (int wd, int ht, const std::string &tit, int d=0);
 
-      /** Return an alias to the element at coordinates (x,y).
-       */
+      T & at (coo z) { return data[real(z) + stride*imag(z)]; }
 
-      T & at (int x, int y) { return data[x+stride*y]; }
+      T const & at (coo z) const { return data[real(z) + stride*imag(z)]; }
 
-      T const & at (int x, int y) const { return data[x+stride*y]; }
+      T & at (int x, int y) __attribute__ ((deprecated)) { return at(coo(x,y)); }
+
+      T const & at (int x, int y) const __attribute__ ((deprecated)) { return at(coo(x,y)); }
 
     private:
       Color * stage;       ///< The raw pixel data of the screen representation.
