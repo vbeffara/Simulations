@@ -54,7 +54,7 @@ namespace vb {
   template<typename T> void Bitmap<T>::paint () {
     for (int x=0; x<w(); ++x)
       for (int y=0; y<h(); ++y)
-        stage[x+stride*y] = at(x,y);
+        stage[x+stride*y] = at(coo(x,y));
   }
 
   /** The special-case constructor for Bitmap<Color>.
