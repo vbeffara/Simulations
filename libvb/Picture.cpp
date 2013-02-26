@@ -73,4 +73,11 @@ namespace vb {
     snapshot();
     if (period>0) global_clock.add (100*period, Picture_snapshot, this);
   }
+
+#ifdef HAVE_FLTK
+  int Picture::handle (int event) {
+    if ((event == FL_KEYDOWN) && (Fl::event_key() == 's')) snapshot();
+    return AutoWindow::handle (event);
+  }
+#endif
 }

@@ -56,9 +56,6 @@ namespace vb {
           case 'x':             // this is an X
             exit (1);
             break;
-          case 's':             // this is an S
-            // snapshot();
-            break;
           case ' ':             // space bar
             paused = !paused;
             break;

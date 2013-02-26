@@ -58,7 +58,8 @@ namespace vb {
     int task;
 
 #ifdef HAVE_FLTK
-    int handle (int event);           ///< Handle the events, in particular 'q' and 'x'.
+  public:
+    virtual int handle (int event);   ///< Handle the events, in particular 'q' and 'x'.
 #else
     int width;                        ///< The width of the image, in pixels.
     int height;                       ///< The height of the image, in pixels.

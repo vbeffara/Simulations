@@ -45,6 +45,11 @@ namespace vb {
     /// Initiate automatic snapshots.
     void snapshot_setup (const std::string &prefix, double period = 0.0);
 
+#ifdef HAVE_FLTK
+    virtual int handle (int event);   ///< Handle the events, in particular 'q' and 'x'.
+#endif
+
+
   protected:
     Cairo::RefPtr <Cairo::ImageSurface> surface; ///< Cairo surface with the same contents.
     Color * stage;                               ///< The pixel data, presented as a std::vector of vb::Color.
