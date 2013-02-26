@@ -48,29 +48,40 @@ public:
 };
 
 int main (int argc, char ** argv) {
-    CL_Parser CLP (argc,argv,"n=50");
+    CL_Parser CLP (argc,argv,"n=50,i,v");
     int n=CLP('n');
     int l=n*n*n*n;
-
-    vector<int> b = bridge (l,true);
+    bool inf=CLP('i');
+    bool vid=CLP('v');
 
     Bitmap<Stat> img(6*n,6*n,"Random Walk Snake hull");
 
     vector<coo> p;
     p.push_back(coo(3*n,3*n));
-
-    img.show();
     img.at(p.back()) = 1;
+    img.show();
 
-    for (int i=0; i<l; ++i) {
-        if (b[i]==1) {
-            p.push_back (p.back() + dz[prng.uniform_int(4)]);
-            img.at(p.back()) += 1;
-        } else{
-            p.pop_back();
+    if (inf) {
+        if (vid) img.snapshot_setup ("RWSH",1.0);
+        while (abs(p.back() - coo(3*n,3*n)) < 3*n-1) {
+            if ((p.size()==1) || (prng.bernoulli(.5))) {
+                p.push_back (p.back() + dz[prng.uniform_int(4)]);
+                img.at(p.back()) += 1; img.step();
+            } else {
+                p.pop_back();
+            }
+        }
+    } else {
+        vector<int> b = bridge (l,true);
+        for (int i=0; i<l; ++i) {
+            if (b[i]==1) {
+                p.push_back (p.back() + dz[prng.uniform_int(4)]);
+                img.at(p.back()) += 1;
+            } else {
+                p.pop_back();
+            }
         }
     }
 
-    img.show();
     img.pause();
 }
