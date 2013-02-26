@@ -14,7 +14,7 @@ namespace vb {
     stride  (surface -> get_stride() / sizeof(Color)),
     cr      (Cairo::Context::create (surface)),
 
-    snapshot_prefix("snapshot"), snapshot_number(0), snapshot_period(0.0), snapshot_task(-1)
+    snapshot_prefix(t), snapshot_number(0), snapshot_period(0.0), snapshot_task(-1)
   { }
 
   Picture::~Picture () {
@@ -59,7 +59,7 @@ namespace vb {
 
   void Picture::snapshot () {
     std::ostringstream fn_s;
-    fn_s << snapshot_prefix << "_" << std::setw(4) << std::setfill('0') << snapshot_number++;
+    fn_s << "snapshots/" << snapshot_prefix << "_" << std::setw(4) << std::setfill('0') << snapshot_number++;
     std::string fn = fn_s.str();
 
     std::cerr << "Taking a snapshot as " << fn << ".png" << std::endl;
