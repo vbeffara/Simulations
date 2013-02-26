@@ -26,16 +26,6 @@ namespace vb {
 
       Image (int wd, int ht, const std::string &tit);
 
-      /** Set the color at a given place in the image.
-       *
-       * It always calls step(); to bypass this, simply use at(x,y)=c.
-       */
-
-      void put (coo z, Color c) {
-        at(real(z),imag(z)) = c;
-        step();
-      }
-
       /** Set the color of a point in the image.
        *
        * If dt is set to 1 (default), then it increments the clock and
@@ -101,8 +91,8 @@ namespace vb {
 
       /** Fill a connected region in the image.
        *
-       * If the color at coordinates (x,y) is already equal to c, then 
-       * do nothing; if not, paint its connected component (defined 
+       * If the color at coordinates (x,y) is already equal to c, then
+       * do nothing; if not, paint its connected component (defined
        * according to adj) using color c.
        *
        * @param x   The first coordinate of the zone to fill.

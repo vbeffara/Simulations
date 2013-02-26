@@ -10,6 +10,14 @@ namespace vb {
     data (0), z0(0)
   { }
 
+  template<> Color & Bitmap<Color>::at (coo z) {
+    return stage[real(z) + stride*imag(z)];
+  }
+
+  template<> Color const & Bitmap<Color>::at (coo z) const {
+    return stage[real(z) + stride*imag(z)];
+  }
+
   template<> Color & Bitmap<Color>::at (int x, int y) {
     return stage[x+stride*y];
   }

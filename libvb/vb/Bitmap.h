@@ -33,6 +33,10 @@ namespace vb {
 
       T const & at (coo z) const { return data[real(z) + stride*imag(z)]; }
 
+      void put (coo z, T const & c) { at(z) = c; step(); }
+
+      // Deprecated (x,y) versions of the above, for backward compatibility
+
       T & at (int x, int y) __attribute__ ((deprecated)) { return at(coo(x,y)); }
 
       T const & at (int x, int y) const __attribute__ ((deprecated)) { return at(coo(x,y)); }
@@ -78,6 +82,9 @@ namespace vb {
    * @param x The first coordinate of the point.
    * @param y The second coordinate of the point.
    */
+
+  template<> Color & Bitmap<Color>::at (coo z);
+  template<> Color const & Bitmap<Color>::at (coo z) const;
 
   template<> Color & Bitmap<Color>::at (int x, int y);
   template<> Color const & Bitmap<Color>::at (int x, int y) const;
