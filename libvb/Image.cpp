@@ -27,8 +27,6 @@ namespace vb {
     }
   }
 
-  void Image::paint () {};
-
   Color Image::lazy (int x, int y) {
     if (int(at(x,y)) == 0) {
       put(coo(x,y), compute(x,y));

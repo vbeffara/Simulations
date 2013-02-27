@@ -58,6 +58,7 @@ namespace vb {
   }
 
   template<typename T> void Bitmap<T>::paint () {
+    if ((T*)stage == data) return; // Bitmap<Color>
     for (int x=0; x<w(); ++x)
       for (int y=0; y<h(); ++y)
         stage[x+stride*y] = at(coo(x,y));
@@ -75,21 +76,6 @@ namespace vb {
    */
 
   template<> Bitmap<Color>::Bitmap (int wd, int ht, const std::string &tit, int d);
-
-  /** Return an alias to the element at coordinates (x,y).
-   *
-   * For Bitmap<Color>, it points directly to the underlying Cairo
-   * surface and allows for direct manipulation.
-   *
-   * @param x The first coordinate of the point.
-   * @param y The second coordinate of the point.
-   */
-
-  template<> Color & Bitmap<Color>::at (coo z);
-  template<> Color const & Bitmap<Color>::at (coo z) const;
-
-  template<> Color & Bitmap<Color>::at (int x, int y);
-  template<> Color const & Bitmap<Color>::at (int x, int y) const;
 }
 
 #endif

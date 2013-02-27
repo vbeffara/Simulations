@@ -102,9 +102,6 @@ namespace vb {
        */
 
       void fill (int x, int y, Color c, unsigned char adj = 85);
-
-    protected:
-      virtual void paint ();
   };
 }
 
