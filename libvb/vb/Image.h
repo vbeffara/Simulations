@@ -104,7 +104,6 @@ namespace vb {
       void fill (int x, int y, Color c, unsigned char adj = 85);
 
     protected:
-      /// Update the contents of AutoWindow::stage (i.e., do nothing).
       virtual void paint ();
   };
 }

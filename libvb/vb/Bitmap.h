@@ -43,7 +43,7 @@ namespace vb {
 
     private:
       Color * stage;       ///< The raw pixel data of the screen representation.
-      std::vector<T> data; ///< The actual data.
+      T * data;            ///< The actual data.
       coo z0;              ///< The coordinates of the origin (at(0) is there on screen).
 
       virtual void paint ();
@@ -52,8 +52,10 @@ namespace vb {
   template<typename T> Bitmap<T>::Bitmap (int wd, int ht, const std::string &tit, int d) :
     Picture(wd,ht,tit),
     stage ((Color *) (surface -> get_data())),
-    data (stride*ht,d)
-  { }
+    data((T*) calloc (stride*ht,sizeof(T)))
+  {
+    for (int i=0; i<stride*ht; ++i) data[i]=d;
+  }
 
   template<typename T> void Bitmap<T>::paint () {
     for (int x=0; x<w(); ++x)

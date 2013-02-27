@@ -30,11 +30,11 @@ namespace vb {
 
 #ifdef HAVE_FLTK
   void draw_cb (void * in, int x, int y, int w, unsigned char * out) {
-    Picture & img  = * (Picture*) in;
-    Color      * data = (Color*) img.surface -> get_data();
+    Picture & img = * (Picture*) in;
+    Color   * src = (Color*) img.surface -> get_data();
 
     for (int i=0; i<w; ++i) {
-      Color &C = data [x+i + img.stride*y];
+      Color &C = src [x+i + img.stride*y];
       out[3*i] = C.r; out[3*i + 1] = C.g; out[3*i + 2] = C.b;
     }
   }

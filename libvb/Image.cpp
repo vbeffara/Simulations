@@ -31,8 +31,7 @@ namespace vb {
 
   Color Image::lazy (int x, int y) {
     if (int(at(x,y)) == 0) {
-      at(x,y) = compute(x,y);
-      step();
+      put(coo(x,y), compute(x,y));
     }
 
     return at(x,y);
@@ -55,7 +54,7 @@ namespace vb {
     if (mono) {
       for (int i=xmin+1; i<xmax; ++i)
         for (int j=ymin+1; j<ymax; ++j)
-          at (i,j) = tmp;
+          put (coo(i,j), tmp);
     } else if ((xmax-xmin) > std::max (ymax-ymin, 1)) {
       int xmed = (xmin+xmax)>>1;
       tessel (xmin,ymin,xmed,ymax);

@@ -160,9 +160,7 @@ namespace vb {
     void output_pdf (const std::string &s = "");
 
   protected:
-    /// Update the contents of AutoWindow::stage.
     void paint ();
-    /// Draw the contents of the figure to a Cairo context.
     void paint (Cairo::RefPtr<Cairo::Context> cr, bool fill = true);
 
     bool ortho; ///< Whether to force the unit square to be a square.
