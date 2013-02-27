@@ -7,7 +7,7 @@ namespace vb {
   Image::Image (int wd, int ht, const std::string &tit) : Bitmap<Color> (wd,ht,tit) { }
 
   void Image::fill (int x, int y, Color c, unsigned char adj) {
-    Color in = at(x,y); if (in == c) return;
+    Color in = at(coo(x,y)); if (in == c) return;
     at(x,y) = c;
 
     static std::vector<int> xy; xy.push_back(x); xy.push_back(y);
@@ -28,11 +28,11 @@ namespace vb {
   }
 
   Color Image::lazy (int x, int y) {
-    if (int(at(x,y)) == 0) {
+    if (int(at(coo(x,y))) == 0) {
       put(coo(x,y), compute(x,y));
     }
 
-    return at(x,y);
+    return at(coo(x,y));
   }
 
   void Image::tessel (int xmin, int ymin, int xmax, int ymax) {

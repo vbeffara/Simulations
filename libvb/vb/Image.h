@@ -54,7 +54,7 @@ namespace vb {
        * @param dt Whether to increment the clock.
        */
 
-      void putpoint_safe (int x, int y, Color c, int dt=1) {
+      void putpoint_safe (int x, int y, Color c, int dt=1) __attribute__ ((deprecated)) {
         if ( (x>=0) && (y>=0) && (x<w()) && (y<h()) ) {
           if (dt) put (coo(x,y),c);
           else at(x,y) = c;
@@ -87,7 +87,7 @@ namespace vb {
        * @param y The second coordinate of the point.
        */
 
-      Color & operator() (int x, int y) { return at(x,y); };
+      Color & operator() (int x, int y) __attribute__ ((deprecated)) { return at(x,y); };
 
       /** Fill a connected region in the image.
        *
@@ -101,7 +101,7 @@ namespace vb {
        * @param adj The adjacency to use when filling (defaults to Z^2).
        */
 
-      void fill (int x, int y, Color c, unsigned char adj = 85);
+      void fill (int x, int y, Color c, unsigned char adj = 85) __attribute__ ((deprecated));
   };
 }
 
