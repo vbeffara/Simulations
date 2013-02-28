@@ -29,7 +29,7 @@ namespace vb {
 
   Color Image::lazy (int x, int y) {
     if (int(at(coo(x,y))) == 0) {
-      put(coo(x,y), compute(x,y));
+      put(coo(x,y), compute(coo(x,y)));
     }
 
     return at(coo(x,y));

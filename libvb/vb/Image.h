@@ -73,7 +73,7 @@ namespace vb {
        * @param data A pointer to additional data needed by the function.
        */
 
-      virtual Color compute (int x, int y) { return 0; }
+      virtual Color compute (coo z) { return 0; }
 
       Color lazy (int x, int y);
 

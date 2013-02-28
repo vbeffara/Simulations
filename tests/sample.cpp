@@ -13,8 +13,8 @@ public:
 
   Sample (int _n) : Image (_n,_n,"sample"), n(_n) {}
 
-  vb::Color compute (int x, int y) {
-    int d = (x-n/2)*(x-n/2) + (y-n/2)*(y-n/2);
+  vb::Color compute (coo z) {
+    int d = norm (z-coo(n/2,n/2));
     return vb::Color ( 1+(2*d*((1<<8)-1))/(n*n) );
   }
 };

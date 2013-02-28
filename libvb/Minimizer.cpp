@@ -89,7 +89,7 @@ namespace vb {
   }
 
   double Minimizer::minimize_bfgs (const Vector &x0, const Vector &W0) {
-    compute (x0);
+    compute(x0);
 
     old_x  = x;
     old_fx = fx+1;

@@ -17,7 +17,7 @@ public:
   SLE (CL_Parser &CLP);
 
   Color quick (int x, int y, int l);
-  Color compute (int x, int y);
+  Color compute (coo z);
   void edge_detect ();
 
   int n;
@@ -60,7 +60,8 @@ Color SLE::quick (int x, int y, int l) {
   if (a<W[k]) return LEFTSIDE; else return RIGHTSIDE;
 }
 
-Color SLE::compute (int x, int y) {
+Color SLE::compute (coo z) {
+  int x=real(z), y=imag(z);
   if (q) {
     for (int l=1024; l>1; l/=2) {
       if (quick(x+l,y,l) == LEFTSIDE) return LEFTSIDE;
