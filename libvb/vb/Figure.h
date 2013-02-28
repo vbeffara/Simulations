@@ -39,7 +39,7 @@ namespace vb {
     virtual double top () =0;     ///< Get the top boundary of the Shape.
     virtual double bottom () =0;  ///< Get the bottom boundary of the Shape.
 
-    virtual void draw (Cairo::RefPtr<Cairo::Context> cr) =0;  ///< Draw the shape on a Cairo context.
+    virtual void draw (cairo_t * cr) =0;  ///< Draw the shape on a Cairo context.
 
     Pen p; ///< The vb::Pen to use to draw the current vb::Shape.
   };
@@ -55,7 +55,7 @@ namespace vb {
     double top ()    { return std::max(z1.imag(),z2.imag()); } ///< Get the top boundary of the Shape.
     double bottom () { return std::min(z1.imag(),z2.imag()); } ///< Get the bottom boundary of the Shape.
 
-    void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw the shape on a Cairo context.
+    void draw (cairo_t * cr); ///< Draw the shape on a Cairo context.
 
   private:
     cpx z1,z2;
@@ -72,7 +72,7 @@ namespace vb {
     double top ()    { return z.imag(); } ///< Get the top boundary of the Shape.
     double bottom () { return z.imag(); } ///< Get the bottom boundary of the Shape.
 
-    void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw the shape on a Cairo context.
+    void draw (cairo_t * cr); ///< Draw the shape on a Cairo context.
 
   private:
     cpx z;
@@ -90,7 +90,7 @@ namespace vb {
     double top ()    { return z.imag() + r; } ///< Get the top boundary of the Shape.
     double bottom () { return z.imag() - r; } ///< Get the bottom boundary of the Shape.
 
-    void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw the shape on a Cairo context.
+    void draw (cairo_t * cr); ///< Draw the shape on a Cairo context.
 
   public:
     cpx z;    ///< The center.
@@ -108,7 +108,7 @@ namespace vb {
     double top ();    ///< Get the top boundary of the Shape.
     double bottom (); ///< Get the bottom boundary of the Shape.
 
-    void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw the shape on a Cairo context.
+    void draw (cairo_t * cr); ///< Draw the shape on a Cairo context.
 
     std::vector<cpx> z; ///< The location of the vertices of the vb::Path.
   };
@@ -119,7 +119,7 @@ namespace vb {
     /// The constructor.
     Polygon (std::vector<cpx> z, Pen p = Pen()) : Path(z,p) {}
 
-    void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw the shape on a Cairo context.
+    void draw (cairo_t * cr); ///< Draw the shape on a Cairo context.
   };
 
 
@@ -143,7 +143,7 @@ namespace vb {
 
     std::list<Shape*> contents; ///< The elements of the figure.
 
-    void draw (Cairo::RefPtr<Cairo::Context> cr); ///< Draw it onto a Cairo context.
+    void draw (cairo_t * cr); ///< Draw it onto a Cairo context.
 
     /** Output the image as a PDF file.
      *
@@ -161,7 +161,7 @@ namespace vb {
 
   protected:
     void paint ();
-    void paint (Cairo::RefPtr<Cairo::Context> cr, bool fill = true);
+    void paint (cairo_t * cr, bool fill = true);
 
     bool ortho; ///< Whether to force the unit square to be a square.
 

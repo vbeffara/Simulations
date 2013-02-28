@@ -10,9 +10,9 @@ namespace vb {
   Picture::Picture (int wd, int ht, const std::string &t) :
     AutoWindow (wd, ht, t.c_str()),
 
-    surface (Cairo::ImageSurface::create (Cairo::FORMAT_RGB24, w(), h())),
-    stride  (surface -> get_stride() / sizeof(Color)),
-    cr      (Cairo::Context::create (surface)),
+    surface (cairo_image_surface_create (CAIRO_FORMAT_RGB24, w(), h())),
+    cr      (cairo_create (surface)),
+    stride  (cairo_image_surface_get_stride (surface) / sizeof(Color)),
 
     snapshot_prefix(t), snapshot_number(0), snapshot_period(0.0), snapshot_task(-1)
   { }
@@ -23,15 +23,17 @@ namespace vb {
 
   void Picture::size (int wd, int ht) {
     AutoWindow::size (wd,ht);
-    surface = Cairo::ImageSurface::create (Cairo::FORMAT_RGB24, w(), h());
-    stride = surface -> get_stride() / sizeof(Color);
-    cr = Cairo::Context::create (surface);
-  }
+    cairo_destroy (cr);
+    cairo_surface_destroy (surface);
+    surface = cairo_image_surface_create (CAIRO_FORMAT_RGB24, w(), h());
+    cr      = cairo_create (surface);
+    stride  = cairo_image_surface_get_stride (surface) / sizeof(Color);
+ }
 
 #ifdef HAVE_FLTK
   void draw_cb (void * in, int x, int y, int w, unsigned char * out) {
     Picture & img = * (Picture*) in;
-    Color   * src = (Color*) img.surface -> get_data();
+    Color   * src = (Color*) (cairo_image_surface_get_data(img.surface));
 
     for (int i=0; i<w; ++i) {
       Color &C = src [x+i + img.stride*y];
@@ -52,7 +54,7 @@ namespace vb {
     if (s == "") os << "output/" << title; else os << s;
     os << ".png";
 
-    surface->write_to_png (os.str());
+    cairo_surface_write_to_png (surface, os.str().c_str());
   }
 
   void Picture::output (const std::string &s) { output_png (s); }

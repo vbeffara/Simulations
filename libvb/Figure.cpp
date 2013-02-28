@@ -5,16 +5,16 @@
 
 namespace vb {
 
-  void Segment::draw (Cairo::RefPtr<Cairo::Context> cr){
-      cr->move_to (z1.real(), z1.imag());
-      cr->line_to (z2.real(), z2.imag());
+  void Segment::draw (cairo_t * cr){
+      cairo_move_to (cr, z1.real(), z1.imag());
+      cairo_line_to (cr, z2.real(), z2.imag());
   }
 
-  void Dot::draw (Cairo::RefPtr<Cairo::Context> cr) { }
+  void Dot::draw (cairo_t * cr) { }
 
-  void Circle::draw (Cairo::RefPtr<Cairo::Context> cr) {
-    cr->begin_new_sub_path ();
-    cr->arc (z.real(), z.imag(), r, 0, 2*M_PI);
+  void Circle::draw (cairo_t * cr) {
+    cairo_new_sub_path (cr);
+    cairo_arc (cr, z.real(), z.imag(), r, 0, 2*M_PI);
   }
 
   double Path::left () {
@@ -41,14 +41,14 @@ namespace vb {
     return m;
   }
 
-  void Path::draw (Cairo::RefPtr<Cairo::Context> cr) {
-    cr->move_to (z[0].real(), z[0].imag());
-    for (unsigned int i=1; i<z.size(); ++i) cr->line_to (z[i].real(), z[i].imag());
+  void Path::draw (cairo_t * cr) {
+    cairo_move_to (cr, z[0].real(), z[0].imag());
+    for (unsigned int i=1; i<z.size(); ++i) cairo_line_to (cr, z[i].real(), z[i].imag());
   };
 
-  void Polygon::draw (Cairo::RefPtr<Cairo::Context> cr) {
-    cr->move_to (z.back().real(), z.back().imag());
-    for (unsigned int i=0; i<z.size(); ++i) cr->line_to (z[i].real(), z[i].imag());
+  void Polygon::draw (cairo_t * cr) {
+    cairo_move_to (cr, z.back().real(), z.back().imag());
+    for (unsigned int i=0; i<z.size(); ++i) cairo_line_to (cr, z[i].real(), z[i].imag());
   };
 
   /*********************************************************/
@@ -93,7 +93,7 @@ namespace vb {
     return (*this);
   }
 
-  void Figure::paint (Cairo::RefPtr<Cairo::Context> cr, bool fill) {
+  void Figure::paint (cairo_t * cr, bool fill) {
     double wd = right()-left(), mid_x = (right()+left())/2;
     double ht = top()-bottom(), mid_y = (top()+bottom())/2;
 
@@ -103,37 +103,37 @@ namespace vb {
     basewidth = 1.0/scale;
 
     if (fill) {
-      cr->save();
-      cr->set_source_rgb (1,1,1);
-      cr->paint();
-      cr->restore();
+      cairo_save(cr);
+      cairo_set_source_rgb (cr, 1,1,1);
+      cairo_paint(cr);
+      cairo_restore(cr);
     }
 
-    cr->save();
-    cr->translate      (w()/2, h()/2);
-    cr->scale          (scale_x*.98, -scale_y*.98); // A tiny margin for stoke width.
-    cr->translate      (-mid_x,-mid_y);
-    cr->set_line_width (basewidth);
-    cr->set_line_join  (Cairo::LINE_JOIN_ROUND);
-    cr->set_line_cap   (Cairo::LINE_CAP_ROUND);
+    cairo_save(cr);
+    cairo_translate      (cr, w()/2, h()/2);
+    cairo_scale          (cr, scale_x*.98, -scale_y*.98); // A tiny margin for stoke width.
+    cairo_translate      (cr, -mid_x,-mid_y);
+    cairo_set_line_width (cr, basewidth);
+    cairo_set_line_join  (cr, CAIRO_LINE_JOIN_ROUND);
+    cairo_set_line_cap   (cr, CAIRO_LINE_CAP_ROUND);
 
     foreach (Shape *i, contents) {
-      cr->save();
+      cairo_save(cr);
       if (i->p.set) {
-        cr->set_source_rgb (i->p.c.r/255.0, i->p.c.g/255.0, i->p.c.b/255.0);
-        cr->set_line_width (basewidth * i->p.w);
+        cairo_set_source_rgb (cr, i->p.c.r/255.0, i->p.c.g/255.0, i->p.c.b/255.0);
+        cairo_set_line_width (cr, basewidth * i->p.w);
       }
       i->draw(cr);
       if (i->p.ff) {
-        cr->stroke_preserve();
-        cr->set_source_rgb (i->p.f.r/255.0, i->p.f.g/255.0, i->p.f.b/255.0);
-        cr->fill();
+        cairo_stroke_preserve(cr);
+        cairo_set_source_rgb (cr, i->p.f.r/255.0, i->p.f.g/255.0, i->p.f.b/255.0);
+        cairo_fill(cr);
       }
-      cr->stroke();
-      cr->restore();
+      cairo_stroke(cr);
+      cairo_restore(cr);
     }
 
-    cr->restore();
+    cairo_restore(cr);
   }
 
   void Figure::paint () {
@@ -145,10 +145,10 @@ namespace vb {
     if (s == "") os << "output/" << title; else os << s;
     os << ".pdf";
 
-    Cairo::RefPtr<Cairo::PdfSurface> pdf = Cairo::PdfSurface::create (os.str(), w(), h());
-    Cairo::RefPtr<Cairo::Context>    pcr = Cairo::Context::create (pdf);
+    cairo_surface_t * pdf = cairo_pdf_surface_create (os.str().c_str(), w(), h());
+    cairo_t * pcr = cairo_create (pdf);
     paint (pcr, false);
-    pcr->show_page();
+    cairo_show_page(cr);
   }
 
   void Figure::output (const std::string &s) { output_pdf (s); }

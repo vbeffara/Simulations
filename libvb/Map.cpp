@@ -42,27 +42,27 @@ namespace vb {
 
     double scale = std::min (scale_x, scale_y);
 
-    cr->save();
-    cr->set_source_rgb (1,1,1);
-    cr->paint();
-    cr->restore();
+    cairo_save(cr);
+    cairo_set_source_rgb (cr, 1,1,1);
+    cairo_paint(cr);
+    cairo_restore(cr);
 
-    cr->save();
-    cr->translate (w()/2,h()/2);
-    cr->scale (scale,scale);
-    cr->translate (-mid_x,-mid_y);
-    cr->set_source_rgb (0,0,0);
-    cr->set_line_width (.5/scale);
+    cairo_save(cr);
+    cairo_translate (cr, w()/2,h()/2);
+    cairo_scale (cr, scale,scale);
+    cairo_translate (cr, -mid_x,-mid_y);
+    cairo_set_source_rgb (cr, 0,0,0);
+    cairo_set_line_width (cr, .5/scale);
 
     for (int i=0; i<n; ++i) {
       foreach (int j, v[i]->adj) {
-        cr->move_to (v[i]->z.real(), v[i]->z.imag());
-        cr->line_to (v[j]->z.real(), v[j]->z.imag());
+        cairo_move_to (cr, v[i]->z.real(), v[i]->z.imag());
+        cairo_line_to (cr, v[j]->z.real(), v[j]->z.imag());
       }
     }
 
-    cr->stroke();
-    cr->restore();
+    cairo_stroke(cr);
+    cairo_restore(cr);
   }
 
   adj_list::iterator Map::find_edge (const Edge &e) const {
