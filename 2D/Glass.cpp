@@ -94,7 +94,7 @@ int main (int argc, char **argv) {
   int    n = CLP('n');
   double p = CLP('p');
   string c = CLP('c');
-  
+
   if      (c == "none")     init_ok_none();
   else if (c == "glass")    init_ok_glass();
   else if (c == "connect4") init_ok_connect4();
@@ -114,22 +114,22 @@ int main (int argc, char **argv) {
     int x = 1 + (prng()%(n-2));
     int y = 1 + (prng()%(n-2));
     int nb = 0;
-    if (img(x+1,y  ) != Color(0)) nb += 1; 
-    if (img(x+1,y+1) != Color(0)) nb += 2; 
-    if (img(x  ,y+1) != Color(0)) nb += 4; 
-    if (img(x-1,y+1) != Color(0)) nb += 8; 
-    if (img(x-1,y  ) != Color(0)) nb += 16; 
-    if (img(x-1,y-1) != Color(0)) nb += 32; 
-    if (img(x  ,y-1) != Color(0)) nb += 64; 
-    if (img(x+1,y-1) != Color(0)) nb += 128; 
+    if (img.at(x+1,y  ) != Color(0)) nb += 1;
+    if (img.at(x+1,y+1) != Color(0)) nb += 2;
+    if (img.at(x  ,y+1) != Color(0)) nb += 4;
+    if (img.at(x-1,y+1) != Color(0)) nb += 8;
+    if (img.at(x-1,y  ) != Color(0)) nb += 16;
+    if (img.at(x-1,y-1) != Color(0)) nb += 32;
+    if (img.at(x  ,y-1) != Color(0)) nb += 64;
+    if (img.at(x+1,y-1) != Color(0)) nb += 128;
 
     if (ok[nb]) {
       if (prng.bernoulli(p)) {
-	if (img(x,y) == Color(0)) {
-          int tmp = img(x+1,y);
-          tmp    |= img (x-1,y);
-          tmp    |= img (x,y+1);
-          tmp    |= img (x,y-1);
+	if (img.at(x,y) == Color(0)) {
+          int tmp = img.at(x+1,y);
+          tmp    |= img.at (x-1,y);
+          tmp    |= img.at (x,y+1);
+          tmp    |= img.at (x,y-1);
           if (tmp==0) tmp=85;
           img.putpoint (x,y,tmp);
         }

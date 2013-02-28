@@ -19,7 +19,7 @@ int main (int argc, char ** argv) {
     int surf=0;
 
     while ((x>0) && (x<n-1) && (y>0) && (y<n-1)) {
-      Color c = img(x,y);
+      Color c = img.at(x,y);
       if      (c == C[0]) { img.putpoint (x,y,C[1],0); ++x; }
       else if (c == C[1]) { img.putpoint (x,y,C[2],0); ++y; }
       else if (c == C[2]) { img.putpoint (x,y,C[3],0); --x; }

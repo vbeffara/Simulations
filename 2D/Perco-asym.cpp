@@ -18,21 +18,21 @@ void findpiv (long hcross)
   if (hcross==0) {
     for (x=0;x<n-1;x++)
       for (y=0;y<n;y++)
-        if ((*img)(x,y)*(*img)(x+1,y)==2)
+        if ((*img).at(x,y)*(*img).at(x+1,y)==2)
           pivh++;
     for (x=0;x<n;x++)
       for (y=0;y<n-1;y++)
-        if ((*img)(x,y)*(*img)(x,y+1)==2)
+        if ((*img).at(x,y)*(*img).at(x,y+1)==2)
           pivv++;
   } else {
     for (x=0;x<n-1;x++)
       for (y=0;y<n;y++)
-        if ((*img)(x,y)*(*img)(x+1,y)==9) {
+        if ((*img).at(x,y)*(*img).at(x+1,y)==9) {
           pivh++;
         }
     for (x=0;x<n;x++)
       for (y=0;y<n-1;y++)
-        if ((*img)(x,y)*(*img)(x,y+1)==9) {
+        if ((*img).at(x,y)*(*img).at(x,y+1)==9) {
           pivv++;
         }
   }
@@ -49,7 +49,7 @@ void explore (long x0, long y0, long d0, long xf, long yf, char c)
     case 0: /* Right */
       if ((x<n-1)&&(right[xy])) {
         x++; xy++; d=3;
-        img->putpoint (x,y,(c|(*img)(x,y)));
+        img->putpoint (x,y,(c|(*img).at(x,y)));
       } else {
         d=1;
       }
@@ -57,7 +57,7 @@ void explore (long x0, long y0, long d0, long xf, long yf, char c)
     case 1: /* Top */
       if ((y<n-1)&&(down[xy+n])) {
         y++; xy+=n; d=0;
-        img->putpoint (x,y,(c|(*img)(x,y)));
+        img->putpoint (x,y,(c|(*img).at(x,y)));
       } else {
         d=2;
       }
@@ -65,7 +65,7 @@ void explore (long x0, long y0, long d0, long xf, long yf, char c)
     case 2: /* Left */
       if ((x>0)&&(right[xy-1])) {
         x--; xy--; d=1;
-        img->putpoint (x,y,(c|(*img)(x,y)));
+        img->putpoint (x,y,(c|(*img).at(x,y)));
       } else {
         d=3;
       }
@@ -73,7 +73,7 @@ void explore (long x0, long y0, long d0, long xf, long yf, char c)
     case 3: /* Down */
       if ((y>0)&&(down[xy])) {
         y--; xy-=n; d=2;
-        img->putpoint (x,y,(c|(*img)(x,y)));
+        img->putpoint (x,y,(c|(*img).at(x,y)));
       } else {
         d=0;
       }
@@ -117,7 +117,7 @@ int main(int argc, char ** argv)
 
   hcross=0;
   for (i=0;i<n;i++)
-    if ((*img)(n-1,i)==Color(1))
+    if ((*img).at(n-1,i)==Color(1))
       hcross=1;
 
   if (hcross==0) {

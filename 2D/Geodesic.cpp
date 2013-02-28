@@ -78,7 +78,7 @@ void fill_free (vector<double> &f, int n) {
 void trace (Image &img, vector<int> &direction, int x, int y) {
   int nn = img.w();
 
-  while (img(x,y) != Color(255)) {
+  while (img.at(x,y) != Color(255)) {
     img.putpoint (x,y,255);
     int xy = direction[x+nn*y];
     x = xy%nn;
@@ -188,7 +188,7 @@ int main (int argc, char **argv) {
     fill_boolean (field,n,z);
   else if (noise == "free")
     fill_free (field,n);
-  else 
+  else
     cerr << "Noise type " << noise << " unknown, no noise for you!" << endl;
 
   double big = 0.0;
@@ -250,7 +250,7 @@ int main (int argc, char **argv) {
     for (int y=0; y<nn; ++y) {
       int i=x+nn*y;
       if (distance[i]<=radius)
-        img.putpoint(x,y,127+img(i,0)/2);
+        img.putpoint(x,y,127+img.at(i,0)/2);
       else if (distance[i]-field[i]<=radius)
         img.putpoint(x,y,0);
     }

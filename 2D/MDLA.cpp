@@ -72,27 +72,27 @@ int main(int argc, char ** argv) {
     nx = x + dx[(int)d]; if ((nx<0)||(nx>=2*n)) continue;
     ny = y + dy[(int)d]; if ((ny<0)||(ny>=2*n)) continue;
 
-    if ((*img)(x,y) == (*img)(nx,ny)) continue;
+    if ((*img).at(x,y) == (*img).at(nx,ny)) continue;
 
-    if ((*img)(x,y) == AWAY)  {
-      if (prng.bernoulli(a) || ((*img)(nx,ny) == DEAD)) { flag = true; img->putpoint (x,y,(prng.bernoulli(p)?ALIVE:EMPTY)); }
+    if ((*img).at(x,y) == AWAY)  {
+      if (prng.bernoulli(a) || ((*img).at(nx,ny) == DEAD)) { flag = true; img->putpoint (x,y,(prng.bernoulli(p)?ALIVE:EMPTY)); }
       else continue;
     }
-    if ((*img)(nx,ny) == AWAY)  {
-      if (prng.bernoulli(a) || ((*img)(x,y) == DEAD)) { flag = true; img->putpoint (nx,ny,(prng.bernoulli(p)?ALIVE:EMPTY)); }
+    if ((*img).at(nx,ny) == AWAY)  {
+      if (prng.bernoulli(a) || ((*img).at(x,y) == DEAD)) { flag = true; img->putpoint (nx,ny,(prng.bernoulli(p)?ALIVE:EMPTY)); }
       else continue;
     }
 
-    if ((*img)(x,y) == (*img)(nx,ny)) continue;
-    if ((*img)(x,y) != ALIVE) { int t=x; x=nx; nx=t;  t=y; y=ny; ny=t; }
-    if ((*img)(x,y) != ALIVE) continue;
+    if ((*img).at(x,y) == (*img).at(nx,ny)) continue;
+    if ((*img).at(x,y) != ALIVE) { int t=x; x=nx; nx=t;  t=y; y=ny; ny=t; }
+    if ((*img).at(x,y) != ALIVE) continue;
 
-    if ((*img)(nx,ny) == EMPTY) {
+    if ((*img).at(nx,ny) == EMPTY) {
       if (prng.bernoulli(a) || flag) {
         img->putpoint (x,y,EMPTY);
         img->putpoint (nx,ny,ALIVE);
       }
-    } else if ((*img)(nx,ny) == DEAD) {
+    } else if ((*img).at(nx,ny) == DEAD) {
       img->putpoint (x,y,DEAD);
       if ((s)&&((x==0)||(x==2*n-1)||(y==0)||(y==2*n-1))) running = false;
       --ngrey;

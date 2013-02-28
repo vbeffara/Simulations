@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
     for (x=1;x<n-1;x++) {
       for (y=1;y<n-1;y++) {
 	if ((x+y+i)%2) {
-	  if ((img(x-1,y)||img(x+1,y)||img(x,y-1)||img(x,y+1)) &&
+	  if ((img.at(x-1,y)||img.at(x+1,y)||img.at(x,y-1)||img.at(x,y+1)) &&
 	      (prng.bernoulli(p))) {
 	    img.putpoint(x,y,255);
 	    total++;
@@ -47,6 +47,6 @@ int main(int argc, char *argv[])
       }
     }
   }
-  
+
   return 0;
 }

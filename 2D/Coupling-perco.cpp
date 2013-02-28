@@ -29,9 +29,9 @@ int compute_diff (Image *c1, Image *c2, Image *d) {
   n=0;
   for (i=0;i<N;i++) {
     for (j=0;j<N;j++) {
-      if ((*c1)(i,j)==(*c2)(i,j)) {
+      if ((*c1).at(i,j)==(*c2).at(i,j)) {
 	d->putpoint(i,j,0);
-      } else if ((*c1)(i,j)>(*c2)(i,j)) {
+      } else if ((*c1).at(i,j)>(*c2).at(i,j)) {
 	d->putpoint(i,j,2);
 	n++;
       } else {
@@ -46,7 +46,7 @@ int compute_diff (Image *c1, Image *c2, Image *d) {
 void compute_cpts (Image *c, int *cpts, int r1, int r2) {
   /*
    * Determine the connected  components in the annulus of  radii r1<r2 around
-   * the center of the square, and put that in *cpts. 
+   * the center of the square, and put that in *cpts.
    */
 
   int x,y,t,dirty;
@@ -56,7 +56,7 @@ void compute_cpts (Image *c, int *cpts, int r1, int r2) {
   t=0;
   for (x=0;x<N;x++) {
     for (y=0;y<N;y++) {
-      if ((*c)(x,y) == Color(1)) {
+      if ((*c).at(x,y) == Color(1)) {
 	cpts[x+N*y]=(++t);
       } else {
 	cpts[x+N*y]=-(++t);
@@ -184,13 +184,13 @@ void monte_carlo (Image *c1, Image *c2, Image *diff, int duration) {
 
     /*  config 1 : juste cond. a 4 bras entre r1 et r3=(N>>1)=N/2 */
 
-    old = (*c1)(x,y);
+    old = (*c1).at(x,y);
     c1 -> putpoint (x,y,z);
     if (test1(c1)==0) c1 -> putpoint (x,y,old);
 
     /*  config 1 : juste cond. a 4 bras entre r1 et r3=(N>>1)=N/2 */
 
-    old = (*c2)(x,y);
+    old = (*c2).at(x,y);
     c2 -> putpoint (x,y,z);
     if (test2(c2)==0) c2 -> putpoint (x,y,old);
 
@@ -207,7 +207,7 @@ void pick (Image *c, testfunction test) {
 
   good=0;
   n=0;
-  
+
   while (good==0) {
     fprintf (stderr,"%d \r",++n);
     for (x=0;x<N;x++)
@@ -235,7 +235,7 @@ int main (int argc, char ** argv) {
   img = new Image(N,N,"The difference");
 
   pick (img1,test1);
-  for (i=0;i<N*N;i++) img2 -> putpoint (i,0, (*img1)(i,0));
+  for (i=0;i<N*N;i++) img2 -> putpoint (i,0, (*img1).at(i,0));
 
   img->show();
   compute_diff(img1,img2,img);

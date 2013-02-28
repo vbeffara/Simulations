@@ -22,22 +22,22 @@ void cnx (int ox, int oy, Color in, Color out)
     j=fifoy[imin];
     k=i+j*img->w();
     imin++;
-    if ((i<img->w()-1)&&((*img)(k+1,0)!=in)&&((*img)(k+1,0)!=out)) {
+    if ((i<img->w()-1)&&((*img).at(k+1,0)!=in)&&((*img).at(k+1,0)!=out)) {
       fifox[++imax]=i+1;
       fifoy[imax]=j;
       img -> putpoint (k+1,0,in);
     }
-    if ((i>0)&&((*img)(k-1,0)!=in)&&((*img)(k-1,0)!=out)) {
+    if ((i>0)&&((*img).at(k-1,0)!=in)&&((*img).at(k-1,0)!=out)) {
       fifox[++imax]=i-1;
       fifoy[imax]=j;
       img -> putpoint (k-1,0,in);
     }
-    if ((j<img->h()-1)&&((*img)(k+img->w(),0)!=in)&&((*img)(k+img->w(),0)!=out)) {
+    if ((j<img->h()-1)&&((*img).at(k+img->w(),0)!=in)&&((*img).at(k+img->w(),0)!=out)) {
       fifox[++imax]=i;
       fifoy[imax]=j+1;
       img -> putpoint (k,1,in);
     }
-    if ((j>0)&&((*img)(k-img->w(),0)!=in)&&((*img)(k-img->w(),0)!=out)) {
+    if ((j>0)&&((*img).at(k-img->w(),0)!=in)&&((*img).at(k-img->w(),0)!=out)) {
       fifox[++imax]=i;
       fifoy[imax]=j-1;
       img -> putpoint (k,-1,in);
@@ -52,32 +52,32 @@ void bndcnx (int ox, int oy)
 
   imin=0; imax=0;
   fifox[0]=ox; fifoy[0]=oy;
-  img -> putpoint (ox,oy, (*img)(ox,oy) | 3);
+  img -> putpoint (ox,oy, (*img).at(ox,oy) | 3);
 
   while (imin<=imax) {
     i=fifox[imin];
     j=fifoy[imin];
     k=i+j*img->w();
     imin++;
-    if ((i<img->w()-1)&&((*img)(k,0)&16)&&!((*img)(k+1,0)&2)) {
+    if ((i<img->w()-1)&&((*img).at(k,0)&16)&&!((*img).at(k+1,0)&2)) {
       fifox[++imax]=i+1;
       fifoy[imax]=j;
-      img->putpoint (k+1,0, (*img)(k,1) | 3);
+      img->putpoint (k+1,0, (*img).at(k,1) | 3);
     }
-    if ((j<img->h()-1)&&((*img)(k,0)&32)&&!((*img)(k+img->w(),0)&2)) {
+    if ((j<img->h()-1)&&((*img).at(k,0)&32)&&!((*img).at(k+img->w(),0)&2)) {
       fifox[++imax]=i;
       fifoy[imax]=j+1;
-      img -> putpoint (k,1, (*img)(k,1) | 3);
+      img -> putpoint (k,1, (*img).at(k,1) | 3);
     }
-    if ((i>0)&&((*img)(k-1,0)&16)&&!((*img)(k-1,0)&2)) {
+    if ((i>0)&&((*img).at(k-1,0)&16)&&!((*img).at(k-1,0)&2)) {
       fifox[++imax]=i-1;
       fifoy[imax]=j;
-      img -> putpoint (k-1,0, (*img)(k-1,0) | 3);
+      img -> putpoint (k-1,0, (*img).at(k-1,0) | 3);
     }
-    if ((j>0)&&((*img)(k-img->w(),0)&32)&&!((*img)(k-img->w(),0)&2)) {
+    if ((j>0)&&((*img).at(k-img->w(),0)&32)&&!((*img).at(k-img->w(),0)&2)) {
       fifox[++imax]=i;
       fifoy[imax]=j-1;
-      img -> putpoint (k,-1, (*img)(k,-1) | 3);
+      img -> putpoint (k,-1, (*img).at(k,-1) | 3);
     }
   }
 }
@@ -100,7 +100,7 @@ int main(int argc, char ** argv)
 
   for (i=0;i<4*n*n;i++) {
     if ( prng.bernoulli(p1) ) img -> putpoint (i,0,17); else img -> putpoint (i,0,1);
-    if ( prng.bernoulli(p2) ) img -> putpoint (i,0, (*img)(i,0) + 32);
+    if ( prng.bernoulli(p2) ) img -> putpoint (i,0, (*img).at(i,0) + 32);
   }
 
   /* 3=cluster de l'origine */
@@ -111,14 +111,14 @@ int main(int argc, char ** argv)
 
   /* Oublier le réseau */
 
-  for (i=0;i<4*n*n;i++) img -> putpoint (i,0, (*img)(i,0) & 3);
+  for (i=0;i<4*n*n;i++) img -> putpoint (i,0, (*img).at(i,0) & 3);
 
   /* "Hull" du cluster */
 
-  for (i=0;i<2*n;i++) if ((*img)(i,0)!=Color(3))                            cnx(i,0,0,3);
-  for (i=0;i<2*n;i++) if ((*img)(img->w()*i,0)!=Color(3))                 cnx(0,i,0,3);
-  for (i=0;i<2*n;i++) if ((*img)(img->w()*(i+1)-1,0)!=Color(3))           cnx(img->w()-1,i,0,3);
-  for (i=0;i<2*n;i++) if ((*img)(img->w()*(img->h()-1)+i,0)!=Color(3)) cnx(i,img->h()-1,0,3);
+  for (i=0;i<2*n;i++) if ((*img).at(i,0)!=Color(3))                            cnx(i,0,0,3);
+  for (i=0;i<2*n;i++) if ((*img).at(img->w()*i,0)!=Color(3))                 cnx(0,i,0,3);
+  for (i=0;i<2*n;i++) if ((*img).at(img->w()*(i+1)-1,0)!=Color(3))           cnx(img->w()-1,i,0,3);
+  for (i=0;i<2*n;i++) if ((*img).at(img->w()*(img->h()-1)+i,0)!=Color(3)) cnx(i,img->h()-1,0,3);
 
   /* affichage du resultat */
 

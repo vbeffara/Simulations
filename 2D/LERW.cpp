@@ -52,7 +52,7 @@ int main(int argc, char ** argv)
 
   done=0; x=n; y=n; imin=n; imax=n; jmin=n; jmax=n;
   while (!done) {
-    d = (*img)(x,y);
+    d = (*img).at(x,y);
     x += dx[(int)d];
     y += dy[(int)d];
 
@@ -81,7 +81,7 @@ int main(int argc, char ** argv)
   i=0; done=0; x=n; y=n; l=0;
   while (!done) {
     l++;
-    d = (*img)(x,y);
+    d = (*img).at(x,y);
     if (!((i++)%40)) printf ("\n");
     printf ("%c ", TRANS[(int)d]);
     x += dx[(int)d];
