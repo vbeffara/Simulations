@@ -30,8 +30,8 @@
 #include <sys/param.h>
 #include <sys/time.h>
 
-#include <cairomm/context.h>
-#include <cairomm/surface.h>
+#include <cairo.h>
+#include <cairo-pdf.h>
 
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
