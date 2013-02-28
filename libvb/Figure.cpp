@@ -148,7 +148,9 @@ namespace vb {
     cairo_surface_t * pdf = cairo_pdf_surface_create (os.str().c_str(), w(), h());
     cairo_t * pcr = cairo_create (pdf);
     paint (pcr, false);
-    cairo_show_page(cr);
+    cairo_show_page (pcr);
+    cairo_destroy (pcr);
+    cairo_surface_destroy (pdf);
   }
 
   void Figure::output (const std::string &s) { output_pdf (s); }
