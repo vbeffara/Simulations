@@ -27,26 +27,23 @@ namespace vb {
     }
   }
 
-  Color Image::lazy (int x, int y) {
-    if (int(at(coo(x,y))) == 0) {
-      put(coo(x,y), compute(coo(x,y)));
-    }
-
-    return at(coo(x,y));
+  Color Image::lazy (coo z) {
+    if (int(at(z)) == 0) put(z, compute(z));
+    return at(z);
   }
 
   void Image::tessel (int xmin, int ymin, int xmax, int ymax) {
-    Color tmp = lazy (xmin,ymin);
+    Color tmp = lazy (coo(xmin,ymin));
     bool mono = true;
 
     for (int i=xmin; i<=xmax; ++i) {
-      if (lazy (i,ymin) != tmp) mono=false;
-      if (lazy (i,ymax) != tmp) mono=false;
+      if (lazy (coo(i,ymin)) != tmp) mono=false;
+      if (lazy (coo(i,ymax)) != tmp) mono=false;
     }
 
     for (int j=ymin; j<=ymax; ++j) {
-      if (lazy (xmin,j) != tmp) mono=false;
-      if (lazy (xmax,j) != tmp) mono=false;
+      if (lazy (coo(xmin,j)) != tmp) mono=false;
+      if (lazy (coo(xmax,j)) != tmp) mono=false;
     }
 
     if (mono) {
