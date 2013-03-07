@@ -54,9 +54,6 @@ namespace vb {
   /// Utility type for integer coordinates.
   typedef std::complex<int> coo;
 
-  const coo E1(1,0);
-  const coo E2(0,1);
-
   class fmt : public boost::format {
     public:
       fmt (const std::string &s) : boost::format(s) { }

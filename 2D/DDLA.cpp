@@ -22,10 +22,10 @@ public:
   void addapoint (coo z) {
     put (z,1);
     int x=real(z), y=imag(z);
-    if ( (x>0) && (y<n-1) && (at(z-E1+E2)==1) && (at(z-E1)==0) )
-      addapoint (z-E1);
-    if ( (y>0) && (x<n-1) && (at(z+E1-E2)==1) && (at(z-E2)==0) )
-      addapoint (z-E2);
+    if ( (x>0) && (y<n-1) && (at(z-coo(1,0)+coo(0,1))==1) && (at(z-coo(1,0))==0) )
+      addapoint (z-coo(1,0));
+    if ( (y>0) && (x<n-1) && (at(z+coo(1,0)-coo(0,1))==1) && (at(z-coo(0,1))==0) )
+      addapoint (z-coo(0,1));
   }
 };
 
@@ -44,14 +44,14 @@ bool ok (coo z) {
   int ans=-1;
 
   while (ans == -1) {
-    if (prng.bernoulli(p)) { ++xx; zz+=E1; } else { ++yy; zz+=E2; }
+    if (prng.bernoulli(p)) { ++xx; zz+=coo(1,0); } else { ++yy; zz+=coo(0,1); }
     assert (zz==coo(xx,yy));
 
     if ((xx>=n) || (yy>=n) || (xx+yy > cursum)) ans = 1;
     if (img->at(zz) == 1) ans = 0;
 
     if (s && (!just_started) && (xx<n-1) && (yy<n-1) &&
-        ((img->at(zz+E1)==1) || (img->at(zz+E2)==1))) ans = 0;
+        ((img->at(zz+coo(1,0))==1) || (img->at(zz+coo(0,1))==1))) ans = 0;
     just_started = false;
   }
 
@@ -86,13 +86,13 @@ int main (int argc, char **argv) {
         img->addapoint (pt.z);
         reshape (real(pt.z),imag(pt.z));
         if ( (real(pt.z)<n-1) && ((*img)(real(pt.z)+1,imag(pt.z))==0) )
-          queue << Point(pt.z+E1,curtime+prng.exponential()/p);
+          queue << Point(pt.z+coo(1,0),curtime+prng.exponential()/p);
         if ( (imag(pt.z)<n-1) && ((*img)(real(pt.z),imag(pt.z)+1)==0) )
-          queue << Point(pt.z+E2,curtime+prng.exponential()/(1-p));
+          queue << Point(pt.z+coo(0,1),curtime+prng.exponential()/(1-p));
         if ( s && (real(pt.z)>0) && ((*img)(real(pt.z)-1,imag(pt.z))==0) )
-          queue << Point(pt.z-E1,curtime+prng.exponential());
+          queue << Point(pt.z-coo(1,0),curtime+prng.exponential());
         if ( s && (imag(pt.z)>0) && ((*img)(real(pt.z),imag(pt.z)-1)==0) )
-          queue << Point(pt.z-E2,curtime+prng.exponential());
+          queue << Point(pt.z-coo(0,1),curtime+prng.exponential());
       } else {
         queue << Point(pt.z,curtime+prng.exponential());
       }
