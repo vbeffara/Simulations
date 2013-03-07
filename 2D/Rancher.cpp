@@ -96,11 +96,12 @@ public:
   }
 
   void main (int argc, char ** argv) {
-    CL_Parser CLP (argc, argv, "p=.1,n=1000,i=1,o");
+    CL_Parser CLP (argc, argv, "p=.1,n=1000,i=1,o,r");
     double pente = CLP('p');
     int    nb    = CLP('n');
     int    inter = CLP('i');
     bool   plot  = CLP('o');
+    bool   renew = CLP('r');
 
     int i=0;
 
@@ -120,12 +121,23 @@ public:
 
     cur = env.begin(); ++cur;
 
+    int last_renewal=3;
+    vector<int> renewals;
+
     for (i=3; i<nb; i++) {
       point p = rand_point();
       if (plot) traj.push_back (p);
       cur = insere_maillon(p);
       if (plot && !((i+1)%inter)) dessine_enveloppe();
       W->step();
+
+      if (renew && (env_size(this)==3)) {
+        int r = i-last_renewal;
+        if (r+1>renewals.size())
+          renewals.resize(r+1);
+        renewals[r] ++;
+        last_renewal = i;
+      }
     }
 
     delete W;
@@ -135,6 +147,17 @@ public:
       F.add (new Path(path));
       F.show(); F.pause();
       F.output_pdf("Rancher");
+    }
+
+    if (renew) {
+      long int n=0, sx=0, sxx=0;
+      for (int i=0; i<renewals.size(); ++i) {
+        n += renewals[i];
+        sx += i*renewals[i];
+        sxx += i*i*renewals[i];
+      }
+      cerr << n << " renewals (density " << double(n)/nb << ")" << endl;
+      cerr << "Average length: " << double(sx)/n << endl;
     }
   }
 };
