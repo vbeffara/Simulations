@@ -20,9 +20,9 @@ int main(int argc, char *argv[])
   /* conditions initiales */
 
   for (int x=0;x<n;++x) {
-    img.putpoint(x,0,255,0);
+    img.putpoint(x,0,255);
     for (int y=1;y<n;++y)
-      img.putpoint(x,y,0,0);
+      img.putpoint(x,y,0);
   }
 
   img.show();

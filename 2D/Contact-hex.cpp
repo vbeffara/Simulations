@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 
   for (int x=0;x<n;++x)
     for (int y=0;y<n/2;++y)
-      img.putpoint(x,y,255,0);
+      img.putpoint(x,y,255);
 
   img.show();
 

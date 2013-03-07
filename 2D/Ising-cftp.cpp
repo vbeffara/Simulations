@@ -46,9 +46,9 @@ long paint (Image &img) {
     for (y=0;y<n;y++) {
       xy = x + n*y;
       if (low[xy]==high[xy])
-        img.putpoint (x,y,85*3*low[xy],0);
+        img.putpoint (x,y,85*3*low[xy]);
       else {
-        img.putpoint (x,y,85*2,0);
+        img.putpoint (x,y,85*2);
         dist++;
       }
     }
@@ -116,9 +116,9 @@ int main(int argc, char *argv[])
 
     for (i=0;i<n*img.w();++i) img.putpoint (i,0,85*2);
 
-    for (i=0;i<n;i++) { img.putpoint(0,i,85*3*LEFT,0); img.putpoint(n-1,i,85*3*RIGHT,0); }
-    for (i=0;i<(n>>1);i++) { img.putpoint(i,0,85*3*LEFT,0); img.putpoint(i,n-1,85*3*LEFT,0); }
-    for (i=(n>>1);i<n;i++) { img.putpoint(i,0,85*3*RIGHT,0); img.putpoint(i,n-1,85*3*RIGHT,0); }
+    for (i=0;i<n;i++) { img.putpoint(0,i,85*3*LEFT); img.putpoint(n-1,i,85*3*RIGHT); }
+    for (i=0;i<(n>>1);i++) { img.putpoint(i,0,85*3*LEFT); img.putpoint(i,n-1,85*3*LEFT); }
+    for (i=(n>>1);i<n;i++) { img.putpoint(i,0,85*3*RIGHT); img.putpoint(i,n-1,85*3*RIGHT); }
 
     for (i=0;i<(n>>1);i++) { low[i]=LEFT; low[i+(n-1)*n]=LEFT; }
     for (i=0;i<n;i++) { low[i*n]=LEFT; }

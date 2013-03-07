@@ -65,7 +65,7 @@ int main(int argc, char ** argv)
     // Recherche d'un pivot
 
     for (k=0; k<4*n; k++)  img->putpoint (k,0,0);
-    for (k=0; k<n>>2; k++) img->putpoint (COO(x[k],y[k]),0,0,1);
+    for (k=0; k<n>>2; k++) img->putpoint (COO(x[k],y[k]),0,0);
     p=0;
     for (k=n>>2; (k<(n>>2)+(n>>1)) && cont; k++) {
       piv=1;

@@ -20,7 +20,7 @@ int main (int argc, char **argv) {
 
   for (int x=0; x<n; ++x)
     if (prng.bernoulli(r)) {
-      img.putpoint(x,0,1,0);
+      img.putpoint(x,0,1);
       field[x]=1;
     } else {
       field[x]=0;
@@ -32,20 +32,20 @@ int main (int argc, char **argv) {
     for (int x=0; x<n; ++x)
       if  ( (prng.bernoulli(l)) ||
             ((x==y)&&(prng.bernoulli(d))) ) {
-        img.putpoint(x,y,1,0);
+        img.putpoint(x,y,1);
         field[x]++;
         int xx=(x+1)%n;
         while (field[xx]==0) {
-          img.putpoint(xx,y,1,0);
+          img.putpoint(xx,y,1);
           xx = (xx+1)%n;
         }
         field[xx]--;
-        img.putpoint(xx,y,1,0);
+        img.putpoint(xx,y,1);
       }
     for (int x=0; x<n; ++x)
       if (field[x])
-        img.putpoint(x,y,1,0);
-  
+        img.putpoint(x,y,1);
+
     if (!(y%100)) img.update();
   }
 

@@ -11,9 +11,8 @@ namespace vb {
 		public:
 			Image (int wd, int ht, const std::string &tit);
 
-			void putpoint (int x, int y, Color c, int dt=1) __attribute__ ((deprecated)) {
-				at(x,y) = c;
-				if (dt) step();
+			void putpoint (int x, int y, Color c) __attribute__ ((deprecated)) {
+				put (coo(x,y),c);
 			}
 
 			virtual Color compute (coo z) { return 0; }
