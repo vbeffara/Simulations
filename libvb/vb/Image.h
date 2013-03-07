@@ -16,13 +16,6 @@ namespace vb {
 				if (dt) step();
 			}
 
-			void putpoint_safe (int x, int y, Color c, int dt=1) __attribute__ ((deprecated)) {
-				if ( (x>=0) && (y>=0) && (x<w()) && (y<h()) ) {
-					if (dt) put (coo(x,y),c);
-					else at(x,y) = c;
-				}
-			}
-
 			virtual Color compute (coo z) { return 0; }
 
 			Color lazy (coo z);
