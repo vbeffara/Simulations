@@ -45,7 +45,7 @@ namespace vb {
     if (mono) {
       for (int i=xmin+1; i<xmax; ++i)
         for (int j=ymin+1; j<ymax; ++j)
-          put (coo(i,j), tmp);
+          at(coo(i,j)) = tmp;
     } else if ((xmax-xmin) > std::max (ymax-ymin, 1)) {
       int xmed = (xmin+xmax)>>1;
       tessel (xmin,ymin,xmed,ymax);
