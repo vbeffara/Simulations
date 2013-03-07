@@ -8,3 +8,4 @@ amc.*
 out*
 *.png
 *.mp4
+*log*
