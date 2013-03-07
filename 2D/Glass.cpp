@@ -106,7 +106,7 @@ int main (int argc, char **argv) {
 
   Image img (n,n, str(fmt("A glass process of parameter %f (conditioning: %s)")%p%c));
 
-  img.fill(0,0,0);
+  img.fill(0,0);
   for (int i=0; i<n; i++) img.putpoint (i,n/2,255);
   img.show();
 

@@ -29,7 +29,7 @@ namespace vb {
 
 			void tessel (int xmin, int ymin, int xmax, int ymax);
 
-			void fill (int x, int y, Color c, unsigned char adj = 85) __attribute__ ((deprecated));
+			void fill (coo z, Color c, int adj = 4);
 	};
 }
 

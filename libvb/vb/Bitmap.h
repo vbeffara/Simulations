@@ -20,6 +20,10 @@ namespace vb {
 
 		void put (coo z, T const & c) { at(z) = c; step(); }
 
+		bool contains (coo z) {
+			return (real(z)>=0) && (imag(z)>=0) && (real(z)<w()) && (imag(z)<h());
+		}
+
 	private:
 		Color * stage;	///< The raw pixel data of the screen representation.
 		T * data;     	///< The actual data.

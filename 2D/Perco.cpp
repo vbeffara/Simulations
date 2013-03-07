@@ -20,7 +20,7 @@ int main(int argc, char ** argv) {
     }
   }
 
-  img.fill (n/2, n/2, Color(255,0,0));
+  img.fill (coo(n/2,n/2), Color(255,0,0));
   img.show();
 
   if (d) {
@@ -36,9 +36,9 @@ int main(int argc, char ** argv) {
       if (img.at(x,y) == c) continue;
       if (on_it && (c == Color(128))) continue;
 
-      img.fill (n/2, n/2, 128);
+      img.fill (coo(n/2,n/2), 128);
       img.putpoint (x, y, c, 0);
-      img.fill (n/2, n/2, Color(255,0,0));
+      img.fill (coo(n/2,n/2), Color(255,0,0));
 
       img.step();
     }

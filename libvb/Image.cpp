@@ -6,24 +6,20 @@
 namespace vb {
   Image::Image (int wd, int ht, const std::string &tit) : Bitmap<Color> (wd,ht,tit) { }
 
-  void Image::fill (int x, int y, Color c, unsigned char adj) {
-    Color in = at(coo(x,y)); if (in == c) return;
-    at(x,y) = c;
+  void Image::fill (coo z, Color c, int adj) {
+    Color in = at(z); if (in == c) return;
 
-    static std::vector<int> xy; xy.push_back(x); xy.push_back(y);
+    std::vector<coo> xy;
+    xy.push_back(z); at(z) = c;
 
     while (xy.size()) {
-      int j=xy.back(); xy.pop_back();
-      int i=xy.back(); xy.pop_back();
-
-      if ((adj&1)   && (i<w()-1)              && (at(i+1,j  )==in)) { xy.push_back(i+1); xy.push_back(j  ); at (i+1,j)   = c; }
-      if ((adj&2)   && (i<w()-1) && (j<h()-1) && (at(i+1,j+1)==in)) { xy.push_back(i+1); xy.push_back(j+1); at (i+1,j+1) = c; }
-      if ((adj&4)   &&              (j<h()-1) && (at(i  ,j+1)==in)) { xy.push_back(i  ); xy.push_back(j+1); at (i  ,j+1) = c; }
-      if ((adj&8)   && (i>0)     && (j<h()-1) && (at(i-1,j+1)==in)) { xy.push_back(i-1); xy.push_back(j+1); at (i-1,j+1) = c; }
-      if ((adj&16)  && (i>0)                  && (at(i-1,j  )==in)) { xy.push_back(i-1); xy.push_back(j  ); at (i-1,j)   = c; }
-      if ((adj&32)  && (i>0)     && (j>0)     && (at(i-1,j-1)==in)) { xy.push_back(i-1); xy.push_back(j-1); at (i-1,j-1) = c; }
-      if ((adj&64)  &&              (j>0)     && (at(i  ,j-1)==in)) { xy.push_back(i  ); xy.push_back(j-1); at (i  ,j-1) = c; }
-      if ((adj&128) && (i<w()-1) && (j>0)     && (at(i+1,j-1)==in)) { xy.push_back(i+1); xy.push_back(j-1); at (i+1,j-1) = c; }
+      coo ij = xy.back(); xy.pop_back();
+      for (int d=0; d<adj; ++d) {
+        coo nij = ij + dz[d];
+        if (contains(nij) && (at(nij) == in)) {
+          xy.push_back(nij); at(nij)=c;
+        }
+      }
     }
   }
 
