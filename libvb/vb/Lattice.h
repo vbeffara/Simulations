@@ -1,9 +1,7 @@
 /// @file Lattice.h
 /// Everything to do with periodic lattices
 
-#ifndef __VB_LATTICE_H
-#define __VB_LATTICE_H
-
+#pragma once
 #include <vb/common.h>
 
 namespace vb {
@@ -138,5 +136,3 @@ namespace vb {
   Lattice SV();  ///< The Shabat-Voevodsky graph.
   Lattice C5();  ///< The C5 graph (automorphism group is Z^2).
 }
-
-#endif

@@ -1,9 +1,7 @@
 /// @file
 /// Definitions for the vb::CoarseImage class
 
-#ifndef __VB_COARSEIMAGE_H
-#define __VB_COARSEIMAGE_H
-
+#pragma once
 #include <vb/Bitmap.h>
 
 namespace vb {
@@ -110,5 +108,3 @@ namespace vb {
       int LL;
   };
 }
-
-#endif

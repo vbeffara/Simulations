@@ -1,9 +1,7 @@
 /// @file
 /// Definitions of a matrix class.
 
-#ifndef __VB_MATRIX_H
-#define __VB_MATRIX_H
-
+#pragma once
 #include <vb/common.h>
 
 #include <boost/numeric/ublas/vector.hpp>
@@ -16,5 +14,3 @@ namespace vb {
   /// A matrix of real numbers.
   typedef boost::numeric::ublas::matrix<double> Matrix;
 }
-
-#endif

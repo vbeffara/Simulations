@@ -1,9 +1,7 @@
 /// @file
 /// Definitions for the vb::Point and vb::PointQueue classes
 
-#ifndef __VB_POINT_H
-#define __VB_POINT_H
-
+#pragma once
 #include <vb/Image.h>
 #include <vb/CoarseImage.h>
 
@@ -103,5 +101,3 @@ namespace vb {
     return img;
   }
 }
-
-#endif

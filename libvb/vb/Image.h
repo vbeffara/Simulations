@@ -1,9 +1,7 @@
 /// @file
 /// Definitions for the vb::Image class
 
-#ifndef __VB_IMAGE_H
-#define __VB_IMAGE_H
-
+#pragma once
 #include <vb/Bitmap.h>
 
 namespace vb {
@@ -24,5 +22,3 @@ namespace vb {
 			void fill (coo z, Color c, int adj = 4);
 	};
 }
-
-#endif

@@ -1,9 +1,7 @@
 /// @file
 /// Algorithms for function minimization.
 
-#ifndef __VB_MINIMIZER_H
-#define __VB_MINIMIZER_H
-
+#pragma once
 #include <vb/Matrix.h>
 
 namespace vb {
@@ -230,5 +228,3 @@ namespace vb {
       double minimize_qn (const Vector &x0);
   };
 }
-
-#endif

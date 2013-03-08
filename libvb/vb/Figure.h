@@ -2,9 +2,7 @@
 /// Definitions for the vb::Figure and related classes.
 /// @example test_figure.cpp
 
-#ifndef __VB_FIGURE_H
-#define __VB_FIGURE_H
-
+#pragma once
 #include <vb/Picture.h>
 
 namespace vb {
@@ -168,5 +166,3 @@ namespace vb {
     double basewidth; ///< Width in real plane to get 1px.
   };
 }
-
-#endif

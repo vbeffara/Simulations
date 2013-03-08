@@ -1,9 +1,7 @@
 /// @file
 /// Definitions for the vb::Bitmap class
 
-#ifndef __VB_BITMAP_H
-#define __VB_BITMAP_H
-
+#pragma once
 #include <vb/Picture.h>
 
 namespace vb {
@@ -48,5 +46,3 @@ namespace vb {
 
 	template<> Bitmap<Color>::Bitmap (int wd, int ht, const std::string &tit, int d);
 }
-
-#endif

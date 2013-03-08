@@ -1,9 +1,7 @@
 /// @file
 /// A class for (periodic) planar maps.
 
-#ifndef MAP_H
-#define MAP_H
-
+#pragma once
 #include <vb/Figure.h>
 #include <vb/Minimizer.h>
 
@@ -400,5 +398,3 @@ namespace vb {
 
   double Map_fg_circle_disk (const Vector &x, Vector &g, void *context);
 }
-
-#endif

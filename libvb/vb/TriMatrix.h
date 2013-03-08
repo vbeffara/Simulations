@@ -1,9 +1,7 @@
 /// @file
 /// Definitions for the vb::TriMatrix class
 
-#ifndef __VB_TRIMATRIX_H
-#define __VB_TRIMATRIX_H
-
+#pragma once
 #include <vb/common.h>
 
 #ifndef TRIMATRIX_BSIZE
@@ -164,5 +162,3 @@ namespace vb {
     }
   }
 }
-
-#endif

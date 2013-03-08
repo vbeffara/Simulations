@@ -1,9 +1,7 @@
 /// @file
 /// Definitions for the vb::CL_Parser class
 
-#ifndef __VB_CL_PARSER_H
-#define __VB_CL_PARSER_H
-
+#pragma once
 #include <vb/common.h>
 
 /** The namespace where libvb puts everything it defines. */
@@ -12,7 +10,7 @@ namespace vb {
 
   /** A helper class for CL_Parser, that holds an unparsed parameter.
    *
-   * It can be casted to an int, a double or a string, and it will do 
+   * It can be casted to an int, a double or a string, and it will do
    * what needs to be done accordingly.
    */
 
@@ -53,8 +51,8 @@ namespace vb {
   class CL_Parser {
   public:
     std::map<char,std::string> params;  ///< The current values of the parameters
-    std::map<char,bool>        has_arg; ///< The list of known flags 
-    
+    std::map<char,bool>        has_arg; ///< The list of known flags
+
     /** The standard constructor of the vb::CL_Parser class.
      *
      * @param argc As passed to main().
@@ -66,7 +64,7 @@ namespace vb {
     CL_Parser (int argc, char** argv,
                std::string syntax,
                const std::string &help = "");
-    
+
     /** Return a generic CL_Value holder. */
 
     CL_Value operator() (char);
@@ -79,5 +77,3 @@ namespace vb {
     void parse (int, char**);
   };
 }
-
-#endif

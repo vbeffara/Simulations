@@ -1,9 +1,7 @@
 /// @file
 /// Definitions for the vb::Picture class.
 
-#ifndef VB_PICTURE_H
-#define VB_PICTURE_H
-
+#pragma once
 #include <vb/Color.h>
 #include <vb/AutoWindow.h>
 
@@ -74,5 +72,3 @@ namespace vb {
 	/// Take a snapshot of the picture passed as argument.
 	void Picture_snapshot (void * AW);
 }
-
-#endif

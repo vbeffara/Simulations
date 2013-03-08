@@ -1,9 +1,7 @@
 /// @file
 /// Definitions for the vb::Watcher class
 
-#ifndef __VB_WATCHER_H
-#define __VB_WATCHER_H
-
+#pragma once
 #include <vb/AutoWindow.h>
 
 /** The namespace where libvb puts everything it defines. */
@@ -103,4 +101,3 @@ namespace vb {
   /// Output the watched variables od a vb::Watcher to std::cerr.
   void Watcher_cerr (void * W);
 }
-#endif

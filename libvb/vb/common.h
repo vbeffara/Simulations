@@ -4,9 +4,7 @@
 /// documentation, but you can have a look at the source. You should never
 /// have to include this file directly.
 
-#ifndef __VB_COMMON_H
-#define __VB_COMMON_H
-
+#pragma once
 #include <vb/config.h>
 
 #include <algorithm>
@@ -70,8 +68,6 @@ namespace vb {
   const coo dz[8] = {coo(1,0), coo(0,1), coo(-1,0), coo(0,-1),
                      coo(1,1), coo(-1,-1), coo(-1,1), coo(1,-1)};
 };
-
-#endif
 
 /** @mainpage Documentation for the `libvb' library.
  *

@@ -1,11 +1,8 @@
 /// @file
 /// Definitions for the vb::PRNG class
 
-#ifndef __VB_PRNG_H
-#define __VB_PRNG_H
-
+#pragma once
 #include <vb/common.h>
-
 #include <boost/random.hpp>
 
 namespace vb {
@@ -167,4 +164,3 @@ namespace vb {
     long long rdmbuf;
   };
 }
-#endif

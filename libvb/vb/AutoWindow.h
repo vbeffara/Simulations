@@ -1,9 +1,7 @@
 /// @file
 /// Definitions for the vb::AutoWindow class.
 
-#ifndef AUTOWINDOW_H
-#define AUTOWINDOW_H
-
+#pragma once
 #include <vb/Clock.h>
 
 namespace vb {
@@ -73,5 +71,3 @@ namespace vb {
   /// Re-draw the vb::AutoWindow passed as parameter.
   void AutoWindow_update (void * AW);
 }
-
-#endif

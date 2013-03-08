@@ -1,9 +1,7 @@
 /// @file
 /// Definitions for the vb::ProgressBar class
 
-#ifndef __VB_PROGRESS_BAR_H
-#define __VB_PROGRESS_BAR_H
-
+#pragma once
 #include <vb/AutoWindow.h>
 
 namespace vb {
@@ -35,5 +33,3 @@ namespace vb {
     double power;         ///< Power law driving the progress.
   };
 }
-
-#endif

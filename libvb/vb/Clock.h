@@ -1,9 +1,7 @@
 /// @file
 /// Definitions for the vb::Clock class
 
-#ifndef __VB_CLOCK_H
-#define __VB_CLOCK_H
-
+#pragma once
 #include <vb/common.h>
 
 namespace vb {
@@ -59,5 +57,3 @@ namespace vb {
   /// A global instance of vb::Clock, which should be enough for a typical program.
   extern Clock global_clock;
 }
-
-#endif
