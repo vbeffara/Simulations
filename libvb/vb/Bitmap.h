@@ -16,11 +16,13 @@ namespace vb {
 		T       & at (int x, int y)       __attribute__ ((deprecated)) { return at(coo(x,y)); }
 		T const & at (int x, int y) const __attribute__ ((deprecated)) { return at(coo(x,y)); }
 
-		void put (coo z, T const & c) { at(z) = c; step(); }
+		T       & atp (coo z)       { int x=(real(z)%w() + w())%w(), y=(imag(z)%h() + h())%h(); return at(coo(x,y)); }
+		T const & atp (coo z) const { int x=(real(z)%w() + w())%w(), y=(imag(z)%h() + h())%h(); return at(coo(x,y)); }
 
-		bool contains (coo z) {
-			return (real(z)>=0) && (imag(z)>=0) && (real(z)<w()) && (imag(z)<h());
-		}
+		void put  (coo z, T const & c) { at(z) = c;  step(); }
+		void putp (coo z, T const & c) { atp(z) = c; step(); }
+
+		bool contains (coo z) { return (real(z)>=0) && (imag(z)>=0) && (real(z)<w()) && (imag(z)<h()); }
 
 	private:
 		Color * stage;	///< The raw pixel data of the screen representation.
