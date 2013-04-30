@@ -24,6 +24,8 @@ namespace vb {
 
 		bool contains (coo z) { return (real(z)>=0) && (imag(z)>=0) && (real(z)<w()) && (imag(z)<h()); }
 
+		virtual T compute  (coo z) { return 0; }
+
 	private:
 		Color * stage;	///< The raw pixel data of the screen representation.
 		T * data;     	///< The actual data.

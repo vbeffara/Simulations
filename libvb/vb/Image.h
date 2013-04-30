@@ -13,8 +13,6 @@ namespace vb {
 				put (coo(x,y),c);
 			}
 
-			virtual Color compute (coo z) { return 0; }
-
 			Color lazy (coo z);
 
 			void tessel (int xmin, int ymin, int xmax, int ymax);
