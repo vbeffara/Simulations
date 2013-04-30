@@ -55,8 +55,9 @@ public:
 		add(p);
 		while (((base+1)%w >= 0) && (base/w <= h-2)) {
 			seg (p,base,dir,1);
-			if (cols[thenext(base,dir)]) { base = thenext(base,dir); dir = (dir+5)%6; }
-			else                         {                           dir = (dir+1)%6; }
+			int thenext = follow (base, (dir+1)%6);
+			if (cols[thenext])	{ base = thenext;	dir = (dir+5)%6; }
+			else              	{                	dir = (dir+1)%6; }
 			seg (p,base,dir,5);
 		}
 	}
@@ -72,8 +73,6 @@ private:
 		static int folb[6] = { 1, w+1, w, -1, -w, -w+1 };
 		return ((base/w)%2 ? folb : fola) [dir] + base;
 	}
-
-	int thenext (int base, int dir) { return follow (base, (dir+1)%6); }
 
 	void seg (Path *p, int base, int dir, int rot) {
 		cpx x1y1 = thepos(base);
