@@ -5,7 +5,9 @@
  * for convenience.
  */
 
+#include <vb/CL_Parser.h>
 #include <vb/Figure.h>
+#include <vb/PRNG.h>
 
 using namespace vb;
 
@@ -13,18 +15,18 @@ double omx = sqrt(3.0);
 
 class Perco_Schramm : public Figure {
 public:
-	Perco_Schramm (int w_, int h_) : w(w_), h(h_), mask(w*h,true) {
+	Perco_Schramm (CL_Parser &CLP) : w(2*int(CLP('n'))), h(w-1), mask(w*h,true) {
 		title = "Perco_Schramm";
 
 		for (int i=0; i < w/2; ++i)     cols.push_back (true);
 		for (int i=0; i < w/2; ++i)     cols.push_back (false);
-		for (int i=0; i < (w-1)*h; ++i) cols.push_back (rand()<rand());
+		for (int i=0; i < (w-1)*h; ++i) cols.push_back (prng.bernoulli(CLP('p')));
 	}
 
 	void tri_boundary () {
 		for (int j=0; j<h; ++j) {
 			for (int i=0; i<w; ++i)
-				mask[i+w*j] = (i <= (w+j)/2) && (i >= (w-j)/2-1) && (j<h-1);
+				mask[i+w*j] = (i <= (w+j)/2) && (i >= (w-j)/2-1) && (j<h);
 			cols[(w-j)/2 + w*j - 1] = true;
 			cols[(w+j)/2 + w*j] = false;
 		}
@@ -53,7 +55,7 @@ public:
 		Path *p = new Path (std::vector<cpx>(0), Pen(BLUE,4));
 		p->z.push_back (thepos(base) + cpx(omx,-1));
 		add(p);
-		while (((base+1)%w >= 0) && (base/w <= h-2)) {
+		while (((base+1)%w >= 0) && (base/w < h-1)) {
 			seg (p,base,dir,1);
 			int thenext = follow (base, (dir+1)%6);
 			if (cols[thenext])	{ base = thenext;	dir = (dir+5)%6; }
@@ -78,15 +80,13 @@ private:
 		cpx x1y1 = thepos(base);
 		cpx x2y2 = thepos(follow(base,dir));
 		cpx x3y3 = thepos(follow(base,(dir+rot)%6));
-		p->z.push_back ((x1y1+x2y2+x3y3)*(1.0/3));
+		p->z.push_back ((x1y1+x2y2+x3y3)/3.0);
 	}
 };
 
 int main (int argc, char ** argv) {
-	Perco_Schramm RS (60,59);
-	RS.size (700,600);
-	RS.tri_boundary();
-	// RS.rect_boundary();
-	RS.perc();
-	RS.walk(); RS.show(); RS.pause(); RS.output();
+	CL_Parser CLP (argc, argv, "n=28,p=.5,t");
+	Perco_Schramm RS (CLP);
+	if (CLP('t')) RS.tri_boundary(); else RS.rect_boundary();
+	RS.perc(); RS.walk(); RS.show(); RS.pause(); RS.output();
 }
