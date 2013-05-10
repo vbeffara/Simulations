@@ -4,8 +4,6 @@
 #pragma once
 #include <vb/AutoWindow.h>
 
-/** The namespace where libvb puts everything it defines. */
-
 namespace vb {
 	/** An abstract base class for holding a value.
 	 *
@@ -68,22 +66,15 @@ namespace vb {
 
 	class Console : public AutoWindow {
 	public:
-		Console (bool e = false);
+		Console () : AutoWindow (400,0,"Console") {}
 		~Console ();
 
 		void watch (Value_base *v);
 
 		template <typename T> void watch (const T & t, const std::string & n) { watch (new Value<T> (t,n)); }
 
-		void print_on (std::ostream &os) const;
-
-		friend std::ostream & operator<< (std::ostream &os, const Console &W);
-
 	private:
 		std::vector <Value_base *> l;
 		int task;
 	};
-
-	/// Output the watched variables od a vb::Console to std::cerr.
-	void Console_cerr (void * W);
 }
