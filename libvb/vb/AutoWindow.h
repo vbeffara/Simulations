@@ -20,11 +20,7 @@ namespace vb {
    * updated with the correct frequency. But this is not mandatory.
    */
 
-  class AutoWindow
-#ifdef HAVE_FLTK
-    : public Fl_Double_Window
-#endif
-  {
+  class AutoWindow : public Fl_Double_Window {
   public:
     std::string title;       ///< The title of the window.
     int fps;                 ///< The target FPS rate.
@@ -51,21 +47,11 @@ namespace vb {
     /// Increment the clock and call cycle() as needed.
     void step() { global_clock.step(); }
 
+    virtual int handle (int event);   ///< Handle the events, in particular 'q' and 'x'.
+
   private:
     bool paused;
     int task;
-
-#ifdef HAVE_FLTK
-  public:
-    virtual int handle (int event);   ///< Handle the events, in particular 'q' and 'x'.
-#else
-    int width;                        ///< The width of the image, in pixels.
-    int height;                       ///< The height of the image, in pixels.
-  public:
-    int w() const { return width; }   ///< Return the current width of the window.
-    int h() const { return height; }  ///< Return the current height of the window.
-    void size (int w, int h);         ///< Resize the window.
-#endif
   };
 
   /// Re-draw the vb::AutoWindow passed as parameter.

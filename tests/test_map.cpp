@@ -102,7 +102,5 @@ int main () {
 
   Figure f; m.plot_circles (f);
   f.show(); f.pause();
-#ifdef HAVE_FLTK
   Fl::run();
-#endif
 }

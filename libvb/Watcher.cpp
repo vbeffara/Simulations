@@ -7,7 +7,6 @@ namespace vb {
     return os;
   }
 
-#ifdef HAVE_FLTK
   Watcher_slot::Watcher_slot (int ww, Value_base * vv) :
     Fl_Group (0,0,ww,30), v(vv) {
     new Fl_Button (x(),y(), 150,h(), vv->name.c_str());
@@ -19,7 +18,6 @@ namespace vb {
     o->value(os.str().c_str());
     Fl_Group::draw();
   }
-#endif
 
   Watcher::Watcher (bool e) : AutoWindow (400,0,"Watcher") {
     if (e) task = global_clock.add (100, Watcher_cerr, this);
@@ -31,12 +29,10 @@ namespace vb {
 
   void Watcher::watch (Value_base *v) {
     l.push_back (v);
-#ifdef HAVE_FLTK
     Watcher_slot * W = new Watcher_slot (w(),v);
     W -> position (0,h());
     size (w(), h()+W->h());
     add (W);
-#endif
   }
 
   std::ostream & operator<< (std::ostream &os, const Watcher &W) {

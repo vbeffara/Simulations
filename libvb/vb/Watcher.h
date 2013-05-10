@@ -56,7 +56,6 @@ namespace vb {
   /// Output the hold value to a stream.
   std::ostream & operator<< (std::ostream &os, const Value_base *V);
 
-#ifdef HAVE_FLTK
   class Watcher_slot : public Fl_Group {
   public:
     Watcher_slot (int ww, Value_base * vv);
@@ -66,7 +65,6 @@ namespace vb {
     Value_base *v;
     Fl_Output *o;
   };
-#endif
 
   /** A utility class to observe a running simulation.
    *

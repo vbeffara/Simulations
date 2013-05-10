@@ -30,7 +30,6 @@ namespace vb {
     stride  = cairo_image_surface_get_stride (surface) / sizeof(Color);
  }
 
-#ifdef HAVE_FLTK
   void draw_cb (void * in, int x, int y, int w, unsigned char * out) {
     Picture & img = * (Picture*) in;
     Color   * src = (Color*) (cairo_image_surface_get_data(img.surface));
@@ -45,7 +44,6 @@ namespace vb {
     paint ();
     fl_draw_image (draw_cb,this,0,0,w(),h());
   }
-#endif
 
   void Picture::output_png (const std::string &s) {
     paint();
@@ -76,10 +74,8 @@ namespace vb {
     if (period>0) global_clock.add (100*period, Picture_snapshot, this);
   }
 
-#ifdef HAVE_FLTK
   int Picture::handle (int event) {
     if ((event == FL_KEYDOWN) && (Fl::event_key() == 's')) snapshot();
     return AutoWindow::handle (event);
   }
-#endif
 }

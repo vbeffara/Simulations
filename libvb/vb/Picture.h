@@ -43,19 +43,13 @@ namespace vb {
 		/// Initiate automatic snapshots.
 		void snapshot_setup (const std::string &prefix, double period = 0.0);
 
-#ifdef HAVE_FLTK
 		virtual int handle (int event);	///< Handle the events, in particular 'q' and 'x'.
-#endif
-
 
 	protected:
 		cairo_surface_t * surface;	///< Cairo version of the surface.
 		cairo_t * cr;             	///< A context to draw onto the surface.
 		int stride;               	///< The number of pixels in a line in memory.
-
-#ifdef HAVE_FLTK
-		void draw ();                  ///< Draw the contents of the window (called by FLTK).
-#endif
+		void draw ();             	///< Draw the contents of the window (called by FLTK).
 
 	private:
 		std::string snapshot_prefix;   ///< The filename prefix for PNG snapshots.
