@@ -2,7 +2,7 @@
 #include <vb/CL_Parser.h>
 #include <vb/CoarseImage.h>
 #include <vb/PRNG.h>
-#include <vb/Watcher.h>
+#include <vb/Console.h>
 
 using namespace vb;
 using namespace std;
@@ -55,7 +55,7 @@ coo jump (int l, int deg=4) {
 class DLA : public CoarseImage {
 public:
   int n,r,deg;
-  Watcher W;
+  Console W;
   KDTree T;
 
   DLA (int n) : CoarseImage(n,n, str(fmt("A DLA cluster of size %d")%n), pow(n,.33)),

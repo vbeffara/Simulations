@@ -1,11 +1,11 @@
 
-#include <vb/Watcher.h>
+#include <vb/Console.h>
 
 using namespace vb;
 using namespace std;
 
 void hello (void * W) {
-  cerr << *((Watcher*)W);
+  cerr << *((Console*)W);
 }
 
 double x2 (void *x) {
@@ -15,7 +15,7 @@ double x2 (void *x) {
 int main (int argc, char ** argv) {
   double x=1.1;
 
-  Watcher W1;
+  Console W1;
   W1.watch (new Value<double> (x,"x"));
   W1.show();
 
@@ -25,7 +25,7 @@ int main (int argc, char ** argv) {
   }
 
   {
-    Watcher W2;
+    Console W2;
     W2.watch (new Value<double> (x,"xx"));
     W2.show();
 

@@ -1,6 +1,9 @@
 #include "vb/Bitmap.h"
 #include "vb/CL_Parser.h"
 #include "vb/PRNG.h"
+#include "vb/Console.h"
+
+#include <FL/Fl_Hor_Nice_Slider.H>
 
 using namespace vb;
 
@@ -39,15 +42,55 @@ public:
 
     void bc_tripod () {
         b=1;
-        for (int i=0; i<w()/2; ++i)   { put (coo(i,0),0); put (coo(i,h()-1),2); }
-        for (int i=w()/2; i<w(); ++i) { put (coo(i,0),1); put (coo(i,h()-1),2); }
-        for (int i=0; i<h(); ++i)     { put (coo(0,i),0); put (coo(w()-1,i),1); }
+        for (int j=0; j<h()-w()/2; ++j) {
+            for (int i=0; i<w()/2; ++i)   put(coo(i,j),0);
+            for (int i=w()/2; i<w(); ++i) put(coo(i,j),2);
+        }
+        for (int j=h()-w()/2; j<h(); ++j) {
+            for (int i=0; i<h()-j; ++i)         put(coo(i,j),0);
+            for (int i=h()-j; i<w()-h()+j; ++i) put(coo(i,j),1);
+            for (int i=w()-h()+j; i<w(); ++i)   put(coo(i,j),2);
+        }
     }
 
-    void bc_dobrushin () {
+    void bc_quadripod () {
+        b=1;
+        for (int j=0; j<h()/2; ++j) {
+            for (int i=0; i<w()/2; ++i)   put(coo(i,j),0);
+            for (int i=w()/2; i<w(); ++i) put(coo(i,j),1);
+        }
+        for (int j=h()/2; j<h(); ++j) {
+            for (int i=0; i<w()/2; ++i)   put(coo(i,j),2);
+            for (int i=w()/2; i<w(); ++i) put(coo(i,j),3);
+        }
+    }
+
+    void bc_dobrushin (bool r = false) {
         b=1;
         for (int i=0; i<w(); ++i) for (int j=0; j<h()/2; ++j)   put(coo(i,j),0);
         for (int i=0; i<w(); ++i) for (int j=h()/2; j<h(); ++j) put(coo(i,j),1);
+        if (r) for (int i=1; i<w()-1; ++i) for (int j=1; j<h()-1; ++j) put(coo(i,j),prng.uniform_int(q));
+    }
+
+    void bc_loren () {
+        b=1;
+        for (int i=0; i<w(); ++i) for (int j=0; j<h(); ++j)
+            if ((i==0)||(j==0)||(i==w()-1)||(j==h()-1))
+                put (coo(i,j),(q*(i+j)/w())%q);
+    }
+
+    void bc_loren2 () { assert (q>=6);
+        b=1;
+        for (int i=0; i<w()/4; ++i)      	put(coo(i,0),0);
+        for (int i=w()/4; i<3*w()/4; ++i)	put(coo(i,0),1);
+        for (int i=3*w()/4; i<w(); ++i)  	put(coo(i,0),2);
+        for (int i=0; i<h()/2; ++i)      	put(coo(0,i),0);
+        for (int i=h()/2; i<h(); ++i)    	put(coo(0,i),5);
+        for (int i=0; i<h()/2; ++i)      	put(coo(w()-1,i),2);
+        for (int i=h()/2; i<h(); ++i)    	put(coo(w()-1,i),3);
+        for (int i=0; i<w()/4; ++i)      	put(coo(i,h()-1),5);
+        for (int i=w()/4; i<3*w()/4; ++i)	put(coo(i,h()-1),4);
+        for (int i=3*w()/4; i<w(); ++i)  	put(coo(i,h()-1),3);
     }
 
     int q;
@@ -55,11 +98,36 @@ public:
     int b;
 };
 
+void bla (Fl_Widget * data);
+
+class Setter : public Fl_Hor_Nice_Slider {
+public:
+	Setter (Potts &P) : Fl_Hor_Nice_Slider (0,0,400,30), p(&P) {
+		bounds (0,4);
+		set_value (p->beta);
+		callback(&bla);
+	}
+	Potts *p;
+};
+
+void bla (Fl_Widget * data) {
+	Setter *S = (Setter*) data;
+	S->p->beta = S->value();
+}
+
 int main (int argc, char ** argv) {
     CL_Parser CLP (argc,argv,"n=500,q=3,b=1");
     Potts P(CLP);
-    P.bc_dobrushin();
+    P.bc_loren2();
     P.show();
+
+    Console W;
+    W.watch(P.beta, "beta");
+    Setter S (P);
+    S.position (0,W.h());
+    W.size (400,W.h()+S.h());
+    W.add (&S);
+    W.show();
 
     while (true) P.up ();
 }

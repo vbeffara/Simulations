@@ -1,5 +1,5 @@
 
-#include <vb/Watcher.h>
+#include <vb/Console.h>
 
 namespace vb {
   std::ostream & operator<< (std::ostream &os, const Value_base *V) {
@@ -7,35 +7,35 @@ namespace vb {
     return os;
   }
 
-  Watcher_slot::Watcher_slot (int ww, Value_base * vv) :
+  Console_slot::Console_slot (int ww, Value_base * vv) :
     Fl_Group (0,0,ww,30), v(vv) {
     new Fl_Button (x(),y(), 150,h(), vv->name.c_str());
     o = new Fl_Output (x()+150,y(), w()-150,h());
   }
 
-  void Watcher_slot::draw () {
+  void Console_slot::draw () {
     std::ostringstream os; os << v;
     o->value(os.str().c_str());
     Fl_Group::draw();
   }
 
-  Watcher::Watcher (bool e) : AutoWindow (400,0,"Watcher") {
-    if (e) task = global_clock.add (100, Watcher_cerr, this);
+  Console::Console (bool e) : AutoWindow (400,0,"Console") {
+    if (e) task = global_clock.add (100, Console_cerr, this);
   }
 
-  Watcher::~Watcher () {
+  Console::~Console () {
     global_clock.remove(task);
   }
 
-  void Watcher::watch (Value_base *v) {
+  void Console::watch (Value_base *v) {
     l.push_back (v);
-    Watcher_slot * W = new Watcher_slot (w(),v);
+    Console_slot * W = new Console_slot (w(),v);
     W -> position (0,h());
     size (w(), h()+W->h());
     add (W);
   }
 
-  std::ostream & operator<< (std::ostream &os, const Watcher &W) {
+  std::ostream & operator<< (std::ostream &os, const Console &W) {
     for (int i = 0; i < W.l.size(); ++i) {
       os << " | ";
       if (W.l[i]->name != "") os << W.l[i]->name << " = ";
@@ -44,5 +44,5 @@ namespace vb {
     return os << " |" << std::endl;
   }
 
-  void Watcher_cerr (void * W) { std::cerr << *((Watcher*)W); }
+  void Console_cerr (void * W) { std::cerr << *((Console*)W); }
 }

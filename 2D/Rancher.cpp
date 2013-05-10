@@ -11,7 +11,7 @@
 #include <vb/CL_Parser.h>
 #include <vb/PRNG.h>
 #include <vb/Figure.h>
-#include <vb/Watcher.h>
+#include <vb/Console.h>
 
 using namespace std;
 using namespace vb;
@@ -105,7 +105,7 @@ public:
 
     int i=0;
 
-    Watcher *W = new Watcher;
+    Console *W = new Console;
     W->watch (new Value<int> (i,"Path length"));
     W->watch (new Value_calc<int> (env_size,this,"Envelope size"));
     W->watch (new Value_calc<double> (env_width,this,"Envelope width"));
