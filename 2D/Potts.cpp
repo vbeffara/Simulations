@@ -126,7 +126,7 @@ int main (int argc, char ** argv) {
     Setter S (P);
     S.position (0,W.h());
     W.size (400,W.h()+S.h());
-    W.add (&S);
+    ((AutoWindow*)(&W)) -> add (&S);
     W.show();
 
     while (true) P.up ();
