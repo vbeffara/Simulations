@@ -23,7 +23,6 @@ namespace vb {
   class AutoWindow : public Fl_Double_Window {
   public:
     std::string title;       ///< The title of the window.
-    int fps;                 ///< The target FPS rate.
 
     /** The standard constructor
      *

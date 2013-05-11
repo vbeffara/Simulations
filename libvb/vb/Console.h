@@ -5,76 +5,53 @@
 #include <vb/AutoWindow.h>
 
 namespace vb {
-	/** An abstract base class for holding a value.
-	 *
-	 * This is a way of enabling vb::Console to track a value of an
-	 * arbitrary type using a template. All that is needed is the ability
-	 * to output to a stream.
-	 */
-
-	class Value_base {
+	template <typename T> class Watcher : public Fl_Group {
 	public:
-		/// Output the hold value to a stream.
-		virtual void print_on (std::ostream &os) const =0;
-
-		/// The name (label) of the hold value.
-		std::string name;
+		Watcher (const T &tt, const std::string &nn, int w) : Fl_Group (0,0,w,30), t(tt), n(nn) {
+			new Fl_Button (0,0,150,30,n.c_str());
+			o = new Fl_Output (150,0,w-150,30);
+		}
+		void draw () {
+			std::ostringstream os; os << t; o->value(os.str().c_str());
+			Fl_Group::draw();
+		}
+		const T &t;
+		Fl_Output *o;
+		std::string n;
 	};
 
-	/// A subclass of vb::Value_base holding a reference to an outside variable.
-
-	template <typename T> class Value : public Value_base {
+	template <typename T> class Tracer : public Fl_Group {
 	public:
-		/// Constructor.
-		Value (const T & t_, const std::string & n = "") : t(t_) { name = n; }
-		void print_on (std::ostream &os) const { os << t; }
-	private:
-		const T & t;
-	};
-
-	/** A subclass of vb::Value_base for a computed value.
-	 *
-	 * Each instance holds a function, and asking for the hold value
-	 * returns the output of that function.
-	 */
-
-	template <typename T> class Value_calc : public Value_base {
 		typedef T calc_function (void*);
-	public:
-		/// Constructor.
-		Value_calc (calc_function f_, void *data, const std::string & n = "") : f(f_), d(data) { name = n; }
-
-		/// Output the output of vb::Value_calc::f to a stream.
-		void print_on (std::ostream &os) const { os << f(d); }
-	private:
+		Tracer (calc_function ff, void *dd, const std::string &nn, int w) : Fl_Group (0,0,w,30), f(ff), d(dd), n(nn) {
+			new Fl_Button (0,0,150,30,n.c_str());
+			o = new Fl_Output (150,0,w-150,30);
+		}
+		void draw () {
+			std::ostringstream os; os << f(d); o->value(os.str().c_str());
+			Fl_Group::draw();
+		}
 		calc_function *f;
 		void *d;
-	};
-
-	/// Output the hold value to a stream.
-	std::ostream & operator<< (std::ostream &os, const Value_base *V);
-
-	class Console_slot : public Fl_Group {
-	public:
-		Console_slot (int ww, Value_base * vv);
-	protected:
-		void draw ();
-	private:
-		Value_base *v;
 		Fl_Output *o;
+		std::string n;
 	};
 
 	class Console : public AutoWindow {
 	public:
 		Console () : AutoWindow (400,0,"Console") {}
-		~Console ();
 
-		void watch (Value_base *v);
+		template <typename T> void watch (const T &t, const std::string &n) {
+			Watcher<T> *WW = new Watcher<T> (t,n,w());
+			WW->position (0,h()); size (w(), h()+WW->h()); add (WW);
+		}
 
-		template <typename T> void watch (const T & t, const std::string & n) { watch (new Value<T> (t,n)); }
+		template <typename T> void trace (T f (void*), void *d, const std::string &n) {
+			Tracer<T> *WW = new Tracer<T> (f,d,n,w());
+			WW->position (0,h()); size (w(), h()+WW->h()); add (WW);
+		};
 
 	private:
-		std::vector <Value_base *> l;
 		int task;
 	};
 }

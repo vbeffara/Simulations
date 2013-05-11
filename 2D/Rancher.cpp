@@ -106,9 +106,9 @@ public:
     int i=0;
 
     Console *W = new Console;
-    W->watch (new Value<int> (i,"Path length"));
-    W->watch (new Value_calc<int> (env_size,this,"Envelope size"));
-    W->watch (new Value_calc<double> (env_width,this,"Envelope width"));
+    W->watch (i,"Path length");
+    W->trace (env_size,this,"Envelope size");
+    W->trace (env_width,this,"Envelope width");
     W->show();
 
     traj.push_back (point (cpx(-1, -pente), 0));

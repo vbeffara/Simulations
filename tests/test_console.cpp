@@ -20,7 +20,7 @@ int main (int argc, char ** argv) {
     global_clock.step();
   }
 
-  W1.watch (new Value_calc<double> (x2,&x,"Double of x"));
+  W1.trace (x2,&x,"Double of x");
 
   for (unsigned long i=0; i<3e8; ++i) {
     x = prng.uniform_real();

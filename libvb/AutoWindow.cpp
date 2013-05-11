@@ -10,7 +10,7 @@ namespace vb {
 
 	AutoWindow::AutoWindow (int wd, int ht, const std::string &t) :
 		Fl_Double_Window (wd, ht, t.c_str()),
-		title(t), fps(20), paused (false) {
+		title(t), paused (false) {
 			task = global_clock.add (5,AutoWindow_update,this);
 			callback(close_window);
 	}
