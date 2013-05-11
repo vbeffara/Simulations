@@ -98,23 +98,6 @@ public:
     int b;
 };
 
-void bla (Fl_Widget * data);
-
-class Setter : public Fl_Hor_Nice_Slider {
-public:
-	Setter (Potts &P) : Fl_Hor_Nice_Slider (0,0,400,30), p(&P) {
-		bounds (0,4);
-		set_value (p->beta);
-		callback(&bla);
-	}
-	Potts *p;
-};
-
-void bla (Fl_Widget * data) {
-	Setter *S = (Setter*) data;
-	S->p->beta = S->value();
-}
-
 int main (int argc, char ** argv) {
     CL_Parser CLP (argc,argv,"n=500,q=3,b=1");
     Potts P(CLP);
@@ -122,11 +105,8 @@ int main (int argc, char ** argv) {
     P.show();
 
     Console W;
-    W.watch(P.beta, "beta");
-    Setter S (P);
-    S.position (0,W.h());
-    W.size (400,W.h()+S.h());
-    ((AutoWindow*)(&W)) -> add (&S);
+    W.watch(P.beta,"beta");
+    W.manage(P.beta,0.0,4.0);
     W.show();
 
     while (true) P.up ();
