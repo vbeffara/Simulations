@@ -8,25 +8,22 @@ namespace vb {
 	class Slot : public Fl_Output {
 	public:
 		Slot (const char *n, int w) : Fl_Output (0,0,w-100,30,n) { align(FL_ALIGN_RIGHT); }
+		template <typename T> void draw_value (T t) {
+			std::ostringstream os; os << t; value(os.str().c_str()); Fl_Output::draw();
+		};
 	};
 
 	template <typename T> class Watcher : public Slot {
 	public:
 		Watcher (T &tt, const char *nn, int w) : Slot (nn,w), t(tt) {}
-		void draw () {
-			std::ostringstream os; os << t; value(os.str().c_str());
-			Slot::draw();
-		}
+		void draw () { draw_value(t); }
 		T &t;
 	};
 
 	template <typename T> class Tracer : public Slot {
 	public:
 		Tracer (T ff (void*), void *dd, const char *nn, int w) : Slot (nn,w), f(ff), d(dd) {}
-		void draw () {
-			std::ostringstream os; os << f(d); value(os.str().c_str());
-			Slot::draw();
-		}
+		void draw () { draw_value(f(d)); }
 		T (*f) (void*);
 		void *d;
 	};
