@@ -1,7 +1,4 @@
-/// @file
-/// Definitions for the vb::Console class
-
-#pragma once
+#pragma once /// \file
 #include <vb/AutoWindow.h>
 
 namespace vb {
