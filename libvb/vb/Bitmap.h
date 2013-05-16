@@ -1,7 +1,4 @@
-/// @file
-/// Definitions for the vb::Bitmap class
-
-#pragma once
+#pragma once /// \file
 #include <vb/Picture.h>
 
 namespace vb {
@@ -14,7 +11,6 @@ namespace vb {
 		T const & at (coo z) const { return data[real(z) + stride*imag(z)]; }
 
 		T       & at (int x, int y)       __attribute__ ((deprecated)) { return at(coo(x,y)); }
-		T const & at (int x, int y) const __attribute__ ((deprecated)) { return at(coo(x,y)); }
 
 		T       & atp (coo z)       { int x=(real(z)%w() + w())%w(), y=(imag(z)%h() + h())%h(); return at(coo(x,y)); }
 		T const & atp (coo z) const { int x=(real(z)%w() + w())%w(), y=(imag(z)%h() + h())%h(); return at(coo(x,y)); }

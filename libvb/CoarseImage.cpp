@@ -33,11 +33,6 @@ namespace vb {
     }
   }
 
-  int CoarseImage::putpoint (int x, int y, int c, int dt) {
-    put (coo(x,y),c);
-    return c;
-  }
-
   char CoarseImage::at (coo z) const {
     int x=real(z+z0), y=imag(z+z0);
     const CoarseCell & d = Bitmap<CoarseCell>::at(coo(x/L,y/L));

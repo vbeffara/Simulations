@@ -1,7 +1,4 @@
-/// @file
-/// Definitions for the vb::Picture class.
-
-#pragma once
+#pragma once /// \file
 #include <vb/Color.h>
 #include <vb/AutoWindow.h>
 
@@ -14,34 +11,18 @@ namespace vb {
 
 	class Picture : public AutoWindow {
 	public:
-		/** The standard constructor
-		 *
-		 * @param wd The width of the window.
-		 * @param ht The height of the window.
-		 * @param t  The title of the window.
-		 */
-
 		Picture (int wd, int ht, const std::string &t = "Picture");
 		~Picture ();
 
 		/// Resize the window.
 		void size (int w, int h);
 
-		/** Output the image in the preferred format (PNG by default).
-		 *
-		 * @param s The base name of the output file, defaults to Image::title.
-		 */
-
+		/// Output the image in the preferred format (PNG by default).
 		virtual void output (const std::string &s = "");
-
-		/// Output the current image to a PNG file of specified name.
 		void output_png (const std::string &s = "");
 
-		/// Take a snapshot of the current window as a PNG file.
-		void snapshot ();
-
-		/// Initiate automatic snapshots.
 		void snapshot_setup (const std::string &prefix, double period = 0.0);
+		void snapshot ();
 
 		virtual int handle (int event);	///< Handle the events, in particular 'q' and 'x'.
 

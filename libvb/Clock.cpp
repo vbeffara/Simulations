@@ -35,7 +35,7 @@ namespace vb {
     next = slice;
   }
 
-  int Clock::add (long period, callback * task, void *data) {
+  int Clock::add (long period, void task (void*), void *data) {
     T.push_back (Task(period,task,data));
     return T.size()-1;
   }
