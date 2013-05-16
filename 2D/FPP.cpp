@@ -1,5 +1,6 @@
 /*
  * FPP.c - First Passage Percolation
+ * TODO switch to coo everywhere
  */
 
 #include <vb/CL_Parser.h>
@@ -24,10 +25,10 @@ public:
   };
 
   void spread (double t, int x, int y) {
-    if (!(at(x+1,y))) pqueue << Point(coo(x+1,y),t+cost());
-    if (!(at(x-1,y))) pqueue << Point(coo(x-1,y),t+cost());
-    if (!(at(x,y+1))) pqueue << Point(coo(x,y+1),t+cost());
-    if (!(at(x,y-1))) pqueue << Point(coo(x,y-1),t+cost());
+    if (!(at(coo(x+1,y)))) pqueue << Point(coo(x+1,y),t+cost());
+    if (!(at(coo(x-1,y)))) pqueue << Point(coo(x-1,y),t+cost());
+    if (!(at(coo(x,y+1)))) pqueue << Point(coo(x,y+1),t+cost());
+    if (!(at(coo(x,y-1)))) pqueue << Point(coo(x,y-1),t+cost());
   }
 
   void run () {
@@ -36,20 +37,20 @@ public:
 
       Point pt(pqueue);
 
-      if (!(at(real(pt.z),imag(pt.z)))) {
+      if (!at(pt.z)) {
         (*this) << pt; ++area;
 
         double curtime = invasion ? 0.0 : pt.t;
 
         int deg=1;
-        if (twostep) deg = at(real(pt.z)-1,imag(pt.z)) + at(real(pt.z)+1,imag(pt.z)) + at(real(pt.z),imag(pt.z)+1) + at(real(pt.z),imag(pt.z)-1);
+        if (twostep) deg = at(pt.z-coo(1,0)) + at(pt.z+coo(1,0)) + at(pt.z+coo(0,1)) + at(pt.z-coo(0,1));
         for (int i=0; i<deg; ++i) spread (curtime,real(pt.z),imag(pt.z));
 
         if (twostep) {
-          if (at(real(pt.z)-1,imag(pt.z))) spread(curtime,real(pt.z)-1,imag(pt.z));
-          if (at(real(pt.z)+1,imag(pt.z))) spread(curtime,real(pt.z)+1,imag(pt.z));
-          if (at(real(pt.z),imag(pt.z)-1)) spread(curtime,real(pt.z),imag(pt.z)-1);
-          if (at(real(pt.z),imag(pt.z)+1)) spread(curtime,real(pt.z),imag(pt.z)+1);
+          if (at(pt.z+coo(-1,0))) spread(curtime,real(pt.z)-1,imag(pt.z));
+          if (at(pt.z+coo(+1,0))) spread(curtime,real(pt.z)+1,imag(pt.z));
+          if (at(pt.z+coo(0,-1))) spread(curtime,real(pt.z),imag(pt.z)-1);
+          if (at(pt.z+coo(0,+1))) spread(curtime,real(pt.z),imag(pt.z)+1);
         }
 
         if ( (real(pt.z)==1) || (imag(pt.z)==1) || (real(pt.z)==true_width-2) || (imag(pt.z)==true_height-2) ) break;

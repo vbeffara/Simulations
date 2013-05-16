@@ -28,10 +28,6 @@ namespace vb {
 			char at        	(coo z) const;
 			char operator()	(coo z) const { return at(z); }
 
-			int putpoint   	(int x, int y, int c, int dt=1)	__attribute__ ((deprecated)) { put (coo(x,y),c); return c; };
-			char at        	(int x, int y) const           	__attribute__ ((deprecated)) { return at(coo(x,y)); }
-			char operator()	(int x, int y) const           	__attribute__ ((deprecated)) { return at(coo(x,y)); }
-
 		private:
 			int LL;
 	};

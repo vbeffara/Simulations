@@ -27,16 +27,16 @@ public:
 
     for (int x=0; x<n/4; ++x) {
       for (int y=0; y<n/4-x; ++y) {
-        putpoint (x+n/2, y+n/2, 1, 0);
-        putpoint (x+n/2, -y+n/2, 1, 0);
-        putpoint (-x+n/2, -y+n/2, 1, 0);
-        putpoint (-x+n/2, y+n/2, 1, 0);
+        put (coo(x+n/2, y+n/2), 1);
+        put (coo(x+n/2, -y+n/2), 1);
+        put (coo(-x+n/2, -y+n/2), 1);
+        put (coo(-x+n/2, y+n/2), 1);
       }
     }
 
     while ((x>=-n/2)&&(y>=-n/2)&&(x<n/2)&&(y<n/2)) {
-      int first = 1 - at(x+n/2,y+n/2);
-      if (prng.bernoulli(r)) putpoint (x+n/2,y+n/2,1);
+      int first = 1 - at(coo(x+n/2,y+n/2));
+      if (prng.bernoulli(r)) put (coo(x+n/2,y+n/2),1);
 
       if (first) d = bump_square (x,y,p,q); else d = prng()&3;
       if (d>=0) { x += dx[d]; y += dy[d]; }

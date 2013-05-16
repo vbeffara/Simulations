@@ -19,7 +19,7 @@ int main (int argc, char **argv) {
   int *height = new int[n];
   for (int i=0; i<n; ++i) {
     height[i]=0;
-    img.putpoint(i,0,1);
+    img.put(coo(i,0),1);
   }
 
   bool running = true;
@@ -39,17 +39,17 @@ int main (int argc, char **argv) {
 
     if (height[x]>=n) break;
 
-    if (height[x]<h) img.putpoint(x,h,0);
-    if (height[x]>h) img.putpoint(x,h+1,1);
+    if (height[x]<h) img.put(coo(x,h),0);
+    if (height[x]>h) img.put(coo(x,h+1),1);
 
     if(f) {
-      height[0]=height[1]; 
-      img.putpoint(0,height[0],1);
-      img.putpoint(0,height[0]+1,0);
+      height[0]=height[1];
+      img.put(coo(0,height[0]),1);
+      img.put(coo(0,height[0]+1),0);
 
       height[n-1]=height[n-2];
-      img.putpoint(n-1,height[n-1],1);
-      img.putpoint(n-1,height[n-1]+1,0);
+      img.put(coo(n-1,height[n-1]),1);
+      img.put(coo(n-1,height[n-1]+1),0);
     }
   }
 

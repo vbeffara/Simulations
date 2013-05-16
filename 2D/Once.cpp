@@ -1,5 +1,6 @@
 /*
  * Vertex-Once-Reinforced Random Walk in Z^2
+ * TODO : refactor into a proper class, use coo
  */
 
 #include <vb/CL_Parser.h>
@@ -44,12 +45,12 @@ int main(int argc, char ** argv)
   x=n/2; y=n/2;
 
   while ((x>0)&&(y>0)&&(x<n-1)&&(y<n-1)) {
-    img.putpoint (x,y,1);
+    img.put (coo(x,y),1);
 
     d = prng()&3;
     nx = x + dx[(int)d];
     ny = y + dy[(int)d];
-    newcol = img(nx,ny);
+    newcol = img.at(coo(nx,ny));
 
     if (newcol || prng.bernoulli(a)) {
        x=nx; y=ny;

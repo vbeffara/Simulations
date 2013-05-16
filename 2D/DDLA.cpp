@@ -80,18 +80,18 @@ int main (int argc, char **argv) {
     Point pt (queue);
 
     if ((real(pt.z)==n-1) || (imag(pt.z)==n-1)) running=0;
-    else if ((*img)(real(pt.z),imag(pt.z))==0) {
+    else if (img->at(pt.z) == 0) {
       double curtime = pt.t;
       if (ok(pt.z)) {
         img->addapoint (pt.z);
         reshape (real(pt.z),imag(pt.z));
-        if ( (real(pt.z)<n-1) && ((*img)(real(pt.z)+1,imag(pt.z))==0) )
+        if ( (real(pt.z)<n-1) && (img->at(pt.z+coo(1,0))==0) )
           queue << Point(pt.z+coo(1,0),curtime+prng.exponential()/p);
-        if ( (imag(pt.z)<n-1) && ((*img)(real(pt.z),imag(pt.z)+1)==0) )
+        if ( (imag(pt.z)<n-1) && (img->at(pt.z+coo(-1,0))==0) )
           queue << Point(pt.z+coo(0,1),curtime+prng.exponential()/(1-p));
-        if ( s && (real(pt.z)>0) && ((*img)(real(pt.z)-1,imag(pt.z))==0) )
+        if ( s && (real(pt.z)>0) && (img->at(pt.z+coo(0,1))==0) )
           queue << Point(pt.z-coo(1,0),curtime+prng.exponential());
-        if ( s && (imag(pt.z)>0) && ((*img)(real(pt.z),imag(pt.z)-1)==0) )
+        if ( s && (imag(pt.z)>0) && (img->at(pt.z+coo(0,-1))==0) )
           queue << Point(pt.z-coo(0,1),curtime+prng.exponential());
       } else {
         queue << Point(pt.z,curtime+prng.exponential());
