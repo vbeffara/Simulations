@@ -33,6 +33,7 @@
 
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
+#include <boost/random.hpp>
 #include <boost/utility.hpp>
 
 #include <FL/Fl.H>

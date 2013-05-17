@@ -1,166 +1,78 @@
-/// @file
-/// Definitions for the vb::PRNG class
-
-#pragma once
+#pragma once /// \file
 #include <vb/common.h>
-#include <boost/random.hpp>
 
 namespace vb {
-  /// Adaptor class to generate random variables from a standard PRNG.
-  template <typename G> class PRNG_base : public G {
-  public:
-    /// Constructor, initializing if a seed is provided.
-    PRNG_base (unsigned long s=0) { if (s) G::seed(s); }
+	template <typename G> class PRNG_base : public G {
+	public:
+		PRNG_base (unsigned long s=0) { if (s) G::seed(s); }
 
-    /// Generate a Bernoulli random variable of given parameter.
-    double bernoulli (double p=0.5) {
-      boost::bernoulli_distribution<> dist(p);
-      boost::variate_generator<G&, boost::bernoulli_distribution<> > die (*this, dist);
-      return die();
-    }
+		// For some reason default parameters are much slower than independent implementation ...
+		double bernoulli   	(double p)              	{ return (boost::bernoulli_distribution<>  	(p))        	(*this); }
+		double bernoulli   	()                      	{ return (boost::bernoulli_distribution<>  	(.5))       	(*this); }
+		double exponential 	(double lambda)         	{ return (boost::exponential_distribution<>	(lambda))   	(*this); }
+		double exponential 	()                      	{ return (boost::exponential_distribution<>	(1.0))      	(*this); }
+		double gaussian    	(double m, double sigma)	{ return (boost::normal_distribution<>     	(m,sigma))  	(*this); }
+		double gaussian    	(double m)              	{ return (boost::normal_distribution<>     	(m,1.0))    	(*this); }
+		double gaussian    	()                      	{ return (boost::normal_distribution<>     	(0.0,1.0))  	(*this); }
+		double geometric   	(double p)              	{ return (boost::geometric_distribution<>  	(p))        	(*this); }
+		double geometric   	()                      	{ return (boost::geometric_distribution<>  	(.5))       	(*this); }
+		double poisson     	(double lambda)         	{ return (boost::poisson_distribution<>    	(lambda))   	(*this); }
+		double poisson     	()                      	{ return (boost::poisson_distribution<>    	(1.0))      	(*this); }
+		double uniform_real	(double min, double max)	{ return (boost::uniform_real<>            	(min, max)) 	(*this); }
+		double uniform_real	(double max)            	{ return (boost::uniform_real<>            	(0.0, max)) 	(*this); }
+		double uniform_real	()                      	{ return (boost::uniform_real<>            	(0.0, 1.0)) 	(*this); }
+		int    uniform_int 	(int mmax)              	{ return (boost::uniform_int<>             	(0, mmax-1))	(*this); }
+	};
 
-    /// Generate an exponential random variable of given parameter.
-    double exponential (double lambda=1.0) {
-      boost::exponential_distribution<> dist(lambda);
-      boost::variate_generator<G&, boost::exponential_distribution<> > die (*this, dist);
-      return die();
-    }
+	typedef PRNG_base <boost::mt19937> PRNG;
+	extern PRNG prng;
 
-    /// Generate a Gaussian random variable of given parameter.
-    double gaussian (double m=0.0, double sigma=1.0) {
-      boost::normal_distribution<> dist(m,sigma);
-      boost::variate_generator<G&, boost::normal_distribution<> > die (*this, dist);
-      return die();
-    }
+	class PRNG_Rewindable {
+	public:
+		PRNG_Rewindable (long aa=13, long bb=257, long mm=2147483647) {
+			max = mm; a = aa; b = bb;
+			long long  t_a=a, t_b=max, t_u=1, t_v=0, t_s=0, t_t=1;
 
-    /// Generate a geometric random variable of given parameter.
-    double geometric (double p=1.0) {
-      boost::geometric_distribution<> dist(p);
-      boost::variate_generator<G&, boost::geometric_distribution<> > die (*this, dist);
-      return die();
-    }
+			while (t_b != 0) {
+				long long  t_q = t_a/t_b;
+				long long  t_r = t_a - t_b*t_q;
+				t_a = t_b; t_b = t_r;
 
-    /// Generate a Poisson random variable of given parameter.
-    double poisson (double lambda=1.0) {
-      boost::poisson_distribution<> dist(lambda);
-      boost::variate_generator<G&, boost::poisson_distribution<> > die (*this, dist);
-      return die();
-    }
+				long long  r1 = t_u - t_q*t_s;
+				t_u = t_s; t_s = r1;
 
-    /// Generate a uniform (continuous) random variable between the given bounds.
-    double uniform_real (double min=0.0, double max=1.0) {
-      boost::uniform_real<> dist(min, max);
-      boost::variate_generator<G&, boost::uniform_real<> > die (*this, dist);
-      return die();
-    }
+				long long  r2 = t_v - t_q*t_t;
+				t_v = t_t; t_t = r2;
+			}
 
-    /// Generate a uniform (integer) random variable between 0 and the given bound (excluded).
-    unsigned int uniform_int (unsigned int range) {
-      boost::uniform_int<> dist(0, range-1);
-      boost::variate_generator<G&, boost::uniform_int<> > die (*this, dist);
-      return die();
-    }
-  };
+			r_a = t_u;
+			r_b = (long) ( (- (long long)b * (long long)r_a ) % (long long)max );
 
-  /// Reference implementation of PRNG_base, using the standard Mersenne twister.
-  typedef PRNG_base <boost::mt19937> PRNG;
+			struct timeval tv;
+			time_t curtime;
 
-  /// A global instance of PRNG to make things simpler.
-  extern PRNG prng;
+			gettimeofday (&tv, NULL);
+			curtime = tv.tv_sec;
+			rdmbuf = tv.tv_usec;
+		}
 
-  /** A rewindable pseudo-random number generator.
-   *
-   * The point is to have a bad, but rewindable random number source.
-   * The algorithm is just linear congruence, so it iterates a*x+b
-   * modulo max, with standard values for them. Rewinding is just a
-   * matter of iterating r_a*x+r_b as many times as necessary, and this
-   * is very efficiet to do (logarithmic in the number steps).
-   *
-   * This is very useful to program coupling from the past without
-   * having to store the random numbers.
-   */
+		void iterate (long long a, long long b, long long n) {
+			while (n>0) {
+				if (n%2) rdmbuf = (a*rdmbuf+b) % max;
+				b = ((a+1)*b) % max;
+				a = (a*a) % max;
+				n >>= 1;
+			}
+		}
 
-  class PRNG_Rewindable {
-  public:
-    /** The standard constructor.
-     *
-     * Default values of the parameters are the same as in standard Unix
-     * (*this)(), i.e. a=13, b=257, modulo 2**31-1.
-     *
-     * @param aa The multipplicator.
-     * @param bb The shift.
-     * @param mm The modulus.
-     */
+		void rewind (long time1, long time2) { iterate (r_a, r_b, (long long)time1 * (long long)time2); }
 
-    PRNG_Rewindable (long aa=13, long bb=257, long mm=2147483647) {
-      max = mm; a = aa; b = bb;
-      long long  t_a=a, t_b=max, t_u=1, t_v=0, t_s=0, t_t=1;
+		unsigned long operator() () { rdmbuf = (a*rdmbuf+b)%max; return (unsigned long) rdmbuf; }
 
-      while (t_b != 0) {
-        long long  t_q = t_a/t_b;
-        long long  t_r = t_a - t_b*t_q;
-        t_a = t_b; t_b = t_r;
+		unsigned long max;
 
-        long long  r1 = t_u - t_q*t_s;
-        t_u = t_s; t_s = r1;
-
-        long long  r2 = t_v - t_q*t_t;
-        t_v = t_t; t_t = r2;
-      }
-
-      r_a = t_u;
-      r_b = (long) ( (- (long long)b * (long long)r_a ) % (long long)max );
-
-      struct timeval tv;
-      time_t curtime;
-
-      gettimeofday (&tv, NULL);
-      curtime = tv.tv_sec;
-      rdmbuf = tv.tv_usec;
-    }
-
-    /** Iterate x -> a*x+b, n times.
-     *
-     * This is done using a dyadic algorithm, so it takes time
-     * O(log(n)).
-     *
-     * @param a The multiplicator.
-     * @param b The shift.
-     * @param n The number of iterations to perform.
-     */
-
-    void iterate (long long a, long long b, long long n) {
-      while (n>0) {
-        if (n%2) rdmbuf = (a*rdmbuf+b) % max;
-        b = ((a+1)*b) % max;
-        a = (a*a) % max;
-        n >>= 1;
-      }
-    }
-
-    /** Rewind the renerator, time1*time2 times.
-     *
-     * Internally it just calls iterate(r_a,r_b,time1*time2).
-     *
-     * @param time1 The first factor of the number of iterations.
-     * @param time2 The second factor of the number of iterations.
-     */
-
-    void rewind (long time1, long time2) {
-      iterate (r_a, r_b, (long long)time1 * (long long)time2);
-    }
-
-    /// Return a pseudo-random number.
-    unsigned long operator() () {
-      rdmbuf = (a*rdmbuf+b)%max;
-      return (unsigned long) rdmbuf;
-    }
-
-    /// The largest value that the PRNG can return.
-    unsigned long max;
-
-  private:
-    long a,b, r_a,r_b;
-    long long rdmbuf;
-  };
+	private:
+		long a,b,r_a,r_b;
+		long long rdmbuf;
+	};
 }
