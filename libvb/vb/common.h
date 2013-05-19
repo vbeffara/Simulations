@@ -31,6 +31,7 @@
 #include <cairo.h>
 #include <cairo-pdf.h>
 
+#define BOOST_DISABLE_ASSERTS 1
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
 #include <boost/random.hpp>

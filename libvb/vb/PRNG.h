@@ -6,22 +6,13 @@ namespace vb {
 	public:
 		PRNG_base (unsigned long s=0) { if (s) G::seed(s); }
 
-		// For some reason default parameters are much slower than independent implementation ...
-		double bernoulli   	(double p)              	{ return (boost::bernoulli_distribution<>  	(p))        	(*this); }
-		double bernoulli   	()                      	{ return (boost::bernoulli_distribution<>  	(.5))       	(*this); }
-		double exponential 	(double lambda)         	{ return (boost::exponential_distribution<>	(lambda))   	(*this); }
-		double exponential 	()                      	{ return (boost::exponential_distribution<>	(1.0))      	(*this); }
-		double gaussian    	(double m, double sigma)	{ return (boost::normal_distribution<>     	(m,sigma))  	(*this); }
-		double gaussian    	(double m)              	{ return (boost::normal_distribution<>     	(m,1.0))    	(*this); }
-		double gaussian    	()                      	{ return (boost::normal_distribution<>     	(0.0,1.0))  	(*this); }
-		double geometric   	(double p)              	{ return (boost::geometric_distribution<>  	(p))        	(*this); }
-		double geometric   	()                      	{ return (boost::geometric_distribution<>  	(.5))       	(*this); }
-		double poisson     	(double lambda)         	{ return (boost::poisson_distribution<>    	(lambda))   	(*this); }
-		double poisson     	()                      	{ return (boost::poisson_distribution<>    	(1.0))      	(*this); }
-		double uniform_real	(double min, double max)	{ return (boost::uniform_real<>            	(min, max)) 	(*this); }
-		double uniform_real	(double max)            	{ return (boost::uniform_real<>            	(0.0, max)) 	(*this); }
-		double uniform_real	()                      	{ return (boost::uniform_real<>            	(0.0, 1.0)) 	(*this); }
-		int    uniform_int 	(int mmax)              	{ return (boost::uniform_int<>             	(0, mmax-1))	(*this); }
+		double bernoulli   	(double p=.5)               	{ return (boost::bernoulli_distribution<>  	(p))        	(*this); }
+		double exponential 	(double lambda=1)           	{ return (boost::exponential_distribution<>	(lambda))   	(*this); }
+		double gaussian    	(double m=0, double sigma=1)	{ return (boost::normal_distribution<>     	(m,sigma))  	(*this); }
+		double geometric   	(double p=.5)               	{ return (boost::geometric_distribution<>  	(p))        	(*this); }
+		double poisson     	(double lambda=1)           	{ return (boost::poisson_distribution<>    	(lambda))   	(*this); }
+		double uniform_real	(double min=0, double max=1)	{ return (boost::uniform_real<>            	(min, max)) 	(*this); }
+		int    uniform_int 	(int mmax)                  	{ return (boost::uniform_int<>             	(0, mmax-1))	(*this); }
 	};
 
 	typedef PRNG_base <boost::mt19937> PRNG;
