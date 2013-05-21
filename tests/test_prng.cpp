@@ -11,7 +11,7 @@ int main (int argc, char ** argv) {
     long long s;
     double t=0;
 
-    ostringstream store; store << prng;
+    string state = prng.state();
 
     cerr << "vb::PRNG::bernoulli() ...              \ttime = ";
     s=0; t=global_clock.time();
@@ -40,8 +40,7 @@ int main (int argc, char ** argv) {
     cerr << global_clock.time()-t << ",  \tsum = " << s << endl;
 
     cerr << "Stored state, first version ...        \ttime = ";
-    istringstream use (store.str()); use >> prng;
-    s=0; t=global_clock.time();
+    prng.state(state); s=0; t=global_clock.time();
     for (int i=0; i<n; ++i) s += prng.bernoulli();
     cerr << global_clock.time()-t << ",  \tsum = " << s << endl;
 }
