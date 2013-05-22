@@ -16,7 +16,7 @@ class IsingCFTP : public Bitmap<Site> {
 public:
 	IsingCFTP (CL_Parser & CLP) : Bitmap<Site> (CLP('n'), CLP('n'), "CFTP for Ising"), b(CLP('b')), d(0), s(CLP('s')),
 								  status (w(),h(),"current status") {
-		for (int i=0; i<w(); ++i) for (int j=0; j<h(); ++j) put (coo(i,j),1);
+		for (int i=0; i<w(); ++i) for (int j=0; j<h(); ++j) put (coo(i,j),1); snap();
 		b *= log(1+sqrt(double(2)));
 		for (int i=0; i<=4; ++i) p.push_back (exp(b*i) / (exp(b*i) + exp(b*(4-i))));
 	};
@@ -29,7 +29,7 @@ public:
 
 	void up ()  	{ for (int i=0; i<w()*h(); ++i) up(coo(d+prng.uniform_int(w()-2*d),d+prng.uniform_int(h()-2*d))); }
 	void snap ()	{ for (int i=0; i<w(); ++i) for (int j=0; j<h(); ++j) status.put (coo(i,j),at(coo(i,j))); status.update(); }
-	void show ()	{ Bitmap<Site>::show(); snap(); status.show(); }
+	void show ()	{ Bitmap<Site>::show(); status.show(); }
 
 	void run () {
 		vector<string> states;
