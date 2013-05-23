@@ -46,39 +46,18 @@ namespace vb {
 		std::vector<T> labels;
 	};
 
-	double cost_cp (Lattice const &L);
-
-	/** A class representing a rectangle in a libvb::Lattice.
-	 *
-	 * The template parameter is the type of data to be put on each vertex
-	 * of the rectangle (typically a color or some kind of local information).
-	 */
-
 	template <typename T> class Lattice_rectangle : public Lattice {
 	public:
-
-		/** The constructor.
-		 *
-		 * The rectangle it produces has _L.n * _w * _h vertices, each one
-		 * carrying as a label an instance of class T.
-		 *
-		 * @param _L The lattice structure.
-		 * @param _w The width of the rectangle, measured in terms of the fundamental domain.
-		 * @param _h The height of the rectangle, measured in terms of the fundamental domain.
-		 */
-
 		Lattice_rectangle (const Lattice &_L, int _w, int _h) : Lattice(_L), w(_w), h(_h), data(w*h*n) {};
 
-		/// Return the label at a given vertex.
-		T & operator() (coo z, int k) { return data[k + n*(real(z)+w*imag(z))]; }
-
-		/// Return the label at a given vertex.
-		T & operator[] (const Lattice_place &v) { return (*this)(v.z,v.k); }
+		T & operator[] (const Lattice_place &v) { return data [v.k + n*(real(v.z)+w*imag(v.z))]; } /// Return the label at a given vertex.
 
 		const int w;         ///< The width of the rectangle.
 		const int h;         ///< The height of the rectangle.
 		std::vector<T> data; ///< The labels.
 	};
+
+	double cost_cp (Lattice const &L);
 
 	Lattice Z2();  ///< The square lattice.
 	Lattice H();   ///< The hexagonal lattice.
