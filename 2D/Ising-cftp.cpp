@@ -29,18 +29,17 @@ public:
 
 	void up ()  	{ for (int i=0; i<w()*h(); ++i) up(coo(d+prng.uniform_int(w()-2*d),d+prng.uniform_int(h()-2*d))); }
 	void snap ()	{ for (int i=0; i<w(); ++i) for (int j=0; j<h(); ++j) status.put (coo(i,j),at(coo(i,j))); status.update(); }
-	void show ()	{ Bitmap<Site>::show(); status.show(); }
 
 	void run () {
-		vector<string> states;
+		vector<string> states; states.push_back(prng.state());
 		int n = w()*h();
 		while (n>0) {
 			cerr << n << endl;
-			states.push_back(prng.state());
 			for (int i=d; i<w()-2*d; ++i) for (int j=d; j<h()-2*d; ++j) put (coo(i,j),1);
 			for (int t=states.size()-1; t>=0; --t) {
 				prng.state(states[t]);
 				for (int i=0; i<(1<<t); ++i) up();
+				if (t==states.size()-1) states.push_back(prng.state());
 			}
 			snap(); if(s) status.snapshot();
 			n=0; for (int i=0; i<w(); ++i) for (int j=0; j<h(); ++j) if (at(coo(i,j)).s==1) ++n;
@@ -68,5 +67,5 @@ public:
 int main(int argc, char *argv[]) {
 	CL_Parser CLP (argc,argv,"n=200,b=1,s");
 	IsingCFTP I (CLP); I.bc_dobrushin();
-	I.show(); I.run(); I.pause();
+	I.show(); I.status.show(); I.run(); I.pause();
 }
