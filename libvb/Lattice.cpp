@@ -2,18 +2,16 @@
 #include <vb/Lattice.h>
 
 namespace vb {
-  Lattice_vertex & Lattice_vertex::operator+= (const Lattice_move &m) {
-    z+=m.dz; k=m.k;
+  Lattice_place & Lattice_place::operator+= (const Lattice_place &m) {
+    z+=m.z; k=m.k;
     return *this;
   }
 
-  Lattice_vertex Lattice_vertex::operator+ (const Lattice_move &m) const {
-    Lattice_vertex tmp (z,k);
+  Lattice_place Lattice_place::operator+ (const Lattice_place &m) const {
+    Lattice_place tmp (z,k);
     tmp += m;
     return tmp;
   }
-
-  Lattice::Lattice (int _n, cpx _tau) : n(_n), adj(_n), tau(_tau), z(_n), r(_n) { }
 
   cpx Lattice::actual (cpx xy) const {
     return xy.real() + tau*xy.imag();
@@ -23,19 +21,19 @@ namespace vb {
     return actual (cpx(real(zz),imag(zz))+z[k]);
   }
 
-  cpx Lattice::operator() (const Lattice_vertex &v) const {
+  cpx Lattice::operator() (const Lattice_place &v) const {
     return (*this)(v.z,v.k);
   }
 
   Lattice & Lattice::bond (int k1, int k2, coo dz) {
-    adj[k1].push_back (Lattice_move(k2,dz));
-    adj[k2].push_back (Lattice_move(k1,-dz));
+    adj[k1].push_back (Lattice_place(dz,k2));
+    adj[k2].push_back (Lattice_place(-dz,k1));
     return *this;
   }
 
   cpx Lattice::shift (int k, int l) const {
-    const Lattice_move &m (adj[k][l]);
-    return (*this)(m.dz,m.k) - (*this)(coo(0,0),k);
+    const Lattice_place &m (adj[k][l]);
+    return (*this)(m.z,m.k) - (*this)(coo(0,0),k);
   }
 
   double Lattice::energy () const {
@@ -76,8 +74,8 @@ namespace vb {
     double a=0, b=0, c=0;
     for (int k=0; k<n; ++k)
       for (int l=0; l<adj[k].size(); ++l) {
-        const Lattice_move &m = adj[k][l];
-        cpx u = cpx(std::real(m.dz),std::imag(m.dz)) + z[m.k] - z[k];
+        const Lattice_place &m = adj[k][l];
+        cpx u = cpx(std::real(m.z),std::imag(m.z)) + z[m.k] - z[k];
         a += u.imag()*u.imag();
         b += 2*u.real()*u.imag();
         c += u.real()*u.real();
@@ -99,7 +97,7 @@ namespace vb {
     return t;
   }
 
-  void Lattice::optimize (LatticeCostFunction f, double eps) {
+  void Lattice::optimize (double f (Lattice const &), double eps) {
     double cost = f(*this);
     double old_cost = cost + eps + 1;
     double tmp_cost = cost;

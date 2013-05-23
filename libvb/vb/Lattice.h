@@ -2,73 +2,51 @@
 #include <vb/common.h>
 
 namespace vb {
-	class Lattice_move {
+	class Lattice_place {
 	public:
-		Lattice_move (int _k, coo _dz) : k(_k), dz(_dz) {}
+		Lattice_place (coo _z=0, int _k=0) : z(_z), k(_k) {};
 
-		int k;  ///< The vertex in the target fundamental domain.
-		coo dz; ///< The displacement.
-	};
-
-	class Lattice_vertex {
-	public:
-		Lattice_vertex (coo _z=0, int _k=0) : z(_z), k(_k) {};
-
-		Lattice_vertex & operator+= (const Lattice_move &m);
-		Lattice_vertex   operator+  (const Lattice_move &m) const;
+		Lattice_place & operator+= (const Lattice_place &m);
+		Lattice_place   operator+  (const Lattice_place &m) const;
 
 		coo z; ///< The coordinates of the fundamental domain containing the point.
 		int k; ///< The vertex identifying the point within its fundamental domain.
 	};
 
-	class Lattice;
-
-	typedef double LatticeCostFunction (Lattice const &);
-	double cost_cp (Lattice const &L);
-
 	class Lattice {
 	public:
-		Lattice (int _n, cpx _tau = cpx(0,1));
+		Lattice (int _n, cpx _tau = cpx(0,1)) : n(_n), adj(_n), tau(_tau), z(_n), r(_n) {};
 
-		/// Map complex coordinates from lattice relative to absolute.
-		cpx actual (cpx xy) const;
+		cpx actual (cpx xy) const;                    	///< Map complex coordinates from lattice relative to absolute.
+		cpx operator() (coo z, int k=0) const;        	///< Compute the affix of the designated vertex.
+		cpx operator() (const Lattice_place &v) const;	///< Compute the affix of the designated vertex.
 
-		/// Compute the affix of the designated vertex.
-		cpx operator() (coo z, int k=0) const;
+		Lattice &bond (int k1, int k2, coo dz = coo(0,0));	///< Add a bond to the lattice structure.
+		cpx shift (int k, int l) const;                   	///< Compute the displacement between two vertices in the same fundamental domain.
 
-		/// Compute the affix of the designated vertex.
-		cpx operator() (const Lattice_vertex &v) const;
+		double energy () const;                                  	///< The sum of bond square-lengths.
+		cpx shear () const;                                      	///< The "distance" from isotropy of the SRW on the current embedding.
+		double relax_once ();                                    	///< Replace each vertex by the barycenter of its neighbors, in order.
+		void relax (double eps=0);                               	///< Iterate relax_once until the energy is (approximately) minimized.
+		void optimize (double f (Lattice const &), double eps=0);	///< Minimize a cost function over possible embeddings.
 
-		/// Add a bond to the lattice structure.
-		Lattice &bond (int k1, int k2, coo dz = coo(0,0));
+		cpx tau_rw () const;	///< Compute the modulus of the SRW embedding.
 
-		/// Compute the displacement between two vertices in the same fundamental domain.
-		cpx shift (int k, int l) const;
-
-		/// The sum of bond square-lengths.
-		double energy () const;
-
-		/// The "distance" from isotropy of the SRW on the current embedding.
-		cpx shear () const;
-
-		/// Replace each vertex by the barycenter of its neighbors, in order.
-		double relax_once ();
-
-		/// Iterate relax_once until the energy is (approximately) minimized.
-		void relax (double eps=0);
-
-		/// Compute the modulus of the SRW embedding.
-		cpx tau_rw () const;
-
-		/// Minimize a cost function over possible embeddings.
-		void optimize (LatticeCostFunction f, double eps=0);
-
-		unsigned int n;                                ///< Number of vertices in a fundamental domain
-		std::vector < std::vector<Lattice_move> > adj; ///< Adjacency lists
-		cpx tau;                                       ///< Modulus of embedding in the complex plane
-		std::vector<cpx> z;                            ///< Displacement of each vertex
-		std::vector<double> r;                         ///< The radius of the disk at each point
+		unsigned int n;                                	///< Number of vertices in a fundamental domain
+		std::vector < std::vector<Lattice_place> > adj;	///< Adjacency lists
+		cpx tau;                                       	///< Modulus of embedding in the complex plane
+		std::vector<cpx> z;                            	///< Displacement of each vertex
+		std::vector<double> r;                         	///< The radius of the disk at each point
 	};
+
+	template <typename T> class Lattice_dressed : public Lattice {
+	public:
+		Lattice_dressed (int n, cpx tau = cpx(0,1))	: Lattice(n,tau),	labels(n) {};
+		Lattice_dressed (Lattice const &L)         	: Lattice(L),    	labels(L.n) {};
+		std::vector<T> labels;
+	};
+
+	double cost_cp (Lattice const &L);
 
 	/** A class representing a rectangle in a libvb::Lattice.
 	 *
@@ -95,7 +73,7 @@ namespace vb {
 		T & operator() (coo z, int k) { return data[k + n*(real(z)+w*imag(z))]; }
 
 		/// Return the label at a given vertex.
-		T & operator[] (const Lattice_vertex &v) { return (*this)(v.z,v.k); }
+		T & operator[] (const Lattice_place &v) { return (*this)(v.z,v.k); }
 
 		const int w;         ///< The width of the rectangle.
 		const int h;         ///< The height of the rectangle.
