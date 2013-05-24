@@ -39,13 +39,6 @@ namespace vb {
 		std::vector<double> r;                         	///< The radius of the disk at each point
 	};
 
-	template <typename T> class Lattice_dressed : public Lattice {
-	public:
-		Lattice_dressed (int n, cpx tau = cpx(0,1))	: Lattice(n,tau),	labels(n) {};
-		Lattice_dressed (Lattice const &L)         	: Lattice(L),    	labels(L.n) {};
-		std::vector<T> labels;
-	};
-
 	template <typename T> class Lattice_rectangle : public Lattice {
 	public:
 		Lattice_rectangle (const Lattice &_L, int _w, int _h) : Lattice(_L), w(_w), h(_h), data(w*h*n) {};
