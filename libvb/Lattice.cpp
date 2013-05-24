@@ -2,29 +2,6 @@
 #include <vb/Lattice.h>
 
 namespace vb {
-  Lattice_place & Lattice_place::operator+= (const Lattice_place &m) {
-    z+=m.z; k=m.k;
-    return *this;
-  }
-
-  Lattice_place Lattice_place::operator+ (const Lattice_place &m) const {
-    Lattice_place tmp (z,k);
-    tmp += m;
-    return tmp;
-  }
-
-  cpx Lattice::actual (cpx xy) const {
-    return xy.real() + tau*xy.imag();
-  }
-
-  cpx Lattice::operator() (coo zz, int k) const {
-    return actual (cpx(real(zz),imag(zz))+z[k]);
-  }
-
-  cpx Lattice::operator() (const Lattice_place &v) const {
-    return (*this)(v.z,v.k);
-  }
-
   Lattice & Lattice::bond (int k1, int k2, coo dz) {
     adj[k1].push_back (Lattice_place(dz,k2));
     adj[k2].push_back (Lattice_place(-dz,k1));
