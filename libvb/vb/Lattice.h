@@ -39,17 +39,6 @@ namespace vb {
 		std::vector<double> r;                         	///< The radius of the disk at each point
 	};
 
-	template <typename T> class Lattice_rectangle : public Lattice {
-	public:
-		Lattice_rectangle (const Lattice &_L, int _w, int _h) : Lattice(_L), w(_w), h(_h), data(w*h*n) {};
-
-		T & operator[] (const Lattice_place &v) { return data [v.k + n*(real(v.z)+w*imag(v.z))]; } /// Return the label at a given vertex.
-
-		const int w;         ///< The width of the rectangle.
-		const int h;         ///< The height of the rectangle.
-		std::vector<T> data; ///< The labels.
-	};
-
 	double cost_cp (Lattice const &L);
 
 	Lattice Z2();  ///< The square lattice.
