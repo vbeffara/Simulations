@@ -15,11 +15,11 @@ namespace vb {
 			}
 			for (int x=0; x<sx; ++x) for (int z=0; z<sz; ++z) {
 				S s=0; for (int y=0; y<sy; ++y) s += at(x,y,z);
-				Image::put (coo(x,z+sy), s/sz);
+				Image::put (coo(x,z+sy), s/sy);
 			}
 			for (int y=0; y<sy; ++y) for (int z=0; z<sz; ++z) {
 				S s=0; for (int x=0; x<sx; ++x) s += at(x,y,z);
-				Image::put (coo(z+sx,y), s/sz);
+				Image::put (coo(z+sx,y), s/sx);
 			}
 			Image::update();
 		}
