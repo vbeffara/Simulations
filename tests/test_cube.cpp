@@ -4,7 +4,7 @@
 using namespace vb;
 
 int main (int argc, char ** argv) {
-    Cube<unsigned char, int> C (100,100,100,"3d Glauber");
+    Cube<unsigned char, int> C (50,100,200,"3d Glauber");
     C.show();
     for (int x=0; x<C.sx; ++x) for (int y=0; y<C.sy; ++y) for (int z=0; z<C.sz; ++z) C.put(x,y,z, prng.bernoulli()?255:0);
 	while (true) {
