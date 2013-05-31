@@ -4,7 +4,7 @@
 namespace vb {
 	template <typename T, typename S> class Adder {
 	public:
-		Adder () : s(0), n(1) { };
+		Adder (int _s = 0) : s(0), n(1) { };
 		void dim (int _n) { n = _n; }
 		S operator+= (const T &t) { s += t; return s; }
 		S operator-= (const T &t) { s -= t; return s; }
@@ -13,21 +13,21 @@ namespace vb {
 		S s; int n;
 	};
 
-	template <typename T, typename S> class Cube : public Image {
+	template <typename T, typename S> class Cube : public Bitmap < Adder<T,S> > {
 	public:
-		Cube (int x, int y, int z, const std::string &name) :Image(x+z,y+z,name),
+		Cube (int x, int y, int z, const std::string &name) : Bitmap < Adder<T,S> > (x+z,y+z,name),
 			sx(x), sy(y), sz(z), data(sx*sy*sz,0), XY(sx*sy), YZ(sy*sz), XZ(sx*sz) {
-			for (int x=sx; x<sx+sz; ++x) for (int y=sy; y<sy+sz; ++y) Image::put (coo(x,y), ((x+y)%2) ? 255 : 0);
+			for (int x=sx; x<sx+sz; ++x) for (int y=sy; y<sy+sz; ++y) Bitmap < Adder<T,S> >::at (coo(x,y)) .s = (((x+y)%2) ? 255 : 0);
 			for (int x=0; x<sx; ++x) for (int y=0; y<sy; ++y) XY[x+sx*y].dim(sz);
 			for (int x=0; x<sx; ++x) for (int z=0; z<sz; ++z) XZ[x+sx*z].dim(sy);
 			for (int y=0; y<sy; ++y) for (int z=0; z<sz; ++z) YZ[y+sy*z].dim(sx);
 		}
 
 		void update () {
-			for (int x=0; x<sx; ++x) for (int y=0; y<sy; ++y)	Image::put (coo(x,y),   	XY[x+sx*y]);
-			for (int x=0; x<sx; ++x) for (int z=0; z<sz; ++z)	Image::put (coo(x,z+sy),	XZ[x+sx*z]);
-			for (int y=0; y<sy; ++y) for (int z=0; z<sz; ++z)	Image::put (coo(z+sx,y),	YZ[y+sy*z]);
-			Image::update();
+			for (int x=0; x<sx; ++x) for (int y=0; y<sy; ++y)	Bitmap < Adder<T,S> > ::put (coo(x,y),   	XY[x+sx*y]);
+			for (int x=0; x<sx; ++x) for (int z=0; z<sz; ++z)	Bitmap < Adder<T,S> > ::put (coo(x,z+sy),	XZ[x+sx*z]);
+			for (int y=0; y<sy; ++y) for (int z=0; z<sz; ++z)	Bitmap < Adder<T,S> > ::put (coo(z+sx,y),	YZ[y+sy*z]);
+			Bitmap < Adder<T,S> > ::update();
 		}
 
 		T & 	at 	(int x, int y, int z)            	{ return data[x+sx*y+sx*sy*z]; }
@@ -35,11 +35,11 @@ namespace vb {
 		void	put	(int x, int y, int z, const T &t)	{
 		    T d = data[x+sx*y+sx*sy*z]; XY[x+sx*y] -= d; XZ[x+sx*z] -= d; YZ[y+sy*z] -= d;
 		    data[x+sx*y+sx*sy*z] = t; XY[x+sx*y] += t; XZ[x+sx*z] += t; YZ[y+sy*z] += t;
-		    step();
+		    AutoWindow::step();
 		}
 
 		int sx,sy,sz;
 		std::vector<T> data;
-		std::vector< Adder<T,S> > XY,YZ,XZ;
+		std::vector < Adder<T,S> > XY,YZ,XZ;
 	};
 }
