@@ -10,3 +10,4 @@ out*
 *.mp4
 *log*
 /snapshots
+*.pov
