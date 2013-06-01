@@ -1,10 +1,14 @@
 #include <vb/Cube.h>
 #include <vb/PRNG.h>
+#include <vb/CL_Parser.h>
 
 using namespace vb;
 
 int main (int argc, char ** argv) {
-    Cube<unsigned char, int> C (50,100,200,"3d Glauber");
+	CL_Parser CLP (argc, argv, "n=100,b=1");
+	double b = CLP('b'); b /= 255;
+
+    Cube<unsigned char, int> C (CLP('n'),CLP('n'),CLP('n'),"3d Glauber");
     C.show();
     for (int x=0; x<C.sx; ++x) for (int y=0; y<C.sy; ++y) for (int z=0; z<C.sz; ++z) C.put(x,y,z, prng.bernoulli()?255:0);
 	while (true) {
@@ -14,9 +18,7 @@ int main (int argc, char ** argv) {
 		int S=0;
 		S += C.atp(x+1,y,z); S += C.atp(x,y+1,z); S += C.atp(x,y,z+1);
 		S += C.atp(x-1,y,z); S += C.atp(x,y-1,z); S += C.atp(x,y,z-1);
-		if (S>3*255)     	C.put (x,y,z,255);
-		else if (S<3*255)	C.put (x,y,z,0);
-		else             	C.put (x,y,z, prng.bernoulli() ? 255 : 0);
+		C.put (x,y,z, prng.bernoulli(exp(b*S) / (exp(b*S) + exp(b*(6*255-S)))) ? 255 : 0);
 	}
     return 0;
 }
