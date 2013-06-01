@@ -1,8 +1,10 @@
 #include <vb/Cube.h>
 #include <vb/PRNG.h>
 #include <vb/CL_Parser.h>
+#include <vb/Pov.h>
 
 using namespace vb;
+using namespace std;
 
 int main (int argc, char ** argv) {
 	CL_Parser CLP (argc, argv, "n=50,b=1");
@@ -24,26 +26,13 @@ int main (int argc, char ** argv) {
 		C.put (x,y,z, prng.bernoulli(exp(beta*S) / (exp(beta*S) + exp(beta*(6*255-S)))) ? 255 : 0);
 	}
 
-	std::cout << "#include \"colors.inc\"" << std::endl << "#include \"stones.inc\"" << std::endl
-		<< "camera { location " << coo3(7*C.sx/4,5*C.sy/4,-C.sz) << " look_at " << coo3(C.sx/2,C.sy/2,C.sz/2) << " angle 60 }" << std::endl
-		<< "light_source { " << coo3(5*C.sx/4,2*C.sy,-2*C.sz) << " color White*1.5 }" << std::endl
-		<< "plane { x, " << - C.sx/4 << " texture { pigment { color White } } finish { reflection {.6} ambient 0.2 diffuse 0 } }" << std::endl
-		<< "plane { y, " << - C.sy/4 << " texture { pigment { color White } } finish { reflection {.4} ambient 0.2 diffuse 0.4 } }" << std::endl
-		<< "plane { z, " << 5*C.sz/4 << " texture { pigment { color White } } finish { reflection {.6} ambient 0.2 diffuse 0 } }" << std::endl
-		<< "cylinder { " << coo3(0,0,0)      	<< ", " << coo3(C.sx,0,0)      	<< ", .1 texture { pigment { color Red } } }" << std::endl
-		<< "cylinder { " << coo3(0,0,0)      	<< ", " << coo3(0,C.sy,0)      	<< ", .1 texture { pigment { color Red } } }" << std::endl
-		<< "cylinder { " << coo3(0,0,0)      	<< ", " << coo3(0,0,C.sz)      	<< ", .1 texture { pigment { color Red } } }" << std::endl
-		<< "cylinder { " << coo3(C.sx,C.sy,0)	<< ", " << coo3(C.sx,0,0)      	<< ", .1 texture { pigment { color Red } } }" << std::endl
-		<< "cylinder { " << coo3(C.sx,C.sy,0)	<< ", " << coo3(0,C.sy,0)      	<< ", .1 texture { pigment { color Red } } }" << std::endl
-		<< "cylinder { " << coo3(C.sx,C.sy,0)	<< ", " << coo3(C.sx,C.sy,C.sz)	<< ", .1 texture { pigment { color Red } } }" << std::endl
-		<< "cylinder { " << coo3(0,C.sy,C.sz)	<< ", " << coo3(0,C.sy,0)      	<< ", .1 texture { pigment { color Red } } }" << std::endl
-		<< "cylinder { " << coo3(0,C.sy,C.sz)	<< ", " << coo3(0,0,C.sz)      	<< ", .1 texture { pigment { color Red } } }" << std::endl
-		<< "cylinder { " << coo3(0,C.sy,C.sz)	<< ", " << coo3(C.sx,C.sy,C.sz)	<< ", .1 texture { pigment { color Red } } }" << std::endl
-		<< "cylinder { " << coo3(C.sx,0,C.sz)	<< ", " << coo3(C.sx,0,0)      	<< ", .1 texture { pigment { color Red } } }" << std::endl
-		<< "cylinder { " << coo3(C.sx,0,C.sz)	<< ", " << coo3(0,0,C.sz)      	<< ", .1 texture { pigment { color Red } } }" << std::endl
-		<< "cylinder { " << coo3(C.sx,0,C.sz)	<< ", " << coo3(C.sx,C.sy,C.sz)	<< ", .1 texture { pigment { color Red } } }" << std::endl
-		<< "background { color White }" << std::endl;
+	std::cout	<< "#version 3.7;" << std::endl << "#include \"colors.inc\"" << std::endl << "#include \"stones.inc\"" << std::endl
+	         	<< "background { color White }" << std::endl
+	         	<< new Pov_Camera (tri(7*C.sx/4,1.3*C.sy,-C.sz), tri(C.sx/2,C.sy/2,C.sz/2), 60)
+	         	<< new Pov_Light_Source (tri(1.25*C.sx,1.8*C.sy,-2.0*C.sz))
+	         	<< new Pov_Plane (tri(1,0,0), -C.sx/4) << new Pov_Plane (tri(0,1,0), -C.sy/8) << new Pov_Plane (tri(0,0,1), 5*C.sz/4)
+	         	<< new Pov_Frame (tri(0,0,0), tri(C.sx,C.sy,C.sz));
 	for (int x=0; x<C.sx; ++x) for (int y=0; y<C.sy; ++y) for (int z=0; z<C.sz; ++z) if (C.at(x,y,z)==255)
-		std::cout << "box { " << coo3(x,y,z) << ", " << coo3(x+1,y+1,z+1) << " texture { pigment { color rgb <.4,.7,1> } } }" << std::endl;
+		std::cout << new Pov_Box (tri(x,y,z), tri(x+1,y+1,z+1));
     return 0;
 }
