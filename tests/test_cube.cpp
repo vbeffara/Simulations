@@ -26,7 +26,7 @@ int main (int argc, char ** argv) {
 
 	std::cout << "#include \"colors.inc\"" << std::endl << "#include \"stones.inc\"" << std::endl
 		<< "camera { location " << coo3(7*C.sx/4,5*C.sy/4,-C.sz) << " look_at " << coo3(C.sx/2,C.sy/2,C.sz/2) << " angle 60 }" << std::endl
-		<< "light_source { " << coo3(C.sx/4,2*C.sy,-2*C.sz) << " color White*1.5 }" << std::endl
+		<< "light_source { " << coo3(5*C.sx/4,2*C.sy,-2*C.sz) << " color White*1.5 }" << std::endl
 		<< "plane { x, " << - C.sx/4 << " texture { pigment { color White } } finish { reflection {.6} ambient 0.2 diffuse 0 } }" << std::endl
 		<< "plane { y, " << - C.sy/4 << " texture { pigment { color White } } finish { reflection {.4} ambient 0.2 diffuse 0.4 } }" << std::endl
 		<< "plane { z, " << 5*C.sz/4 << " texture { pigment { color White } } finish { reflection {.6} ambient 0.2 diffuse 0 } }" << std::endl
