@@ -2,6 +2,10 @@
 #include <vb/Image.h>
 
 namespace vb {
+	class coo3 { public: int x,y,z; coo3 (int xx, int yy, int zz) : x(xx), y(yy), z(zz) {} };
+
+	std::ostream & operator<< (std::ostream &os, const coo3 &c) { return os << "<" << c.x << "," << c.y << "," << c.z << ">"; }
+
 	template <typename T, typename S> class Adder {
 	public:
 		Adder (int _s = 0) : s(_s), n(1) { };
