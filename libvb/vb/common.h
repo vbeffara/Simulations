@@ -5,6 +5,7 @@
 /// have to include this file directly.
 
 #pragma once
+#ifndef DOXYGEN
 #include <vb/config.h>
 
 #include <algorithm>
@@ -43,6 +44,7 @@
 #include <FL/Fl_Hor_Nice_Slider.H>
 #include <FL/Fl_Output.H>
 #include <FL/fl_draw.H>
+#endif
 
 namespace vb {
   /// Utility type for a complex number.
