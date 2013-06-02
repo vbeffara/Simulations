@@ -43,7 +43,7 @@ namespace vb {
     class Pov_Plane : public Pov_Object { public: tri a; double d; Pov_Plane (tri aa, double dd) : a(aa), d(dd) {}
         std::ostream & output_pov (std::ostream & os) {
             return os	<< "plane { " << a << ", " << d
-                     	<< " texture { pigment { color White } } finish { reflection {.7} ambient 0.2 diffuse 0 } }";
+                     	<< " texture { pigment { color White } } finish { reflection {.8} ambient 0.1 diffuse 0 } }";
         }
     };
 
