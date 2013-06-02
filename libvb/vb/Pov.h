@@ -61,7 +61,8 @@ namespace vb {
         }
     };
 
-    class Pov_Scene { public:
+    class Pov_Scene { public: std::string title;
+		Pov_Scene (std::string s) : title(s) { }
 		~Pov_Scene () { foreach (Pov_Object *o,objs) delete o; }
 
 		std::ostream & output_pov (std::ostream & os) {
@@ -71,6 +72,14 @@ namespace vb {
 			  	<< "background { color White }" << std::endl;
 			foreach (Pov_Object *o, objs) os << o;
 			return os;
+		}
+
+		void output_pov (const std::string &s = "") {
+		    std::ostringstream os;
+		    if (s == "") os << "output/" << title; else os << s;
+			os << ".pov";
+			std::cerr << "*** TODO: This should go in " << os.str() << std::endl;
+			output_pov (std::cout);
 		}
 
 		std::vector <Pov_Object*> objs;

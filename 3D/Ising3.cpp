@@ -36,14 +36,15 @@ int main (int argc, char ** argv) {
     Ising3 C (CLP); C.show();
     C.bc_cube(); for (int t=0; t<10; ++t) C.swipe();
 
-	Pov_Scene S; S	<< new Pov_Camera      	(tri(7*C.sx/4,1.3*C.sy,-C.sz), tri(C.sx/2,C.sy/2,C.sz/2), 60)
-	              	<< new Pov_Light_Source	(tri(1.25*C.sx,1.8*C.sy,-2.0*C.sz))
-	              	<< new Pov_Plane       	(tri(1,0,0), -C.sx/4)
-	              	<< new Pov_Plane       	(tri(0,1,0), -C.sy/8)
-	              	<< new Pov_Plane       	(tri(0,0,1), 5*C.sz/4)
-	              	<< new Pov_Frame       	(tri(0,0,0), tri(C.sx,C.sy,C.sz));
+	Pov_Scene S ("A 3d Ising configuration");
+	S	<< new Pov_Camera      	(tri(7*C.sx/4,1.3*C.sy,-C.sz), tri(C.sx/2,C.sy/2,C.sz/2), 60)
+	 	<< new Pov_Light_Source	(tri(1.25*C.sx,1.8*C.sy,-2.0*C.sz))
+	 	<< new Pov_Plane       	(tri(1,0,0), -C.sx/4)
+	 	<< new Pov_Plane       	(tri(0,1,0), -C.sy/8)
+	 	<< new Pov_Plane       	(tri(0,0,1), 5*C.sz/4)
+	 	<< new Pov_Frame       	(tri(0,0,0), tri(C.sx,C.sy,C.sz));
 	for (int x=0; x<C.sx; ++x) for (int y=0; y<C.sy; ++y) for (int z=0; z<C.sz; ++z) if (C.at(x,y,z)==255)
 		S << new Pov_Box (tri(x,y,z), tri(x+1,y+1,z+1));
 
-	std::cout << S; return 0;
+	S.output_pov();
 }
