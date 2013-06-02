@@ -5,7 +5,10 @@ namespace vb {
     class tri { public: double x,y,z; tri (double xx, double yy, double zz) : x(xx), y(yy), z(zz) {} };
     std::ostream & operator<< (std::ostream &os, const tri &c) { return os << "<" << c.x << "," << c.y << "," << c.z << ">"; }
 
-    class Pov_Object { public: virtual std::ostream & output_pov (std::ostream & os) =0; };
+    class Pov_Object { public:
+		virtual std::ostream & output_pov (std::ostream & os) =0;
+		virtual ~Pov_Object () {};
+	};
     std::ostream & operator<< (std::ostream & os, Pov_Object * o) { return o->output_pov(os) << std::endl; }
 
     class Pov_Camera : public Pov_Object { public: tri a,b; double d; Pov_Camera (tri aa, tri bb, double dd) : a(aa), b(bb), d(dd) {}
@@ -57,4 +60,22 @@ namespace vb {
             << new Pov_Cylinder (tri(b.x,a.y,b.z), tri(a.x,a.y,b.z), .1, 1) << new Pov_Cylinder (tri(b.x,a.y,b.z), tri(b.x,b.y,b.z), .1, 1);
         }
     };
+
+    class Pov_Scene { public:
+		~Pov_Scene () { foreach (Pov_Object *o,objs) delete o; }
+
+		std::ostream & output_pov (std::ostream & os) {
+			os	<< "#version 3.7;" << std::endl
+			  	<< "#include \"colors.inc\"" << std::endl
+			  	<< "#include \"stones.inc\"" << std::endl
+			  	<< "background { color White }" << std::endl;
+			foreach (Pov_Object *o, objs) os << o;
+			return os;
+		}
+
+		std::vector <Pov_Object*> objs;
+		Pov_Scene & operator<< (Pov_Object *o) { objs.push_back(o); return *this; }
+    };
+
+    std::ostream & operator<< (std::ostream & os, Pov_Scene &S) { return S.output_pov (os); }
 }
