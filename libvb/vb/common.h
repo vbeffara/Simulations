@@ -47,29 +47,33 @@
 #endif
 
 namespace vb {
-  /// Utility type for a complex number.
-  typedef std::complex<double> cpx;
+	/// Utility type for a complex number.
+	typedef std::complex<double> cpx;
 
-  const cpx I(0,1);
+	const cpx I(0,1);
 
-  /// Utility type for integer coordinates.
-  typedef std::complex<int> coo;
+	class tri { public: double x,y,z; tri (double xx, double yy, double zz) : x(xx), y(yy), z(zz) {} };
+	inline std::ostream & operator<< (std::ostream &os, const tri &c) { return os << "<" << c.x << "," << c.y << "," << c.z << ">"; }
 
-  class fmt : public boost::format {
-    public:
-      fmt (const std::string &s) : boost::format(s) { }
-      operator std::string() const { return boost::format::str(); }
-  };
+	/// Utility type for 2d integer coordinates.
+	typedef std::complex<int> coo;
 
-#define foreach BOOST_FOREACH
+	/// Utility type for 3d integer coordinates.
+	class coo3 { public: int x,y,z; coo3 (int xx, int yy, int zz) : x(xx), y(yy), z(zz) {} };
 
-  // Convenient for steps. In order: Z^2, then NE/SW for triangular,
-  // then NW/SE to finish the degree 8 lattice.
+	class fmt : public boost::format {
+	public:
+		fmt (const std::string &s) : boost::format(s) { }
+		operator std::string() const { return boost::format::str(); }
+	};
 
-  const int dx[8] = {1,0,-1,0,1,-1,-1,1};
-  const int dy[8] = {0,1,0,-1,1,-1,1,-1};
-  const coo dz[8] = {coo(1,0), coo(0,1), coo(-1,0), coo(0,-1),
-                     coo(1,1), coo(-1,-1), coo(-1,1), coo(1,-1)};
+	#define foreach BOOST_FOREACH
+
+	// Convenient for steps. In order: Z^2, then NE/SW for triangular,
+	// then NW/SE to finish the degree 8 lattice.
+	const int dx[8] = {1,0,-1,0,1,-1,-1,1};
+	const int dy[8] = {0,1,0,-1,1,-1,1,-1};
+	const coo dz[8] = {coo(1,0), coo(0,1), coo(-1,0), coo(0,-1), coo(1,1), coo(-1,-1), coo(-1,1), coo(1,-1)};
 };
 
 /** @mainpage Documentation for the `libvb' library.

@@ -2,9 +2,6 @@
 #include <vb/common.h>
 
 namespace vb {
-    class tri { public: double x,y,z; tri (double xx, double yy, double zz) : x(xx), y(yy), z(zz) {} };
-    std::ostream & operator<< (std::ostream &os, const tri &c) { return os << "<" << c.x << "," << c.y << "," << c.z << ">"; }
-
     class Pov_Object { public:
 		virtual std::ostream & output_pov (std::ostream & os) =0;
 		virtual ~Pov_Object () {};
