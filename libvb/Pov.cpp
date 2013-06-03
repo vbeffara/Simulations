@@ -25,7 +25,7 @@ namespace vb {
 
     std::ostream & Pov_Plane::output_pov (std::ostream & os) {
         return os   << "plane { " << a << ", " << d
-                    << " texture { pigment { color White } } finish { reflection {.8} ambient 0.1 diffuse 0 } }";
+                    << " texture { pigment { color White } } finish { reflection {.8} ambient 0 diffuse 0 } }";
     }
 
     std::ostream & Pov_Frame::output_pov (std::ostream & os) { return os
@@ -41,6 +41,8 @@ namespace vb {
         os  << "#version 3.7;" << std::endl
             << "#include \"colors.inc\"" << std::endl
             << "#include \"stones.inc\"" << std::endl
+            << "#include \"rad_def.inc\"" << std::endl
+            << "global_settings { radiosity { Rad_Settings(Radiosity_Normal,off,off) } }" << std::endl
             << "background { color White }" << std::endl;
         foreach (Pov_Object *o, objs) os << o;
         return os;

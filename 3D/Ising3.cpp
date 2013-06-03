@@ -20,7 +20,7 @@ class Ising3 : public Cube <unsigned char, int> { public: int b; double beta;
 	}
 
 	void swipe () {
-		for (int t=0; t<10*sx*sy*sz; ++t) {
+		for (int t=0; t<sx*sy*sz; ++t) {
 			int x=b+prng.uniform_int(sx-2*b), y=b+prng.uniform_int(sy-2*b), z=b+prng.uniform_int(sz-2*b), S=0;
 			S += atp(x+1,y,z); S += atp(x,y+1,z); S += atp(x,y,z+1);
 			S += atp(x-1,y,z); S += atp(x,y-1,z); S += atp(x,y,z-1);
@@ -33,6 +33,6 @@ int main (int argc, char ** argv) {
 	CL_Parser CLP (argc, argv, "n=50,b=1");
 
     Ising3 C (CLP); C.show();
-    C.bc_cube(); for (int t=0; t<10; ++t) C.swipe();
+    C.bc_dobrushin(); for (int t=0; t<2*int(CLP('n')); ++t) C.swipe();
 	C.output_pov();
 }
