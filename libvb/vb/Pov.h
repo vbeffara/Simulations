@@ -10,25 +10,18 @@ namespace vb {
 	};
     std::ostream & operator<< (std::ostream & os, Pov_Object * o) { return o->output_pov(os) << std::endl; }
 
-    class Pov_Union : public Pov_Object { public: std::vector<Pov_Object*> objs;
-        Pov_Union (std::string t = "") : Pov_Object ("union",t) {}
-        ~Pov_Union () { foreach (Pov_Object *o, objs) delete o; }
-        Pov_Union & operator<< (Pov_Object *o) { objs.push_back(o); return *this; }
-        std::ostream & pov_contents (std::ostream & os);
-    };
-
     class Pov_Camera : public Pov_Object { public: tri a,b; double d;
         Pov_Camera (tri aa, tri bb, double dd) : Pov_Object("camera"), a(aa), b(bb), d(dd) {}
         std::ostream & pov_contents (std::ostream & os);
     };
 
     class Pov_Light_Source : public Pov_Object { public:
-		Pov_Light_Source (tri a) : Pov_Object("light_source") { pts.push_back(a); }
+        Pov_Light_Source (tri a) : Pov_Object("light_source") { pts.push_back(a); }
         std::ostream & pov_contents (std::ostream & os);
     };
 
     class Pov_Sphere : public Pov_Object { public:
-		Pov_Sphere (tri a, double r, std::string t = "") : Pov_Object("sphere",t) { pts.push_back(a); coefs.push_back(r); }
+        Pov_Sphere (tri a, double r, std::string t = "") : Pov_Object("sphere",t) { pts.push_back(a); coefs.push_back(r); }
     };
 
     class Pov_Cylinder : public Pov_Object { public:
@@ -36,25 +29,28 @@ namespace vb {
     };
 
     class Pov_Box : public Pov_Object { public:
-		Pov_Box (tri a, tri b, std::string t = "") : Pov_Object("box",t) { pts.push_back(a); pts.push_back(b); }
+        Pov_Box (tri a, tri b, std::string t = "") : Pov_Object("box",t) { pts.push_back(a); pts.push_back(b); }
     };
 
     class Pov_Plane : public Pov_Object { public:
-		Pov_Plane (tri a, double d, std::string t = "") : Pov_Object("plane",t) { pts.push_back(a); coefs.push_back(d); }
+        Pov_Plane (tri a, double d, std::string t = "") : Pov_Object("plane",t) { pts.push_back(a); coefs.push_back(d); }
+    };
+
+    class Pov_Union : public Pov_Object { public: std::vector<Pov_Object*> objs;
+        Pov_Union (std::string t = "") : Pov_Object ("union",t) {}
+        ~Pov_Union () { foreach (Pov_Object *o, objs) delete o; }
+        Pov_Union & operator<< (Pov_Object *o) { objs.push_back(o); return *this; }
+        std::ostream & pov_contents (std::ostream & os);
+    };
+
+    class Pov_Scene : public Pov_Union { public: std::string title;
+        Pov_Scene (std::string s) : title(s) { }
+        std::ostream & output_pov (std::ostream & os);
+        void output_pov (const std::string &s = "");
     };
 
     class Pov_Frame : public Pov_Union { public:
-		Pov_Frame (tri a, tri b, std::string t = "");
-    };
-
-    class Pov_Scene { public: std::string title; std::vector <Pov_Object*> objs;
-		Pov_Scene (std::string s) : title(s) { }
-		~Pov_Scene () { foreach (Pov_Object *o,objs) delete o; }
-
-		std::ostream & output_pov (std::ostream & os);
-		void output_pov (const std::string &s = "");
-
-		Pov_Scene & operator<< (Pov_Object *o) { objs.push_back(o); return *this; }
+        Pov_Frame (tri a, tri b, std::string t = "");
     };
 
     std::ostream & operator<< (std::ostream & os, Pov_Scene &S) { return S.output_pov (os); }

@@ -40,8 +40,7 @@ namespace vb {
             << "#include \"rad_def.inc\"" << std::endl
             << "global_settings { radiosity { Rad_Settings(Radiosity_Normal,off,off) } }" << std::endl
             << "background { color White }" << std::endl;
-        foreach (Pov_Object *o, objs) os << o;
-        return os;
+        return pov_contents(os);
     }
 
     void Pov_Scene::output_pov (const std::string &s) {
