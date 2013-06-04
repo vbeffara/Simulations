@@ -2,8 +2,8 @@
 #include <vb/common.h>
 
 namespace vb {
-    class Pov_Object { public: std::string type; std::vector<tri> pts; std::vector<double> coefs;
-        Pov_Object (std::string s) : type(s) {};
+    class Pov_Object { public: std::string type, texture; std::vector<tri> pts; std::vector<double> coefs;
+        Pov_Object (std::string s, std::string t = "") : type(s), texture(t) {};
 		virtual ~Pov_Object () {};
         virtual std::ostream & output_pov (std::ostream & os);
         virtual std::ostream & pov_contents (std::ostream & os) { return os; };
@@ -21,27 +21,23 @@ namespace vb {
     };
 
     class Pov_Sphere : public Pov_Object { public:
-		Pov_Sphere (tri a, double r) : Pov_Object("sphere") { pts.push_back(a); coefs.push_back(r); }
-        std::ostream & pov_contents (std::ostream & os);
+		Pov_Sphere (tri a, double r, std::string t = "") : Pov_Object("sphere",t) { pts.push_back(a); coefs.push_back(r); }
     };
 
     class Pov_Cylinder : public Pov_Object { public:
-        Pov_Cylinder (tri a, tri b, double r) : Pov_Object("cylinder") { pts.push_back(a); pts.push_back(b); coefs.push_back(r); }
-        std::ostream & pov_contents (std::ostream & os);
+        Pov_Cylinder (tri a, tri b, double r, std::string t = "") : Pov_Object("cylinder",t) { pts.push_back(a); pts.push_back(b); coefs.push_back(r); }
     };
 
     class Pov_Box : public Pov_Object { public:
-		Pov_Box (tri a, tri b) : Pov_Object("box") { pts.push_back(a); pts.push_back(b); }
-        std::ostream & pov_contents (std::ostream & os);
+		Pov_Box (tri a, tri b, std::string t = "") : Pov_Object("box",t) { pts.push_back(a); pts.push_back(b); }
     };
 
     class Pov_Plane : public Pov_Object { public:
-		Pov_Plane (tri a, double d) : Pov_Object("plane") { pts.push_back(a); coefs.push_back(d); }
-        std::ostream & pov_contents (std::ostream & os);
+		Pov_Plane (tri a, double d, std::string t = "") : Pov_Object("plane",t) { pts.push_back(a); coefs.push_back(d); }
     };
 
     class Pov_Frame : public Pov_Object { public: tri a,b;
-		Pov_Frame (tri aa, tri bb) : Pov_Object("union"), a(aa), b(bb) {}
+		Pov_Frame (tri aa, tri bb, std::string t = "") : Pov_Object("union",t), a(aa), b(bb) {}
         std::ostream & pov_contents (std::ostream & os);
     };
 

@@ -41,12 +41,12 @@ namespace vb {
 			Pov_Scene SS (this->title);
 			SS	<< new Pov_Camera      	(tri(7*sx/4,1.3*sy,-sz), tri(sx/2,sy/2,sz/2), 60)
 			  	<< new Pov_Light_Source	(tri(1.25*sx,1.8*sy,-2.0*sz))
-			  	<< new Pov_Plane       	(tri(1,0,0), -sx/4)
-			  	<< new Pov_Plane       	(tri(0,1,0), -sy/8)
-			  	<< new Pov_Plane       	(tri(0,0,1), 5*sz/4)
-			  	<< new Pov_Frame       	(tri(0,0,0), tri(sx,sy,sz));
+			  	<< new Pov_Plane       	(tri(1,0,0), -sx/4, "pigment { color White } } finish { reflection {.8} ambient 0 diffuse 0")
+			  	<< new Pov_Plane       	(tri(0,1,0), -sy/8, "pigment { color White } } finish { reflection {.8} ambient 0 diffuse 0")
+			  	<< new Pov_Plane       	(tri(0,0,1), 5*sz/4, "pigment { color White } } finish { reflection {.8} ambient 0 diffuse 0")
+			  	<< new Pov_Frame       	(tri(0,0,0), tri(sx,sy,sz), "pigment { color Red }");
 			for (int x=0; x<sx; ++x) for (int y=0; y<sy; ++y) for (int z=0; z<sz; ++z) if (at(x,y,z)==255)
-				SS << new Pov_Box (tri(x,y,z), tri(x+1,y+1,z+1));
+				SS << new Pov_Box (tri(x,y,z), tri(x+1,y+1,z+1), "pigment { color rgb <.3,.7,1> }");
 			SS.output_pov();
 		}
 
