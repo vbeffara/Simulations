@@ -25,14 +25,16 @@ namespace vb {
 
 		using Bitmap < Adder<T,S> > :: at;
 
-		T &	at 	(int x, int y, int z)	{                                                             	return data[x+sx*y+sx*sy*z];	}
-		T &	atp	(int x, int y, int z)	{ int xx=((x%sx)+sx)%sx, yy=((y%sy)+sy)%sy, zz=((z%sz)+sz)%sz;	return at(xx,yy,zz);        	}
+		int index (coo3 c) { return c.x + sx*c.y + sx*sy*c.z; }
 
-		void put (int x, int y, int z, const T &t) {
-		    T d = data[x+sx*y+sx*sy*z]; if (t!=d) {
-				at(coo(x,y)) -= d; at(coo(x,z+sy)) -= d; at(coo(z+sx,y)) -= d;
-				at(coo(x,y)) += t; at(coo(x,z+sy)) += t; at(coo(z+sx,y)) += t;
-			    data[x+sx*y+sx*sy*z] = t;
+		T &	at 	(coo3 c)	{                                                                   	return data[index(c)];    	}
+		T &	atp	(coo3 c)	{ int xx=((c.x%sx)+sx)%sx, yy=((c.y%sy)+sy)%sy, zz=((c.z%sz)+sz)%sz;	return at(coo3(xx,yy,zz));	}
+
+		void put (coo3 c, const T &t) {
+		    T d = data[index(c)]; if (t!=d) {
+				at(coo(c.x,c.y)) -= d; at(coo(c.x,c.z+sy)) -= d; at(coo(c.z+sx,c.y)) -= d;
+				at(coo(c.x,c.y)) += t; at(coo(c.x,c.z+sy)) += t; at(coo(c.z+sx,c.y)) += t;
+			    data[index(c)] = t;
 			}
 		    AutoWindow::step();
 		}
@@ -46,7 +48,7 @@ namespace vb {
 			  	<< new Pov_Plane       	(tri(0,0,1), 5*sz/4, "pigment { color White } } finish { reflection {.8} ambient 0 diffuse 0")
 			  	<< new Pov_Frame       	(tri(0,0,0), tri(sx,sy,sz), "pigment { color Red }");
 			Pov_Union * SQ = new Pov_Union("pigment { color rgb <.3,.7,1> }");
-			for (int x=0; x<sx; ++x) for (int y=0; y<sy; ++y) for (int z=0; z<sz; ++z) if (at(x,y,z)==255)
+			for (int x=0; x<sx; ++x) for (int y=0; y<sy; ++y) for (int z=0; z<sz; ++z) if (at(coo3(x,y,z))==255)
 				*SQ << new Pov_Box (tri(x,y,z), tri(x+1,y+1,z+1));
 			SS << SQ; SS.output_pov();
 		}
