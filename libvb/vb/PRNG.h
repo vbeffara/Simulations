@@ -1,5 +1,6 @@
 #pragma once /// \file
-#include <vb/common.h>
+#define BOOST_DISABLE_ASSERTS 1
+#include <boost/random.hpp>
 
 namespace vb {
 	class PRNG : public boost::mt19937 {

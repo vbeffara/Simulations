@@ -1,7 +1,6 @@
-/// @file
-/// Description of the vb::Path class
-
-#include <vb/common.h>
+#pragma once /// @file
+#include <string>
+#include <vector>
 
 namespace vb {
   /** A class to describe a path in Z^2.

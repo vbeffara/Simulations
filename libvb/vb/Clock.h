@@ -1,8 +1,5 @@
-/// @file
-/// Definitions for the vb::Clock class
-
-#pragma once
-#include <vb/common.h>
+#pragma once /// @file
+#include <vector>
 
 namespace vb {
 	class Task {

@@ -2,6 +2,7 @@
 #include <vb/PRNG.h>
 #include <vb/Path.h>
 #include <vb/ProgressBar.h>
+#include <vb/common.h> // for fmt
 
 using namespace std;
 using namespace vb;

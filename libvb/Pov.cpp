@@ -1,5 +1,6 @@
 /// \file
 #include <vb/Pov.h>
+#include <fstream>
 
 namespace vb {
     std::ostream & Pov_Object::output_pov (std::ostream & os) {

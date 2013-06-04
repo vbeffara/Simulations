@@ -1,7 +1,5 @@
-/// @file
-/// Implementation of the vb::CL_Parser class
-
 #include <vb/CL_Parser.h>
+#include <iostream>
 
 namespace vb {
   CL_Value::CL_Value (const std::string &s) : value(s) { }
@@ -37,10 +35,10 @@ namespace vb {
       has_arg[s[0]] = true;
     }
   }
-  
+
   void CL_Parser::parse (int argc, char **argv) {
     int ch;
-    
+
     while ((ch = getopt(argc,argv,getopt_arg.c_str())) != -1) {
       if (ch == 'h') {
         std::cerr << _help << std::endl;
@@ -52,7 +50,7 @@ namespace vb {
       }
     }
   }
-  
+
   CL_Value CL_Parser::operator() (char c) {
     return CL_Value (params[c]);
   }

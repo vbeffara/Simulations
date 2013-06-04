@@ -2,6 +2,9 @@
 /// Implementation of the vb::ProgressBar class
 
 #include <vb/ProgressBar.h>
+#include <iostream>
+#include <iomanip>
+#include <cmath>
 
 namespace vb {
   ProgressBar::ProgressBar (int length, double pow) :

@@ -1,5 +1,5 @@
 #pragma once /// \file
-#include <vb/common.h>
+#include <vb/config.h>
 
 namespace vb {
   /** A rather stupid class holding color info in Cairo format.

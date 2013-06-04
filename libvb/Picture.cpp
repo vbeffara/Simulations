@@ -2,6 +2,10 @@
 /// Implementation of the vb::Picture class
 
 #include <vb/Picture.h>
+#include <FL/fl_draw.H>
+#include <iostream>
+#include <iomanip>
+#include <sstream>
 
 namespace vb {
   void Picture_update   (void * AW) { ((Picture*)AW) -> update();   }

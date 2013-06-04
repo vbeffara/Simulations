@@ -1,5 +1,8 @@
 #pragma once /// \file
 #include <vb/AutoWindow.h>
+#include <FL/Fl_Hor_Nice_Slider.H>
+#include <FL/Fl_Output.H>
+#include <sstream>
 
 namespace vb {
 	class Slot : public Fl_Output {

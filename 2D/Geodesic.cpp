@@ -1,6 +1,4 @@
-#include <iostream>
-#include <vector>
-#include <string>
+#include <vb/config.h>
 #include <vb/PRNG.h>
 #include <vb/CL_Parser.h>
 #include <vb/Image.h>

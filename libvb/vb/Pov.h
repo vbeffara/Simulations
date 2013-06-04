@@ -1,7 +1,12 @@
 #pragma once /// \file
-#include <vb/common.h>
+#include <sstream>
+#include <vector>
+#include <vb/common.h> // for foreach
 
 namespace vb {
+	class tri { public: double x,y,z; tri (double xx, double yy, double zz) : x(xx), y(yy), z(zz) {} };
+	inline std::ostream & operator<< (std::ostream &os, const tri &c) { return os << "<" << c.x << "," << c.y << "," << c.z << ">"; }
+
 	class Pov_Object { public: std::string type, texture; std::vector<tri> pts; std::vector<double> coefs;
 		Pov_Object (std::string s, std::string t = "") : type(s), texture(t) {};
 		virtual ~Pov_Object () {};

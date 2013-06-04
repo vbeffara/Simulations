@@ -1,8 +1,5 @@
-/// @file
-/// Definitions for the vb::TriMatrix class
-
-#pragma once
-#include <vb/common.h>
+#pragma once /// @file
+#include <vector>
 
 #ifndef TRIMATRIX_BSIZE
 /// The size of a fundamental block in the storage structure.

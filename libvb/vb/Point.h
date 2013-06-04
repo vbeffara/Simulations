@@ -1,6 +1,7 @@
 #pragma once /// \file
 #include <vb/Image.h>
 #include <vb/CoarseImage.h>
+#include <queue>
 
 namespace vb {
 	class PointQueue;

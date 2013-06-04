@@ -1,10 +1,11 @@
-/// @file
-/// Algorithms for function minimization.
-
-#pragma once
-#include <vb/Matrix.h>
+#pragma once /// @file
+#include <boost/numeric/ublas/vector.hpp>
+#include <boost/numeric/ublas/matrix.hpp>
 
 namespace vb {
+  typedef boost::numeric::ublas::vector<double> Vector;
+  typedef boost::numeric::ublas::matrix<double> Matrix;
+
   /** A class to minimize functions.
    *
    * It implements various algorithms, and which one to choose heavily

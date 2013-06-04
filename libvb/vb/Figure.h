@@ -1,5 +1,8 @@
-#pragma once ///< @file
+#pragma once /// @file
 #include <vb/Picture.h>
+#include <cairo-pdf.h>
+#include <vb/common.h> // for cpx
+#include <list>
 
 namespace vb {
 	class Pen {

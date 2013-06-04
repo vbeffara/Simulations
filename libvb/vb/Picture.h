@@ -1,6 +1,7 @@
 #pragma once /// \file
 #include <vb/Color.h>
 #include <vb/AutoWindow.h>
+#include <cairo.h>
 
 namespace vb {
 	/** A nice helper class for simulations.

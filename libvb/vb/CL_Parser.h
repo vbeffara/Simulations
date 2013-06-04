@@ -1,5 +1,6 @@
 #pragma once /// \file
-#include <vb/common.h>
+#include <string>
+#include <map>
 
 namespace vb {
 	class CL_Value {
