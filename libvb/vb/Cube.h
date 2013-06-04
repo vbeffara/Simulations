@@ -41,16 +41,22 @@ namespace vb {
 
 		void output_pov () {
 			Pov_Scene SS (this->title);
-			SS	<< new Pov_Camera      	(tri(7*sx/4,1.3*sy,-sz), tri(sx/2,sy/2,sz/2), 60)
-			  	<< new Pov_Light_Source	(tri(1.25*sx,1.8*sy,-2.0*sz))
-			  	<< new Pov_Plane       	(tri(1,0,0), -sx/4, "pigment { color White } } finish { reflection {.8} ambient 0 diffuse 0")
-			  	<< new Pov_Plane       	(tri(0,1,0), -sy/8, "pigment { color White } } finish { reflection {.8} ambient 0 diffuse 0")
-			  	<< new Pov_Plane       	(tri(0,0,1), 5*sz/4, "pigment { color White } } finish { reflection {.8} ambient 0 diffuse 0")
-			  	<< new Pov_Frame       	(tri(0,0,0), tri(sx,sy,sz), "pigment { color Red }");
-			Pov_Union * SQ = new Pov_Union("pigment { color rgb <.3,.7,1> }");
+			SS	<< new Pov_Camera      	(tri(7*sx/4,1.4*sy,-sz), tri(sx/2,sy/2,sz/2), 60)
+			  	<< new Pov_Light_Source	(tri(3*sx,2*sy,-.3*sz))
+			  	<< new Pov_Plane       	(tri(1,0,0), -sx/4, "pigment { color White } } finish { reflection {.6} ambient 0 diffuse 0")
+			  	<< new Pov_Plane       	(tri(0,1,0), -sy/8, "pigment { color White } } finish { reflection {0} ambient 0.2 diffuse 0.3")
+			  	<< new Pov_Plane       	(tri(0,0,1), 5*sz/4, "pigment { color White } } finish { reflection {.6} ambient 0 diffuse 0");
+
+			Pov_Union * squares = new Pov_Union("pigment { color rgb <.3,.5,.8> } normal { bumps .1 scale .1 } finish { reflection {0} ambient 0 diffuse .5 brilliance 1.5 roughness .1 }");
 			for (int x=0; x<sx; ++x) for (int y=0; y<sy; ++y) for (int z=0; z<sz; ++z) if (at(coo3(x,y,z))==255)
-				*SQ << new Pov_Box (tri(x,y,z), tri(x+1,y+1,z+1));
-			SS << SQ; SS.output_pov();
+				* squares << new Pov_Box (tri(x,y,z), tri(x+1,y+1,z+1));
+
+			Pov_Union * cube = new Pov_Union();
+			*cube	<< new Pov_Frame	(tri(0,0,0), tri(sx,sy,sz), "pigment { color rgb <.8,0,0> }")
+			     	<< squares;
+			     	// << new Pov_Raw ("rotate 360*clock*y");
+
+			SS << cube; SS.output_pov();
 		}
 
 		int sx,sy,sz;

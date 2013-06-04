@@ -12,18 +12,13 @@ namespace vb {
         return os << " }";
     }
 
-    std::ostream & Pov_Union::pov_contents (std::ostream & os) {
-		foreach (Pov_Object *o, objs) os << o;
-		return os;
-	}
-
-    std::ostream & Pov_Camera::pov_contents (std::ostream & os)      	{ return os << "location " << a << " look_at " << b << " angle " << d; }
-    std::ostream & Pov_Light_Source::pov_contents (std::ostream & os)	{ return os << " color White"; }
+    std::ostream & Pov_Union::pov_contents       	(std::ostream & os) { foreach (Pov_Object *o, objs) os << o; return os; }
+    std::ostream & Pov_Camera::pov_contents      	(std::ostream & os)	{ return os << "location " << a << " look_at " << b << " angle " << d; }
+    std::ostream & Pov_Light_Source::pov_contents	(std::ostream & os)	{ return os << " color White*2"; }
 
 	Pov_Frame::Pov_Frame (tri a, tri b, std::string t) : Pov_Union(t) { (*this)
-        << new Pov_Sphere (tri(a.x,a.y,a.z), .1) << new Pov_Sphere (tri(a.x,a.y,b.z), .1)
-        << new Pov_Sphere (tri(a.x,b.y,a.z), .1) << new Pov_Sphere (tri(a.x,b.y,b.z), .1)
-        << new Pov_Sphere (tri(b.x,a.y,a.z), .1) << new Pov_Sphere (tri(b.x,a.y,b.z), .1)
+        << new Pov_Sphere (tri(a.x,a.y,a.z), .1) << new Pov_Sphere (tri(a.x,a.y,b.z), .1) << new Pov_Sphere (tri(a.x,b.y,a.z), .1)
+        << new Pov_Sphere (tri(a.x,b.y,b.z), .1) << new Pov_Sphere (tri(b.x,a.y,a.z), .1) << new Pov_Sphere (tri(b.x,a.y,b.z), .1)
         << new Pov_Sphere (tri(b.x,b.y,a.z), .1) << new Pov_Sphere (tri(b.x,b.y,b.z), .1)
         << new Pov_Cylinder (tri(a.x,a.y,a.z), tri(a.x,a.y,b.z), .1) << new Pov_Cylinder (tri(a.x,a.y,a.z), tri(a.x,b.y,a.z), .1)
         << new Pov_Cylinder (tri(a.x,a.y,a.z), tri(b.x,a.y,a.z), .1) << new Pov_Cylinder (tri(a.x,b.y,b.z), tri(a.x,a.y,b.z), .1)
@@ -44,10 +39,7 @@ namespace vb {
     }
 
     void Pov_Scene::output_pov (const std::string &s) {
-        std::ostringstream os;
-        if (s == "") os << "output/" << title; else os << s;
-        os << ".pov";
-        std::cerr << "*** TODO: This should go in " << os.str() << std::endl;
-        output_pov (std::cout);
+        std::ostringstream os; if (s == "") os << "output/" << title; else os << s; os << ".pov";
+        std::ofstream f (os.str().c_str()); output_pov(f);
     }
 }
