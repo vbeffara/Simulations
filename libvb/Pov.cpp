@@ -12,10 +12,15 @@ namespace vb {
         return os << " }";
     }
 
+    std::ostream & Pov_Union::pov_contents (std::ostream & os) {
+		foreach (Pov_Object *o, objs) os << o;
+		return os;
+	}
+
     std::ostream & Pov_Camera::pov_contents (std::ostream & os)      	{ return os << "location " << a << " look_at " << b << " angle " << d; }
     std::ostream & Pov_Light_Source::pov_contents (std::ostream & os)	{ return os << " color White"; }
 
-    std::ostream & Pov_Frame::pov_contents (std::ostream & os) { return os
+	Pov_Frame::Pov_Frame (tri a, tri b, std::string t) : Pov_Union(t) { (*this)
         << new Pov_Sphere (tri(a.x,a.y,a.z), .1) << new Pov_Sphere (tri(a.x,a.y,b.z), .1)
         << new Pov_Sphere (tri(a.x,b.y,a.z), .1) << new Pov_Sphere (tri(a.x,b.y,b.z), .1)
         << new Pov_Sphere (tri(b.x,a.y,a.z), .1) << new Pov_Sphere (tri(b.x,a.y,b.z), .1)

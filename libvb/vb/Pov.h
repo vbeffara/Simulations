@@ -10,8 +10,15 @@ namespace vb {
 	};
     std::ostream & operator<< (std::ostream & os, Pov_Object * o) { return o->output_pov(os) << std::endl; }
 
+    class Pov_Union : public Pov_Object { public: std::vector<Pov_Object*> objs;
+        Pov_Union (std::string t = "") : Pov_Object ("union",t) {}
+        ~Pov_Union () { foreach (Pov_Object *o, objs) delete o; }
+        Pov_Union & operator<< (Pov_Object *o) { objs.push_back(o); return *this; }
+        std::ostream & pov_contents (std::ostream & os);
+    };
+
     class Pov_Camera : public Pov_Object { public: tri a,b; double d;
-		Pov_Camera (tri aa, tri bb, double dd) : Pov_Object("camera"), a(aa), b(bb), d(dd) {}
+        Pov_Camera (tri aa, tri bb, double dd) : Pov_Object("camera"), a(aa), b(bb), d(dd) {}
         std::ostream & pov_contents (std::ostream & os);
     };
 
@@ -36,9 +43,8 @@ namespace vb {
 		Pov_Plane (tri a, double d, std::string t = "") : Pov_Object("plane",t) { pts.push_back(a); coefs.push_back(d); }
     };
 
-    class Pov_Frame : public Pov_Object { public: tri a,b;
-		Pov_Frame (tri aa, tri bb, std::string t = "") : Pov_Object("union",t), a(aa), b(bb) {}
-        std::ostream & pov_contents (std::ostream & os);
+    class Pov_Frame : public Pov_Union { public:
+		Pov_Frame (tri a, tri b, std::string t = "");
     };
 
     class Pov_Scene { public: std::string title; std::vector <Pov_Object*> objs;
