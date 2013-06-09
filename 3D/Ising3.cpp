@@ -14,17 +14,10 @@ class Ising3 : public Cube <unsigned char, int> { public: CL_Parser & clp; int b
 		else bc_bernoulli(double(clp('p')));
 	};
 
-	void bc_bernoulli (double p=.5) {
-		for (int x=0; x<sx; ++x) for (int y=0; y<sy; ++y) for (int z=0; z<sz; ++z) put(coo3(x,y,z), prng.bernoulli(p) ? 255 : 0);
-	}
-
-	void bc_dobrushin () {
-		b=1; for (int x=0; x<sx; ++x) for (int y=0; y<sy; ++y) for (int z=0; z<sz; ++z) put(coo3(x,y,z), y<sy/2 ? 255 : 0);
-	}
-
-	void bc_cube () {
-		for (int x=0; x<sx; ++x) for (int y=0; y<sy; ++y) for (int z=0; z<sz; ++z) put(coo3(x,y,z), 0);
-		for (int x=sx/10; x<9*sx/10; ++x) for (int y=sy/10; y<9*sy/10; ++y) for (int z=sz/10; z<9*sz/10; ++z) put(coo3(x,y,z), 255);
+	void bc_bernoulli (double p=.5)	{ for (coo3 c(0,0,0); !done(c); next(c)) put(c, prng.bernoulli(p)	? 255 : 0);	b=0; }
+	void bc_dobrushin ()           	{ for (coo3 c(0,0,0); !done(c); next(c)) put(c, c.y<sy/2         	? 255 : 0);	b=1; }
+	void bc_cube ()                	{ for (coo3 c(0,0,0); !done(c); next(c)) put(c, 0); b=0;
+	    for (int x=sx/10; x<9*sx/10; ++x) for (int y=sy/10; y<9*sy/10; ++y) for (int z=sz/10; z<9*sz/10; ++z) put(coo3(x,y,z), 255);
 	}
 
 	int nbsum (coo3 c) { int S=0; for (int i=0; i<6; ++i) S += atp(c+dz3[i]) ? 1 : 0; return S; }
@@ -49,7 +42,6 @@ int main (int argc, char ** argv) {
 	int T = CLP('t'); if (T==0) T = CLP('n');
     Ising3 C (CLP); C.show();
     ProgressBar P (T);
-
     for (int t=0; t<T; ++t) { C.swipe(); P.set(t); }
 	C.output_pov();
 }

@@ -48,6 +48,9 @@ namespace vb {
 
 		coo3 rand (int b=0) { return coo3 (b+prng.uniform_int(sx-2*b), b+prng.uniform_int(sy-2*b), b+prng.uniform_int(sz-2*b)); }
 
+		void next (coo3 &c) { c.x++; if (c.x==sx) c.x=0, c.y++; if (c.y==sy) c.y=0, c.z++; }
+		bool done (coo3 &c) { return (c.z==sz); }
+
 		void output_pov () {
 			Pov_Union * corner = new Pov_Union(); * corner
 				<< new Pov_Plane	(tri(1,0,0), -.75*sx)
