@@ -5,8 +5,8 @@
 
 using namespace vb; using namespace std;
 
-class Ising3 : public Cube <unsigned char, int> { public: CL_Parser & clp; int b; double beta; vector<double> glaub,kaw;
-	Ising3 (CL_Parser & CLP) : Cube <unsigned char, int> (CLP('n'), CLP('n'), CLP('n'), "The 3d Ising model"), clp(CLP), b(0), beta(clp('b')) {
+class Ising3 : public Cube { public: CL_Parser & clp; int b; double beta; vector<double> glaub,kaw;
+	Ising3 (CL_Parser & CLP) : Cube (CLP('n'), CLP('n'), CLP('n'), "The 3d Ising model"), clp(CLP), b(0), beta(clp('b')) {
 		for (int k=0; k<=6; ++k) glaub.push_back(exp(k*beta) / (exp(k*beta) + exp((6-k)*beta)));
 		for (int k=0; k<=12; ++k) kaw.push_back(1/(1+exp(2*beta*(k-6))));
 		if (string(clp('c')) == "cube")	bc_cube();
