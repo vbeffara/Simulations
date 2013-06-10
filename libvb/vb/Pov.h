@@ -1,7 +1,7 @@
 #pragma once /// \file
 #include <vector>
 #include <iostream>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 namespace vb {
 	class tri { public: double x,y,z; tri (double xx, double yy, double zz) : x(xx), y(yy), z(zz) {} };
@@ -16,10 +16,10 @@ namespace vb {
 
 		Pov_Object & operator<< (tri a);
 		Pov_Object & operator<< (double x);
-		Pov_Object & operator<< (Pov_Object *o)	{ subs.push_back(boost::shared_ptr<Pov_Object>(o));	return *this; }
+		Pov_Object & operator<< (Pov_Object *o)	{ subs.push_back(std::shared_ptr<Pov_Object>(o)); return *this; }
 
 		std::string type; bool braces; int commas;
-		std::vector < boost::shared_ptr<Pov_Object> > subs;
+		std::vector < std::shared_ptr<Pov_Object> > subs;
 	};
 	std::ostream & operator<< (std::ostream & os, Pov_Object * o) { return o->output_pov(os); }
 

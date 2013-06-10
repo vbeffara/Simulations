@@ -66,10 +66,10 @@ namespace vb {
   }
 
   adj_list::iterator Map::find_edge (const Edge &e) const {
-    if (e.first >= n) return (adj_list::iterator) NULL;
+    if (e.first >= n) return v[0]->adj.end();
     for (adj_list::iterator i = v[e.first]->adj.begin(); i != v[e.first]->adj.end(); ++i)
       if (*i == e.second) return i;
-    return (adj_list::iterator) NULL;
+    return v[0]->adj.end();
   }
 
   Edge Map::turn_left (const Edge &e) const {
@@ -229,7 +229,7 @@ namespace vb {
     os << "digraph G {" << std::endl;
     for (int i=0; i<n; ++i)
       foreach (int j, v[i]->adj) {
-        if (find_edge(Edge(j,i)) == (adj_list::iterator) NULL)
+        if (find_edge(Edge(j,i)) == v[0]->adj.end())
           os << "  " << i << " -> " << j << ";" << std::endl;
         else if (i<=j)
           os << "  " << i << " -> " << j << " [arrowhead = none]" << std::endl;
@@ -246,7 +246,7 @@ namespace vb {
   void Map::plot_edges (Figure &F) {
     for (int i=0; i<n; ++i) {
       foreach (int j, v[i]->adj)
-        if ((i<j) || (find_edge(Edge(j,i)) == (adj_list::iterator) NULL)) F.add (new Segment(v[i]->z,v[j]->z));
+        if ((i<j) || (find_edge(Edge(j,i)) == v[0]->adj.end())) F.add (new Segment(v[i]->z,v[j]->z));
     }
   }
 

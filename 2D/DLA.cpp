@@ -118,8 +118,8 @@ public:
         } else {
           z += jump(d/3, deg);
           if (l1(z) > 100*r) {
-            real(z) *= .9;
-            imag(z) *= .9;
+            z.x *= .9;
+            z.y *= .9;
           }
         }
         d = min (2*d, l1(z));

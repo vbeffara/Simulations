@@ -64,7 +64,7 @@ int main (int argc, char ** argv) {
 
 	if (inf) {
 		if (vid) S.snapshot_setup ("RWSH",1.0);
-		while (abs(S.p.back() - coo(3*n,3*n)) < 3*n-1) {
+		while (norm(S.p.back() - coo(3*n,3*n)) < (3*n-1)*(3*n-1)) {
 			if ((S.p.size()==1) || (prng.bernoulli(.5)))	S.grow(prng.uniform_int(4));
 			else                                        	S.shrink();
 		}

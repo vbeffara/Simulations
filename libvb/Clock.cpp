@@ -1,5 +1,5 @@
-
 #include <vb/Clock.h>
+#include <time.h>
 
 namespace vb {
   /** A class for a programmable clock, to eventually replace Timer().
@@ -10,7 +10,7 @@ namespace vb {
   Clock::Clock () : next(1), slice(10), n_call(0) {}
 
   long Clock::clock () const {
-    return std::clock();
+    return ::clock();
   }
 
   double Clock::time () const {

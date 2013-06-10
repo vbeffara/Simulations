@@ -45,7 +45,7 @@ bool ok (coo z) {
 
   while (ans == -1) {
     if (prng.bernoulli(p)) { ++xx; zz+=coo(1,0); } else { ++yy; zz+=coo(0,1); }
-    assert (zz==coo(xx,yy));
+    // assert (zz==coo(xx,yy));
 
     if ((xx>=n) || (yy>=n) || (xx+yy > cursum)) ans = 1;
     if (img->at(zz) == 1) ans = 0;

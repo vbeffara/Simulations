@@ -42,7 +42,7 @@ bool Triangulation::flip (Edge e) {
   int l = *e2;
 
   if (k==l) return false;
-  if (find_edge(Edge(k,l)) != (adj_list::iterator) NULL) return false;
+  if (find_edge(Edge(k,l)) != v[0]->adj.end()) return false;
 
   ++e1; if (e1 == v[i]->adj.end()) e1 = v[i]->adj.begin();
   v[i]->adj.erase(e1);

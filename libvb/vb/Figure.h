@@ -3,7 +3,7 @@
 #include <vb/common.h> // for cpx
 #include <cairo-pdf.h>
 #include <list>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 namespace vb {
 	class Pen {
@@ -120,7 +120,7 @@ namespace vb {
 
 		Figure &add (Shape *S);     ///< Add an element to the figure.
 
-		std::list < boost::shared_ptr<Shape> > contents; ///< The elements of the figure.
+		std::list < std::shared_ptr<Shape> > contents; ///< The elements of the figure.
 
 		void draw (cairo_t * cr); ///< Draw it onto a Cairo context.
 

@@ -1,5 +1,7 @@
 #pragma once /// @file
 #include <vector>
+#include <algorithm>
+#include <stdlib.h>
 
 #ifndef TRIMATRIX_BSIZE
 /// The size of a fundamental block in the storage structure.
