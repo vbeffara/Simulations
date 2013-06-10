@@ -53,7 +53,7 @@ int main(int argc, char ** argv) {
       ymax = std::max(ymax,-ymin); ymin = -ymax;
     }
 
-    f.clean();
+    f.contents.clear();
     f.add (new Circle(cpx(x,y),.5));
     f.add (new Dot(cpx(xmax+1,ymax+1)));
     f.add (new Dot(cpx(xmax+1,ymin-1)));

@@ -6,8 +6,6 @@
 namespace vb {
 	Pov_Object::Pov_Object (std::string s, bool b) : type(s), braces(b), commas(0) {}
 
-	Pov_Object::~Pov_Object () { for (int i=0; i<subs.size(); ++i) delete subs[i]; };
-
 	std::ostream & Pov_Object::output_pov (std::ostream & os) {
 		os << type << " "; if (braces) os << "{ ";
 		for (int i=0; i<subs.size(); ++i) os << subs[i] << (i<commas ? ", " : " ");
@@ -19,8 +17,8 @@ namespace vb {
 		std::ofstream f (os.str().c_str()); output_pov(f);
 	}
 
-	Pov_Object & Pov_Object::operator<< (tri a)   	{ subs.push_back	(new Pov_Coordinate (a)); 	return *this; }
-	Pov_Object & Pov_Object::operator<< (double x)	{ subs.push_back	(new Pov_Coefficient (x));	return *this; }
+	Pov_Object & Pov_Object::operator<< (tri a)   	{ return (*this) << new Pov_Coordinate (a); }
+	Pov_Object & Pov_Object::operator<< (double x)	{ return (*this) << new Pov_Coefficient (x); }
 
 	Pov_Scene::Pov_Scene () : Pov_Object ("") {
 		(*this) << new Pov_Object ("#version 3.7;")

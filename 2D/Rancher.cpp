@@ -105,11 +105,11 @@ public:
 
     int i=0;
 
-    Console *W = new Console;
-    W->watch (i,"Path length");
-    W->trace (env_size,this,"Envelope size");
-    W->trace (env_width,this,"Envelope width");
-    W->show();
+    Console W;
+    W.watch (i,"Path length");
+    W.trace (env_size,this,"Envelope size");
+    W.trace (env_width,this,"Envelope width");
+    W.show();
 
     traj.push_back (point (cpx(-1, -pente), 0));
     traj.push_back (point (cpx(-1, pente), 0));
@@ -129,7 +129,7 @@ public:
       if (plot) traj.push_back (p);
       cur = insere_maillon(p);
       if (plot && !((i+1)%inter)) dessine_enveloppe();
-      W->step();
+      W.step();
 
       if (renew && (env_size(this)==3)) {
         int r = i-last_renewal;
@@ -139,8 +139,6 @@ public:
         last_renewal = i;
       }
     }
-
-    delete W;
 
     if (plot) {
       vector<cpx> path; for (int i=2; i<traj.size(); ++i) path.push_back (traj[i]);

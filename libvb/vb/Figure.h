@@ -1,8 +1,9 @@
 #pragma once /// @file
 #include <vb/Picture.h>
-#include <cairo-pdf.h>
 #include <vb/common.h> // for cpx
+#include <cairo-pdf.h>
 #include <list>
+#include <boost/shared_ptr.hpp>
 
 namespace vb {
 	class Pen {
@@ -111,8 +112,6 @@ namespace vb {
 	class Figure : public Picture {
 	public:
 		Figure (bool ortho = true); ///< Constructor, reserves a window for display.
-		~Figure ();                 ///< Destructor, also destroys the contents nodes.
-		void clean ();              ///< Destroy all the contents nodes.
 
 		double left ();             ///< Get the left boundary of the Figure.
 		double right ();            ///< Get the right boundary of the Figure.
@@ -121,7 +120,7 @@ namespace vb {
 
 		Figure &add (Shape *S);     ///< Add an element to the figure.
 
-		std::list<Shape*> contents; ///< The elements of the figure.
+		std::list < boost::shared_ptr<Shape> > contents; ///< The elements of the figure.
 
 		void draw (cairo_t * cr); ///< Draw it onto a Cairo context.
 
