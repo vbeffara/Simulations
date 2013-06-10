@@ -1,5 +1,6 @@
 #pragma once /// \file
 #include <vector>
+#include <iostream>
 
 namespace vb {
 	class tri { public: double x,y,z; tri (double xx, double yy, double zz) : x(xx), y(yy), z(zz) {} };
@@ -7,39 +8,36 @@ namespace vb {
 
 	class Pov_Object {
 	public:
-		Pov_Object (std::string s, std::string t = "", std::string p = "", bool b = true, int c = 0);
+		Pov_Object (std::string s, bool b = false);
 		virtual ~Pov_Object ();
 		virtual std::ostream & output_pov (std::ostream & os);
+		void output_pov (const std::string &s);
 
 		Pov_Object & operator<< (tri a);
 		Pov_Object & operator<< (double x);
 		Pov_Object & operator<< (Pov_Object *o)	{ subs.push_back(o);	return *this; }
 
-		std::string type, pov; bool braces; int commas;
+		std::string type; bool braces; int commas;
 		std::vector<Pov_Object*> subs;
 	};
 	std::ostream & operator<< (std::ostream & os, Pov_Object * o) { return o->output_pov(os); }
 
-	class Pov_Coordinate : public Pov_Object {
-	public:
+	class Pov_Coordinate : public Pov_Object { public: tri t;
 		Pov_Coordinate (tri a) : Pov_Object ("coordinate"), t(a) {}
 		std::ostream & output_pov (std::ostream & os) { return os << t; }
-		tri t;
 	};
 
-	class Pov_Coefficient : public Pov_Object {
-	public:
+	class Pov_Coefficient : public Pov_Object { public: double v;
 		Pov_Coefficient (double x) : Pov_Object ("coefficient"), v(x) {}
 		std::ostream & output_pov (std::ostream & os) { return os << v; }
-		double v;
 	};
 
 	class Pov_Scene : public Pov_Object {
 	public:
 		Pov_Scene ();
-		void output_pov (const std::string &s);
 	};
 
+	class Pov_Texture     	: public Pov_Object { public: Pov_Texture     	(std::string t);         	                    	};
 	class Pov_Camera      	: public Pov_Object { public: Pov_Camera      	(tri a, tri b, double d);	                    	};
 	class Pov_Light_Source	: public Pov_Object { public: Pov_Light_Source	(tri a);                 	                    	};
 	class Pov_Union       	: public Pov_Object { public: Pov_Union       	(                        	std::string t = "");	};
