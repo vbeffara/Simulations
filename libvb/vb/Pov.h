@@ -21,7 +21,7 @@ namespace vb {
 		std::string type; bool braces; int commas;
 		std::vector < std::shared_ptr<Pov_Object> > subs;
 	};
-	std::ostream & operator<< (std::ostream & os, Pov_Object * o) { return o->output_pov(os); }
+	inline std::ostream & operator<< (std::ostream & os, Pov_Object * o) { return o->output_pov(os); }
 
 	class Pov_Coordinate : public Pov_Object { public: tri t;
 		Pov_Coordinate (tri a) : Pov_Object ("coordinate"), t(a) {}
