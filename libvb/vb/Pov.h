@@ -7,7 +7,7 @@ namespace vb {
 
 	class Pov_Object {
 	public:
-		Pov_Object (std::string s, std::string t = "", std::string p = "", bool b = true);
+		Pov_Object (std::string s, std::string t = "", std::string p = "", bool b = true, int c = 0);
 		virtual ~Pov_Object ();
 		virtual std::ostream & output_pov (std::ostream & os);
 
@@ -15,10 +15,24 @@ namespace vb {
 		Pov_Object & operator<< (double x)     	{ coefs.push_back(x);	return *this; }
 		Pov_Object & operator<< (Pov_Object *o)	{ subs.push_back(o); 	return *this; }
 
-		std::string type, pov; bool braces;
+		std::string type, pov; bool braces; int commas;
 		std::vector<tri> pts; std::vector<double> coefs; std::vector<Pov_Object*> subs;
 	};
 	std::ostream & operator<< (std::ostream & os, Pov_Object * o) { return o->output_pov(os) << std::endl; }
+
+	class Pov_Coordinate : public Pov_Object {
+	public:
+		Pov_Coordinate (tri a) : Pov_Object ("coordinate"), t(a) {}
+		std::ostream & output_pov (std::ostream & os) { return os << t; }
+		tri t;
+	};
+
+	class Pov_Coefficient : public Pov_Object {
+	public:
+		Pov_Coefficient (double x) : Pov_Object ("coefficient"), v(x) {}
+		std::ostream & output_pov (std::ostream & os) { return os << v; }
+		double v;
+	};
 
 	class Pov_Scene : public Pov_Object {
 	public:

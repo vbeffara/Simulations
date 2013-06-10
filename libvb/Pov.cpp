@@ -4,7 +4,7 @@
 #include <fstream>
 
 namespace vb {
-	Pov_Object::Pov_Object (std::string s, std::string t, std::string p, bool b) : type(s), pov(p), braces(b) {
+	Pov_Object::Pov_Object (std::string s, std::string t, std::string p, bool b, int c) : type(s), pov(p), braces(b), commas(c) {
 		if (t != "") (*this) << new Pov_Object ("texture", t);
 	}
 
@@ -12,9 +12,9 @@ namespace vb {
 
 	std::ostream & Pov_Object::output_pov (std::ostream & os) {
 		os << type << " "; if (braces) os << "{";
-		bool b=false;
-		foreach (tri t, pts)     	{ os << (b ? ", " : " ") << t; b=true; }
-		foreach (double d, coefs)	{ os << (b ? ", " : " ") << d; b=true; }
+		int c = commas;
+		foreach (tri t, pts)     	{ os << " " << t << (c>0 ? "," : ""); --c; }
+		foreach (double d, coefs)	{ os << " " << d << (c>0 ? "," : ""); --c; }
 		foreach (Pov_Object *o, subs) os << " " << o;
 		os << pov; if (braces) os << " }"; return os;
 	}
@@ -43,13 +43,13 @@ namespace vb {
 		(*this) << a << new Pov_Object ("color", "", "White*2", false);
 	}
 
-	Pov_Sphere::Pov_Sphere (tri a, double r, std::string t) : Pov_Object("sphere",t) { (*this) << a << r; }
+	Pov_Sphere::Pov_Sphere (tri a, double r, std::string t) : Pov_Object("sphere",t,"",true,1) { (*this) << a << r; }
 
-	Pov_Cylinder::Pov_Cylinder (tri a, tri b, double r, std::string t) : Pov_Object("cylinder",t) { (*this) << a << b << r; }
+	Pov_Cylinder::Pov_Cylinder (tri a, tri b, double r, std::string t) : Pov_Object("cylinder",t,"",true,2) { (*this) << a << b << r; }
 
-	Pov_Box::Pov_Box (tri a, tri b, std::string t) : Pov_Object("box",t) { (*this) << a << b; }
+	Pov_Box::Pov_Box (tri a, tri b, std::string t) : Pov_Object("box",t,"",true,1) { (*this) << a << b; }
 
-	Pov_Plane::Pov_Plane (tri a, double d, std::string t) : Pov_Object("plane",t) { (*this) << a << d; }
+	Pov_Plane::Pov_Plane (tri a, double d, std::string t) : Pov_Object("plane",t,"",true,1) { (*this) << a << d; }
 
 	Pov_Frame::Pov_Frame (tri a, tri b, std::string t) : Pov_Union() { (*this)
 		<< new Pov_Sphere (tri(a.x,a.y,a.z), .1) << new Pov_Sphere (tri(a.x,a.y,b.z), .1) << new Pov_Sphere (tri(a.x,b.y,a.z), .1)
