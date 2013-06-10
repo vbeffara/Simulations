@@ -13,11 +13,12 @@ namespace vb {
 	std::ostream & Pov_Object::output_pov (std::ostream & os) {
 		os << type << " "; if (braces) os << "{";
 		int c = commas;
-		foreach (tri t, pts)     	{ os << " " << t << (c>0 ? "," : ""); --c; }
-		foreach (double d, coefs)	{ os << " " << d << (c>0 ? "," : ""); --c; }
-		foreach (Pov_Object *o, subs) os << " " << o;
-		os << pov; if (braces) os << " }"; return os;
+		foreach (Pov_Object *o, subs)	{ os << " " << o << (c>0 ? "," : ""); --c; }
+		os << pov; if (braces) os << " }"; os << std::endl; return os;
 	}
+
+	Pov_Object & Pov_Object::operator<< (tri a)   	{ subs.push_back	(new Pov_Coordinate (a)); 	return *this; }
+	Pov_Object & Pov_Object::operator<< (double x)	{ subs.push_back	(new Pov_Coefficient (x));	return *this; }
 
 	Pov_Scene::Pov_Scene () : Pov_Object ("","","",false) {
 		(*this) << new Pov_Object ("#version", "", "3.7;", false)

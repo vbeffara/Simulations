@@ -11,14 +11,14 @@ namespace vb {
 		virtual ~Pov_Object ();
 		virtual std::ostream & output_pov (std::ostream & os);
 
-		Pov_Object & operator<< (tri a)        	{ pts.push_back(a);  	return *this; }
-		Pov_Object & operator<< (double x)     	{ coefs.push_back(x);	return *this; }
-		Pov_Object & operator<< (Pov_Object *o)	{ subs.push_back(o); 	return *this; }
+		Pov_Object & operator<< (tri a);
+		Pov_Object & operator<< (double x);
+		Pov_Object & operator<< (Pov_Object *o)	{ subs.push_back(o);	return *this; }
 
 		std::string type, pov; bool braces; int commas;
-		std::vector<tri> pts; std::vector<double> coefs; std::vector<Pov_Object*> subs;
+		std::vector<Pov_Object*> subs;
 	};
-	std::ostream & operator<< (std::ostream & os, Pov_Object * o) { return o->output_pov(os) << std::endl; }
+	std::ostream & operator<< (std::ostream & os, Pov_Object * o) { return o->output_pov(os); }
 
 	class Pov_Coordinate : public Pov_Object {
 	public:
