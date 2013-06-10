@@ -3,8 +3,6 @@
 #include "vb/PRNG.h"
 #include "vb/Console.h"
 
-#include <FL/Fl_Hor_Nice_Slider.H>
-
 using namespace vb;
 
 const Color C[6] = { RED, BLUE, YELLOW, GREEN, MAGENTA, CYAN };
