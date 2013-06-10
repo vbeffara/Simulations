@@ -66,11 +66,11 @@ namespace vb {
 				<< squares
 				<< new Pov_Object ("rotate", "", "360*clock*y", false);
 
-			Pov_Scene SS (this->title); SS
+			Pov_Scene SS; SS
 				<< new Pov_Camera (tri(1.25*sx,.9*sy,-1.5*sz), tri(0,0,0), 60)
 				<< new Pov_Light_Source	(tri(2.5*sx,1.5*sy,-.8*sz))
 				<< corner << cube;
-				SS.output_pov();
+				SS.output_pov(title);
 		}
 
 		int sx,sy,sz;
