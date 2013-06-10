@@ -1,4 +1,4 @@
-# -*- mode: python; -*-
+#!/usr/bin/env python
 
 def options (ctx) :
 	ctx.load ('compiler_c compiler_cxx')
