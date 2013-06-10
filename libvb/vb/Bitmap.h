@@ -14,8 +14,8 @@ namespace vb {
 		void     	put 	(coo z, T const & c)	{ at(z) = c;  step(); }
 		void     	putp	(coo z, T const & c)	{ atp(z) = c; step(); }
 
-		T & 	at      	(int x, int y)         	__attribute__ ((deprecated))	{ return at(coo(x,y));	}
-		void	putpoint	(int x, int y, Color c)	__attribute__ ((deprecated))	{ put (coo(x,y),c);   	}
+		T & 	at      	(int x, int y)         	[[deprecated]]	{ return at(coo(x,y));	}
+		void	putpoint	(int x, int y, Color c)	[[deprecated]]	{ put (coo(x,y),c);   	}
 
 		bool     	contains	(coo z) { return (real(z)>=0) && (imag(z)>=0) && (real(z)<w()) && (imag(z)<h()); }
 		virtual T	compute 	(coo z) { return dflt; }
@@ -62,4 +62,5 @@ namespace vb {
 	}
 
 	template<> Bitmap<Color>::Bitmap (int wd, int ht, const std::string &tit, Color d);
+	extern template class Bitmap<Color>;
 }

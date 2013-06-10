@@ -55,7 +55,7 @@ namespace vb {
     cairo_set_line_width (cr, .5/scale);
 
     for (int i=0; i<n; ++i) {
-      foreach (int j, v[i]->adj) {
+      for (int j : v[i]->adj) {
         cairo_move_to (cr, v[i]->z.real(), v[i]->z.imag());
         cairo_line_to (cr, v[j]->z.real(), v[j]->z.imag());
       }
@@ -115,7 +115,7 @@ namespace vb {
     scale = radius;
 
     int k=0;
-    foreach (int i, face_ext) {
+    for (int i : face_ext) {
       --k;
       bd[i] = true;
       double angle = (reverse?-2.0:2.0)*3.1415927*k/n_ext;
@@ -152,7 +152,7 @@ namespace vb {
         if (v[i]->adj.size() == 0) continue;
 
         cpx old = v[i]->z; v[i]->z = 0.0;
-        foreach (int j, v[i]->adj) v[i]->z += v[j]->z;
+        for (int j : v[i]->adj) v[i]->z += v[j]->z;
         v[i]->z /= v[i]->adj.size();
         if (v[i]->z != old) dirty = true;
       }
@@ -185,7 +185,7 @@ namespace vb {
       }
     }
 
-    foreach (adj_list i, new_vertices) {
+    for (adj_list i : new_vertices) {
       v.push_back(new Vertex(0.0));
       v.back()->adj = i;
       v.back()->z = (v[i.front()]->z + v[i.back()]->z)/double(2.0);
@@ -216,7 +216,7 @@ namespace vb {
 
   void Map::barycentric () {
     std::list<int> l = split_edges();
-    foreach (int i, l) {
+    for (int i : l) {
       std::list<int> f = face(Edge(i,v[i]->adj.front()));
       if (f.size() == 6) hex_to_triangle(f);
 
@@ -228,7 +228,7 @@ namespace vb {
   void Map::print_as_dot (std::ostream &os) {
     os << "digraph G {" << std::endl;
     for (int i=0; i<n; ++i)
-      foreach (int j, v[i]->adj) {
+      for (int j : v[i]->adj) {
         if (find_edge(Edge(j,i)) == v[0]->adj.end())
           os << "  " << i << " -> " << j << ";" << std::endl;
         else if (i<=j)
@@ -245,7 +245,7 @@ namespace vb {
 
   void Map::plot_edges (Figure &F) {
     for (int i=0; i<n; ++i) {
-      foreach (int j, v[i]->adj)
+      for (int j : v[i]->adj)
         if ((i<j) || (find_edge(Edge(j,i)) == v[0]->adj.end())) F.add (new Segment(v[i]->z,v[j]->z));
     }
   }
@@ -265,7 +265,7 @@ namespace vb {
   int Map::nb_faces () {
     double tmp = 0.0;
     for (int i=0; i<n; ++i)
-      foreach (int j, v[i]->adj)
+      for (int j : v[i]->adj)
         tmp += double(1.0) / double(face(Edge(i,j)).size());
     return floor (tmp + .1);
   }
@@ -374,7 +374,7 @@ namespace vb {
         y = v[v[i]->adj.back()]->r;
         theta = 0.0;
 
-        foreach (int j, v[i]->adj) {
+        for (int j : v[i]->adj) {
           z = y; y = v[j]->r;
           double t = (((x+y)*(x+y) + (x+z)*(x+z) - (y+z)*(y+z)) / (2*(x+y)*(x+z)));
           if (t < -1.0) t = -1.0;
@@ -429,7 +429,7 @@ namespace vb {
         cpx prev_z = v[v[i]->adj.back()]->z;
         double prev_r = v[v[i]->adj.back()]->r;
 
-        foreach (int j, v[i]->adj) {
+        for (int j : v[i]->adj) {
           cpx z = v[j]->z;
           if ((prev_z != nowhere) && (z == nowhere) && ((!bd[i])||(!bd[j]))) {
             double x = v[i]->r;
@@ -484,7 +484,7 @@ namespace vb {
     ++n;
 
     int prev_i = _bord.back();
-    foreach (int i, _bord) {
+    for (int i : _bord) {
       add_before (Edge(i,prev_i),n-1);
       prev_i = i;
     }
@@ -532,7 +532,7 @@ namespace vb {
     os << m.n << " vertices:" << std::endl;
     for (int i=0; i<m.n; ++i) {
       os << "  " << i << " ->";
-      foreach (int j, m.v[i]->adj) os << " " << j;
+      for (int j : m.v[i]->adj) os << " " << j;
       os << std::endl;
     }
     return os;
@@ -551,7 +551,7 @@ namespace vb {
       g[2*i] = 0;
       g[2*i+1] = 0;
 
-      foreach (int j, m->v[i]->adj) {
+      for (int j : m->v[i]->adj) {
         c += (x[2*j] - x[2*i]) * (x[2*j] - x[2*i]);
         c += (x[2*j+1] - x[2*i+1]) * (x[2*j+1] - x[2*i+1]);
         if (!(m->bd[i])) {
@@ -571,7 +571,7 @@ namespace vb {
     fill (g.begin(), g.end(), 0.0);
 
     for (int i=0; i < m->n; ++i) {
-      foreach (int j, m->v[i]->adj) {
+      for (int j : m->v[i]->adj) {
         double dx = x[3*j]-x[3*i];
         double dy = x[3*j+1]-x[3*i+1];
         double l = sqrt(dx*dx + dy*dy);

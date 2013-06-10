@@ -1,7 +1,6 @@
 #pragma once /// @file
 #include <complex>
 #include <string>
-#include <boost/foreach.hpp>
 #include <boost/format.hpp>
 
 namespace vb {
@@ -15,6 +14,4 @@ namespace vb {
 		fmt (const std::string &s) : boost::format(s) { }
 		operator std::string() const { return boost::format::str(); }
 	};
-
-	#define foreach BOOST_FOREACH
 };

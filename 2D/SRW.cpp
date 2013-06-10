@@ -42,7 +42,7 @@ int main(int argc, char ** argv) {
       std::pair<cpx,cpx> step (cpx(x,y),cpx(nx,ny));
 
       bool there=false;
-      foreach (bicpx s, t) if (s==step) { there=true; break; }
+      for (bicpx s : t) if (s==step) { there=true; break; }
       if (!there) t.push_back(step);
 
       x = nx; y = ny;

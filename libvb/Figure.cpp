@@ -57,25 +57,25 @@ namespace vb {
 
   double Figure::left () {
     double l = 0.0;
-    foreach (std::shared_ptr <Shape> i, contents) l = std::min (l,i->left());
+    for (std::shared_ptr <Shape> i : contents) l = std::min (l,i->left());
     return l;
   }
 
   double Figure::right () {
     double l = 0.0;
-    foreach (std::shared_ptr <Shape> i, contents) l = std::max (l,i->right());
+    for (std::shared_ptr <Shape> i : contents) l = std::max (l,i->right());
     return l;
   }
 
   double Figure::top () {
     double l = 0.0;
-    foreach (std::shared_ptr <Shape> i, contents) l = std::max (l,i->top());
+    for (std::shared_ptr <Shape> i : contents) l = std::max (l,i->top());
     return l;
   }
 
   double Figure::bottom () {
     double l = 0.0;
-    foreach (std::shared_ptr <Shape> i, contents) l = std::min (l,i->bottom());
+    for (std::shared_ptr <Shape> i : contents) l = std::min (l,i->bottom());
     return l;
   }
 
@@ -108,7 +108,7 @@ namespace vb {
     cairo_set_line_join  (cr, CAIRO_LINE_JOIN_ROUND);
     cairo_set_line_cap   (cr, CAIRO_LINE_CAP_ROUND);
 
-    foreach (std::shared_ptr<Shape> i, contents) {
+    for (std::shared_ptr <Shape> i : contents) {
       cairo_save(cr);
       if (i->p.set) {
         cairo_set_source_rgb (cr, i->p.c.r/255.0, i->p.c.g/255.0, i->p.c.b/255.0);

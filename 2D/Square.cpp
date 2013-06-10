@@ -204,12 +204,12 @@ int main (int argc, char **argv) {
   set<pt> P = connections(o,&cout);
   set<pt> E;
 
-  foreach (pt i, P) {
+  for (pt i : P) {
     pair<pt,pt> pp = leaf(i,o,NULL);
     E.insert (pp.first); E.insert (pp.second);
   }
 
-  foreach (pt i, E) {
+  for (pt i : E) {
     geodesique (i,o,NULL);
     cerr << i << endl;
   }

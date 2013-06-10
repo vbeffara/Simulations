@@ -1,6 +1,7 @@
 #include <vb/PRNG.h>
 #include <vb/CL_Parser.h>
 #include <vb/Clock.h>
+#include <random>
 
 using namespace vb;
 using namespace std;
@@ -32,6 +33,13 @@ int main (int argc, char ** argv) {
     cerr << "many boost::bernoulli_distributions ...\ttime = ";
     s=0; t=global_clock.time();
     for (int i=0; i<n; ++i) s += (boost::bernoulli_distribution<> (.5))(prng);
+    cerr << global_clock.time()-t << ",  \tsum = " << s << endl;
+
+    cerr << "C++11 style ...                        \ttime = ";
+    s=0; t=global_clock.time();
+    std::bernoulli_distribution dist2(.5);
+    std::mt19937_64 engine;
+    for (int i=0; i<n; ++i) if(dist2(engine)) s++;
     cerr << global_clock.time()-t << ",  \tsum = " << s << endl;
 
     cerr << "UNIX rand() ...                        \ttime = ";

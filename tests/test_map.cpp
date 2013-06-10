@@ -19,7 +19,7 @@ double fg (const Vector &x, Vector &g, void *context) {
   fill (g.begin(), g.end(), 0.0);
 
   for (int i=0; i < m->n; ++i) {
-    foreach (int j, m->v[i]->adj) {
+    for (int j : m->v[i]->adj) {
       double dx = x[3*j]-x[3*i];
       double dy = x[3*j+1]-x[3*i+1];
       double l = sqrt(dx*dx + dy*dy);
@@ -78,8 +78,8 @@ int main () {
     m.circlepack (6,0,bord);
   } else {
     // 3.6 seconds total on seltz.
-    foreach (bool b, m.bd) b = false;
-    foreach (int i, bord) m.bd[i] = true;
+    for (bool b : m.bd) b = false;
+    for (int i : bord) m.bd[i] = true;
 
     Vector x(3*m.n);
 
