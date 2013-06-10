@@ -13,7 +13,7 @@ class Spin {
 public:
     int s;
     Spin (int i) : s(i) {};
-    operator Color() const { if ((s>=0)&&(s<6)) return C[s]; else return WHITE; }
+    operator Color() const { if ((s>=0)&&(s<6)) return C[s]; else return Indexed(s); }
 };
 
 class Potts : public Bitmap<Spin> {
@@ -101,7 +101,7 @@ public:
 int main (int argc, char ** argv) {
     CL_Parser CLP (argc,argv,"n=500,q=3,b=1");
     Potts P(CLP);
-    P.bc_loren2();
+    // P.bc_dobrushin();
     P.show();
 
     Console W;
