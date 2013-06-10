@@ -8,11 +8,10 @@ namespace vb {
 
 	void close_window (Fl_Widget *w) { exit(1); }
 
-	AutoWindow::AutoWindow (int wd, int ht, const std::string &t) :
-		Fl_Double_Window (wd, ht, t.c_str()),
-		title(t), paused (false) {
-			task = global_clock.add (5,AutoWindow_update,this);
-			callback(close_window);
+	AutoWindow::AutoWindow (int wd, int ht, const std::string &t) : Fl_Double_Window (wd, ht, t.c_str()), title(t), paused (false) {
+		label (title.c_str());
+		task = global_clock.add (5,AutoWindow_update,this);
+		callback(close_window);
 	}
 
 	AutoWindow::~AutoWindow () {
