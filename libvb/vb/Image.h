@@ -1,4 +1,4 @@
-#pragma once /// @file Definitions for the vb::Image class (just an wrapper for Bitmap<Color>)
+#pragma once /// @file
 #include <vb/Bitmap.h>
 
 namespace vb {

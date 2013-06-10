@@ -1,49 +1,45 @@
-#pragma once /// \file
+#pragma once /// @file
 #include <vb/config.h>
+#include <math.h>
 
 namespace vb {
-  /** A rather stupid class holding color info in Cairo format.
-   *
-   * It is just a 4-char structure with a few convenience methods for
-   * making it out of components, and it adapts to the endianness of the
-   * machine as determined at compilation time. The point is to be able
-   * to cast the output of Cairo::ImageSurface::get_data() to Color* to
-   * access components without caring about endianness.
-   */
-
-  class Color {
-    public:
+	class Color {
+	public:
 #if VB_ENDIAN == little
-      unsigned char b; ///< The blue component.
-      unsigned char g; ///< The green component.
-      unsigned char r; ///< The red component.
-      unsigned char a; ///< The alpha channel (for ARGB32).
-
-      /// Constructor from RGBA values.
-      Color (unsigned char R, unsigned char G, unsigned char B, unsigned char A=255) : b(B), g(G), r(R), a(A) { }
-
-      /// Constructor from a greyscale value.
-      Color (unsigned char V = 0) : b(V), g(V), r(V), a(255) { }
+		unsigned char b; ///< The blue component.
+		unsigned char g; ///< The green component.
+		unsigned char r; ///< The red component.
+		unsigned char a; ///< The alpha channel (for ARGB32).
 #else
-      unsigned char a; ///< The alpha channel (for ARGB32).
-      unsigned char r; ///< The red component.
-      unsigned char g; ///< The green component.
-      unsigned char b; ///< The blue component.
-
-      /// Constructor from RGBA values.
-      Color (unsigned char R, unsigned char G, unsigned char B, unsigned char A=255) : a(A), r(R), g(G), b(B) { }
-
-      /// Constructor from a greyscale value.
-      Color (unsigned char V = 0) : a(255), r(V), g(V), b(V) { }
+		unsigned char a; ///< The alpha channel (for ARGB32).
+		unsigned char r; ///< The red component.
+		unsigned char g; ///< The green component.
+		unsigned char b; ///< The blue component.
 #endif
-      /// Compare to another color.
-      bool operator== (const Color &o) { return (r==o.r) && (g==o.g) && (b==o.b) && (a==o.a); }
-      /// Compare to another color.
-      bool operator!= (const Color &o) { return ! operator==(o); }
-      /// Convert to greyscale as an integer.
-      operator int () { return (r+g+b)/3; }
-  };
 
-  const Color NONE(0,0,0,0), BLACK(0,0,0), WHITE(255,255,255), RED(255,0,0), GREEN(0,255,0), BLUE(0,0,255),
-              CYAN(0,255,255), MAGENTA(255,0,255), YELLOW(255,255,0);
+		Color (unsigned char R, unsigned char G, unsigned char B, unsigned char A=255)	: a(A), r(R), g(G), b(B)	{}
+		Color (unsigned char V)                                                       	: Color (V,V,V)         	{}
+		Color ()                                                                      	: Color (0,0,0,0)       	{}
+
+		bool operator== (const Color &o) const { return (r==o.r) && (g==o.g) && (b==o.b) && (a==o.a); }
+		bool operator!= (const Color &o) const { return ! operator== (o); }
+
+		operator int () { return (r+g+b)/3; }
+	};
+
+	const Color	NONE(0,0,0,0), BLACK(0,0,0), WHITE(255,255,255), RED(255,0,0), GREEN(0,255,0), BLUE(0,0,255),
+	           	CYAN(0,255,255), MAGENTA(255,0,255), YELLOW(255,255,0);
+
+	inline Color HSV (double h, double s, double v) {
+		int h_i = h*6; double f = h*6 - h_i; v*=255;
+		int p = v*(1-s), q = v*(1-f*s), t = v*(1-(1-f)*s);
+		if (h_i==0)     	return Color(v,t,p);
+		else if (h_i==1)	return Color(q,v,p);
+		else if (h_i==2)	return Color(p,v,t);
+		else if (h_i==3)	return Color(p,q,v);
+		else if (h_i==4)	return Color(t,p,v);
+		else            	return Color(v,p,q);
+	}
+
+	inline Color Indexed (int i, double s=1, double v=1) { double x = i * (1.0+sqrt(5.0))/2.0; return HSV (x-int(x),s,v); }
 }

@@ -102,6 +102,7 @@ int bump_iso (int x, int y, double p, double q) {
   if ((x>=0) && (y<=0)) return (prng.bernoulli(double(x)/(x-y)) ? 2 : 1);
   if ((x<=0) && (y>=0)) return (prng.bernoulli(double(x)/(x-y)) ? 0 : 3);
   if ((x<=0) && (y<=0)) return (prng.bernoulli(double(x)/(x+y)) ? 0 : 1);
+  return 0; // should not happen.
 }
 
 int bump_lozenge_2 (int x, int y, double p, double q) {
