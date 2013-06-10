@@ -33,11 +33,7 @@ namespace vb {
 		std::ostream & output_pov (std::ostream & os) { return os << v; }
 	};
 
-	class Pov_Scene : public Pov_Object {
-	public:
-		Pov_Scene ();
-	};
-
+	class Pov_Scene       	: public Pov_Object { public: Pov_Scene       	();                      	                    	};
 	class Pov_Texture     	: public Pov_Object { public: Pov_Texture     	(std::string t);         	                    	};
 	class Pov_Camera      	: public Pov_Object { public: Pov_Camera      	(tri a, tri b, double d);	                    	};
 	class Pov_Light_Source	: public Pov_Object { public: Pov_Light_Source	(tri a);                 	                    	};

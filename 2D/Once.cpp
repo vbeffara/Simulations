@@ -1,11 +1,7 @@
-/*
- * Vertex-Once-Reinforced Random Walk in Z^2
- * TODO : refactor into a proper class, use coo
- */
-
 #include <vb/CL_Parser.h>
 #include <vb/PRNG.h>
 #include <vb/CoarseImage.h>
+#include <vb/common.h> // fmt
 
 #include <stdio.h>
 #include <stdlib.h>

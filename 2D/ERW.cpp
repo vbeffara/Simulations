@@ -1,10 +1,7 @@
-/*
- * Excited random walk in the plane.
- */
-
 #include <vb/CL_Parser.h>
 #include <vb/PRNG.h>
 #include <vb/CoarseImage.h>
+#include <vb/common.h> // dx,dy
 
 using namespace vb;
 

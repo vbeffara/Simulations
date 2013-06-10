@@ -1,12 +1,7 @@
-/*
- * Glass - conditioned metropolis Markov chain
- *
- * (contains Contact-connect as a particular case)
- */
-
 #include <vb/CL_Parser.h>
 #include <vb/Image.h>
 #include <vb/PRNG.h>
+#include <vb/common.h> // fmt
 
 using namespace vb;
 using namespace std;

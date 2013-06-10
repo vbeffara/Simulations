@@ -1,13 +1,10 @@
-/*
- * DLA in a bath of exclusion particles.
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <vb/Image.h>
 #include <vb/PRNG.h>
 #include <vb/CL_Parser.h>
+#include <vb/common.h> // fmt
 
 #define EC fprintf(stderr,"<%d>\n",__LINE__);
 

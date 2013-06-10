@@ -1,11 +1,7 @@
-/*
- * Simulation d'une marche simple dans Z^2, tu?e ? la sortie d'un
- * carré de côté donné.
- */
-
 #include <vb/CL_Parser.h>
 #include <vb/Image.h>
 #include <vb/PRNG.h>
+#include <vb/common.h> // fmt
 
 #define EC fprintf(stderr,"<%d>\n",__LINE__);
 

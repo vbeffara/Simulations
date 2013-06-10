@@ -1,11 +1,7 @@
-/*
- * Simulation d'une marche à boucles effacées dans Z^2, tuée à la
- * sortie d'un carré de côté donné.
- */
-
 #include <vb/CL_Parser.h>
 #include <vb/Image.h>
 #include <vb/PRNG.h>
+#include <vb/common.h> // fmt
 
 using namespace vb;
 

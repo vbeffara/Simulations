@@ -1,8 +1,8 @@
-
 #include <vb/CL_Parser.h>
 #include <vb/CoarseImage.h>
 #include <vb/PRNG.h>
 #include <vb/Console.h>
+#include <vb/common.h> // fmt
 
 using namespace vb;
 using namespace std;

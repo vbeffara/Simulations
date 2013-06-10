@@ -1,7 +1,7 @@
-
 #include <vb/CL_Parser.h>
 #include <vb/Image.h>
 #include <vb/PRNG.h>
+#include <vb/common.h> // dx,dy
 
 using namespace vb;
 using namespace std;

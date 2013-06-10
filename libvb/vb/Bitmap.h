@@ -1,6 +1,6 @@
 #pragma once /// \file
 #include <vb/Picture.h>
-#include <vb/common.h> // for coo
+#include <vb/coo.h>
 
 namespace vb {
 	template <typename T> class Bitmap : public Picture {
