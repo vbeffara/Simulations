@@ -35,7 +35,7 @@ class Ising3 : public Cube { public: CL_Parser & clp; int b; bool k; double beta
 };
 
 int main (int argc, char ** argv) {
-	CL_Parser CLP (argc, argv, "n=50,b=1,t=0,p=.5,k,c=bernoulli|cube|dibrushin");
+	CL_Parser CLP (argc, argv, "n=50,b=1,t=0,p=.5,k,c=bernoulli|cube|dobrushin");
 	int T = CLP('t'); if (T==0) T = 2*int(CLP('n'));
     Ising3 C (CLP); C.show();
     { ProgressBar P (T); for (int t=0; t<T; ++t) { C.swipe(); P.set(t); } }
