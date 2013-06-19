@@ -26,8 +26,9 @@ namespace vb {
 		void fill (coo z, T c, int adj = 4);
 		void tessel (int xmin, int ymin, int xmax, int ymax);
 
-		Bitmap_iterator<T>	begin	()	{ return Bitmap_iterator<T> (*this, coo(0,0));  	}
-		Bitmap_iterator<T>	end  	()	{ return Bitmap_iterator<T> (*this, coo(0,h()));	}
+		typedef Bitmap_iterator<T> iterator;
+		iterator	begin	()	{ return iterator (*this, coo(0,0));  	}
+		iterator	end  	()	{ return iterator (*this, coo(0,h()));	}
 
 	private:
 		Color * stage;	///< The raw pixel data of the screen representation.
@@ -40,11 +41,11 @@ namespace vb {
 		}
 	};
 
-	template<typename T> class Bitmap_iterator { public: Bitmap<T> &b; coo z;
-		Bitmap_iterator	(Bitmap<T> &bb, coo zz) : b(bb), z(zz)	{}
-		bool operator!=	(Bitmap_iterator<T> &o)               	{ return (&b != &o.b) || (z != o.z);        	}
-		void operator++	()                                    	{ z.x++; if (z.x == b.w()) { z.x=0; z.y++; }	}
-		T & operator*  	()                                    	{ return b.at(z);                           	}
+	template<typename T> class Bitmap_iterator : public coo { public: Bitmap<T> &b;
+		Bitmap_iterator	(Bitmap<T> &bb, coo z) : coo(z), b(bb)	{}
+		bool operator!=	(Bitmap_iterator<T> &o)               	{ return (&b != &o.b) || ((coo)(*this) != (coo)(o));	}
+		void operator++	()                                    	{ x++; if (x == b.w()) { x=0; y++; }                	}
+		T & operator*  	()                                    	{ return b.at(*this);                               	}
 	};
 
 	template<typename T> Bitmap<T>::Bitmap (int wd, int ht, const std::string &tit, T d) :
