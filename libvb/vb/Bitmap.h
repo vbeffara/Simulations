@@ -44,6 +44,7 @@ namespace vb {
 	template<typename T> class Bitmap_iterator : public coo { public: Bitmap<T> &b;
 		Bitmap_iterator	(Bitmap<T> &bb, coo z) : coo(z), b(bb)	{}
 		bool operator!=	(Bitmap_iterator<T> &o)               	{ return (&b != &o.b) || ((coo)(*this) != (coo)(o));	}
+		bool operator!=	(coo o)                               	{ return ((coo)(*this) != (coo)(o));                	}
 		void operator++	()                                    	{ x++; if (x == b.w()) { x=0; y++; }                	}
 		T & operator*  	()                                    	{ return b.at(*this);                               	}
 	};

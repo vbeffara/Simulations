@@ -1,6 +1,7 @@
 #pragma once /// \file
 #include <vb/Bitmap.h>
 #include <vb/PRNG.h>
+#include <vb/coo.h>
 
 namespace vb {
 	class Adder { public: int s; int n;
@@ -10,11 +11,6 @@ namespace vb {
 		int operator-=	(int t)                   	{ s -= t; return s; }
 		operator Color	()                        	{ return Color(s/n); }
 	};
-
-	class coo3 { public: int x,y,z; coo3 (int xx, int yy, int zz) : x(xx), y(yy), z(zz) {} };
-	const coo3 dz3[6] { coo3(1,0,0), coo3(-1,0,0), coo3(0,1,0), coo3(0,-1,0), coo3(0,0,1), coo3(0,0,-1) };
-	inline coo3 operator+ (const coo3 & c1, const coo3 & c2) { return coo3 (c1.x+c2.x, c1.y+c2.y, c1.z+c2.z); }
-	inline bool operator!= (const coo3 & c1, const coo3 & c2) { return (c1.x!=c2.x) || (c1.y!=c2.y) || (c1.z!=c2.z); }
 
 	class Cube_iterator;
 
@@ -31,6 +27,8 @@ namespace vb {
 		unsigned char &	at 	(coo3 c) { return data[index(c)]; }
 		unsigned char &	atp	(coo3 c) { return at(wrap(c)); }
 
+		typedef Cube_iterator iterator; iterator begin (); iterator end ();
+
 		using Bitmap <Adder> :: at;
 		void put (coo3 c, unsigned char t) {
 		    unsigned char d = data[index(c)]; if (t!=d) {
@@ -43,16 +41,12 @@ namespace vb {
 
 		void output_pov ();
 
-		typedef Cube_iterator iterator;
-		iterator	begin	();
-		iterator	end  	();
-
 		int sx,sy,sz; std::vector <unsigned char> data;
 	};
 
 	class Cube_iterator : public coo3 { public: Cube &c;
 		Cube_iterator                  	(Cube &cc, coo3 xyz) : coo3(xyz), c(cc)	{}
-		bool operator!=                	(Cube_iterator &o)                     	{ return (&c != &o.c) || ((coo3)(*this) != (coo3)(o));          	}
+		bool operator!=                	(const Cube_iterator &o)               	{ return (&c != &o.c) || ((coo3)(*this) != (coo3)(o));          	}
 		void operator++                	()                                     	{ x++; if (x == c.sx) { x=0; y++; } if (y == c.sy) { y=0; z++; }	}
 		unsigned const char & operator*	()                                     	{ return c.at((coo3)(*this));                                   	}
 	};
