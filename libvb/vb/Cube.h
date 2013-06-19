@@ -14,6 +14,9 @@ namespace vb {
 	class coo3 { public: int x,y,z; coo3 (int xx, int yy, int zz) : x(xx), y(yy), z(zz) {} };
 	const coo3 dz3[6] { coo3(1,0,0), coo3(-1,0,0), coo3(0,1,0), coo3(0,-1,0), coo3(0,0,1), coo3(0,0,-1) };
 	inline coo3 operator+ (const coo3 & c1, const coo3 & c2) { return coo3 (c1.x+c2.x, c1.y+c2.y, c1.z+c2.z); }
+	inline bool operator!= (const coo3 & c1, const coo3 & c2) { return (c1.x!=c2.x) || (c1.y!=c2.y) || (c1.z!=c2.z); }
+
+	class Cube_iterator;
 
 	class Cube : public Bitmap <Adder> { public:
 		Cube (int x, int y, int z, const std::string &name);
@@ -21,7 +24,6 @@ namespace vb {
 		int 	index	(coo3 c) 	{ return c.x + sx*c.y + sx*sy*c.z; }
 		coo3	rand 	(int b=0)	{ return coo3 (b+prng.uniform_int(sx-2*b), b+prng.uniform_int(sy-2*b), b+prng.uniform_int(sz-2*b)); }
 		coo3	wrap 	(coo3 c) 	{ int xx=((c.x%sx)+sx)%sx, yy=((c.y%sy)+sy)%sy, zz=((c.z%sz)+sz)%sz; return coo3(xx,yy,zz); }
-		void	next 	(coo3 &c)	{ c.x++; if (c.x==sx) c.x=0, c.y++; if (c.y==sy) c.y=0, c.z++; }
 
 		void	putp	(coo3 c, unsigned char t)	{ put(wrap(c),t); }
 		bool	done	(coo3 &c)                	{ return (c.z==sz); }
@@ -41,6 +43,17 @@ namespace vb {
 
 		void output_pov ();
 
+		typedef Cube_iterator iterator;
+		iterator	begin	();
+		iterator	end  	();
+
 		int sx,sy,sz; std::vector <unsigned char> data;
+	};
+
+	class Cube_iterator : public coo3 { public: Cube &c;
+		Cube_iterator                  	(Cube &cc, coo3 xyz) : coo3(xyz), c(cc)	{}
+		bool operator!=                	(Cube_iterator &o)                     	{ return (&c != &o.c) || ((coo3)(*this) != (coo3)(o));          	}
+		void operator++                	()                                     	{ x++; if (x == c.sx) { x=0; y++; } if (y == c.sy) { y=0; z++; }	}
+		unsigned const char & operator*	()                                     	{ return c.at((coo3)(*this));                                   	}
 	};
 }

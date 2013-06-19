@@ -9,6 +9,9 @@ namespace vb {
 		for (int y=0; y<sy; ++y) for (int z=0; z<sz; ++z) at(coo(z+sx,y)).dim(sx);
 	}
 
+	Cube_iterator	Cube::begin	()	{ return Cube_iterator (*this, coo3(0,0,0)); 	}
+	Cube_iterator	Cube::end  	()	{ return Cube_iterator (*this, coo3(0,0,sz));	}
+
 	void Cube::output_pov () {
 		Pov_Union * corner = new Pov_Union(); * corner
 			<< new Pov_Plane  	(tri(1,0,0), -.75*sx)

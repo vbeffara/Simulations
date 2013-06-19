@@ -14,9 +14,9 @@ class Ising3 : public Cube { public: CL_Parser & clp; int b; bool k; double beta
 		else   	                                 	bc_bernoulli(double(clp('p')));
 	};
 
-	void bc_bernoulli (double p=.5)	{ for (coo3 c(0,0,0); !done(c); next(c)) put(c, prng.bernoulli(p)	? 255 : 0);	b=0; }
-	void bc_dobrushin ()           	{ for (coo3 c(0,0,0); !done(c); next(c)) put(c, c.y<sy/2         	? 255 : 0);	b=1; }
-	void bc_cube ()                	{ for (coo3 c(0,0,0); !done(c); next(c)) put(c, 0); b=0;
+	void bc_bernoulli (double p=.5)	{ for (auto c = begin(); c != end(); ++c) put(c, prng.bernoulli(p)	? 255 : 0);	b=0; }
+	void bc_dobrushin ()           	{ for (auto c = begin(); c != end(); ++c) put(c, c.y<sy/2         	? 255 : 0);	b=1; }
+	void bc_cube ()                	{ for (auto c = begin(); c != end(); ++c) put(c, 0); b=0;
 	    for (int x=sx/10; x<9*sx/10; ++x) for (int y=sy/10; y<9*sy/10; ++y) for (int z=sz/10; z<9*sz/10; ++z) put(coo3(x,y,z), 255);
 	}
 
