@@ -30,10 +30,10 @@ int main(int argc, char ** argv) {
       int x = prng.uniform_int(n);
       int y = prng.uniform_int(n);
       if ((x+y)%2 == 0) continue;
-      bool on_it = (img.at(x,y) == Color(255,0,0));
+      bool on_it = (img.at(coo(x,y)) == Color(255,0,0));
 
       Color c = prng.bernoulli(p) * 128;
-      if (img.at(x,y) == c) continue;
+      if (img.at(coo(x,y)) == c) continue;
       if (on_it && (c == Color(128))) continue;
 
       img.fill (coo(n/2,n/2), 128);

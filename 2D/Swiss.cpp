@@ -37,15 +37,15 @@ public:
     int mid = (w()+h())/2;
     for (int x=0; x<w(); ++x) {
       for (int y=0; y<h(); ++y) {
-        if (y>x) { if (x+y<mid) at(x,y) = EAST;  else at(x,y) = SOUTH; }
-        else     { if (x+y<mid) at(x,y) = NORTH; else at(x,y) = WEST;  }
-        if (prng.bernoulli(p)) at(x,y) = prng.uniform_int(4);
+        if (y>x) { if (x+y<mid) at(coo(x,y)) = EAST;  else at(coo(x,y)) = SOUTH; }
+        else     { if (x+y<mid) at(coo(x,y)) = NORTH; else at(coo(x,y)) = WEST;  }
+        if (prng.bernoulli(p)) at(coo(x,y)) = prng.uniform_int(4);
       }
     }
 
     for (int x=c; x<w()-c; ++x)
       for (int y=c; y<h()-c; ++y)
-        at(x,y) = prng.uniform_int(4);
+        at(coo(x,y)) = prng.uniform_int(4);
   }
 };
 
@@ -59,10 +59,10 @@ int main (int argc, char ** argv) {
 
   while (true) {
     int nb[4] = { 0,0,0,0 };
-    nb[w.at((x+1)%(w.w()),y)] += 1;
-    nb[w.at((x+w.w()-1)%(w.w()),y)] += 1;
-    nb[w.at(x,(y+1)%(w.h()))] += 1;
-    nb[w.at(x,(y+w.h()-1)%(w.h()))] += 1;
+    nb[w.at(coo((x+1)%(w.w()),y))] += 1;
+    nb[w.at(coo((x+w.w()-1)%(w.w()),y))] += 1;
+    nb[w.at(coo(x,(y+1)%(w.h())))] += 1;
+    nb[w.at(coo(x,(y+w.h()-1)%(w.h())))] += 1;
     int max = 0;
     for (int i=0; i<4; ++i) if (nb[i]>max) max=nb[i];
 
@@ -70,7 +70,7 @@ int main (int argc, char ** argv) {
     if (prng.bernoulli(1-w.q))
       while (nb[d]<max) d = prng.uniform_int(4);
 
-    w.at(x,y) = d; x = (x+dx[d]+w.w())%(w.w()); y = (y+dy[d]+w.h())%(w.h());
+    w.at(coo(x,y)) = d; x = (x+dx[d]+w.w())%(w.w()); y = (y+dy[d]+w.h())%(w.h());
     w.step();
   }
 }

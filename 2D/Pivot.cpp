@@ -70,13 +70,13 @@ int main(int argc, char ** argv)
     for (k=n>>2; (k<(n>>2)+(n>>1)) && cont; k++) {
       piv=1;
       for (l=k; (l<n) && piv; l++) {
-        if ((*img).at(COO(x[l],y[l]),0) || (*img).at(RCOO(x[l],y[l],x[k],y[k]),0))
+        if ((*img).at(coo(COO(x[l],y[l]),0)) || (*img).at(coo(RCOO(x[l],y[l],x[k],y[k]),0)))
           piv=0;
       }
       if (piv) {
         img->putpoint (COO(x[k],y[k]),0,2);
         p=k; cont=0;
-      } else if ((*img).at(COO(x[k],y[k]),0)==Color(0)) img->putpoint(COO(x[k],y[k]),0,1);
+      } else if ((*img).at(coo(COO(x[k],y[k]),0))==Color(0)) img->putpoint(COO(x[k],y[k]),0,1);
     }
     if (cont) fprintf(stderr, ".");
   }
@@ -86,7 +86,7 @@ int main(int argc, char ** argv)
   for (k=0; k<4*n; k++) img->putpoint (k,0,0);
   for (k=0; k<n; k++)   img->putpoint (COO(x[k]-x[p],y[k]-y[p]),0,3);
   for (k=p+1; k<n; k++) {
-    if ((*img).at(RCOO(x[k]-x[p],y[k]-y[p],0,0),0) != Color(3)) {
+    if ((*img).at(coo(RCOO(x[k]-x[p],y[k]-y[p],0,0),0)) != Color(3)) {
       img->putpoint (RCOO(x[k]-x[p],y[k]-y[p],0,0),0,1);
     }
   }

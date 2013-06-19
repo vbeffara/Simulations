@@ -17,32 +17,32 @@ void bndcnx (int ox, int oy) {
 
   imin=0; imax=0;
   fifox[0]=ox; fifoy[0]=oy;
-  img -> putpoint (ox,oy, (*img).at(ox,oy) | 3);
+  img -> putpoint (ox,oy, (*img).at(coo(ox,oy)) | 3);
 
   while (imin<=imax) {
     i=fifox[imin];
     j=fifoy[imin];
     k=i+j*img->w();
     imin++;
-    if ((i<img->w()-1)&&((*img).at(i,j)&16)&&!((*img).at(i+1,j)&2)) {
+    if ((i<img->w()-1)&&((*img).at(coo(i,j))&16)&&!((*img).at(coo(i+1,j))&2)) {
       fifox[++imax]=i+1;
       fifoy[imax]=j;
-      img -> putpoint (i+1,j, (*img).at(i+1,j) | 3);
+      img -> putpoint (i+1,j, (*img).at(coo(i+1,j)) | 3);
     }
-    if ((j<img->h()-1)&&((*img).at(i,j)&32)&&!((*img).at(i,j+1)&2)) {
+    if ((j<img->h()-1)&&((*img).at(coo(i,j))&32)&&!((*img).at(coo(i,j+1))&2)) {
       fifox[++imax]=i;
       fifoy[imax]=j+1;
-      img -> putpoint (i,j+1, (*img).at(i,j+1) | 3);
+      img -> putpoint (i,j+1, (*img).at(coo(i,j+1)) | 3);
     }
-    if ((i>0)&&((*img).at(i-1,j)&16)&&!((*img).at(i-1,j)&2)) {
+    if ((i>0)&&((*img).at(coo(i-1,j))&16)&&!((*img).at(coo(i-1,j))&2)) {
       fifox[++imax]=i-1;
       fifoy[imax]=j;
-      img -> putpoint (i-1,j, (*img).at(i-1,j) | 3);
+      img -> putpoint (i-1,j, (*img).at(coo(i-1,j)) | 3);
     }
-    if ((j>0)&&((*img).at(i,j-1)&32)&&!((*img).at(i,j-1)&2)) {
+    if ((j>0)&&((*img).at(coo(i,j-1))&32)&&!((*img).at(coo(i,j-1))&2)) {
       fifox[++imax]=i;
       fifoy[imax]=j-1;
-      img -> putpoint (i,j-1, (*img).at(i,j-1) | 3);
+      img -> putpoint (i,j-1, (*img).at(coo(i,j-1)) | 3);
     }
   }
 }
@@ -74,12 +74,12 @@ int main (int argc, char **argv) {
           img -> putpoint (i,j, 16*prng.bernoulli(p) + 32*prng.bernoulli(q));
 
       for (int j=0; j<m; ++j) {
-        img -> putpoint (0,j, (*img).at(0,j) | 32);
-        img -> putpoint (n-1,j, (*img).at(n-1,j) | 32);
+        img -> putpoint (0,j, (*img).at(coo(0,j)) | 32);
+        img -> putpoint (n-1,j, (*img).at(coo(n-1,j)) | 32);
       }
 
       bndcnx (0,0);
-      if ((*img).at(n-1,0) & 3) ++ncross;
+      if ((*img).at(coo(n-1,0)) & 3) ++ncross;
     }
   }
 

@@ -77,14 +77,14 @@ void SLE::edge_detect () {
 
   for (int y=1; y<h(); y++) {
     for (int x=0; x<w()-1; x++) {
-      self = at(x,y);
+      self = at(coo(x,y));
       if (x<w()-1) {
-        right = at(x+1,y);
+        right = at(coo(x+1,y));
       } else {
         right = self;
       }
       if (y<h()-1) {
-        down = at(x,y+1);
+        down = at(coo(x,y+1));
       } else {
         down = self;
       }

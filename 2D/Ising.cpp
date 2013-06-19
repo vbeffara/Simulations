@@ -63,13 +63,13 @@ int main(int argc, char *argv[])
       for (y=1;y<n-1;y++) {
         f1 = 0; f2 = 0; xy = x + n*y;
 
-        if (img.at(xy,0) == img.at(xy-1,0)) { f2++; } else { f1++; }
-        if (img.at(xy,0) == img.at(xy-n,0)) { f2++; } else { f1++; }
-        if (img.at(xy,0) == img.at(xy+1,0)) { f2++; } else { f1++; }
-        if (img.at(xy,0) == img.at(xy+n,0)) { f2++; } else { f1++; }
+        if (img.at(coo(xy,0)) == img.at(coo(xy-1,0))) { f2++; } else { f1++; }
+        if (img.at(coo(xy,0)) == img.at(coo(xy-n,0))) { f2++; } else { f1++; }
+        if (img.at(coo(xy,0)) == img.at(coo(xy+1,0))) { f2++; } else { f1++; }
+        if (img.at(coo(xy,0)) == img.at(coo(xy+n,0))) { f2++; } else { f1++; }
 
         if ( (f2<=f1) || (prng() < p[f2-f1]) ) {
-          img.putpoint(x,y,(255-img.at(xy,0)));
+          img.putpoint(x,y,(255-img.at(coo(xy,0))));
         }
       }
     }

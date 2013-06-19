@@ -57,11 +57,11 @@ int Mirrors::main () {
   while (true) {
     for (int i=0; i<n; ++i) {
       for (int j=0; j<n; ++j) {
-        at(i,j) = STATE_NONE;
+        at(coo(i,j)) = STATE_NONE;
         if (prng.bernoulli(1-q)) {
-          at(i,j).s |= STATE_PRESENT;
-          if (prng.bernoulli(p)) at(i,j).s |= STATE_NE;
-          if (prng.bernoulli(f)) at(i,j).s |= STATE_FLIP;
+          at(coo(i,j)).s |= STATE_PRESENT;
+          if (prng.bernoulli(p)) at(coo(i,j)).s |= STATE_NE;
+          if (prng.bernoulli(f)) at(coo(i,j)).s |= STATE_FLIP;
         }
       }
     }
@@ -70,13 +70,13 @@ int Mirrors::main () {
 
     while ((t<8*n*n)&&(x>0)&&(y>0)&&(x<n-1)&&(y<n-1)) {
       ++t;
-      at(x,y).s |= STATE_VISITED;
+      at(coo(x,y)).s |= STATE_VISITED;
 
       x += dx[d]; y += dy[d];
 
-      if (at(x,y) & STATE_PRESENT) {
-        if (at(x,y).s & STATE_NE) d = flip_ne[d]; else d = flip_nw[d];
-        if (at(x,y).s & STATE_FLIP) at(x,y).s ^= STATE_NE;
+      if (at(coo(x,y)) & STATE_PRESENT) {
+        if (at(coo(x,y)).s & STATE_NE) d = flip_ne[d]; else d = flip_nw[d];
+        if (at(coo(x,y)).s & STATE_FLIP) at(coo(x,y)).s ^= STATE_NE;
       }
     }
 

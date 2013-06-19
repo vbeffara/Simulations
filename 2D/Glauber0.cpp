@@ -25,10 +25,10 @@ void Glauber::step (int i, int j) {
   if (j==-1) j=prng.uniform_int(n);
 
   int c=0;
-  if (at((i+1)%n,   j) == Color(255)) ++c;
-  if (at((i+n-1)%n, j) == Color(255)) ++c;
-  if (at(i,   (j+1)%n) == Color(255)) ++c;
-  if (at(i, (j+n-1)%n) == Color(255)) ++c;
+  if (at(coo((i+1)%n,   j)) == Color(255)) ++c;
+  if (at(coo((i+n-1)%n, j)) == Color(255)) ++c;
+  if (at(coo(i,   (j+1)%n)) == Color(255)) ++c;
+  if (at(coo(i, (j+n-1)%n)) == Color(255)) ++c;
 
   if ((c>2) || ((c==2) && prng.bernoulli(.5))) putpoint(i,j,255);
   else putpoint(i,j,0);

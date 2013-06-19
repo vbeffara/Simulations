@@ -17,7 +17,7 @@ int main (int argc, char **argv) {
   for (int i=0;i<n;++i)
     for (int j=0;j<n;++j)
       if (vb::prng.bernoulli(p))
-	if ( ((i>0)&&img.at(i-1,j)) || ((j>0)&&img.at(i,j-1)) )
+	if ( ((i>0)&&img.at(vb::coo(i-1,j))) || ((j>0)&&img.at(vb::coo(i,j-1))) )
 	  img.putpoint (i,j,255);
 
   return 0;
