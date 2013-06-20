@@ -67,7 +67,7 @@ int main(int argc, char ** argv)
 
   for (int x=0; x<n; ++x)
     for (int y=0; y<n; ++y)
-      img.putpoint(x,y,color[cluster[x+n*y]]);
+      img.put(coo(x,y),color[cluster[x+n*y]]);
 
   return 0;
 }

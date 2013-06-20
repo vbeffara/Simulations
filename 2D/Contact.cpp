@@ -20,9 +20,9 @@ int main(int argc, char *argv[])
   /* conditions initiales */
 
   for (int x=0;x<n;++x) {
-    img.putpoint(x,0,255);
+    img.put(coo(x,0),255);
     for (int y=1;y<n;++y)
-      img.putpoint(x,y,0);
+      img.put(coo(x,y),0);
   }
 
   img.show();
@@ -38,10 +38,10 @@ int main(int argc, char *argv[])
 	if ((x+y+i)%2) {
 	  if ((img.at(coo(x-1,y))||img.at(coo(x+1,y))||img.at(coo(x,y-1))||img.at(coo(x,y+1))) &&
 	      (prng.bernoulli(p))) {
-	    img.putpoint(x,y,255);
+	    img.put(coo(x,y),255);
 	    total++;
 	  } else {
-	    img.putpoint(x,y,0);
+	    img.put(coo(x,y),0);
 	  }
 	}
       }

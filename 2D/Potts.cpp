@@ -99,7 +99,7 @@ public:
 int main (int argc, char ** argv) {
     CL_Parser CLP (argc,argv,"n=500,q=3,b=1");
     Potts P(CLP);
-    // P.bc_dobrushin();
+    P.bc(1); for (auto & c : P) c=1;
     P.show();
 
     Console W;

@@ -28,21 +28,21 @@ int main(int argc, char *argv[])
   if (beta > log(1+sqrt(2.0))) { /* Basse temp. */
     for (x=1;x<n-1;x++) {
       for (y=1;y<n-1;y++) {
-        img.putpoint (x,y, (x<(n>>1)?LEFT:RIGHT));
+        img.put(coo (x,y), (x<(n>>1)?LEFT:RIGHT));
       }
     }
   } else { /* Haute temp. */
     for (x=1;x<n-1;x++) {
       for (y=1;y<n-1;y++) {
-        img.putpoint (x,y, (prng.bernoulli(.5)?LEFT:RIGHT));
+        img.put(coo (x,y), (prng.bernoulli(.5)?LEFT:RIGHT));
       }
     }
   }
 
-  for (i=0;i<(n>>1);i++) { img.putpoint (i,0,LEFT);  img.putpoint (i,n-1,LEFT); }
-  for (i=0;i<n;i++)      { img.putpoint (0,i,LEFT); }
-  for (i=(n>>1);i<n;i++) { img.putpoint (i,0,RIGHT); img.putpoint (i,n-1,RIGHT); }
-  for (i=0;i<n;i++)      { img.putpoint (n-1,i,RIGHT); }
+  for (i=0;i<(n>>1);i++) { img.put(coo (i,0),LEFT);  img.put(coo (i,n-1),LEFT); }
+  for (i=0;i<n;i++)      { img.put(coo (0,i),LEFT); }
+  for (i=(n>>1);i<n;i++) { img.put(coo (i,0),RIGHT); img.put(coo (i,n-1),RIGHT); }
+  for (i=0;i<n;i++)      { img.put(coo (n-1,i),RIGHT); }
 
   img.show();
 
@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
         if (img.at(coo(xy,0)) == img.at(coo(xy+n,0))) { f2++; } else { f1++; }
 
         if ( (f2<=f1) || (prng() < p[f2-f1]) ) {
-          img.putpoint(x,y,(255-img.at(coo(xy,0))));
+          img.put(coo(x,y),(255-img.at(coo(xy,0))));
         }
       }
     }

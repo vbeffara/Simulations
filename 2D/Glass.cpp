@@ -102,7 +102,7 @@ int main (int argc, char **argv) {
   Image img (n,n, str(fmt("A glass process of parameter %f (conditioning: %s)")%p%c));
 
   img.fill(0,0);
-  for (int i=0; i<n; i++) img.putpoint (i,n/2,255);
+  for (int i=0; i<n; i++) img.put(coo(i,n/2),255);
   img.show();
 
   for (int i=2000*n*n; ; i--) {
@@ -126,9 +126,9 @@ int main (int argc, char **argv) {
           tmp    |= img.at(coo(x,y+1));
           tmp    |= img.at(coo(x,y-1));
           if (tmp==0) tmp=85;
-          img.putpoint (x,y,tmp);
+          img.put(coo(x,y),tmp);
         }
-      } else img.putpoint(x,y,0);
+      } else img.put(coo(x,y),0);
     }
   }
   return 0;

@@ -90,7 +90,7 @@ void SLE::edge_detect () {
       }
 
       if ((self!=right)||(self!=down)) {
-        putpoint (x,y,INSIDE);
+        put (coo(x,y),INSIDE);
       }
     }
   }
@@ -103,7 +103,7 @@ int main (int argc, char ** argv) {
 
   int r = CLP('r'); if (r) prng.seed(r);
 
-  for (int i=0;i<sle.w();i++) sle.putpoint (i,0,INSIDE);
+  for (int i=0;i<sle.w();i++) sle.put (coo(i,0),INSIDE);
 
   sle.show();
   sle.tessel (0,1,sle.w()-1,sle.h()-1);

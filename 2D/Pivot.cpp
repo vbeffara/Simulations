@@ -64,8 +64,8 @@ int main(int argc, char ** argv)
 
     // Recherche d'un pivot
 
-    for (k=0; k<4*n; k++)  img->putpoint (k,0,0);
-    for (k=0; k<n>>2; k++) img->putpoint (COO(x[k],y[k]),0,0);
+    for (k=0; k<4*n; k++)  img->put (coo(k,0),0);
+    for (k=0; k<n>>2; k++) img->put (coo(COO(x[k],y[k]),0),0);
     p=0;
     for (k=n>>2; (k<(n>>2)+(n>>1)) && cont; k++) {
       piv=1;
@@ -74,20 +74,20 @@ int main(int argc, char ** argv)
           piv=0;
       }
       if (piv) {
-        img->putpoint (COO(x[k],y[k]),0,2);
+        img->put (coo(COO(x[k],y[k]),0),2);
         p=k; cont=0;
-      } else if ((*img).at(coo(COO(x[k],y[k]),0))==Color(0)) img->putpoint(COO(x[k],y[k]),0,1);
+      } else if ((*img).at(coo(COO(x[k],y[k]),0))==Color(0)) img->put(coo(COO(x[k],y[k]),0),1);
     }
     if (cont) fprintf(stderr, ".");
   }
 
   fprintf(stderr, "\nPivot found at time %d (%d,%d).\n", p, x[p], y[p]);
 
-  for (k=0; k<4*n; k++) img->putpoint (k,0,0);
-  for (k=0; k<n; k++)   img->putpoint (COO(x[k]-x[p],y[k]-y[p]),0,3);
+  for (k=0; k<4*n; k++) img->put(coo(k,0),0);
+  for (k=0; k<n; k++)   img->put(coo(COO(x[k]-x[p],y[k]-y[p]),0),3);
   for (k=p+1; k<n; k++) {
     if ((*img).at(coo(RCOO(x[k]-x[p],y[k]-y[p],0,0),0)) != Color(3)) {
-      img->putpoint (RCOO(x[k]-x[p],y[k]-y[p],0,0),0,1);
+      img->put(coo(RCOO(x[k]-x[p],y[k]-y[p],0,0),0),1);
     }
   }
 

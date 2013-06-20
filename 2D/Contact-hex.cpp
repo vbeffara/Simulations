@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 
   for (int x=0;x<n;++x)
     for (int y=0;y<n/2;++y)
-      img.putpoint(x,y,255);
+      img.put(coo(x,y),255);
 
   img.show();
 
@@ -36,10 +36,10 @@ int main(int argc, char *argv[])
         if ((x+y+i)%3 == 0) {
           if ((img.at(coo(x-1,y-1))||img.at(coo(x,y+1))||img.at(coo(x+1,y))) &&
               (prng.bernoulli(p))) {
-            img.putpoint(x,y,255);
+            img.put(coo(x,y),255);
             total++;
           } else {
-            img.putpoint(x,y,0);
+            img.put(coo(x,y),0);
           }
         }
       }

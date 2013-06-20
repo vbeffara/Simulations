@@ -39,19 +39,19 @@ int main(int argc, char ** argv) {
   if (g) {
     for (x=0;x<2*n;++x)
       for (y=0;y<2*n;++y)
-        img->putpoint (x,y,AWAY);
+        img->put (coo(x,y),AWAY);
   } else {
     for (x=0;x<2*n;x++) {
       for (y=0;y<2*n;y++) {
         if (prng.bernoulli(p)) {
-          img->putpoint (x,y,ALIVE);
+          img->put (coo(x,y),ALIVE);
           if ((x!=n)||(y!=n)) ngrey++;
         } else
-          img->putpoint (x,y,EMPTY);
+          img->put (coo(x,y),EMPTY);
       }
     }
   }
-  img->putpoint (n,n,DEAD);
+  img->put (coo(n,n),DEAD);
 
   img->show();
 
@@ -72,11 +72,11 @@ int main(int argc, char ** argv) {
     if ((*img).at(coo(x,y)) == (*img).at(coo(nx,ny))) continue;
 
     if ((*img).at(coo(x,y)) == AWAY)  {
-      if (prng.bernoulli(a) || ((*img).at(coo(nx,ny)) == DEAD)) { flag = true; img->putpoint (x,y,(prng.bernoulli(p)?ALIVE:EMPTY)); }
+      if (prng.bernoulli(a) || ((*img).at(coo(nx,ny)) == DEAD)) { flag = true; img->put (coo(x,y),(prng.bernoulli(p)?ALIVE:EMPTY)); }
       else continue;
     }
     if ((*img).at(coo(nx,ny)) == AWAY)  {
-      if (prng.bernoulli(a) || ((*img).at(coo(x,y)) == DEAD)) { flag = true; img->putpoint (nx,ny,(prng.bernoulli(p)?ALIVE:EMPTY)); }
+      if (prng.bernoulli(a) || ((*img).at(coo(x,y)) == DEAD)) { flag = true; img->put (coo(nx,ny),(prng.bernoulli(p)?ALIVE:EMPTY)); }
       else continue;
     }
 
@@ -86,11 +86,11 @@ int main(int argc, char ** argv) {
 
     if ((*img).at(coo(nx,ny)) == EMPTY) {
       if (prng.bernoulli(a) || flag) {
-        img->putpoint (x,y,EMPTY);
-        img->putpoint (nx,ny,ALIVE);
+        img->put (coo(x,y),EMPTY);
+        img->put (coo(nx,ny),ALIVE);
       }
     } else if ((*img).at(coo(nx,ny)) == DEAD) {
-      img->putpoint (x,y,DEAD);
+      img->put (coo(x,y),DEAD);
       if ((s)&&((x==0)||(x==2*n-1)||(y==0)||(y==2*n-1))) running = false;
       --ngrey;
     }

@@ -15,8 +15,8 @@ int main(int argc, char ** argv) {
 
   for (int x=0; x<n; ++x) {
     for (int y=0; y<n; ++y) {
-      if      ((x%2 == 0) && (y%2 == 0)) img.putpoint (x, y, 128);
-      else if ((x%2 == 0) || (y%2 == 0)) img.putpoint (x, y, prng.bernoulli(p) * 128);
+      if      ((x%2 == 0) && (y%2 == 0)) img.put (coo(x,y), 128);
+      else if ((x%2 == 0) || (y%2 == 0)) img.put (coo(x,y), prng.bernoulli(p) * 128);
     }
   }
 
@@ -37,7 +37,7 @@ int main(int argc, char ** argv) {
       if (on_it && (c == Color(128))) continue;
 
       img.fill (coo(n/2,n/2), 128);
-      img.putpoint (x, y, c);
+      img.put (coo(x,y), c);
       img.fill (coo(n/2,n/2), Color(255,0,0));
 
       img.step();

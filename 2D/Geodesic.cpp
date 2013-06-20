@@ -77,7 +77,7 @@ void trace (Image &img, vector<int> &direction, int x, int y) {
   int nn = img.w();
 
   while (img.at(coo(x,y)) != Color(255)) {
-    img.putpoint (x,y,255);
+    img.put (coo(x,y),255);
     int xy = direction[x+nn*y];
     x = xy%nn;
     y = xy/nn;
@@ -227,7 +227,7 @@ int main (int argc, char **argv) {
 
       if (color>128) color=128;
       if (color<0) color=0;
-      img.putpoint (i,j,color);
+      img.put(coo(i,j),color);
     }
 
   for (int i=0; i<=nn-1; i+=15) {
@@ -248,9 +248,9 @@ int main (int argc, char **argv) {
     for (int y=0; y<nn; ++y) {
       int i=x+nn*y;
       if (distance[i]<=radius)
-        img.putpoint(x,y,127+img.at(coo(i,0))/2);
+        img.put(coo(x,y),127+img.at(coo(i,0))/2);
       else if (distance[i]-field[i]<=radius)
-        img.putpoint(x,y,0);
+        img.put(coo(x,y),0);
     }
   }
 }

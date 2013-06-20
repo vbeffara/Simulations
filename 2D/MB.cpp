@@ -25,14 +25,14 @@ int main(int argc, char ** argv)
   img = new Image(2*n,2*n, str(fmt("A Brownian path of size %d")%n));
   for (int i=0; i<2*n; ++i)
     for (int j=0; j<2*n; ++j)
-      img->putpoint(i,j,Color(253,246,227));
+      img->put(coo(i,j),Color(253,246,227));
 
   /* Simulation */
 
   i=0; done=0; x=n; y=n;
   while (!done) {
     d = prng()&3;
-    img->putpoint (x,y,Color(88,110,117));
+    img->put(coo(x,y),Color(88,110,117));
     x += dx[(int)d];
     y += dy[(int)d];
     /*  fprintf(stderr,"%8ld\r",++i); */

@@ -15,8 +15,8 @@ int main (int argc, char **argv) {
 
   for (int i=0;i<n;++i) {
     for (int j=0;j<n;++j) {
-      if (d>1) img.putpoint(i,j,(int)prng.uniform_int((1<<d)));
-      else img.putpoint(i,j,prng.bernoulli(p));
+      if (d>1) img.put(coo(i,j),(int)prng.uniform_int((1<<d)));
+      else img.put(coo(i,j),prng.bernoulli(p));
     }
   }
 
@@ -41,7 +41,7 @@ int main (int argc, char **argv) {
         if (j>0) newcolor = img.at(coo(i,j-1));
         break;
     }
-    img.putpoint (i,j,newcolor);
+    img.put(coo(i,j),newcolor);
   }
 
   return 0;

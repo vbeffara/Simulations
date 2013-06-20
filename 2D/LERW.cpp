@@ -36,7 +36,7 @@ int main(int argc, char ** argv)
   i=0; done=0; x=n; y=n;
   while (!done) {
     d = prng()&3;
-    img -> putpoint (x,y,d);
+    img -> put(coo(x,y),d);
     x += dx[(int)d];
     y += dy[(int)d];
     /* fprintf(stderr,"%8ld\r",++i); */

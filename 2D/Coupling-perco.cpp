@@ -30,12 +30,12 @@ int compute_diff (Image *c1, Image *c2, Image *d) {
   for (i=0;i<N;i++) {
     for (j=0;j<N;j++) {
       if ((*c1).at(coo(i,j))==(*c2).at(coo(i,j))) {
-	d->putpoint(i,j,0);
+	d->put(coo(i,j),0);
       } else if ((*c1).at(coo(i,j))>(*c2).at(coo(i,j))) {
-	d->putpoint(i,j,2);
+	d->put(coo(i,j),2);
 	n++;
       } else {
-	d->putpoint(i,j,3);
+	d->put(coo(i,j),3);
 	n++;
       }
     }
@@ -185,14 +185,14 @@ void monte_carlo (Image *c1, Image *c2, Image *diff, int duration) {
     /*  config 1 : juste cond. a 4 bras entre r1 et r3=(N>>1)=N/2 */
 
     old = (*c1).at(coo(x,y));
-    c1 -> putpoint (x,y,z);
-    if (test1(c1)==0) c1 -> putpoint (x,y,old);
+    c1 -> put(coo(x,y),z);
+    if (test1(c1)==0) c1 -> put(coo(x,y),old);
 
     /*  config 1 : juste cond. a 4 bras entre r1 et r3=(N>>1)=N/2 */
 
     old = (*c2).at(coo(x,y));
-    c2 -> putpoint (x,y,z);
-    if (test2(c2)==0) c2 -> putpoint (x,y,old);
+    c2 -> put(coo(x,y),z);
+    if (test2(c2)==0) c2 -> put(coo(x,y),old);
 
     /*  affichage de la difference */
 
@@ -212,12 +212,12 @@ void pick (Image *c, testfunction test) {
     fprintf (stderr,"%d \r",++n);
     for (x=0;x<N;x++)
       for (y=0;y<N;y++)
-	c->putpoint (x,y,(prng.bernoulli(.5)));
+	c->put(coo(x,y),(prng.bernoulli(.5)));
 
     for (x=-RAD1+1;x<RAD1-1;x++) {
       for (y=-RAD1+1;y<RAD1-1;y++) {
-	c->putpoint ((N>>1)+x,(N>>1)+y,0);
-	c->putpoint ((N>>1)+x,(N>>1)+y,0);
+	c->put(coo((N>>1)+x,(N>>1)+y),0);
+	c->put(coo((N>>1)+x,(N>>1)+y),0);
       }
     }
 
@@ -235,7 +235,7 @@ int main (int argc, char ** argv) {
   img = new Image(N,N,"The difference");
 
   pick (img1,test1);
-  for (i=0;i<N*N;i++) img2 -> putpoint (i,0, (*img1).at(coo(i,0)));
+  for (i=0;i<N*N;i++) img2 -> put (coo(i,0), (*img1).at(coo(i,0)));
 
   img->show();
   compute_diff(img1,img2,img);

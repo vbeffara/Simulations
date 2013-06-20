@@ -49,7 +49,7 @@ void explore (long x0, long y0, long d0, long xf, long yf, char c)
     case 0: /* Right */
       if ((x<n-1)&&(right[xy])) {
         x++; xy++; d=3;
-        img->putpoint (x,y,(c|(*img).at(coo(x,y))));
+        img->put (coo(x,y),(c|(*img).at(coo(x,y))));
       } else {
         d=1;
       }
@@ -57,7 +57,7 @@ void explore (long x0, long y0, long d0, long xf, long yf, char c)
     case 1: /* Top */
       if ((y<n-1)&&(down[xy+n])) {
         y++; xy+=n; d=0;
-        img->putpoint (x,y,(c|(*img).at(coo(x,y))));
+        img->put (coo(x,y),(c|(*img).at(coo(x,y))));
       } else {
         d=2;
       }
@@ -65,7 +65,7 @@ void explore (long x0, long y0, long d0, long xf, long yf, char c)
     case 2: /* Left */
       if ((x>0)&&(right[xy-1])) {
         x--; xy--; d=1;
-        img->putpoint (x,y,(c|(*img).at(coo(x,y))));
+        img->put (coo(x,y),(c|(*img).at(coo(x,y))));
       } else {
         d=3;
       }
@@ -73,7 +73,7 @@ void explore (long x0, long y0, long d0, long xf, long yf, char c)
     case 3: /* Down */
       if ((y>0)&&(down[xy])) {
         y--; xy-=n; d=2;
-        img->putpoint (x,y,(c|(*img).at(coo(x,y))));
+        img->put (coo(x,y),(c|(*img).at(coo(x,y))));
       } else {
         d=0;
       }
@@ -128,7 +128,7 @@ int main(int argc, char ** argv)
   } else {
     for (i=0;i<n;i++)
       for (j=0;j<n;j++)
-        img->putpoint (i,j,0);
+        img->put (coo(i,j),0);
 
     for (i=0;i<n;i++) {
       down[n*i+n-1]=1;
@@ -138,8 +138,8 @@ int main(int argc, char ** argv)
   }
 
   for (i=0;i<n;i++) {
-    img->putpoint (0,i,0);
-    img->putpoint (n-1,i,0);
+    img->put (coo(0,i),0);
+    img->put (coo(n-1,i),0);
   }
 
   findpiv(hcross);
