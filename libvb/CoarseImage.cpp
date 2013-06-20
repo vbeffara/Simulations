@@ -12,7 +12,7 @@ namespace vb {
   void CoarseImage::put (coo z, int c) {
     step();
 
-    int x=real(z+z0), y=imag(z+z0);
+    int x=(z+z0).x, y=(z+z0).y;
     CoarseCell & d = Bitmap<CoarseCell>::at(coo(x/L,y/L));
 
     if (d.fill == c*LL) return;
@@ -34,7 +34,7 @@ namespace vb {
   }
 
   char CoarseImage::at (coo z) const {
-    int x=real(z+z0), y=imag(z+z0);
+    int x=(z+z0).x, y=(z+z0).y;
     const CoarseCell & d = Bitmap<CoarseCell>::at(coo(x/L,y/L));
 
     if (d.fill==0) return 0;

@@ -51,7 +51,7 @@ namespace vb {
     for (int k=0; k<n; ++k)
       for (int l=0; l<adj[k].size(); ++l) {
         const Lattice_place &m = adj[k][l];
-        cpx u = cpx(real(m.z),imag(m.z)) + z[m.k] - z[k];
+        cpx u = cpx(m.z.x,m.z.y) + z[m.k] - z[k];
         a += u.imag()*u.imag();
         b += 2*u.real()*u.imag();
         c += u.real()*u.real();

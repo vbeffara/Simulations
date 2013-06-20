@@ -17,8 +17,8 @@ namespace vb {
 		Lattice (int _n, cpx _tau = cpx(0,1)) : n(_n), adj(_n), tau(_tau), z(_n), r(_n) {};
 
 		cpx      	actual    	(cpx xy) const                             	{ return real(xy) + tau*imag(xy); };
-		cpx      	operator()	(coo xy, int k=0) const                    	{ return actual(cpx(real(xy),imag(xy)) + z[k]); };
-		cpx      	operator[]	(const Lattice_place &v) const             	{ return actual(cpx(real(v.z),imag(v.z)) + z[v.k]); }
+		cpx      	operator()	(coo xy, int k=0) const                    	{ return actual(cpx(xy.x,xy.y) + z[k]); };
+		cpx      	operator[]	(const Lattice_place &v) const             	{ return actual(cpx(v.z.x,v.z.y) + z[v.k]); }
 		cpx      	shift     	(int k, int l) const;                      	///< Displacement between vertices in the same fundamental domain.
 		double   	energy    	() const;                                  	///< The sum of bond square-lengths.
 		cpx      	shear     	() const;                                  	///< The "distance" from isotropy of the SRW.

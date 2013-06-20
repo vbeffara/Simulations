@@ -61,7 +61,7 @@ Color SLE::quick (int x, int y, int l) {
 }
 
 Color SLE::compute (coo z) {
-  int x=real(z), y=imag(z);
+  int x=z.x, y=z.y;
   if (q) {
     for (int l=1024; l>1; l/=2) {
       if (quick(x+l,y,l) == LEFTSIDE) return LEFTSIDE;

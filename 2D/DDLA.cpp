@@ -21,7 +21,7 @@ public:
 
   void addapoint (coo z) {
     put (z,1);
-    int x=real(z), y=imag(z);
+    int x=z.x, y=z.y;
     if ( (x>0) && (y<n-1) && (at(z-coo(1,0)+coo(0,1))==1) && (at(z-coo(1,0))==0) )
       addapoint (z-coo(1,0));
     if ( (y>0) && (x<n-1) && (at(z+coo(1,0)-coo(0,1))==1) && (at(z-coo(0,1))==0) )
@@ -38,7 +38,7 @@ void reshape (int x, int y) {
 }
 
 bool ok (coo z) {
-  int xx=real(z), yy=imag(z);
+  int xx=z.x, yy=z.y;
   coo zz=z;
   bool just_started=true;
   int ans=-1;
@@ -79,19 +79,19 @@ int main (int argc, char **argv) {
   while (running) {
     Point pt (queue);
 
-    if ((real(pt.z)==n-1) || (imag(pt.z)==n-1)) running=0;
+    if ((pt.z.x==n-1) || (pt.z.y==n-1)) running=0;
     else if (img->at(pt.z) == 0) {
       double curtime = pt.t;
       if (ok(pt.z)) {
         img->addapoint (pt.z);
-        reshape (real(pt.z),imag(pt.z));
-        if ( (real(pt.z)<n-1) && (img->at(pt.z+coo(1,0))==0) )
+        reshape (pt.z.x,pt.z.y);
+        if ( (pt.z.x<n-1) && (img->at(pt.z+coo(1,0))==0) )
           queue << Point(pt.z+coo(1,0),curtime+prng.exponential()/p);
-        if ( (imag(pt.z)<n-1) && (img->at(pt.z+coo(-1,0))==0) )
+        if ( (pt.z.y<n-1) && (img->at(pt.z+coo(-1,0))==0) )
           queue << Point(pt.z+coo(0,1),curtime+prng.exponential()/(1-p));
-        if ( s && (real(pt.z)>0) && (img->at(pt.z+coo(0,1))==0) )
+        if ( s && (pt.z.x>0) && (img->at(pt.z+coo(0,1))==0) )
           queue << Point(pt.z-coo(1,0),curtime+prng.exponential());
-        if ( s && (imag(pt.z)>0) && (img->at(pt.z+coo(0,-1))==0) )
+        if ( s && (pt.z.y>0) && (img->at(pt.z+coo(0,-1))==0) )
           queue << Point(pt.z-coo(0,1),curtime+prng.exponential());
       } else {
         queue << Point(pt.z,curtime+prng.exponential());

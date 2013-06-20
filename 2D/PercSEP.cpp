@@ -69,7 +69,7 @@ int main (int argc, char ** argv) {
 			if (P.tasym) P.clean();
 			int na=0; for (int x=0;x<P.w();++x) for (int y=0;y<P.h();++y) if (P.at(coo(x,y))==2) ++na;
 			if (na==0) exit(0);
-			std::cout << t/(P.w()*P.h()) << " " << na << " " << real(P.flow) << " " << double(real(P.flow))/na << std::endl;
+			std::cout << t/(P.w()*P.h()) << " " << na << " " << P.flow.x << " " << double(P.flow.x)/na << std::endl;
 			P.flow = 0;
 		}
 		P.move();

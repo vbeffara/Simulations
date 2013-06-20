@@ -12,7 +12,7 @@ public:
   KDTree () : size(0), children(2) {};
 
   void insert (coo _z, int d=0) {
-    int c = (d==0 ? real(_z) : imag(_z));
+    int c = (d==0 ? _z.x : _z.y);
     ++size;
     if (size==1) {
       z = _z;
@@ -27,7 +27,7 @@ public:
   coo last (coo _z, int d=0, coo a=0) {
     if (size==0) return a;
     if (_z == z) return z;
-    int c = (d==0 ? real(_z) : imag(_z));
+    int c = (d==0 ? _z.x : _z.y);
     int side = (c<split ? 0 : 1);
     if (children[side] == 0) return z;
     return children[side] -> last (_z,1-d,z);
@@ -40,7 +40,7 @@ private:
   vector<KDTree *> children;
 };
 
-int l1 (coo z) { return abs(real(z)) + abs(imag(z)); }
+int l1 (coo z) { return abs(z.x) + abs(z.y); }
 
 coo jump (int l, int deg=4) {
   double theta = prng.uniform_real(0,2*M_PI);
@@ -69,7 +69,7 @@ public:
   void update () { W.update(); CoarseImage::update(); }
 
   char at (coo z) {
-    int x=real(z), y=imag(z);
+    int x=z.x, y=z.y;
     if ((x<-n/2) || (x>=n/2) || (y<-n/2) || (y>=n/2)) return 0;
     else return CoarseImage::at(z);
   }
