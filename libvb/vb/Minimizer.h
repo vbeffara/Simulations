@@ -96,14 +96,11 @@ namespace vb {
 
       double compute (const Vector &x_ = Vector(0));
 
-      /** Perform a few initialization.
-       *
-       * In particular, it reserves space in x, gx, old_x and old_gx so
-       * that the algorithms can use swap() and in-place computations.
-       * Except that right now they don't.
-       */
-
-      void init ();
+      Minimizer (unsigned int n_,
+                 double f_ (const Vector &, void *),
+                 Vector g_ (const Vector &, void *),
+                 double fg_ (const Vector &, Vector &, void *),
+                 void *context_);
 
       /** The constructor for joint f and g computation.
        *
