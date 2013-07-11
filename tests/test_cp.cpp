@@ -8,6 +8,10 @@ using namespace std;
 int center = 6;
 int infinity = 13;
 
+void cb (const Vector & x, double fx, void * context) {
+	cerr << fx << endl;
+}
+
 int main (int argc, char ** argv) {
 	CL_Parser CLP (argc, argv, "s=4");
 
@@ -43,7 +47,7 @@ int main (int argc, char ** argv) {
 	}
 
 	Minimizer MM (3*m.n, Map_fg_circle_disk, &m);
-	MM.os = &cerr;
+	MM.cb = cb;
 
 	MM.minimize_qn (x);
 	x = MM.x;

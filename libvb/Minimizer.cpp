@@ -7,7 +7,7 @@ namespace vb {
   Minimizer::Minimizer (unsigned int n_,
                         double fg_ (const Vector &, Vector &, void *),
                         void *context_)
-    : n(n_), f(NULL), g(NULL), fg(fg_), context(context_) {
+    : n(n_), f(NULL), g(NULL), fg(fg_), cb(NULL), context(context_) {
       init();
     }
 
@@ -15,7 +15,7 @@ namespace vb {
                         double f_ (const Vector &, void *),
                         Vector g_ (const Vector &, void *),
                         void *context_)
-    : n(n_), f(f_), g(g_), fg(NULL), context(context_) {
+    : n(n_), f(f_), g(g_), fg(NULL), cb(NULL), context(context_) {
       init();
     };
 
@@ -33,7 +33,6 @@ namespace vb {
   }
 
   void Minimizer::init () {
-    os = NULL;
     er = 1.0;
     ler = 0;
 
@@ -64,15 +63,6 @@ namespace vb {
       if (fx>y) { t_r=t; refining = true; } else t_l = t;
       if (refining) t = (t_r+t_l)/2.0; else t *= 2.0;
       if (t-t_l+1.0 == 1.0) break;
-    }
-
-    if (os) {
-      double tmp = inner_prod (gx,gx);
-      while (tmp<er) {
-        er /= 10.0;
-        ++ler;
-        if (ler%10) *os << '.'; else *os << '*';
-      }
     }
   }
 
@@ -197,6 +187,8 @@ namespace vb {
 
       line_search(d);
       first=false;
+
+      if (cb) cb(x,fx,context);
     }
 
     return fx;

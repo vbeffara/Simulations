@@ -52,6 +52,10 @@ namespace vb {
 
       double (*fg) (const Vector &, Vector &, void *);
 
+      /// Callback, takes current x, current error and the context.
+
+      void (*cb) (const Vector &, double, void *);
+
       /** The context of all f and g computations.
        *
        * It is expected to point to an object, and will be passed to all
@@ -73,15 +77,6 @@ namespace vb {
       Vector old_x;  ///< The previous value of x, before the last line_search().
       double old_fx; ///< The value of the function at old_x.
       Vector old_gx; ///< The gradient of the function at old_x.
-
-      /** A pointer to a logging std::ostream.
-       *
-       * If not NULL, some of the algorithms will output some logging
-       * information there as they go, that is useful especially for
-       * long computations.
-       */
-
-      std::ostream *os;
 
       double er; ///< An indicator of the current error, for logging.
       int ler;   ///< The base-10 0logarithm of er.

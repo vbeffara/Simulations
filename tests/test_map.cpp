@@ -40,8 +40,6 @@ double fg (const Vector &x, Vector &g, void *context) {
   return c;
 }
 
-
-
 int main () {
   Map m (13);
 
@@ -90,7 +88,6 @@ int main () {
     }
 
     Minimizer M (3*m.n, fg, &m);
-    M.os = &cerr;
     M.minimize_qn (x);
 
     for (int i=0; i<m.n; ++i) {
