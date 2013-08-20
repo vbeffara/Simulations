@@ -12,7 +12,7 @@ int main (int argc, char ** argv) {
 	H1.alpha	= { { 0, 3 }, { 1, 8, 2 }, { 4, 5, 6 }, { 7 } };
 	H1.phi  	= { { 0, 4, 8 }, { 1 }, { 2, 7, 6, 5, 3 } };
 
-	H1.validate(); cout << H1;
+	H1.validate(); cerr << H1;
 
 	// This is a toric graph whose lift is the centered square lattice. Encode using images.
 	Hypermap H2;
@@ -20,7 +20,9 @@ int main (int argc, char ** argv) {
 	H2.alpha	= { 4, 11, 6, 10, 0, 9, 2, 8, 7, 5, 3, 1 };
 	H2.phi  	= { 3, 8, 5, 11, 7, 10, 1, 9, 6, 4, 2, 0 };
 
-	H2.validate(); cout << H2;
+	H2.validate(); cerr << H2;
+
+	H1.output_dot(cout);
 
 	return 0;
 }
