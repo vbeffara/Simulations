@@ -34,15 +34,10 @@ namespace vb {
 		int euler () { return n_black() + n_white() - n_edges() + n_faces(); }
 		int genus () { return 1-euler()/2; }
 
-		void output_dot (std::ostream & os) {
-			std::vector<int> black(n_edges()), white(n_edges());
-			for (int i=0; i<n_black(); ++i) for (int j : sigma.c[i]) black[j]=i;
-			for (int i=0; i<n_white(); ++i) for (int j : alpha.c[i]) white[j]=i;
-			os << "graph {" << std::endl;
-			for (int i=0; i<n_black(); ++i) os << "  b" << i << " [fillcolor=\"grey\"];" << std::endl;
-			for (int i=0; i<n_edges(); ++i) os << "  b" << black[i] << " -- w" << white[i] << ";" << std::endl;
-			os << "}" << std::endl;
-		}
+		void output_dot      	(std::ostream & os);
+		void output_graph_dot	(std::ostream & os);
+
+		Hypermap split_edges (); ///< Turn white vertices into black and then complete into a new hypermap.
 
 		Permutation sigma, alpha, phi; // black, white, faces
 	};
