@@ -46,25 +46,39 @@ int main (int argc, char ** argv) {
 	O.phi  	= {3,6,0,1,7,2,4,5};
 
 	// Experiments
-
-	CL_Parser CLP (argc,argv,"n=5,t=1000");
+	CL_Parser CLP (argc,argv,"n=5,t=1000,c");
 	Hypermap H=T;
 
 	for (int i=0; i<int(CLP('n')); ++i) H = H.split_edges();
 
-	assert(H.validate()); cerr << H;
-	assert (H.is_triangulation());
+	assert(H.validate()); assert(H.is_triangulation()); cerr << H;
 
-	{	int T=CLP('t'); ProgressBar PB (T);
-	 	for (int t=0; t<T; ++t) {
-	 		H.flip(prng.uniform_int(H.n_edges()),true);
-	 		if (t%1000 == 0) PB.set(t);
-	 	}
+	if (true) {
+		int T=CLP('t'); ProgressBar PB (T);
+		for (int t=0; t<T; ++t) {
+			H.flip(prng.uniform_int(H.n_edges()),true);
+			if (t%1000 == 0) PB.set(t);
+		}
+		H.sigma.use_s(); H.phi.use_s();
 	}
 
-	H.sigma.use_s(); H.phi.use_s();
+	if (CLP('c')) {
+		bool done=0; while (!done) {
+			done=1;
+			for (auto c : H.sigma.c) {
+				if (c.size() != 2) continue;
+				int	a=c[0], b=c[1], cc=H.alpha[a], d=H.alpha[b], e=H.sigma[d], f=H.alpha[e], h=H.sigma[cc], g=H.alpha[h],
+				   	i=H.phi[h], k=H.sigma[h], j=H.alpha[k];
+				if (H.sigma.l[cc]==H.sigma.l[d]) continue;
+				if (H.sigma[H.sigma[cc]]==cc) continue;
+				if (H.sigma[H.sigma[d]]==d) continue;
+				done=0;
+				H.sigma[i]=e; H.sigma[d]=g; H.sigma[f]=k; H.sigma[h]=cc; H.phi[f]=i; H.phi[j]=f; H.phi[a]=h; H.phi[h]=d;
+			}
+			H.sigma.use_s(); H.phi.use_s(); assert(H.validate());
+		}
+		cerr << H.sigma << H.phi;
+	}
 
-	H.output_graph_dot(cout);
-
-	return 0;
+	H.output_graph_dot(cout); return 0;
 }
