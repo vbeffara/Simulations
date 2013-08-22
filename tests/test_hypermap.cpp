@@ -1,6 +1,6 @@
 #include <vb/Hypermap.h>
 #include <vb/PRNG.h>
-#include <iostream>
+#include <cassert>
 
 using namespace vb;
 using namespace std;
@@ -43,15 +43,17 @@ int main (int argc, char ** argv) {
 
 	for (int i=0; i<5; ++i) H = H.split_edges();
 
-	H.validate(); cerr << H;
+	assert(H.validate()); cerr << H;
 
 	assert (H.is_triangulation());
-	for (int t=0; t<1e8; ++t) {
+	for (int t=0; t<1e6; ++t) {
 		H.flip(prng.uniform_int(H.n_edges()),true);
 	}
-	H.sigma.s_to_c(); H.phi.s_to_c();
+	H.sigma.s_to_c(); H.sigma.labels();
+	H.phi.s_to_c(); H.phi.labels();
+	H.alpha.labels();
 
-	H.output_graph_dot(cout);
+	H.output_dot(cout);
 
 	return 0;
 }

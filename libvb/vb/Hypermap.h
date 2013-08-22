@@ -1,19 +1,17 @@
 #pragma once /// @file
 #include <vb/Permutation.h>
-#include <cassert>
 
 // Implementation of hypermaps as triples of permutations, following A. Zvonkin, "Belyi Functions: Examples, Properties, and Applications".
 
 namespace vb {
 	class Hypermap {
 	public:
-		void validate ();
-
 		int n_black () { return sigma.c.size(); }
 		int n_white () { return alpha.c.size(); }
 		int n_faces () { return phi.c.size(); }
 		int n_edges () { return sigma.size(); }
 
+		bool validate ();
 		bool is_graph () { for (auto v : alpha.c) if (v.size() != 2) return false; return true; }
 		bool is_triangulation () {
 			if (!(is_graph())) return false;

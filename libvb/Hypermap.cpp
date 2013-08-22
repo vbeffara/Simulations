@@ -1,33 +1,28 @@
 #include <vb/Hypermap.h>
 
 namespace vb {
-	void Hypermap::validate () {
-		assert (sigma.size() == alpha.size());
-		assert (sigma.size() == phi.size());
-		for (int i=0; i<sigma.size(); ++i) assert (phi[alpha[sigma[i]]] == i);
+	bool Hypermap::validate () {
+		if (sigma.size() != alpha.size()) return false;
+		if (sigma.size() != phi.size()) return false;
+		for (int i=0; i<sigma.size(); ++i) if (phi[alpha[sigma[i]]] != i) return false;
+		return true;
 	}
 
 	void Hypermap::output_dot (std::ostream & os) {
-		std::vector<int> black(n_edges()), white(n_edges());
-		for (int i=0; i<n_black(); ++i) for (int j : sigma.c[i]) black[j]=i;
-		for (int i=0; i<n_white(); ++i) for (int j : alpha.c[i]) white[j]=i;
-		os << "graph {" << std::endl;
-		for (int i=0; i<n_black(); ++i) os << "  b" << i << " [fillcolor=\"grey\"];" << std::endl;
-		for (int i=0; i<n_edges(); ++i) os << "  b" << black[i] << " -- w" << white[i] << ";" << std::endl;
+		os << "graph { graph [dimen=3]" << std::endl;
+		for (int i=0; i<n_black(); ++i) os << "  b" << i << " [shape=point];" << std::endl;
+		for (int i=0; i<n_white(); ++i) os << "  w" << i << " [shape=point,fillcolor=white];" << std::endl;
+		for (int i=0; i<n_edges(); ++i) os << "  b" << sigma.l[i] << " -- w" << alpha.l[i] << ";" << std::endl;
 		os << "}" << std::endl;
 	}
 
 	void Hypermap::output_graph_dot (std::ostream & os) {
-		assert (is_graph());
-		std::vector<int> black(n_edges()), white(n_edges());
-		for (int i=0; i<n_black(); ++i) for (int j : sigma.c[i]) black[j]=i;
-		for (int i=0; i<n_white(); ++i) for (int j : alpha.c[i]) white[j]=i;
 		os << "graph { graph [dimen=3]" << std::endl;
 		for (int i=0; i<n_black(); ++i)
 			os << "  " << i << " [shape=point];" << std::endl;
 		for (int i=0; i<n_edges(); ++i)
 			if (i<alpha[i])
-				os << "  " << black[i] << " -- " << black[alpha[i]] << ";" << std::endl;
+				os << "  " << sigma.l[i] << " -- " << sigma.l[alpha[i]] << ";" << std::endl;
 		os << "}" << std::endl;
 	}
 
