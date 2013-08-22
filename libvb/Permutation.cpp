@@ -1,7 +1,7 @@
 #include <vb/Permutation.h>
 
 namespace vb {
-	void Permutation::s_to_c () {
+	void Permutation::use_s () {
 		c.clear();
 		std::vector<int> done (size(), 0);
 		for (int i=0; i<size(); ++i) {
@@ -10,15 +10,17 @@ namespace vb {
 			for (int j=at(i); done[j]==0; j=at(j)) { v.push_back(j); done[j]=1; }
 			c.push_back(v);
 		}
+		labels();
 	}
 
-	void Permutation::c_to_s () {
+	void Permutation::use_c () {
 		int sz=0; for (std::vector<int> v : c) sz += v.size();
 		std::vector<int>::operator= (std::vector<int> (sz));
 		for (auto v : c) {
 			for (int i=0; i<v.size()-1; ++i) at(v[i])=v[i+1];
 			at(v.back()) = v[0];
 		}
+		labels();
 	}
 
 	std::ostream & operator<< (std::ostream &os, Permutation &P) {

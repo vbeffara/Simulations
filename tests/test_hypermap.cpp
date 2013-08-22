@@ -41,7 +41,7 @@ int main (int argc, char ** argv) {
 
 	Hypermap H=T;
 
-	for (int i=0; i<5; ++i) H = H.split_edges();
+	for (int i=0; i<6; ++i) H = H.split_edges();
 
 	assert(H.validate()); cerr << H;
 
@@ -49,9 +49,7 @@ int main (int argc, char ** argv) {
 	for (int t=0; t<1e6; ++t) {
 		H.flip(prng.uniform_int(H.n_edges()),true);
 	}
-	H.sigma.s_to_c(); H.sigma.labels();
-	H.phi.s_to_c(); H.phi.labels();
-	H.alpha.labels();
+	H.sigma.use_s(); H.phi.use_s();
 
 	H.output_dot(cout);
 

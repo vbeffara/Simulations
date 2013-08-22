@@ -41,7 +41,7 @@ namespace vb {
 			for (int &i : FF) i += 3*N;
 			H.phi.c.push_back (FF);
 		}
-		H.sigma.c_to_s(); H.alpha.c_to_s(); H.phi.c_to_s();
+		H.sigma.use_c(); H.alpha.use_c(); H.phi.use_c();
 		return H;
 	}
 
@@ -52,7 +52,7 @@ namespace vb {
 		if ((e==sigma[e])||(f==sigma[f])) return;
 		sigma[a]=e; sigma[e]=c; sigma[d]=j; sigma[g]=b; sigma[i]=f; sigma[f]=h;
 		phi[a]=g; phi[g]=f; phi[f]=a; phi[d]=e; phi[e]=i; phi[i]=d;
-		if (!fast) { sigma.s_to_c(); phi.s_to_c(); }
+		if (!fast) { sigma.use_s(); phi.use_s(); }
 	}
 
 	std::ostream & operator<< (std::ostream &os, Hypermap &H) {
