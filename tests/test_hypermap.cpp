@@ -1,5 +1,7 @@
+#include <vb/CL_Parser.h>
 #include <vb/Hypermap.h>
 #include <vb/PRNG.h>
+#include <vb/ProgressBar.h>
 #include <cassert>
 
 using namespace vb;
@@ -12,6 +14,12 @@ int main (int argc, char ** argv) {
 	T.sigma	= {{0,1},{2,3},{4,5}};
 	T.alpha	= {{0,2},{3,4},{1,5}};
 	T.phi  	= {{0,3,5},{1,4,2}};
+
+	// Two triangles, this one is invalid but some of the algorithms work.
+	Hypermap TT;
+	TT.sigma	= {{0,1},{2,3},{4,5}, {6,7},{8,9},{10,11}};
+	TT.alpha	= {{0,2},{3,4},{1,5}, {6,8},{9,10},{7,11}};
+	TT.phi  	= {{0,3,5},{1,4,2},   {6,9,11}, {7,10,8}};
 
 	// This is the planar hypermap in Zvonkine's paper. Encode using cycles.
 	Hypermap H1;
@@ -39,19 +47,24 @@ int main (int argc, char ** argv) {
 
 	// Experiments
 
+	CL_Parser CLP (argc,argv,"n=5,t=1000");
 	Hypermap H=T;
 
-	for (int i=0; i<6; ++i) H = H.split_edges();
+	for (int i=0; i<int(CLP('n')); ++i) H = H.split_edges();
 
 	assert(H.validate()); cerr << H;
-
 	assert (H.is_triangulation());
-	for (int t=0; t<1e6; ++t) {
-		H.flip(prng.uniform_int(H.n_edges()),true);
+
+	{	int T=CLP('t'); ProgressBar PB (T);
+	 	for (int t=0; t<T; ++t) {
+	 		H.flip(prng.uniform_int(H.n_edges()),true);
+	 		if (t%1000 == 0) PB.set(t);
+	 	}
 	}
+
 	H.sigma.use_s(); H.phi.use_s();
 
-	H.output_dot(cout);
+	H.output_graph_dot(cout);
 
 	return 0;
 }
