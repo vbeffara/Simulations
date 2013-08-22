@@ -1,26 +1,6 @@
 #include <vb/Hypermap.h>
 
 namespace vb {
-	void Permutation::s_to_c () {
-		c.clear();
-		std::vector<int> done (size(), 0);
-		for (int i=0; i<size(); ++i) {
-			if (done[i]) continue;
-			std::vector<int> v (1,i); done[i]=1;
-			for (int j=at(i); done[j]==0; j=at(j)) { v.push_back(j); done[j]=1; }
-			c.push_back(v);
-		}
-	}
-
-	void Permutation::c_to_s () {
-		int sz=0; for (std::vector<int> v : c) sz += v.size();
-		std::vector<int>::operator= (std::vector<int> (sz));
-		for (auto v : c) {
-			for (int i=0; i<v.size()-1; ++i) at(v[i])=v[i+1];
-			at(v.back()) = v[0];
-		}
-	}
-
 	void Hypermap::validate () {
 		assert (sigma.size() == alpha.size());
 		assert (sigma.size() == phi.size());
@@ -70,10 +50,14 @@ namespace vb {
 		return H;
 	}
 
-	std::ostream & operator<< (std::ostream &os, Permutation &P) {
-		os << "(";
-		for (auto cc : P.c) { os << " ("; for (int i : cc) os << " " << i; os << " )"; }
-		return os << " )" << std::endl;
+	void Hypermap::flip (int e, bool fast) {
+		int b=sigma[e], a=alpha[b], c=sigma[a], d=alpha[c], f=alpha[e], g=phi[f], h=alpha[g], i=phi[g], j=alpha[i];
+		if (alpha[phi[alpha[phi[e]]]]==e) return;
+		if (phi[alpha[phi[alpha[e]]]]==e) return;
+		if ((e==sigma[e])||(f==sigma[f])) return;
+		sigma[a]=e; sigma[e]=c; sigma[d]=j; sigma[g]=b; sigma[i]=f; sigma[f]=h;
+		phi[a]=g; phi[g]=f; phi[f]=a; phi[d]=e; phi[e]=i; phi[i]=d;
+		if (!fast) { sigma.s_to_c(); phi.s_to_c(); }
 	}
 
 	std::ostream & operator<< (std::ostream &os, Hypermap &H) {
