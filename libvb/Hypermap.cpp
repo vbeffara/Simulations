@@ -2,6 +2,7 @@
 
 namespace vb {
 	void Permutation::s_to_c () {
+		c.clear();
 		std::vector<int> done (size(), 0);
 		for (int i=0; i<size(); ++i) {
 			if (done[i]) continue;
@@ -14,7 +15,7 @@ namespace vb {
 	void Permutation::c_to_s () {
 		int sz=0; for (std::vector<int> v : c) sz += v.size();
 		std::vector<int>::operator= (std::vector<int> (sz));
-		for (std::vector<int> v : c) {
+		for (auto v : c) {
 			for (int i=0; i<v.size()-1; ++i) at(v[i])=v[i+1];
 			at(v.back()) = v[0];
 		}
@@ -60,7 +61,7 @@ namespace vb {
 			H.alpha.c.push_back ({a,a+N}); H.alpha.c.push_back ({a+2*N,a+3*N});
 			H.phi.c.push_back ({a,a+2*N,f+N});
 		}
-		for (std::vector<int> F : phi.c) {
+		for (auto F : phi.c) {
 			std::vector<int> FF = F;
 			for (int &i : FF) i += 3*N;
 			H.phi.c.push_back (FF);
@@ -71,7 +72,7 @@ namespace vb {
 
 	std::ostream & operator<< (std::ostream &os, Permutation &P) {
 		os << "(";
-		for (std::vector<int> cc : P.c) { os << " ("; for (int i : cc) os << " " << i; os << " )"; }
+		for (auto cc : P.c) { os << " ("; for (int i : cc) os << " " << i; os << " )"; }
 		return os << " )" << std::endl;
 	}
 

@@ -1,4 +1,5 @@
 #include <vb/Hypermap.h>
+#include <vb/PRNG.h>
 #include <iostream>
 
 using namespace vb;
@@ -30,20 +31,27 @@ int main (int argc, char ** argv) {
 	H3.alpha	= {{0,13},{1,6},{2,3},{4,5},{7,12},{8,9},{10,11}};
 	H3.phi  	= {{0,12,6},{1,5,3},{2,4,8,10,13},{7,11,9}};
 
+	// Hyperbolic surface of genus 2 from the octogon.
+	Hypermap O;
+	O.sigma	= {3,2,4,1,7,6,0,5};
+	O.alpha	= {{0,1},{2,3},{4,5},{6,7}};
+	O.phi  	= {3,6,0,1,7,2,4,5};
+
 	// Experiments
 
-	Hypermap H=H2;
-	H.validate(); cerr << H;
+	Hypermap H=T;
 
-	H = H.split_edges();
-	H = H.split_edges();
-	H = H.split_edges();
-	H = H.split_edges();
-	H = H.split_edges();
+	for (int i=0; i<5; ++i) H = H.split_edges();
 
 	H.validate(); cerr << H;
+
+	assert (H.is_triangulation());
+	for (int t=0; t<1e8; ++t) {
+		H.flip(prng.uniform_int(H.n_edges()),true);
+	}
+	H.sigma.s_to_c(); H.phi.s_to_c();
+
 	H.output_graph_dot(cout);
-
 
 	return 0;
 }
