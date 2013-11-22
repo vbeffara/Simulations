@@ -12,3 +12,5 @@ out*
 /snapshots
 *.pov
 *.ref
+*.pdf
+*.dot
