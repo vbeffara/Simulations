@@ -19,31 +19,35 @@ namespace vb {
 
   double Path::left () {
     double m=z[0].real();
-    for (unsigned int i=1; i<z.size(); ++i) m = std::min (m, z[i].real());
+    for (unsigned int i=1; i<z.size(); ++i) if (isnormal(real(z[i]))) m = std::min (m, z[i].real());
     return m;
   }
 
   double Path::right () {
     double m=z[0].real();
-    for (unsigned int i=1; i<z.size(); ++i) m = std::max (m, z[i].real());
+    for (unsigned int i=1; i<z.size(); ++i) if (isnormal(real(z[i]))) m = std::max (m, z[i].real());
     return m;
   }
 
   double Path::top () {
     double m=z[0].imag();
-    for (unsigned int i=1; i<z.size(); ++i) m = std::max (m, z[i].imag());
+    for (unsigned int i=1; i<z.size(); ++i) if (isnormal(real(z[i]))) m = std::max (m, z[i].imag());
     return m;
   }
 
   double Path::bottom () {
     double m=z[0].imag();
-    for (unsigned int i=1; i<z.size(); ++i) m = std::min (m, z[i].imag());
+    for (unsigned int i=1; i<z.size(); ++i) if (isnormal(real(z[i]))) m = std::min (m, z[i].imag());
     return m;
   }
 
   void Path::draw (cairo_t * cr) {
-    cairo_move_to (cr, z[0].real(), z[0].imag());
-    for (unsigned int i=1; i<z.size(); ++i) cairo_line_to (cr, z[i].real(), z[i].imag());
+    bool down = false;
+    for (auto p : z) {
+      if (isnan(real(p))) { down = false; continue; }
+      if (!down) { cairo_move_to (cr, p.real(), p.imag()); down = true; }
+      else { cairo_line_to (cr, p.real(), p.imag()); }
+    }
   };
 
   void Polygon::draw (cairo_t * cr) {
