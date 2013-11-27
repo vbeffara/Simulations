@@ -1,6 +1,6 @@
 #pragma once /// @file
 #include <vb/Picture.h>
-#include <vb/common.h> // for cpx
+#include <vb/common.h>
 #include <cairo-pdf.h>
 #include <list>
 #include <memory>

@@ -208,9 +208,9 @@ namespace vb {
 
       int genre ();
 
-      /** Maps each vertex of the map using the given Möbius transform.
+      /** Maps each vertex of the map using the given MÃ¶bius transform.
        *
-       * The Möbius map is given by one complex parameter w and one real
+       * The MÃ¶bius map is given by one complex parameter w and one real
        * parameter theta. w is mapped to 0, and theta is the rotation
        * term (at least if w=0, if not then the meaning of theta is
        * quite arbitrary).
@@ -308,7 +308,7 @@ namespace vb {
 
       void rotate (const double &theta);
 
-      /** Apply a Möbius transform to the circles of the embedding.
+      /** Apply a MÃ¶bius transform to the circles of the embedding.
        *
        * It is similar to mobius() but works on circles instead, so it
        * does preserve tangencies. The parameter describe a circle that
