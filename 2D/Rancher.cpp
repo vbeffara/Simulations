@@ -12,6 +12,7 @@
 #include <vb/PRNG.h>
 #include <vb/Figure.h>
 #include <vb/Console.h>
+#include <list>
 
 using namespace std;
 using namespace vb;

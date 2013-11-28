@@ -97,8 +97,8 @@ namespace vb {
     v[e.first]->adj.insert (ee,vv);
   }
 
-  std::list<int> Map::face (Edge e) {
-    std::list<int> l;
+  std::vector<int> Map::face (Edge e) {
+    std::vector<int> l;
     int first = e.first; l.push_back(first);
     e = turn_left(e);
     while (e.first != first) {
@@ -108,7 +108,7 @@ namespace vb {
     return l;
   }
 
-  void Map::inscribe (const std::list<int> &face_ext, const double &radius, bool reverse) {
+  void Map::inscribe (const std::vector<int> &face_ext, const double &radius, bool reverse) {
     int n_ext = face_ext.size();
 
     for (int i=0; i<n; ++i) { bd[i] = false; }
@@ -160,11 +160,11 @@ namespace vb {
     update();
   }
 
-  std::list<int> Map::split_edges () {
+  std::vector<int> Map::split_edges () {
     std::vector<int> tmp;
     for (int i=0; i<n*n; ++i) tmp.push_back(-1);
 
-    std::list<int> output;
+    std::vector<int> output;
     std::vector<adj_list> new_vertices;
 
     for (int v1=0; v1<n; ++v1) {
@@ -196,8 +196,8 @@ namespace vb {
     return output;
   }
 
-  void Map::hex_to_triangle (const std::list<int> &f) {
-    std::list<int>::const_iterator i = f.begin();
+  void Map::hex_to_triangle (const std::vector<int> &f) {
+    std::vector<int>::const_iterator i = f.begin();
     int x = *i; ++i;
     int b = *i; ++i;
     int y = *i; ++i;
@@ -215,9 +215,9 @@ namespace vb {
   }
 
   void Map::barycentric () {
-    std::list<int> l = split_edges();
+    std::vector<int> l = split_edges();
     for (int i : l) {
-      std::list<int> f = face(Edge(i,v[i]->adj.front()));
+      std::vector<int> f = face(Edge(i,v[i]->adj.front()));
       if (f.size() == 6) hex_to_triangle(f);
 
       f = face(Edge(i,v[i]->adj.back()));
@@ -474,7 +474,7 @@ namespace vb {
     }
   }
 
-  double Map::circlepack (int _zero, int _one, const std::list<int> &_bord) {
+  double Map::circlepack (int _zero, int _one, const std::vector<int> &_bord) {
     balance();
     // First, add the outer vertex.
 
@@ -503,7 +503,10 @@ namespace vb {
 
     cpx center = v[n-1]->z;
     v.pop_back(); --n;
-    for (int i=0; i<n; ++i) v[i]->adj.remove(n);
+    for (int i=0; i<n; ++i) {
+      auto it = std::find(v[i]->adj.begin(), v[i]->adj.end(), n);
+      if (it != v[i]->adj.end()) { v[i]->adj.erase(it); --i; }
+    }
 
     // Recenter and invert
 

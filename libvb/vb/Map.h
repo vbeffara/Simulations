@@ -7,7 +7,7 @@
 
 namespace vb {
   typedef std::pair<int,int> Edge;     ///< A simple alias for map edges.
-  typedef std::list<int>     adj_list; ///< A simple alias for adjacency lists.
+  typedef std::vector<int>   adj_list; ///< A simple alias for adjacency lists.
 
   /** A vertex of a vb::Map.
    *
@@ -105,7 +105,7 @@ namespace vb {
        * @param e The base edge of the face.
        */
 
-      std::list<int> face (Edge e);
+      std::vector<int> face (Edge e);
 
       /** Position the given vertices as a regular polygon.
        *
@@ -118,7 +118,7 @@ namespace vb {
        * @param reverse  If true, rotate clockwise.
        */
 
-      void inscribe (const std::list<int> &face_ext, const double &radius = 1.0, bool reverse = false);
+      void inscribe (const std::vector<int> &face_ext, const double &radius = 1.0, bool reverse = false);
 
       /** Produce a balanced embedding of the map.
        *
@@ -145,7 +145,7 @@ namespace vb {
 
       /// Add a new vertex at the middle of every edge in the map.
 
-      std::list<int> split_edges ();
+      std::vector<int> split_edges ();
 
       /** Inscribe a triangle in the given hexagon.
        *
@@ -155,7 +155,7 @@ namespace vb {
        * @param f The hexagon to split into 4 triangles.
        */
 
-      void hex_to_triangle (const std::list<int> &f);
+      void hex_to_triangle (const std::vector<int> &f);
 
       /** Perform barycentric subdivision of the map.
        *
@@ -266,7 +266,7 @@ namespace vb {
        * @param _bord The list of boundary vertices.
        */
 
-      double circlepack (int _zero, int _one, const std::list<int> &_bord);
+      double circlepack (int _zero, int _one, const std::vector<int> &_bord);
 
       /** Compute the labels for a circle packing.
        *

@@ -2,8 +2,6 @@
 #include <vb/Picture.h>
 #include <vb/common.h>
 #include <cairo-pdf.h>
-#include <list>
-#include <memory>
 
 namespace vb {
 	class Pen {
@@ -120,7 +118,7 @@ namespace vb {
 
 		Figure &add (Shape *S);     ///< Add an element to the figure.
 
-		std::list < std::shared_ptr<Shape> > contents; ///< The elements of the figure.
+		std::vector <std::shared_ptr<Shape>> contents; ///< The elements of the figure.
 
 		void draw (cairo_t * cr); ///< Draw it onto a Cairo context.
 

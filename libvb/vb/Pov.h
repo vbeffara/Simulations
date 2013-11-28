@@ -1,7 +1,6 @@
 #pragma once /// \file
 #include <vector>
 #include <iostream>
-#include <memory>
 
 namespace vb {
 	class tri { public: double x,y,z; tri (double xx, double yy, double zz) : x(xx), y(yy), z(zz) {} };
