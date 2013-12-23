@@ -66,26 +66,20 @@ public:
   double p,q,r;
 
   ERW (int n, CL_Parser CLP) : CoarseImage (n,n, "An excited random walk", pow(n,.33)),
-                               p(CLP('p')), q(CLP('q')), r(CLP('r')) {};
+                               p(CLP('p')), q(CLP('q')), r(CLP('r')) { z0 = coo(n/2,n/2); };
 
   void run () {
-    int n=true_width, d;
+    int n=true_width;
 
     for (int x=0; x<n/4; ++x) {
       for (int y=0; y<n/4-x; ++y) {
-        put (coo(x+n/2, y+n/2), 1);
-        put (coo(x+n/2, -y+n/2), 1);
-        put (coo(-x+n/2, -y+n/2), 1);
-        put (coo(-x+n/2, y+n/2), 1);
+        put (coo(x,y),1); put (coo(x,-y),1); put (coo(-x,-y),1); put (coo(-x,y),1);
       }
     }
 
-    coo z (0,0);
-    while (contains(z+coo(n/2,n/2))) {
-      int first = 1 - at(z+coo(n/2,n/2));
-      if (prng.bernoulli(r)) put (z+coo(n/2,n/2),1);
-
-      if (first) d = bump_square (z,p,q); else d = prng()&3;
+    coo z(0); while (contains(z)) {
+      int d = at(z) ? prng()&3 : bump_square (z,p,q);
+      if (prng.bernoulli(r)) put (z,1);
       if (d>=0) { z += dz[d]; }
     }
   }
