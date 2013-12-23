@@ -9,16 +9,18 @@ namespace vb {
 		unsigned char g; ///< The green component.
 		unsigned char r; ///< The red component.
 		unsigned char a; ///< The alpha channel (for ARGB32).
+
+		Color (unsigned char R, unsigned char G, unsigned char B, unsigned char A=255)	: b(B), g(G), r(R), a(A) {}
 #else
 		unsigned char a; ///< The alpha channel (for ARGB32).
 		unsigned char r; ///< The red component.
 		unsigned char g; ///< The green component.
 		unsigned char b; ///< The blue component.
-#endif
 
 		Color (unsigned char R, unsigned char G, unsigned char B, unsigned char A=255)	: a(A), r(R), g(G), b(B)	{}
-		Color (unsigned char V)                                                       	: Color (V,V,V)         	{}
-		Color ()                                                                      	: Color (0,0,0,0)       	{}
+#endif
+		Color (unsigned char V)	: Color (V,V,V)  	{}
+		Color ()               	: Color (0,0,0,0)	{}
 
 		bool operator== (const Color &o) const { return (r==o.r) && (g==o.g) && (b==o.b) && (a==o.a); }
 		bool operator!= (const Color &o) const { return ! operator== (o); }

@@ -1,6 +1,5 @@
 #pragma once /// \file
 #include <vb/Bitmap.h>
-#include <vb/PRNG.h>
 
 namespace vb {
 	class Adder { public: int s; int n;

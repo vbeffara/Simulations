@@ -120,13 +120,6 @@ namespace vb {
 
 		std::vector <std::shared_ptr<Shape>> contents; ///< The elements of the figure.
 
-		void draw (cairo_t * cr); ///< Draw it onto a Cairo context.
-
-		/** Output the image as a PDF file.
-		 *
-		 * @param s The base name of the output file, defaults to Image::title.
-		 */
-
 		virtual void output (const std::string &s = "");
 
 		/** Output the image as a PDF file.
