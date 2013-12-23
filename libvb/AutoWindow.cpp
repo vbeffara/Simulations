@@ -2,6 +2,7 @@
 /// Implementation of the vb::AutoWindow class
 
 #include <vb/AutoWindow.h>
+#include <FL/Fl.H>
 
 namespace vb {
 	void AutoWindow_update (void * AW) { ((AutoWindow*)AW) -> update(); }

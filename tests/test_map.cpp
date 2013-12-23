@@ -99,5 +99,4 @@ int main () {
 
   Figure f; m.plot_circles (f);
   f.show(); f.pause();
-  Fl::run();
 }

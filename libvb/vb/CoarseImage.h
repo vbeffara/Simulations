@@ -31,6 +31,8 @@ namespace vb {
 			if ((d.fill==0)||(d.fill==LL)) std::vector<char>().swap(d.sub);
 		}
 
+		bool contains (coo z) { return (z.x>=0) && (z.y>=0) && (z.x<true_width) && (z.y<true_height); }
+
 		int LL;
 		int true_width;    ///< The true width of the image, in pixels.
 		int true_height;   ///< The true height of the image, in pixels.

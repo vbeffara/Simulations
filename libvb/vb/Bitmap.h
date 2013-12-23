@@ -1,6 +1,7 @@
 #pragma once /// \file
 #include <vb/Picture.h>
 #include <vb/coo.h>
+#include <cstdlib>
 
 namespace vb {
 	template <typename T> class Bitmap_iterator;

@@ -1,6 +1,5 @@
 #pragma once /// \file
 #include <vb/Clock.h>
-#include <FL/Fl.H>
 #include <FL/Fl_Double_Window.H>
 #include <string>
 

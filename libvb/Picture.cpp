@@ -2,6 +2,7 @@
 /// Implementation of the vb::Picture class
 
 #include <vb/Picture.h>
+#include <FL/Fl.H>
 #include <FL/fl_draw.H>
 #include <iostream>
 #include <iomanip>
