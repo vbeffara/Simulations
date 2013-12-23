@@ -1,5 +1,6 @@
 #pragma once /// \file
 #include <vb/Picture.h>
+#include <vb/PRNG.h>
 #include <vb/coo.h>
 #include <cstdlib>
 
@@ -17,9 +18,10 @@ namespace vb {
 		void     	put 	(coo z, T const & c)	{ at(z) = c;  step(); }
 		void     	putp	(coo z, T const & c)	{ atp(z) = c; step(); }
 
-		bool     	contains	(coo z) { return (z.x>=0) && (z.y>=0) && (z.x<w()) && (z.y<h()); }
-		virtual T	compute 	(coo z) { return dflt; }
-		T        	lazy    	(coo z) { if (at(z) == dflt) put(z, compute(z)); return at(z); }
+		bool     	contains	(coo z)  	{ return (z.x>=0) && (z.y>=0) && (z.x<w()) && (z.y<h()); }
+		virtual T	compute 	(coo z)  	{ return dflt; }
+		T        	lazy    	(coo z)  	{ if (at(z) == dflt) put(z, compute(z)); return at(z); }
+		coo      	rand    	(int b=0)	{ return coo (b+prng.uniform_int(w()-2*b), b+prng.uniform_int(h()-2*b)); }
 
 		void fill (coo z, T c, int adj = 4);
 		void tessel (int xmin, int ymin, int xmax, int ymax);
