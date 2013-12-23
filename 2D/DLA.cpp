@@ -2,7 +2,7 @@
 #include <vb/CoarseImage.h>
 #include <vb/PRNG.h>
 #include <vb/Console.h>
-#include <vb/common.h> // fmt
+#include <vb/fmt.h>
 
 using namespace vb;
 using namespace std;

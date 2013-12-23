@@ -1,6 +1,6 @@
 #pragma once /// @file
 #include <vb/Picture.h>
-#include <vb/common.h>
+#include <vb/cpx.h>
 #include <cairo-pdf.h>
 
 namespace vb {

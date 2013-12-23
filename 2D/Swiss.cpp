@@ -1,7 +1,8 @@
 #include <vb/Bitmap.h>
 #include <vb/CL_Parser.h>
 #include <vb/PRNG.h>
-#include <vb/common.h> // dx,dy
+#include <vb/fmt.h>
+#include <vb/dxdy.h>
 
 using namespace vb;
 using namespace std;

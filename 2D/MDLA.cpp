@@ -4,7 +4,8 @@
 #include <vb/Image.h>
 #include <vb/PRNG.h>
 #include <vb/CL_Parser.h>
-#include <vb/common.h> // fmt
+#include <vb/fmt.h>
+#include <vb/dxdy.h>
 
 #define EC fprintf(stderr,"<%d>\n",__LINE__);
 

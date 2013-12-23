@@ -3,7 +3,6 @@
 #include <vb/Hypermap.h>
 #include <vb/PRNG.h>
 #include <vb/ProgressBar.h>
-#include <vb/common.h>
 #include <cassert>
 
 using namespace vb;
