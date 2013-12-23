@@ -5,11 +5,11 @@
 #include <vb/Console.h>
 using namespace std; using namespace vb;
 
-double a0 = 10, aex1 = 20, aex2 = 20, sigmab0 = .5, sigmabex1 = .1, sigmabex2 = .1, Ac = 100, sigmac = .1, slope = 0;
+double a0 = 10, aex1 = 20, aex2 = 20, sigmab0 = .5, sigmabex1 = .1, sigmabex2 = .1, Ac = .3, sigmac = .1, slope = 0;
 
 double g        	(double x, double sigma)	{ return exp(-x*x/(2*sigma*sigma)); }
 double b        	(double x)              	{ return a0 * g(x,sigmab0) + aex1 * g(x-2,sigmabex1) + aex2 * g(x+2,sigmabex2) + slope*x; }
-double c        	(double x, double y)    	{ return .1 * max (-.3*(x-y)*(x-y)*(x-y)*(x-y) + (x-y)*(x-y) + 3, 0.0); }
+double c        	(double x, double y)    	{ return .1 * max (-Ac*(x-y)*(x-y)*(x-y)*(x-y) + (x-y)*(x-y) + 3, 0.0); }
 double rescaling	(double x, int size)    	{ return 6.0*(x-1.0)/(size-1.0) - 3.0; }
 
 double NewNu (vector<double> & nu, double K, double p, int size) {
@@ -45,6 +45,7 @@ int main (int argc, char ** argv) {
 
 	Console W;
 	W.watch (slope, "Slope"); W.manage (slope,-100.0,100.0);
+	W.watch (Ac, "Ac"); W.manage (Ac,.2,.4);
 	W.show();
 
 	Figure F (false);
