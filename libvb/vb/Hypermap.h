@@ -1,7 +1,6 @@
 #pragma once /// @file
 #include <vb/Permutation.h>
-
-// Implementation of hypermaps as triples of permutations, following A. Zvonkin, "Belyi Functions: Examples, Properties, and Applications".
+#include <iostream>
 
 namespace vb {
 	class Hypermap {

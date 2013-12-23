@@ -1,8 +1,5 @@
 #pragma once /// @file
 #include <vector>
-#include <iostream>
-
-// Implementation of hypermaps as triples of permutations, following A. Zvonkin, "Belyi Functions: Examples, Properties, and Applications".
 
 namespace vb {
 	class Permutation : public std::vector<int> {

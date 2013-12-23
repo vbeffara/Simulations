@@ -1,6 +1,5 @@
 #pragma once /// @file
 #include <vb/config.h>
-#include <math.h>
 
 namespace vb {
 	class Color {
@@ -41,5 +40,5 @@ namespace vb {
 		else            	return Color(v,p,q);
 	}
 
-	inline Color Indexed (int i, double s=1, double v=1) { double x = i * (1.0+sqrt(5.0))/2.0; return HSV (x-int(x),s,v); }
+	inline Color Indexed (int i, double s=1, double v=1) { double x = i * 1.61803398874989484820; return HSV (x-int(x),s,v); }
 }

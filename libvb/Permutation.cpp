@@ -1,4 +1,5 @@
 #include <vb/Permutation.h>
+#include <iostream>
 
 namespace vb {
 	void Permutation::use_s () {
