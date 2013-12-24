@@ -1,6 +1,5 @@
 #pragma once /// \file
 
-#include <vb/dxdy.h>
 #include <vb/CL_Parser.h>
 #include <vb/Console.h>
 #include <vb/Cube.h>

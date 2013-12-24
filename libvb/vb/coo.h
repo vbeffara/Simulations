@@ -15,6 +15,7 @@ namespace vb {
 	inline int norm (coo z) { return z.x*z.x + z.y*z.y; }
 
 	const coo dz[8] = { coo(1,0), coo(0,1), coo(-1,0), coo(0,-1), coo(1,1), coo(-1,-1), coo(-1,1), coo(1,-1) };
+	const coo J (0,1);
 
 	class coo3 { public: int x,y,z;
 		coo3 (int xx, int yy, int zz) : x(xx), y(yy), z(zz) {}

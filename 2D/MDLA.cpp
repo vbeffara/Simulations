@@ -1,13 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <vb/Image.h>
-#include <vb/PRNG.h>
 #include <vb/CL_Parser.h>
+#include <vb/Image.h>
 #include <vb/fmt.h>
-#include <vb/dxdy.h>
-
-#define EC fprintf(stderr,"<%d>\n",__LINE__);
 
 #define EMPTY  Color(0)
 #define AWAY   Color(50)
@@ -16,86 +9,40 @@
 
 using namespace vb;
 
-int main(int argc, char ** argv) {
-  Image *img;              /* L image */
-  char d;                  /* La chaine */
+int main (int argc, char ** argv) {
+    CL_Parser CLP (argc, argv, "n=250,p=.5,g,a=1.0,t=0.0,s");
+    int    n = CLP('n'); // Half of board size
+    double p = CLP('p'); // Initial particle density
+    bool   g = CLP('g'); // Dynamic discovery of environment (ghosts)
+    double t = CLP('t'); // Snapshot interval for movies
+    double a = CLP('a'); // Contagion probability
 
-  long x,y,nx,ny,done,ndraw,ngrey;
+    Image img (2*n,2*n, str(fmt("A MDLA in density %f")%p));
 
-  CL_Parser CLP (argc, argv, "n=250,p=.5,g,a=1.0,t=0.0,s");
-  int    n = CLP('n');
-  double p = CLP('p');
-  bool   g = CLP('g');
-  double a = CLP('a');
-  double t = CLP('t');
-  bool   s = CLP('s');
+    for (Color & c : img) if (g) c = AWAY; else c = prng.bernoulli(p) ? ALIVE : EMPTY;
+    img.put (coo(n,n),DEAD); img.show();
+    if (t>0) img.snapshot_setup ("MDLA",t);
 
-  /* Initialisations */
+    while (true) {
+        coo z = img.rand(), nz = z + dz[prng()%4];
+        if (!img.contains(nz)) continue;
+        if (img.at(z) == img.at(nz)) continue;
 
-  img = new Image(2*n,2*n, str(fmt("A MDLA in density %f")%p));
-  if (t>0) img->snapshot_setup ("MDLA",t);
+        bool flag = false;
+        if (img.at(z) == AWAY)  {
+            if (prng.bernoulli(a) || (img.at(nz) == DEAD)) { flag = true; img.put (z,(prng.bernoulli(p)?ALIVE:EMPTY)); }
+            else continue;
+        }
+        if (img.at(nz) == AWAY)  {
+            if (prng.bernoulli(a) || (img.at(z) == DEAD)) { flag = true; img.put (nz,(prng.bernoulli(p)?ALIVE:EMPTY)); }
+            else continue;
+        }
 
-  ngrey = 0;
+        if (img.at(z) == img.at(nz)) continue;
+        if (img.at(z) != ALIVE) { coo t=z; z=nz; nz=t; }
+        if (img.at(z) != ALIVE) continue;
 
-  if (g) {
-    for (x=0;x<2*n;++x)
-      for (y=0;y<2*n;++y)
-        img->put (coo(x,y),AWAY);
-  } else {
-    for (x=0;x<2*n;x++) {
-      for (y=0;y<2*n;y++) {
-        if (prng.bernoulli(p)) {
-          img->put (coo(x,y),ALIVE);
-          if ((x!=n)||(y!=n)) ngrey++;
-        } else
-          img->put (coo(x,y),EMPTY);
-      }
+        if (img.at(nz) == EMPTY) { if (prng.bernoulli(a) || flag) { img.put (z,EMPTY); img.put (nz,ALIVE); } }
+        else if (img.at(nz) == DEAD) { img.put (z,DEAD); if ((z.x==0)||(z.x==2*n-1)||(z.y==0)||(z.y==2*n-1)) break; }
     }
-  }
-  img->put (coo(n,n),DEAD);
-
-  img->show();
-
-  /* Simulation */
-
-  done=0; ndraw=0;
-
-  bool running = true;
-  while (running) {
-    bool flag = false;
-    x = prng() % (2*n);
-    y = prng() % (2*n);
-
-    d = prng() &3;
-    nx = x + dx[(int)d]; if ((nx<0)||(nx>=2*n)) continue;
-    ny = y + dy[(int)d]; if ((ny<0)||(ny>=2*n)) continue;
-
-    if ((*img).at(coo(x,y)) == (*img).at(coo(nx,ny))) continue;
-
-    if ((*img).at(coo(x,y)) == AWAY)  {
-      if (prng.bernoulli(a) || ((*img).at(coo(nx,ny)) == DEAD)) { flag = true; img->put (coo(x,y),(prng.bernoulli(p)?ALIVE:EMPTY)); }
-      else continue;
-    }
-    if ((*img).at(coo(nx,ny)) == AWAY)  {
-      if (prng.bernoulli(a) || ((*img).at(coo(x,y)) == DEAD)) { flag = true; img->put (coo(nx,ny),(prng.bernoulli(p)?ALIVE:EMPTY)); }
-      else continue;
-    }
-
-    if ((*img).at(coo(x,y)) == (*img).at(coo(nx,ny))) continue;
-    if ((*img).at(coo(x,y)) != ALIVE) { int t=x; x=nx; nx=t;  t=y; y=ny; ny=t; }
-    if ((*img).at(coo(x,y)) != ALIVE) continue;
-
-    if ((*img).at(coo(nx,ny)) == EMPTY) {
-      if (prng.bernoulli(a) || flag) {
-        img->put (coo(x,y),EMPTY);
-        img->put (coo(nx,ny),ALIVE);
-      }
-    } else if ((*img).at(coo(nx,ny)) == DEAD) {
-      img->put (coo(x,y),DEAD);
-      if ((s)&&((x==0)||(x==2*n-1)||(y==0)||(y==2*n-1))) running = false;
-      --ngrey;
-    }
-  }
-
-  return 0;
 }
