@@ -1,5 +1,4 @@
 #!/usr/bin/env runhaskell
-{-# LANGUAGE OverloadedStrings, TupleSections #-}
 
 import Data.List (isPrefixOf)
 import System.FilePath.Find
@@ -11,10 +10,8 @@ inc = filter (isPrefixOf "vb/") . map (drop 10 . init) . filter (isPrefixOf "#in
 main :: IO ()
 main = do   
     putStrLn "digraph {"
-    files <- find (fileName /=? "build") (extension ==? ".h") "."
-    let names = map (drop 8) files
-    mapM_ print names
+    files <- find always (extension ==? ".h") "libvb"
     contents <- mapM readFile files
-    let arrows = concat $ zipWith (map . (,)) names $ map inc contents
+    let arrows = concat $ zipWith (map . (,)) (map (drop 6) files) $ map inc contents
     mapM_ (uncurry (printf "  \"%s\" -> \"%s\"\n")) arrows
     putStrLn "}"
