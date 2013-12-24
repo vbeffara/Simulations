@@ -2,8 +2,6 @@
 {-# LANGUAGE OverloadedStrings, TupleSections #-}
 
 import Data.List (isPrefixOf)
-import qualified Data.Text as T
-import qualified Data.Text.IO as TIO
 import System.FilePath.Find
 import Text.Printf (printf)
 
