@@ -11,7 +11,7 @@ class Snake : public CoarseImage {
     void step (coo dz);
     void shrink ();
     bool alive () const;
-    void output () const;
+    void output (const std::string &s = "");
   private:
     std::vector<coo> z;
 };
@@ -39,7 +39,7 @@ bool Snake::alive () const {
   return ((lx>0) && (lx<true_width-1) && (ly>0) && (ly<true_height-1));
 }
 
-void Snake::output () const {
+void Snake::output (const std::string &s) {
   OldPath P (z.size()-1, title);
   for (unsigned i=0; i<z.size()-1; ++i) {
     coo dz = z[i+1]-z[i];
@@ -49,7 +49,7 @@ void Snake::output () const {
     if (dy>0) P[i]=1;
     if (dy<0) P[i]=3;
   }
-  P.output();
+  P.output(s);
 }
 
 int main (int argc, char ** argv) {
