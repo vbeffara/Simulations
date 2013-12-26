@@ -1,25 +1,34 @@
 #pragma once /// \file
 
-#include <vb/CL_Parser.h>
-#include <sstream>
+#include <cstdlib>
+#include <map>
+#include <string>
 
 namespace vb {
-	class Hub : public CL_Parser {
-	public:
-		Hub (std::string t,   int argc, char ** argv, std::string c = "") : CL_Parser (argc,argv,c), title(t) {
-			std::ostringstream o;
-			if (params.size() + has_arg.size()) {
-				bool first = true;
-				o << " (";
-				for (auto i : params) {
-					o << (first ? "" : ",") << i.first << "=" << i.second;
-					first = false;
-				}
-				o << ")";
-			}
-			title += o.str();
-		}
+	class Value : public std::string {
+		public:
+			Value (const std::string &s) : std::string (s) {}
 
-		std::string title;
+			operator bool()  	const { return atoi(c_str()); }
+			operator int()   	const { return atoi(c_str()); }
+			operator long()  	const { return atoi(c_str()); }
+			operator double()	const { return atof(c_str()); }
+	};
+
+	class Hub {
+	public:
+		Hub (std::string t, int argc, char ** argv, std::string c = "");
+
+		std::string title,help;
+		std::map<char,std::string> params;
+		std::map<char,bool>        has_arg;
+
+		Value operator() (char c) { return params[c]; }
+
+	private:
+		void newparam (const std::string &);
+		void parse (int, char**);
+
+		std::string getopt_arg;
 	};
 }

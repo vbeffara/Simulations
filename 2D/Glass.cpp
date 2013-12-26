@@ -1,4 +1,4 @@
-#include <vb/CL_Parser.h>
+#include <vb/Hub.h>
 #include <vb/Image.h>
 #include <vb/PRNG.h>
 
@@ -82,10 +82,10 @@ void init_ok_connect6 (void) {
 }
 
 int main (int argc, char **argv) {
-  CL_Parser CLP (argc,argv,"n=300,p=.5,c=none");
-  int    n = CLP('n');
-  double p = CLP('p');
-  string c = CLP('c');
+  Hub H ("Glassy Glauber dynamics for percolation",argc,argv,"n=300,p=.5,c=none");
+  int    n = H('n');
+  double p = H('p');
+  string c = H('c');
 
   if      (c == "none")     init_ok_none();
   else if (c == "glass")    init_ok_glass();
@@ -96,7 +96,7 @@ int main (int argc, char **argv) {
     exit (1);
   }
 
-  Image img (n,n, "A glass process");
+  Image img (n,n,H.title);
 
   img.fill(0,0);
   for (int i=0; i<n; i++) img.put(coo(i,n/2),255);
