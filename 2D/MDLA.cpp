@@ -1,6 +1,5 @@
 #include <vb/CL_Parser.h>
 #include <vb/Image.h>
-#include <vb/fmt.h>
 
 #define EMPTY  Color(0)
 #define AWAY   Color(50)
@@ -17,7 +16,7 @@ int main (int argc, char ** argv) {
     double t = CLP('t'); // Snapshot interval for movies
     double a = CLP('a'); // Contagion probability
 
-    Image img (2*n,2*n, str(fmt("A MDLA in density %f")%p));
+    Image img (2*n,2*n, "A Multi-particle DLA");
 
     for (Color & c : img) if (g) c = AWAY; else c = prng.bernoulli(p) ? ALIVE : EMPTY;
     img.put (coo(n,n),DEAD); img.show();

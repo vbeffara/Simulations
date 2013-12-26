@@ -1,7 +1,6 @@
-#include <vb/CL_Parser.h>
+#include <vb/Hub.h>
 #include <vb/Image.h>
 #include <vb/PRNG.h>
-#include <vb/fmt.h>
 
 using namespace vb;
 
@@ -11,11 +10,11 @@ int main(int argc, char *argv[])
 
   /* arguments -> p et n */
 
-  CL_Parser CLP (argc,argv,"p=.5,n=400");
-  double p = CLP('p');
-  int n = CLP('n');
+  Hub H ("Discrete-time contact process on the hexagonal lattice",argc,argv,"p=.5,n=400");
+  double p = H('p');
+  int n = H('n');
 
-  Image img (n,n, str(fmt("Discrete-time contact process on the tri/hex lattice (p=%f)")%p));
+  Image img (n,n,H.title);
 
   /* conditions initiales */
 

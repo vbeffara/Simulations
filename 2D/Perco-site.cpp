@@ -1,7 +1,6 @@
 #include <vb/CL_Parser.h>
 #include <vb/Image.h>
 #include <vb/PRNG.h>
-#include <vb/fmt.h>
 
 using namespace vb;
 
@@ -56,7 +55,7 @@ int main(int argc, char ** argv)
   n = CLP('n');
   p = CLP('p');
 
-  img=new Image(2*n,2*n, str(fmt("Site-percolation cluster (p=%)")%p));
+  img=new Image(2*n,2*n,"Site-percolation cluster");
 
   /* Site-percolation --- 1=dedans, 2=dehors */
 

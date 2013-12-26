@@ -1,7 +1,6 @@
 #include <vb/CL_Parser.h>
 #include <vb/Image.h>
 #include <vb/PRNG.h>
-#include <vb/fmt.h>
 
 using namespace vb;
 
@@ -63,7 +62,7 @@ int main(int argc, char ** argv)
   for (int i=0; i<n*n; ++i)
     color[i] = (char) prng.bernoulli(q);
 
-  Image img (n,n, str(fmt("Divide-and-color model (p=%f,q=%f)")%p%q));
+  Image img (n,n, "Divide-and-color model");
 
   for (int x=0; x<n; ++x)
     for (int y=0; y<n; ++y)

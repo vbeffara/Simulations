@@ -1,7 +1,6 @@
 #include <vb/CL_Parser.h>
 #include <vb/Image.h>
 #include <vb/PRNG.h>
-#include <vb/fmt.h>
 
 using namespace vb;
 
@@ -103,7 +102,7 @@ int main(int argc, char ** argv)
     if (prng.bernoulli(.5-epsilon)) down[i]=1;
   }
 
-  img = new Image(n,n, str(fmt("Asymmetric bond-percolation cluster (epsilon=%)")%epsilon));
+  img = new Image(n,n,"Asymmetric bond-percolation cluster");
 
   /* OnScreen (img); */
 

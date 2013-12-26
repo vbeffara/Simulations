@@ -1,6 +1,5 @@
 #include <vb/Hub.h>
 #include <vb/Bitmap.h>
-#include <vb/fmt.h>
 
 using namespace vb;
 using namespace std;

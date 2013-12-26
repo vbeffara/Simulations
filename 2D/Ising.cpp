@@ -1,7 +1,6 @@
 #include <vb/CL_Parser.h>
 #include <vb/Image.h>
 #include <vb/PRNG.h>
-#include <vb/fmt.h>
 
 using namespace vb;
 
@@ -18,7 +17,7 @@ int main(int argc, char *argv[])
   double beta = CLP('b');
   long n = CLP('n');
 
-  Image img(n,n, str(fmt("An Ising configuration (beta=%f)")%beta));
+  Image img(n,n, "An Ising configuration");
 
   /* conditions initiales / au bord */
 

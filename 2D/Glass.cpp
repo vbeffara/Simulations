@@ -1,7 +1,6 @@
 #include <vb/CL_Parser.h>
 #include <vb/Image.h>
 #include <vb/PRNG.h>
-#include <vb/fmt.h>
 
 using namespace vb;
 using namespace std;
@@ -97,7 +96,7 @@ int main (int argc, char **argv) {
     exit (1);
   }
 
-  Image img (n,n, str(fmt("A glass process of parameter %f (conditioning: %s)")%p%c));
+  Image img (n,n, "A glass process");
 
   img.fill(0,0);
   for (int i=0; i<n; i++) img.put(coo(i,n/2),255);

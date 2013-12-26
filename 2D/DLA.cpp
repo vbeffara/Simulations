@@ -2,7 +2,6 @@
 #include <vb/CoarseImage.h>
 #include <vb/PRNG.h>
 #include <vb/Console.h>
-#include <vb/fmt.h>
 
 using namespace vb;
 using namespace std;
@@ -58,7 +57,7 @@ public:
   Console W;
   KDTree T;
 
-  DLA (int n) : CoarseImage(n,n, str(fmt("A DLA cluster of size %d")%n), pow(n,.33)),
+  DLA (int n) : CoarseImage(n,n, "A DLA cluster", pow(n,.33)),
                 n(n), r(1), deg(4) {
     z0 = coo(n/2,n/2);
     W.watch (T.size, "Number of particles");

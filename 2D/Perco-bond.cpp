@@ -1,7 +1,6 @@
 #include <vb/CL_Parser.h>
 #include <vb/Image.h>
 #include <vb/PRNG.h>
-#include <vb/fmt.h>
 
 using namespace vb;
 
@@ -92,7 +91,7 @@ int main(int argc, char ** argv)
   n = CLP('n');
   p = CLP('p');
 
-  Image img (2*n,2*n, str(fmt("Bond-percolation cluster (p=%)")%p));
+  Image img (2*n,2*n,"Bond-percolation cluster");
 
   /* Bond-percolation --- 16->est, 32->nord */
 

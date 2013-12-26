@@ -2,18 +2,16 @@
 #include <vb/PRNG.h>
 #include <vb/Path.h>
 #include <vb/ProgressBar.h>
-#include <vb/fmt.h>
 
 using namespace std;
 using namespace vb;
 
-int main(int argc, char ** argv)
-{
+int main(int argc, char ** argv) {
   CL_Parser CLP (argc,argv,"n=500,t=5000");
   int n = CLP('n');
   int t = CLP('t');
 
-  OldPath P (n, str(fmt("A self-avoiding walk of length %d")%n), true);
+  OldPath P (n,"A self-avoiding walk",true);
   ProgressBar PB (t);
 
   for (int i=0;i<t;) {
