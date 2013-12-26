@@ -114,10 +114,8 @@ namespace vb {
 
     for (std::shared_ptr <Shape> i : contents) {
       cairo_save(cr);
-      if (i->p.set) {
-        cairo_set_source_rgb (cr, i->p.c.r/255.0, i->p.c.g/255.0, i->p.c.b/255.0);
-        cairo_set_line_width (cr, basewidth * i->p.w);
-      }
+      cairo_set_source_rgb (cr, i->p.c.r/255.0, i->p.c.g/255.0, i->p.c.b/255.0);
+      cairo_set_line_width (cr, basewidth * i->p.w);
       i->draw(cr);
       if (i->p.ff) {
         cairo_stroke_preserve(cr);
