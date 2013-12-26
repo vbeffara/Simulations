@@ -17,10 +17,10 @@ namespace vb {
         int l=0;
         coo z(0);
 
-        T.put(z.x,z.y,1);
+        T.put(z,1);
         for (char i : *this) {
             l = (relative ? l+i : i) % 4; z += dz[l];
-            if (T.get(z.x,z.y)) return false; else T.put(z.x,z.y,1);
+            if (T.at(z)) return false; else T.put(z,1);
         }
         return true;
     }

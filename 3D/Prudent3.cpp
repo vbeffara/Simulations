@@ -25,20 +25,20 @@ class Walker {
 
 Walker::Walker () : pos(3,0), length(0), Max(3,INT_MIN), Min(3,INT_MAX) {
   for (int i=0; i<3; ++i) {
-    Max[i].put (0,0,0);
-    Min[i].put (0,0,0);
+    Max[i].put (0,0);
+    Min[i].put (0,0);
   }
 }
 
 int Walker::step (int dir, int add) {
   if (add==0) return 0;
   if (add>0) {
-    if (pos[dir] < Max[dir].get(pos[(dir+1)%3], pos[(dir+2)%3])) return 0;
+    if (pos[dir] < Max[dir].at(coo(pos[(dir+1)%3], pos[(dir+2)%3]))) return 0;
     pos[dir] += add;
     reframe();
     ++ length;
   } else {
-    if (pos[dir] > Min[dir].get(pos[(dir+1)%3], pos[(dir+2)%3])) return 0;
+    if (pos[dir] > Min[dir].at(coo(pos[(dir+1)%3], pos[(dir+2)%3]))) return 0;
     pos[dir] += add;
     reframe();
     ++ length;
@@ -48,10 +48,10 @@ int Walker::step (int dir, int add) {
 
 void Walker::reframe () {
   for (int i=0; i<3; ++i) {
-    if (pos[i] > Max[i].get(pos[(i+1)%3], pos[(i+2)%3]))
-      Max[i].put(pos[(i+1)%3], pos[(i+2)%3], pos[i]);
-    if (pos[i] < Min[i].get(pos[(i+1)%3], pos[(i+2)%3]))
-      Min[i].put(pos[(i+1)%3], pos[(i+2)%3], pos[i]);
+    if (pos[i] > Max[i].at(coo(pos[(i+1)%3], pos[(i+2)%3])))
+      Max[i].put(coo(pos[(i+1)%3], pos[(i+2)%3]), pos[i]);
+    if (pos[i] < Min[i].at(coo(pos[(i+1)%3], pos[(i+2)%3])))
+      Min[i].put(coo(pos[(i+1)%3], pos[(i+2)%3]), pos[i]);
   }
 }
 
