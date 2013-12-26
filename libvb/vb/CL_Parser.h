@@ -22,9 +22,7 @@ namespace vb {
 		std::map<char,std::string> params;  ///< The current values of the parameters
 		std::map<char,bool>        has_arg; ///< The list of known flags
 
-		CL_Parser (int argc, char** argv,
-							 std::string syntax,
-							 const std::string &help = "");
+		CL_Parser (int argc, char** argv, std::string syntax);
 
 		CL_Value operator() (char);
 

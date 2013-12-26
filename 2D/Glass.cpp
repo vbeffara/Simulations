@@ -83,9 +83,7 @@ void init_ok_connect6 (void) {
 }
 
 int main (int argc, char **argv) {
-  CL_Parser CLP (argc,argv,"n=300,p=.5,c=none",
-      "Syntax: Glass [-n size] [-p p] [-c conditioning]\n\
-      conditioning is one of: none (default), glass, connect4, connect6");
+  CL_Parser CLP (argc,argv,"n=300,p=.5,c=none");
   int    n = CLP('n');
   double p = CLP('p');
   string c = CLP('c');

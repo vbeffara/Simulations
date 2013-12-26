@@ -11,10 +11,8 @@ namespace vb {
   CL_Value::operator long()        const { return atoi(value.c_str()); }
   CL_Value::operator double()      const { return atof(value.c_str()); }
 
-  CL_Parser::CL_Parser (int argc, char **argv, std::string syntax, const std::string &help) :
-    getopt_arg("h"), _help(help) {
-      if (help.length()==0) _help = "CL_Parser argument : " + syntax;
-
+  CL_Parser::CL_Parser (int argc, char **argv, std::string syntax) :
+    getopt_arg("h"), _help("CL_Parser argument : " + syntax) {
       size_t cut;
       while ((cut=syntax.find_first_of(",")) != syntax.npos) {
         newparam (syntax.substr(0,cut));

@@ -5,8 +5,7 @@
 using namespace vb;
 
 int main (int argc, char **argv) {
-  vb::CL_Parser CLP(argc,argv,"n=500,p=.75",
-		"Syntax: Perco-oriented [-n <size>]");
+  vb::CL_Parser CLP(argc,argv,"n=500,p=.75");
   const int n = CLP('n');
   const double p = CLP('p');
 
