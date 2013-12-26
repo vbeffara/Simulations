@@ -15,15 +15,14 @@ namespace vb {
 			operator double()	const { return atof(c_str()); }
 	};
 
-	class Hub {
+	class Hub : public std::map <char,std::string> {
 	public:
 		Hub (std::string t, int argc, char ** argv, std::string c = "");
 
 		std::string title,help;
-		std::map<char,std::string> params;
 		std::map<char,bool>        has_arg;
 
-		Value operator() (char c) { return params[c]; }
+		Value operator() (char c) { return at(c); }
 
 	private:
 		void newparam (const std::string &);
