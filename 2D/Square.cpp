@@ -142,9 +142,9 @@ pair<pt,pt> leaf (pt p, const vector<double> &o, ostream *os = NULL) {
   pt p2 = geodesique (pt(p), o);
 
   if ((os != NULL) && (p1 != p2)) {
-    pt p1 = geodesique (pt(p), o, os);
+    geodesique (pt(p), o, os);
     p.reverse();
-    pt p2 = geodesique (p, o, os);
+    geodesique (p, o, os);
   }
 
   if (p1<p2) return pair<pt,pt>(p1,p2);
