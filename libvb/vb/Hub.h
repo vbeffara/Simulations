@@ -7,7 +7,8 @@
 namespace vb {
 	class Value : public std::string {
 		public:
-			Value (const std::string &s) : std::string (s) {}
+			Value (const std::string s = "") : std::string (s) {}
+			Value operator= (std::string s) { std::string::operator=(s); return *this; }
 
 			operator bool()  	const { return atoi(c_str()); }
 			operator int()   	const { return atoi(c_str()); }
@@ -15,14 +16,12 @@ namespace vb {
 			operator double()	const { return atof(c_str()); }
 	};
 
-	class Hub : public std::map <char,std::string> {
+	class Hub : public std::map <char,Value> {
 	public:
 		Hub (std::string t, int argc, char ** argv, std::string c = "");
 
 		std::string title,help;
 		std::map<char,bool>        has_arg;
-
-		Value operator() (char c) { return at(c); }
 
 	private:
 		void newparam (const std::string &);

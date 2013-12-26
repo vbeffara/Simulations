@@ -11,8 +11,8 @@ int main(int argc, char *argv[])
   /* arguments -> p et n */
 
   Hub H ("Discrete-time contact process on the hexagonal lattice",argc,argv,"p=.5,n=400");
-  double p = H('p');
-  int n = H('n');
+  double p = H['p'];
+  int n = H['n'];
 
   Image img (n,n,H.title);
 

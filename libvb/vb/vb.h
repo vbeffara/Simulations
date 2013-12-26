@@ -1,8 +1,8 @@
 #pragma once /// \file
 
+#include <vb/CL_Parser.h>
 #include <vb/Console.h>
 #include <vb/Cube.h>
-#include <vb/Hub.h>
 #include <vb/Hypermap.h>
 #include <vb/Lattice.h>
 #include <vb/Map.h>

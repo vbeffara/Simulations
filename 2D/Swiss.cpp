@@ -30,7 +30,7 @@ public:
     int c;
     double p,q;
 
-    World (Hub &H) : Bitmap<Site> (H('n'),H('n'),H.title), c(H('c')), p(H('p')), q(H('q')) {
+    World (Hub &H) : Bitmap<Site> (H['n'],H['n'],H.title), c(H['c']), p(H['p']), q(H['q']) {
         int mid = (w()+h())/2;
         for (int x=0; x<w(); ++x) {
             for (int y=0; y<h(); ++y) {

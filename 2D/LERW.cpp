@@ -6,7 +6,7 @@ using namespace vb;
 
 class LERW : private Bitmap<char> {
 public:
-    LERW (Hub &H) : Bitmap<char> (2*int(H('n')),2*int(H('n')),H.title) {
+    LERW (Hub &H) : Bitmap<char> (2*int(H['n']),2*int(H['n']),H.title) {
         coo z(w()/2,h()/2); while (contains(z)) { int d = prng()&3; put(z,d); z += dz[d]; }
     }
 
