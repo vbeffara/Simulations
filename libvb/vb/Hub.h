@@ -7,9 +7,9 @@
 namespace vb {
 	class Hub : public CL_Parser {
 	public:
-		Hub (int argc, char ** argv, fmt t,         std::string c = "", std::string h = "") : Hub (argc,argv,str(t),c,h) {}
+		Hub (boost::format t, int argc, char ** argv, std::string c = "") : Hub (str(t),argc,argv,c) {}
 
-		Hub (int argc, char ** argv, std::string t, std::string c = "", std::string h = "") : CL_Parser (argc,argv,c,h), title(t) {
+		Hub (std::string t,   int argc, char ** argv, std::string c = "") : CL_Parser (argc,argv,c), title(t) {
 			std::ostringstream o;
 			if (params.size() + has_arg.size()) {
 				bool first = true;

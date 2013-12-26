@@ -60,6 +60,6 @@ public:
 };
 
 int main (int argc, char ** argv) {
-    Hub H (argc,argv,"The Swiss Journalist","n=600,c=0,p=.8,q=.35");
+    Hub H ("The Swiss Journalist",argc,argv,"n=600,c=0,p=.8,q=.35");
     World w(H); w.show(); w.pause(); w.run();
 }
