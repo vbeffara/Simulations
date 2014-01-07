@@ -27,7 +27,8 @@ int main (int argc, char ** argv) {
     cerr << "boost::bernoulli_distribution ...      \ttime = ";
     s=0; t=global_clock.time();
     boost::bernoulli_distribution<> dist(.5);
-    for (int i=0; i<n; ++i) s += dist(prng);
+    boost::mt19937 boostengine;
+    for (int i=0; i<n; ++i) s += dist(boostengine);
     cerr << global_clock.time()-t << ",  \tsum = " << s << endl;
 
     cerr << "many boost::bernoulli_distributions ...\ttime = ";
