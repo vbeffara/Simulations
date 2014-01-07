@@ -38,7 +38,7 @@ namespace vb {
 		void run () {
 			for (Task & t : tasks) if (t.active && (now() >= t.next)) { t(); t.next = now() + t.period; }
 			double time = Duration(now()-start).count();
-			if (time < .1) slice += slice/10; else slice = std::min (n_call / (time*100), slice + slice/10.0);
+			if (time < 1) slice += slice/10; else slice = std::min (n_call / (time*100), slice + slice/10.0);
 			next = slice;
 		}
 
