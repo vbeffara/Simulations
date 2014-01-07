@@ -4,28 +4,18 @@
 
 using namespace vb;
 
-double x2 (void *x) {
-  double X = *(double*)x; return X*2;
-}
+double x2 (void *x) { double X = *(double*)x; return X*2; }
 
 int main (int argc, char ** argv) {
-  double x=1.1;
+	double x=1.1;
 
-  Console W1;
-  W1.watch (x,"x");
-  W1.show();
+	Console W;
+	W.watch (x,"x");
+	W.show();
 
-  for (unsigned long i=0; i<3e8; ++i) {
-    x = prng.uniform_real();
-    global_clock.step();
-  }
+	for (unsigned long i=0; i<3e8; ++i) { x = prng.uniform_real(); W.step(); } // Usually W.step() would be implicit
 
-  W1.trace (x2,&x,"Double of x");
+	W.trace (x2,&x,"Double of x");
 
-  for (unsigned long i=0; i<3e8; ++i) {
-    x = prng.uniform_real();
-    global_clock.step();
-  }
-
-  return 0;
+	for (unsigned long i=0; i<3e8; ++i) { x = prng.uniform_real(); W.step(); }
 }
