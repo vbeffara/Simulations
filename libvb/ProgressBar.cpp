@@ -27,7 +27,7 @@ namespace vb {
 
         if (current>0) {
             double done = pow(current,power), todo = pow(final,power);
-            int    eta  = time() * (todo/done - 1.0);
+            int    eta  = Duration(now()-start).count() * (todo/done - 1.0);
             bool   big  = false;
 
             std::cerr << " (";
