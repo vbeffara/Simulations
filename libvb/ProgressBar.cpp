@@ -26,9 +26,9 @@ namespace vb {
         std::cerr << "]";
 
         if (current>0) {
-            double done = pow(current,power), todo = pow(final,power);
-            int    eta  = Duration(now()-start).count() * (todo/done - 1.0);
-            bool   big  = false;
+            double done  = pow(current,power), todo = pow(final,power);
+            Duration etd = (now()-start) * (todo/done - 1.0);
+            int eta = etd.count(); bool big = false;
 
             std::cerr << " (";
             if (eta >= 3600*24) {
