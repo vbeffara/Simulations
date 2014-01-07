@@ -5,18 +5,11 @@
 #include <FL/Fl.H>
 
 namespace vb {
-	void AutoWindow_update (void * AW) { ((AutoWindow*)AW) -> update(); }
-
 	void close_window (Fl_Widget *w) { exit(1); }
 
-	AutoWindow::AutoWindow (int wd, int ht, const std::string &t) : Fl_Double_Window (wd, ht, t.c_str()), title(t), paused (false) {
+	AutoWindow::AutoWindow (int wd, int ht, const std::string &t) : Auto(.05), Fl_Double_Window (wd, ht), title(t), paused (false) {
 		label (title.c_str());
-		task = global_clock.add (5,AutoWindow_update,this);
 		callback(close_window);
-	}
-
-	AutoWindow::~AutoWindow () {
-		global_clock.remove(task);
 	}
 
 	void AutoWindow::show () {

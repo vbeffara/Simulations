@@ -2,26 +2,20 @@
 /// Implementation of the vb::ProgressBar class
 
 #include <vb/ProgressBar.h>
-#include <vb/Clock.h>
 #include <iostream>
 #include <iomanip>
 #include <cmath>
 
 namespace vb {
-    void ProgressBar_update (void * PB) { ((ProgressBar*)PB) -> update(); }
-
-    ProgressBar::ProgressBar (int length, double pow) : final(length), current(0), power(pow) {
-        task = global_clock.add (5,ProgressBar_update,this);
-    }
+    ProgressBar::ProgressBar (int length, double pow) : Auto(.05), final(length), current(0), power(pow) {}
 
     ProgressBar::~ProgressBar () {
         set(final); update(); std::cerr << "\n";
-        global_clock.remove(task);
     }
 
     void ProgressBar::set (int pos) {
         if (pos<0) pos=0; if (pos>final) pos=final; current = pos;
-        global_clock.step();
+        step();
     }
 
     void ProgressBar::update () {
