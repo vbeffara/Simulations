@@ -25,9 +25,9 @@ namespace vb {
         for (int i=nchar; i<50; ++i) std::cerr << " ";
         std::cerr << "]";
 
-        if (global_clock.time() > 2) {
+        if (current>0) {
             double done = pow(current,power), todo = pow(final,power);
-            int    eta  = global_clock.time() * (todo/done - 1.0);
+            int    eta  = time() * (todo/done - 1.0);
             bool   big  = false;
 
             std::cerr << " (";

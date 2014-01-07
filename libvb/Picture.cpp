@@ -9,9 +9,6 @@
 #include <sstream>
 
 namespace vb {
-  void Picture_update   (void * AW) { ((Picture*)AW) -> update();   }
-  void Picture_snapshot (void * AW) { ((Picture*)AW) -> snapshot(); }
-
   Picture::Picture (int wd, int ht, const std::string &t) :
     AutoWindow (wd, ht, t.c_str()),
 
@@ -23,7 +20,7 @@ namespace vb {
   { }
 
   Picture::~Picture () {
-    global_clock.remove(snapshot_task);
+    if (snapshot_task>=0) remove_task(snapshot_task);
   }
 
   void Picture::size (int wd, int ht) {
@@ -72,11 +69,11 @@ namespace vb {
   }
 
   void Picture::snapshot_setup (const std::string &prefix, double period) {
-    global_clock.remove (snapshot_task);
+    if (snapshot_task>=0) remove_task(snapshot_task);
     snapshot_period = period;
     snapshot_prefix = prefix;
     snapshot();
-    if (period>0) global_clock.add (100*period, Picture_snapshot, this);
+    if (period>0) snapshot_task = add_task (period, [this]{this->snapshot();});
   }
 
   int Picture::handle (int event) {

@@ -1,4 +1,5 @@
 #pragma once /// \file
+
 #include <vb/Color.h>
 #include <vb/AutoWindow.h>
 #include <cairo.h>
@@ -44,7 +45,4 @@ namespace vb {
 		/// Shuffle the bytes for FLTK display of a line.
 		friend void draw_cb (void *, int, int, int, unsigned char *);
 	};
-
-	/// Take a snapshot of the picture passed as argument.
-	void Picture_snapshot (void * AW);
 }
