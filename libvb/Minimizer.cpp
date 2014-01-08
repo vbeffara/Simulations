@@ -6,7 +6,7 @@
 namespace vb {
 	Minimizer::Minimizer (unsigned int n_, double f_ (const Vector &, void *), Vector g_ (const Vector &, void *),
 			double fg_ (const Vector &, Vector &, void *), void *context_) :
-	    n(n_), f(f_), g(g_), fg(fg_), cb(NULL), context(context_), er(1.0), ler(0), x(n), gx(n), old_x(n), old_gx(n) {}
+	    n(n_), f(f_), g(g_), fg(fg_), cb(NULL), context(context_), x(n), gx(n), old_x(n), old_gx(n), er(1.0), ler(0) {}
 
 	Minimizer::Minimizer (unsigned int n_, double fg_ (const Vector &, Vector &, void *), void *context_) :
 		Minimizer (n_,NULL,NULL,fg_,context_) {}

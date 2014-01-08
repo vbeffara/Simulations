@@ -31,7 +31,7 @@ namespace vb {
 		int N = n_edges();
 
 		for (int a=0; a<N; ++a) {
-			int b=alpha[a], c=phi[a], e=phi[c], f=sigma[a], x=phi[b];
+			int b=alpha[a], c=phi[a], f=sigma[a], x=phi[b];
 			if (a<b) H.sigma.c.push_back ({a+N,x+3*N,b+2*N,b+N,c+3*N,a+2*N});
 			H.alpha.c.push_back ({a,a+N}); H.alpha.c.push_back ({a+2*N,a+3*N});
 			H.phi.c.push_back ({a,a+2*N,f+N});
