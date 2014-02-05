@@ -16,7 +16,7 @@ class Toroidal : public Hypermap { // Triangulation of torus
 				src(n_edges()), adj(n_black()), rad(n_black(),1), angle(n_edges(),NAN), place(n_black(),NAN), circ(n_black(),true) {
 			assert(is_triangulation());
             for (int i=0; i<n_black(); ++i) for (int e : sigma.c[i]) src[e]=i;
-			for (int i=0; i<n_black(); ++i) for (int e : sigma.c[i]) adj[i].push_back(src[alpha[e]]); 
+			for (int i=0; i<n_black(); ++i) for (int e : sigma.c[i]) adj[i].push_back(src[alpha[e]]);
 		}
 
 		void acpa (double r) {
@@ -53,10 +53,10 @@ class Toroidal : public Hypermap { // Triangulation of torus
 					int j=src[alpha[e]]; double l = rad[i] + rad[j];
 					cpx z = place[i] + cpx(l*cos(angle[e]),l*sin(angle[e]));
 					if (isnan(real(place[j]))) { flag = true; place[src[alpha[e]]] = z; }
-					else if (abs(place[j]-z) > rad[0]/2) { 
+					else if (abs(place[j]-z) > rad[0]/2) {
 						bool fresh = true;
 						for (cpx p : periods) if (abs(place[j]-z-p) < rad[0]/2) fresh = false;
-						if (fresh) periods.push_back(place[j]-z); 
+						if (fresh) periods.push_back(place[j]-z);
 					}
 				}
 			}
@@ -137,6 +137,12 @@ int main (int argc, char ** argv) {
 	H2.alpha    = { 4, 11, 6, 10, 0, 9, 2, 8, 7, 5, 3, 1 };
 	H2.phi      = { 3, 8, 5, 11, 7, 10, 1, 9, 6, 4, 2, 0 };
 
+	// This is H2 with one additional site.
+	Hypermap H67;
+	H67.sigma	= { { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, { 10, 11, 12, 13, 14 }, { 15, 16, 17 } };
+	H67.alpha	= { { 0, 5 }, { 1, 14 }, { 2, 17 }, { 3, 7 }, { 4, 10 }, { 6, 11 }, { 8, 16 }, { 9, 12 }, { 13, 15 } };
+	H67.phi  	= { { 0, 4, 14 }, { 1, 13, 17 }, { 2, 16, 7 }, { 3, 6, 10 }, { 5, 9, 11 }, { 8, 15, 12 } };
+
 	// The envelope-house in Zvonkine.
 	Hypermap H3;
 	H3.sigma    = {{0,1,2},{3,4},{5,6,7,8},{9,10},{11,12,13}};
@@ -156,12 +162,12 @@ int main (int argc, char ** argv) {
 	C5.phi   = {{11,17,15},{4,12,10},{6,8,13},{20,23,9},{1,5,3},{18,2,21},{16,24,7},{19,25,26},{0,27,28},{22,14,29}};
 
 	CL_Parser CLP (argc,argv,"n=4,r=2.6");
-	Hypermap G=C5;
+	Hypermap G=H67;
 
 	for (int i=0; i<int(CLP('n')); ++i) G = G.split_edges(); cerr << G;
 
 	Toroidal H(G);
-	H.pack(CLP('r')); cerr << H.m << endl;
-	H.output_pdf(30);
-	H.output_graph_dot(cout);
+	H.pack(CLP('r')); cerr << setprecision(10) << H.m << endl;
+	H.output_pdf(18);
+	// H.output_graph_dot(cout);
 }
