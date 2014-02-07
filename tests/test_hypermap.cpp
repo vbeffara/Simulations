@@ -3,7 +3,6 @@
 #include <vb/Hypermap.h>
 #include <vb/PRNG.h>
 #include <vb/ProgressBar.h>
-#include <cassert>
 
 using namespace vb;
 using namespace std;
@@ -13,7 +12,8 @@ double alpha_xyz (double x, double y, double z) { return acos (((x+y)*(x+y)+(x+z
 class Toroidal : public Hypermap { // Triangulation of torus
 	public:
 		Toroidal (const Hypermap &H) : Hypermap(H),
-				src(n_edges()), adj(n_black()), rad(n_black(),1), angle(n_edges(),NAN), place(n_black(),NAN), circ(n_black(),true) {
+				src(n_edges()), adj(n_black()), rad(n_black(),1), angle(n_edges(),NAN), place(n_black(),NAN),
+				bone_v(n_black(),false), bone_e(n_edges(),false) {
 			assert(is_triangulation());
             for (int i=0; i<n_black(); ++i) for (int e : sigma.c[i]) src[e]=i;
 			for (int i=0; i<n_black(); ++i) for (int e : sigma.c[i]) adj[i].push_back(src[alpha[e]]);
@@ -82,10 +82,22 @@ class Toroidal : public Hypermap { // Triangulation of torus
 			}
 		}
 
-		void output_pdf (int E=0) {
-			if (E>0) {
-				for (int i=0; i<n_black(); ++i) circ[i] = false;
-				for (int e=0; e<E; ++e) { int ee=e; do { circ[src[ee]]=true; ee = sigma[sigma[sigma[alpha[ee]]]]; } while (!circ[src[ee]]); }
+		// Mode: 1 -> disks along the bones,
+		//       2 -> disks elsewhere,
+		//       4 -> edges along the bones,
+		//       8 -> edges around the bones,
+		//      16 -> edges elsewhere.
+		// Good modes are:
+		//    3 -> circle packing;
+		//    4 -> just the bones;
+		//   17 -> chain of empty disks plus small triangles;
+		//   24 -> whole triangulation;
+
+		void output_pdf (int E=0, int mode=255) {
+			for (int e=0; e<E; ++e) {
+				int ee=e; do {
+					bone_e[ee]=true; bone_e[alpha[e]]=true; bone_v[src[ee]]=true; ee = sigma[sigma[sigma[alpha[ee]]]];
+				} while (!bone_e[ee]);
 			}
 			double slope = real(m) / imag(m);
 			Figure F;
@@ -97,10 +109,16 @@ class Toroidal : public Hypermap { // Triangulation of torus
 						int i=src[e]; cpx z = place[i] + cpx(a) + cpx(b)*m;
 						if ((imag(z)<-.6)||(imag(z)>1.6)) continue;
 						if ((real(z)<-.6+slope*imag(z)) || (real(z)>2.6+slope*imag(z))) continue;
-						if ((e==sigma.c[i][0]) && circ[i]) F.add (new Circle (z,rad[i],Pen(0,.12)));
-						if (!circ[i]) { eee.push_back(z); eee.push_back(z+cpx(rad[i]*cos(angle[e]),rad[i]*sin(angle[e]))); eee.push_back(NAN); }
+						if (e == sigma.c[i][0])
+							if ( ((mode&1)&&(bone_v[i])) || ((mode&2)&&(!bone_v[i])) )
+								F.add (new Circle (z,rad[i],Pen(0,.15)));
+						if ( ((mode&4)&&(bone_e[e])) || ((mode&8)&&(bone_v[i])) || ((mode&16)&&(!bone_v[i])) ) {
+							eee.push_back(z);
+							eee.push_back(z+cpx(rad[i]*cos(angle[e]),rad[i]*sin(angle[e])));
+							eee.push_back(NAN);
+						}
 					}
-			F.add (new Path (eee,Pen(0,.06)));
+			if (eee.size()) F.add (new Path (eee,Pen(0,.06)));
 			F.output_pdf("period");
 		}
 
@@ -108,7 +126,7 @@ class Toroidal : public Hypermap { // Triangulation of torus
 		vector<vector<int>> adj;
 		vector<double> rad,angle;
 		vector<cpx> place;
-		vector<bool> circ;
+		vector<bool> bone_v, bone_e;
 		cpx m;
 };
 
@@ -161,13 +179,14 @@ int main (int argc, char ** argv) {
 	C5.alpha = {{0,1},{2,3},{4,5},{6,7},{8,9},{10,11},{12,13},{14,15},{16,17},{18,19},{20,21},{22,23},{24,25},{26,27},{28,29}};
 	C5.phi   = {{11,17,15},{4,12,10},{6,8,13},{20,23,9},{1,5,3},{18,2,21},{16,24,7},{19,25,26},{0,27,28},{22,14,29}};
 
-	CL_Parser CLP (argc,argv,"n=4,r=2.6");
-	Hypermap G=H67;
+	CL_Parser CLP (argc,argv,"n=4,r=2.6,m=17");
+	Hypermap G=C5;
 
+	int n_skel = G.n_edges();
 	for (int i=0; i<int(CLP('n')); ++i) G = G.split_edges(); cerr << G;
 
 	Toroidal H(G);
 	H.pack(CLP('r')); cerr << setprecision(10) << H.m << endl;
-	H.output_pdf(18);
+	H.output_pdf(n_skel,CLP('m'));
 	// H.output_graph_dot(cout);
 }
