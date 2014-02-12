@@ -17,11 +17,11 @@ Lattice G () {
 }
 
 int main (int argc, char ** argv) {
-	Lattice L = G();
+	Lattice L = SV();
 	L.relax(1e-14);
 	L.tau = L.tau_rw();
 	L.optimize (cost_cp);
-	cerr << L.tau << endl;
+	cerr << setprecision(15) << L.tau << endl;
 
 	Pen p (Color(255,0,0),1,Color(255,255,0));
 
