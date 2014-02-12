@@ -212,7 +212,17 @@ int main (int argc, char ** argv) {
 	for (int i=0; i<int(CLP('n')); ++i) G = G.split_edges(); cerr << G;
 
 	Toroidal H(G);
-	H.pack(CLP('r')); cerr << setprecision(10) << H.m << endl;
+	H.pack(CLP('r'));
 	H.output_pdf(n_skel,CLP('m'));
-	// H.output_graph_dot(cout);
+
+	cpx q = exp(I * M_PI * H.m);
+	cpx theta2(0), old_theta2(-1); for (int n=0; theta2 != old_theta2; ++n) { old_theta2=theta2; theta2 += 2.0 * pow (q, (n+.5)*(n+.5)); }
+	cpx theta3(1), old_theta3(-1); for (int n=1; theta3 != old_theta3; ++n) { old_theta3=theta3; theta3 += 2.0 * pow (q, n*n); }
+	cpx lambda = pow(theta2,4) / pow(theta3,4);
+	cpx J = (4.0/27.0) * pow(1.0-lambda+pow(lambda,2),3) / pow(lambda,2) / pow(1.0-lambda,2);
+	cpx j = 1728.0 * J;
+
+	cerr << setprecision(15);
+	cerr << "    tau = " << H.m << endl;
+	cerr << "j (tau) = " << j << endl;
 }
