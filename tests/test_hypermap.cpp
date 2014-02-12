@@ -206,23 +206,37 @@ int main (int argc, char ** argv) {
 	A4.phi   = { {0,13,20}, {1,14,19}, {2,15,18}, {3,8,17}, {4,16,9}, {5,23,10}, {6,22,11}, {7,21,12} };
 
 	CL_Parser CLP (argc,argv,"n=4,r=2.6,m=17,a=4");
-	Hypermap G=artem(CLP('a'));
-
+	Hypermap G=H67;
 	int n_skel = G.n_edges();
-	for (int i=0; i<int(CLP('n')); ++i) G = G.split_edges(); cerr << G;
 
-	Toroidal H(G);
-	H.pack(CLP('r'));
-	H.output_pdf(n_skel,CLP('m'));
+	vector<cpx> taus, js;
 
-	cpx q = exp(I * M_PI * H.m);
-	cpx theta2(0), old_theta2(-1); for (int n=0; theta2 != old_theta2; ++n) { old_theta2=theta2; theta2 += 2.0 * pow (q, (n+.5)*(n+.5)); }
-	cpx theta3(1), old_theta3(-1); for (int n=1; theta3 != old_theta3; ++n) { old_theta3=theta3; theta3 += 2.0 * pow (q, n*n); }
-	cpx lambda = pow(theta2,4) / pow(theta3,4);
-	cpx J = (4.0/27.0) * pow(1.0-lambda+pow(lambda,2),3) / pow(lambda,2) / pow(1.0-lambda,2);
-	cpx j = 1728.0 * J;
+	cerr << setprecision(15); cout << setprecision(15);
 
-	cerr << setprecision(15);
-	cerr << "    tau = " << H.m << endl;
-	cerr << "j (tau) = " << j << endl;
+	for (int i=0; i<=int(CLP('n')); ++i) {
+		cerr << "Step " << i << ": " << G; Toroidal H(G); H.pack(CLP('r'));
+		if (i==int(CLP('n'))-1) H.output_pdf(n_skel,CLP('m'));
+
+		cpx q = exp(I * M_PI * H.m);
+		cpx theta2(0), old_theta2(-1); for (int n=0; theta2 != old_theta2; ++n) { old_theta2=theta2; theta2 += 2.0 * pow (q, (n+.5)*(n+.5)); }
+		cpx theta3(1), old_theta3(-1); for (int n=1; theta3 != old_theta3; ++n) { old_theta3=theta3; theta3 += 2.0 * pow (q, n*n); }
+		cpx lambda = pow(theta2,4) / pow(theta3,4);
+		cpx J = (4.0/27.0) * pow(1.0-lambda+pow(lambda,2),3) / pow(lambda,2) / pow(1.0-lambda,2);
+		cpx j = 1728.0 * J;
+
+		cerr << "    tau = " << H.m << endl;
+		cerr << "j (tau) = " << j << endl;
+
+		taus.push_back(H.m); js.push_back(j);
+
+		G = G.split_edges();
+	}
+
+	for (int i=0; i<int(CLP('n')); ++i) cout << i << " " << js[i] << endl;
+	while (js.size()>2) {
+		for (int i=0; i<js.size()-2; ++i)
+			js[i] = (js[i]*js[i+2]-js[i+1]*js[i+1]) / (js[i]+js[i+2]-2.0*js[i+1]);
+		js.pop_back(); js.pop_back();
+		cout << endl; for (int i=0; i<js.size(); ++i) cout << i << " " << js[i] << endl;
+	}
 }
