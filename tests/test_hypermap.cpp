@@ -130,6 +130,20 @@ class Toroidal : public Hypermap { // Triangulation of torus
 		cpx m;
 };
 
+Hypermap artem (int n) {
+	vector<int> sigma(6*n), alpha(6*n), phi(6*n);
+	for (int i=0; i<n; ++i) {
+		sigma[i]=2*n+i; sigma[n+i]=5*n+i+1; sigma[2*n+i]=n+i-1; sigma[3*n+i]=3*n+i+1; sigma[4*n+i]=4*n+i-1; sigma[5*n+i]=i;
+		alpha[i]=n+i; alpha[n+i]=i; alpha[2*n+i]=3*n+i; alpha[3*n+i]=2*n+i; alpha[4*n+i]=5*n+i; alpha[5*n+i]=4*n+i;
+		phi[i]=2*n+i+1; phi[n+i]=5*n+i; phi[2*n+i]=3*n+i-1; phi[3*n+i]=i; phi[4*n+i]=n+i-1; phi[5*n+i]=4*n+i+1;
+	}
+	sigma[2*n-1]=3*n; sigma[2*n]=5*n-1; sigma[4*n-1]=5*n; sigma[4*n]=2*n-1;
+	phi[n-1]=4*n; phi[2*n]=2*n-1; phi[3*n]=0; phi[4*n]=4*n-1; phi[6*n-1]=2*n;
+	Hypermap H; H.sigma=sigma; H.alpha=alpha; H.phi=phi;
+	assert(H.validate());
+	return H;
+}
+
 int main (int argc, char ** argv) {
 	// Triangle on the sphere
 	Hypermap T;
@@ -179,8 +193,20 @@ int main (int argc, char ** argv) {
 	C5.alpha = {{0,1},{2,3},{4,5},{6,7},{8,9},{10,11},{12,13},{14,15},{16,17},{18,19},{20,21},{22,23},{24,25},{26,27},{28,29}};
 	C5.phi   = {{11,17,15},{4,12,10},{6,8,13},{20,23,9},{1,5,3},{18,2,21},{16,24,7},{19,25,26},{0,27,28},{22,14,29}};
 
-	CL_Parser CLP (argc,argv,"n=4,r=2.6,m=17");
-	Hypermap G=C5;
+	// SV graph
+	Hypermap SV;
+	SV.sigma = { {1,2,3,4,5,6,7}, {8,9,10,11,12}, {13,14,15,16,17}, {18,19,20,21,22,23,0} };
+	SV.alpha = { {0,4}, {1,10}, {2,22}, {3,15}, {5,8}, {6,19}, {7,13}, {9,23}, {11,17}, {12,20}, {14,18}, {16,21} };
+	SV.phi   = { {0,3,14}, {1,9,22}, {2,21,15}, {4,23,8}, {5,12,19}, {6,18,13}, {7,17,10}, {11,16,20} };
+
+	// Artem's graph with 4 intervals
+	Hypermap A4;
+	A4.sigma = { {0,12,11,10,9,8,7,20,19,18,17,16}, {1,13,4,23}, {2,14,5,22}, {3,15,6,21} };
+	A4.alpha = { {0,4}, {1,5}, {2,6}, {3,7}, {8,16}, {9,23}, {10,22}, {11,21}, {12,20}, {13,19}, {14,18}, {15,17} };
+	A4.phi   = { {0,13,20}, {1,14,19}, {2,15,18}, {3,8,17}, {4,16,9}, {5,23,10}, {6,22,11}, {7,21,12} };
+
+	CL_Parser CLP (argc,argv,"n=4,r=2.6,m=17,a=4");
+	Hypermap G=artem(CLP('a'));
 
 	int n_skel = G.n_edges();
 	for (int i=0; i<int(CLP('n')); ++i) G = G.split_edges(); cerr << G;
