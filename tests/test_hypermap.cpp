@@ -205,17 +205,33 @@ int main (int argc, char ** argv) {
 	A4.alpha = { {0,4}, {1,5}, {2,6}, {3,7}, {8,16}, {9,23}, {10,22}, {11,21}, {12,20}, {13,19}, {14,18}, {15,17} };
 	A4.phi   = { {0,13,20}, {1,14,19}, {2,15,18}, {3,8,17}, {4,16,9}, {5,23,10}, {6,22,11}, {7,21,12} };
 
-	CL_Parser CLP (argc,argv,"n=4,r=2.6,m=17,a=4");
-	Hypermap G=H67;
+	// Bipartite version of H67
+	Hypermap B;
+	B.sigma = { {0,1,2,3,4,5,6,7,8,9,10,11}, {12,13,14,15}, {16,17,18,19}, {20,21,22,23}, {24,25,26,27,28,29} };
+	B.alpha = { {0,6}, {1,29}, {2,16}, {3,12}, {4,8}, {5,24}, {7,25}, {9,15}, {10,22}, {11,26}, {13,19}, {14,23}, {17,28}, {18,20}, {21,27} };
+	B.phi   = { {0,5,29}, {1,28,16}, {2,19,12}, {3,15,8}, {4,7,24}, {6,11,25}, {9,14,22}, {10,21,26}, {13,18,23}, {17,27,20} };
+
+	// Tripartite of passport (8,8,62)
+	Hypermap E;
+	E.sigma = { {0,1,2,3,4,5}, {6,7,8,9,10,11,12,13}, {14,15,16,17,18,19,20,21}, {22,23} };
+	E.alpha = { {0,6}, {1,20}, {2,8}, {3,14}, {4,12}, {5,16}, {7,15}, {9,19}, {10,22}, {11,17}, {13,21}, {18,23} };
+	E.phi   = { {0,13,20}, {1,19,8}, {2,7,14}, {3,21,12}, {4,11,16}, {5,15,6}, {9,18,22}, {10,23,17} };
+
+	CL_Parser CLP (argc,argv,"n=4,o=0,r=2.6,m=17,a=3,f");
+	Hypermap G=artem(CLP('a'));
 	int n_skel = G.n_edges();
+	if (CLP('f')) { for (int i=0; i<10000*n_skel; ++i) G.flip(prng.uniform_int(n_skel),true); G.flip(0); }
+	G.validate();
 
 	vector<cpx> taus, js;
 
 	cerr << setprecision(15); cout << setprecision(15);
 
-	for (int i=0; i<=int(CLP('n')); ++i) {
+	for (int i=0; i<int(CLP('o')); ++i) G = G.split_edges();
+
+	for (int i=CLP('o'); i<=int(CLP('n')); ++i) {
 		cerr << "Step " << i << ": " << G; Toroidal H(G); H.pack(CLP('r'));
-		if (i==int(CLP('n'))-1) H.output_pdf(n_skel,CLP('m'));
+		if (i==int(CLP('n'))) H.output_pdf(n_skel,CLP('m'));
 
 		cpx q = exp(I * M_PI * H.m);
 		cpx theta2(0), old_theta2(-1); for (int n=0; theta2 != old_theta2; ++n) { old_theta2=theta2; theta2 += 2.0 * pow (q, (n+.5)*(n+.5)); }
@@ -232,11 +248,11 @@ int main (int argc, char ** argv) {
 		G = G.split_edges();
 	}
 
-	for (int i=0; i<int(CLP('n')); ++i) cout << i << " " << js[i] << endl;
+	for (int i=int(CLP('o')); i<=int(CLP('n')); ++i) cout << i << " " << js[i-int(CLP('o'))] << endl;
 	while (js.size()>2) {
 		for (int i=0; i<js.size()-2; ++i)
 			js[i] = (js[i]*js[i+2]-js[i+1]*js[i+1]) / (js[i]+js[i+2]-2.0*js[i+1]);
 		js.pop_back(); js.pop_back();
-		cout << endl; for (int i=0; i<js.size(); ++i) cout << i << " " << js[i] << endl;
+		cout << endl; for (int i=0; i<js.size(); ++i) cout << js[i] << endl;
 	}
 }
