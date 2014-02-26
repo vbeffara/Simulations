@@ -1,6 +1,5 @@
 #include <vb/Hub.h>
-#include <vb/PRNG.h>
-#include <vb/Image.h>
+#include <vb/Bitmap.h>
 
 using namespace vb;
 using namespace std;
@@ -38,7 +37,7 @@ public:
 int main (int argc, char ** argv) {
 	Hub H ("1D contact process",argc,argv,"n=1000,p=1,e=0,l=3.3,m=100,j"); Contact T(H);
 
-	Image I (T.size(),700,H.title); I.show();
+	Bitmap<Site> I (T.size(),700,H.title); I.show();
 	for (int t=0 ;; ++t) {
 		for (int i=0; i<I.w(); ++i) I.putp(coo(i,t),T[i]);
 		for (int i=0; i<I.w() * T.total; ++i) T.step();
