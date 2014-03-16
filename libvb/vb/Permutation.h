@@ -18,8 +18,12 @@ namespace vb {
 		Permutation inverse  	()                     	const;
 		Permutation operator*	(const Permutation & o)	const; // this then o i.e. $o \circ this$.
 
+		std::vector<std::vector<int>> & cycles () { return c; }
+
+		std::vector<int>	l;
+
+	private:
 		std::vector<std::vector<int>>	c;
-		std::vector<int>             	l;
 	};
 
 

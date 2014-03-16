@@ -5,16 +5,16 @@
 namespace vb {
 	class Hypermap {
 	public:
-		int n_black () { return sigma.c.size(); }
-		int n_white () { return alpha.c.size(); }
-		int n_faces () { return phi.c.size(); }
+		int n_black () { return sigma.cycles().size(); }
+		int n_white () { return alpha.cycles().size(); }
+		int n_faces () { return phi.cycles().size(); }
 		int n_edges () { return sigma.size(); }
 
 		bool validate ();
-		bool is_graph () { for (auto v : alpha.c) if (v.size() != 2) return false; return true; }
+		bool is_graph () { for (auto v : alpha.cycles()) if (v.size() != 2) return false; return true; }
 		bool is_triangulation () {
 			if (!(is_graph())) return false;
-			for (auto f : phi.c) if (f.size() != 3) return false;
+			for (auto f : phi.cycles()) if (f.size() != 3) return false;
 			return true;
 		}
 

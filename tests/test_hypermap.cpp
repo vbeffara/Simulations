@@ -15,8 +15,8 @@ class Toroidal : public Hypermap { // Triangulation of torus
 				src(n_edges()), adj(n_black()), rad(n_black(),1), angle(n_edges(),NAN), place(n_black(),NAN),
 				bone_v(n_black(),false), bone_e(n_edges(),false) {
 			assert(is_triangulation());
-            for (int i=0; i<n_black(); ++i) for (int e : sigma.c[i]) src[e]=i;
-			for (int i=0; i<n_black(); ++i) for (int e : sigma.c[i]) adj[i].push_back(src[alpha[e]]);
+            for (int i=0; i<n_black(); ++i) for (int e : sigma.cycles()[i]) src[e]=i;
+			for (int i=0; i<n_black(); ++i) for (int e : sigma.cycles()[i]) adj[i].push_back(src[alpha[e]]);
 		}
 
 		void acpa (double r) {
@@ -109,7 +109,7 @@ class Toroidal : public Hypermap { // Triangulation of torus
 						int i=src[e]; cpx z = place[i] + cpx(a) + cpx(b)*m;
 						if ((imag(z)<-.6)||(imag(z)>1.6)) continue;
 						if ((real(z)<-.6+slope*imag(z)) || (real(z)>2.6+slope*imag(z))) continue;
-						if (e == sigma.c[i][0])
+						if (e == sigma.cycles()[i][0])
 							if ( ((mode&1)&&(bone_v[i])) || ((mode&2)&&(!bone_v[i])) )
 								F.add (new Circle (z,rad[i],Pen(0,.15)));
 						if ( ((mode&4)&&(bone_e[e])) || ((mode&8)&&(bone_v[i])) || ((mode&16)&&(!bone_v[i])) ) {

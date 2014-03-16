@@ -31,14 +31,14 @@ namespace vb {
 
 		for (int a=0; a<N; ++a) {
 			int b=alpha[a], c=phi[a], f=sigma[a], x=phi[b];
-			if (a<b) H.sigma.c.push_back ({a+N,x+3*N,b+2*N,b+N,c+3*N,a+2*N});
-			H.alpha.c.push_back ({a,a+N}); H.alpha.c.push_back ({a+2*N,a+3*N});
-			H.phi.c.push_back ({a,a+2*N,f+N});
+			if (a<b) H.sigma.cycles().push_back ({a+N,x+3*N,b+2*N,b+N,c+3*N,a+2*N});         	// TODO modify the permutation differently
+			H.alpha.cycles().push_back ({a,a+N}); H.alpha.cycles().push_back ({a+2*N,a+3*N});	// ... and here too
+			H.phi.cycles().push_back ({a,a+2*N,f+N});                                        	// ... and here as well
 		}
-		for (auto F : phi.c) {
+		for (auto F : phi.cycles()) {
 			std::vector<int> FF = F;
 			for (int &i : FF) i += 3*N;
-			H.phi.c.push_back (FF);
+			H.phi.cycles().push_back (FF); // ... and also here
 		}
 		H.sigma.use_c(); H.alpha.use_c(); H.phi.use_c();
 		return H;
