@@ -11,7 +11,6 @@ namespace vb {
 			for (int j=at(i); done[j]==0; j=at(j)) { v.push_back(j); done[j]=1; }
 			c.push_back(v);
 		}
-		labels();
 	}
 
 	void Permutation::use_c () {
@@ -21,7 +20,23 @@ namespace vb {
 			for (int i=0; i<v.size()-1; ++i) at(v[i])=v[i+1];
 			at(v.back()) = v[0];
 		}
-		labels();
+	}
+
+	bool Permutation::is_identity () {
+		for (int i=0; i<size(); ++i) if (at(i)!=i) return false;
+		return true;
+	}
+
+	Permutation Permutation::inverse () const {
+		Permutation s; s.resize(size());
+		for (int i=0; i<size(); ++i) s[at(i)]=i;
+		s.use_s(); return s;
+	}
+
+	Permutation Permutation::operator* (const Permutation & o) const {
+		Permutation s; s.resize(size());
+		for (int i=0; i<size(); ++i) s[i] = o[at(i)];
+		s.use_s(); return s;
 	}
 
 	std::ostream & operator<< (std::ostream &os, Permutation &P) {

@@ -4,8 +4,7 @@ namespace vb {
 	bool Hypermap::validate () {
 		if (sigma.size() != alpha.size()) return false;
 		if (sigma.size() != phi.size()) return false;
-		for (int i=0; i<sigma.size(); ++i) if (phi[alpha[sigma[i]]] != i) return false;
-		return true;
+		return (sigma*alpha*phi).is_identity();
 	}
 
 	void Hypermap::output_dot (std::ostream & os) {

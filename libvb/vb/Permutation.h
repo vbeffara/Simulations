@@ -12,14 +12,16 @@ namespace vb {
 
 		void use_s ();
 		void use_c ();
-		void labels () {
-			l.resize(size());
-			for (int i=0; i<c.size(); ++i) for (int j : c[i]) l[j]=i;
-		}
+
+		bool is_identity ();
+
+		Permutation inverse  	()                     	const;
+		Permutation operator*	(const Permutation & o)	const; // this then o i.e. $o \circ this$.
 
 		std::vector<std::vector<int>>	c;
 		std::vector<int>             	l;
 	};
+
 
 	std::ostream & operator<< (std::ostream &os, Permutation &P);
 }
