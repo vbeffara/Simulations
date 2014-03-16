@@ -217,14 +217,26 @@ int main (int argc, char ** argv) {
 	E.alpha = { {0,6}, {1,20}, {2,8}, {3,14}, {4,12}, {5,16}, {7,15}, {9,19}, {10,22}, {11,17}, {13,21}, {18,23} };
 	E.phi   = { {0,13,20}, {1,19,8}, {2,7,14}, {3,21,12}, {4,11,16}, {5,15,6}, {9,18,22}, {10,23,17} };
 
-	CL_Parser CLP (argc,argv,"n=4,o=0,r=2.6,m=17,a=3,f");
-	Hypermap G=artem(CLP('a'));
+	// Degree 5 example in Khadjavi-Scharaschkin
+	Hypermap KS5;
+	KS5.sigma = { {0,2}, {1,3,4} };
+	KS5.alpha = { {0,1,3}, {2,4} };
+	KS5.phi   = { 1,2,3,4,0 };
+
+	// Triangulation from KS5
+	Hypermap KS5T;
+	KS5T.sigma = { {0,1,2,3}, {4,5,6,7}, {8,9,10,11,12,13}, {14,15,16,17,18,19}, {20,21,22,23,24,25,26,27,28,29} };
+	KS5T.alpha = { {0,6}, {1,29}, {2,19}, {3,25}, {4,10}, {5,20}, {7,24}, {8,17}, {9,21}, {11,23}, {12,15}, {13,27}, {14,28}, {16,22}, {18,26}};
+	KS5T.phi   = { {0,5,29}, {1,28,19}, {2,18,25}, {3,24,6}, {4,9,20}, {7,23,10}, {8,16,21}, {11,22,15}, {12,14,27}, {13,26,17} };
+
+	CL_Parser CLP (argc,argv,"n=4,o=0,r=2.6,m=4,a=3,f");
+	Hypermap G=E;
+	assert(G.validate());
+
 	int n_skel = G.n_edges();
 	if (CLP('f')) { for (int i=0; i<10000*n_skel; ++i) G.flip(prng.uniform_int(n_skel),true); G.flip(0); }
-	G.validate();
 
 	vector<cpx> taus, js;
-
 	cerr << setprecision(15); cout << setprecision(15);
 
 	for (int i=0; i<int(CLP('o')); ++i) G = G.split_edges();
@@ -236,9 +248,8 @@ int main (int argc, char ** argv) {
 		cpx q = exp(I * M_PI * H.m);
 		cpx theta2(0), old_theta2(-1); for (int n=0; theta2 != old_theta2; ++n) { old_theta2=theta2; theta2 += 2.0 * pow (q, (n+.5)*(n+.5)); }
 		cpx theta3(1), old_theta3(-1); for (int n=1; theta3 != old_theta3; ++n) { old_theta3=theta3; theta3 += 2.0 * pow (q, n*n); }
-		cpx lambda = pow(theta2,4) / pow(theta3,4);
-		cpx J = (4.0/27.0) * pow(1.0-lambda+pow(lambda,2),3) / pow(lambda,2) / pow(1.0-lambda,2);
-		cpx j = 1728.0 * J;
+		cpx lambda = pow(theta2/theta3,4);
+		cpx j = 256.0 * pow(1.0-lambda+pow(lambda,2),3) / pow(lambda*(1.0-lambda),2);
 
 		cerr << "    tau = " << H.m << endl;
 		cerr << "j (tau) = " << j << endl;
