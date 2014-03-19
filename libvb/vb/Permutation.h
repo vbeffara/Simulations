@@ -8,11 +8,9 @@ namespace vb {
 	public:
 		Permutation (int n = 0)         	: std::vector<int> (n)	{ for (int i=0; i<n; ++i) at(i)=i; }
 		Permutation (std::vector<int> s)	: std::vector<int> (s)	{ }
-		Permutation (Cycles & cc)       	                      	{ use_c(cc); }
+		Permutation (Cycles & c);
 
-		void use_c (Cycles & c);
-
-		bool is_identity ();
+		bool is_identity () const;
 
 		Permutation inverse  	()                     	const;
 		Permutation operator*	(const Permutation & o)	const; // this then o i.e. $o \circ this$.
@@ -22,6 +20,5 @@ namespace vb {
 		std::vector<int>	l;
 	};
 
-
-	std::ostream & operator<< (std::ostream &os, Permutation &P);
+	std::ostream & operator<< (std::ostream &os, const Permutation &P);
 }

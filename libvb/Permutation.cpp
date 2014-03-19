@@ -2,9 +2,9 @@
 #include <iostream>
 
 namespace vb {
-	void Permutation::use_c (Cycles & c) {
-		int sz=0; for (std::vector<int> v : c) sz += v.size();
-		std::vector<int>::operator= (std::vector<int> (sz));
+	Permutation::Permutation (Cycles & c) {
+		int sz=0; for (auto v : c) sz += v.size();
+		resize(sz);
 		for (auto v : c) {
 			for (int i=0; i<v.size()-1; ++i) at(v[i])=v[i+1];
 			at(v.back()) = v[0];
@@ -23,7 +23,7 @@ namespace vb {
 		return c;
 	}
 
-	bool Permutation::is_identity () {
+	bool Permutation::is_identity () const {
 		for (int i=0; i<size(); ++i) if (at(i)!=i) return false;
 		return true;
 	}
@@ -40,7 +40,7 @@ namespace vb {
 		return s;
 	}
 
-	std::ostream & operator<< (std::ostream &os, Permutation &P) {
+	std::ostream & operator<< (std::ostream &os, const Permutation &P) {
 		os << "(";
 		for (auto cc : P.cycles()) { os << " ("; for (int i : cc) os << " " << i; os << " )"; }
 		return os << " )" << std::endl;
