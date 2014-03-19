@@ -15,9 +15,9 @@ class Toroidal : public Hypermap { // Triangulation of torus
 				src(n_edges()), adj(n_black()), rad(n_black(),1), angle(n_edges(),NAN), place(n_black(),NAN),
 				bone_v(n_black(),false), bone_e(n_edges(),false) {
 			assert(is_triangulation());
-			Cycles sc = sigma.cycles();
-            for (int i=0; i<n_black(); ++i) for (int e : sc[i]) src[e]=i;
-			for (int i=0; i<n_black(); ++i) for (int e : sc[i]) adj[i].push_back(src[alpha[e]]);
+			Cycles sc = sigma.cycles(); int nb=n_black();
+            for (int i=0; i<nb; ++i) for (int e : sc[i]) src[e]=i;
+			for (int i=0; i<nb; ++i) for (int e : sc[i]) adj[i].push_back(src[alpha[e]]);
 		}
 
 		void acpa (double r) {
