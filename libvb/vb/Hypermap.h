@@ -11,10 +11,10 @@ namespace vb {
 			assert(validate());
 		}
 
-		int n_black () { return sigma.cycles().size(); }
-		int n_white () { return alpha.cycles().size(); }
-		int n_faces () { return phi.cycles().size(); }
-		int n_edges () { return sigma.size(); }
+		int n_black () const { return sigma.cycles().size(); }
+		int n_white () const { return alpha.cycles().size(); }
+		int n_faces () const { return phi.cycles().size(); }
+		int n_edges () const { return sigma.size(); }
 
 		bool validate ();
 		bool is_graph () { for (auto v : alpha.cycles()) if (v.size() != 2) return false; return true; }

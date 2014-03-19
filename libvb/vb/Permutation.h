@@ -6,24 +6,20 @@ namespace vb {
 
 	class Permutation : public std::vector<int> {
 	public:
-		Permutation (int n = 0)         	: std::vector<int> (n)	{ for (int i=0; i<n; ++i) at(i)=i; use_s(); }
-		Permutation (std::vector<int> s)	: std::vector<int> (s)	{ use_s(); }
-		Permutation (Cycles cc)         	: c(cc)               	{ use_c(); }
+		Permutation (int n = 0)         	: std::vector<int> (n)	{ for (int i=0; i<n; ++i) at(i)=i; }
+		Permutation (std::vector<int> s)	: std::vector<int> (s)	{ }
+		Permutation (Cycles & cc)       	                      	{ use_c(cc); }
 
-		void use_s ();
-		void use_c ();
+		void use_c (Cycles & c);
 
 		bool is_identity ();
 
 		Permutation inverse  	()                     	const;
 		Permutation operator*	(const Permutation & o)	const; // this then o i.e. $o \circ this$.
 
-		Cycles & cycles () { return c; }
+		Cycles cycles () const;
 
 		std::vector<int>	l;
-
-	private:
-		Cycles	c;
 	};
 
 

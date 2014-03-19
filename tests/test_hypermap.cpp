@@ -15,16 +15,18 @@ class Toroidal : public Hypermap { // Triangulation of torus
 				src(n_edges()), adj(n_black()), rad(n_black(),1), angle(n_edges(),NAN), place(n_black(),NAN),
 				bone_v(n_black(),false), bone_e(n_edges(),false) {
 			assert(is_triangulation());
-            for (int i=0; i<n_black(); ++i) for (int e : sigma.cycles()[i]) src[e]=i;
-			for (int i=0; i<n_black(); ++i) for (int e : sigma.cycles()[i]) adj[i].push_back(src[alpha[e]]);
+			Cycles sc = sigma.cycles();
+            for (int i=0; i<n_black(); ++i) for (int e : sc[i]) src[e]=i;
+			for (int i=0; i<n_black(); ++i) for (int e : sc[i]) adj[i].push_back(src[alpha[e]]);
 		}
 
 		void acpa (double r) {
 			double e = 1, old_e = 2;
+			int n = n_black();
 			while ((e > 1e-3) || (e < old_e)) {
 				cerr << e << "     \r";
 				old_e = e; e = 0;
-				for (int i=0; i<n_black(); ++i) {
+				for (int i=0; i<n; ++i) {
 					double s=-2*M_PI, r0=rad[i], r1, r2=rad[adj[i].back()];
 					for (int ll : adj[i]) { r1=r2; r2=rad[ll]; s += alpha_xyz (r0,r1,r2); }
 					rad[i] *= 1 + r*s/(2*M_PI); if (rad[i]<0) rad[i] /= 1 + r*s/(2*M_PI); ;
@@ -36,9 +38,9 @@ class Toroidal : public Hypermap { // Triangulation of torus
 		void pack (double r) {
 			acpa(r);
 
-			angle[0]=0;
+			angle[0]=0; int ne=n_edges();
 			bool flag=true; while (flag) { flag = false;
-				for (int i=0; i<n_edges(); ++i) {
+				for (int i=0; i<ne; ++i) {
 					if (isnan(angle[i]))         	continue;
 					if (isnan(angle[alpha[i]])) {	angle[alpha[i]] = angle[i]+M_PI; flag = true; }
 					if (isnan(angle[sigma[i]])) {	double x = rad[src[i]], y = rad[src[alpha[i]]], z = rad[src[alpha[sigma[i]]]];
@@ -48,7 +50,7 @@ class Toroidal : public Hypermap { // Triangulation of torus
 
 			place[0]=0; vector<cpx> periods;
 			flag=true; while (flag) { flag=false; periods.clear();
-				for (int e=0; e<n_edges(); ++e) {
+				for (int e=0; e<ne; ++e) {
 					int i=src[e]; if (isnan(real(place[i]))) continue;
 					int j=src[alpha[e]]; double l = rad[i] + rad[j];
 					cpx z = place[i] + cpx(l*cos(angle[e]),l*sin(angle[e]));
@@ -102,14 +104,14 @@ class Toroidal : public Hypermap { // Triangulation of torus
 			double slope = real(m) / imag(m);
 			Figure F;
 			F.add (new Polygon ({0,1,cpx(1)+m,m}, Pen(0,0,200,1)));
-			vector<cpx> eee;
+			vector<cpx> eee; int ne=n_edges(); Cycles cc=sigma.cycles();
 			for (int a=-1; a<=2; ++a)
 				for (int b=-1; b<=1; ++b)
-					for (int e=0; e<n_edges(); ++e) {
+					for (int e=0; e<ne; ++e) {
 						int i=src[e]; cpx z = place[i] + cpx(a) + cpx(b)*m;
 						if ((imag(z)<-.6)||(imag(z)>1.6)) continue;
 						if ((real(z)<-.6+slope*imag(z)) || (real(z)>2.6+slope*imag(z))) continue;
-						if (e == sigma.cycles()[i][0])
+						if (e == cc[i][0])
 							if ( ((mode&1)&&(bone_v[i])) || ((mode&2)&&(!bone_v[i])) )
 								F.add (new Circle (z,rad[i],Pen(0,.15)));
 						if ( ((mode&4)&&(bone_e[e])) || ((mode&8)&&(bone_v[i])) || ((mode&16)&&(!bone_v[i])) ) {
@@ -204,7 +206,7 @@ int main (int argc, char ** argv) {
 	               	{{0,5,29}, {1,28,19}, {2,18,25}, {3,24,6}, {4,9,20}, {7,23,10}, {8,16,21}, {11,22,15}, {12,14,27}, {13,26,17}} );
 
 	CL_Parser CLP (argc,argv,"n=4,o=0,r=2.6,m=4,a=3,f");
-	Hypermap G=E;
+	Hypermap G=H67;
 
 	int n_skel = G.n_edges();
 	if (CLP('f')) { for (int i=0; i<10000*n_skel; ++i) G.flip(prng.uniform_int(n_skel)); }

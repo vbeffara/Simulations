@@ -27,7 +27,7 @@ namespace vb {
 
 	Hypermap Hypermap::split_edges () {
 		int N = n_edges();
-		std::vector<std::vector<int>> sigma_c, alpha_c, phi_c;
+		Cycles sigma_c, alpha_c, phi_c;
 		sigma_c = sigma.cycles();
 
 		for (int a=0; a<N; ++a) {

@@ -2,8 +2,17 @@
 #include <iostream>
 
 namespace vb {
-	void Permutation::use_s () {
-		c.clear();
+	void Permutation::use_c (Cycles & c) {
+		int sz=0; for (std::vector<int> v : c) sz += v.size();
+		std::vector<int>::operator= (std::vector<int> (sz));
+		for (auto v : c) {
+			for (int i=0; i<v.size()-1; ++i) at(v[i])=v[i+1];
+			at(v.back()) = v[0];
+		}
+	}
+
+	Cycles Permutation::cycles () const {
+		Cycles c;
 		std::vector<int> done (size(), 0);
 		for (int i=0; i<size(); ++i) {
 			if (done[i]) continue;
@@ -11,15 +20,7 @@ namespace vb {
 			for (int j=at(i); done[j]==0; j=at(j)) { v.push_back(j); done[j]=1; }
 			c.push_back(v);
 		}
-	}
-
-	void Permutation::use_c () {
-		int sz=0; for (std::vector<int> v : c) sz += v.size();
-		std::vector<int>::operator= (std::vector<int> (sz));
-		for (auto v : c) {
-			for (int i=0; i<v.size()-1; ++i) at(v[i])=v[i+1];
-			at(v.back()) = v[0];
-		}
+		return c;
 	}
 
 	bool Permutation::is_identity () {
@@ -30,13 +31,13 @@ namespace vb {
 	Permutation Permutation::inverse () const {
 		Permutation s; s.resize(size());
 		for (int i=0; i<size(); ++i) s[at(i)]=i;
-		s.use_s(); return s;
+		return s;
 	}
 
 	Permutation Permutation::operator* (const Permutation & o) const {
 		Permutation s; s.resize(size());
 		for (int i=0; i<size(); ++i) s[i] = o[at(i)];
-		s.use_s(); return s;
+		return s;
 	}
 
 	std::ostream & operator<< (std::ostream &os, Permutation &P) {
