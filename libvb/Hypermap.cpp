@@ -44,14 +44,13 @@ namespace vb {
 		return Hypermap (sigma_c, alpha_c, phi_c);
 	}
 
-	void Hypermap::flip (int e, bool fast) {
+	void Hypermap::flip (int e) {
 		int b=sigma[e], a=alpha[b], c=sigma[a], d=alpha[c], f=alpha[e], g=phi[f], h=alpha[g], i=phi[g], j=alpha[i];
 		if (alpha[phi[alpha[phi[e]]]]==e) return;
 		if (phi[alpha[phi[alpha[e]]]]==e) return;
 		if ((e==sigma[e])||(f==sigma[f])) return;
 		sigma[a]=e; sigma[e]=c; sigma[d]=j; sigma[g]=b; sigma[i]=f; sigma[f]=h;
 		phi[a]=g; phi[g]=f; phi[f]=a; phi[d]=e; phi[e]=i; phi[i]=d;
-		if (!fast) { sigma.use_s(); phi.use_s(); }
 	}
 
 	std::ostream & operator<< (std::ostream &os, Hypermap &H) {

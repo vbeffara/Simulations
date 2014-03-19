@@ -207,7 +207,7 @@ int main (int argc, char ** argv) {
 	Hypermap G=E;
 
 	int n_skel = G.n_edges();
-	if (CLP('f')) { for (int i=0; i<10000*n_skel; ++i) G.flip(prng.uniform_int(n_skel),true); G.flip(0); }
+	if (CLP('f')) { for (int i=0; i<10000*n_skel; ++i) G.flip(prng.uniform_int(n_skel)); }
 
 	vector<cpx> taus, js;
 	cerr << setprecision(15); cout << setprecision(15);

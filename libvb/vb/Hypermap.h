@@ -32,7 +32,7 @@ namespace vb {
 
 		Hypermap split_edges (); ///< Turn white vertices into black and then complete into a new hypermap.
 
-		void flip (int e, bool fast=false); // fast=true will invalidate the permutation cycles, need to be rebuilt afterwards.
+		void flip (int e);
 
 		Permutation sigma, alpha, phi; // black, white, faces
 	};
