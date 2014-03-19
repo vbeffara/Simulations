@@ -6,11 +6,9 @@ namespace vb {
 
 	class Permutation : public std::vector<int> {
 	public:
-		Permutation (std::vector<int> s = {})	: std::vector<int> (s)	{ use_s(); }
-		Permutation (Cycles cc)              	: c(cc)               	{ use_c(); }
-
-		Permutation & operator= (const std::vector<int> s)              	{ vector<int>::operator=(s);	use_s(); return *this; }
-		Permutation & operator= (const std::vector<std::vector<int>> cc)	{ c = cc;                   	use_c(); return *this; }
+		Permutation (int n = 0)         	: std::vector<int> (n)	{ for (int i=0; i<n; ++i) at(i)=i; use_s(); }
+		Permutation (std::vector<int> s)	: std::vector<int> (s)	{ use_s(); }
+		Permutation (Cycles cc)         	: c(cc)               	{ use_c(); }
 
 		void use_s ();
 		void use_c ();
@@ -20,12 +18,12 @@ namespace vb {
 		Permutation inverse  	()                     	const;
 		Permutation operator*	(const Permutation & o)	const; // this then o i.e. $o \circ this$.
 
-		std::vector<std::vector<int>> & cycles () { return c; }
+		Cycles & cycles () { return c; }
 
 		std::vector<int>	l;
 
 	private:
-		std::vector<std::vector<int>>	c;
+		Cycles	c;
 	};
 
 
