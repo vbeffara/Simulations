@@ -2,10 +2,12 @@
 #include <vector>
 
 namespace vb {
+	using Cycles = std::vector<std::vector<int>>;
+
 	class Permutation : public std::vector<int> {
 	public:
-		Permutation (std::vector<int> s = {})         	: std::vector<int> (s)	{ use_s(); }
-		Permutation (std::vector<std::vector<int>> cc)	: c(cc)               	{ use_c(); }
+		Permutation (std::vector<int> s = {})	: std::vector<int> (s)	{ use_s(); }
+		Permutation (Cycles cc)              	: c(cc)               	{ use_c(); }
 
 		Permutation & operator= (const std::vector<int> s)              	{ vector<int>::operator=(s);	use_s(); return *this; }
 		Permutation & operator= (const std::vector<std::vector<int>> cc)	{ c = cc;                   	use_c(); return *this; }

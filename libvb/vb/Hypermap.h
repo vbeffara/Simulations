@@ -1,10 +1,16 @@
 #pragma once /// @file
 #include <vb/Permutation.h>
 #include <iostream>
+#include <cassert>
 
 namespace vb {
 	class Hypermap {
 	public:
+		Hypermap (Cycles s, Cycles a, Cycles p) : Hypermap (Permutation(s), Permutation(a), Permutation(p)) {}
+		Hypermap (Permutation s, Permutation a, Permutation p) : sigma(s), alpha(a), phi(p) {
+			assert(validate());
+		}
+
 		int n_black () { return sigma.cycles().size(); }
 		int n_white () { return alpha.cycles().size(); }
 		int n_faces () { return phi.cycles().size(); }
