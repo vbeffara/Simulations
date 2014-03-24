@@ -41,7 +41,8 @@ namespace vb {
 	}
 
 	std::ostream & operator<< (std::ostream &os, const Permutation &P) {
-		os << "(";
+		os << "{"; for (auto i : P) os << " " << i;
+		os << " } (";
 		for (auto cc : P.cycles()) { os << " ("; for (int i : cc) os << " " << i; os << " )"; }
 		return os << " )" << std::endl;
 	}

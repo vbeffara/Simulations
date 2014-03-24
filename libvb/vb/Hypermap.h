@@ -7,9 +7,7 @@ namespace vb {
 	class Hypermap {
 	public:
 		Hypermap (Cycles s, Cycles a, Cycles p) : Hypermap (Permutation(s), Permutation(a), Permutation(p)) {}
-		Hypermap (Permutation s, Permutation a, Permutation p) : sigma(s), alpha(a), phi(p) {
-			assert(validate());
-		}
+		Hypermap (Permutation s, Permutation a, Permutation p) : sigma(s), alpha(a), phi(p) {}
 
 		int n_black () const { return sigma.cycles().size(); }
 		int n_white () const { return alpha.cycles().size(); }
