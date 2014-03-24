@@ -6,9 +6,6 @@
 #include <vb/Figure.h>
 #include <vb/coo.h>
 
-static const int dx[4] = { 1, 0,-1, 0 };
-static const int dy[4] = { 0, 1, 0,-1 };
-
 namespace vb {
     OldPath::OldPath (int l, const std::string & title_, bool rel) : std::vector<char> (l), title(title_), relative(rel) { };
 
