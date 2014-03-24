@@ -4,21 +4,17 @@
 #include <vb/QuadTree.h>
 
 using namespace vb;
-using namespace std;
-
-int l1 (coo z) { return abs(z.x) + abs(z.y); }
 
 class DLA : public CoarseImage { public:
-	DLA (Hub & H) : CoarseImage(H['n'],H['n'], H.title, pow(H['n'],.33)), n(H['n']), r(1), deg(H['d']), QT(coo(-n/2,-n/2),coo(n/2,n/2),30) {
+	DLA (Hub & H) : CoarseImage(H['n'],H['n'], H.title, pow(H['n'],.33)), n(H['n']), r(0), deg(H['d']), QT(coo(-n/2,-n/2),coo(n/2,n/2),30) {
 		z0 = coo(n/2,n/2);
 		if (H['l']) for (int i=-n/4; i<n/4; ++i) put(i);
-		W.watch (QT.n, "Nb of particles");
-		W.watch (r,    "Cluster radius");
+		W.watch (QT.n, "Nb of particles"); W.watch (r, "Cluster radius");
 	};
 
 	void show    	()           	{ W.show(); CoarseImage::show(); }
 	char at      	(coo z) const	{ return contains(z) && CoarseImage::at(z); }
-	void put     	(coo z)      	{ CoarseImage::put(z,1); r = max (r, l1(z)); QT.insert(z); }
+	void put     	(coo z)      	{ CoarseImage::put(z,1); QT.insert(z); r = std::max (r,sup(z)); }
 	bool neighbor	(coo z) const	{ for (int i=0; i<deg; ++i) if (at(z+dz[i])) return true; return false; }
 
 	coo jump (int l) const {
@@ -32,20 +28,12 @@ class DLA : public CoarseImage { public:
 	void runDLA () {
 		put(0);
 		while (r<n/2-1) {
-			coo z = jump (2*r+2);
-			int d = r+2;
+			coo z = jump (r+10); QuadIndex qi { 0, sup(z) };
 			while (!neighbor(z)) {
-				d = dist(z,d);
-				if (d<10) {
-					z += dz[prng()%deg];
-				} else {
-					z += jump(d/3);
-					if (l1(z) > 100*r) {
-						z.x *= .9;
-						z.y *= .9;
-					}
-				}
-				d = min (2*d, l1(z));
+				QT.nn (z,qi);
+				if (qi.d<10) { z += dz[prng()%deg]; }
+				else { z += jump(qi.d/2); if (sup(z) > 100*r) { z.x *= .9; z.y *= .9; } }
+				qi.d = sup (z-qi.z);
 			}
 			put(z);
 		}
