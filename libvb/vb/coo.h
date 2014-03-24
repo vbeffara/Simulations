@@ -1,5 +1,9 @@
 #pragma once /// @file
 
+#include <algorithm>
+#include <cstdlib>
+#include <iostream>
+
 namespace vb {
 	class coo { public: int x,y;
 		coo(int xx = 0, int yy = 0) : x(xx), y(yy) {}
@@ -9,10 +13,16 @@ namespace vb {
 		coo 	operator+ 	(const coo & z)	const	{ return coo (x+z.x, y+z.y); }
 		coo 	operator- 	(const coo & z)	const	{ return coo (x-z.x, y-z.y); }
 		coo 	operator- 	()             	const	{ return coo (-x,-y); }
-		void	operator+=	(const coo & z)	     	{ x+=z.x; y+=z.y; }
+
+		coo	operator/	(int d)	const	{ return coo (x/d,y/d);}
+
+		void	operator+=	(const coo & z)		{ x+=z.x; y+=z.y; }
 	};
 
-	inline int norm (coo z) { return z.x*z.x + z.y*z.y; }
+	inline int norm	(coo z) { return z.x*z.x + z.y*z.y; }
+	inline int sup 	(coo z) { return std::max (abs(z.x), abs(z.y)); }
+
+	inline std::ostream & operator<< (std::ostream & os, const coo z) { return os << "(" << z.x << "," << z.y << ")"; }
 
 	const coo dz[8] = { coo(1,0), coo(0,1), coo(-1,0), coo(0,-1), coo(1,1), coo(-1,-1), coo(-1,1), coo(1,-1) };
 	const coo J (0,1);
