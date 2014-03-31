@@ -25,9 +25,8 @@ namespace vb {
 		void split ();
 
 		coo ul,br,center,iul,ibr;
-		std::vector <coo> pts;
-		QuadTree * children[4];
 		int m;
-		bool leaf;
+		QuadTree * children[4];
+		std::vector <coo> pts;
 	};
 }

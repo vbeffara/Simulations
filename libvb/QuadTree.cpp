@@ -2,10 +2,10 @@
 
 namespace vb {
 	QuadTree::QuadTree (coo UL, coo BR, int M) :
-		n(0), ul(UL), br(BR), center((ul+br)/2), iul(br), ibr(ul), m(M), leaf(true) {};
+		n(0), ul(UL), br(BR), center((ul+br)/2), iul(br), ibr(ul), m(M) {};
 
 	QuadTree::~QuadTree () {
-		if (!leaf) for (int i=0; i<4; ++i) delete children[i];
+		if (n>m) for (int i=0; i<4; ++i) delete children[i];
 	}
 
 	int QuadTree::index (coo z) const {
@@ -14,11 +14,11 @@ namespace vb {
 	}
 
 	void QuadTree::insert (coo z) {
-		++n;
 		iul.x = std::min(iul.x,z.x); iul.y = std::min(iul.y,z.y);
 		ibr.x = std::max(ibr.x,z.x); ibr.y = std::max(ibr.y,z.y);
-		if (leaf)	{ pts.push_back(z); if (n>m) split(); }
-		else     	{ children[index(z)] -> insert (z); }
+		if (n==m) split();
+		if (n<m) pts.push_back(z); else children[index(z)] -> insert (z);
+		++n;
 	}
 
 	void QuadTree::split () {
@@ -27,14 +27,14 @@ namespace vb {
 		children[2] = new QuadTree (coo(ul.x,center.y),	coo(center.x,br.y),	m);
 		children[3] = new QuadTree (center,            	br,                	m);
 		for (auto & z : pts) children[index(z)] -> insert (z);
-		std::vector<coo>().swap(pts); leaf = false;
+		std::vector<coo>().swap(pts);
 	}
 
 	int QuadTree::idist (coo z) const { return std::min ({z.x-ul.x, 	z.y-ul.y, 	br.x-z.x, 	br.y-z.y}); 	}
 	int QuadTree::odist (coo z) const { return std::max ({z.x-ibr.x,	z.y-ibr.y,	iul.x-z.x,	iul.y-z.y});	}
 
 	void QuadTree::nn (coo z, QuadIndex & qi) const {
-		if (leaf) for (auto & w : pts) {
+		if (n<=m) for (auto & w : pts) {
 			int newnorm = sup (z-w);
 			if (newnorm < qi.d) { qi.d = newnorm; qi.z = w; }
 		} else {
