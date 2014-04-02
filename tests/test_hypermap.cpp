@@ -41,9 +41,9 @@ class Toroidal : public Hypermap { // Triangulation of torus
 			angle[0]=0; int ne=n_edges();
 			bool flag=true; while (flag) { flag = false;
 				for (int i=0; i<ne; ++i) {
-					if (isnan(angle[i]))         	continue;
-					if (isnan(angle[alpha[i]])) {	angle[alpha[i]] = angle[i]+M_PI; flag = true; }
-					if (isnan(angle[sigma[i]])) {	double x = rad[src[i]], y = rad[src[alpha[i]]], z = rad[src[alpha[sigma[i]]]];
+					if (std::isnan(angle[i]))         	continue;
+					if (std::isnan(angle[alpha[i]])) {	angle[alpha[i]] = angle[i]+M_PI; flag = true; }
+					if (std::isnan(angle[sigma[i]])) {	double x = rad[src[i]], y = rad[src[alpha[i]]], z = rad[src[alpha[sigma[i]]]];
 					                             	angle[sigma[i]] = angle[i] + alpha_xyz(x,y,z); flag = true; }
 				}
 			}
@@ -51,10 +51,10 @@ class Toroidal : public Hypermap { // Triangulation of torus
 			place[0]=0; vector<cpx> periods;
 			flag=true; while (flag) { flag=false; periods.clear();
 				for (int e=0; e<ne; ++e) {
-					int i=src[e]; if (isnan(real(place[i]))) continue;
+					int i=src[e]; if (std::isnan(real(place[i]))) continue;
 					int j=src[alpha[e]]; double l = rad[i] + rad[j];
 					cpx z = place[i] + cpx(l*cos(angle[e]),l*sin(angle[e]));
-					if (isnan(real(place[j]))) { flag = true; place[src[alpha[e]]] = z; }
+					if (std::isnan(real(place[j]))) { flag = true; place[src[alpha[e]]] = z; }
 					else if (abs(place[j]-z) > rad[0]/2) {
 						bool fresh = true;
 						for (cpx p : periods) if (abs(place[j]-z-p) < rad[0]/2) fresh = false;

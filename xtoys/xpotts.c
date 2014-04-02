@@ -29,7 +29,7 @@
 # include <string.h>
 # include <malloc.h>
 # include <math.h>
-# include <select.h>
+# include <sys/select.h>
 
 /* dimensions for control boxes */
 # define HEATERHEIGHT 80

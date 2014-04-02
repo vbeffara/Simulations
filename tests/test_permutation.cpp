@@ -1,5 +1,6 @@
 #include <vb/Hypermap.h>
 #include <iostream>
+#include <algorithm>
 
 using namespace vb;
 using namespace std;

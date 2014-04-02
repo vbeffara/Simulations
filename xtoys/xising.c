@@ -35,7 +35,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <limits.h>
-#include <select.h>
+#include <sys/select.h>
 #include <string.h>
 
 /*

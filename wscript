@@ -4,8 +4,8 @@ def options (ctx) :
 	ctx.load ('compiler_c compiler_cxx')
 
 def configure (ctx) :
-	ctx.env.CXXFLAGS += [ '-std=c++11', '-stdlib=libc++' ]
-	ctx.env.LINKFLAGS += [ '-std=c++11', '-stdlib=libc++' ]
+	ctx.env.CXXFLAGS += [ '-std=c++11' ]
+	ctx.env.LINKFLAGS += [ '-std=c++11' ]
 
 	ctx.load ('compiler_c compiler_cxx boost')
 	ctx.define ('VB_ENDIAN', ctx.check_endianness(), 0)

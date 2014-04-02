@@ -23,7 +23,7 @@
 # include <string.h>
 # include <malloc.h>
 # include <math.h>
-# include <select.h>
+# include <sys/select.h>
 
 /* NSITES=number of lattice sites 
    fft (as implemented here) REQUIRES a power of two */

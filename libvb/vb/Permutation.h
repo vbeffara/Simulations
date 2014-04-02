@@ -1,5 +1,6 @@
 #pragma once /// @file
 #include <vector>
+#include <iostream>
 
 namespace vb {
 	using Cycles = std::vector<std::vector<int>>;

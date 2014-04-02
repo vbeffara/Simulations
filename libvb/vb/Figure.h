@@ -2,6 +2,7 @@
 #include <vb/Picture.h>
 #include <vb/cpx.h>
 #include <cairo-pdf.h>
+#include <memory>
 
 namespace vb {
 	class Pen {

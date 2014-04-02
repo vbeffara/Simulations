@@ -17,7 +17,7 @@
       
 #include <sys/time.h>
 #include <sys/types.h>
-#include <select.h>
+#include <sys/select.h>
 
 struct timeval timeout;
 

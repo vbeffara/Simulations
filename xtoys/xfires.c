@@ -26,7 +26,7 @@ A text description of this program is there as well.
 # include <stdlib.h>
 # include <string.h>
 # include <malloc.h>
-# include <select.h>
+# include <sys/select.h>
 
 /* size and position parameters for buttons, etc. */
 # define PLAYTOP 116
