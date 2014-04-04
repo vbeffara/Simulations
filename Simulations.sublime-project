@@ -1,17 +1,31 @@
 {
-	"folders":
-	[
-		{
-			"path" : ".",
-			"folder_exclude_patterns" : [ ".waf*", "build", "00*", "doxygen", "output" ],
-			"file_exclude_patterns" : [ ".lock*", "*.sublime-workspace", "*.png", "*.mp4" ]
-		}
-	],
 	"build_systems":
 	[
 		{
-			"name": "WAF",
-			"cmd": "$project_path/waf"
+			"cmd": "$project_path/waf",
+			"name": "WAF"
+		}
+	],
+	"folders":
+	[
+		{
+			"file_exclude_patterns":
+			[
+				".lock*",
+				"*.sublime-workspace",
+				"*.png",
+				"*.mp4"
+			],
+			"folder_exclude_patterns":
+			[
+				".waf*",
+				"build",
+				"00*",
+				"doxygen",
+				"output"
+			],
+			"follow_symlinks": true,
+			"path": "."
 		}
 	]
 }
