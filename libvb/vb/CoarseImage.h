@@ -1,5 +1,6 @@
 #pragma once /// \file
 #include <vb/Bitmap.h>
+#include <png++/png.hpp>
 
 namespace vb {
 	class CoarseCell { public:
@@ -32,6 +33,27 @@ namespace vb {
 		}
 
 		bool contains (coo z) const { z += z0; return (z.x>=0) && (z.y>=0) && (z.x<true_width) && (z.y<true_height); }
+
+		void output_fine (std::string fn) {
+		    using row = png::packed_pixel_row <png::gray_pixel_1>;
+
+		    png::image_info m_info (png::make_image_info<png::gray_pixel_1>());
+	        m_info.set_width (true_width);
+	        m_info.set_height (true_height);
+
+		    std::ofstream stream (fn, std::ios::binary);
+	        png::writer <std::ostream> wr (stream);
+	        wr.set_image_info(m_info);
+	        wr.write_info();
+
+			row m_row (true_width);
+	        for (int j=0; j<true_height; ++j) {
+		        for (int i=0; i<true_width; ++i) m_row[i] = ! at(coo(i,j)-z0);
+				wr.write_row(png::row_traits<row>::get_data(m_row));
+	        }
+
+	        wr.write_end_info();
+		}
 
 		int true_width;    ///< The true width of the image, in pixels.
 		int true_height;   ///< The true height of the image, in pixels.

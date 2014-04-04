@@ -68,7 +68,6 @@ class DLA : public CoarseImage { public:
 
 int main (int argc, char ** argv) {
 	Hub H ("Lattice DLA",argc,argv,"n=500,p=30,c=50");
-	DLA dla (H); dla.show(); dla.runDLA(); dla.output();
-	cerr << sizeof (dla.QT) << " " << sizeof (coo*) << endl;
+	DLA dla (H); dla.show(); dla.runDLA(); dla.output(); dla.output_fine("dla.png");
 	cerr << "Final cluster: " << dla.QT.n << " particles, diameter = " << dla.r << endl;
 }
