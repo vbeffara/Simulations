@@ -27,6 +27,10 @@ namespace vb {
 	const coo dz[8] = { coo(1,0), coo(0,1), coo(-1,0), coo(0,-1), coo(1,1), coo(-1,-1), coo(-1,1), coo(1,-1) };
 	const coo J (0,1);
 
+	class rect { public: coo ul,br;
+		rect (coo u, coo b) : ul(u), br(b) {};
+	};
+
 	class coo3 { public: int x,y,z;
 		coo3 (int xx, int yy, int zz) : x(xx), y(yy), z(zz) {}
 

@@ -6,7 +6,9 @@
 using namespace vb; using namespace std;
 
 class DLA : public CoarseImage { public:
-	DLA (Hub & H) : CoarseImage(H['n'],H['n'], H.title, pow(H['n'],.33)), n(H['n']), c(H['c']), r(1), QT(coo(-n/2,-n/2),coo(n/2,n/2),30) {
+	DLA (Hub & H) : CoarseImage(H['n'],H['n'], H.title, pow(H['n'],.33)),
+		n(H['n']), c(H['c']), r(1), QT(coo(-n/2,-n/2),coo(n/2,n/2),20),
+		img (512,512,"QuadTree") {
 		z0 = coo(n/2,n/2);
 		W.watch (QT.n, "Nb of particles"); W.watch (r, "Cluster radius");
 		prec.push_back (vector<double>()); prec.push_back (vector<double>());
@@ -27,9 +29,9 @@ class DLA : public CoarseImage { public:
 		cerr << endl;
 	};
 
-	void show    	()           	{ W.show(); CoarseImage::show(); }
+	void show    	()           	{ W.show(); CoarseImage::show(); img.show(); }
 	char at      	(coo z) const	{ return contains(z) && CoarseImage::at(z); }
-	void put     	(coo z)      	{ CoarseImage::put(z,1); QT.insert(z); r = std::max (r,sup(z)); if (!(QT.n%1000)) { update(); W.update(); } }
+	void put     	(coo z)      	{ CoarseImage::put(z,1); QT.insert(z); r = std::max (r,sup(z)); if (!(QT.n%1000)) { update(); W.update(); img.update(); } }
 	bool neighbor	(coo z) const	{ for (int i=0; i<4; ++i) if (at(z+dz[i])) return true; return false; }
 
 	coo jump (int d) const {
@@ -60,14 +62,17 @@ class DLA : public CoarseImage { public:
 		}
 	}
 
+	void paint () { QT.paint (img,0,512); CoarseImage::paint(); }
+
 	int n,c,r;
 	Console W;
 	QuadTree QT;
 	vector<vector<double>> prec;
+	Image img;
 };
 
 int main (int argc, char ** argv) {
 	Hub H ("Lattice DLA",argc,argv,"n=500,p=30,c=50");
-	DLA dla (H); dla.show(); dla.runDLA(); dla.output(); dla.output_fine("dla.png");
+	DLA dla (H); dla.show(); dla.runDLA(); dla.output(); // dla.output_fine("dla.png");
 	cerr << "Final cluster: " << dla.QT.n << " particles, diameter = " << dla.r << endl;
 }

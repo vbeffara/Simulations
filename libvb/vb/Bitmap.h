@@ -36,6 +36,7 @@ namespace vb {
 		coo z0;       	///< The coordinates of the origin (at(0) is there on screen).
 		T dflt;       	///< The default value.
 
+	protected:
 		virtual void paint () { if ((T*)stage == data) return; // Bitmap<Color>
 			for (int x=0; x<w(); ++x) for (int y=0; y<h(); ++y) stage[x+stride*y] = data[x+stride*y];
 		}

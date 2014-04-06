@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vb/coo.h>
+#include <vb/Image.h>
 #include <vector>
 
 namespace vb {
@@ -14,6 +14,8 @@ namespace vb {
 		void insert (coo z);
 
 		void nn (coo z, QuadIndex & qi) const;
+
+		void paint (Image & img, coo ul, int w);
 
 		int n;
 

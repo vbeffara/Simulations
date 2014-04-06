@@ -45,4 +45,16 @@ namespace vb {
 			}
 		}
 	}
+
+	void QuadTree::paint (Image & img, coo ul, int w) {
+		if (w==1) { img.at(ul) = (n>0) ? GREEN : BLACK; return; }
+		if (n>m) {
+			children[0] -> paint (img, ul, w/2);
+			children[1] -> paint (img, ul+coo(w/2,0), w/2);
+			children[2] -> paint (img, ul+coo(0,w/2), w/2);
+			children[3] -> paint (img, ul+coo(w/2,w/2), w/2);
+			return;
+		}
+		for (int i=0; i<w; ++i) { img.at(ul+coo(i,0)) = Color(128,0,0); img.at(ul+coo(0,i)) = Color(128,0,0); }
+	}
 }
