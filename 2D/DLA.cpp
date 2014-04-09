@@ -7,7 +7,7 @@ using namespace vb; using namespace std;
 
 class DLA : public CoarseImage { public:
 	DLA (Hub & H) : CoarseImage(H['n'],H['n'], H.title, pow(H['n'],.33)),
-		n(H['n']), c(H['c']), r(1), QT(coo(-n/2,-n/2),coo(n/2,n/2),20),
+		n(H['n']), c(H['c']), r(1), QT(coo(-n/2,-n/2),coo(n/2,n/2),H['l']),
 		img (512,512,"QuadTree") {
 		z0 = coo(n/2,n/2);
 		W.watch (QT.n, "Nb of particles"); W.watch (r, "Cluster radius");
@@ -72,7 +72,7 @@ class DLA : public CoarseImage { public:
 };
 
 int main (int argc, char ** argv) {
-	Hub H ("Lattice DLA",argc,argv,"n=500,p=30,c=50");
+	Hub H ("Lattice DLA",argc,argv,"n=2000,p=30,c=50,l=30");
 	DLA dla (H); dla.show(); dla.runDLA(); dla.output(); // dla.output_fine("dla.png");
 	cerr << "Final cluster: " << dla.QT.n << " particles, diameter = " << dla.r << endl;
 }
