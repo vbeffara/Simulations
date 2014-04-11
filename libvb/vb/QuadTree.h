@@ -8,8 +8,6 @@ namespace vb {
 
 	class QuadTree {
 	public:
-		static std::vector <QuadTree *> store;
-
 		QuadTree (coo UL, coo BR, int M);
 		~QuadTree ();
 
@@ -22,6 +20,8 @@ namespace vb {
 		int n;
 
 	private:
+		static std::vector <QuadTree *> store;
+
 		int index (coo z) const;
 		int idist (coo z) const;
 		int odist (coo z) const;
