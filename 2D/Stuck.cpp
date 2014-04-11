@@ -4,15 +4,15 @@
 using namespace std; using namespace vb;
 
 class Stat { public:
-	Stat (int ss) : s(ss) { m = max(m,s); }
+	Stat (int ss) : s(ss), ml(m) { m = max(m,s); }
 	operator int () { return s; }
 	operator Color() {
 		if (s<0) return Color(0,64,0);
 		if (s==0) return 0;
-		if (s<=.01*m) return Color(64,0,0);
+		if (ml<=.5*m) return Color(64,0,0);
 		return 64 + (s*190)/m;
 	}
-	int s;
+	int s,ml;
 	static int m;
 };
 
