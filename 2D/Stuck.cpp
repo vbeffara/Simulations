@@ -1,5 +1,6 @@
 #include <vb/Hub.h>
 #include <vb/Bitmap.h>
+#include <vb/Console.h>
 
 using namespace std; using namespace vb;
 
@@ -22,7 +23,11 @@ int Stat::min=0, Stat::max=1;
 class Stuck : public Bitmap<Stat> { public:
 	Stuck (Hub H) : Bitmap<Stat> (2*int(H['n']),2*int(H['n']),H.title), alpha(H['a']), beta(H['b']) {
 		for (int i=0; i<w()/2; ++i) for (int j=0; j<h()/2; ++j) at(coo(2*i,2*j))=-1;
+		C.watch (alpha, "Alpha");
+		C.manage (alpha, 0.142, 0.35);
+		C.lambda ((std::function<int()>) ([this](){return this->nsup();}), "Support");
 	}
+	void show () { C.show(); Bitmap<Stat>::show(); }
 	void run() {
 		coo z (w()/2,h()/2);
 		vector<double> l(4);
@@ -40,10 +45,21 @@ class Stuck : public Bitmap<Stat> { public:
 			z += d+d;
 		}
 	}
+	void update () {
+		int m=Stat::max;
+		for (int v : *this) if (v > 0) m = min (m,v);
+		if (m<Stat::max) Stat::min=m;
+		Bitmap<Stat>::update();
+	}
+	int nsup () { int n=0; for (Stat v : *this) if ((v.s>0) && (v.ml>.9*Stat::max)) ++n; return n; }
+
 	double alpha, beta;
+	Console C;
 };
 
 int main (int argc, char ** argv) {
-	Hub H ("Stuck walk on the square lattice",argc,argv,"n=200,a=.1432,b=5");
-	Stuck S(H); S.show(); S.run();
+	Hub H ("Stuck walk on the square lattice",argc,argv,"n=200,a=.1432,b=5,v=0");
+	Stuck S(H); S.show();
+	if (double(H['v'])>0) S.snapshot_setup("Stuck",H['v']);
+	S.run();
 }

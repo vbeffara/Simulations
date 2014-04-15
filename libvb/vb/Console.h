@@ -28,6 +28,13 @@ namespace vb {
 		void *d;
 	};
 
+	template <typename T> class Lambda : public Slot {
+	public:
+		Lambda (std::function <T()> ff, const char *nn, int w, int h) : Slot (nn,w,h), f(ff) {}
+		void draw () { draw_value(f()); }
+		std::function <T()> f;
+	};
+
 	template <typename T> void apply (Fl_Widget *W);
 
 	template <typename T> class Manager : public Fl_Hor_Nice_Slider {
@@ -48,6 +55,7 @@ namespace vb {
 
 		template <typename T> void watch (T &t,                	const char *n)	{ add (new Watcher<T> (t,n,w(),h())); }
 		template <typename T> void trace (T f (void*), void *d,	const char *n)	{ add (new Tracer<T> (f,d,n,w(),h())); }
+		template <typename T> void lambda (std::function <T()> f,const char *n)	{ add (new Lambda<T> (f,n,w(),h())); }
 		template <typename T> void manage (T &t, T t1, T t2)   	              	{ add (new Manager<T> (t,t1,t2,w(),h())); }
 	};
 }
