@@ -25,8 +25,8 @@ int main (int argc, char ** argv) {
 
 	Image I (T.size(),700,"TASEP"); I.show();
 	for (int t=0,u=0 ;; ++t,++u) {
-		for (int j=0; j<u; ++j) for (int i=0; i<T.size(); ++i) T.step();
-		for (int i=0; i<T.size(); ++i) I.put(coo(i,t%I.h()),C[T[i]]);
+		for (int j=0; j<u; ++j) for (unsigned i=0; i<T.size(); ++i) T.step();
+		for (unsigned i=0; i<T.size(); ++i) I.put(coo(i,t%I.h()),C[T[i]]);
 		if (t==I.h()) I.pause();
 	}
 }

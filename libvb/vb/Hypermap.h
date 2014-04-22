@@ -9,10 +9,10 @@ namespace vb {
 		Hypermap (Cycles s, Cycles a, Cycles p) : Hypermap (Permutation(s), Permutation(a), Permutation(p)) {}
 		Hypermap (Permutation s, Permutation a, Permutation p) : sigma(s), alpha(a), phi(p) {}
 
-		int n_black () const { return sigma.cycles().size(); }
-		int n_white () const { return alpha.cycles().size(); }
-		int n_faces () const { return phi.cycles().size(); }
-		int n_edges () const { return sigma.size(); }
+		unsigned n_black () const { return sigma.cycles().size(); }
+		unsigned n_white () const { return alpha.cycles().size(); }
+		unsigned n_faces () const { return phi.cycles().size(); }
+		unsigned n_edges () const { return sigma.size(); }
 
 		bool validate ();
 		bool is_graph () { for (auto v : alpha.cycles()) if (v.size() != 2) return false; return true; }
@@ -30,7 +30,7 @@ namespace vb {
 
 		Hypermap split_edges (); ///< Turn white vertices into black and then complete into a new hypermap.
 
-		void flip (int e);
+		void flip (unsigned e);
 
 		Permutation sigma, alpha, phi; // black, white, faces
 	};

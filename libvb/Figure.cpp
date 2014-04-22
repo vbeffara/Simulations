@@ -10,7 +10,7 @@ namespace vb {
       cairo_line_to (cr, z2.real(), z2.imag());
   }
 
-  void Dot::draw (cairo_t * cr) { }
+  void Dot::draw (cairo_t *) { }
 
   void Circle::draw (cairo_t * cr) {
     cairo_new_sub_path (cr);

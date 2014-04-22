@@ -6,7 +6,7 @@ using namespace vb;
 
 static int T=100000, N=10000;
 
-int main (int argc, char **argv) {
+int main (int, char **) {
   int laststep=0;
 
   double sd=0.0, sd2=0.0;

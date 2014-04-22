@@ -12,6 +12,7 @@ namespace vb {
 
 		operator bool()  	const { return atoi(c_str()); }
 		operator int()   	const { return atoi(c_str()); }
+		operator unsigned()	const { return atoi(c_str()); }
 		operator long()  	const { return atoi(c_str()); }
 		operator double()	const { return atof(c_str()); }
 	};

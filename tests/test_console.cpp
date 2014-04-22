@@ -6,7 +6,7 @@ using namespace vb;
 
 double x2 (void *x) { double X = *(double*)x; return X*2; }
 
-int main (int argc, char ** argv) {
+int main (int, char **) {
 	double x=1.1;
 
 	Console W;

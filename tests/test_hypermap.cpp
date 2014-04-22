@@ -104,10 +104,10 @@ class Toroidal : public Hypermap { // Triangulation of torus
 			double slope = real(m) / imag(m);
 			Figure F;
 			F.add (new Polygon ({0,1,cpx(1)+m,m}, Pen(0,0,200,1)));
-			vector<cpx> eee; int ne=n_edges(); Cycles cc=sigma.cycles();
+			vector<cpx> eee; unsigned ne=n_edges(); Cycles cc=sigma.cycles();
 			for (int a=-1; a<=2; ++a)
 				for (int b=-1; b<=1; ++b)
-					for (int e=0; e<ne; ++e) {
+					for (unsigned e=0; e<ne; ++e) {
 						int i=src[e]; cpx z = place[i] + cpx(a) + cpx(b)*m;
 						if ((imag(z)<-.6)||(imag(z)>1.6)) continue;
 						if ((real(z)<-.6+slope*imag(z)) || (real(z)>2.6+slope*imag(z))) continue;
@@ -133,7 +133,7 @@ class Toroidal : public Hypermap { // Triangulation of torus
 };
 
 Hypermap artem (int n) {
-	vector<int> sigma(6*n), alpha(6*n), phi(6*n);
+	vector<unsigned> sigma(6*n), alpha(6*n), phi(6*n);
 	for (int i=0; i<n; ++i) {
 		sigma[i]=2*n+i; sigma[n+i]=5*n+i+1; sigma[2*n+i]=n+i-1; sigma[3*n+i]=3*n+i+1; sigma[4*n+i]=4*n+i-1; sigma[5*n+i]=i;
 		alpha[i]=n+i; alpha[n+i]=i; alpha[2*n+i]=3*n+i; alpha[3*n+i]=2*n+i; alpha[4*n+i]=5*n+i; alpha[5*n+i]=4*n+i;
@@ -176,9 +176,9 @@ int main (int argc, char ** argv) {
 
 	for (int i=int(CLP('o')); i<=int(CLP('n')); ++i) cout << i << " " << js[i-int(CLP('o'))] << endl;
 	while (js.size()>2) {
-		for (int i=0; i<js.size()-2; ++i)
+		for (unsigned i=0; i<js.size()-2; ++i)
 			js[i] = (js[i]*js[i+2]-js[i+1]*js[i+1]) / (js[i]+js[i+2]-2.0*js[i+1]);
 		js.pop_back(); js.pop_back();
-		cout << endl; for (int i=0; i<js.size(); ++i) cout << js[i] << endl;
+		cout << endl; for (unsigned i=0; i<js.size(); ++i) cout << js[i] << endl;
 	}
 }

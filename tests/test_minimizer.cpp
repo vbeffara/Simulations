@@ -6,19 +6,19 @@ using namespace vb;
 
 #define DIM 400
 
-double f (const Vector &x, void *context = NULL) {
+double f (const Vector &x, void *) {
   double o = 0;
   for (unsigned int i=0; i<DIM; ++i) o += (1 - cos(x[i]/(i+1)));
   return o;
 }
 
-Vector g (const Vector &x, void *context = NULL) {
+Vector g (const Vector &x, void *) {
   Vector out(DIM);
   for (unsigned int i=0; i<DIM; ++i) out[i] = sin(x[i]/(i+1))/(i+1);
   return out;
 }
 
-double fg (const Vector &x, Vector &g, void *context = NULL) {
+double fg (const Vector &x, Vector &g, void *) {
   double o = 0;
   for (unsigned int i=0; i<DIM; ++i) {
     o += (1 - cos(x[i]/(i+1)));

@@ -3,7 +3,7 @@
 
 using namespace vb;
 
-int main (int argc, char ** argv) {
+int main (int, char **) {
     Image I (500,500,"Testing C++11 features");
 
     // Loop over the whole image

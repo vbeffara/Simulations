@@ -41,7 +41,7 @@ int bump_dent (coo z, double p, double q) {
   return bump_square (z,p,q);
 }
 
-int bump_iso (coo z, double p, double q) {
+int bump_iso (coo z, double p, double) {
   if (z==coo(0)) return -1; if (prng.bernoulli(1-p)) return -1;
   if ((z.x>=0) && (z.y>=0)) return (prng.bernoulli(double(z.x)/(z.x+z.y)) ? 2 : 3);
   if ((z.x>=0) && (z.y<=0)) return (prng.bernoulli(double(z.x)/(z.x-z.y)) ? 2 : 1);

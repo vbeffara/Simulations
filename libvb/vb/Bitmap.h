@@ -19,7 +19,7 @@ namespace vb {
 		void     	putp	(coo z, T const & c)	{ atp(z) = c; step(); }
 
 		bool     	contains	(coo z)  	{ return (z.x>=0) && (z.y>=0) && (z.x<w()) && (z.y<h()); }
-		virtual T	compute 	(coo z)  	{ return dflt; }
+		virtual T	compute 	(coo)  	{ return dflt; }
 		T        	lazy    	(coo z)  	{ if (at(z) == dflt) put(z, compute(z)); return at(z); }
 		coo      	rand    	(int b=0)	{ return coo (b+prng.uniform_int(w()-2*b), b+prng.uniform_int(h()-2*b)); }
 

@@ -14,16 +14,16 @@ namespace vb {
 
   double Lattice::energy () const {
     double t=0;
-    for (int k=0; k<n; ++k)
-      for (int l=0; l<adj[k].size(); ++l)
+    for (unsigned k=0; k<n; ++k)
+      for (unsigned l=0; l<adj[k].size(); ++l)
         t += norm(shift(k,l));
     return t;
   }
 
   cpx Lattice::shear () const {
     cpx t=0;
-    for (int k=0; k<n; ++k)
-      for (int l=0; l<adj[k].size(); ++l)
+    for (unsigned k=0; k<n; ++k)
+      for (unsigned l=0; l<adj[k].size(); ++l)
         t += shift(k,l) * shift(k,l);
     return t;
   }

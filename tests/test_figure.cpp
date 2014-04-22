@@ -6,7 +6,7 @@ using namespace vb;
 
 Color randomcolor() { return HSV (prng.uniform_real(0,1),1,1); }
 
-int main (int argc, char **argv) {
+int main (int, char **) {
 	Figure F;
 	for (int i=0; i<10; ++i)
 		F.add (new Segment(	cpx(prng.uniform_real(-5,5),prng.uniform_real(-5,5)),

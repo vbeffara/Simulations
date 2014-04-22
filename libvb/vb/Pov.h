@@ -18,7 +18,7 @@ namespace vb {
 		Pov_Object & operator<< (double x);
 		Pov_Object & operator<< (Pov_Object *o)	{ subs.push_back(std::shared_ptr<Pov_Object>(o)); return *this; }
 
-		std::string type; bool braces; int commas;
+		std::string type; bool braces; unsigned commas;
 		std::vector < std::shared_ptr<Pov_Object> > subs;
 	};
 	inline std::ostream & operator<< (std::ostream & os, Pov_Object * o) { return o->output_pov(os); }

@@ -8,7 +8,7 @@ using namespace std;
 int center = 6;
 int infinity = 13;
 
-void cb (const Vector & x, double fx, void * context) {
+void cb (const Vector &, double fx, void *) {
 	cerr << fx << endl;
 }
 

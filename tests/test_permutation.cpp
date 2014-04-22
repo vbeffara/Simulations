@@ -31,7 +31,7 @@ bool connected (Permutation s, Permutation a) {
 
 vector<Hypermap> maps (vector<int> s, vector<int> a, vector<int> p) {
 	Cycles cs; int i=0;
-	for (int l : s) { vector<int> c; for (int j=0; j<l; ++j) c.push_back(i++); cs.push_back (c); }
+	for (int l : s) { vector<unsigned> c; for (int j=0; j<l; ++j) c.push_back(i++); cs.push_back (c); }
 	Permutation sigma (cs), alpha (sigma.size());
 	vector<Hypermap> output;
 	do {
@@ -42,7 +42,7 @@ vector<Hypermap> maps (vector<int> s, vector<int> a, vector<int> p) {
 	return output;
 }
 
-int main (int argc, char ** argv) {
+int main (int, char **) {
 	auto ms = maps (vector<int> {2,2,3}, vector<int> {2,2,3}, vector<int> {2,2,3});
 	for (auto m : ms) {
 		cout << m;

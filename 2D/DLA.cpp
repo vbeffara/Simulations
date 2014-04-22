@@ -34,7 +34,7 @@ class DLA : public CoarseImage { public:
 	void put     	(coo z)      	{ CoarseImage::put(z,1); QT.insert(z); r = std::max (r,sup(z)); if (!(QT.n%1000)) { update(); W.update(); img.update(); } }
 	bool neighbor	(coo z) const	{ for (int i=0; i<4; ++i) if (at(z+dz[i])) return true; return false; }
 
-	coo jump (int d) const {
+	coo jump (unsigned d) const {
 		if (d<=2) return dz[prng.uniform_int(4)];
 		if (d<prec.size()) {
 			coo w (d-1, prng.discrete(prec[d]) - (d-1));
@@ -64,7 +64,7 @@ class DLA : public CoarseImage { public:
 
 	void paint () { QT.paint (img,0,512); CoarseImage::paint(); }
 
-	int n,c,r;
+	int n; unsigned c; int r;
 	Console W;
 	QuadTree QT;
 	vector<vector<double>> prec;

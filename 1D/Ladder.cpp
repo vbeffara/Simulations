@@ -16,11 +16,11 @@ int main (int argc, char ** argv) {
 	bool d=CLP('d');
 
 	vector<int> env;
-	int X=0;
+	unsigned X=0;
 
 	for (int i=0; i<t; ++i) {
 		if (d) {
-			for (int j=0; j<env.size(); ++j) {
+			for (unsigned j=0; j<env.size(); ++j) {
 				if (X==j) cout << "*"; else cout << " ";
 				cout << env[j];
 			}

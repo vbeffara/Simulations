@@ -37,7 +37,7 @@ namespace vb {
 
 	class Dot : public Shape {
 	public:
-		Dot (cpx zz, Pen p = Pen(), std::string ll = "") : Shape(p), z(zz) {}
+		Dot (cpx zz, Pen p = Pen()) : Shape(p), z(zz) {}
 
 		double left ()   { return z.real(); }
 		double right ()  { return z.real(); }

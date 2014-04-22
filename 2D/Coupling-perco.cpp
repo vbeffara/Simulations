@@ -43,7 +43,7 @@ int compute_diff (Image *c1, Image *c2, Image *d) {
   return n;
 }
 
-void compute_cpts (Image *c, int *cpts, int r1, int r2) {
+void compute_cpts (Image *c, int *cpts, int r1, int) {
   /*
    * Determine the connected  components in the annulus of  radii r1<r2 around
    * the center of the square, and put that in *cpts.
@@ -226,7 +226,7 @@ void pick (Image *c, testfunction test) {
   fprintf (stderr,"\n");
 }
 
-int main (int argc, char ** argv) {
+int main (int, char **) {
   int i;
   Image *img,*img1,*img2;
 

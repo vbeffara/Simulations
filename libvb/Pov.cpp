@@ -8,7 +8,7 @@ namespace vb {
 
 	std::ostream & Pov_Object::output_pov (std::ostream & os) {
 		os << type << " "; if (braces) os << "{ ";
-		for (int i=0; i<subs.size(); ++i) os << subs[i] << (i<commas ? ", " : " ");
+		for (unsigned i=0; i<subs.size(); ++i) os << subs[i] << (i<commas ? ", " : " ");
 		if (braces) os << "}"; os << std::endl; return os;
 	}
 
@@ -28,7 +28,7 @@ namespace vb {
 				<< new Pov_Object ("background { color White }");
 	}
 
-	Pov_Union::Pov_Union (std::string t) : Pov_Object ("union", true) {}
+	Pov_Union::Pov_Union (std::string) : Pov_Object ("union", true) {}
 
 	Pov_Texture::Pov_Texture (std::string t) : Pov_Object("texture", true) { (*this) << new Pov_Object(t); }
 
@@ -41,13 +41,13 @@ namespace vb {
 		(*this) << a << new Pov_Object ("color White*2", false);
 	}
 
-	Pov_Sphere::Pov_Sphere (tri a, double r, std::string t) : Pov_Object("sphere", true) { (*this) << a << r; commas=1; }
+	Pov_Sphere::Pov_Sphere (tri a, double r, std::string) : Pov_Object("sphere", true) { (*this) << a << r; commas=1; }
 
-	Pov_Cylinder::Pov_Cylinder (tri a, tri b, double r, std::string t) : Pov_Object("cylinder", true) { (*this) << a << b << r; commas=2; }
+	Pov_Cylinder::Pov_Cylinder (tri a, tri b, double r, std::string) : Pov_Object("cylinder", true) { (*this) << a << b << r; commas=2; }
 
-	Pov_Box::Pov_Box (tri a, tri b, std::string t) : Pov_Object("box", true) { (*this) << a << b; commas=1; }
+	Pov_Box::Pov_Box (tri a, tri b, std::string) : Pov_Object("box", true) { (*this) << a << b; commas=1; }
 
-	Pov_Plane::Pov_Plane (tri a, double d, std::string t) : Pov_Object("plane", true) { (*this) << a << d; commas=1; }
+	Pov_Plane::Pov_Plane (tri a, double d, std::string) : Pov_Object("plane", true) { (*this) << a << d; commas=1; }
 
 	Pov_Frame::Pov_Frame (tri a, tri b, std::string t) : Pov_Union() { (*this)
 		<< new Pov_Sphere (tri(a.x,a.y,a.z), .1) << new Pov_Sphere (tri(a.x,a.y,b.z), .1) << new Pov_Sphere (tri(a.x,b.y,a.z), .1)

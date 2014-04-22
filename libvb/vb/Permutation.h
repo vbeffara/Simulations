@@ -3,12 +3,12 @@
 #include <iostream>
 
 namespace vb {
-	using Cycles = std::vector<std::vector<int>>;
+	using Cycles = std::vector<std::vector<unsigned>>;
 
-	class Permutation : public std::vector<int> {
+	class Permutation : public std::vector<unsigned> {
 	public:
-		Permutation (int n = 0)         	: std::vector<int> (n)	{ for (int i=0; i<n; ++i) at(i)=i; }
-		Permutation (std::vector<int> s)	: std::vector<int> (s)	{ }
+		Permutation (unsigned n = 0)         	: std::vector<unsigned> (n)	{ for (unsigned i=0; i<n; ++i) at(i)=i; }
+		Permutation (std::vector<unsigned> s)	: std::vector<unsigned> (s)	{ }
 		Permutation (Cycles & c);
 
 		bool is_identity () const;
@@ -18,7 +18,7 @@ namespace vb {
 
 		Cycles cycles () const;
 
-		std::vector<int>	l;
+		std::vector<unsigned>	l;
 	};
 
 	std::ostream & operator<< (std::ostream &os, const Permutation &P);
