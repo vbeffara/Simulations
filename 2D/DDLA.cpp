@@ -87,11 +87,11 @@ int main (int argc, char **argv) {
         reshape (pt.z.x,pt.z.y);
         if ( (pt.z.x<n-1) && (img->at(pt.z+coo(1,0))==0) )
           queue << Point(pt.z+coo(1,0),curtime+prng.exponential()/p);
-        if ( (pt.z.y<n-1) && (img->at(pt.z+coo(-1,0))==0) )
+        if ( (pt.z.y<n-1) && (img->at(pt.z+coo(0,1))==0) )
           queue << Point(pt.z+coo(0,1),curtime+prng.exponential()/(1-p));
-        if ( s && (pt.z.x>0) && (img->at(pt.z+coo(0,1))==0) )
+        if ( s && (pt.z.x>0) && (img->at(pt.z-coo(1,0))==0) )
           queue << Point(pt.z-coo(1,0),curtime+prng.exponential());
-        if ( s && (pt.z.y>0) && (img->at(pt.z+coo(0,-1))==0) )
+        if ( s && (pt.z.y>0) && (img->at(pt.z-coo(0,1))==0) )
           queue << Point(pt.z-coo(0,1),curtime+prng.exponential());
       } else {
         queue << Point(pt.z,curtime+prng.exponential());
