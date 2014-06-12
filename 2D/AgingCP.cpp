@@ -1,6 +1,5 @@
 #include <vb/Hub.h>
 #include <vb/Bitmap.h>
-#include <vb/Console.h>
 
 using namespace std; using namespace vb;
 
@@ -19,12 +18,11 @@ class ACP : public Bitmap<Site> { public:
 		double s=0; for (double u : P) s+=u; for (double &u : P) u /= s;
 	}
 	void run() {
-		step();
 		coo z = rand(); if (at(z)==0) return;
 		int action = prng.discrete (P);
-		if (action == 0)                    	{ put (z,0); }
-		else if (action == 1)               	{ int a = at(z); if (a>0) put(z, min(a+1,maxage)); }
-		else if (action-1+kid <= int(at(z)))	{ coo nz = z + dz[prng.uniform_int(4)]; if (atp(nz) == 0) putp(nz,1); }
+		if (action == 0)                           	{ put (z, 0); }
+		else if ((action == 1) && (at(z) < maxage))	{ put (z, at(z)+1); }
+		else if (action-1+kid <= int(at(z)))       	{ coo nz = z + dz[prng.uniform_int(4)]; if (atp(nz) == 0) putp(nz,1); }
 	}
 	int kid, maxage;
 	vector<double> P;
