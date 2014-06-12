@@ -6,13 +6,12 @@
 namespace vb {
 	class PointQueue;
 
-	class Point {
+	class Point : public coo {
 		public:
-			coo z;   	///< The location of the point.
 			double t;	///< The time at which the clock rings.
 			char c;  	///< The color of the point.
 
-			Point (coo zz=0, double tt=0, char cc=1) : z(zz), t(tt), c(cc) {};
+			Point (coo zz=0, double tt=0, char cc=1) : coo(zz), t(tt), c(cc) {};
 			Point (PointQueue &pq);
 
 			bool operator< (const Point &pt) const { return t > pt.t; };
@@ -26,6 +25,6 @@ namespace vb {
 
 	Point::Point (PointQueue &pq) { pq >> *this; };
 
-	Image      	&operator<< (Image &img,      	const Point &p) { img.put (p.z,p.c); return img; }
-	CoarseImage	&operator<< (CoarseImage &img,	const Point &p) { img.put (p.z,p.c); return img; }
+	Image      	&operator<< (Image &img,      	const Point &p) { img.put (p,p.c); return img; }
+	CoarseImage	&operator<< (CoarseImage &img,	const Point &p) { img.put (p,p.c); return img; }
 }

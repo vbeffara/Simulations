@@ -37,23 +37,23 @@ public:
 
       Point pt(pqueue);
 
-      if (!at(pt.z)) {
+      if (!at(pt)) {
         (*this) << pt; ++area;
 
         double curtime = invasion ? 0.0 : pt.t;
 
         int deg=1;
-        if (twostep) deg = at(pt.z-coo(1,0)) + at(pt.z+coo(1,0)) + at(pt.z+coo(0,1)) + at(pt.z-coo(0,1));
-        for (int i=0; i<deg; ++i) spread (curtime,pt.z.x,pt.z.y);
+        if (twostep) deg = at(pt-coo(1,0)) + at(pt+coo(1,0)) + at(pt+coo(0,1)) + at(pt-coo(0,1));
+        for (int i=0; i<deg; ++i) spread (curtime,pt.x,pt.y);
 
         if (twostep) {
-          if (at(pt.z+coo(-1,0))) spread(curtime,pt.z.x-1,pt.z.y);
-          if (at(pt.z+coo(+1,0))) spread(curtime,pt.z.x+1,pt.z.y);
-          if (at(pt.z+coo(0,-1))) spread(curtime,pt.z.x,pt.z.y-1);
-          if (at(pt.z+coo(0,+1))) spread(curtime,pt.z.x,pt.z.y+1);
+          if (at(pt+coo(-1,0))) spread(curtime,pt.x-1,pt.y);
+          if (at(pt+coo(+1,0))) spread(curtime,pt.x+1,pt.y);
+          if (at(pt+coo(0,-1))) spread(curtime,pt.x,pt.y-1);
+          if (at(pt+coo(0,+1))) spread(curtime,pt.x,pt.y+1);
         }
 
-        if ( (pt.z.x==1) || (pt.z.y==1) || (pt.z.x==true_width-2) || (pt.z.y==true_height-2) ) break;
+        if ( (pt.x==1) || (pt.y==1) || (pt.x==true_width-2) || (pt.y==true_height-2) ) break;
       }
     }
   }
