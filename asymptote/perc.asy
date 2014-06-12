@@ -1,10 +1,10 @@
-int xdim = 20;
-int ydim = 20;
-real p = .45;
+int xdim = 40;
+int ydim = 30;
+real p = .7;
 
 import stats;
 
-unitsize (10);
+unitsize (5);
 
 for (int i=0; i<=xdim; ++i)
   for (int j=0; j<=ydim; ++j)
@@ -13,10 +13,9 @@ for (int i=0; i<=xdim; ++i)
 for (int i=0; i<xdim; ++i)
   for (int j=0; j<=ydim; ++j)
     if (unitrand() < p) draw ((i,j)--(i+1,j));
-    else draw ((i+.5,j-.5)--(i+.5,j+.5), dotted);
+//    else draw ((i+.5,j-.5)--(i+.5,j+.5), dotted);
 
 for (int i=0; i<=xdim; ++i)
   for (int j=0; j<ydim; ++j)
     if (unitrand() < p) draw ((i,j)--(i,j+1));
-    else draw ((i-.5,j+.5)--(i+.5,j+.5), dotted);
-
+//    else draw ((i-.5,j+.5)--(i+.5,j+.5), dotted);
