@@ -15,9 +15,12 @@ namespace vb {
 	void Cube::output_pov (std::string s) {
 		Pov_Union * corner = new Pov_Union(); * corner
 			<< new Pov_Plane  	(tri(1,0,0), -.75*sx)
-			<< new Pov_Plane  	(tri(0,1,0), -.75*sy)
 			<< new Pov_Plane  	(tri(0,0,1),  .75*sz)
-			<< new Pov_Texture	("pigment { color White } finish { reflection {.6} ambient 0 diffuse 0 }");
+			<< new Pov_Texture	("pigment { color White } finish { reflection {.5} ambient 0 diffuse 0 }");
+
+		Pov_Union * ground = new Pov_Union(); * ground
+			<< new Pov_Plane  	(tri(0,1,0), -.75*sy)
+			<< new Pov_Texture	("pigment { color White } finish { reflection 0 ambient 0.2 diffuse 0.1 }");
 
 		Pov_Union * squares = new Pov_Union();
 		for (int x=0; x<sx; ++x) for (int y=0; y<sy; ++y) for (int z=0; z<sz; ++z) if (at(coo3(x,y,z))==255)
@@ -31,8 +34,8 @@ namespace vb {
 
 		Pov_Scene SS; SS
 			<< new Pov_Camera (tri(1.25*sx,.9*sy,-1.5*sz), tri(0,0,0), 60)
-			<< new Pov_Light_Source	(tri(2.5*sx,1.5*sy,-.8*sz))
-			<< corner << cube;
-			SS.output_pov(title);
+			<< new Pov_Light_Source	(tri(50*sx,30*sy,-15*sz))
+			<< corner << ground << cube;
+			SS.output_pov(s == "" ? title : s);
 	}
 }
