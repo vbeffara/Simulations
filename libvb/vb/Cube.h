@@ -37,7 +37,7 @@ namespace vb {
 		    step();
 		}
 
-		void output_pov ();
+		void output_pov (std::string s = "");
 
 		int sx,sy,sz; std::vector <unsigned char> data;
 	};

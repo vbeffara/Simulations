@@ -42,6 +42,12 @@ int main (int argc, char ** argv) {
 	CL_Parser CLP (argc, argv, "n=50,b=1,t=0,p=.5,k,c=bernoulli|cube|dobrushin|hexagon,s=0");
 	int T = CLP('t'); if (T==0) T = 2*int(CLP('n'));
     Ising3 C (CLP); C.show();
-    { ProgressBar P (T); for (int t=0; t<T; ++t) { C.swipe(); P.set(t); } }
+    { ProgressBar P (T); int s = CLP('s'); for (int t=0; t<T; ++t) {
+		if (s && (t % (T/s)) == 0) {
+			std::ostringstream os; os << "snapshot_" << std::setw(4) << std::setfill('0') << t/(T/s);
+			C.output_pov (os.str());
+		}
+		C.swipe(); P.set(t);
+	} }
 	C.output_pov();
 }

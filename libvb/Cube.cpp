@@ -12,7 +12,7 @@ namespace vb {
 	Cube_iterator	Cube::begin	()	{ return Cube_iterator (*this, coo3(0,0,0)); 	}
 	Cube_iterator	Cube::end  	()	{ return Cube_iterator (*this, coo3(0,0,sz));	}
 
-	void Cube::output_pov () {
+	void Cube::output_pov (std::string s) {
 		Pov_Union * corner = new Pov_Union(); * corner
 			<< new Pov_Plane  	(tri(1,0,0), -.75*sx)
 			<< new Pov_Plane  	(tri(0,1,0), -.75*sy)
