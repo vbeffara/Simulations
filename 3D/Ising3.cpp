@@ -11,6 +11,7 @@ class Ising3 : public Cube { public: CL_Parser & clp; int b; bool k; double beta
 		for (int k=0; k<=12; ++k) kaw.push_back(1/(1+exp(2*beta*(k-6))));
 		if     	(string(clp('c')) == "cube")     	bc_cube();
 		else if	(string(clp('c')) == "dobrushin")	bc_dobrushin();
+		else if	(string(clp('c')) == "hexagon")  	bc_hexagon();
 		else   	                                 	bc_bernoulli(double(clp('p')));
 	};
 
@@ -19,6 +20,9 @@ class Ising3 : public Cube { public: CL_Parser & clp; int b; bool k; double beta
 	void bc_cube ()                	{ for (auto c = begin(); c != end(); ++c) put(c, 0); b=0;
 	    for (int x=sx/10; x<9*sx/10; ++x) for (int y=sy/10; y<9*sy/10; ++y) for (int z=sz/10; z<9*sz/10; ++z) put(coo3(x,y,z), 255);
 	}
+	void bc_hexagon () { b=1; for (int i=0; i<sx; ++i) for (int j=0; j<sx; ++j) {
+		put (coo3(i,j,sz-1), 255); put (coo3(0,i,j), 255); put (coo3(i,0,j), 255);
+	}}
 
 	int nbsum (coo3 c) { int S=0; for (int i=0; i<6; ++i) S += atp(c+dz3[i]) ? 1 : 0; return S; }
 
@@ -35,7 +39,7 @@ class Ising3 : public Cube { public: CL_Parser & clp; int b; bool k; double beta
 };
 
 int main (int argc, char ** argv) {
-	CL_Parser CLP (argc, argv, "n=50,b=1,t=0,p=.5,k,c=bernoulli|cube|dobrushin");
+	CL_Parser CLP (argc, argv, "n=50,b=1,t=0,p=.5,k,c=bernoulli|cube|dobrushin|hexagon,s=0");
 	int T = CLP('t'); if (T==0) T = 2*int(CLP('n'));
     Ising3 C (CLP); C.show();
     { ProgressBar P (T); for (int t=0; t<T; ++t) { C.swipe(); P.set(t); } }
