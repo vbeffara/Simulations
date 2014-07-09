@@ -20,7 +20,7 @@ def configure (ctx) :
 	ctx.write_config_header ('libvb/vb/config.h')
 
 def build (ctx) :
-	ctx.recurse ('libvb tests 1D 2D 3D xtoys')
+	ctx.recurse ('libvb tests 1D 2D 3D')
 	ctx.install_files ('${PREFIX}/include/vb', 'libvb/vb/config.h')
 
 def unit_test (ctx, prog, ext, checksum):

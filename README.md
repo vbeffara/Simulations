@@ -34,7 +34,3 @@ The aim of this library is to provide an easy way for mathematicians (and maybe 
 ## Compilation
 
 I am using the very nice [`waf`](http://code.google.com/p/waf/) framework for my simulations, because it has a lot of cool features (such as automatic dependency tracking, and most of all portability). It is very easy to install, if you already have Python, because it is a single file; there is a copy in the root directory, which you can copy somewhere in your `$PATH` for convenience (somewhere where you have write privileges while running it), or use directly by running `./waf`.
-
-## About the `xtoys` directory
-
-These programs are not mine at all, they were written by [Mike Creutz](http://thy.phy.bnl.gov/www/xtoys/xtoys.html). I include them because they are somehow related to the others, and because I had to rewrite the Makefile to compile them on Mac OS X, now they should compile everywhere (as long as the X11 include files are present, of course).  If there is any (legal or other) problem about their presence here, I will remove them at once.

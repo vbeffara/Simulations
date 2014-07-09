@@ -1,7 +1,0 @@
-
-def build (ctx) :
-    if 'LIB_X11' in ctx.env:
-        for i in ctx.path.ant_glob('*.c'):
-            ctx.program (source = [i], target = str(i)[:-2], use='X11', includes='/usr/include/sys', lib='m')
-
-# vim: ft=python
