@@ -25,6 +25,10 @@ class Tiling : public Bitmap<Half> { public:
             }
         } else {
             for (int x=0; x<w(); ++x) for (int y=0; y<h(); ++y) putd (coo(x,y), 2*(x%2));
+            int b = H['b']; if (b>0) {
+                for (int x=w()/2-b; x<w()/2+b; ++x) putd(coo(x,h()/2), (2+at(coo(x,h()/2)).d)%4);
+                at(coo(w()/2-b,h()/2)).type = 0; at(coo(w()/2+b,h()/2)).type = 0;
+            }
         }
     }
     
@@ -37,7 +41,7 @@ class Tiling : public Bitmap<Half> { public:
 };
 
 int main (int argc, char ** argv) {
-    Hub H ("Domino tiling",argc,argv,"n=200,o=aztec");
+    Hub H ("Domino tiling",argc,argv,"n=200,o=aztec,b=0");
     Tiling T(H); T.show(); T.pause();
     while (true) T.flip(T.rand());
 }
