@@ -15,7 +15,7 @@ namespace vb {
 			else                	{ getopt_arg += s.substr(0,1) + ":";	(*this)[s[0]] = s.substr(2);	has_arg[s[0]] = true; }
 		}
 
-		int ch;
+		char ch;
 		while ((ch = getopt(argc,argv,getopt_arg.c_str())) != -1) {
 			if (ch == 'h')       	{ std::cerr << help << std::endl; exit(0); } 
 			else if (has_arg[ch])	{ (*this)[ch] = optarg; }
