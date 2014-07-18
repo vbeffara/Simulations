@@ -8,28 +8,25 @@ Color halfcolors [12] { BLACK,BLACK,BLACK,BLACK , RED,GREEN,YELLOW,BLUE , YELLOW
 
 class Half { public:
     unsigned char d, type;
-    Half (unsigned char _d = 0) : d(_d), type(0) {}
-    void operator= (unsigned char _d) { d=_d; }
+    Half (unsigned char _d = 0, unsigned char _t = 0) : d(_d), type(_t) {}
     operator Color () { return halfcolors [d+4*type]; }
 };
 
 class Tiling : public Bitmap<Half> { public:
-    void putd (coo c, unsigned char d) { at(c).d = d; step(); }
+    void putd (coo c, unsigned char d) { at(c).d = d; at(c+dz[d]).d = (d+2)%4; step(); }
 
     Tiling (Hub &H) : Bitmap<Half> (H['n'],H['n'],H.title) {
-        for (int x=0;x<w();++x) for (int y=0;y<h();++y) { at(coo(x,y)).type = 1+((x+y)%2); }
+        for (int x=0;x<w();++x) for (int y=0;y<h();++y) { at(coo(x,y)) = Half ( 2*(x%2), 1+((x+y)%2) ); }
         if (H['o'] == "aztec") {
             for (int i=0; i<h()/2; ++i) {
                 for (int j=0; j<w()/2-i-1; ++j) { at(coo(i,j)).type=0; at(coo(w()-1-i,j)).type=0; at(coo(i,h()-1-j)).type=0; at(coo(w()-1-i,h()-1-j)).type=0; }
                 for (int j=0; j<w(); ++j) { putd(coo(i,j), 1 + 2*((i+j+h()/2+1)%2)); putd(coo(i+w()/2,j), 1 + 2*((i+j+w()/2)%2)); }
             }
         } else if (H['o'] == "hill") {
-            for (int x=0; x<w(); ++x) for (int y=0; y<h(); ++y) {
-                if (x>=y) { if (x+y < w()) putd (coo(x,y), 2*((x+y)%2));       else if (x>y) putd (coo(x,y), 1 + 2*((x+y+w())%2)); }
-                if (x<=y) { if (x+y >= w()-1) putd (coo(x,y), 2*((x+y+h()+1)%2)); else if (x<y) putd (coo(x,y), 1 + 2*((x+y+1)%2)); }
-            }
+            for (int y=0; y<h()/2; ++y) for (int x=y; x<w()-y; x+=2)     { putd(coo(x,y),0); putd(coo(x,h()-1-y),0); }
+            for (int x=0; x<w()/2; ++x) for (int y=x+1; y<h()-1-x; y+=2) { putd(coo(x,y),1); putd(coo(w()-1-x,y),1); }
         } else {
-            for (int x=0; x<w(); ++x) for (int y=0; y<h(); ++y) putd (coo(x,y), 2*(x%2));
+            for (int x=0; x<w(); x+=2) for (int y=0; y<h(); ++y) putd (coo(x,y), 0);
             int b = H['b']; if (b>0) {
                 for (int x=w()/2-b; x<w()/2+b; ++x) putd(coo(x,h()/2), (2+at(coo(x,h()/2)).d)%4);
                 at(coo(w()/2-b,h()/2)).type = 0; at(coo(w()/2+b,h()/2)).type = 0;
@@ -39,14 +36,14 @@ class Tiling : public Bitmap<Half> { public:
     
     void flip (coo c) {
         if (at(c).type == 0) return;
-        step(); unsigned char d = at(c).d;
-        coo oc = c + dz[d] + dz[(d+1)%4]; if (!contains(oc)) return; if (at(oc).d != ((d+2)%4)) return;
-        putd (c,(d+1)%4); putd (c+dz[d],(d+1)%4); putd (c+dz[(d+1)%4],(d+3)%4); putd (oc,(d+3)%4); 
+        unsigned char d = at(c).d; coo oc = c + dz[d] + dz[(d+1)%4];
+        if (!contains(oc)) return; if (at(oc).type == 0) return; if (at(oc).d != ((d+2)%4)) return;
+        putd (c,(d+1)%4); putd (oc,(d+3)%4);
     }
 };
 
 int main (int argc, char ** argv) {
-    Hub H ("Domino tiling",argc,argv,"n=200,o=aztec,b=0");
+    Hub H ("Domino tiling",argc,argv,"n=200,o=aztec|hill|flat,b=0");
     Tiling T(H); T.show(); T.pause();
     while (true) T.flip(T.rand());
 }
