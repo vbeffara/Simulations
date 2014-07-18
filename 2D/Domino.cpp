@@ -14,6 +14,7 @@ class Half { public:
 
 class Tiling : public Bitmap<Half> { public:
     void putd (coo c, unsigned char d) { at(c).d = d; at(c+dz[d]).d = (d+2)%4; step(); }
+    void freeze (coo c) { at(c).type = 0; at(c+dz[at(c).d]).type = 0; }
 
     Tiling (Hub &H) : Bitmap<Half> (H['n'],H['n'],H.title) {
         for (int x=0;x<w();++x) for (int y=0;y<h();++y) { at(coo(x,y)) = Half ( 2*(x%2), 1+((x+y)%2) ); }
@@ -43,7 +44,8 @@ class Tiling : public Bitmap<Half> { public:
 };
 
 int main (int argc, char ** argv) {
-    Hub H ("Domino tiling",argc,argv,"n=200,o=aztec|hill|flat,b=0");
+    Hub H ("Domino tiling",argc,argv,"n=200,o=aztec|hill|flat,b=0,f=0");
     Tiling T(H); T.show(); T.pause();
-    while (true) T.flip(T.rand());
+    unsigned f = T.w()*T.h()*double(H['f']);
+    for (unsigned t=1 ;; ++t) { T.flip(T.rand()); if (t==f) T.freeze (coo(T.w()/2,T.h()/2)); }
 }
