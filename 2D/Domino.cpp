@@ -23,6 +23,11 @@ class Tiling : public Bitmap<Half> { public:
                 for (int j=0; j<w()/2-i-1; ++j) { at(coo(i,j)).type=0; at(coo(w()-1-i,j)).type=0; at(coo(i,h()-1-j)).type=0; at(coo(w()-1-i,h()-1-j)).type=0; }
                 for (int j=0; j<w(); ++j) { putd(coo(i,j), 1 + 2*((i+j+h()/2+1)%2)); putd(coo(i+w()/2,j), 1 + 2*((i+j+w()/2)%2)); }
             }
+        } else if (H['o'] == "hill") {
+            for (int x=0; x<w(); ++x) for (int y=0; y<h(); ++y) {
+                if (x>=y) { if (x+y < w()) putd (coo(x,y), 2*((x+y)%2));       else if (x>y) putd (coo(x,y), 1 + 2*((x+y+w())%2)); }
+                if (x<=y) { if (x+y >= w()-1) putd (coo(x,y), 2*((x+y+h()+1)%2)); else if (x<y) putd (coo(x,y), 1 + 2*((x+y+1)%2)); }
+            }
         } else {
             for (int x=0; x<w(); ++x) for (int y=0; y<h(); ++y) putd (coo(x,y), 2*(x%2));
             int b = H['b']; if (b>0) {
