@@ -26,6 +26,10 @@ class Tiling : public Bitmap<Half> { public:
         } else if (H['o'] == "hill") {
             for (int y=0; y<h()/2; ++y) for (int x=y; x<w()-y; x+=2)     { putd(coo(x,y),0); putd(coo(x,h()-1-y),0); }
             for (int x=0; x<w()/2; ++x) for (int y=x+1; y<h()-1-x; y+=2) { putd(coo(x,y),1); putd(coo(w()-1-x,y),1); }
+        } else if (H['o'] == "hole") {
+            for (int y=0; y<h()/2; ++y) for (int x=y; x<w()-y-1; x+=2)   { putd(coo(x,y),0); putd(coo(x+1,h()-1-y),0); }
+            for (int x=0; x<w()/2; ++x) for (int y=x+1; y<h()-1-x; y+=2) { putd(coo(x,y),1); putd(coo(w()-1-x,y-1),1); }
+            coo mid (w()/2,h()/2); at(mid).type = 0; putd (mid+coo(-1,-1),1); putd (mid+coo(-1,1),0); putd (mid+coo(1,1),3); putd (mid+coo(1,-1),2);
         } else {
             for (int x=0; x<w(); x+=2) for (int y=0; y<h(); ++y) putd (coo(x,y), 0);
             int b = H['b']; if (b>0) {
@@ -44,7 +48,7 @@ class Tiling : public Bitmap<Half> { public:
 };
 
 int main (int argc, char ** argv) {
-    Hub H ("Domino tiling",argc,argv,"n=200,o=aztec|hill|flat,b=0,f=0");
+    Hub H ("Domino tiling",argc,argv,"n=200,o=aztec|hill|hole|flat,b=0,f=0");
     Tiling T(H); T.show(); T.pause();
     unsigned f = T.w()*T.h()*double(H['f']);
     for (unsigned t=1 ;; ++t) { T.flip(T.rand()); if (t==f) T.freeze (coo(T.w()/2,T.h()/2)); }
