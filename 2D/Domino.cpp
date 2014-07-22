@@ -1,5 +1,6 @@
 
 #include <vb/Bitmap.h>
+#include <vb/Console.h>
 #include <vb/Hub.h>
 
 using namespace vb; using namespace std;
@@ -47,6 +48,7 @@ class Tiling : public Bitmap<Half> { public:
         if (at(c).type == 0) return 0;
         unsigned char d = at(c).d; coo oc = c + dz[d] + dz[(d+1)%4];
         if (!contains(oc)) return 0; if (at(oc).type == 0) return 0; if (at(oc).d != ((d+2)%4)) return 0;
+        vector<double> rr {r,r*r,1,r};
         if (prng.bernoulli(1-rr[(d+at(c).type)%4])) return 0;
         putd (c,(d+1)%4); putd (oc,(d+3)%4); return 1;
     }
@@ -55,9 +57,10 @@ class Tiling : public Bitmap<Half> { public:
 };
 
 int main (int argc, char ** argv) {
-    Hub H ("Domino tiling",argc,argv,"n=200,o=aztec|hill|hole|flat,b=0,f=0,r=1,d");
+    Hub H ("Domino tiling",argc,argv,"n=200,o=aztec|hill|hole|flat,b=0,f=0,r=1,d"); Tiling T(H);
     if (H['d']) halfcolors = dicolors;
-    Tiling T(H); T.show(); T.pause();
+    Console C; C.watch(T.r,"r"); C.manage(T.r,0.0,1.0); C.show();
+    T.show(); T.pause();
     unsigned f = T.w()*T.h()*double(H['f']);
     for (unsigned long long t=1 ;; ++t) { T.flip(T.rand()); if (t==f) T.freeze (coo(T.w()/2,T.h()/2)); }
 }
