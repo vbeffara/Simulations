@@ -1,5 +1,6 @@
-#include <vb/CL_Parser.h>
+#include <vb/Hub.h>
 #include <vb/Image.h>
+#include <vb/cpx.h>
 #include <fftw3.h>
 
 using namespace vb; using namespace std;
@@ -16,26 +17,20 @@ class Field : public Bitmap<double> { public:
 	void fill_dyadic (int n0) {
 		for (int l=n-1; l>=n0; --l) {
 			int ll = 1<<l;
-			for (int i=0; i<w()/ll; ++i)
-				for (int j=0; j<w()/ll; ++j) {
-					double g = prng.gaussian();
-					for (int x=i*ll; x<(i+1)*ll; ++x)
-						for (int y=j*ll; y<(j+1)*ll; ++y)
-							at(coo(x,y)) += g;
-				}
+			for (int i=0; i<w()/ll; ++i) for (int j=0; j<w()/ll; ++j) {
+				double g = prng.gaussian();
+				for (int x=i*ll; x<(i+1)*ll; ++x) for (int y=j*ll; y<(j+1)*ll; ++y) at(coo(x,y)) += g;
+			}
 		}
 	}
 
 	void fill_boolean (int n0) {
 		for (int l=n-1; l>=n0; --l) {
 			int ll = 1<<l;
-			for (int i=0; i<w()/ll; ++i)
-				for (int j=0; j<w()/ll; ++j) {
-					double g = prng.uniform_real(-1,1);
-					for (int x=i*ll; x<(i+1)*ll; ++x)
-						for (int y=j*ll; y<(j+1)*ll; ++y)
-							at(coo(x,y)) += g;
-				}
+			for (int i=0; i<w()/ll; ++i) for (int j=0; j<w()/ll; ++j) {
+				double g = prng.uniform_real(-1,1);
+				for (int x=i*ll; x<(i+1)*ll; ++x) for (int y=j*ll; y<(j+1)*ll; ++y) at(coo(x,y)) += g;
+			}
 		}
 	}
 
@@ -46,16 +41,11 @@ class Field : public Bitmap<double> { public:
 		fftw_complex *out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * w() * w());
 		fftw_plan p = fftw_plan_dft_2d (w(), w(), in, out, FFTW_FORWARD, FFTW_ESTIMATE);
 
-		for (int i=0; i<w(); ++i) {
-			for (int j=0; j<w(); ++j) {
-				if ((i==0)&&(j==0)) break;
-				double size = 0;
-				if (i<w()/2) size += i*i; else size += (w()-i)*(w()-i);
-				if (j<w()/2) size += j*j; else size += (w()-j)*(w()-j);
-				size = sqrt(size);
-				in[i+w()*j][0] = prng.gaussian() / size;
-				in[i+w()*j][1] = prng.gaussian() / size;
-			}
+		for (int i=0; i<w(); ++i) for (int j=0; j<w(); ++j) {
+			if ((i==0)&&(j==0)) break;
+			cpx z ( (i<w()/2 ? i : w()-i) , (j<w()/2 ? j : w()-j) );
+			in[i+w()*j][0] = prng.gaussian() / abs(z);
+			in[i+w()*j][1] = prng.gaussian() / abs(z);
 		}
 
 		fftw_execute(p);
@@ -66,16 +56,19 @@ class Field : public Bitmap<double> { public:
 	int n;
 };
 
-void trace (Image &img, vector<int> &direction, int x, int y) {
-	int nn = img.w();
+class QG : public Image { public: 
+	using Image::Image; 
 
-	while (img.at(coo(x,y)) != Color(255)) {
-		img.put (coo(x,y),255);
-		int xy = direction[x+nn*y];
-		x = xy%nn;
-		y = xy/nn;
+	void trace (coo z) {
+		while (at(z) != Color(255)) {
+			put(z,255);
+			int xy = d[z.x+w()*z.y];
+			z = coo(xy%w(),xy/w());
+		}
 	}
-}
+
+	vector<int> d;
+};
 
 void find_geodesics (const Field & field, vector<double> &distance, vector<int> &direction, int nn) {
 	unsigned int changed = 1; while (changed>0) {
@@ -183,10 +176,11 @@ int main (int argc, char **argv) {
 	for (int i=0; i<nn*nn; ++i) distance.push_back(big);
 	distance[nn*(nn+1)/2] = 0.0;
 
-	vector<int> direction;
-	for (int i=0; i<nn*nn; ++i) direction.push_back(nn*(nn+1)/2);
+	QG img (nn,nn,"A dyadic GFF");
 
-	find_geodesics (field, distance, direction, nn);
+	for (int i=0; i<nn*nn; ++i) img.d.push_back(nn*(nn+1)/2);
+
+	find_geodesics (field, distance, img.d, nn);
 
 	double radius = distance[0];
 	for (int i=0; i<nn; ++i) {
@@ -197,7 +191,6 @@ int main (int argc, char **argv) {
 	}
 	cerr << "Distance to the boundary : " << radius << endl;
 
-	Image img (nn,nn,"A dyadic GFF");
 	for (int i=0; i<nn; ++i)
 		for (int j=0; j<nn; ++j) {
 			double renorm = log(field.at(coo(i,j)))/(g*sqrt((double)n));
@@ -209,10 +202,10 @@ int main (int argc, char **argv) {
 		}
 
 	for (int i=0; i<=nn-1; i+=15) {
-		trace (img, direction, 0, i);
-		trace (img, direction, nn-1, i);
-		trace (img, direction, i, 0);
-		trace (img, direction, i, nn-1);
+		img.trace (coo(0,i));
+		img.trace (coo(nn-1,i));
+		img.trace (coo(i,0));
+		img.trace (coo(i,nn-1));
 	}
 
 	// for (int i=0; i<=nn-1; i+=15) {
@@ -231,4 +224,6 @@ int main (int argc, char **argv) {
 				img.put(coo(x,y),0);
 		}
 	}
+
+	img.output();
 }
