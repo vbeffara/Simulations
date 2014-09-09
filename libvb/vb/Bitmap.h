@@ -9,7 +9,7 @@ namespace vb {
 
 	template <typename T> class Bitmap : public Picture { public:
 		Bitmap (int wd, int ht, const std::string &tit, T d=0);
-		~Bitmap () { if ((T*)stage != data) free(data); }
+		~Bitmap () { free(data); }
 
 		T &      	at  	(coo z)             	{ return data[z.x + stride*z.y]; }
 		T const &	at  	(coo z) const       	{ return data[z.x + stride*z.y]; }
@@ -75,7 +75,4 @@ namespace vb {
 		else if ((xmax-xmin) > std::max(ymax-ymin,1))	{ int xmed=(xmin+xmax)>>1; tessel (xmin,ymin,xmed,ymax); tessel (xmed,ymin,xmax,ymax); }
 		else if (ymax>ymin+1)                        	{ int ymed=(ymin+ymax)>>1; tessel (xmin,ymin,xmax,ymed); tessel (xmin,ymed,xmax,ymax); }
 	}
-
-	template<> Bitmap<Color>::Bitmap (int wd, int ht, const std::string &tit, Color d);
-	extern template class Bitmap<Color>;
 }
