@@ -1,6 +1,7 @@
 #include <vb/Lattice.h>
 #include <vb/PRNG.h>
 #include <vb/Figure.h>
+#include <iomanip>
 
 using namespace vb;
 using namespace std;

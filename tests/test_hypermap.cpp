@@ -3,6 +3,7 @@
 #include <vb/Hypermap_lib.h>
 #include <vb/PRNG.h>
 #include <vb/ProgressBar.h>
+#include <iomanip>
 
 using namespace vb;
 using namespace std;

@@ -12,6 +12,7 @@
 #include <vb/PRNG.h>
 #include <vb/Figure.h>
 #include <vb/Console.h>
+#include <boost/utility.hpp>
 #include <list>
 
 using namespace std;

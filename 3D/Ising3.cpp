@@ -2,6 +2,7 @@
 #include <vb/PRNG.h>
 #include <vb/CL_Parser.h>
 #include <vb/ProgressBar.h>
+#include <iomanip>
 
 using namespace vb; using namespace std;
 

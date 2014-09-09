@@ -1,6 +1,7 @@
 #pragma once /// \file
 #define BOOST_DISABLE_ASSERTS 1
 #include <boost/random.hpp>
+#include <sstream>
 #include <vector>
 
 namespace vb {
