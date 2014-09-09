@@ -1,11 +1,7 @@
-#include <vb/config.h>
 #include <vb/PRNG.h>
 #include <vb/CL_Parser.h>
 #include <vb/Image.h>
-
-#ifdef HAVE_FFTW3
 #include <fftw3.h>
-#endif
 
 using namespace std;
 using namespace vb;
@@ -44,7 +40,6 @@ void fill_white (vector<double> &f, int n) {
 }
 
 void fill_free (vector<double> &f, int n) {
-#ifdef HAVE_FFTW3
   int N = 1<<n;
 
   fftw_complex *in  = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N * N);
@@ -68,9 +63,6 @@ void fill_free (vector<double> &f, int n) {
 
   fftw_destroy_plan(p);
   fftw_free(in); fftw_free(out);
-#else
-  std::cerr << "No FFTW3, can't make a free field !" << std::endl;
-#endif
 }
 
 void trace (Image &img, vector<int> &direction, int x, int y) {

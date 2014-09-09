@@ -10,10 +10,10 @@ def configure (ctx) :
 	ctx.load ('compiler_c compiler_cxx boost')
 	ctx.define ('VB_ENDIAN', ctx.check_endianness(), 0)
 	ctx.check_cfg	(package='cairo',                        	args='--cflags --libs')
+	ctx.check_cfg	(package='fftw3',                        	args='--cflags --libs')
 	ctx.check_cfg	(package='libpng',                       	args='--cflags --libs',   	uselib_store='PNG')
 	ctx.check_cfg	(package='',                             	args='--cflags --ldflags',	uselib_store='FLTK', path='fltk-config')
 	ctx.check_cfg	(package='x11',                          	args='--cflags --libs',   	mandatory=0)
-	ctx.check_cfg	(package='fftw3',                        	args='--cflags --libs',   	mandatory=0)
 	ctx.check    	(header_name=["string", "png++/png.hpp"],	msg='Checking for PNG++', 	define_name='HAVE_PNGPP')
 	ctx.check_boost ()
 
