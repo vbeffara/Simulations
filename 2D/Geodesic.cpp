@@ -4,66 +4,67 @@
 
 using namespace vb; using namespace std;
 
-using Field = Bitmap<double>;
-
-void fill_dyadic (Field & f, int n, int n0) {
-	int nn = 1<<n;
-	for (int l=n-1; l>=n0; --l) {
-		int ll = 1<<l;
-		for (int i=0; i<nn/ll; ++i)
-			for (int j=0; j<nn/ll; ++j) {
-				double g = prng.gaussian();
-				for (int x=i*ll; x<(i+1)*ll; ++x)
-					for (int y=j*ll; y<(j+1)*ll; ++y)
-						f.at(coo(x,y)) += g;
-			}
+class Field : public Bitmap<double> { public:
+	Field (Hub &H) : Bitmap<double> (1<<int(H['n']),1<<int(H['n']),"Random field"), n(H['n']) {
+		if     	(H['w'] == "dyadic") 	fill_dyadic (H['z']);
+		else if	(H['w'] == "boolean")	fill_boolean (H['z']);
+		else if	(H['w'] == "white")  	fill_white ();
+		else if	(H['w'] == "free")   	fill_free ();
+		else   	                     	cerr << "Noise type " << H['w'] << " unknown, no noise for you!" << endl;
 	}
-}
 
-void fill_boolean (Field & f, int n, int n0) {
-	int nn = 1<<n;
-	for (int l=n-1; l>=n0; --l) {
-		int ll = 1<<l;
-		for (int i=0; i<nn/ll; ++i)
-			for (int j=0; j<nn/ll; ++j) {
-				double g = prng.uniform_real(-1,1);
-				for (int x=i*ll; x<(i+1)*ll; ++x)
-					for (int y=j*ll; y<(j+1)*ll; ++y)
-						f.at(coo(x,y)) += g;
-			}
-	}
-}
-
-void fill_white (Field & f, int n) {
-	for (auto & u : f) u = prng.gaussian() * sqrt((double)n);
-}
-
-void fill_free (Field & f, int n) {
-	int N = 1<<n;
-
-	fftw_complex *in  = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N * N);
-	fftw_complex *out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N * N);
-	fftw_plan p = fftw_plan_dft_2d (N, N, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
-
-	for (int i=0; i<N; ++i) {
-		for (int j=0; j<N; ++j) {
-			if ((i==0)&&(j==0)) break;
-			double size = 0;
-			if (i<N/2) size += i*i; else size += (N-i)*(N-i);
-			if (j<N/2) size += j*j; else size += (N-j)*(N-j);
-			size = sqrt(size);
-			in[i+N*j][0] = prng.gaussian() / size;
-			in[i+N*j][1] = prng.gaussian() / size;
+	void fill_dyadic (int n0) {
+		for (int l=n-1; l>=n0; --l) {
+			int ll = 1<<l;
+			for (int i=0; i<w()/ll; ++i)
+				for (int j=0; j<w()/ll; ++j) {
+					double g = prng.gaussian();
+					for (int x=i*ll; x<(i+1)*ll; ++x)
+						for (int y=j*ll; y<(j+1)*ll; ++y)
+							at(coo(x,y)) += g;
+				}
 		}
 	}
 
-	fftw_execute(p);
-	for (int i=0; i<N; ++i) for (int j=0; j<N; ++j) f.put(coo(i,j),out[i+N*j][0]);
-	// for (int i=0; i<N*N; ++i) f[i] = out[i][0];
+	void fill_boolean (int n0) {
+		for (int l=n-1; l>=n0; --l) {
+			int ll = 1<<l;
+			for (int i=0; i<w()/ll; ++i)
+				for (int j=0; j<w()/ll; ++j) {
+					double g = prng.uniform_real(-1,1);
+					for (int x=i*ll; x<(i+1)*ll; ++x)
+						for (int y=j*ll; y<(j+1)*ll; ++y)
+							at(coo(x,y)) += g;
+				}
+		}
+	}
 
-	fftw_destroy_plan(p);
-	fftw_free(in); fftw_free(out);
-}
+	void fill_white () { for (auto & u : *this) u = prng.gaussian() * sqrt((double)n); }
+
+	void fill_free () {
+		fftw_complex *in  = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * w() * w());
+		fftw_complex *out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * w() * w());
+		fftw_plan p = fftw_plan_dft_2d (w(), w(), in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+
+		for (int i=0; i<w(); ++i) {
+			for (int j=0; j<w(); ++j) {
+				if ((i==0)&&(j==0)) break;
+				double size = 0;
+				if (i<w()/2) size += i*i; else size += (w()-i)*(w()-i);
+				if (j<w()/2) size += j*j; else size += (w()-j)*(w()-j);
+				size = sqrt(size);
+				in[i+w()*j][0] = prng.gaussian() / size;
+				in[i+w()*j][1] = prng.gaussian() / size;
+			}
+		}
+
+		fftw_execute(p);
+		for (int i=0; i<w(); ++i) for (int j=0; j<w(); ++j) put(coo(i,j),out[i+w()*j][0]);
+		fftw_destroy_plan(p); fftw_free(in); fftw_free(out);
+	}
+
+	int n;
+};
 
 void trace (Image &img, vector<int> &direction, int x, int y) {
 	int nn = img.w();
@@ -160,24 +161,11 @@ void explore (const Image &img, const vector<int> &direction, int x, int y, cons
 int main (int argc, char **argv) {
 	Hub H ("Random 2D geometry", argc, argv, "w=dyadic,n=8,z=0,g=1,s=0");
 	if (int s = H['s']) prng.seed(s);
-	int n = H['n'], z = H['z'], nn = 1<<n;
+	int n = H['n'], nn = 1<<n;
 	double g = H['g'];
 	string noise = H['w'];
 
-	Field field (nn,nn,"Field");
-	// vector<double> field;
-	// for (int i=0; i<nn*nn; ++i) field.push_back(0.0);
-
-	if (noise == "dyadic")
-		fill_dyadic (field,n,z);
-	else if (noise == "white")
-		fill_white (field,n);
-	else if (noise == "boolean")
-		fill_boolean (field,n,z);
-	else if (noise == "free")
-		fill_free (field,n);
-	else
-		cerr << "Noise type " << noise << " unknown, no noise for you!" << endl;
+	Field field (H);
 
 	double big = 0.0;
 	double max = field.at(0);
