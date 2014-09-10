@@ -57,74 +57,32 @@ class Field : public Bitmap<double> { public:
 };
 
 class QG : public Image { public: 
-	using Image::Image; 
+	QG (int n1, int n2, string s) : Image(n1,n2,s), d(n1,n2) {}; 
 
 	void trace (coo z) {
 		while (at(z) != Color(255)) {
 			put(z,255);
-			int xy = d[z.x+w()*z.y];
-			z = coo(xy%w(),xy/w());
+			z = d.at(z);
 		}
 	}
 
-	vector<int> d;
+	Array<coo> d;
 };
 
-void find_geodesics (const Field & field, vector<double> &distance, vector<int> &direction, int nn) {
+void find_geodesics (const Field & field, vector<double> &distance, Array<coo> &direction, int nn) {
 	unsigned int changed = 1; while (changed>0) {
 		changed=0;
 
 		for (int x=0; x<nn; ++x) {
 			for (int y=0; y<nn; ++y) {
-				int xy = x+nn*y;
+				int xy = x+nn*y; coo z(x,y);
 				bool flag = false;
 
-				if ((x>0)    && (distance[xy-1]  + field.at(coo(x,y)) < distance[xy])) { direction[xy] = xy-1;  distance[xy] = distance[xy-1]  + field.at(coo(x,y)); flag=true; }
-				if ((x<nn-1) && (distance[xy+1]  + field.at(coo(x,y)) < distance[xy])) { direction[xy] = xy+1;  distance[xy] = distance[xy+1]  + field.at(coo(x,y)); flag=true; }
-				if ((y>0)    && (distance[xy-nn] + field.at(coo(x,y)) < distance[xy])) { direction[xy] = xy-nn; distance[xy] = distance[xy-nn] + field.at(coo(x,y)); flag=true; }
-				if ((y<nn-1) && (distance[xy+nn] + field.at(coo(x,y)) < distance[xy])) { direction[xy] = xy+nn; distance[xy] = distance[xy+nn] + field.at(coo(x,y)); flag=true; }
-
-				if (flag) ++changed;
-			}
-		}
-
-		for (int x=nn-1; x>=0; --x) {
-			for (int y=nn-1; y>=0; --y) {
-				int xy = x+nn*y;
-				bool flag = false;
-
-				if ((x>0)    && (distance[xy-1]  + field.at(coo(x,y)) < distance[xy])) { direction[xy] = xy-1;  distance[xy] = distance[xy-1]  + field.at(coo(x,y)); flag=true; }
-				if ((x<nn-1) && (distance[xy+1]  + field.at(coo(x,y)) < distance[xy])) { direction[xy] = xy+1;  distance[xy] = distance[xy+1]  + field.at(coo(x,y)); flag=true; }
-				if ((y>0)    && (distance[xy-nn] + field.at(coo(x,y)) < distance[xy])) { direction[xy] = xy-nn; distance[xy] = distance[xy-nn] + field.at(coo(x,y)); flag=true; }
-				if ((y<nn-1) && (distance[xy+nn] + field.at(coo(x,y)) < distance[xy])) { direction[xy] = xy+nn; distance[xy] = distance[xy+nn] + field.at(coo(x,y)); flag=true; }
-
-				if (flag) ++changed;
-			}
-		}
-
-		for (int x=0; x<nn; ++x) {
-			for (int y=nn-1; y>=0; --y) {
-				int xy = x+nn*y;
-				bool flag = false;
-
-				if ((x>0)    && (distance[xy-1]  + field.at(coo(x,y)) < distance[xy])) { direction[xy] = xy-1;  distance[xy] = distance[xy-1]  + field.at(coo(x,y)); flag=true; }
-				if ((x<nn-1) && (distance[xy+1]  + field.at(coo(x,y)) < distance[xy])) { direction[xy] = xy+1;  distance[xy] = distance[xy+1]  + field.at(coo(x,y)); flag=true; }
-				if ((y>0)    && (distance[xy-nn] + field.at(coo(x,y)) < distance[xy])) { direction[xy] = xy-nn; distance[xy] = distance[xy-nn] + field.at(coo(x,y)); flag=true; }
-				if ((y<nn-1) && (distance[xy+nn] + field.at(coo(x,y)) < distance[xy])) { direction[xy] = xy+nn; distance[xy] = distance[xy+nn] + field.at(coo(x,y)); flag=true; }
-
-				if (flag) ++changed;
-			}
-		}
-
-		for (int x=nn-1; x>=0; --x) {
-			for (int y=0; y<nn; ++y) {
-				int xy = x+nn*y;
-				bool flag = false;
-
-				if ((x>0)    && (distance[xy-1]  + field.at(coo(x,y)) < distance[xy])) { direction[xy] = xy-1;  distance[xy] = distance[xy-1]  + field.at(coo(x,y)); flag=true; }
-				if ((x<nn-1) && (distance[xy+1]  + field.at(coo(x,y)) < distance[xy])) { direction[xy] = xy+1;  distance[xy] = distance[xy+1]  + field.at(coo(x,y)); flag=true; }
-				if ((y>0)    && (distance[xy-nn] + field.at(coo(x,y)) < distance[xy])) { direction[xy] = xy-nn; distance[xy] = distance[xy-nn] + field.at(coo(x,y)); flag=true; }
-				if ((y<nn-1) && (distance[xy+nn] + field.at(coo(x,y)) < distance[xy])) { direction[xy] = xy+nn; distance[xy] = distance[xy+nn] + field.at(coo(x,y)); flag=true; }
+				for (int k=0; k<4; ++k) {
+					coo nz = z + dz[k]; int nxy = nz.x + nn*nz.y;
+					if (!(direction.contains(nz))) continue;
+					if ((distance[nxy] + field.at(z) < distance[xy])) { direction.at(z) = nz; distance[xy] = distance[nxy] + field.at(z); flag=true; }
+				}
 
 				if (flag) ++changed;
 			}
@@ -178,7 +136,7 @@ int main (int argc, char **argv) {
 
 	QG img (nn,nn,"A dyadic GFF");
 
-	for (int i=0; i<nn*nn; ++i) img.d.push_back(nn*(nn+1)/2);
+	for (auto & u : img.d) u = nn*(nn+1)/2;
 
 	find_geodesics (field, distance, img.d, nn);
 
