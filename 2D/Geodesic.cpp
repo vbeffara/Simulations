@@ -90,23 +90,6 @@ void find_geodesics (const Field & field, Array<double> &distance, Array<coo> &d
 	}
 }
 
-void explore (const Image &img, const vector<int> &direction, int x, int y, const vector<double> d, const vector<double> f) {
-	int nn = img.w();
-
-	double l = d[x+nn*y];
-
-	cerr << endl;
-
-	while ((x!=nn/2)||(y!=nn/2)) {
-		cerr << l << " " << f[x+nn*y] << endl;
-		l -= f[x+nn*y];
-		int xy = direction[x+nn*y];
-		x = xy%nn;
-		y = xy/nn;
-	}
-}
-
-
 int main (int argc, char **argv) {
 	Hub H ("Random 2D geometry", argc, argv, "w=dyadic,n=8,z=0,g=1,s=0");
 	if (int s = H['s']) prng.seed(s);
@@ -162,13 +145,6 @@ int main (int argc, char **argv) {
 		img.trace (coo(i,0));
 		img.trace (coo(i,nn-1));
 	}
-
-	// for (int i=0; i<=nn-1; i+=15) {
-	//	explore (img, direction, 0, i, distance, field);
-	//	explore (img, direction, nn-1, i, distance, field);
-	//	explore (img, direction, i, 0, distance, field);
-	//	explore (img, direction, i, nn-1, distance, field);
-	// }
 
 	for (int x=0; x<nn; ++x) {
 		for (int y=0; y<nn; ++y) {
