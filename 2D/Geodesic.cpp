@@ -69,19 +69,19 @@ class QG : public Image { public:
 	Array<coo> d;
 };
 
-void find_geodesics (const Field & field, vector<double> &distance, Array<coo> &direction, int nn) {
+void find_geodesics (const Field & field, Array<double> &distance, Array<coo> &direction, int nn) {
 	unsigned int changed = 1; while (changed>0) {
 		changed=0;
 
 		for (int x=0; x<nn; ++x) {
 			for (int y=0; y<nn; ++y) {
-				int xy = x+nn*y; coo z(x,y);
+				coo z(x,y);
 				bool flag = false;
 
 				for (int k=0; k<4; ++k) {
-					coo nz = z + dz[k]; int nxy = nz.x + nn*nz.y;
+					coo nz = z + dz[k];
 					if (!(direction.contains(nz))) continue;
-					if ((distance[nxy] + field.at(z) < distance[xy])) { direction.at(z) = nz; distance[xy] = distance[nxy] + field.at(z); flag=true; }
+					if ((distance.at(nz) + field.at(z) < distance.at(z))) { direction.at(z) = nz; distance.at(z) = distance.at(nz) + field.at(z); flag=true; }
 				}
 
 				if (flag) ++changed;
@@ -130,9 +130,8 @@ int main (int argc, char **argv) {
 		big += u;
 	}
 
-	vector<double> distance;
-	for (int i=0; i<nn*nn; ++i) distance.push_back(big);
-	distance[nn*(nn+1)/2] = 0.0;
+	Array<double> distance (nn,nn,big);
+	distance.at(coo(nn/2,nn/2)) = 0.0;
 
 	QG img (nn,nn,"A dyadic GFF");
 
@@ -140,12 +139,12 @@ int main (int argc, char **argv) {
 
 	find_geodesics (field, distance, img.d, nn);
 
-	double radius = distance[0];
+	double radius = distance.at(0);
 	for (int i=0; i<nn; ++i) {
-		if (distance[i]<radius) radius=distance[i];
-		if (distance[nn*i]<radius) radius=distance[i];
-		if (distance[i+nn*(nn-1)]<radius) radius=distance[i];
-		if (distance[nn-1+nn*i]<radius) radius=distance[i];
+		if (distance.at(coo(i,0))    < radius) radius=distance.at(coo(i,0));
+		if (distance.at(coo(0,i))    < radius) radius=distance.at(coo(i,0));
+		if (distance.at(coo(i,nn-1)) < radius) radius=distance.at(coo(i,0));
+		if (distance.at(coo(nn-1,i)) < radius) radius=distance.at(coo(i,0));
 	}
 	cerr << "Distance to the boundary : " << radius << endl;
 
@@ -176,9 +175,9 @@ int main (int argc, char **argv) {
 	for (int x=0; x<nn; ++x) {
 		for (int y=0; y<nn; ++y) {
 			int i=x+nn*y;
-			if (distance[i]<=radius)
-				img.put(coo(x,y),127+img.at(coo(i,0))/2);
-			else if (distance[i]-field.at(coo(x,y))<=radius)
+			if (distance.at(coo(x,y))<=radius)
+				img.put(coo(x,y),127+img.at(coo(x,y))/2);
+			else if (distance.at(coo(x,y))-field.at(coo(x,y))<=radius)
 				img.put(coo(x,y),0);
 		}
 	}
