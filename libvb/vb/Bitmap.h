@@ -5,23 +5,41 @@
 #include <cstdlib>
 
 namespace vb {
+	template <typename T> class Array { public: 
+		Array (int w, int h) : data ((T*) calloc (w*h,sizeof(T))), W(w), H(h) {};
+		~Array () { free(data); }
+
+		T &      	at	(coo z)      	{ return data[z.x + W*z.y]; }
+		T const &	at	(coo z) const	{ return data[z.x + W*z.y]; }
+
+		T &      	atp	(coo z)      	{ int x=(z.x%W + W)%W, y=(z.y%H + H)%H; return at(coo(x,y)); }
+		T const &	atp	(coo z) const	{ int x=(z.x%W + W)%W, y=(z.y%H + H)%H; return at(coo(x,y)); }
+
+		void	put 	(coo z, T const & c)	{ at(z) = c; }
+		void	putp	(coo z, T const & c)	{ atp(z) = c; }
+
+		bool	contains	(coo z)  	{ return (z.x>=0) && (z.y>=0) && (z.x<W) && (z.y<H); }
+		coo 	rand    	(int b=0)	{ return coo (b+prng.uniform_int(W-2*b), b+prng.uniform_int(H-2*b)); }
+
+		T * data;
+		int W,H;
+	};
+
 	template <typename T> class Bitmap_iterator;
 
-	template <typename T> class Bitmap : public Picture { public:
+	template <typename T> class Bitmap : public Picture, public Array<T> { public:
 		Bitmap (int wd, int ht, const std::string &tit, T d=0);
-		~Bitmap () { free(data); }
 
-		T &      	at  	(coo z)             	{ return data[z.x + stride*z.y]; }
-		T const &	at  	(coo z) const       	{ return data[z.x + stride*z.y]; }
-		T &      	atp 	(coo z)             	{ int x=(z.x%w() + w())%w(), y=(z.y%h() + h())%h(); return at(coo(x,y)); }
-		T const &	atp 	(coo z) const       	{ int x=(z.x%w() + w())%w(), y=(z.y%h() + h())%h(); return at(coo(x,y)); }
-		void     	put 	(coo z, T const & c)	{ at(z) = c;  step(); }
-		void     	putp	(coo z, T const & c)	{ atp(z) = c; step(); }
+		using Array<T>::data; 
+		using Array<T>::at; 
+		using Array<T>::atp;
+		using Array<T>::contains; // TODO: rename, clashes with Fl_Widget
 
-		bool     	contains	(coo z)  	{ return (z.x>=0) && (z.y>=0) && (z.x<w()) && (z.y<h()); }
-		virtual T	compute 	(coo)  	{ return dflt; }
-		T        	lazy    	(coo z)  	{ if (at(z) == dflt) put(z, compute(z)); return at(z); }
-		coo      	rand    	(int b=0)	{ return coo (b+prng.uniform_int(w()-2*b), b+prng.uniform_int(h()-2*b)); }
+		void	put 	(coo z, T const & c)	{ Array<T>::put(z,c);  step(); }
+		void	putp	(coo z, T const & c)	{ Array<T>::putp(z,c); step(); }
+
+		virtual T	compute	(coo)  	{ return dflt; }
+		T        	lazy   	(coo z)	{ if (at(z) == dflt) put(z, compute(z)); return at(z); }
 
 		void fill (coo z, T c, int adj = 4);
 		void tessel (int xmin, int ymin, int xmax, int ymax);
@@ -32,13 +50,12 @@ namespace vb {
 
 	private:
 		Color * stage;	///< The raw pixel data of the screen representation.
-		T * data;     	///< The actual data.
 		coo z0;       	///< The coordinates of the origin (at(0) is there on screen).
 		T dflt;       	///< The default value.
 
 	protected:
-		virtual void paint () { if ((T*)stage == data) return; // Bitmap<Color>
-			for (int x=0; x<w(); ++x) for (int y=0; y<h(); ++y) stage[x+stride*y] = data[x+stride*y];
+		virtual void paint () {
+			for (int x=0; x<w(); ++x) for (int y=0; y<h(); ++y) stage[x+stride*y] = data[x+w()*y];
 		}
 	};
 
@@ -51,9 +68,8 @@ namespace vb {
 	};
 
 	template<typename T> Bitmap<T>::Bitmap (int wd, int ht, const std::string &tit, T d) :
-		Picture(wd,ht,tit), stage ((Color *) (cairo_image_surface_get_data (surface))),
-		data((T*) calloc (stride*ht,sizeof(T))), z0(0), dflt(d) {
-			for (int i=0; i<stride*ht; ++i) data[i]=dflt;
+		Picture(wd,ht,tit), Array<T>(wd,ht), stage ((Color *) (cairo_image_surface_get_data (surface))), z0(0), dflt(d) {
+			for (int i=0; i<wd*ht; ++i) data[i]=dflt;
 	}
 
 	template<typename T> void Bitmap<T>::fill (coo z, T c, int adj) {
