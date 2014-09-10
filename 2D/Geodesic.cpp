@@ -55,16 +55,23 @@ class Field : public Array<double> { public:
 };
 
 class QG : public Image { public: 
-	QG (Hub & H) : Image (1<<int(H['n']), 1<<int(H['n']), "A dyadic GFF"), field(H), next(w(),h(),coo(w()/2,h()/2)), d(w(),h()) {
-		double big = 0.0, min = field.at(0), max = field.at(0);
+	QG (Hub & H) : Image (1<<int(H['n']), 1<<int(H['n']), H.title), field(H), next(w(),h(),coo(w()/2,h()/2)), d(w(),h()) {
+		double big = 0.0, min = field.at(0), max = field.at(0), g = H['g'];
 
 		for (auto & u : field) {
 			if (u<min) min = u; if (u>max) max = u;
-			u = exp(double(H['g']) * u) / w();
+			u = exp(g*u);
 			big += u;
 		}
 
 		for (auto & u : d) u = big; d.at(coo(w()/2,h()/2)) = 0.0;
+
+		for (int i=0; i<w(); ++i)
+			for (int j=0; j<h(); ++j) {
+				double c = log(field.at(coo(i,j))) / g;
+				int color = 255 * (c-min)/(max-min);
+				put(coo(i,j),color);
+		}
 	};
 
 	void find_geodesics () {
@@ -102,47 +109,34 @@ class QG : public Image { public:
 
 	void trace (coo z) { while (at(z) != Color(255)) { put(z,255); z = next.at(z); } }
 
+	void ball () {
+		double r = radius();
+		for (int x=0; x<w(); ++x) {
+			for (int y=0; y<h(); ++y) {
+				if (d.at(coo(x,y)) <= r) put(coo(x,y), Color(0,0,127+at(coo(x,y)).b/2));
+			}
+		}
+	}
+
 	Field field;
 	Array<coo> next;
 	Array<double> d;
 };
 
 int main (int argc, char **argv) {
-	Hub H ("Random 2D geometry", argc, argv, "w=dyadic,n=9,z=0,g=1,s=0");
+	Hub H ("Random 2D geometry", argc, argv, "w=dyadic,n=9,z=0,g=1,s=0,b");
 	if (int s = H['s']) prng.seed(s);
 	int n = H['n'], nn = 1<<n;
-	double g = H['g'];
 
 	QG img (H);
+	img.show();
 	img.find_geodesics ();
 
 	double radius = img.radius(); cerr << "Distance to the boundary : " << radius << endl;
 
-	for (int i=0; i<nn; ++i)
-		for (int j=0; j<nn; ++j) {
-			double renorm = log(img.field.at(coo(i,j)))/(g*sqrt((double)n));
-			int color = 32 * (2.0 + renorm);
+	if (H['b']) img.ball ();
 
-			if (color>128) color=128;
-			if (color<0) color=0;
-			img.put(coo(i,j),color);
-		}
-
-	for (int i=0; i<=nn-1; i+=15) {
-		img.trace (coo(0,i));
-		img.trace (coo(nn-1,i));
-		img.trace (coo(i,0));
-		img.trace (coo(i,nn-1));
-	}
-
-	for (int x=0; x<nn; ++x) {
-		for (int y=0; y<nn; ++y) {
-			if (img.d.at(coo(x,y))<=radius)
-				img.put(coo(x,y),127+img.at(coo(x,y))/2);
-			else if (img.d.at(coo(x,y))-img.field.at(coo(x,y))<=radius)
-				img.put(coo(x,y),0);
-		}
-	}
+	for (int i=0; i<=nn-1; i+=15) { img.trace (coo(0,i)); img.trace (coo(nn-1,i)); img.trace (coo(i,0)); img.trace (coo(i,nn-1)); }
 
 	img.output();
 }
