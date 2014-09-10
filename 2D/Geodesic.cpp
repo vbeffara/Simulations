@@ -142,9 +142,9 @@ int main (int argc, char **argv) {
 	double radius = distance.at(0);
 	for (int i=0; i<nn; ++i) {
 		if (distance.at(coo(i,0))    < radius) radius=distance.at(coo(i,0));
-		if (distance.at(coo(0,i))    < radius) radius=distance.at(coo(i,0));
-		if (distance.at(coo(i,nn-1)) < radius) radius=distance.at(coo(i,0));
-		if (distance.at(coo(nn-1,i)) < radius) radius=distance.at(coo(i,0));
+		if (distance.at(coo(0,i))    < radius) radius=distance.at(coo(0,i));
+		if (distance.at(coo(i,nn-1)) < radius) radius=distance.at(coo(i,nn-1));
+		if (distance.at(coo(nn-1,i)) < radius) radius=distance.at(coo(nn-1,i));
 	}
 	cerr << "Distance to the boundary : " << radius << endl;
 
