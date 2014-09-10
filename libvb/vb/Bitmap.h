@@ -1,30 +1,8 @@
 #pragma once /// \file
 #include <vb/Picture.h>
-#include <vb/PRNG.h>
-#include <vb/coo.h>
-#include <cstdlib>
+#include <vb/Array.h>
 
 namespace vb {
-	template <typename T> class Array { public: 
-		Array (int w, int h) : data ((T*) calloc (w*h,sizeof(T))), W(w), H(h) {};
-		~Array () { free(data); }
-
-		T &      	at	(coo z)      	{ return data[z.x + W*z.y]; }
-		T const &	at	(coo z) const	{ return data[z.x + W*z.y]; }
-
-		T &      	atp	(coo z)      	{ int x=(z.x%W + W)%W, y=(z.y%H + H)%H; return at(coo(x,y)); }
-		T const &	atp	(coo z) const	{ int x=(z.x%W + W)%W, y=(z.y%H + H)%H; return at(coo(x,y)); }
-
-		void	put 	(coo z, T const & c)	{ at(z) = c; }
-		void	putp	(coo z, T const & c)	{ atp(z) = c; }
-
-		bool	contains	(coo z)  	{ return (z.x>=0) && (z.y>=0) && (z.x<W) && (z.y<H); }
-		coo 	rand    	(int b=0)	{ return coo (b+prng.uniform_int(W-2*b), b+prng.uniform_int(H-2*b)); }
-
-		T * data;
-		int W,H;
-	};
-
 	template <typename T> class Bitmap_iterator;
 
 	template <typename T> class Bitmap : public Picture, public Array<T> { public:
