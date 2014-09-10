@@ -55,83 +55,72 @@ class Field : public Array<double> { public:
 };
 
 class QG : public Image { public: 
-	QG (int n1, int n2, string s) : Image(n1,n2,s), d(n1,n2) {}; 
+	QG (Hub & H) : Image (1<<int(H['n']), 1<<int(H['n']), "A dyadic GFF"), field(H), next(w(),h(),coo(w()/2,h()/2)), d(w(),h()) {
+		double big = 0.0, min = field.at(0), max = field.at(0);
 
-	void trace (coo z) {
-		while (at(z) != Color(255)) {
-			put(z,255);
-			z = d.at(z);
+		for (auto & u : field) {
+			if (u<min) min = u; if (u>max) max = u;
+			u = exp(double(H['g']) * u) / w();
+			big += u;
+		}
+
+		for (auto & u : d) u = big; d.at(coo(w()/2,h()/2)) = 0.0;
+	};
+
+	void find_geodesics () {
+		unsigned int changed = 1; while (changed>0) {
+			changed=0;
+
+			for (int x=0; x<w(); ++x) {
+				for (int y=0; y<h(); ++y) {
+					coo z(x,y);
+					bool flag = false;
+
+					for (int k=0; k<4; ++k) {
+						coo nz = z + dz[k];
+						if (!(contains(nz))) continue;
+						if ((d.at(nz) + field.at(z) < d.at(z))) { next.at(z) = nz; d.at(z) = d.at(nz) + field.at(z); flag=true; }
+					}
+
+					if (flag) ++changed;
+				}
+			}
+
+			cerr << changed << "          \r";
 		}
 	}
 
-	Array<coo> d;
+	double radius () {
+		double r = d.at(0); for (int i=0; i<w(); ++i) {
+			r = min (r, d.at(coo(i,0))    );
+			r = min (r, d.at(coo(0,i))    );
+			r = min (r, d.at(coo(i,h()-1)));
+			r = min (r, d.at(coo(w()-1,i)));
+		}
+		return r;
+	}
+
+	void trace (coo z) { while (at(z) != Color(255)) { put(z,255); z = next.at(z); } }
+
+	Field field;
+	Array<coo> next;
+	Array<double> d;
 };
 
-void find_geodesics (const Field & field, Array<double> &distance, Array<coo> &direction, int nn) {
-	unsigned int changed = 1; while (changed>0) {
-		changed=0;
-
-		for (int x=0; x<nn; ++x) {
-			for (int y=0; y<nn; ++y) {
-				coo z(x,y);
-				bool flag = false;
-
-				for (int k=0; k<4; ++k) {
-					coo nz = z + dz[k];
-					if (!(direction.contains(nz))) continue;
-					if ((distance.at(nz) + field.at(z) < distance.at(z))) { direction.at(z) = nz; distance.at(z) = distance.at(nz) + field.at(z); flag=true; }
-				}
-
-				if (flag) ++changed;
-			}
-		}
-
-		cerr << "\r" << changed << "       ";
-	}
-}
-
 int main (int argc, char **argv) {
-	Hub H ("Random 2D geometry", argc, argv, "w=dyadic,n=8,z=0,g=1,s=0");
+	Hub H ("Random 2D geometry", argc, argv, "w=dyadic,n=9,z=0,g=1,s=0");
 	if (int s = H['s']) prng.seed(s);
 	int n = H['n'], nn = 1<<n;
 	double g = H['g'];
-	string noise = H['w'];
 
-	Field field (H);
+	QG img (H);
+	img.find_geodesics ();
 
-	double big = 0.0;
-	double max = field.at(0);
-	double min = field.at(0);
-
-	for (auto & u : field) {
-		if (u<min) min = u;
-		if (u>max) max = u;
-
-		u = exp(g * u) / nn;
-		big += u;
-	}
-
-	Array<double> distance (nn,nn,big);
-	distance.at(coo(nn/2,nn/2)) = 0.0;
-
-	QG img (nn,nn,"A dyadic GFF");
-
-	for (auto & u : img.d) u = nn*(nn+1)/2;
-
-	find_geodesics (field, distance, img.d, nn);
-
-	double radius = distance.at(0);
-	for (int i=0; i<nn; ++i) {
-		if (distance.at(coo(i,0))    < radius) radius=distance.at(coo(i,0));
-		if (distance.at(coo(0,i))    < radius) radius=distance.at(coo(0,i));
-		if (distance.at(coo(i,nn-1)) < radius) radius=distance.at(coo(i,nn-1));
-		if (distance.at(coo(nn-1,i)) < radius) radius=distance.at(coo(nn-1,i));
-	}
-	cerr << "Distance to the boundary : " << radius << endl;
+	double radius = img.radius(); cerr << "Distance to the boundary : " << radius << endl;
 
 	for (int i=0; i<nn; ++i)
 		for (int j=0; j<nn; ++j) {
-			double renorm = log(field.at(coo(i,j)))/(g*sqrt((double)n));
+			double renorm = log(img.field.at(coo(i,j)))/(g*sqrt((double)n));
 			int color = 32 * (2.0 + renorm);
 
 			if (color>128) color=128;
@@ -148,9 +137,9 @@ int main (int argc, char **argv) {
 
 	for (int x=0; x<nn; ++x) {
 		for (int y=0; y<nn; ++y) {
-			if (distance.at(coo(x,y))<=radius)
+			if (img.d.at(coo(x,y))<=radius)
 				img.put(coo(x,y),127+img.at(coo(x,y))/2);
-			else if (distance.at(coo(x,y))-field.at(coo(x,y))<=radius)
+			else if (img.d.at(coo(x,y))-img.field.at(coo(x,y))<=radius)
 				img.put(coo(x,y),0);
 		}
 	}
