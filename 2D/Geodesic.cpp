@@ -37,19 +37,17 @@ class Field : public Array<double> { public:
 	void fill_white () { for (auto & u : *this) u = prng.gaussian() * sqrt((double)n); }
 
 	void fill_free () {
-		fftw_complex *in  = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * W*H);
-		fftw_complex *out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * W*H);
-		fftw_plan p = fftw_plan_dft_2d (W, H, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+		cpx *in = (cpx*) fftw_alloc_complex(W*H), *out = (cpx*) fftw_alloc_complex(W*H);
+		fftw_plan p = fftw_plan_dft_2d (W, H, (fftw_complex*) in, (fftw_complex*) out, FFTW_FORWARD, FFTW_ESTIMATE);
 
 		for (int i=0; i<W; ++i) for (int j=0; j<H; ++j) {
 			if ((i==0)&&(j==0)) break;
 			cpx z ( min(i,W-i) , min(j,H-j) );
-			in[i+W*j][0] = prng.gaussian() / abs(z);
-			in[i+W*j][1] = prng.gaussian() / abs(z);
+			in[i+W*j] = cpx ( prng.gaussian() / abs(z), prng.gaussian() / abs(z) );
 		}
 
 		fftw_execute(p);
-		for (int i=0; i<W; ++i) for (int j=0; j<H; ++j) put(coo(i,j),out[i+W*j][0]);
+		for (int i=0; i<W; ++i) for (int j=0; j<H; ++j) put(coo(i,j),real(out[i+W*j]));
 		fftw_destroy_plan(p); fftw_free(in); fftw_free(out);
 	}
 
@@ -174,7 +172,6 @@ int main (int argc, char **argv) {
 
 	for (int x=0; x<nn; ++x) {
 		for (int y=0; y<nn; ++y) {
-			int i=x+nn*y;
 			if (distance.at(coo(x,y))<=radius)
 				img.put(coo(x,y),127+img.at(coo(x,y))/2);
 			else if (distance.at(coo(x,y))-field.at(coo(x,y))<=radius)
