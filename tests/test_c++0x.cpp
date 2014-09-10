@@ -10,7 +10,7 @@ int main (int, char **) {
     for (auto & v : I) v = prng.uniform_int(255);
 
     // More explicit use of iterator
-    for (auto z = I.begin(); z != Bitmap_iterator<Color> (I,coo(0,400)); ++z) *z = prng.uniform_int(128);
+    for (auto z = I.begin(); z != Array_iterator<Color> (I,coo(0,400)); ++z) *z = prng.uniform_int(128);
 
     // Can also use coordinates
     for (auto z = I.begin(); z != Image::iterator (I,coo(0,300)); ++z) *z = prng.uniform_int(1+255*z.x/499);

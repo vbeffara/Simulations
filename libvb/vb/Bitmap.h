@@ -3,14 +3,11 @@
 #include <vb/Array.h>
 
 namespace vb {
-	template <typename T> class Bitmap_iterator;
-
 	template <typename T> class Bitmap : public Picture, public Array<T> { public:
 		Bitmap (int wd, int ht, const std::string &tit, T d=0);
 
-		using Array<T>::data; 
-		using Array<T>::at; 
-		using Array<T>::atp;
+		using Array<T>::at;   	using Array<T>::atp;
+		using Array<T>::begin;	using Array<T>::end;
 		using Array<T>::contains; // TODO: rename, clashes with Fl_Widget
 
 		void	put 	(coo z, T const & c)	{ Array<T>::put(z,c);  step(); }
@@ -22,10 +19,6 @@ namespace vb {
 		void fill (coo z, T c, int adj = 4);
 		void tessel (int xmin, int ymin, int xmax, int ymax);
 
-		typedef Bitmap_iterator<T> iterator;
-		iterator	begin	()	{ return iterator (*this, coo(0,0));  	}
-		iterator	end  	()	{ return iterator (*this, coo(0,h()));	}
-
 	private:
 		Color * stage;	///< The raw pixel data of the screen representation.
 		coo z0;       	///< The coordinates of the origin (at(0) is there on screen).
@@ -33,22 +26,12 @@ namespace vb {
 
 	protected:
 		virtual void paint () {
-			for (int x=0; x<w(); ++x) for (int y=0; y<h(); ++y) stage[x+stride*y] = data[x+w()*y];
+			for (int x=0; x<w(); ++x) for (int y=0; y<h(); ++y) stage[x+stride*y] = at(coo(x,y));
 		}
 	};
 
-	template<typename T> class Bitmap_iterator : public coo { public: Bitmap<T> &b;
-		Bitmap_iterator	(Bitmap<T> &bb, coo z) : coo(z), b(bb)	{}
-		bool operator!=	(Bitmap_iterator<T> &o)               	{ return (&b != &o.b) || ((coo)(*this) != (coo)(o));	}
-		bool operator!=	(coo o)                               	{ return ((coo)(*this) != (coo)(o));                	}
-		void operator++	()                                    	{ x++; if (x == b.w()) { x=0; y++; }                	}
-		T & operator*  	()                                    	{ return b.at(*this);                               	}
-	};
-
 	template<typename T> Bitmap<T>::Bitmap (int wd, int ht, const std::string &tit, T d) :
-		Picture(wd,ht,tit), Array<T>(wd,ht), stage ((Color *) (cairo_image_surface_get_data (surface))), z0(0), dflt(d) {
-			for (int i=0; i<wd*ht; ++i) data[i]=dflt;
-	}
+		Picture(wd,ht,tit), Array<T>(wd,ht,d), stage ((Color *) (cairo_image_surface_get_data (surface))), z0(0), dflt(d) {}
 
 	template<typename T> void Bitmap<T>::fill (coo z, T c, int adj) {
 		T in = at(z); if (in == c) return;

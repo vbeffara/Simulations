@@ -1,13 +1,13 @@
 #pragma once /// \file
 #include <vb/PRNG.h>
 #include <vb/coo.h>
+#include <vector>
 
 namespace vb {
 	template <typename T> class Array_iterator;
 
 	template <typename T> class Array { public: 
-		Array (int w, int h) : data ((T*) calloc (w*h,sizeof(T))), W(w), H(h) {};
-		~Array () { free(data); }
+		Array (int w, int h, T d=0) :  W(w), H(h), data (w*h,d) {};
 
 		T &      	at	(coo z)      	{ return data[z.x + W*z.y]; }
 		T const &	at	(coo z) const	{ return data[z.x + W*z.y]; }
@@ -25,8 +25,10 @@ namespace vb {
 		iterator	begin	()	{ return iterator (*this, coo(0,0));	}
 		iterator	end  	()	{ return iterator (*this, coo(0,H));	}
 
-		T * data;
 		int W,H;
+
+	private:
+		std::vector<T> data;
 	};
 
 	template<typename T> class Array_iterator : public coo { public: Array<T> &b;
