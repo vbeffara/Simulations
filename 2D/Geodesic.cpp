@@ -140,12 +140,12 @@ class QG : public Image { public:
 };
 
 int main (int argc, char **argv) {
-	Hub H ("Random 2D geometry", argc, argv, "w=dyadic,n=9,z=0,g=1,s=0,b");
+	Hub H ("Random 2D geometry", argc, argv, "w=dyadic,n=9,z=0,g=1,s=0,b,v");
 	if (int s = H['s']) prng.seed(s);
 	int n = H['n'], nn = 1<<n;
 
 	QG img (H);
-	img.show();
+	if (H['v']) img.show();
 	img.dijkstra();
 
 	double radius = img.radius(); cerr << "Distance to the boundary : " << radius << endl;
