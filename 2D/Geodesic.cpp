@@ -57,12 +57,11 @@ class Field : public Array<double> { public:
 
 class Info { 
 	public: 
-		Info (coo _z, coo _n, double _d, bool _done = false) : z(_z), next(_n), d(_d), done(_done) {} 
+		Info (coo _z, coo _n, double _d) : z(_z), next(_n), d(_d) {}
 		bool operator< (const Info &o) const { return d > o.d; }
 
 		coo z,next; 
 		double d; 
-		bool done;
 	};
 
 class QG : public Image { public: 
@@ -84,7 +83,7 @@ class QG : public Image { public:
 				int color = 255 * (c-min)/(max-min);
 				put(z,color);
 		}
-		I.at(mid).d = 0.0; I.at(mid).done = true;
+		I.at(mid).d = 0.0;
 	};
 
 	void dijkstra () {
@@ -96,14 +95,12 @@ class QG : public Image { public:
 			Q.push (I.at(nz));
 		}
 
-		int left = w()*h()-1; while (left) {
-			while (I.at(Q.top().z).done) Q.pop();
+		for (int left = w()*h()-1; left>0; --left) {
+			while (I.at(Q.top().z).d < Q.top().d) Q.pop();
 			Info im = Q.top(); Q.pop();
-			I.at(im.z).done = true; --left;
 			for (int k=0; k<4; ++k) {
 				coo nz = im.z + dz[k];
 				if (!(contains(nz))) continue;
-				if (I.at(nz).done) continue;
 				double nd = im.d + field.at(nz);
 				if (I.at(nz).d > nd) { 
 					I.at(nz).d = nd; 
