@@ -1,5 +1,6 @@
 #include <vb/Hub.h>
 #include <vb/Image.h>
+#include <vb/ProgressBar.h>
 #include <vb/cpx.h>
 #include <fftw3.h>
 #include <queue>
@@ -87,15 +88,11 @@ class QG : public Image { public:
 	};
 
 	void dijkstra () {
-		priority_queue<Info> Q;
+		priority_queue<Info> Q; Q.push (I.at(coo(w()/2,h()/2)));
+		ProgressBar PB (w()*h());
 
-		for (int i=0; i<4; ++i) { 
-			coo z = coo(w()/2,h()/2), nz = z + dz[i]; 
-			I.at(nz) = Info (nz,z,field.at(nz)); 
-			Q.push (I.at(nz));
-		}
-
-		for (int left = w()*h()-1; left>0; --left) {
+		for (int t=0; t < w()*h(); ++t) {
+			PB.set (t);
 			while (I.at(Q.top().z).d < Q.top().d) Q.pop();
 			Info im = Q.top(); Q.pop();
 			for (int k=0; k<4; ++k) {
@@ -137,19 +134,16 @@ class QG : public Image { public:
 };
 
 int main (int argc, char **argv) {
-	Hub H ("Random 2D geometry", argc, argv, "w=dyadic,n=9,z=0,g=1,s=0,b,v");
+	Hub H ("Random 2D geometry", argc, argv, "w=free,n=9,z=0,g=1,s=0,b,i");
 	if (int s = H['s']) prng.seed(s);
 	int n = H['n'], nn = 1<<n;
 
-	QG img (H);
-	if (H['v']) img.show();
+	QG img (H); if (!H['i']) img.show();
+
 	img.dijkstra();
-
-	double radius = img.radius(); cerr << "Distance to the boundary : " << radius << endl;
-
 	if (H['b']) img.ball ();
 
-	for (int i=0; i<=nn-1; i+=15) { img.trace (coo(0,i)); img.trace (coo(nn-1,i)); img.trace (coo(i,0)); img.trace (coo(i,nn-1)); }
+	for (int i=0; i<=nn-1; i+=1) { img.trace (coo(0,i)); img.trace (coo(nn-1,i)); img.trace (coo(i,0)); img.trace (coo(i,nn-1)); }
 
-	img.output();
+	if (!H['i']) img.pause(); img.output();
 }
