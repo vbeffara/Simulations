@@ -54,8 +54,10 @@ class Field : public Array<double> { public:
 	int n;
 };
 
+class Info { public: coo next; double d; Info (double dd = 0) : next (0), d (dd) {} };
+
 class QG : public Image { public: 
-	QG (Hub & H) : Image (1<<int(H['n']), 1<<int(H['n']), H.title), field(H), next(w(),h(),coo(w()/2,h()/2)), d(w(),h()) {
+	QG (Hub & H) : Image (1<<int(H['n']), 1<<int(H['n']), H.title), field(H), I(w(),h()) {
 		double big = 0.0, min = field.at(0), max = field.at(0), g = H['g'];
 
 		for (auto & u : field) {
@@ -64,7 +66,8 @@ class QG : public Image { public:
 			big += u;
 		}
 
-		for (auto & u : d) u = big; d.at(coo(w()/2,h()/2)) = 0.0;
+		for (auto & i : I) { i.next = coo(w()/2,h()/2); i.d = big; }
+		I.at(coo(w()/2,h()/2)).d = 0.0;
 
 		for (int i=0; i<w(); ++i)
 			for (int j=0; j<h(); ++j) {
@@ -77,50 +80,43 @@ class QG : public Image { public:
 	void find_geodesics () {
 		unsigned int changed = 1; while (changed>0) {
 			changed=0;
-
 			for (int x=0; x<w(); ++x) {
 				for (int y=0; y<h(); ++y) {
-					coo z(x,y);
-					bool flag = false;
-
+					coo z(x,y); Info & i = I.at(z); double f = field.at(z);
 					for (int k=0; k<4; ++k) {
-						coo nz = z + dz[k];
-						if (!(contains(nz))) continue;
-						if ((d.at(nz) + field.at(z) < d.at(z))) { next.at(z) = nz; d.at(z) = d.at(nz) + field.at(z); flag=true; }
+						coo nz = z + dz[k]; if (!(contains(nz))) continue;
+						Info & ni = I.at(nz);
+						if ((ni.d + f < i.d)) { i.next = nz; i.d = ni.d + f; ++changed; }
 					}
-
-					if (flag) ++changed;
 				}
 			}
-
 			cerr << changed << "          \r";
 		}
 	}
 
 	double radius () {
-		double r = d.at(0); for (int i=0; i<w(); ++i) {
-			r = min (r, d.at(coo(i,0))    );
-			r = min (r, d.at(coo(0,i))    );
-			r = min (r, d.at(coo(i,h()-1)));
-			r = min (r, d.at(coo(w()-1,i)));
+		double r = I.at(0).d; for (int i=0; i<w(); ++i) {
+			r = min (r, I.at(coo(i,0)).d    );
+			r = min (r, I.at(coo(0,i)).d    );
+			r = min (r, I.at(coo(i,h()-1)).d);
+			r = min (r, I.at(coo(w()-1,i)).d);
 		}
 		return r;
 	}
 
-	void trace (coo z) { while (at(z) != Color(255)) { put(z,255); z = next.at(z); } }
+	void trace (coo z) { while (at(z) != Color(255)) { put(z,255); z = I.at(z).next; } }
 
 	void ball () {
 		double r = radius();
 		for (int x=0; x<w(); ++x) {
 			for (int y=0; y<h(); ++y) {
-				if (d.at(coo(x,y)) <= r) put(coo(x,y), Color(0,0,127+at(coo(x,y)).b/2));
+				if (I.at(coo(x,y)).d <= r) put(coo(x,y), Color(0,0,127+at(coo(x,y)).b/2));
 			}
 		}
 	}
 
 	Field field;
-	Array<coo> next;
-	Array<double> d;
+	Array<Info> I;
 };
 
 int main (int argc, char **argv) {
