@@ -3,6 +3,7 @@
 #include <vb/ProgressBar.h>
 #include <vb/cpx.h>
 #include <fftw3.h>
+#include <limits>
 #include <queue>
 
 using namespace vb; using namespace std;
@@ -14,6 +15,8 @@ class Field : public Array<double> { public:
 		else if	(H['w'] == "white")  	fill_white ();
 		else if	(H['w'] == "free")   	fill_free ();
 		else   	                     	cerr << "Noise type " << H['w'] << " unknown, no noise for you!" << endl;
+
+		minf = maxf = at(0); for (auto & u : *this) { minf = min (minf,u); maxf = max (maxf,u); }
 	}
 
 	void fill_dyadic (int n0) {
@@ -54,6 +57,7 @@ class Field : public Array<double> { public:
 	}
 
 	int n;
+	double minf,maxf;
 };
 
 class Info { 
@@ -66,22 +70,17 @@ class Info {
 	};
 
 class QG : public Image { public: 
-	QG (Hub & H) : Image (1<<int(H['n']), 1<<int(H['n']), H.title), field(H), I(w(),h(),Info(0,0,0,0)) {
-		double big = 0, min = field.at(0), max = field.at(0), g = H['g'];
-
-		for (auto & u : field) {
-			if (u<min) min = u; if (u>max) max = u;
-			u = exp(g*u);
-			big += u;
-		}
+	QG (Hub & H) : Image (1<<int(H['n']), 1<<int(H['n']), H.title), I(w(),h(),Info(0,0,0,0)) {
+		Field field (H);
+		double g = H['g'];
 
 		coo mid (w()/2,h()/2);
 		for (int i=0; i<w(); ++i)
 			for (int j=0; j<h(); ++j) {
 				coo z(i,j);
-				I.at(z) = Info (z, mid, big, field.at(z));
-				double c = log(field.at(z)) / g;
-				int color = 255 * (c-min)/(max-min);
+				I.at(z) = Info (z, mid, numeric_limits<double>::infinity(), exp(g*field.at(z)));
+				double c = field.at(z);
+				int color = 255 * (c-field.minf)/(field.maxf-field.minf);
 				put(z,color);
 		}
 		I.at(mid).d = 0.0;
@@ -126,7 +125,6 @@ class QG : public Image { public:
 		}
 	}
 
-	Field field;
 	Array<Info> I;
 };
 
