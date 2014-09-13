@@ -8,23 +8,39 @@
 
 using namespace vb; using namespace std;
 
-class Field : public Array<double> { public:
-	Field (Hub &H) : Array<double> (1<<int(H['n']),1<<int(H['n']),0), n(H['n']) {
+class Info { 
+	public: 
+		Info (coo _z, coo _n, double _d, double _f) : z(_z), next(_n), d(_d), f(_f) {}
+		bool operator< (const Info &o) const { return d > o.d; }
+
+		coo z,next; 
+		double d,f;
+	};
+
+class QG : public Image { public: 
+	QG (Hub & H) : Image (1<<int(H['n']), 1<<int(H['n']), H.title), I(w(),h(),Info(0,0,0,0)), g(H['g']), n(H['n']) {
 		if     	(H['w'] == "dyadic") 	fill_dyadic	(H['z']);
 		else if	(H['w'] == "boolean")	fill_boolean (H['z']);
 		else if	(H['w'] == "white")  	fill_white ();
 		else if	(H['w'] == "free")   	fill_free ();
 		else   	                     	cerr << "Noise type " << H['w'] << " unknown, no noise for you!" << endl;
 
-		minf = maxf = at(0); for (auto & u : *this) { minf = min (minf,u); maxf = max (maxf,u); }
-	}
+		minf = maxf = I.at(0).f; for (auto & u : I) { minf = min (minf,u.f); maxf = max (maxf,u.f); }
+
+		for (int i=0; i<w(); ++i)
+			for (int j=0; j<h(); ++j) {
+				coo z(i,j);
+				put (z, 255 * (I.at(z).f-minf)/(maxf-minf));
+				I.at(z) = Info (z, z, numeric_limits<double>::infinity(), exp(g*I.at(z).f));
+		}
+	};
 
 	void fill_dyadic (int n0) {
 		for (int l=n-1; l>=n0; --l) {
 			int ll = 1<<l;
 			for (int i=0; i<W/ll; ++i) for (int j=0; j<H/ll; ++j) {
 				double g = prng.gaussian();
-				for (int x=i*ll; x<(i+1)*ll; ++x) for (int y=j*ll; y<(j+1)*ll; ++y) at(coo(x,y)) += g;
+				for (int x=i*ll; x<(i+1)*ll; ++x) for (int y=j*ll; y<(j+1)*ll; ++y) I.at(coo(x,y)).f += g;
 			}
 		}
 	}
@@ -34,12 +50,12 @@ class Field : public Array<double> { public:
 			int ll = 1<<l;
 			for (int i=0; i<W/ll; ++i) for (int j=0; j<H/ll; ++j) {
 				double g = prng.uniform_real(-1,1);
-				for (int x=i*ll; x<(i+1)*ll; ++x) for (int y=j*ll; y<(j+1)*ll; ++y) at(coo(x,y)) += g;
+				for (int x=i*ll; x<(i+1)*ll; ++x) for (int y=j*ll; y<(j+1)*ll; ++y) I.at(coo(x,y)).f += g;
 			}
 		}
 	}
 
-	void fill_white () { for (auto & u : *this) u = prng.gaussian() * sqrt((double)n); }
+	void fill_white () { for (auto & u : I) u.f = prng.gaussian() * sqrt((double)n); }
 
 	void fill_free () {
 		cpx *in = (cpx*) fftw_alloc_complex(W*H), *out = (cpx*) fftw_alloc_complex(W*H);
@@ -52,42 +68,13 @@ class Field : public Array<double> { public:
 		}
 
 		fftw_execute(p);
-		for (int i=0; i<W; ++i) for (int j=0; j<H; ++j) put(coo(i,j),real(out[i+W*j]));
+		for (int i=0; i<W; ++i) for (int j=0; j<H; ++j) I.at(coo(i,j)).f = real(out[i+W*j]);
 		fftw_destroy_plan(p); fftw_free(in); fftw_free(out);
 	}
 
-	int n;
-	double minf,maxf;
-};
-
-class Info { 
-	public: 
-		Info (coo _z, coo _n, double _d, double _f) : z(_z), next(_n), d(_d), f(_f) {}
-		bool operator< (const Info &o) const { return d > o.d; }
-
-		coo z,next; 
-		double d,f;
-	};
-
-class QG : public Image { public: 
-	QG (Hub & H) : Image (1<<int(H['n']), 1<<int(H['n']), H.title), I(w(),h(),Info(0,0,0,0)) {
-		Field field (H);
-		double g = H['g'];
-
-		coo mid (w()/2,h()/2);
-		for (int i=0; i<w(); ++i)
-			for (int j=0; j<h(); ++j) {
-				coo z(i,j);
-				I.at(z) = Info (z, mid, numeric_limits<double>::infinity(), exp(g*field.at(z)));
-				double c = field.at(z);
-				int color = 255 * (c-field.minf)/(field.maxf-field.minf);
-				put(z,color);
-		}
-		I.at(mid).d = 0.0;
-	};
-
 	void dijkstra () {
-		priority_queue<Info> Q; Q.push (I.at(coo(w()/2,h()/2)));
+		coo mid (w()/2,h()/2);
+		priority_queue<Info> Q; I.at(mid).d=0; Q.push(I.at(mid));
 		ProgressBar PB (w()*h());
 
 		for (int t=0; t < w()*h(); ++t) {
@@ -126,6 +113,8 @@ class QG : public Image { public:
 	}
 
 	Array<Info> I;
+	double g,minf, maxf;
+	int n;
 };
 
 int main (int argc, char **argv) {
