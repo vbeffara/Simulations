@@ -58,15 +58,15 @@ class Field : public Array<double> { public:
 
 class Info { 
 	public: 
-		Info (coo _z, coo _n, double _d) : z(_z), next(_n), d(_d) {}
+		Info (coo _z, coo _n, double _d, double _f) : z(_z), next(_n), d(_d), f(_f) {}
 		bool operator< (const Info &o) const { return d > o.d; }
 
 		coo z,next; 
-		double d; 
+		double d,f;
 	};
 
 class QG : public Image { public: 
-	QG (Hub & H) : Image (1<<int(H['n']), 1<<int(H['n']), H.title), field(H), I(w(),h(),Info(0,0,0)) {
+	QG (Hub & H) : Image (1<<int(H['n']), 1<<int(H['n']), H.title), field(H), I(w(),h(),Info(0,0,0,0)) {
 		double big = 0, min = field.at(0), max = field.at(0), g = H['g'];
 
 		for (auto & u : field) {
@@ -79,7 +79,7 @@ class QG : public Image { public:
 		for (int i=0; i<w(); ++i)
 			for (int j=0; j<h(); ++j) {
 				coo z(i,j);
-				I.at(z) = Info (z, mid, big);
+				I.at(z) = Info (z, mid, big, field.at(z));
 				double c = log(field.at(z)) / g;
 				int color = 255 * (c-min)/(max-min);
 				put(z,color);
@@ -98,12 +98,9 @@ class QG : public Image { public:
 			for (int k=0; k<4; ++k) {
 				coo nz = im.z + dz[k];
 				if (!(contains(nz))) continue;
-				double nd = im.d + field.at(nz);
-				if (I.at(nz).d > nd) { 
-					I.at(nz).d = nd; 
-					I.at(nz).next = im.z; 
-					Q.push (I.at(nz));
-				}
+				Info & ni = I.at(nz);
+				double nd = im.d + ni.f;
+				if (ni.d > nd) { ni.d = nd; ni.next = im.z; Q.push (ni); }
 			}
 		}
 	}
