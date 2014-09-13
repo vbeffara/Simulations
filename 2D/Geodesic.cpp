@@ -2,6 +2,7 @@
 #include <vb/Image.h>
 #include <vb/cpx.h>
 #include <fftw3.h>
+#include <queue>
 
 using namespace vb; using namespace std;
 
@@ -56,15 +57,17 @@ class Field : public Array<double> { public:
 
 class Info { 
 	public: 
-		Info (coo _z, coo _n, double _d) : z(_z), next(_n), d(_d) {} 
-	
+		Info (coo _z, coo _n, double _d, bool _done = false) : z(_z), next(_n), d(_d), done(_done) {} 
+		bool operator< (const Info &o) const { return d > o.d; }
+
 		coo z,next; 
 		double d; 
+		bool done;
 	};
 
 class QG : public Image { public: 
 	QG (Hub & H) : Image (1<<int(H['n']), 1<<int(H['n']), H.title), field(H), I(w(),h(),Info(0,0,0)) {
-		double big = 0.0, min = field.at(0), max = field.at(0), g = H['g'];
+		double big = 0, min = field.at(0), max = field.at(0), g = H['g'];
 
 		for (auto & u : field) {
 			if (u<min) min = u; if (u>max) max = u;
@@ -81,21 +84,33 @@ class QG : public Image { public:
 				int color = 255 * (c-min)/(max-min);
 				put(z,color);
 		}
-		I.at(mid).d = 0.0;
+		I.at(mid).d = 0.0; I.at(mid).done = true;
 	};
 
-	void find_geodesics () {
-		unsigned int changed = 1; while (changed>0) {
-			changed=0;
-			for (auto & i : I) {
-				double f = field.at(i.z);
-				for (int k=0; k<4; ++k) {
-					coo nz = i.z + dz[k]; if (!(contains(nz))) continue;
-					Info & ni = I.at(nz);
-					if ((ni.d + f < i.d)) { i.next = nz; i.d = ni.d + f; ++changed; }
+	void dijkstra () {
+		priority_queue<Info> Q;
+
+		for (int i=0; i<4; ++i) { 
+			coo z = coo(w()/2,h()/2), nz = z + dz[i]; 
+			I.at(nz) = Info (nz,z,field.at(nz)); 
+			Q.push (I.at(nz));
+		}
+
+		int left = w()*h()-1; while (left) {
+			while (I.at(Q.top().z).done) Q.pop();
+			Info im = Q.top(); Q.pop();
+			I.at(im.z).done = true; --left;
+			for (int k=0; k<4; ++k) {
+				coo nz = im.z + dz[k];
+				if (!(contains(nz))) continue;
+				if (I.at(nz).done) continue;
+				double nd = im.d + field.at(nz);
+				if (I.at(nz).d > nd) { 
+					I.at(nz).d = nd; 
+					I.at(nz).next = im.z; 
+					Q.push (I.at(nz));
 				}
 			}
-			cerr << changed << "          \r";
 		}
 	}
 
@@ -131,7 +146,7 @@ int main (int argc, char **argv) {
 
 	QG img (H);
 	img.show();
-	img.find_geodesics ();
+	img.dijkstra();
 
 	double radius = img.radius(); cerr << "Distance to the boundary : " << radius << endl;
 
