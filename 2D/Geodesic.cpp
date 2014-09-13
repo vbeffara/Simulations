@@ -6,7 +6,7 @@
 using namespace vb; using namespace std;
 
 class Field : public Array<double> { public:
-	Field (Hub &H) : Array<double> (1<<int(H['n']),1<<int(H['n'])), n(H['n']) {
+	Field (Hub &H) : Array<double> (1<<int(H['n']),1<<int(H['n']),0), n(H['n']) {
 		if     	(H['w'] == "dyadic") 	fill_dyadic	(H['z']);
 		else if	(H['w'] == "boolean")	fill_boolean (H['z']);
 		else if	(H['w'] == "white")  	fill_white ();
@@ -54,10 +54,16 @@ class Field : public Array<double> { public:
 	int n;
 };
 
-class Info { public: coo next; double d; Info (double dd = 0) : next (0), d (dd) {} };
+class Info { 
+	public: 
+		Info (coo _z, coo _n, double _d) : z(_z), next(_n), d(_d) {} 
+	
+		coo z,next; 
+		double d; 
+	};
 
 class QG : public Image { public: 
-	QG (Hub & H) : Image (1<<int(H['n']), 1<<int(H['n']), H.title), field(H), I(w(),h()) {
+	QG (Hub & H) : Image (1<<int(H['n']), 1<<int(H['n']), H.title), field(H), I(w(),h(),Info(0,0,0)) {
 		double big = 0.0, min = field.at(0), max = field.at(0), g = H['g'];
 
 		for (auto & u : field) {
@@ -66,28 +72,27 @@ class QG : public Image { public:
 			big += u;
 		}
 
-		for (auto & i : I) { i.next = coo(w()/2,h()/2); i.d = big; }
-		I.at(coo(w()/2,h()/2)).d = 0.0;
-
+		coo mid (w()/2,h()/2);
 		for (int i=0; i<w(); ++i)
 			for (int j=0; j<h(); ++j) {
-				double c = log(field.at(coo(i,j))) / g;
+				coo z(i,j);
+				I.at(z) = Info (z, mid, big);
+				double c = log(field.at(z)) / g;
 				int color = 255 * (c-min)/(max-min);
-				put(coo(i,j),color);
+				put(z,color);
 		}
+		I.at(mid).d = 0.0;
 	};
 
 	void find_geodesics () {
 		unsigned int changed = 1; while (changed>0) {
 			changed=0;
-			for (int x=0; x<w(); ++x) {
-				for (int y=0; y<h(); ++y) {
-					coo z(x,y); Info & i = I.at(z); double f = field.at(z);
-					for (int k=0; k<4; ++k) {
-						coo nz = z + dz[k]; if (!(contains(nz))) continue;
-						Info & ni = I.at(nz);
-						if ((ni.d + f < i.d)) { i.next = nz; i.d = ni.d + f; ++changed; }
-					}
+			for (auto & i : I) {
+				double f = field.at(i.z);
+				for (int k=0; k<4; ++k) {
+					coo nz = i.z + dz[k]; if (!(contains(nz))) continue;
+					Info & ni = I.at(nz);
+					if ((ni.d + f < i.d)) { i.next = nz; i.d = ni.d + f; ++changed; }
 				}
 			}
 			cerr << changed << "          \r";
