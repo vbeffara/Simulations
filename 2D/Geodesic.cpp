@@ -101,7 +101,7 @@ class QG : public Image { public:
 		return r;
 	}
 
-	void trace (coo z) { while (at(z) != Color(255)) { put(z,255); z = I.at(z).next; } }
+	void trace (coo z, Color c = RED) { while (at(z) != c) { put(z,c); z = I.at(z).next; } }
 
 	void ball () {
 		double r = radius();
