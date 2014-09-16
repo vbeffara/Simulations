@@ -27,8 +27,8 @@ class QG : public Image { public:
 
 		minf = maxf = I.at(0).f; for (auto & u : I) { minf = min (minf,u.f); maxf = max (maxf,u.f); }
 
-		for (int i=0; i<w(); ++i)
-			for (int j=0; j<h(); ++j) {
+		for (int j=0; j<h(); ++j)
+			for (int i=0; i<w(); ++i) {
 				coo z(i,j);
 				put (z, 255 * (I.at(z).f-minf)/(maxf-minf));
 				I.at(z) = Info (z, z, numeric_limits<double>::infinity(), exp(g*I.at(z).f));
@@ -61,14 +61,14 @@ class QG : public Image { public:
 		cpx *in = (cpx*) fftw_alloc_complex(W*H), *out = (cpx*) fftw_alloc_complex(W*H);
 		fftw_plan p = fftw_plan_dft_2d (W, H, (fftw_complex*) in, (fftw_complex*) out, FFTW_FORWARD, FFTW_ESTIMATE);
 
-		for (int i=0; i<W; ++i) for (int j=0; j<H; ++j) {
+		for (int j=0; j<H; ++j) for (int i=0; i<W; ++i) {
 			if ((i==0)&&(j==0)) break;
 			cpx z ( min(i,W-i) , min(j,H-j) );
 			in[i+W*j] = cpx ( prng.gaussian() / abs(z), prng.gaussian() / abs(z) );
 		}
 
 		fftw_execute(p);
-		for (int i=0; i<W; ++i) for (int j=0; j<H; ++j) I.at(coo(i,j)).f = real(out[i+W*j]);
+		for (int j=0; j<H; ++j) for (int i=0; i<W; ++i) I.at(coo(i,j)).f = real(out[i+W*j]);
 		fftw_destroy_plan(p); fftw_free(in); fftw_free(out);
 	}
 
@@ -105,8 +105,8 @@ class QG : public Image { public:
 
 	void ball () {
 		double r = radius();
-		for (int x=0; x<w(); ++x) {
-			for (int y=0; y<h(); ++y) {
+		for (int y=0; y<h(); ++y) {
+			for (int x=0; x<w(); ++x) {
 				if (I.at(coo(x,y)).d <= r) put(coo(x,y), Color(0,0,127+at(coo(x,y)).b/2));
 			}
 		}
