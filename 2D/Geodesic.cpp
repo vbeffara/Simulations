@@ -61,11 +61,16 @@ class QG : public Image { public:
 		cpx *in = (cpx*) fftw_alloc_complex(W*H), *out = (cpx*) fftw_alloc_complex(W*H);
 		fftw_plan p = fftw_plan_dft_2d (W, H, (fftw_complex*) in, (fftw_complex*) out, FFTW_FORWARD, FFTW_ESTIMATE);
 
+		vector<double> sinarrayi(W), sinarrayj(H);
+		for (int i=0; i<W; ++i) sinarrayi[i] = W * sin(M_PI * i/W);
+		for (int j=0; j<H; ++j) sinarrayj[j] = H * sin(M_PI * j/H);
+		
 		for (int j=0; j<H; ++j) for (int i=0; i<W; ++i) {
 			if ((i==0)&&(j==0)) break;
-			cpx z ( min(i,W-i) , min(j,H-j) );
-			in[i+W*j] = cpx ( prng.gaussian() / abs(z), prng.gaussian() / abs(z) );
+			double norm = sqrt(sinarrayi[i]*sinarrayi[i] + sinarrayj[j]*sinarrayj[j]) ;
+			in[i+W*j] = cpx (prng.gaussian(),prng.gaussian()) * sqrt(M_PI/2) / norm;
 		}
+		in[0] = cpx (0,0);
 
 		fftw_execute(p);
 		for (int j=0; j<H; ++j) for (int i=0; i<W; ++i) I.at(coo(i,j)).f = real(out[i+W*j]);
