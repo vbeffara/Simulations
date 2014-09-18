@@ -26,6 +26,7 @@ class QG : public Image { public:
 		else   	                     	cerr << "Noise type " << H['w'] << " unknown, no noise for you!" << endl;
 
 		minf = maxf = I.at(0).f; for (auto & u : I) { minf = min (minf,u.f); maxf = max (maxf,u.f); }
+		cerr << "Renormalized minimal and maximal value of field: " << minf/log(w()) << ", " << maxf/log(w()) << endl;
 
 		for (int j=0; j<h(); ++j)
 			for (int i=0; i<w(); ++i) {
@@ -62,12 +63,12 @@ class QG : public Image { public:
 		fftw_plan p = fftw_plan_dft_2d (W, H, (fftw_complex*) in, (fftw_complex*) out, FFTW_FORWARD, FFTW_ESTIMATE);
 
 		vector<double> sinarrayi(W), sinarrayj(H);
-		for (int i=0; i<W; ++i) sinarrayi[i] = W * sin(M_PI * i/W);
-		for (int j=0; j<H; ++j) sinarrayj[j] = H * sin(M_PI * j/H);
+		for (int i=0; i<W; ++i) sinarrayi[i] = sin(M_PI * i/W);
+		for (int j=0; j<H; ++j) sinarrayj[j] = sin(M_PI * j/H);
 		
 		for (int j=0; j<H; ++j) for (int i=0; i<W; ++i) {
 			if ((i==0)&&(j==0)) break;
-			double norm = sqrt(sinarrayi[i]*sinarrayi[i] + sinarrayj[j]*sinarrayj[j]) ;
+			double norm = sqrt (W*H*(sinarrayi[i]*sinarrayi[i] + sinarrayj[j]*sinarrayj[j]));
 			in[i+W*j] = cpx (prng.gaussian(),prng.gaussian()) * sqrt(M_PI/2) / norm;
 		}
 		in[0] = cpx (0,0);
