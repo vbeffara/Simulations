@@ -6,7 +6,7 @@
 using namespace vb; using namespace std;
 
 class DLA : public CoarseImage { public:
-	DLA (Hub & H) : CoarseImage(H['n'],H['n'], H.title, pow(H['n'],.33)),
+	DLA (Hub & H) : CoarseImage(H['n'],H['n'], H.title, pow(double(H['n']),.33)),
 		n(H['n']), c(H['c']), r(1), QT(coo(-n/2,-n/2),coo(n/2,n/2),H['l']),
 		img (512,512,"QuadTree") {
 		z0 = coo(n/2,n/2);

@@ -5,7 +5,7 @@ using namespace vb; using namespace std;
 
 class DDLA : public CoarseImage {
 public:
-	DDLA (CL_Parser & CLP) : CoarseImage (CLP('n'),CLP('n'),"A directed DLA cluster", CLP('f') ? pow(CLP('n'),.33) : 1),
+	DDLA (CL_Parser & CLP) : CoarseImage (CLP('n'),CLP('n'),"A directed DLA cluster", CLP('f') ? pow(double(CLP('n')),.33) : 1),
 			f(CLP('f')), n(CLP('n')), cursum(0), p(CLP('p')) {
 		put(0,1);
 		pq << Point(1,prng.exponential()/p) << Point(J,prng.exponential()/(1-p));
