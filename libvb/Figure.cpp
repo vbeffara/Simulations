@@ -88,7 +88,8 @@ namespace vb {
     return (*this);
   }
 
-  void Figure::paint (cairo_t * cr, bool fill) {
+  void Figure::paint (cairo_t * cr, bool fill, bool crop) {
+    double real_h = w() * (top()-bottom()) / (right()-left());
     double wd = right()-left(), mid_x = (right()+left())/2;
     double ht = top()-bottom(), mid_y = (top()+bottom())/2;
 
@@ -105,7 +106,7 @@ namespace vb {
     }
 
     cairo_save(cr);
-    cairo_translate      (cr, w()/2, h()/2);
+    cairo_translate      (cr, w()/2, (crop ? real_h : h())/2);
     cairo_scale          (cr, scale_x*.98, -scale_y*.98); // A tiny margin for stoke width.
     cairo_translate      (cr, -mid_x,-mid_y);
     cairo_set_line_width (cr, basewidth);
@@ -138,9 +139,11 @@ namespace vb {
     if (s == "") os << "output/" << title; else os << s;
     os << ".pdf";
 
-    cairo_surface_t * pdf = cairo_pdf_surface_create (os.str().c_str(), w(), h());
+    double real_h = w() * (top()-bottom()) / (right()-left());
+
+    cairo_surface_t * pdf = cairo_pdf_surface_create (os.str().c_str(), w(), real_h);
     cairo_t * pcr = cairo_create (pdf);
-    paint (pcr, false);
+    paint (pcr, false, true);
     cairo_show_page (pcr);
     cairo_destroy (pcr);
     cairo_surface_destroy (pdf);

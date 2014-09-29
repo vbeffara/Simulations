@@ -91,7 +91,7 @@ namespace vb {
 
 	protected:
 		void paint ();
-		void paint (cairo_t * cr, bool fill = true);
+		void paint (cairo_t * cr, bool fill = true, bool crop = false);
 
 		bool ortho;
 		double basewidth;
