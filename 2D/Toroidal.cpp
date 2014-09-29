@@ -9,9 +9,16 @@ using namespace std;
 
 double alpha_xyz (double x, double y, double z) { return acos (((x+y)*(x+y)+(x+z)*(x+z)-(y+z)*(y+z))/(2*(x+y)*(x+z))); }
 
+class Vertex { public:
+	Vertex () { z=NAN; }
+	cpx z;
+};
+
 class Toroidal : public Hypermap { public:
+	vector<Vertex> V;
+
 	Toroidal (const Hypermap &H) : Hypermap(H),
-			src(n_edges()), adj(n_black()), rad(n_black(),1), angle(n_edges(),NAN), place(n_black(),NAN),
+			 V(n_black()), src(n_edges()), adj(n_black()), rad(n_black(),1), angle(n_edges(),NAN),
 			bone_v(n_black(),false), bone_e(n_edges(),false) {
 		assert(is_triangulation());
 		Cycles sc = sigma.cycles(); int nb=n_black();
@@ -47,24 +54,24 @@ class Toroidal : public Hypermap { public:
 			}
 		}
 
-		place[0]=0; vector<cpx> periods;
+		V[0].z=0; vector<cpx> periods;
 		flag=true; while (flag) { flag=false; periods.clear();
 			for (int e=0; e<ne; ++e) {
-				int i=src[e]; if (std::isnan(real(place[i]))) continue;
+				int i=src[e]; if (std::isnan(real(V[i].z))) continue;
 				int j=src[alpha[e]]; double l = rad[i] + rad[j];
-				cpx z = place[i] + cpx(l*cos(angle[e]),l*sin(angle[e]));
-				if (std::isnan(real(place[j]))) { flag = true; place[src[alpha[e]]] = z; }
-				else if (abs(place[j]-z) > rad[0]/2) {
+				cpx z = V[i].z + cpx(l*cos(angle[e]),l*sin(angle[e]));
+				if (std::isnan(real(V[j].z))) { flag = true; V[src[alpha[e]]].z = z; }
+				else if (abs(V[j].z-z) > rad[0]/2) {
 					bool fresh = true;
-					for (cpx p : periods) if (abs(place[j]-z-p) < rad[0]/2) fresh = false;
-					if (fresh) periods.push_back(place[j]-z);
+					for (cpx p : periods) if (abs(V[j].z-z-p) < rad[0]/2) fresh = false;
+					if (fresh) periods.push_back(V[j].z-z);
 				}
 			}
 		}
 
 		cpx p1 = periods[0]; for (cpx p : periods) if (abs(p)<abs(p1)) { p1=p; }
 
-		for (cpx   	&z : place)  	z /= p1;
+		for (auto  	&v : V)      	v.z /= p1;
 		for (double	&a : angle)  	a -= arg(p1);
 		for (cpx   	&p : periods)	p /= p1;
 		for (double	&r : rad)    	r /= abs(p1);
@@ -74,14 +81,14 @@ class Toroidal : public Hypermap { public:
 		for (cpx p : moduli) if (abs(p)<n2) { n2=abs(p); m=p; }
 		if (imag(m)<0) m = -m; while (real(m)<-.499) m+=1; while (real(m)>.501) m-=1;
 
-		if (flip) { for (auto & a : angle) a += M_PI; for (auto & z : place) z = -z; }
+		if (flip) { for (auto & a : angle) a += M_PI; for (auto & v : V) v.z = -v.z; }
 
 		double slope = real(m) / imag(m);
-		for (cpx &z : place) {
-			while (imag(z) < 0)                  	z += m;
-			while (imag(z) > imag(m))            	z -= m;
-			while (real(z) < slope * imag(z))    	z += 1;
-			while (real(z) > slope * imag(z) + 1)	z -= 1;
+		for (auto & v : V) {
+			while (imag(v.z) < 0)                    	v.z += m;
+			while (imag(v.z) > imag(m))              	v.z -= m;
+			while (real(v.z) < slope * imag(v.z))    	v.z += 1;
+			while (real(v.z) > slope * imag(v.z) + 1)	v.z -= 1;
 		}
 	}
 
@@ -109,7 +116,7 @@ class Toroidal : public Hypermap { public:
 		for (int a=-2; a<=3; ++a)
 			for (int b=-1; b<=1; ++b)
 				for (unsigned e=0; e<ne; ++e) {
-					int i=src[e]; cpx z = place[i] + cpx(a) + cpx(b)*m;
+					int i=src[e]; cpx z = V[i].z + cpx(a) + cpx(b)*m;
 					if ((imag(z)<-.6)||(imag(z)>1.6)) continue;
 					if ((real(z)<-.6+0*slope*imag(z)) || (real(z)>2.6+0*slope*imag(z))) continue;
 					if (e == cc[i][0])
@@ -128,23 +135,18 @@ class Toroidal : public Hypermap { public:
 	vector<int> src;
 	vector<vector<int>> adj;
 	vector<double> rad,angle;
-	vector<cpx> place;
 	vector<bool> bone_v, bone_e;
 	cpx m;
 };
 
 int main (int argc, char ** argv) {
-	CL_Parser CLP (argc,argv,"n=4,o=0,r=2.6,m=4,a=3,f,b");
-	Hypermap G = H_H67();
-
-	int n_skel = G.n_edges();
-	if (CLP('f')) { for (int i=0; i<10000*n_skel; ++i) G.flip(prng.uniform_int(n_skel)); }
-
-	vector<cpx> taus, js;
-	cerr << setprecision(15); cout << setprecision(15);
+	CL_Parser CLP (argc,argv,"n=4,o=0,r=2.6,m=4,a=3,b");
+	Hypermap G = H_C5();
 
 	for (int i=0; i<int(CLP('o')); ++i) G = G.split_edges();
+	int n_skel = G.n_edges();
 
+	cerr << setprecision(15); cout << setprecision(15);
 	for (int i=CLP('o'); i<=int(CLP('n')); ++i) {
 		cerr << "Step " << i << ": " << G; Toroidal H(G); H.pack(CLP('r'),CLP('b'));
 		if (i==int(CLP('n'))) H.output_pdf(n_skel,CLP('m'));
@@ -158,16 +160,6 @@ int main (int argc, char ** argv) {
 		cerr << "    tau = " << H.m << endl;
 		cerr << "j (tau) = " << j << endl;
 
-		taus.push_back(H.m); js.push_back(j);
-
 		G = G.split_edges();
-	}
-
-	for (int i=int(CLP('o')); i<=int(CLP('n')); ++i) cout << i << " " << js[i-int(CLP('o'))] << endl;
-	while (js.size()>2) {
-		for (unsigned i=0; i<js.size()-2; ++i)
-			js[i] = (js[i]*js[i+2]-js[i+1]*js[i+1]) / (js[i]+js[i+2]-2.0*js[i+1]);
-		js.pop_back(); js.pop_back();
-		cout << endl; for (unsigned i=0; i<js.size(); ++i) cout << js[i] << endl;
 	}
 }
