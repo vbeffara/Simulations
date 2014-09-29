@@ -1,3 +1,14 @@
+// Mode: 1 -> disks along the bones,
+//       2 -> disks elsewhere,
+//       4 -> edges along the bones,
+//       8 -> edges around the bones,
+//      16 -> edges elsewhere.
+// Good modes are:
+//    3 -> circle packing;
+//    4 -> just the bones;
+//   17 -> chain of empty disks plus small triangles;
+//   24 -> whole triangulation;
+
 #include <vb/CL_Parser.h>
 #include <vb/Figure.h>
 #include <vb/Hypermap_lib.h>
@@ -9,21 +20,18 @@ using namespace std;
 
 double alpha_xyz (double x, double y, double z) { return acos (((x+y)*(x+y)+(x+z)*(x+z)-(y+z)*(y+z))/(2*(x+y)*(x+z))); }
 
-class Vertex { public:
-	Vertex () { z=NAN; }
-	cpx z;
-};
+class Vertex	{ public: cpx z;  	double r;	bool bone; vector<int> adj;	Vertex ()	{ z=NAN; r=1;	bone=false; } };
+class Edge  	{ public: int src;	double a;	bool bone;                 	Edge ()  	{ a=NAN;     	bone=false; } };
 
 class Toroidal : public Hypermap { public:
-	vector<Vertex> V;
+	vector<Vertex>	V;
+	vector<Edge>  	E;
 
-	Toroidal (const Hypermap &H) : Hypermap(H),
-			 V(n_black()), src(n_edges()), adj(n_black()), rad(n_black(),1), angle(n_edges(),NAN),
-			bone_v(n_black(),false), bone_e(n_edges(),false) {
+	Toroidal (const Hypermap &H) : Hypermap(H), V(n_black()), E(n_edges()) {
 		assert(is_triangulation());
 		Cycles sc = sigma.cycles(); int nb=n_black();
-        for (int i=0; i<nb; ++i) for (int e : sc[i]) src[e]=i;
-		for (int i=0; i<nb; ++i) for (int e : sc[i]) adj[i].push_back(src[alpha[e]]);
+        for (int i=0; i<nb; ++i) for (int e : sc[i]) E[e].src=i;
+		for (int i=0; i<nb; ++i) for (int e : sc[i]) V[i].adj.push_back(E[alpha[e]].src);
 	}
 
 	void acpa (double r) {
@@ -33,9 +41,9 @@ class Toroidal : public Hypermap { public:
 			cerr << e << "     \r";
 			old_e = e; e = 0;
 			for (int i=0; i<n; ++i) {
-				double s=-2*M_PI, r0=rad[i], r1, r2=rad[adj[i].back()];
-				for (int ll : adj[i]) { r1=r2; r2=rad[ll]; s += alpha_xyz (r0,r1,r2); }
-				rad[i] *= 1 + r*s/(2*M_PI); if (rad[i]<0) rad[i] /= 1 + r*s/(2*M_PI); ;
+				double s=-2*M_PI, r0=V[i].r, r1, r2=V[V[i].adj.back()].r;
+				for (int ll : V[i].adj) { r1=r2; r2=V[ll].r; s += alpha_xyz (r0,r1,r2); }
+				V[i].r *= 1 + r*s/(2*M_PI); if (V[i].r<0) V[i].r /= 1 + r*s/(2*M_PI); ;
 				e += abs(s);
 			}
 		}
@@ -44,26 +52,26 @@ class Toroidal : public Hypermap { public:
 	void pack (double r, bool flip = false) {
 		acpa(r);
 
-		angle[0]=0; int ne=n_edges();
+		E[0].a=0; int ne=n_edges();
 		bool flag=true; while (flag) { flag = false;
 			for (int i=0; i<ne; ++i) {
-				if (std::isnan(angle[i]))         	continue;
-				if (std::isnan(angle[alpha[i]])) {	angle[alpha[i]] = angle[i]+M_PI; flag = true; }
-				if (std::isnan(angle[sigma[i]])) {	double x = rad[src[i]], y = rad[src[alpha[i]]], z = rad[src[alpha[sigma[i]]]];
-				                                  	angle[sigma[i]] = angle[i] + alpha_xyz(x,y,z); flag = true; }
+				if (std::isnan(E[i].a))         	continue;
+				if (std::isnan(E[alpha[i]].a)) {	E[alpha[i]].a = E[i].a+M_PI; flag = true; }
+				if (std::isnan(E[sigma[i]].a)) {	double x = V[E[i].src].r, y = V[E[alpha[i]].src].r, z = V[E[alpha[sigma[i]]].src].r;
+				                                	E[sigma[i]].a = E[i].a + alpha_xyz(x,y,z); flag = true; }
 			}
 		}
 
 		V[0].z=0; vector<cpx> periods;
 		flag=true; while (flag) { flag=false; periods.clear();
 			for (int e=0; e<ne; ++e) {
-				int i=src[e]; if (std::isnan(real(V[i].z))) continue;
-				int j=src[alpha[e]]; double l = rad[i] + rad[j];
-				cpx z = V[i].z + cpx(l*cos(angle[e]),l*sin(angle[e]));
-				if (std::isnan(real(V[j].z))) { flag = true; V[src[alpha[e]]].z = z; }
-				else if (abs(V[j].z-z) > rad[0]/2) {
+				int i=E[e].src; if (std::isnan(real(V[i].z))) continue;
+				int j=E[alpha[e]].src; double l = V[i].r + V[j].r;
+				cpx z = V[i].z + polar(l,E[e].a);
+				if (std::isnan(real(V[j].z))) { flag = true; V[E[alpha[e]].src].z = z; }
+				else if (abs(V[j].z-z) > V[0].r/2) {
 					bool fresh = true;
-					for (cpx p : periods) if (abs(V[j].z-z-p) < rad[0]/2) fresh = false;
+					for (cpx p : periods) if (abs(V[j].z-z-p) < V[0].r/2) fresh = false;
 					if (fresh) periods.push_back(V[j].z-z);
 				}
 			}
@@ -71,17 +79,16 @@ class Toroidal : public Hypermap { public:
 
 		cpx p1 = periods[0]; for (cpx p : periods) if (abs(p)<abs(p1)) { p1=p; }
 
-		for (auto  	&v : V)      	v.z /= p1;
-		for (double	&a : angle)  	a -= arg(p1);
-		for (cpx   	&p : periods)	p /= p1;
-		for (double	&r : rad)    	r /= abs(p1);
+		for (auto	& v : V)     	{ v.z /= p1; v.r /= abs(p1); }
+		for (auto	& e : E)     	{ e.a -= arg(p1); }
+		for (cpx 	&p : periods)	p /= p1;
 
 		vector<cpx> moduli; for (cpx p : periods) if (abs(imag(p)) > .1) moduli.push_back(p);
 		double n2 = abs(moduli[0]); m = moduli[0];
 		for (cpx p : moduli) if (abs(p)<n2) { n2=abs(p); m=p; }
 		if (imag(m)<0) m = -m; while (real(m)<-.499) m+=1; while (real(m)>.501) m-=1;
 
-		if (flip) { for (auto & a : angle) a += M_PI; for (auto & v : V) v.z = -v.z; }
+		if (flip) { for (auto & e : E) e.a += M_PI; for (auto & v : V) v.z = m-v.z; }
 
 		double slope = real(m) / imag(m);
 		for (auto & v : V) {
@@ -92,22 +99,11 @@ class Toroidal : public Hypermap { public:
 		}
 	}
 
-	// Mode: 1 -> disks along the bones,
-	//       2 -> disks elsewhere,
-	//       4 -> edges along the bones,
-	//       8 -> edges around the bones,
-	//      16 -> edges elsewhere.
-	// Good modes are:
-	//    3 -> circle packing;
-	//    4 -> just the bones;
-	//   17 -> chain of empty disks plus small triangles;
-	//   24 -> whole triangulation;
-
-	void output_pdf (int E=0, int mode=255) {
-		for (int e=0; e<E; ++e) {
+	void output_pdf (int EE=0, int mode=255) {
+		for (int e=0; e<EE; ++e) {
 			int ee=e; do {
-				bone_e[ee]=true; bone_e[alpha[e]]=true; bone_v[src[ee]]=true; ee = sigma[sigma[sigma[alpha[ee]]]];
-			} while (!bone_e[ee]);
+				E[ee].bone=true; E[alpha[e]].bone=true; V[E[ee].src].bone=true; ee = sigma[sigma[sigma[alpha[ee]]]];
+			} while (!E[ee].bone);
 		}
 		double slope = real(m) / imag(m);
 		Figure F;
@@ -116,15 +112,15 @@ class Toroidal : public Hypermap { public:
 		for (int a=-2; a<=3; ++a)
 			for (int b=-1; b<=1; ++b)
 				for (unsigned e=0; e<ne; ++e) {
-					int i=src[e]; cpx z = V[i].z + cpx(a) + cpx(b)*m;
+					int i=E[e].src; cpx z = V[i].z + cpx(a) + cpx(b)*m;
 					if ((imag(z)<-.6)||(imag(z)>1.6)) continue;
 					if ((real(z)<-.6+0*slope*imag(z)) || (real(z)>2.6+0*slope*imag(z))) continue;
 					if (e == cc[i][0])
-						if ( ((mode&1)&&(bone_v[i])) || ((mode&2)&&(!bone_v[i])) )
-							F.add (new Circle (z,rad[i],Pen(0,.15)));
-					if ( ((mode&4)&&(bone_e[e])) || ((mode&8)&&(bone_v[i])) || ((mode&16)&&(!bone_v[i])) ) {
+						if ( ((mode&1)&&(V[i].bone)) || ((mode&2)&&(!V[i].bone)) )
+							F.add (new Circle (z,V[i].r,Pen(0,.15)));
+					if ( ((mode&4)&&(E[e].bone)) || ((mode&8)&&(V[i].bone)) || ((mode&16)&&(!V[i].bone)) ) {
 						eee.push_back(z);
-						eee.push_back(z+cpx(rad[i]*cos(angle[e]),rad[i]*sin(angle[e])));
+						eee.push_back(z+polar(V[i].r,E[e].a));
 						eee.push_back(NAN);
 					}
 				}
@@ -132,10 +128,6 @@ class Toroidal : public Hypermap { public:
 		F.output_pdf("period");
 	}
 
-	vector<int> src;
-	vector<vector<int>> adj;
-	vector<double> rad,angle;
-	vector<bool> bone_v, bone_e;
 	cpx m;
 };
 
