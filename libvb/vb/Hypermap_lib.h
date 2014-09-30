@@ -15,4 +15,20 @@ namespace vb {
 	Hypermap H_KS5 ();       	// Degree 5 example in Khadjavi-Scharaschkin, signature (23,23,5)
 	Hypermap H_KS5T ();      	// Triangulation from KS5
 	Hypermap H_artem (int n);	// Triangular lattice with one edge type split into n edges
+
+	Hypermap H_lib (std::string s) {
+		if (s == "T")   	return H_T   	();
+		if (s == "TT")  	return H_TT  	();
+		if (s == "H1")  	return H_H1  	();
+		if (s == "H2")  	return H_H2  	();
+		if (s == "H67") 	return H_H67 	();
+		if (s == "H3")  	return H_H3  	();
+		if (s == "C5")  	return H_C5  	();
+		if (s == "SV")  	return H_SV  	();
+		if (s == "B")   	return H_B   	();
+		if (s == "E")   	return H_E   	();
+		if (s == "KS5") 	return H_KS5T	();
+		if (s == "KS5T")	return H_KS5T	();
+		throw "err";
+	}
 }
