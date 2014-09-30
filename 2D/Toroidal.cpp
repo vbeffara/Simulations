@@ -31,7 +31,7 @@ class Toroidal : public Hypermap { public:
 	cpx m;
 	Hub H;
 
-	Toroidal (const Hub H_, const Hypermap & G) : Hypermap(G), n_skel(G.n_edges()), H(H_) {
+	Toroidal (Hub H_) : Hypermap(H_lib(H_['g'])), n_skel(n_edges()), H(H_) {
 		for (int i=0; i<int(H['o']); ++i) Hypermap::operator= (Hypermap::split_edges());
 		from_hypermap();
 	}
@@ -149,8 +149,8 @@ class Toroidal : public Hypermap { public:
 };
 
 int main (int argc, char ** argv) {
-	Hub H ("Toroidal triangulation",argc,argv,"n=4,o=0,r=2.7,m=4,f");
-	Toroidal G (H,H_H67());
+	Hub H ("Toroidal triangulation",argc,argv,"n=4,o=0,r=2.7,m=4,f,g=C5");
+	Toroidal G (H);
 
 	cerr << setprecision(15); cout << setprecision(15);
 	for (int i=H['o']; i<=int(H['n']); ++i) {
