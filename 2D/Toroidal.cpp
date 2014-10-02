@@ -39,7 +39,11 @@ class Toroidal : public Hypermap { public:
 	void split_edges () {
 		Hypermap::operator= (Hypermap::split_edges());
 		from_hypermap();
-		for (int i=0; i<V.size()/4; ++i) for (int j : V[i].adj) V[j].r = V[i].r;
+		for (int i=V.size()/4; i<V.size(); ++i) {
+			V[i].r = 0; int k=0;
+			for (int j : V[i].adj) if (j < V.size()/4) { V[i].r += V[j].r; ++k; }
+			V[i].r /= k;
+		}
 	}
 
 	void from_hypermap () {
