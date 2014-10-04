@@ -23,6 +23,13 @@ namespace vb {
 		return c;
 	}
 
+	std::vector<unsigned> Permutation::signature () const {
+		vector<unsigned> output;
+		for (auto c : cycles()) output.push_back(c.size());
+		sort (output.begin(),output.end());
+		return output;
+	}
+
 	bool Permutation::is_identity () const {
 		for (unsigned i=0; i<size(); ++i) if (at(i)!=i) return false;
 		return true;

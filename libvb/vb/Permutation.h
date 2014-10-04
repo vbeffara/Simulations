@@ -14,9 +14,10 @@ namespace vb {
 		bool is_identity () const;
 
 		Permutation inverse  	()                     	const;
-		Permutation operator*	(const Permutation & o)	const; // this then o i.e. $o \circ this$.
+		Permutation operator*	(const Permutation & o)	const; // this then o i.e. $this * o = o \circ this$.
 
-		Cycles cycles () const;
+		Cycles               	cycles ()   	const;
+		std::vector<unsigned>	signature ()	const;
 
 		std::vector<unsigned>	l;
 	};
