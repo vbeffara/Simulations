@@ -2,7 +2,7 @@
 #include <vb/Toroidal.h>
 
 namespace vb {
-	Toroidal::Toroidal (Hypermap M, Hub H_) : Hypermap(M), n_skel(n_edges()), H(H_) {
+	Toroidal::Toroidal (Hypermap M, Hub H_) : Hypermap(M), m(I), n_skel(n_edges()), H(H_) {
 		for (int i=0; i<int(H['o']); ++i) Hypermap::operator= (Hypermap::split_edges());
 		from_hypermap();
 	}

@@ -31,12 +31,12 @@ namespace vb {
 
 		Toroidal (Hypermap M, Hub H_);
 
-		void split_edges  	();        	//< Add one vertex at the midpoint of each edge.
-		void from_hypermap	();        	//< If the Hypermap part is correct, fill in V and E.
-		void acpa         	(double r);	//< Compute the radii of the circle packing.
-		void pack         	(double r);	//< Run acpa() and then compute an embedding into a torus.
-		void flip         	();        	//< Map everything by z -> -z.
-		void output_pdf   	();        	//< Make a PDF of a few periods of the covering.
+		void split_edges  	();            	//< Add one vertex at the midpoint of each edge.
+		void from_hypermap	();            	//< If the Hypermap part is correct, fill in V and E.
+		void acpa         	(double r);    	//< Compute the radii of the circle packing.
+		void pack         	(double r=2.7);	//< Run acpa() and then compute an embedding into a torus.
+		void flip         	();            	//< Map everything by z -> -z.
+		void output_pdf   	();            	//< Make a PDF of a few periods of the covering.
 
 		cpx m;
 
