@@ -21,31 +21,29 @@ bool connected (Permutation s, Permutation a) {
 }
 
 class Pairing_Iterator { public:
-	vector<unsigned> c;
+	Cycles                  	state_c;
+	vector<vector<unsigned>>	state_p;
+	vector<unsigned>        	state_k;
 
-	void go (vector<unsigned> & p) {
-		if (p.size() == 0) {
-			l.push_back (Permutation(n)); Permutation &cc = l.back();
-			for (int i=0; i<n/2; ++i) { cc[c[2*i]]=c[2*i+1]; cc[c[2*i+1]]=c[2*i]; }
-			pb->set(l.size());
-		} else {
-			unsigned i=p[0];
-			for (int k=1; k<p.size(); ++k) {
-				unsigned o = p[k];
-				c.push_back(i); c.push_back(o);
-				vector<unsigned> new_p;
-				for (unsigned j : p) if ((j!=i) && (j!=o)) new_p.push_back(j);
-				go (new_p);
-				c.pop_back(); c.pop_back();
-			}
-		}
+	void go () {
+		if (state_c.size() == n/2) { l.push_back(state_c); pb->set(l.size()); return; }
+		vector<unsigned> & p = state_p.back(); unsigned i=p[0];
+		int k = state_k.back(); if (k==p.size()) return;
+		unsigned o = p[k];
+		vector<unsigned> new_p; for (unsigned j : p) if ((j!=i) && (j!=o)) new_p.push_back(j);
+		state_c.push_back({i,o}); state_p.push_back(new_p); state_k.push_back(1);
+		go();
+		state_k.pop_back(); state_p.pop_back(); state_c.pop_back();
+		state_k.push_back(k+1);
+		go();
+		state_k.pop_back();
 	}
 
 	Pairing_Iterator (int n_, int i_, bool d) : n(n_), i(i_) {
 		if (d) {
 			pb = new ProgressBar (npair(n));
 			vector<unsigned> all; for (int i=0; i<n; ++i) all.push_back(i);
-			go(all);
+			state_p.push_back(all); state_k.push_back(1); go(); state_k.pop_back(); state_p.pop_back();
 			delete pb;
 		}
 	};
