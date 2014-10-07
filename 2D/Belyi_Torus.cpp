@@ -97,7 +97,7 @@ Permutation optlabel (Permutation a, Permutation b) {
 }
 
 int main (int argc, char ** argv) {
-	Hub H ("Toroidal enumeration", argc, argv, "f=4,m=17");
+	Hub H ("Toroidal enumeration", argc, argv, "f=4,m=4");
 	int F=H['f'], A=3*F/2, S=F/2, a=3*F; assert (F%2 == 0);
 
 	Cycles phi_c; for (unsigned i=0; i<a/3; ++i) phi_c.push_back ({3*i,3*i+1,3*i+2}); Permutation phi(phi_c);
@@ -107,7 +107,7 @@ int main (int argc, char ** argv) {
 	while (true) { Permutation alpha = pairings(a).rand();
 		                                                                            	if (!connected(phi,alpha))	continue;
 		Permutation sigma = (alpha*phi).inverse(); Hypermap M (sigma,alpha,phi);    	if (M.genus() != 1)       	continue;
-		bool good=true; for (auto & c : sigma.cycles()) if (c.size()<=2) good=false;	if (!good)                	continue;
+		bool good=true; for (auto & c : sigma.cycles()) if (c.size()<=3) good=false;	if (!good)                	continue;
 
 		Permutation s = optlabel (alpha,phi);
 		Hypermap B (sigma.conjugate(s),alpha.conjugate(s),phi.conjugate(s));
@@ -117,17 +117,14 @@ int main (int argc, char ** argv) {
 			cout << "Sigma: " << B.sigma;
 			cout << "Alpha: " << B.alpha;
 			cout << "Phi:   " << B.phi;
-			cout << endl << " --> found " << v.size() << endl << endl;
+
+			ostringstream os; os << "Toroidal enumeration (f=" << F << ", i=" << v.size() << ")"; H.title = os.str();
+			Toroidal T (M,H); for (int i=0; i<3; ++i) { T.split_edges(); T.pack(2); }
+
+			cerr << "               \r\n";
+			cout << " --> " << H.title << endl;
+			cout << "     Modulus: tau=" << T.m << endl << endl;
+			T.output_pdf();
 		}
-
-		// ostringstream os; os << "Toroidal enumeration (f=" << F << ", i=" << i << ")"; H.title = os.str();
-		// Toroidal T (M,H);
-		// T.split_edges(); T.acpa(2.7);
-		// T.split_edges(); T.acpa(2.7);
-		// T.split_edges(); T.pack();
-
-		// cout << "  " << T.m << endl;
-		// cout << H.title << endl;
-		// T.output_pdf();
 	}
 }
