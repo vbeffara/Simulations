@@ -69,11 +69,25 @@ namespace vb {
 		return out;
 	}
 
+	bool connected (const Permutation & s, const Permutation & a) {
+		int n=s.size(); std::vector<unsigned> l(n); for (unsigned i=0; i<n; ++i) l[i]=i;
+		bool dirty=true; while (dirty) {
+			dirty=false;
+			for (int i=0; i<n; ++i) if (l[s[i]]<l[i]) { l[i]=l[s[i]]; dirty=true; }
+			for (int i=0; i<n; ++i) if (l[a[i]]<l[i]) { l[i]=l[a[i]]; dirty=true; }
+		}
+		for (int i=0; i<n; ++i) if (l[i]>0) return false;
+		return true;
+	}
+
 	std::ostream & operator<< (std::ostream &os, const Permutation &P) {
-		os << "{"; for (auto i : P) os << " " << i;
-		os << " } (";
-		for (auto cc : P.cycles()) { os << " ("; for (unsigned i : cc) os << " " << i; os << " )"; }
-		return os << " )" << std::endl;
+		os << "("; bool f = true;
+		for (auto cc : P.cycles()) {
+			if (!f) os << " "; os << "("; bool ff = true;
+			for (unsigned i : cc) { if (!ff) os << " "; os << i; ff = false; }
+			os << ")"; f = false;
+		}
+		return os << ")";
 	}
 
 	std::ostream & operator<< (std::ostream &os, const Passport &P) {

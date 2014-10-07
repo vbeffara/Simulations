@@ -34,6 +34,9 @@ namespace vb {
 
 		void flip (unsigned e);
 
+		Permutation	relabel  	(unsigned i)	const;
+		void       	normalize	();
+
 		Permutation sigma, alpha, phi; // black, white, faces
 	};
 

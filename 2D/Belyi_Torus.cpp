@@ -1,7 +1,6 @@
 #include <vb/PRNG.h>
 #include <vb/ProgressBar.h>
 #include <vb/Toroidal.h>
-#include <cassert>
 
 using namespace vb; using namespace std;
 
@@ -11,17 +10,6 @@ unsigned long long fact   	(unsigned long long n)                      	{ return
 unsigned long long binom  	(unsigned long long n, unsigned long long k)	{ return fact(n)/fact(k)/fact(n-k);   	}
 unsigned long long catalan	(unsigned long long n)                      	{ return binom(2*n,n)/(n+1);          	}
 unsigned long long npair  	(unsigned long long n)                      	{ return fact(n)/fact(n/2)/pow(2,n/2);	}
-
-bool connected (Permutation s, Permutation a) {
-	int n=s.size(); vector<int> l(n); for (int i=0; i<n; ++i) l[i]=i;
-	bool dirty=true; while (dirty) {
-		dirty=false;
-		for (int i=0; i<n; ++i) if (l[s[i]]<l[i]) { l[i]=l[s[i]]; dirty=true; }
-		for (int i=0; i<n; ++i) if (l[a[i]]<l[i]) { l[i]=l[a[i]]; dirty=true; }
-	}
-	for (int i=0; i<n; ++i) if (l[i]>0) return false;
-	return true;
-}
 
 class Pairing_Iterator { public:
 	vector<vector<unsigned>> todo_c, todo_p;
@@ -77,27 +65,6 @@ class pairings { public:
 	}
 };
 
-Permutation relabel (Permutation a, Permutation b, unsigned i) {
-	int n = a.size(), m = 0;
-	vector<unsigned> s1(n,n), s2(n,n);
-	vector<unsigned> stack; stack.push_back(i); s1[i]=0; s2[0]=i; ++m;
-	while (stack.size()) {
-		int x = stack.back(); stack.pop_back();
-		if (s1[a[x]]==n) { stack.push_back(a[x]); s1[a[x]] = m; s2[m]=a[x]; ++m; }
-		if (s1[b[x]]==n) { stack.push_back(b[x]); s1[b[x]] = m; s2[m]=b[x]; ++m; }
-	}
-	return s1;
-}
-
-Permutation optlabel (Permutation a, Permutation b) {
-	Permutation s = relabel (a,b,0), aa = a.conjugate(s), bb = b.conjugate(s);
-	for (int i=1; i<a.size(); ++i) {
-		Permutation s2 = relabel (a,b,i), aa2 = a.conjugate(s2), bb2 = b.conjugate(s2);
-		if ((aa2<aa) || ((aa2==aa) && (bb2<bb))) { s=s2; aa=aa2; bb=bb2; }
-	}
-	return s;
-}
-
 int main (int argc, char ** argv) {
 	Hub H ("Toroidal enumeration", argc, argv, "s=1,m=4,r=1");
 	int s=H['s'], a=6*s, r=H['r']; if (r>0) prng.seed(r);
@@ -110,14 +77,13 @@ int main (int argc, char ** argv) {
 		Permutation sigma = (alpha*phi).inverse(); Hypermap M (sigma,alpha,phi);    	if (M.genus() != 1)       	continue;
 		bool good=true; for (auto & c : sigma.cycles()) if (c.size()<=3) good=false;	if (!good)                	continue;
 
-		Permutation s = optlabel (alpha,phi);
-		Hypermap B (sigma.conjugate(s),alpha.conjugate(s),phi.conjugate(s));
+		Hypermap B(sigma,alpha,phi); B.normalize();
 		bool there = false; for (Hypermap & O : v) if (O==B) there = true;
 		if (!there) {
 			v.push_back(B);
-			cout << "Sigma: " << B.sigma;
-			cout << "Alpha: " << B.alpha;
-			cout << "Phi:   " << B.phi;
+			cout << "Sigma: " << B.sigma << endl;
+			cout << "Alpha: " << B.alpha << endl;
+			cout << "Phi:   " << B.phi << endl;
 
 			ostringstream os; os << "Toroidal enumeration (s=" << s << ", i=" << v.size() << ")"; H.title = os.str();
 			Toroidal T (M,H); for (int i=0; i<3; ++i) { T.split_edges(); T.pack(2); }

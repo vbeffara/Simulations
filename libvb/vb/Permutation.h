@@ -26,6 +26,8 @@ namespace vb {
 		std::vector<unsigned>	l;
 	};
 
+	bool connected (const Permutation & s, const Permutation & a);
+
 	std::ostream & operator<< (std::ostream &os, const Passport &P);
 	std::ostream & operator<< (std::ostream &os, const Permutation &P);
 }

@@ -53,6 +53,27 @@ namespace vb {
 		phi[a]=g; phi[g]=f; phi[f]=a; phi[d]=e; phi[e]=i; phi[i]=d;
 	}
 
+	Permutation Hypermap::relabel (unsigned i) const {
+		int n = alpha.size(), m = 0;
+		std::vector<unsigned> s1(n,n), s2(n,n);
+		s1[i]=m; s2[m]=i; ++m;
+		for (unsigned k=0; k<n; ++k) {
+			int x = s2[k];
+			if (s1[alpha[x]]==n) { s1[alpha[x]] = m; s2[m]=alpha[x]; ++m; }
+			if (s1[phi[x]]==n) { s1[phi[x]] = m; s2[m]=phi[x]; ++m; }
+		}
+		return s1;
+	}
+
+	void Hypermap::normalize () {
+		Permutation s = relabel(0), a = alpha.conjugate(s), p = phi.conjugate(s);
+		for (int i=1; i<alpha.size(); ++i) {
+			Permutation s2 = relabel(i), a2 = alpha.conjugate(s2), p2 = phi.conjugate(s2);
+			if ((a2<a) || ((a2==a) && (p2<p))) { s=s2; a=a2; p=p2; }
+		}
+		alpha = a; phi = p; sigma = sigma.conjugate(s);
+	}
+
 	std::ostream & operator<< (std::ostream &os, Hypermap &H) {
 		os   	<< "Hypermap < "
 		     	<< H.n_black() << " black, " << H.n_white() << " white, "

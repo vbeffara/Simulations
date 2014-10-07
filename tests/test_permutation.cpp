@@ -18,17 +18,6 @@ vector<int> signature (Permutation & s) {
 	return output;
 }
 
-bool connected (Permutation s, Permutation a) {
-	int n=s.size(); vector<int> l(n); for (int i=0; i<n; ++i) l[i]=i;
-	bool dirty=true; while (dirty) {
-		dirty=false;
-		for (int i=0; i<n; ++i) if (l[s[i]]<l[i]) { l[i]=l[s[i]]; dirty=true; }
-		for (int i=0; i<n; ++i) if (l[a[i]]<l[i]) { l[i]=l[a[i]]; dirty=true; }
-	}
-	for (int i=0; i<n; ++i) if (l[i]>0) return false;
-	return true;
-}
-
 vector<Hypermap> maps (vector<int> s, vector<int> a, vector<int> p) {
 	Cycles cs; int i=0;
 	for (int l : s) { vector<unsigned> c; for (int j=0; j<l; ++j) c.push_back(i++); cs.push_back (c); }
