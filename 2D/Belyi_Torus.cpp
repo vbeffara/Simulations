@@ -97,8 +97,8 @@ Permutation optlabel (Permutation a, Permutation b) {
 }
 
 int main (int argc, char ** argv) {
-	Hub H ("Toroidal enumeration", argc, argv, "f=4,m=4");
-	int F=H['f'], A=3*F/2, S=F/2, a=3*F; assert (F%2 == 0);
+	Hub H ("Toroidal enumeration", argc, argv, "s=1,m=4");
+	int S=H['s'], F=2*S, A=3*S, a=6*S;
 
 	Cycles phi_c; for (unsigned i=0; i<a/3; ++i) phi_c.push_back ({3*i,3*i+1,3*i+2}); Permutation phi(phi_c);
 
@@ -118,7 +118,7 @@ int main (int argc, char ** argv) {
 			cout << "Alpha: " << B.alpha;
 			cout << "Phi:   " << B.phi;
 
-			ostringstream os; os << "Toroidal enumeration (f=" << F << ", i=" << v.size() << ")"; H.title = os.str();
+			ostringstream os; os << "Toroidal enumeration (s=" << S << ", i=" << v.size() << ")"; H.title = os.str();
 			Toroidal T (M,H); for (int i=0; i<3; ++i) { T.split_edges(); T.pack(2); }
 
 			cerr << "               \r\n";
