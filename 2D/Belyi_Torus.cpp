@@ -87,6 +87,15 @@ Permutation relabel (Permutation a, Permutation b, unsigned i) {
 	return s1;
 }
 
+Permutation optlabel (Permutation a, Permutation b) {
+	Permutation s = relabel (a,b,0), aa = a.conjugate(s), bb = b.conjugate(s);
+	for (int i=1; i<a.size(); ++i) {
+		Permutation s2 = relabel (a,b,i), aa2 = a.conjugate(s2), bb2 = b.conjugate(s2);
+		if ((aa2<aa) || ((aa2==aa) && (bb2<bb))) { s=s2; aa=aa2; bb=bb2; }
+	}
+	return s;
+}
+
 int main (int argc, char ** argv) {
 	Hub H ("Toroidal enumeration", argc, argv, "f=4,m=17");
 	int F=H['f'], A=3*F/2, S=F/2, a=3*F; assert (F%2 == 0);
@@ -95,19 +104,21 @@ int main (int argc, char ** argv) {
 
 	vector<Hypermap> v;
 
-	int i=0; for (Permutation alpha : pairings(a)) {
+	while (true) { Permutation alpha = pairings(a).rand();
 		                                                                            	if (!connected(phi,alpha))	continue;
 		Permutation sigma = (alpha*phi).inverse(); Hypermap M (sigma,alpha,phi);    	if (M.genus() != 1)       	continue;
 		bool good=true; for (auto & c : sigma.cycles()) if (c.size()<=2) good=false;	if (!good)                	continue;
 
-		cout << "Sigma: " << sigma;
-		cout << "Alpha: " << alpha;
-		cout << "Phi:   " << phi;
-
-		Permutation s = relabel (alpha,phi,0);
+		Permutation s = optlabel (alpha,phi);
 		Hypermap B (sigma.conjugate(s),alpha.conjugate(s),phi.conjugate(s));
 		bool there = false; for (Hypermap & O : v) if (O==B) there = true;
-		if (!there) v.push_back(B);
+		if (!there) {
+			v.push_back(B);
+			cout << "Sigma: " << B.sigma;
+			cout << "Alpha: " << B.alpha;
+			cout << "Phi:   " << B.phi;
+			cout << endl << " --> found " << v.size() << endl << endl;
+		}
 
 		// ostringstream os; os << "Toroidal enumeration (f=" << F << ", i=" << i << ")"; H.title = os.str();
 		// Toroidal T (M,H);
@@ -118,17 +129,5 @@ int main (int argc, char ** argv) {
 		// cout << "  " << T.m << endl;
 		// cout << H.title << endl;
 		// T.output_pdf();
-
-		cout << endl;
-		++i;
-	}
-
-	cout << i << " triangulations, " << v.size() << " unique ones." << endl << endl;
-
-	for (Hypermap M : v) {
-		cout << "| Sigma: " << M.sigma;
-		cout << "| Alpha: " << M.alpha;
-		cout << "| Phi:   " << M.phi;
-		cout << endl;
 	}
 }
