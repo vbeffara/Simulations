@@ -1,3 +1,4 @@
+#include <vb/PRNG.h>
 #include <vb/ProgressBar.h>
 #include <vb/Toroidal.h>
 #include <cassert>
@@ -57,10 +58,21 @@ class Pairing_Iterator { public:
 };
 
 class pairings { public:
-	pairings              	(int n_) : n(n_)	{                                           	}
-	Pairing_Iterator begin	()              	{ return Pairing_Iterator(n,0,true);        	};
-	Pairing_Iterator end  	()              	{ return Pairing_Iterator(n,npair(n),false);	};
 	int n;
+
+	pairings        	     	(int n_) : n(n_)	{                                           	}
+	Pairing_Iterator	begin	()              	{ return Pairing_Iterator(n,0,true);        	};
+	Pairing_Iterator	end  	()              	{ return Pairing_Iterator(n,npair(n),false);	};
+
+	Permutation rand () {
+		Permutation out(n);
+		for (int i=0; i<n; ++i) {
+			if (out[i]<i) continue;
+			while (true) { out[i] = i+1+prng.uniform_int(n-i-1); if (out[out[i]]==out[i]) break; }
+			out[out[i]] = i;
+		}
+		return out;
+	}
 };
 
 int main (int argc, char ** argv) {
@@ -74,9 +86,9 @@ int main (int argc, char ** argv) {
 		Permutation sigma = (alpha*phi).inverse(); Hypermap M (sigma,alpha,phi);    	if (M.genus() != 1)       	continue;
 		bool good=true; for (auto & c : sigma.cycles()) if (c.size()<=2) good=false;	if (!good)                	continue;
 
-		// cout << "Sigma: " << sigma;
-		// cout << "Alpha: " << alpha;
-		// cout << "Phi:   " << phi;
+		cout << "Sigma: " << sigma;
+		cout << "Alpha: " << alpha;
+		cout << "Phi:   " << phi;
 
 		// ostringstream os; os << "Toroidal enumeration (f=" << F << ", i=" << i << ")"; H.title = os.str();
 		// Toroidal T (M,H);
@@ -88,7 +100,7 @@ int main (int argc, char ** argv) {
 		// cout << H.title << endl;
 		// T.output_pdf();
 
-		// cout << endl;
+		cout << endl;
 		++i;
 	}
 
