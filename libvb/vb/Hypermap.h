@@ -9,6 +9,8 @@ namespace vb {
 		Hypermap (Cycles s, Cycles a, Cycles p) : Hypermap (Permutation(s), Permutation(a), Permutation(p)) {}
 		Hypermap (Permutation s, Permutation a, Permutation p) : sigma(s), alpha(a), phi(p) {}
 
+		bool operator== (const Hypermap & o) const { return (sigma==o.sigma) && (alpha==o.alpha) /* && (p==o.p) */ ; }
+
 		unsigned n_black () const { return sigma.cycles().size(); }
 		unsigned n_white () const { return alpha.cycles().size(); }
 		unsigned n_faces () const { return phi.cycles().size(); }

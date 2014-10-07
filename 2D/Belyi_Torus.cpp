@@ -75,11 +75,25 @@ class pairings { public:
 	}
 };
 
+Permutation relabel (Permutation a, Permutation b, unsigned i) {
+	int n = a.size(), m = 0;
+	vector<unsigned> s1(n,n), s2(n,n);
+	vector<unsigned> stack; stack.push_back(i); s1[i]=0; s2[0]=i; ++m;
+	while (stack.size()) {
+		int x = stack.back(); stack.pop_back();
+		if (s1[a[x]]==n) { stack.push_back(a[x]); s1[a[x]] = m; s2[m]=a[x]; ++m; }
+		if (s1[b[x]]==n) { stack.push_back(b[x]); s1[b[x]] = m; s2[m]=b[x]; ++m; }
+	}
+	return s1;
+}
+
 int main (int argc, char ** argv) {
 	Hub H ("Toroidal enumeration", argc, argv, "f=4,m=17");
 	int F=H['f'], A=3*F/2, S=F/2, a=3*F; assert (F%2 == 0);
 
 	Cycles phi_c; for (unsigned i=0; i<a/3; ++i) phi_c.push_back ({3*i,3*i+1,3*i+2}); Permutation phi(phi_c);
+
+	vector<Hypermap> v;
 
 	int i=0; for (Permutation alpha : pairings(a)) {
 		                                                                            	if (!connected(phi,alpha))	continue;
@@ -89,6 +103,11 @@ int main (int argc, char ** argv) {
 		cout << "Sigma: " << sigma;
 		cout << "Alpha: " << alpha;
 		cout << "Phi:   " << phi;
+
+		Permutation s = relabel (alpha,phi,0);
+		Hypermap B (sigma.conjugate(s),alpha.conjugate(s),phi.conjugate(s));
+		bool there = false; for (Hypermap & O : v) if (O==B) there = true;
+		if (!there) v.push_back(B);
 
 		// ostringstream os; os << "Toroidal enumeration (f=" << F << ", i=" << i << ")"; H.title = os.str();
 		// Toroidal T (M,H);
@@ -104,5 +123,12 @@ int main (int argc, char ** argv) {
 		++i;
 	}
 
-	cout << i << " triangulations." << endl;
+	cout << i << " triangulations, " << v.size() << " unique ones." << endl << endl;
+
+	for (Hypermap M : v) {
+		cout << "| Sigma: " << M.sigma;
+		cout << "| Alpha: " << M.alpha;
+		cout << "| Phi:   " << M.phi;
+		cout << endl;
+	}
 }
