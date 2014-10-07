@@ -5,7 +5,7 @@
 
 using namespace vb; using namespace std;
 
-vector<unsigned> ntri { 0, 1, 2, 6, 23, 92 };
+vector<unsigned> ntri { 0, 1, 2, 6, 23, 92/*, 467*/ }; // 92 is probably ok, the others ...
 
 int main (int argc, char ** argv) {
 	Hub H ("Toroidal enumeration", argc, argv, "s=1,m=4,r=1");
@@ -29,7 +29,7 @@ int main (int argc, char ** argv) {
 			cout << "Phi:   " << M.phi << endl;
 
 			ostringstream os; os << "Toroidal enumeration (s=" << s << ", pass " << M.sigma.passport() << ", i=" << v.size() << ")"; H.title = os.str();
-			Toroidal T (M,H); for (int i=0; i<3; ++i) { T.split_edges(); T.pack(2); }
+			Toroidal T (M,H); for (int i=0; i<3; ++i) { T.split_edges(); } T.pack(1);
 
 			cerr << "               \r\n";
 			cout << " --> Passport: " << M.sigma.passport() << endl;
