@@ -48,6 +48,12 @@ namespace vb {
 		return s;
 	}
 
+	Permutation Permutation::conjugate (const Permutation & s) const {
+		Permutation out(size());
+		for (int i=0; i<size(); ++i) out[s[i]]=s[at(i)];
+		return out;
+	}
+
 	std::ostream & operator<< (std::ostream &os, const Permutation &P) {
 		os << "{"; for (auto i : P) os << " " << i;
 		os << " } (";

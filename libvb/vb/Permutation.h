@@ -15,6 +15,7 @@ namespace vb {
 
 		Permutation inverse  	()                     	const;
 		Permutation operator*	(const Permutation & o)	const; // this then o i.e. $this * o = o \circ this$.
+		Permutation conjugate	(const Permutation & s) const;
 
 		Cycles               	cycles ()   	const;
 		std::vector<unsigned>	signature ()	const;
