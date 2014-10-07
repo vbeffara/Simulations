@@ -18,3 +18,4 @@ out*
 *.o
 /graph
 bla*
+/tools/graph
