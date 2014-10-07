@@ -39,7 +39,7 @@ namespace vb {
 				double s=-2*M_PI, r0=v.r, r1, r2=V[v.adj.back()].r;
 				for (int ll : v.adj) { r1=r2; r2=V[ll].r; s += alpha_xyz (r0,r1,r2); }
 				v.r *= 1 + r*s/(2*M_PI); if (v.r<0) v.r /= 1 + r*s/(2*M_PI); ;
-				e += abs(s);
+				e += fabs(s);
 			}
 		}
 	}
