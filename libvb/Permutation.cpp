@@ -31,6 +31,21 @@ namespace vb {
 		return output;
 	}
 
+	Passport Permutation::passport () const {
+		std::vector<unsigned> s = signature();
+		Passport out;
+		unsigned l=0, c=0;
+		for (int i=s.size()-1; i>=0; --i) {
+			if (s[i]==l) ++c;
+			else {
+				if (c>0) out.push_back({l,c});
+				l=s[i]; c=1;
+			}
+		}
+		out.push_back({l,c});
+		return out;
+	}
+
 	bool Permutation::is_identity () const {
 		for (unsigned i=0; i<size(); ++i) if (at(i)!=i) return false;
 		return true;
@@ -59,5 +74,11 @@ namespace vb {
 		os << " } (";
 		for (auto cc : P.cycles()) { os << " ("; for (unsigned i : cc) os << " " << i; os << " )"; }
 		return os << " )" << std::endl;
+	}
+
+	std::ostream & operator<< (std::ostream &os, const Passport &P) {
+		bool first = true;
+		for (auto c : P) { if (!first) os << " "; os << c.first << "(" << c.second << ")"; first = false; }
+		return os;
 	}
 }

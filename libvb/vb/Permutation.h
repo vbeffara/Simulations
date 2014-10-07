@@ -5,6 +5,8 @@
 namespace vb {
 	using Cycles = std::vector<std::vector<unsigned>>;
 
+	class Passport : public std::vector<std::pair<unsigned,unsigned>> {};
+
 	class Permutation : public std::vector<unsigned> {
 	public:
 		Permutation (unsigned n = 0)         	: std::vector<unsigned> (n)	{ for (unsigned i=0; i<n; ++i) at(i)=i; }
@@ -19,9 +21,11 @@ namespace vb {
 
 		Cycles               	cycles ()   	const;
 		std::vector<unsigned>	signature ()	const;
+		Passport             	passport () 	const;
 
 		std::vector<unsigned>	l;
 	};
 
+	std::ostream & operator<< (std::ostream &os, const Passport &P);
 	std::ostream & operator<< (std::ostream &os, const Permutation &P);
 }

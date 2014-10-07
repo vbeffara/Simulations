@@ -122,8 +122,10 @@ int main (int argc, char ** argv) {
 			Toroidal T (M,H); for (int i=0; i<3; ++i) { T.split_edges(); T.pack(2); }
 
 			cerr << "               \r\n";
-			cout << " --> " << H.title << endl;
-			cout << "     Modulus: tau=" << T.m << endl << endl;
+			cout << " --> Passport: " << M.sigma.passport() << endl;
+			cout << "     Modulus: tau=" << T.m << endl;
+			cout << "     Order number: " << v.size() << endl;
+			cout << endl;
 			T.output_pdf();
 		}
 	}
