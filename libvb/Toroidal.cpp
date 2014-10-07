@@ -1,5 +1,6 @@
 #include <vb/Figure.h>
 #include <vb/Toroidal.h>
+#include <cmath>
 
 namespace vb {
 	Toroidal::Toroidal (Hypermap M, Hub H_) : Hypermap(M), m(I), n_skel(n_edges()), H(H_) {
@@ -74,7 +75,7 @@ namespace vb {
 		for (auto	& e : E)     	{ e.a -= arg(p1); }
 		for (cpx 	&p : periods)	p /= p1;
 
-		std::vector<cpx> moduli; for (cpx p : periods) if (abs(imag(p)) > .1) moduli.push_back(p);
+		std::vector<cpx> moduli; for (cpx p : periods) if (fabs(imag(p)) > .1) moduli.push_back(p);
 		double n2 = abs(moduli[0]); m = moduli[0];
 		for (cpx p : moduli) if (abs(p)<n2) { n2=abs(p); m=p; }
 		if (imag(m)<0) m = -m; while (real(m)<-.499) m+=1; while (real(m)>.501) m-=1;
