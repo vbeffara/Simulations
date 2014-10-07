@@ -5,6 +5,8 @@
 
 using namespace vb; using namespace std;
 
+vector<unsigned> ntri { 0, 1, 2, 6, 23, 92 };
+
 unsigned long long fact   	(unsigned long long n)                      	{ return (n<2 ? 1 : n*fact(n-1));     	}
 unsigned long long binom  	(unsigned long long n, unsigned long long k)	{ return fact(n)/fact(k)/fact(n-k);   	}
 unsigned long long catalan	(unsigned long long n)                      	{ return binom(2*n,n)/(n+1);          	}
@@ -97,15 +99,14 @@ Permutation optlabel (Permutation a, Permutation b) {
 }
 
 int main (int argc, char ** argv) {
-	Hub H ("Toroidal enumeration", argc, argv, "s=1,m=4");
-	int S=H['s'], F=2*S, A=3*S, a=6*S;
+	Hub H ("Toroidal enumeration", argc, argv, "s=1,m=4,r=1");
+	int s=H['s'], a=6*s, r=H['r']; if (r>0) prng.seed(r);
 
 	Cycles phi_c; for (unsigned i=0; i<a/3; ++i) phi_c.push_back ({3*i,3*i+1,3*i+2}); Permutation phi(phi_c);
 
-	vector<Hypermap> v;
-
-	while (true) { Permutation alpha = pairings(a).rand();
-		                                                                            	if (!connected(phi,alpha))	continue;
+	vector<Hypermap> v; unsigned target = s<ntri.size() ? ntri[s] : 1000;
+	while (v.size()<target) {
+		Permutation alpha = pairings(a).rand();                                     	if (!connected(phi,alpha))	continue;
 		Permutation sigma = (alpha*phi).inverse(); Hypermap M (sigma,alpha,phi);    	if (M.genus() != 1)       	continue;
 		bool good=true; for (auto & c : sigma.cycles()) if (c.size()<=3) good=false;	if (!good)                	continue;
 
@@ -118,7 +119,7 @@ int main (int argc, char ** argv) {
 			cout << "Alpha: " << B.alpha;
 			cout << "Phi:   " << B.phi;
 
-			ostringstream os; os << "Toroidal enumeration (s=" << S << ", i=" << v.size() << ")"; H.title = os.str();
+			ostringstream os; os << "Toroidal enumeration (s=" << s << ", i=" << v.size() << ")"; H.title = os.str();
 			Toroidal T (M,H); for (int i=0; i<3; ++i) { T.split_edges(); T.pack(2); }
 
 			cerr << "               \r\n";
