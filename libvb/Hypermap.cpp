@@ -74,6 +74,10 @@ namespace vb {
 		alpha = a; phi = p; sigma = sigma.conjugate(s);
 	}
 
+	void Hypermap::mirror () {
+		alpha = sigma*phi; sigma = sigma.inverse(); phi = phi.inverse();
+	}
+
 	std::ostream & operator<< (std::ostream &os, Hypermap &H) {
 		os   	<< "Hypermap < "
 		     	<< H.n_black() << " black, " << H.n_white() << " white, "

@@ -1,4 +1,5 @@
 // d: minimum degree of the triangulation
+// f: identify maps obtained after mirror flip
 // g: genus of the triangulation
 // m: mode for the generated pdf (see vb/Toroidal.h)
 // o: enable splitting, circle packing and output (fails if g!=1)
@@ -12,16 +13,16 @@
 
 using namespace vb; using namespace std;
 
-vector<unsigned> ntri { 0, /*1, 3, 11, 64, 455 */ };
+vector<unsigned> ntri { 0, 1, 5, 46, 669 };
 
 int main (int argc, char ** argv) {
-	Hub H ("Toroidal enumeration", argc, argv, "s=1,m=4,r=1,o,d=0,g=1");
+	Hub H ("Toroidal enumeration", argc, argv, "s=1,m=4,r=1,o,d=0,g=1,f");
 	int s=H['s'], g=H['g'], a=6*(s+2*g-2), r=H['r'], d=H['d'];
 	assert (a>0); if (g!=1) assert(!H['o']); if (r>0) prng.seed(r);
 
 	Cycles phi_c; for (unsigned i=0; i<a/3; ++i) phi_c.push_back ({3*i,3*i+1,3*i+2}); Permutation phi(phi_c);
 
-	vector<Hypermap> v; unsigned target = s<ntri.size() ? ntri[s] : 0;
+	vector<Hypermap> v; unsigned target = 0; if ((d==0) && (g==1) && (!H['f']) && (s<ntri.size())) target = ntri[s];
 
 	while ((target==0)||(v.size()<target)) {
 		Permutation alpha = Pairings(a).rand();                                    	if (!connected(phi,alpha))	continue;
@@ -30,14 +31,14 @@ int main (int argc, char ** argv) {
 
 		M.normalize();
 		bool there = false; for (Hypermap & O : v) if (O==M) there = true;
+		if (H['f']) { Hypermap MM = M; MM.mirror(); MM.normalize(); for (Hypermap & O : v) if (O==MM) there = true; }
 		if (!there) {
 			v.push_back(M);
 
 			cout << "Sigma: " << M.sigma << endl;
 			cout << "Alpha: " << M.alpha << endl;
 			cout << "Phi:   " << M.phi << endl;
-
-			cerr << "               \r\n";
+			cout << endl;
 			cout << " --> Passport: " << M.sigma.passport() << endl;
 			cout << "     Order number: " << v.size() << endl << endl;
 

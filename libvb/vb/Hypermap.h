@@ -36,6 +36,7 @@ namespace vb {
 
 		Permutation	relabel  	(unsigned i)	const;
 		void       	normalize	();
+		void       	mirror   	();
 
 		Permutation sigma, alpha, phi; // black, white, faces
 	};
