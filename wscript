@@ -15,6 +15,8 @@ def configure (ctx) :
 	ctx.check_cfg	(package='',                             	args='--cflags --ldflags',	uselib_store='FLTK', path='fltk-config')
 	ctx.check_cfg	(package='x11',                          	args='--cflags --libs',   	mandatory=0)
 	ctx.check    	(header_name=["string", "png++/png.hpp"],	msg='Checking for PNG++', 	define_name='HAVE_PNGPP')
+	ctx.check    	(lib='boost_system')
+	ctx.check    	(lib='boost_filesystem')
 	ctx.check_boost ()
 
 	ctx.write_config_header ('libvb/vb/config.h')

@@ -21,7 +21,7 @@ namespace vb {
 	public:
 		Hub (std::string t, int argc, char ** argv, std::string c = "");
 
-		std::string title,help;
+		std::string title,prog,dir,help;
 		std::map <char,bool> has_arg;
 	};
 }

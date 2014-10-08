@@ -6,10 +6,13 @@ namespace vb {
 	Toroidal::Toroidal (Hypermap M, Hub H_) : Hypermap(M), m(I), n_skel(n_edges()), H(H_) {
 		for (int i=0; i<int(H['o']); ++i) Hypermap::operator= (Hypermap::split_edges());
 		from_hypermap();
+		prog = H_.prog;
 	}
 
 	void Toroidal::split_edges () {
+		std::string p = prog;
 		Hypermap::operator= (Hypermap::split_edges());
+		prog = p;
 		from_hypermap();
 		for (int i=V.size()/4; i<V.size(); ++i) {
 			V[i].r = 0; int k=0;
@@ -120,6 +123,6 @@ namespace vb {
 		}
 
 		if (eee.size()) F.add (new Path (eee,Pen(0,.06)));
-		F.title = H.title; F.output_pdf();
+		F.title = H.title; F.prog = prog; F.output_pdf();
 	}
 }

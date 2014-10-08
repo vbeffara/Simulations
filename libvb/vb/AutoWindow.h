@@ -15,7 +15,7 @@ namespace vb {
 
 		int handle (int event);
 
-		std::string title;
+		std::string title,prog;
 
 	private:
 		bool paused;

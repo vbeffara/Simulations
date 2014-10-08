@@ -51,7 +51,7 @@ namespace vb {
     paint();
 
     std::ostringstream os;
-    if (s == "") os << "output/" << title; else os << s;
+    if (s == "") os << "output/" << (prog!="" ? prog+"/" : "") << title; else os << s;
     os << ".png";
 
     cairo_surface_write_to_png (surface, os.str().c_str());

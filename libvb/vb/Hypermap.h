@@ -39,6 +39,8 @@ namespace vb {
 		void       	mirror   	();
 
 		Permutation sigma, alpha, phi; // black, white, faces
+
+		std::string prog;
 	};
 
 	std::ostream & operator<< (std::ostream &os, Hypermap &H);

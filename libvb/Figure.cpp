@@ -141,7 +141,7 @@ namespace vb {
 
   void Figure::output_pdf (const std::string &s) {
     std::ostringstream os;
-    if (s == "") os << "output/" << title; else os << s;
+    if (s == "") os << "output/" << (prog!="" ? prog+"/" : "") << title; else os << s;
     os << ".pdf";
 
     double real_h = w() * (top()-bottom()) / (right()-left());

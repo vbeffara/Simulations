@@ -3,11 +3,14 @@
 #include <vector>
 #include <getopt.h>
 #include <boost/algorithm/string.hpp>
+#include <boost/filesystem.hpp>
 
 namespace vb {
 	Hub::Hub (std::string t, int argc, char ** argv, std::string c) : title(t), help("Syntax : " + c) {
-		std::vector<std::string> cs;
-		boost::split (cs, c, boost::is_any_of(", "), boost::token_compress_on);
+		std::vector<std::string> cs;	boost::split (cs, c, boost::is_any_of(", "), boost::token_compress_on);
+		std::vector<std::string> fs;	boost::split (fs, argv[0], boost::is_any_of("/\\"));
+
+		prog = fs.back(); dir = "output/" + prog + "/"; boost::filesystem::create_directories(dir);
 
 		std::string getopt_arg ("h");
 		for (auto s : cs) {
@@ -17,7 +20,7 @@ namespace vb {
 
 		char ch;
 		while ((ch = getopt(argc,argv,getopt_arg.c_str())) != -1) {
-			if (ch == 'h')       	{ std::cerr << help << std::endl; exit(0); } 
+			if (ch == 'h')       	{ std::cerr << help << std::endl; exit(0); }
 			else if (has_arg[ch])	{ (*this)[ch] = optarg; }
 			else                 	{ (*this)[ch] = "1"; }
 		}
