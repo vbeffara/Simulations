@@ -60,7 +60,11 @@ namespace vb {
 		}
 
 		sigma = sigma_c; alpha = alpha_c; phi = phi_c;
-		initial.resize (sigma.size(),false); for (int i=0; i<N; ++i) initial[alpha[i]] = initial[i];
+		initial.resize (sigma.size(),0);
+		for (int i=0; i<N; ++i) {
+			initial[alpha[i]] = (initial[i]&1 ? 1 : 0);
+			if ((initial[i]&2) && (initial[alpha[sigma[sigma[sigma[alpha[i]]]]]]&2)) initial[alpha[i]] |= 4;
+		}
 	}
 
 	void Hypermap::flip (unsigned e) {
@@ -117,7 +121,8 @@ namespace vb {
 				relabel(p);
 
 				int ii=alpha[n-2], jj=alpha[n-1]; alpha[ii]=jj; alpha[jj]=ii;
-				sigma.resize(n-2); alpha.resize(n-2); phi.resize(n-2); n -= 2;
+				initial[ii] |= initial[n-2]; initial[jj] |= initial[n-1];
+				sigma.resize(n-2); alpha.resize(n-2); phi.resize(n-2); initial.resize(n-2); n-=2;
 				phi = (sigma*alpha).inverse();
 
 				break;
@@ -134,7 +139,7 @@ namespace vb {
 
 	void Hypermap::relabel (const Permutation & p) {
 		sigma = sigma.conjugate(p); alpha = alpha.conjugate(p); phi = phi.conjugate(p);
-		std::vector<bool> b (sigma.size()); for (int i=0; i<sigma.size(); ++i) b[p[i]] = initial[i]; initial=b;
+		std::vector<unsigned> b (sigma.size()); for (int i=0; i<sigma.size(); ++i) b[p[i]] = initial[i]; initial=b;
 	}
 
 	std::ostream & operator<< (std::ostream &os, Hypermap &H) {

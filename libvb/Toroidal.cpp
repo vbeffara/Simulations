@@ -100,28 +100,42 @@ namespace vb {
 	void Toroidal::output_pdf () {
 		for (int e=0; e<sigma.size(); ++e) {
 			if (!initial[e]) continue;
-			V[E[e].src].bone=true;
+			V[E[e].src].bone = std::max (V[E[e].src].bone,initial[e]);
 		}
 
 		Figure F; std::vector<cpx> eee; int mode = H['m'];
-		F.add (new Polygon ({0,1,cpx(1)+m,m}, Pen(0,0,200,1)));
 
 		for (int a=-2; a<3; ++a) {
 			for (int b=-1; b<2; ++b) {
 				for (auto v : V) {
 					cpx z = v.z + cpx(a) + cpx(b)*m;
 					if ((imag(z)<-.6)||(imag(z)>1.7*std::max(1.0,imag(m)))||(real(z)<-.8)||(real(z)>2.6)) continue;
-					if ( ((mode&1)&&(v.bone)) || ((mode&2)&&(!v.bone)) ) F.add (new Circle (z,v.r,Pen(0,.15)));
-					for (int e : v.edges) if ( ((mode&4)&&(initial[e])) || ((mode&8)&&(v.bone)) || ((mode&16)&&(!v.bone)) ) {
-						eee.push_back(z);
-						eee.push_back(z+std::polar(v.r,E[e].a));
-						eee.push_back(NAN);
+					if ( ((mode&1)&&(v.bone)) || ((mode&2)&&(!v.bone)) ) F.add (new Circle (z,v.r,Pen(0,.3)));
+					for (int e : v.edges) {
+						if ( ((mode&4)&&(initial[e])) || ((mode&8)&&(v.bone)) || ((mode&16)&&(!v.bone)) ) {
+							eee.push_back(z);
+							eee.push_back(z+std::polar(v.r,E[e].a));
+							eee.push_back(NAN);
+						}
 					}
 				}
 			}
 		}
 
-		if (eee.size()) F.add (new Path (eee,Pen(0,.06)));
+		if (eee.size()) F.add (new Path (eee,Pen(0,.5)));
+
+		for (int a=-2; a<3; ++a) {
+			for (int b=-1; b<2; ++b) {
+				for (auto v : V) {
+					cpx z = v.z + cpx(a) + cpx(b)*m;
+					if ((imag(z)<-.6)||(imag(z)>1.7*std::max(1.0,imag(m)))||(real(z)<-.8)||(real(z)>2.6)) continue;
+					if ((mode&32)&&(v.bone&2)) F.add (new Circle (z,.015,Pen(0,.5,0,1)));
+					if ((mode&64)&&(v.bone&4)) F.add (new Circle (z,.01,Pen(0,2,WHITE,1)));
+				}
+			}
+		}
+
+		F.add (new Polygon ({0,1,cpx(1)+m,m}, Pen(0,0,Color(0,0,0,50),1)));
 		F.title = H.title; F.prog = prog; F.output_pdf();
 	}
 }

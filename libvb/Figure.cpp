@@ -125,7 +125,7 @@ namespace vb {
       i->draw(cr);
       if (i->p.ff) {
         cairo_stroke_preserve(cr);
-        cairo_set_source_rgb (cr, i->p.f.r/255.0, i->p.f.g/255.0, i->p.f.b/255.0);
+        cairo_set_source_rgba (cr, i->p.f.r/255.0, i->p.f.g/255.0, i->p.f.b/255.0, i->p.f.a/255.0);
         cairo_fill(cr);
       }
       cairo_stroke(cr);

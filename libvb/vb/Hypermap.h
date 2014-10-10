@@ -6,7 +6,7 @@
 namespace vb {
 	class Hypermap {
 	public:
-		Hypermap (Permutation s, Permutation a, Permutation p)	: sigma(s), alpha(a), phi(p), initial(s.size(),true)       	{}
+		Hypermap (Permutation s, Permutation a, Permutation p)	: sigma(s), alpha(a), phi(p), initial(s.size(),3)          	{}
 		Hypermap (Cycles s, Cycles a, Cycles p)               	: Hypermap (Permutation(s), Permutation(a), Permutation(p))	{}
 
 		bool operator== (const Hypermap & o) const { return (sigma==o.sigma) && (alpha==o.alpha); }
@@ -39,7 +39,7 @@ namespace vb {
 		void	split_edges	();
 
 		Permutation sigma, alpha, phi;
-		std::vector<bool> initial;
+		std::vector<unsigned> initial;
 
 		std::string prog;
 
