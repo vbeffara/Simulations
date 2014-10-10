@@ -9,7 +9,9 @@ namespace vb {
 		Hypermap (Permutation s, Permutation a, Permutation p)	: sigma(s), alpha(a), phi(p), initial(s.size(),true)       	{}
 		Hypermap (Cycles s, Cycles a, Cycles p)               	: Hypermap (Permutation(s), Permutation(a), Permutation(p))	{}
 
-		bool operator== (const Hypermap & o) const { return (sigma==o.sigma) && (alpha==o.alpha) /* && (p==o.p) */ ; }
+		Hypermap dual () const;
+
+		bool operator== (const Hypermap & o) const { return (sigma==o.sigma) && (alpha==o.alpha); }
 
 		unsigned n_black () const { return sigma.cycles().size(); }
 		unsigned n_white () const { return alpha.cycles().size(); }
@@ -34,13 +36,18 @@ namespace vb {
 
 		void flip (unsigned e);
 
-		Permutation	relabel  	(unsigned i)	const;
-		void       	normalize	();
-		void       	mirror   	();
+		void	normalize	();
+		void	mirror   	();
+		void	simplify2	();
+		void	relabel  	(const Permutation & p);
 
 		Permutation sigma, alpha, phi; // black, white, faces
+		std::vector<bool> initial;
 
 		std::string prog;
+
+	private:
+		Permutation	rebasing	(unsigned i)	const;
 	};
 
 	std::ostream & operator<< (std::ostream &os, Hypermap &H);

@@ -44,7 +44,10 @@ int main (int argc, char ** argv) {
 
 			if (H['o']) {
 				ostringstream os; os << "Toroidal enumeration (s=" << s << ", pass " << M.sigma.passport() << ", i=" << v.size() << ")"; H.title = os.str();
-				Toroidal T (M,H); for (int i=0; i<3; ++i) { T.split_edges(); } T.pack(1);
+				for (int i=0; i<4; ++i) M = M.split_edges();
+				M.simplify2(); M=M.dual(); M.simplify2(); M=M.dual();
+				Toroidal T (M,H);
+				T.pack(2);
 				cout << "     Modulus: tau=" << T.m << endl << endl;
 				T.output_pdf();
 			}

@@ -62,7 +62,7 @@ namespace vb {
 		phi[a]=g; phi[g]=f; phi[f]=a; phi[d]=e; phi[e]=i; phi[i]=d;
 	}
 
-	Permutation Hypermap::relabel (unsigned i) const {
+	Permutation Hypermap::rebasing (unsigned i) const {
 		int n = alpha.size(), m = 0;
 		std::vector<unsigned> s1(n,n), s2(n,n);
 		s1[i]=m; s2[m]=i; ++m;
@@ -80,11 +80,38 @@ namespace vb {
 			Permutation s2 = rebasing(i), a2 = alpha.conjugate(s2), p2 = phi.conjugate(s2);
 			if ((a2<a) || ((a2==a) && (p2<p))) { s=s2; a=a2; p=p2; }
 		}
-		alpha = a; phi = p; sigma = sigma.conjugate(s);
+		relabel(s);
 	}
 
 	void Hypermap::mirror () {
 		alpha = sigma*phi; sigma = sigma.inverse(); phi = phi.inverse();
+	}
+
+	void Hypermap::simplify2 () {
+		int n = sigma.size();
+		bool finished = false;
+		while (!finished) {
+			finished = true;
+			for (auto v : sigma.cycles()) {
+				if (v.size() != 2) continue;
+				finished = false;
+
+				int i=std::min(v[0],v[1]), j=std::max(v[0],v[1]); Permutation p(n);
+				if (j==n-2) { p[i] = n-2; p[n-2] = n-1; p[n-1] = i; } else { p[i]=n-2; p[n-2]=i; p[j]=n-1; p[n-1]=j; }
+				relabel(p);
+
+				int ii=alpha[n-2], jj=alpha[n-1]; alpha[ii]=jj; alpha[jj]=ii;
+				sigma.resize(n-2); alpha.resize(n-2); phi.resize(n-2); n -= 2;
+				phi = (sigma*alpha).inverse();
+
+				break;
+			}
+		}
+	}
+
+	void Hypermap::relabel (const Permutation & p) {
+		sigma = sigma.conjugate(p); alpha = alpha.conjugate(p); phi = phi.conjugate(p);
+		std::vector<bool> b (sigma.size()); for (int i=0; i<sigma.size(); ++i) b[p[i]] = initial[i]; initial=b;
 	}
 
 	std::ostream & operator<< (std::ostream &os, Hypermap &H) {

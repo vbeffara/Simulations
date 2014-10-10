@@ -69,6 +69,10 @@ namespace vb {
 		return out;
 	}
 
+	Permutation Transposition (unsigned n, unsigned i, unsigned j) {
+		Permutation p(n); p[i]=j; p[j]=i; return p;
+	}
+
 	bool connected (const Permutation & s, const Permutation & a) {
 		int n=s.size(); std::vector<unsigned> l(n); for (unsigned i=0; i<n; ++i) l[i]=i;
 		bool dirty=true; while (dirty) {
