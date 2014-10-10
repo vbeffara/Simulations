@@ -6,8 +6,8 @@
 namespace vb {
 	class Hypermap {
 	public:
-		Hypermap (Cycles s, Cycles a, Cycles p) : Hypermap (Permutation(s), Permutation(a), Permutation(p)) {}
-		Hypermap (Permutation s, Permutation a, Permutation p) : sigma(s), alpha(a), phi(p) {}
+		Hypermap (Permutation s, Permutation a, Permutation p)	: sigma(s), alpha(a), phi(p), initial(s.size(),true)       	{}
+		Hypermap (Cycles s, Cycles a, Cycles p)               	: Hypermap (Permutation(s), Permutation(a), Permutation(p))	{}
 
 		bool operator== (const Hypermap & o) const { return (sigma==o.sigma) && (alpha==o.alpha) /* && (p==o.p) */ ; }
 

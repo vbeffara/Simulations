@@ -27,7 +27,7 @@ namespace vb {
 	class Toroidal : public Hypermap {
 	public:
 		class Vertex	{ public: cpx z;  	double r;	bool bone; std::vector<int> adj; std::vector<unsigned> edges;	Vertex () { r=1; } };
-		class Edge  	{ public: int src;	double a;	bool bone; };
+		class Edge  	{ public: int src;	double a; };
 
 		Toroidal (Hypermap M, Hub H_);
 

@@ -1,6 +1,12 @@
 #include <vb/Hypermap.h>
 
 namespace vb {
+	Hypermap Hypermap::dual () const {
+		Hypermap out (phi.inverse(),alpha.inverse(),sigma.inverse());
+		out.initial = initial;
+		return out;
+	}
+
 	bool Hypermap::validate () {
 		if (sigma.size() != alpha.size()) return false;
 		if (sigma.size() != phi.size()) return false;
@@ -41,7 +47,10 @@ namespace vb {
 			for (unsigned &i : FF) i += 3*N;
 			phi_c.push_back (FF);
 		}
-		return Hypermap (sigma_c, alpha_c, phi_c);
+		Hypermap out (sigma_c, alpha_c, phi_c);
+		for (int i=sigma.size(); i<out.initial.size(); ++i) out.initial[i]=false;
+		for (int i=0; i<sigma.size(); ++i) { out.initial[i] = initial[i]; out.initial[out.alpha[i]] = initial[i]; }
+		return out;
 	}
 
 	void Hypermap::flip (unsigned e) {
@@ -66,9 +75,9 @@ namespace vb {
 	}
 
 	void Hypermap::normalize () {
-		Permutation s = relabel(0), a = alpha.conjugate(s), p = phi.conjugate(s);
+		Permutation s = rebasing(0), a = alpha.conjugate(s), p = phi.conjugate(s);
 		for (int i=1; i<alpha.size(); ++i) {
-			Permutation s2 = relabel(i), a2 = alpha.conjugate(s2), p2 = phi.conjugate(s2);
+			Permutation s2 = rebasing(i), a2 = alpha.conjugate(s2), p2 = phi.conjugate(s2);
 			if ((a2<a) || ((a2==a) && (p2<p))) { s=s2; a=a2; p=p2; }
 		}
 		alpha = a; phi = p; sigma = sigma.conjugate(s);

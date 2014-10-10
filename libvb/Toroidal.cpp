@@ -28,7 +28,7 @@ namespace vb {
 	    int i=0;
 		for (auto & v : V) {
 			v.z = NAN; v.bone=false; v.adj.clear(); v.edges = sc[i];
-			for (int e : v.edges) { E[e].a = NAN; E[e].bone = false; E[e].src = i; }
+			for (int e : v.edges) { E[e].a = NAN; E[e].src = i; }
 			++i;
 		}
 		for (auto & v : V) for (int e : v.edges) { v.adj.push_back(E[alpha[e]].src); }
@@ -98,10 +98,9 @@ namespace vb {
 	}
 
 	void Toroidal::output_pdf () {
-		for (int e=0; e<n_skel; ++e) {
-			int ee=e; do {
-				E[ee].bone=true; E[alpha[e]].bone=true; V[E[ee].src].bone=true; ee = sigma[sigma[sigma[alpha[ee]]]];
-			} while (!E[ee].bone);
+		for (int e=0; e<sigma.size(); ++e) {
+			if (!initial[e]) continue;
+			V[E[e].src].bone=true;
 		}
 
 		Figure F; std::vector<cpx> eee; int mode = H['m'];
@@ -113,7 +112,7 @@ namespace vb {
 					cpx z = v.z + cpx(a) + cpx(b)*m;
 					if ((imag(z)<-.6)||(imag(z)>1.7*std::max(1.0,imag(m)))||(real(z)<-.8)||(real(z)>2.6)) continue;
 					if ( ((mode&1)&&(v.bone)) || ((mode&2)&&(!v.bone)) ) F.add (new Circle (z,v.r,Pen(0,.15)));
-					for (int e : v.edges) if ( ((mode&4)&&(E[e].bone)) || ((mode&8)&&(v.bone)) || ((mode&16)&&(!v.bone)) ) {
+					for (int e : v.edges) if ( ((mode&4)&&(initial[e])) || ((mode&8)&&(v.bone)) || ((mode&16)&&(!v.bone)) ) {
 						eee.push_back(z);
 						eee.push_back(z+std::polar(v.r,E[e].a));
 						eee.push_back(NAN);
