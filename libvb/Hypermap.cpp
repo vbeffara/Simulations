@@ -1,16 +1,27 @@
 #include <vb/Hypermap.h>
 
 namespace vb {
-	Hypermap Hypermap::dual () const {
-		Hypermap out (phi.inverse(),alpha.inverse(),sigma.inverse());
-		out.initial = initial;
-		return out;
-	}
-
-	bool Hypermap::validate () {
+	bool Hypermap::validate () const {
 		if (sigma.size() != alpha.size()) return false;
 		if (sigma.size() != phi.size()) return false;
 		return (sigma*alpha*phi).is_identity();
+	}
+
+	bool Hypermap::is_graph () const {
+		for (auto v : alpha.cycles()) if (v.size() != 2) return false;
+		return true;
+	}
+
+	bool Hypermap::is_triangulation () const {
+		if (!(is_graph())) return false;
+		for (auto f : phi.cycles()) if (f.size() != 3) return false;
+		return true;
+	}
+
+	bool Hypermap::is_simple () const {
+		for (auto s : sigma.cycles())	if (s.size()<=2) return false;
+		for (auto f : phi.cycles())  	if (f.size()<=2) return false;
+		return true;
 	}
 
 	void Hypermap::output_dot (std::ostream & os) {
@@ -31,7 +42,7 @@ namespace vb {
 		os << "}" << std::endl;
 	}
 
-	Hypermap Hypermap::split_edges () {
+	void Hypermap::split_edges () {
 		unsigned N = n_edges();
 		Cycles sigma_c, alpha_c, phi_c;
 		sigma_c = sigma.cycles();
@@ -47,10 +58,9 @@ namespace vb {
 			for (unsigned &i : FF) i += 3*N;
 			phi_c.push_back (FF);
 		}
-		Hypermap out (sigma_c, alpha_c, phi_c);
-		for (int i=sigma.size(); i<out.initial.size(); ++i) out.initial[i]=false;
-		for (int i=0; i<sigma.size(); ++i) { out.initial[i] = initial[i]; out.initial[out.alpha[i]] = initial[i]; }
-		return out;
+
+		sigma = sigma_c; alpha = alpha_c; phi = phi_c;
+		initial.resize (sigma.size(),false); for (int i=0; i<N; ++i) initial[alpha[i]] = initial[i];
 	}
 
 	void Hypermap::flip (unsigned e) {
@@ -74,17 +84,23 @@ namespace vb {
 		return s1;
 	}
 
-	void Hypermap::normalize () {
+	Permutation Hypermap::rebasing () const {
 		Permutation s = rebasing(0), a = alpha.conjugate(s), p = phi.conjugate(s);
 		for (int i=1; i<alpha.size(); ++i) {
 			Permutation s2 = rebasing(i), a2 = alpha.conjugate(s2), p2 = phi.conjugate(s2);
 			if ((a2<a) || ((a2==a) && (p2<p))) { s=s2; a=a2; p=p2; }
 		}
-		relabel(s);
+		return s;
 	}
+
+	void Hypermap::normalize () { relabel(rebasing()); }
 
 	void Hypermap::mirror () {
 		alpha = sigma*phi; sigma = sigma.inverse(); phi = phi.inverse();
+	}
+
+	void Hypermap::dual () {
+		sigma = sigma.inverse(); alpha = alpha.inverse(); phi = phi.inverse(); swap(sigma,phi);
 	}
 
 	void Hypermap::simplify2 () {
@@ -106,6 +122,13 @@ namespace vb {
 
 				break;
 			}
+		}
+	}
+
+	void Hypermap::simplify () {
+		while (!is_simple()) {
+			simplify2();                	// Remove vertices of degree 2
+			dual(); simplify2(); dual();	// Remove pairs of adjacent edges
 		}
 	}
 

@@ -9,10 +9,7 @@ namespace vb {
 	}
 
 	void Toroidal::split_edges () {
-		std::string p = prog;
-		Hypermap::operator= (Hypermap::split_edges());
-		prog = p;
-		from_hypermap();
+		split_edges(); from_hypermap();
 		for (int i=V.size()/4; i<V.size(); ++i) {
 			V[i].r = 0; int k=0;
 			for (int j : V[i].adj) if (j < V.size()/4) { V[i].r += V[j].r; ++k; }
