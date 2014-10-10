@@ -79,8 +79,12 @@ namespace vb {
 		for (cpx p : moduli) if (abs(p)<n2) { n2=abs(p); m=p; }
 		if (imag(m)<0) m = -m; while (real(m)<-.499) m+=1; while (real(m)>.501) m-=1;
 
+		int mdeg=0; cpx mpos=0;
+		for (auto v : V) if (v.adj.size()>mdeg) { mdeg = v.adj.size(); mpos = v.z; }
+
 		double slope = real(m) / imag(m);
 		for (auto & v : V) {
+			v.z -= mpos;
 			while (imag(v.z) < 0)                    	v.z += m;
 			while (imag(v.z) > imag(m))              	v.z -= m;
 			while (real(v.z) < slope * imag(v.z))    	v.z += 1;
