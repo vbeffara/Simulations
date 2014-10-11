@@ -78,15 +78,9 @@ namespace vb {
 	}
 
 	Permutation Hypermap::rebasing (unsigned i) const {
-		int n = alpha.size(), m = 0;
-		std::vector<unsigned> s1(n,n), s2(n,n);
-		s1[i]=m; s2[m]=i; ++m;
-		for (unsigned k=0; k<n; ++k) {
-			int x = s2[k];
-			if (s1[alpha[x]]==n) { s1[alpha[x]] = m; s2[m]=alpha[x]; ++m; }
-			if (s1[phi[x]]==n) { s1[phi[x]] = m; s2[m]=phi[x]; ++m; }
-		}
-		return s1;
+		int n=alpha.size(), m=0; std::vector<unsigned> s1(n,n), s2(n,n);
+		auto go = [&] (int i) { while (s1[i]==n) { s1[i]=m; s2[m]=i; ++m; i=alpha[i]; } };
+		go(i); for (int x : s2) go(phi[x]); return s1;
 	}
 
 	Permutation Hypermap::rebasing () const {
