@@ -2,6 +2,7 @@
 // f: identify maps obtained after mirror flip
 // g: genus of the triangulation
 // m: mode for the generated pdf (see vb/Toroidal.h)
+// n: number of subdivisions for the circle packing
 // o: enable splitting, circle packing and output (fails if g!=1)
 // r: seed for the PRNG, set to 0 for time-based
 // s: number of vertices
@@ -16,7 +17,7 @@ using namespace vb; using namespace std;
 vector<unsigned> ntri { 0, 1, 5, 46, 669 };
 
 int main (int argc, char ** argv) {
-	Hub H ("Toroidal enumeration", argc, argv, "s=1,m=4,r=1,o,d=0,g=1,f");
+	Hub H ("Toroidal enumeration", argc, argv, "s=1,m=4,r=1,o,d=0,g=1,f,n=4");
 	int s=H['s'], g=H['g'], a=6*(s+2*g-2), r=H['r'], d=H['d'];
 	assert (a>0); if (g!=1) assert(!H['o']); if (r>0) prng.seed(r);
 
@@ -44,8 +45,8 @@ int main (int argc, char ** argv) {
 
 			if (H['o']) {
 				ostringstream os; os << "Toroidal enumeration (s=" << s << ", pass " << M.sigma.passport() << ", i=" << v.size() << ")"; H.title = os.str();
-				for (int i=0; i<4; ++i) M.split_edges(); M.simplify();
-				Toroidal T (M,H); T.pack(2);
+				for (int i=0; i<int(H['n']); ++i) M.split_edges(); M.simplify();
+				Toroidal T (M,H); T.pack();
 				cout << "     Modulus: tau=" << T.m << endl << endl;
 				T.output_pdf();
 			}
