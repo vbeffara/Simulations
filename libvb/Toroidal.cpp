@@ -49,7 +49,7 @@ namespace vb {
 				double s=0, r0=v.r, r1, r2=V[v.adj.back()].r;
 				for (int ll : v.adj) { r1=r2; r2=V[ll].r; s += alpha_xyz (r0,r1,r2); }
 				double c=cos(s/n);
-				double nr=ccn(n) * (1-c + sqrt(2-2*c)) / (1+c);
+				double nr=ccn(n) * (1-c + sqrt(2*(1-c))) / (1+c);
 				e += fabs(1-nr);
 				v.r *= 1.1 * nr - .1;
 			}

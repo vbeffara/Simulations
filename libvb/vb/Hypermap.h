@@ -34,6 +34,7 @@ namespace vb {
 		void	normalize  	();
 		void	mirror     	();
 		void	dual       	();
+		void	simplify1  	();
 		void	simplify2  	();
 		void	simplify   	();
 		void	split_edges	();

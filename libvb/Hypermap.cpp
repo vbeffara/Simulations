@@ -107,6 +107,29 @@ namespace vb {
 		sigma = sigma.inverse(); alpha = alpha.inverse(); phi = phi.inverse(); swap(sigma,phi);
 	}
 
+	void Hypermap::simplify1 () {
+		int n = sigma.size();
+		bool finished = false;
+		while (!finished) {
+			finished = true;
+			for (auto v : sigma.cycles()) {
+				if (v.size() != 1) continue;
+				finished = false;
+
+				int jj=v[0], ii=alpha[jj]; Permutation p(n);
+				if (jj==n-2) { p[ii] = n-2; p[n-2] = n-1; p[n-1] = ii; } else { p[ii]=n-2; p[n-2]=ii; p[jj]=n-1; p[n-1]=jj; }
+				relabel(p);
+
+				unsigned i=phi[n-1], j=sigma[n-2], k=alpha[j];
+				sigma[i]=j; phi[k]=i; initial[j] |= initial[n-1]; initial[i] |= initial[n-2];
+				sigma.resize(n-2); alpha.resize(n-2); phi.resize(n-2); initial.resize(n-2); n-=2;
+				assert(validate());
+
+				break;
+			}
+		}
+	}
+
 	void Hypermap::simplify2 () {
 		int n = sigma.size();
 		bool finished = false;
@@ -132,8 +155,8 @@ namespace vb {
 
 	void Hypermap::simplify () {
 		while (!is_simple()) {
-			simplify2();                	// Remove vertices of degree 2
-			dual(); simplify2(); dual();	// Remove pairs of adjacent edges
+			simplify1(); dual(); simplify1(); dual();
+			simplify2(); dual(); simplify2(); dual();
 		}
 	}
 
