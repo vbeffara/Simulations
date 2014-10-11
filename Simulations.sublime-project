@@ -14,7 +14,8 @@
 				".lock*",
 				"*.sublime-workspace",
 				"*.png",
-				"*.mp4"
+				"*.mp4",
+				"*#*"
 			],
 			"folder_exclude_patterns":
 			[
