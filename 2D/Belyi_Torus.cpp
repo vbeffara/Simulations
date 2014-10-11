@@ -40,8 +40,10 @@ int main (int argc, char ** argv) {
 			cout << "Alpha: " << M.alpha << endl;
 			cout << "Phi:   " << M.phi << endl;
 			cout << endl;
-			cout << " --> Passport: " << M.sigma.passport() << endl;
-			cout << "     Order number: " << v.size() << endl << endl;
+			cout << "     Order number: " << v.size() << endl;
+			cout << "     Name:         " << M.name() << endl;
+			cout << "     Passport:     " << M.sigma.passport() << endl;
+			cout << endl;
 
 			if (H['o']) {
 				ostringstream os; os << "Toroidal enumeration (s=" << s << ", pass " << M.sigma.passport() << ", i=" << v.size() << ")"; H.title = os.str();

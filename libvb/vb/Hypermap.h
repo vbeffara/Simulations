@@ -27,6 +27,8 @@ namespace vb {
 		void output_dot      	(std::ostream & os);
 		void output_graph_dot	(std::ostream & os);
 
+		std::string name () const; // For triangulations, assumed to be normalized
+
 		void flip (unsigned e);
 
 		void	relabel	(const Permutation & p);
