@@ -30,22 +30,34 @@ namespace vb {
 		for (auto & v : V) for (int e : v.edges) { v.adj.push_back(E[alpha[e]].src); }
 	}
 
-	void Toroidal::acpa (double r) {
+	double alpha_xyz (double x, double y, double z) { return acos ( (x*(x+y+z) - y*z) / ((x+y)*(x+z)) ); }
+
+	double ccn (int n) {
+		static std::vector<double> p;
+		for (int i=p.size(); i<=n; ++i) p.push_back (sqrt(2/(1-cos(2*M_PI/i)))-1);
+		return p[n];
+	}
+
+	void Toroidal::acpa () {
+		std::cerr << sigma.passport() << std::endl;
 		double e = 1, old_e = 2;
 		while ((e > 1e-3) || (e < old_e)) {
 			std::cerr << e << "     \r";
 			old_e = e; e = 0;
 			for (auto & v : V) {
-				double s=-2*M_PI, r0=v.r, r1, r2=V[v.adj.back()].r;
+				int n = v.adj.size();
+				double s=0, r0=v.r, r1, r2=V[v.adj.back()].r;
 				for (int ll : v.adj) { r1=r2; r2=V[ll].r; s += alpha_xyz (r0,r1,r2); }
-				v.r *= 1 + r*s/(2*M_PI); if (v.r<0) v.r /= 1 + r*s/(2*M_PI); ;
-				e += fabs(s);
+				double c=cos(s/n);
+				double nr=ccn(n) * (1-c + sqrt(2-2*c)) / (1+c);
+				e += fabs(1-nr);
+				v.r *= 1.1 * nr - .1;
 			}
 		}
 	}
 
-	void Toroidal::pack (double r) {
-		acpa(r);
+	void Toroidal::pack () {
+		acpa();
 
 		E[0].a=0; int ne=n_edges();
 		bool flag=true; while (flag) { flag = false;

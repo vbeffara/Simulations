@@ -6,12 +6,12 @@ using namespace vb;
 using namespace std;
 
 int main (int argc, char ** argv) {
-	Hub H ("Toroidal triangulation",argc,argv,"n=4,o=0,r=2.7,m=4,f,g=C5");
+	Hub H ("Toroidal triangulation",argc,argv,"n=4,o=0,m=4,f,g=C5");
 	Toroidal G (H_lib(H['g']),H);
 
 	for (int i=H['o']; i<=int(H['n']); ++i) {
 		cerr << "Step " << i << ": " << G;
-		G.pack(H['r']); if(H['f']) G.flip();
+		G.pack(); if(H['f']) G.flip();
 
 		cpx q = exp(I * M_PI * G.m);
 		cpx theta2(0), old_theta2(-1); for (int n=0; theta2 != old_theta2; ++n) { old_theta2=theta2; theta2 += 2.0 * pow (q, (n+.5)*(n+.5)); }
