@@ -22,8 +22,6 @@ namespace vb {
 		Cycles               	cycles ()   	const;
 		std::vector<unsigned>	signature ()	const;
 		Passport             	passport () 	const;
-
-		std::vector<unsigned>	l;
 	};
 
 	Permutation Transposition (unsigned n, unsigned i, unsigned j);

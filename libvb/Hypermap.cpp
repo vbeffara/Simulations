@@ -25,24 +25,6 @@ namespace vb {
 		return true;
 	}
 
-	void Hypermap::output_dot (std::ostream & os) {
-		os << "graph { graph [dimen=3]" << std::endl;
-		for (unsigned i=0; i<n_black(); ++i) os << "  b" << i << " [shape=point];" << std::endl;
-		for (unsigned i=0; i<n_white(); ++i) os << "  w" << i << " [shape=point,fillcolor=white];" << std::endl;
-		for (unsigned i=0; i<n_edges(); ++i) os << "  b" << sigma.l[i] << " -- w" << alpha.l[i] << ";" << std::endl;
-		os << "}" << std::endl;
-	}
-
-	void Hypermap::output_graph_dot (std::ostream & os) {
-		os << "graph { graph [dimen=3]" << std::endl;
-		for (unsigned i=0; i<n_black(); ++i)
-			os << "  " << i << " [shape=point];" << std::endl;
-		for (unsigned i=0; i<n_edges(); ++i)
-			if (i<alpha[i])
-				os << "  " << sigma.l[i] << " -- " << sigma.l[alpha[i]] << ";" << std::endl;
-		os << "}" << std::endl;
-	}
-
 	void Hypermap::split_edges () {
 		unsigned N = n_edges();
 		Cycles sigma_c, alpha_c, phi_c;

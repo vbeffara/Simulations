@@ -24,9 +24,6 @@ namespace vb {
 		int euler () const { return n_black() + n_white() - n_edges() + n_faces(); }
 		int genus () const { return 1-euler()/2; }
 
-		void output_dot      	(std::ostream & os);
-		void output_graph_dot	(std::ostream & os);
-
 		std::string name () const; // For triangulations, assumed to be normalized
 
 		void flip (unsigned e);
