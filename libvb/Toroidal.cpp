@@ -4,6 +4,7 @@
 
 namespace vb {
 	Toroidal::Toroidal (Hypermap M, Hub H_) : Hypermap(M), m(I), H(H_) {
+		assert (genus()==1);
 		from_hypermap();
 		prog = H_.prog;
 	}
@@ -21,9 +22,9 @@ namespace vb {
 		for (auto & v : V) for (int e : v.edges) { v.adj.push_back(E[alpha[e]].src); }
 	}
 
-	double alpha_xyz (double x, double y, double z) { return acos ( (x*(x+y+z) - y*z) / ((x+y)*(x+z)) ); }
+	static double alpha_xyz (double x, double y, double z) { return acos ( (x*(x+y+z) - y*z) / ((x+y)*(x+z)) ); }
 
-	double ccn (int n) {
+	static double ccn (int n) {
 		static std::vector<double> p;
 		for (int i=p.size(); i<=n; ++i) p.push_back (sqrt(2/(1-cos(2*M_PI/i)))-1);
 		return p[n];
