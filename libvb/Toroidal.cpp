@@ -143,6 +143,14 @@ namespace vb {
 					if ((mode&32)&&(v.bone&2)) F.add (new Circle (z,.015,Pen(0,.5,0,1)));
 					if ((mode&64)&&(v.bone&4)) F.add (new Circle (z,.01,Pen(0,2,WHITE,1)));
 					if ((mode&128)&&(v.bone&8)) F.add (new Circle (z,.01,Pen(0,2,RED,1)));
+					if ((mode&256)&&(v.bone&8)) {
+						std::vector<cpx> ast; for (int i=0; i<3; ++i) {
+							ast.push_back (z+std::polar(.013,i*M_PI/3));
+							ast.push_back (z+std::polar(.013,(i+3)*M_PI/3));
+							ast.push_back (NAN);
+						}
+						F.add (new Path (ast,Pen(0,1)));
+					}
 				}
 			}
 		}

@@ -9,7 +9,8 @@
 //      16 -> edges elsewhere
 //      32 -> big points at vertices (initial[i]&2)
 //      64 -> circles at midpoints (initial[i]&4)
-//     128 -> stars at faces (initial[i]&8)
+//     128 -> red circles at faces (initial[i]&8)
+//     256 -> stars at faces (variation on 128)
 //
 // Good modes are:
 //    3 -> circle packing;
