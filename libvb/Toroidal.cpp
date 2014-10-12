@@ -3,18 +3,9 @@
 #include <cmath>
 
 namespace vb {
-	Toroidal::Toroidal (Hypermap M, Hub H_) : Hypermap(M), m(I), n_skel(n_edges()), H(H_) {
+	Toroidal::Toroidal (Hypermap M, Hub H_) : Hypermap(M), m(I), H(H_) {
 		from_hypermap();
 		prog = H_.prog;
-	}
-
-	void Toroidal::split_edges () {
-		split_edges(); from_hypermap();
-		for (int i=V.size()/4; i<V.size(); ++i) {
-			V[i].r = 0; int k=0;
-			for (int j : V[i].adj) if (j < V.size()/4) { V[i].r += V[j].r; ++k; }
-			V[i].r /= k;
-		}
 	}
 
 	void Toroidal::from_hypermap () {

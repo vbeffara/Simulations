@@ -32,7 +32,6 @@ namespace vb {
 
 		Toroidal (Hypermap M, Hub H_);
 
-		void split_edges  	();	//< Add one vertex at the midpoint of each edge.
 		void from_hypermap	();	//< If the Hypermap part is correct, fill in V and E.
 		void acpa         	();	//< Compute the radii of the circle packing.
 		void pack         	();	//< Run acpa() and then compute an embedding into a torus.
@@ -45,7 +44,6 @@ namespace vb {
 		std::vector<Vertex>	V;
 		std::vector<Edge>  	E;
 
-		int n_skel;
 		Hub H;
 	};
 }
