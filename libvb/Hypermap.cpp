@@ -149,11 +149,20 @@ namespace vb {
 		std::vector<unsigned> b (sigma.size()); for (int i=0; i<sigma.size(); ++i) b[p[i]] = initial[i]; initial=b;
 	}
 
+	void Hypermap::dessin () {
+		Cycles new_a, new_f; int n=sigma.size(); initial.resize(6*n);
+		for (unsigned i=0; i<n; ++i) {
+			new_a.push_back({i,i+n}); new_a.push_back({i+2*n,i+3*n}); new_a.push_back({i+4*n,i+5*n});
+			new_f.push_back({i,i+2*n,i+4*n}); new_f.push_back({alpha[i]+n,phi[i]+5*n,i+3*n});
+			initial[i]=3; initial[i+n]=5; initial[i+2*n]=4; initial[i+3*n]=8; initial[i+4*n]=8; initial[i+5*n]=2;
+		}
+		alpha = new_a; phi = new_f; sigma = (alpha*phi).inverse();
+	}
+
 	std::ostream & operator<< (std::ostream &os, Hypermap &H) {
-		os   	<< "Hypermap < "
-		     	<< H.n_black() << " black, " << H.n_white() << " white, "
-		     	<< H.n_edges() << " half-edges, " << H.n_faces() << " faces, genus " << H.genus() << " >" << std::endl;
-		// os	<< "  | Black: " << H.sigma << "  | White: " << H.alpha << "  | Faces: " << H.phi;
+		os	<< "Hypermap < "
+		  	<< H.n_black() << " black, " << H.n_white() << " white, "
+		  	<< H.n_edges() << " half-edges, " << H.n_faces() << " faces, genus " << H.genus() << " >" << std::endl;
 		return os;
 	}
 }

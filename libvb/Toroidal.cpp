@@ -39,7 +39,6 @@ namespace vb {
 	}
 
 	void Toroidal::acpa () {
-		std::cerr << sigma.passport() << std::endl;
 		double e = 1, old_e = 2;
 		while ((e > 1e-3) || (e < old_e)) {
 			std::cerr << e << "     \r";
@@ -124,7 +123,7 @@ namespace vb {
 					if ((imag(z)<-.6)||(imag(z)>1.7*std::max(1.0,imag(m)))||(real(z)<-.8)||(real(z)>2.6)) continue;
 					if ( ((mode&1)&&(v.bone)) || ((mode&2)&&(!v.bone)) ) F.add (new Circle (z,v.r,Pen(0,.3)));
 					for (int e : v.edges) {
-						if ( ((mode&4)&&(initial[e])) || ((mode&8)&&(v.bone)) || ((mode&16)&&(!v.bone)) ) {
+						if ( ((mode&4)&&(initial[e]&1)) || ((mode&8)&&(v.bone&1)) || ((mode&16)&&(!(v.bone&1))) ) {
 							eee.push_back(z);
 							eee.push_back(z+std::polar(v.r,E[e].a));
 							eee.push_back(NAN);
@@ -143,6 +142,7 @@ namespace vb {
 					if ((imag(z)<-.6)||(imag(z)>1.7*std::max(1.0,imag(m)))||(real(z)<-.8)||(real(z)>2.6)) continue;
 					if ((mode&32)&&(v.bone&2)) F.add (new Circle (z,.015,Pen(0,.5,0,1)));
 					if ((mode&64)&&(v.bone&4)) F.add (new Circle (z,.01,Pen(0,2,WHITE,1)));
+					if ((mode&128)&&(v.bone&8)) F.add (new Circle (z,.01,Pen(0,2,RED,1)));
 				}
 			}
 		}

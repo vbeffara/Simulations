@@ -9,13 +9,14 @@
 //      16 -> edges elsewhere
 //      32 -> big points at vertices (initial[i]&2)
 //      64 -> circles at midpoints (initial[i]&4)
+//     128 -> stars at faces (initial[i]&8)
 //
 // Good modes are:
 //    3 -> circle packing;
 //    4 -> just the bones;
 //   17 -> chain of empty disks plus small triangles;
 //   24 -> whole triangulation;
-//  100 -> dessin (bones, vertices in black, midpoints in white)
+//  228 -> dessin (bones, vertices in black, midpoints in white, centers of faces)
 
 #include <vb/Hub.h>
 #include <vb/Hypermap.h>

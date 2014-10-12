@@ -30,13 +30,15 @@ namespace vb {
 
 		void	relabel	(const Permutation & p);
 
-		void	normalize  	();
-		void	mirror     	();
-		void	dual       	();
-		void	simplify1  	();
-		void	simplify2  	();
-		void	simplify   	();
+		void	normalize	();
+		void	mirror   	();
+		void	dual     	();
+		void	simplify1	();
+		void	simplify2	();
+		void	simplify 	();
+
 		void	split_edges	();
+		void	dessin     	();
 
 		Permutation sigma, alpha, phi;
 		std::vector<unsigned> initial;
