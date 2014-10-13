@@ -37,8 +37,9 @@ namespace vb {
 		void pack         	();	//< Run acpa() and then compute an embedding into a torus.
 		void output_pdf   	();	//< Make a PDF of a few periods of the covering.
 
-		void linear   	(cpx a, cpx b);
+		void linear   	(cpx a, cpx b = 0.0);
 		void inversion	();
+		void mobiusto0	(cpx a);
 
 		std::vector<Vertex>	V;
 		std::vector<Edge>  	E;

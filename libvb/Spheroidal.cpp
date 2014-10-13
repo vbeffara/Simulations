@@ -101,6 +101,11 @@ namespace vb {
 		}
 	}
 
+	void Spheroidal::mobiusto0 (cpx a) {
+		cpx abar = conj(a);
+		linear (-abar,1); inversion(); linear(1.0/abar-a, -1.0/abar);
+	}
+
 	void Spheroidal::output_pdf () {
 		for (int e=0; e<sigma.size(); ++e) {
 			if (!initial[e]) continue;
