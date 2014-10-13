@@ -50,7 +50,6 @@ namespace vb {
 				v.r *= 1.1 * nr - .1;
 			}
 		}
-		std::cerr << std::endl;
 	}
 
 	void Spheroidal::pack () {
