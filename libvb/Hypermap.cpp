@@ -21,6 +21,10 @@ namespace vb {
 		for (auto & v : V) for (int e : sc[v.i]) { v.adj.push_back(E[alpha[e]].src); }
 	}
 
+	int Hypermap::euler () const { return sigma.cycles().size() + alpha.cycles().size() - sigma.size() + phi.cycles().size(); }
+
+	int	Hypermap::genus () const { return 1-euler()/2; }
+
 	bool Hypermap::is_graph () const {
 		for (auto v : alpha.cycles()) if (v.size() != 2) return false;
 		return true;
@@ -39,7 +43,7 @@ namespace vb {
 	}
 
 	void Hypermap::split_edges () {
-		unsigned N = n_edges();
+		unsigned N = sigma.size();
 		Cycles sigma_c, alpha_c, phi_c;
 		sigma_c = sigma.cycles();
 
@@ -96,13 +100,9 @@ namespace vb {
 		return os.str();
 	}
 
-	void Hypermap::mirror () {
-		alpha = sigma*phi; sigma = sigma.inverse(); phi = phi.inverse();
-	}
+	void Hypermap::mirror () { alpha = sigma*phi; sigma = sigma.inverse(); phi = phi.inverse(); }
 
-	void Hypermap::dual () {
-		sigma = sigma.inverse(); alpha = alpha.inverse(); phi = phi.inverse(); swap(sigma,phi);
-	}
+	void Hypermap::dual () { sigma = sigma.inverse(); alpha = alpha.inverse(); phi = phi.inverse(); swap(sigma,phi); }
 
 	void Hypermap::simplify1 () {
 		int n = sigma.size();
@@ -173,15 +173,13 @@ namespace vb {
 	}
 
 	std::ostream & operator<< (std::ostream &os, Hypermap &H) {
-		os	<< "Hypermap < "
-		  	<< H.n_black() << " black, " << H.n_white() << " white, "
-		  	<< H.n_edges() << " half-edges, " << H.n_faces() << " faces, genus " << H.genus() << " >" << std::endl;
+		os	<< "Hypermap < " << H.sigma.cycles().size() << " black, "
+		  	<< H.alpha.cycles().size() << " white, " << H.sigma.size() << " half-edges, "
+		  	<< H.phi.cycles().size() << " faces, genus " << H.genus() << " >" << std::endl;
 		return os;
 	}
 
-	double Hypermap::alpha_xyz (double x, double y, double z) const {
-		return acos ( (x*(x+y+z) - y*z) / ((x+y)*(x+z)) );
-	}
+	double Hypermap::alpha_xyz (double x, double y, double z) const { return acos ( (x*(x+y+z) - y*z) / ((x+y)*(x+z)) ); }
 
 	double Hypermap::ccn (int n) const {
 		static std::vector<double> p;

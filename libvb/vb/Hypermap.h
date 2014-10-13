@@ -16,18 +16,12 @@ namespace vb {
 
 		bool operator== (const Hypermap & o) const { return (sigma==o.sigma) && (alpha==o.alpha); }
 
-		unsigned n_black () const { return sigma.cycles().size(); }
-		unsigned n_white () const { return alpha.cycles().size(); }
-		unsigned n_faces () const { return phi.cycles().size(); }
-		unsigned n_edges () const { return sigma.size(); }
-
 		bool	validate        	() const;
 		bool	is_graph        	() const;
 		bool	is_triangulation	() const;
 		bool	is_simple       	(int d = 2) const; // ! parallel but non-consecutive edges (like an eye) are not detected
-
-		int euler () const { return n_black() + n_white() - n_edges() + n_faces(); }
-		int genus () const { return 1-euler()/2; }
+		int 	euler           	() const;
+		int 	genus           	() const;
 
 		std::string name () const; // For triangulations, assumed to be normalized
 

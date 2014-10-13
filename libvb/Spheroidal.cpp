@@ -26,7 +26,7 @@ namespace vb {
 
 		E[e0].a=M_PI/3; E[sigma[e0]].a = 0; E[e2].a=M_PI; E[sigma[e2]].a = 2*M_PI/3; E[e1].a=-M_PI/3; E[sigma[e1]].a = -2*M_PI/3;
 
-		int ne=n_edges();
+		int ne=sigma.size();
 		bool flag=true; while (flag) { flag = false;
 			for (int i=0; i<ne; ++i) {
 				if (std::isnan(E[i].a))         	continue;

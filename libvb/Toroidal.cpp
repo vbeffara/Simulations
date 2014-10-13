@@ -13,7 +13,7 @@ namespace vb {
 	void Toroidal::pack () {
 		acpa();
 
-		E[0].a=0; int ne=n_edges();
+		E[0].a=0; int ne=sigma.size();
 		bool flag=true; while (flag) { flag = false;
 			for (int i=0; i<ne; ++i) {
 				if (std::isnan(E[i].a))         	continue;
