@@ -101,8 +101,17 @@ namespace vb {
 	}
 
 	void Spheroidal::mobiusto0 (cpx a) {
+		if (a==0.0) return;
 		cpx abar = conj(a);
-		linear (-abar,1); inversion(); linear(1.0/abar-a, -1.0/abar);
+		for (auto & v : V) {
+			const cpx z1 = 1.0 - abar * v.z; const double r1 = norm(z1) - v.r*v.r*norm(a);
+			v.z = ((1-norm(a)) * z1/r1 - 1.0) / abar;
+			v.r *= (1-norm(a))/r1;
+		}
+		for (unsigned i=0; i<sigma.size(); ++i) {
+			E[i].a = arg(V[E[alpha[i]].src].z - V[E[i].src].z);
+			if (V[E[alpha[i]].src].r<0) E[i].a += M_PI;
+		}
 	}
 
 	void Spheroidal::output_pdf () {
