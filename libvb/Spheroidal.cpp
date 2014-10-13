@@ -13,18 +13,13 @@ namespace vb {
 	void Spheroidal::pack () {
 		for (auto & v : V) v.fixed = false;
 		for (auto f : phi.cycles()) if (f.size()==3) {
-			unsigned i0,i1,i2,e0;
-			e0=f[0]; i0 = E[f[0]].src; i1 = E[f[1]].src; i2 = E[f[2]].src;
-			V[i0].fixed=true; V[i1].fixed=true; V[i2].fixed=true;
-			break;
+			V[E[f[0]].src].fixed = true;	E[f[0]].a=M_PI/3; 	E[sigma[f[0]]].a = 0;
+			V[E[f[1]].src].fixed = true;	E[f[1]].a=-M_PI/3;	E[sigma[f[1]]].a = -2*M_PI/3;
+			V[E[f[2]].src].fixed = true;	E[f[2]].a=M_PI;   	E[sigma[f[2]]].a = 2*M_PI/3;
+			V[E[f[0]].src].z=0; break;
 		}
 
 		acpa();
-
-		unsigned i0,i1,i2,e0,e1,e2;
-		for (auto &f : phi.cycles()) if (f.size()==3) { e0=f[0]; i0 = E[e0].src; e1=f[1]; i1 = E[e1].src; e2=f[2]; i2 = E[e2].src; break; }
-
-		E[e0].a=M_PI/3; E[sigma[e0]].a = 0; E[e2].a=M_PI; E[sigma[e2]].a = 2*M_PI/3; E[e1].a=-M_PI/3; E[sigma[e1]].a = -2*M_PI/3;
 
 		int ne=sigma.size();
 		bool flag=true; while (flag) { flag = false;
@@ -35,8 +30,6 @@ namespace vb {
 				                                	E[sigma[i]].a = E[i].a + alpha_xyz(x,y,z); flag = true; }
 			}
 		}
-
-		V[i0].z=0;
 
 		flag=true; while (flag) { flag=false;
 			for (int e=0; e<ne; ++e) {
