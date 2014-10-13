@@ -24,7 +24,7 @@ namespace vb {
 		bool	validate        	() const;
 		bool	is_graph        	() const;
 		bool	is_triangulation	() const;
-		bool	is_simple       	() const; // ! parallel but non-consecutive edges (like an eye) are not detected
+		bool	is_simple       	(int d = 2) const; // ! parallel but non-consecutive edges (like an eye) are not detected
 
 		int euler () const { return n_black() + n_white() - n_edges() + n_faces(); }
 		int genus () const { return 1-euler()/2; }
@@ -42,7 +42,7 @@ namespace vb {
 		void	dual       	();
 		void	simplify1  	();
 		void	simplify2  	();
-		void	simplify   	();
+		void	simplify   	(int d = 2);
 		void	split_edges	();
 		void	dessin     	();
 

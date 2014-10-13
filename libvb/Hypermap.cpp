@@ -32,9 +32,9 @@ namespace vb {
 		return true;
 	}
 
-	bool Hypermap::is_simple () const {
-		for (auto s : sigma.cycles())	if (s.size()<=2) return false;
-		for (auto f : phi.cycles())  	if (f.size()<=2) return false;
+	bool Hypermap::is_simple (int d) const {
+		for (auto s : sigma.cycles())	if (s.size()<=d) return false;
+		for (auto f : phi.cycles())  	if (f.size()<=d) return false;
 		return true;
 	}
 
@@ -150,10 +150,10 @@ namespace vb {
 		}
 	}
 
-	void Hypermap::simplify () {
-		while (!is_simple()) {
-			simplify1(); dual(); simplify1(); dual();
-			simplify2(); dual(); simplify2(); dual();
+	void Hypermap::simplify (int d) {
+		while (!is_simple(d)) {
+			if (d>=1) { simplify1(); dual(); simplify1(); dual(); }
+			if (d>=2) { simplify2(); dual(); simplify2(); dual(); }
 		}
 	}
 
