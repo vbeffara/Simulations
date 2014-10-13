@@ -18,10 +18,15 @@ int main (int argc, char ** argv) {
 	if (!H['d']) M.dessin();
 	for (int i=0; i<int(H['n']); ++i) M.split_edges();
 
-	Spheroidal T (M,H); T.pack(); T.output_pdf();
+	Spheroidal T (M,H); T.pack();
+
+	unsigned i=0; while (!(T.initial[i]&8)) ++i; cpx z = T.V[T.E[i].src].z;
+
+	T.linear (1,-z); T.inversion();
 
 	cerr << "sigma:   " << M.sigma.passport() << endl;
 	cerr << "alpha:   " << M.alpha.passport() << endl;
 	cerr << "phi:     " << M.phi.passport()   << endl;
-	cerr << "modulus: " << T.m << endl;
+
+	T.output_pdf();
 }

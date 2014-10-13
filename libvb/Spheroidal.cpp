@@ -3,7 +3,7 @@
 #include <cmath>
 
 namespace vb {
-	Spheroidal::Spheroidal (Hypermap M, Hub H_) : Hypermap(M), m(I), H(H_) {
+	Spheroidal::Spheroidal (Hypermap M, Hub H_) : Hypermap(M), H(H_) {
 		assert (genus()==0);
 		from_hypermap();
 		prog = H_.prog;
@@ -54,8 +54,8 @@ namespace vb {
 	void Spheroidal::pack () {
 		acpa();
 
-		double e = 1, old_e = 2; unsigned i0,i1,i2,e0,e1,e2;
-		for (auto &f : phi.cycles()) if (f.size()==3) { e0=f[0]; i0 = E[e0].src; e1=f[1]; i1 = E[e2].src; e2=f[2]; i2 = E[e2].src; break; }
+		unsigned i0,i1,i2,e0,e1,e2;
+		for (auto &f : phi.cycles()) if (f.size()==3) { e0=f[0]; i0 = E[e0].src; e1=f[1]; i1 = E[e1].src; e2=f[2]; i2 = E[e2].src; break; }
 
 		E[e0].a=M_PI/3; E[sigma[e0]].a = 0; E[e2].a=M_PI; E[sigma[e2]].a = 2*M_PI/3; E[e1].a=-M_PI/3; E[sigma[e1]].a = -2*M_PI/3;
 
@@ -81,9 +81,19 @@ namespace vb {
 		}
 	}
 
-	void Spheroidal::flip() {
-		for (auto & e : E) e.a += M_PI;
-		for (auto & v : V) v.z = 1.0+m-v.z;
+	void Spheroidal::linear (cpx a, cpx b) {
+		for (auto & v : V) { v.z = a*v.z+b; v.r *= abs(a); }
+		for (auto & e : E) { e.a += arg(a); }
+	}
+
+	void Spheroidal::inversion () {
+		for (auto & v : V) {
+			if (v.z==0.0) { v.r = 1/v.r; continue; }
+			double r1 = 1/(abs(v.z)-v.r), r2 = 1/(abs(v.z)+v.r);
+			double nr = (r1-r2)/2, nz = (r1+r2)/2;
+			v.z *= nz/abs(v.z); v.r = nr;
+		}
+		for (unsigned i=0; i<sigma.size(); ++i) { E[i].a = arg(V[E[alpha[i]].src].z - V[E[i].src].z); }
 	}
 
 	void Spheroidal::output_pdf () {

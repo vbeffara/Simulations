@@ -35,15 +35,15 @@ namespace vb {
 		void from_hypermap	();	//< If the Hypermap part is correct, fill in V and E.
 		void acpa         	();	//< Compute the radii of the circle packing.
 		void pack         	();	//< Run acpa() and then compute an embedding into a torus.
-		void flip         	();	//< Map everything by z -> -z.
 		void output_pdf   	();	//< Make a PDF of a few periods of the covering.
 
-		cpx m;
+		void linear   	(cpx a, cpx b);
+		void inversion	();
 
-	private:
 		std::vector<Vertex>	V;
 		std::vector<Edge>  	E;
 
+	private:
 		Hub H;
 	};
 }
