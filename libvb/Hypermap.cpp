@@ -178,4 +178,16 @@ namespace vb {
 		  	<< H.n_edges() << " half-edges, " << H.n_faces() << " faces, genus " << H.genus() << " >" << std::endl;
 		return os;
 	}
+
+	double Hypermap::alpha_xyz (double x, double y, double z) const {
+		return acos ( (x*(x+y+z) - y*z) / ((x+y)*(x+z)) );
+	}
+
+	double Hypermap::ccn (int n) const {
+		static std::vector<double> p;
+		for (int i=p.size(); i<=n; ++i) p.push_back (sqrt(2/(1-cos(2*M_PI/i)))-1);
+		return p[n];
+	}
+
+
 }

@@ -52,6 +52,10 @@ namespace vb {
 
 		std::string prog;
 
+	protected:
+		double alpha_xyz	(double x, double y, double z)	const;
+		double ccn      	(int n)                       	const;
+
 	private:
 		Permutation	rebasing	(unsigned i)	const;
 		Permutation	rebasing	()          	const;

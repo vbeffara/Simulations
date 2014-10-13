@@ -10,14 +10,6 @@ namespace vb {
 		prog = H_.prog;
 	}
 
-	static double alpha_xyz (double x, double y, double z) { return acos ( (x*(x+y+z) - y*z) / ((x+y)*(x+z)) ); }
-
-	static double ccn (int n) {
-		static std::vector<double> p;
-		for (int i=p.size(); i<=n; ++i) p.push_back (sqrt(2/(1-cos(2*M_PI/i)))-1);
-		return p[n];
-	}
-
 	void Spheroidal::acpa () {
 		double e = 1, old_e = 2; unsigned i0,i1,i2,e0;
 		for (auto & v : V) if (v.adj.size()==2) v.r=0;
