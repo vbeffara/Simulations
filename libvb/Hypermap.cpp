@@ -1,4 +1,5 @@
 #include <vb/Hypermap.h>
+#include <cassert>
 #include <sstream>
 
 namespace vb {
@@ -6,6 +7,18 @@ namespace vb {
 		if (sigma.size() != alpha.size()) return false;
 		if (sigma.size() != phi.size()) return false;
 		return (sigma*alpha*phi).is_identity();
+	}
+
+	void Hypermap::from_hypermap () {
+		Cycles sc = sigma.cycles(); int nb = sc.size();
+		V.resize(nb); E.resize(6*nb);
+	    int i=0;
+		for (auto & v : V) {
+			v.z = NAN; v.bone=false; v.adj.clear(); v.edges = sc[i];
+			for (int e : v.edges) { E[e].a = NAN; E[e].src = i; }
+			++i;
+		}
+		for (auto & v : V) for (int e : v.edges) { v.adj.push_back(E[alpha[e]].src); }
 	}
 
 	bool Hypermap::is_graph () const {

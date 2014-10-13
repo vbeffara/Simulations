@@ -27,22 +27,15 @@
 namespace vb {
 	class Spheroidal : public Hypermap {
 	public:
-		class Vertex	{ public: cpx z;  	double r;	unsigned bone; std::vector<int> adj; std::vector<unsigned> edges;	Vertex () { r=1; } };
-		class Edge  	{ public: int src;	double a=NAN; };
-
 		Spheroidal (Hypermap M, Hub H_);
 
-		void from_hypermap	();	//< If the Hypermap part is correct, fill in V and E.
-		void acpa         	();	//< Compute the radii of the circle packing.
-		void pack         	();	//< Run acpa() and then compute an embedding into a torus.
-		void output_pdf   	();	//< Make a PDF of a few periods of the covering.
+		void acpa      	();	//< Compute the radii of the circle packing.
+		void pack      	();	//< Run acpa() and then compute an embedding into a torus.
+		void output_pdf	();	//< Make a PDF of a few periods of the covering.
 
 		void linear   	(cpx a, cpx b = 0.0);
 		void inversion	();
 		void mobiusto0	(cpx a);
-
-		std::vector<Vertex>	V;
-		std::vector<Edge>  	E;
 
 	private:
 		Hub H;

@@ -1,13 +1,18 @@
 #pragma once /// @file
 #include <vb/Permutation.h>
+#include <vb/cpx.h>
 #include <iostream>
-#include <cassert>
 
 namespace vb {
 	class Hypermap {
 	public:
+		class Vertex	{ public: cpx z;  	double r=1.0;	unsigned bone;	std::vector<int> adj;	std::vector<unsigned> edges;	};
+		class Edge  	{ public: int src;	double a=NAN;	              	                     	                            	};
+
 		Hypermap (Permutation s, Permutation a, Permutation p)	: sigma(s), alpha(a), phi(p), initial(s.size(),3)          	{}
 		Hypermap (Cycles s, Cycles a, Cycles p)               	: Hypermap (Permutation(s), Permutation(a), Permutation(p))	{}
+
+		void from_hypermap	();	//< If the Hypermap part is correct, fill in V and E.
 
 		bool operator== (const Hypermap & o) const { return (sigma==o.sigma) && (alpha==o.alpha); }
 
@@ -30,18 +35,20 @@ namespace vb {
 
 		void	relabel	(const Permutation & p);
 
-		void	normalize	();
-		void	mirror   	();
-		void	dual     	();
-		void	simplify1	();
-		void	simplify2	();
-		void	simplify 	();
-
+		void	normalize  	();
+		void	mirror     	();
+		void	dual       	();
+		void	simplify1  	();
+		void	simplify2  	();
+		void	simplify   	();
 		void	split_edges	();
 		void	dessin     	();
 
 		Permutation sigma, alpha, phi;
+
 		std::vector<unsigned> initial;
+		std::vector<Vertex>	V;
+		std::vector<Edge>  	E;
 
 		std::string prog;
 

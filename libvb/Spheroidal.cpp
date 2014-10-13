@@ -1,5 +1,6 @@
 #include <vb/Figure.h>
 #include <vb/Spheroidal.h>
+#include <cassert>
 #include <cmath>
 
 namespace vb {
@@ -7,19 +8,6 @@ namespace vb {
 		assert (genus()==0);
 		from_hypermap();
 		prog = H_.prog;
-	}
-
-	void Spheroidal::from_hypermap () {
-		assert(is_triangulation());
-		Cycles sc = sigma.cycles(); int nb = sc.size();
-		V.resize(nb); E.resize(6*nb);
-	    int i=0;
-		for (auto & v : V) {
-			v.z = NAN; v.bone=false; v.adj.clear(); v.edges = sc[i];
-			for (int e : v.edges) { E[e].a = NAN; E[e].src = i; }
-			++i;
-		}
-		for (auto & v : V) for (int e : v.edges) { v.adj.push_back(E[alpha[e]].src); }
 	}
 
 	static double alpha_xyz (double x, double y, double z) { return acos ( (x*(x+y+z) - y*z) / ((x+y)*(x+z)) ); }
