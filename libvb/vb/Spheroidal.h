@@ -21,8 +21,6 @@
 
 #include <vb/Hub.h>
 #include <vb/Hypermap.h>
-#include <vb/cpx.h>
-#include <vector>
 
 namespace vb {
 	class Spheroidal : public Hypermap {
