@@ -4,10 +4,10 @@
 #include <cmath>
 
 namespace vb {
-	Spheroidal::Spheroidal (Hypermap M, Hub H_) : Hypermap(M), H(H_) {
+	Spheroidal::Spheroidal (Hypermap M, Hub H) : Hypermap(M) {
 		assert (genus()==0);
 		from_hypermap();
-		prog = H_.prog;
+		prog = H.prog; mode = H['m']; title = H.title;
 	}
 
 	void Spheroidal::acpa () {
@@ -100,7 +100,7 @@ namespace vb {
 			V[E[e].src].bone = std::max (V[E[e].src].bone,initial[e]);
 		}
 
-		Figure F; std::vector<cpx> eee; int mode = H['m'];
+		Figure F; std::vector<cpx> eee;
 
 		for (auto v : V) {
 			cpx z = v.z;
@@ -132,6 +132,6 @@ namespace vb {
 			}
 		}
 
-		F.title = H.title; F.prog = prog; F.output_pdf();
+		F.title = title; F.prog = prog; F.output_pdf();
 	}
 }

@@ -36,8 +36,5 @@ namespace vb {
 		void flip	();	//< Map everything by z -> -z.
 
 		cpx m;
-
-	private:
-		Hub H;
 	};
 }

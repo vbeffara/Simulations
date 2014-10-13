@@ -36,8 +36,5 @@ namespace vb {
 		void linear   	(cpx a, cpx b = 0.0);
 		void inversion	();
 		void mobiusto0	(cpx a);
-
-	private:
-		Hub H;
 	};
 }

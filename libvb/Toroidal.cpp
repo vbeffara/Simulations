@@ -4,10 +4,10 @@
 #include <cmath>
 
 namespace vb {
-	Toroidal::Toroidal (Hypermap M, Hub H_) : Hypermap(M), m(I), H(H_) {
+	Toroidal::Toroidal (Hypermap M, Hub H) : Hypermap(M), m(I) {
 		assert (genus()==1);
 		from_hypermap();
-		prog = H_.prog;
+		prog = H.prog; mode = H['m']; title = H.title;
 	}
 
 	void Toroidal::acpa () {
@@ -86,7 +86,7 @@ namespace vb {
 			V[E[e].src].bone = std::max (V[E[e].src].bone,initial[e]);
 		}
 
-		Figure F; std::vector<cpx> eee; int mode = H['m'];
+		Figure F; std::vector<cpx> eee;
 
 		for (int a=-2; a<3; ++a) {
 			for (int b=-1; b<2; ++b) {
@@ -128,6 +128,6 @@ namespace vb {
 		}
 
 		F.add (new Polygon ({0,1,cpx(1)+m,m}, Pen(0,0,Color(0,0,0,50),1)));
-		F.title = H.title; F.prog = prog; F.output_pdf();
+		F.title = title; F.prog = prog; F.output_pdf();
 	}
 }
