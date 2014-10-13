@@ -88,12 +88,15 @@ namespace vb {
 
 	void Spheroidal::inversion () {
 		for (auto & v : V) {
-			if (v.z==0.0) { v.r = 1/v.r; continue; }
+			if (v.z==0.0) { v.r = -1/v.r; continue; }
 			double r1 = 1/(abs(v.z)-v.r), r2 = 1/(abs(v.z)+v.r);
 			double nr = (r1-r2)/2, nz = (r1+r2)/2;
 			v.z *= nz/abs(v.z); v.r = nr;
 		}
-		for (unsigned i=0; i<sigma.size(); ++i) { E[i].a = arg(V[E[alpha[i]].src].z - V[E[i].src].z); }
+		for (unsigned i=0; i<sigma.size(); ++i) {
+			E[i].a = arg(V[E[alpha[i]].src].z - V[E[i].src].z);
+			if (V[E[alpha[i]].src].r<0) E[i].a += M_PI;
+		}
 	}
 
 	void Spheroidal::output_pdf () {
@@ -106,7 +109,7 @@ namespace vb {
 
 		for (auto v : V) {
 			cpx z = v.z;
-			if ( ((mode&1)&&(v.bone)) || ((mode&2)&&(!v.bone)) ) F.add (new Circle (z,v.r,Pen(0,.3)));
+			if ( ((mode&1)&&(v.bone)) || ((mode&2)&&(!v.bone)) ) F.add (new Circle (z,fabs(v.r),Pen(0,.3)));
 			for (int e : v.edges) {
 				if ( ((mode&4)&&(initial[e]&1)) || ((mode&8)&&(v.bone&1)) || ((mode&16)&&(!(v.bone&1))) ) {
 					eee.push_back(z);
@@ -119,8 +122,9 @@ namespace vb {
 		if (eee.size()) F.add (new Path (eee,Pen(0,.5)));
 
 		for (auto v : V) {
+			if (v.r<0) continue;
 			cpx z = v.z;
-			if ((mode&32)&&(v.bone&2)) F.add (new Circle (z,.015,Pen(0,.5,0,1)));
+			if ((mode&32)&&(v.bone&2)) F.add (new Circle (z,.01,Pen(0,2,BLACK,1)));
 			if ((mode&64)&&(v.bone&4)) F.add (new Circle (z,.01,Pen(0,2,WHITE,1)));
 			if ((mode&128)&&(v.bone&8)) F.add (new Circle (z,.01,Pen(0,2,RED,1)));
 			if ((mode&256)&&(v.bone&8)) {
