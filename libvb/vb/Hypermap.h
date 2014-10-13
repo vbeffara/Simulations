@@ -6,8 +6,8 @@
 namespace vb {
 	class Hypermap {
 	public:
-		class Vertex	{ public: cpx z;  	double r=1.0;	unsigned bone;	std::vector<int> adj;	std::vector<unsigned> edges;	bool fixed = false; };
-		class Edge  	{ public: int src;	double a=NAN;	              	                     	                            	};
+		struct Vertex	{ int i;	cpx z;  	double r=1.0;	unsigned bone;	std::vector<int> adj;	bool fixed = false;	};
+		struct Edge  	{ int i;	int src;	double a=NAN;	              	                     	                   	};
 
 		Hypermap (Permutation s, Permutation a, Permutation p)	: sigma(s), alpha(a), phi(p), initial(s.size(),3)          	{}
 		Hypermap (Cycles s, Cycles a, Cycles p)               	: Hypermap (Permutation(s), Permutation(a), Permutation(p))	{}

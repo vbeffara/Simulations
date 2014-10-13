@@ -10,15 +10,15 @@ namespace vb {
 	}
 
 	void Hypermap::from_hypermap () {
-		Cycles sc = sigma.cycles(); int nb = sc.size();
-		V.resize(nb); E.resize(6*nb);
-	    int i=0;
+		Cycles sc = sigma.cycles();
+		int nb = sc.size(); V.resize(nb); E.resize(6*nb);
+		for (int i=0; i<E.size(); ++i) E[i].i=i;
+		for (int i=0; i<V.size(); ++i) V[i].i=i;
 		for (auto & v : V) {
-			v.z = NAN; v.bone=false; v.adj.clear(); v.edges = sc[i];
-			for (int e : v.edges) { E[e].a = NAN; E[e].src = i; }
-			++i;
+			v.z = NAN; v.bone=false; v.adj.clear();
+			for (int e : sc[v.i]) { E[e].a = NAN; E[e].src = v.i; }
 		}
-		for (auto & v : V) for (int e : v.edges) { v.adj.push_back(E[alpha[e]].src); }
+		for (auto & v : V) for (int e : sc[v.i]) { v.adj.push_back(E[alpha[e]].src); }
 	}
 
 	bool Hypermap::is_graph () const {
@@ -194,9 +194,8 @@ namespace vb {
 		for (auto & v : V) if (v.adj.size()==2) v.r=0;
 		while ((e > 1e-3) || (e < old_e)) {
 			std::cerr << e << "      \r"; old_e = e; e = 0;
-			for (unsigned i=0; i<V.size(); ++i) {
-				Vertex & v = V[i];   	if (v.fixed)	continue;
-				int n = v.adj.size();	if (n==2)   	continue;
+			for (auto & v : V) {
+				int n = v.adj.size(); if ((v.fixed) || (n==2)) continue;
 				double s=0, r0=v.r, r1, r2=V[v.adj.back()].r;
 				for (int ll : v.adj) { r1=r2; r2=V[ll].r; s += alpha_xyz (r0,r1,r2); }
 				double c=cos(s/n), nr=ccn(n) * (1-c + sqrt(2*(1-c))) / (1+c);

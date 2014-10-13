@@ -86,12 +86,12 @@ namespace vb {
 			V[E[e].src].bone = std::max (V[E[e].src].bone,initial[e]);
 		}
 
-		Figure F; std::vector<cpx> eee;
+		Figure F; std::vector<cpx> eee; Cycles sc = sigma.cycles();
 
-		for (auto v : V) {
+		for (auto & v : V) {
 			cpx z = v.z;
 			if ( ((mode&1)&&(v.bone)) || ((mode&2)&&(!v.bone)) ) F.add (new Circle (z,fabs(v.r),Pen(0,.3)));
-			for (int e : v.edges) {
+			for (int e : sc[v.i]) {
 				if ( ((mode&4)&&(initial[e]&1)) || ((mode&8)&&(v.bone&1)) || ((mode&16)&&(!(v.bone&1))) ) {
 					eee.push_back(z);
 					eee.push_back(z+std::polar(v.r,E[e].a));
