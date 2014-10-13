@@ -10,23 +10,6 @@ namespace vb {
 		prog = H.prog; mode = H['m']; title = H.title;
 	}
 
-	void Toroidal::acpa () {
-		double e = 1, old_e = 2;
-		while ((e > 1e-3) || (e < old_e)) {
-			std::cerr << e << "     \r";
-			old_e = e; e = 0;
-			for (auto & v : V) {
-				int n = v.adj.size();
-				double s=0, r0=v.r, r1, r2=V[v.adj.back()].r;
-				for (int ll : v.adj) { r1=r2; r2=V[ll].r; s += alpha_xyz (r0,r1,r2); }
-				double c=cos(s/n);
-				double nr=ccn(n) * (1-c + sqrt(2*(1-c))) / (1+c);
-				e += fabs(1-nr);
-				v.r *= 1.1 * nr - .1;
-			}
-		}
-	}
-
 	void Toroidal::pack () {
 		acpa();
 

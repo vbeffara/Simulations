@@ -27,13 +27,12 @@
 namespace vb {
 	class Toroidal : public Hypermap {
 	public:
-		Toroidal (Hypermap M, Hub H_);
+		Toroidal (Hypermap M, Hub H);
 
-		void acpa      	();	//< Compute the radii of the circle packing.
 		void pack      	();	//< Run acpa() and then compute an embedding into a torus.
 		void output_pdf	();	//< Make a PDF of a few periods of the covering.
 
-		void flip	();	//< Map everything by z -> -z.
+		void flip	();
 
 		cpx m;
 	};

@@ -27,9 +27,8 @@
 namespace vb {
 	class Spheroidal : public Hypermap {
 	public:
-		Spheroidal (Hypermap M, Hub H_);
+		Spheroidal (Hypermap M, Hub H);
 
-		void acpa      	();	//< Compute the radii of the circle packing.
 		void pack      	();	//< Run acpa() and then compute an embedding into a torus.
 		void output_pdf	();	//< Make a PDF of a few periods of the covering.
 

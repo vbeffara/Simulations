@@ -189,5 +189,20 @@ namespace vb {
 		return p[n];
 	}
 
-
+	void Hypermap::acpa () {
+		double e = 1, old_e = 2;
+		for (auto & v : V) if (v.adj.size()==2) v.r=0;
+		while ((e > 1e-3) || (e < old_e)) {
+			std::cerr << e << "      \r"; old_e = e; e = 0;
+			for (unsigned i=0; i<V.size(); ++i) {
+				Vertex & v = V[i];   	if (v.fixed)	continue;
+				int n = v.adj.size();	if (n==2)   	continue;
+				double s=0, r0=v.r, r1, r2=V[v.adj.back()].r;
+				for (int ll : v.adj) { r1=r2; r2=V[ll].r; s += alpha_xyz (r0,r1,r2); }
+				double c=cos(s/n), nr=ccn(n) * (1-c + sqrt(2*(1-c))) / (1+c);
+				e += fabs(1-nr);
+				v.r *= 1.1 * nr - .1;
+			}
+		}
+	}
 }

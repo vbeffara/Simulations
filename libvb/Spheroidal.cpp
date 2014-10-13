@@ -10,29 +10,15 @@ namespace vb {
 		prog = H.prog; mode = H['m']; title = H.title;
 	}
 
-	void Spheroidal::acpa () {
-		double e = 1, old_e = 2; unsigned i0,i1,i2,e0;
-		for (auto & v : V) if (v.adj.size()==2) v.r=0;
-		for (auto f : phi.cycles()) if (f.size()==3) { e0=f[0]; i0 = E[f[0]].src; i1 = E[f[1]].src; i2 = E[f[2]].src; break; }
-		while ((e > 1e-3) || (e < old_e)) {
-			std::cerr << e << "      \r";
-			old_e = e; e = 0;
-			for (unsigned i=0; i<V.size(); ++i) {
-				if ((i==i0)||(i==i1)||(i==i2)) continue;
-				if (V[i].adj.size()==2) continue;
-				Vertex &v = V[i];
-				int n = v.adj.size();
-				double s=0, r0=v.r, r1, r2=V[v.adj.back()].r;
-				for (int ll : v.adj) { r1=r2; r2=V[ll].r; s += alpha_xyz (r0,r1,r2); }
-				double c=cos(s/n);
-				double nr=ccn(n) * (1-c + sqrt(2*(1-c))) / (1+c);
-				e += fabs(1-nr);
-				v.r *= 1.1 * nr - .1;
-			}
-		}
-	}
-
 	void Spheroidal::pack () {
+		for (auto & v : V) v.fixed = false;
+		for (auto f : phi.cycles()) if (f.size()==3) {
+			unsigned i0,i1,i2,e0;
+			e0=f[0]; i0 = E[f[0]].src; i1 = E[f[1]].src; i2 = E[f[2]].src;
+			V[i0].fixed=true; V[i1].fixed=true; V[i2].fixed=true;
+			break;
+		}
+
 		acpa();
 
 		unsigned i0,i1,i2,e0,e1,e2;

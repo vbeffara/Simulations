@@ -6,7 +6,7 @@
 namespace vb {
 	class Hypermap {
 	public:
-		class Vertex	{ public: cpx z;  	double r=1.0;	unsigned bone;	std::vector<int> adj;	std::vector<unsigned> edges;	};
+		class Vertex	{ public: cpx z;  	double r=1.0;	unsigned bone;	std::vector<int> adj;	std::vector<unsigned> edges;	bool fixed = false; };
 		class Edge  	{ public: int src;	double a=NAN;	              	                     	                            	};
 
 		Hypermap (Permutation s, Permutation a, Permutation p)	: sigma(s), alpha(a), phi(p), initial(s.size(),3)          	{}
@@ -32,6 +32,8 @@ namespace vb {
 		std::string name () const; // For triangulations, assumed to be normalized
 
 		void flip (unsigned e);
+
+		void	acpa	();
 
 		void	relabel	(const Permutation & p);
 
