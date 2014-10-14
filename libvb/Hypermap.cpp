@@ -163,10 +163,10 @@ namespace vb {
 	}
 
 	void Hypermap::dessin () {
-		Cycles new_a, new_f; int n=sigma.size(); initial.resize(6*n);
+		Cycles new_a, new_f; int n=sigma.size(); initial.resize(6*n); Permutation alpha1 = alpha.inverse();
 		for (unsigned i=0; i<n; ++i) {
 			new_a.push_back({i,i+n}); new_a.push_back({i+2*n,i+3*n}); new_a.push_back({i+4*n,i+5*n});
-			new_f.push_back({i,i+2*n,i+4*n}); new_f.push_back({alpha[i]+n,phi[i]+5*n,i+3*n});
+			new_f.push_back({i,i+2*n,i+4*n}); new_f.push_back({alpha1[i]+n,phi[i]+5*n,i+3*n});
 			initial[i]=3; initial[i+n]=5; initial[i+2*n]=4; initial[i+3*n]=8; initial[i+4*n]=8; initial[i+5*n]=2;
 		}
 		alpha = new_a; phi = new_f; sigma = (alpha*phi).inverse();
