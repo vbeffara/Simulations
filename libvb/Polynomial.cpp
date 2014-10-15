@@ -9,6 +9,14 @@ namespace vb {
 		at(0) = -l*at(0);
 	}
 
+	unsigned Polynomial::degree () const { return size()-1; }
+
+	Polynomial Polynomial::derivative () const {
+		std::vector<cpx> out (degree());
+		for (int i=0; i<degree(); ++i) out[i] = cpx(i+1) * at(i+1);
+		return out;
+	}
+
 	cpx Polynomial::operator() (cpx z) const {
 		cpx out = back();
 		for (int i=size()-2; i>=0; --i) out = out*z+at(i);

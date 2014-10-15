@@ -8,6 +8,9 @@ namespace vb {
 	public:
 		Polynomial (const std::vector<cpx> V);
 
+		unsigned  	degree    	() const;
+		Polynomial	derivative	() const;
+
 		cpx operator() (cpx z) const;
 
 		void add_root (cpx l);
