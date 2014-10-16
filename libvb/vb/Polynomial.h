@@ -16,6 +16,8 @@ namespace vb {
 		void add_root (cpx l);
 
 		std::string v = "z";
+
+		double precision = 0.0;
 	};
 
 	std::ostream & operator<< (std::ostream & os, const Polynomial & P);

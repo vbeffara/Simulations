@@ -26,15 +26,18 @@ namespace vb {
 	std::ostream & operator<< (std::ostream & os, const Polynomial & P) {
 		bool first=true;
 		for (int i=P.size()-1; i>=0; --i) {
-			if (P[i]==0.0) continue;
+			if (abs(P[i])    	<= P.precision) continue;
+			if (abs(P[i]-1.0)	<= P.precision) { if (i==0) os << 1; else os << P.v << "^" << i; first=false; continue; }
+			if (abs(P[i]+1.0)	<= P.precision) { if (i==0) os << -1; else os << "- " << P.v << "^" << i; first=false; continue; }
 			os << (first ? "(" : " + (");
-			if (imag(P[i])==0.0) os << real(P[i]); else
-			if (real(P[i])==0.0) os << imag(P[i]) << " I"; else
+			if (fabs(imag(P[i])) <= P.precision) os << real(P[i]); else
+			if (fabs(real(P[i])) <= P.precision) os << imag(P[i]) << " I"; else
 			os << real(P[i]) << (imag(P[i])>=0 ? "+" : "") << imag(P[i]) << "I";
 			os << ")";
 			if (i>0) os << " " << P.v << "^" << i;
 			first = false;
 		}
+		if (first) os << 0;
 		return os;
 	}
 }
