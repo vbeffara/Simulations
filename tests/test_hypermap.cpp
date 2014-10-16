@@ -7,6 +7,27 @@
 
 using namespace vb; using namespace std;
 
+class RationalFraction { public:
+	RationalFraction (Polynomial P_ = {{1}}, Polynomial Q_ = {{1}}) : P(P_), Q(Q_) {}
+
+	cpx operator() (cpx z) const { return P(z)/Q(z); }
+
+	int degree () const { return P.degree() - Q.degree(); }
+
+	void add_root (cpx z) { P.add_root(z); }
+	void add_pole (cpx z) { Q.add_root(z); }
+
+	RationalFraction derivative () const { return P.derivative(); }
+
+	Polynomial P,Q;
+};
+
+ostream & operator<< (ostream & os, const RationalFraction & R) {
+	os << "P[z_] = " << R.P << endl;
+	os << "Q[z_] = " << R.Q << endl;
+	return os;
+}
+
 class Constellation { public:
 	cpx lead() {
 		Polynomial P ({1}); for (int i=0; i<b.size(); ++i) for (int j=0; j<bd[i]; ++j) P.add_root(b[i]);
@@ -16,35 +37,45 @@ class Constellation { public:
 	}
 
 	void compute() {
-		Polynomial P ({1}); for (int i=0; i<b.size(); ++i) for (int j=0; j<bd[i]; ++j) P.add_root(b[i]); Ps = {P};
-		for (auto & c : Ps[0]) c *= l;
-		for (int i=0; i<b.size(); ++i) for (int j=Ps.size(); j<bd[i]; ++j) Ps.push_back(Ps.back().derivative());
-		for (int i=0; i<w.size(); ++i) for (int j=Ps.size(); j<wd[i]; ++j) Ps.push_back(Ps.back().derivative());
+		RationalFraction R;
+		for (int i=0; i<b.size(); ++i) for (int j=0; j<bd[i]; ++j) R.add_root(b[i]);
+		for (int i=0; i<f.size(); ++i) for (int j=0; j<fd[i]; ++j) R.add_pole(f[i]);
+		Rs = {R};
+		for (auto & c : Rs[0].P) c *= l;
+		for (int i=0; i<b.size(); ++i) for (int j=Rs.size(); j<bd[i]; ++j) Rs.push_back(Rs.back().derivative());
+		for (int i=0; i<w.size(); ++i) for (int j=Rs.size(); j<wd[i]; ++j) Rs.push_back(Rs.back().derivative());
 	}
 
-	vector<cpx>     	b,w;
-	vector<unsigned>	bd,wd;
+	vector<cpx>     	b,w,f;
+	vector<unsigned>	bd,wd,fd;
 	cpx             	l=1.0;
 
-	vector<Polynomial>	Ps;
+	vector<RationalFraction>	Rs;
 };
 
 ostream & operator<< (ostream & os, const Constellation & C) {
-	os << "Black vertices: " << endl;
+	os << "Black vertices / zeros: " << endl;
 	for (int i=0; i<C.b.size(); ++i) {
 		os << "| " << C.bd[i] << "\t" << C.b[i];
-		for (int j=0; j<C.bd[i]; ++j) os << "\t" << C.Ps[j](C.b[i]);
+		for (int j=0; j<C.bd[i]; ++j) os << "\t" << C.Rs[j](C.b[i]);
 		os << endl;
 	}
 	os << endl;
-	os << "White vertices: " << endl;
+	os << "White vertices / ones: " << endl;
 	for (int i=0; i<C.w.size(); ++i) {
 		os << "| " << C.wd[i] << "\t" << C.w[i];
-		for (int j=0; j<C.wd[i]; ++j) os << "\t" << C.Ps[j](C.w[i]);
+		for (int j=0; j<C.wd[i]; ++j) os << "\t" << C.Rs[j](C.w[i]);
 		os << endl;
 	}
 	os << endl;
-	os << "P[z_] = " << C.Ps[0] << endl;
+	os << "Red vertices / poles: " << endl;
+	for (int i=0; i<C.f.size(); ++i) {
+		os << "| " << C.fd[i] << "\t" << C.f[i];
+		for (int j=0; j<C.fd[i]; ++j) os << "\t" << C.Rs[j](C.f[i]);
+		os << endl;
+	}
+	os << endl;
+	os << C.Rs[0] << endl;
 	return os;
 }
 
@@ -89,18 +120,18 @@ void find (Constellation & C) {
 }
 
 void belyi (Constellation & C) {
-	cpx lead = C.Ps[0].back(); double lambda = pow(abs(lead),1.0/C.Ps[0].degree());
-	for (int i=1; i<C.Ps[0].size(); ++i) C.Ps[0][i] /= pow(lambda,i);
+	cpx lead = C.Rs[0].P.back(); double lambda = pow(abs(lead),1.0/C.Rs[0].degree());
+	for (int i=1; i<C.Rs[0].P.size(); ++i) C.Rs[0].P[i] /= pow(lambda,i);
 
 	for (auto & z : C.b) z *= lambda; for (auto & z : C.w) z *= lambda; C.l = C.lead(); C.compute();
 
 	double err=0;
-	for (int k=0; k<C.b.size(); ++k) for (int i=0; i<C.bd[k]; ++i) err += abs(C.Ps[i](C.b[k]));
-	for (int k=0; k<C.w.size(); ++k) for (int i=0; i<C.wd[k]; ++i) err += abs(C.Ps[i](C.w[k]) - (i==0?1.0:0.0));
+	for (int k=0; k<C.b.size(); ++k) for (int i=0; i<C.bd[k]; ++i) err += abs(C.Rs[i](C.b[k]));
+	for (int k=0; k<C.w.size(); ++k) for (int i=0; i<C.wd[k]; ++i) err += abs(C.Rs[i](C.w[k]) - (i==0?1.0:0.0));
 
 	cout << endl << endl << "Remaining error: " << err << endl;
 	cout << setprecision (log10(1/err)-1) << fixed;
-	C.Ps[0].precision = err;
+	C.Rs[0].P.precision = err; C.Rs[0].Q.precision = err;
 	cout << endl << C << endl;
 }
 
@@ -114,12 +145,19 @@ Constellation marked (const Spheroidal & T) {
 		if (!there) { C.b.push_back(z); C.bd.push_back(d); }
 	}
 
-
 	for (int i=0; i<T.sigma.size(); ++i) {
 		if (!(T.initial[i]&4)) continue;
 		auto & v = T.V[T.E[i].src]; cpx z = v.z; unsigned d = v.adj.size()/2;
 		bool there=false; for (auto w : C.w) if (w==z) there=true; if (there) continue;
 		if (!there) { C.w.push_back(z); C.wd.push_back(d); }
+	}
+
+	for (int i=0; i<T.sigma.size(); ++i) {
+		if (!(T.initial[i]&8)) continue;
+		auto & v = T.V[T.E[i].src]; if (v.r<0) continue;
+		cpx z = v.z; unsigned d = v.adj.size()/2;
+		bool there=false; for (auto w : C.f) if (w==z) there=true; if (there) continue;
+		if (!there) { C.f.push_back(z); C.fd.push_back(d); }
 	}
 
 	C.l = C.lead(); C.compute(); return C;
@@ -137,6 +175,7 @@ int main (int argc, char ** argv) {
 	// Hypermap M { {{4,1,2},{3,0},{5,6}}, {{4,3},{1},{2},{0,5},{6}}, {{4,0,6,5,3,2,1}} };                        	// Long-tailed tripod - Lando page 89
 	// Hypermap M { {{1},{5},{7},{9},{2,8,0},{4,3,6}}, {{2,1},{0,3},{4,5},{6,7},{8,9}}, {{2,1,0,4,5,6,7,3,8,9}} };	// Graph H
 	// Hypermap M { {{0,1,2},{3},{4}}, {{0,3,4},{1},{2}}, {{0,4,3,2,1}} };                                        	// Dessin H
+	// Hypermap M { {{0,2,3},{1}}, {{0,1},{2,3}}, {{0,1,3},{2}} };                                                	// Simple map - Lando page 107
 
 	cout << M;
 	cout << "  sigma: " << M.sigma << endl;
@@ -153,8 +192,10 @@ int main (int argc, char ** argv) {
 	Constellation C = marked(T);
 	cout << endl << C << endl;
 
-	cpx lead = C.Ps[0].back(); double lambda = pow(abs(lead),1.0/C.Ps[0].degree());
+	cpx lead = C.Rs[0].P.back(); double lambda = pow(abs(lead),1.0/C.Rs[0].degree());
 	for (auto & z : C.b) z *= lambda; for (auto & z : C.w) z *= lambda; C.l = C.lead(); C.compute();
+
+	T.linear(lambda); T.output_pdf();
 
 	find(C);
 
