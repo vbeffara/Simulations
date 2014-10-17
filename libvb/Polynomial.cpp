@@ -14,6 +14,7 @@ namespace vb {
 	Polynomial Polynomial::derivative () const {
 		std::vector<cpx> out (degree());
 		for (int i=0; i<degree(); ++i) out[i] = cpx(i+1) * at(i+1);
+		if (out.empty()) out.push_back(0.0);
 		return out;
 	}
 
