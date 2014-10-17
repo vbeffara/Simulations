@@ -20,5 +20,8 @@ namespace vb {
 		double precision = 0.0;
 	};
 
+	Polynomial operator- (const Polynomial & P, const Polynomial & Q);
+	Polynomial operator* (const Polynomial & P, const Polynomial & Q);
+
 	std::ostream & operator<< (std::ostream & os, const Polynomial & P);
 }

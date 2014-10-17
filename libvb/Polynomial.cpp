@@ -18,6 +18,23 @@ namespace vb {
 		return out;
 	}
 
+	Polynomial operator* (const Polynomial & P, const Polynomial & Q) {
+		std::vector<cpx> PQ (P.degree()+Q.degree()+1, 0.0);
+		for (int i=0; i<=P.degree(); ++i) {
+			for (int j=0; j<=Q.degree(); ++j) {
+				PQ[i+j] += P[i] * Q[j];
+			}
+		}
+		return PQ;
+	}
+
+	Polynomial operator- (const Polynomial & P, const Polynomial & Q) {
+		Polynomial PQ = P;
+		if (PQ.degree()<Q.degree()) PQ.resize(Q.degree()+1,0.0);
+		for (int i=0; i<=Q.degree(); ++i) PQ[i] -= Q[i];
+		return PQ;
+	}
+
 	cpx Polynomial::operator() (cpx z) const {
 		cpx out = back();
 		for (int i=size()-2; i>=0; --i) out = out*z+at(i);
