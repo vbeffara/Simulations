@@ -98,7 +98,7 @@ namespace vb {
     double wd = right()-left(), mid_x = (right()+left())/2;
     double ht = top()-bottom(), mid_y = (top()+bottom())/2;
 
-    double scale_x = w()/wd, scale_y = h()/ht;
+    double scale_x = w()/wd, scale_y = (crop ? real_h : h())/ht;
     double scale = std::min(scale_x,scale_y);
     if (ortho) scale_x = scale_y = scale;
     basewidth = 1.0/scale;
