@@ -176,6 +176,9 @@ namespace vb {
 		os	<< "Hypermap < " << H.sigma.cycles().size() << " black, "
 		  	<< H.alpha.cycles().size() << " white, " << H.sigma.size() << " half-edges, "
 		  	<< H.phi.cycles().size() << " faces, genus " << H.genus() << " >" << std::endl;
+		os << "  sigma: " << H.sigma << std::endl;
+		os << "  alpha: " << H.alpha << std::endl;
+		os << "    phi: " << H.phi << std::endl;
 		return os;
 	}
 

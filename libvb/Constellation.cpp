@@ -40,15 +40,15 @@ namespace vb {
 	}
 
 	double Constellation::belyi () {
-		cpx z0 = b[0];                      	for (auto & z : b) z -= z0; for (auto & z : w) z -= z0; for (auto & z : f) z -= z0;
-		cpx r0 = std::polar(1.0,-arg(w[0]));	for (auto & z : b) z *= r0; for (auto & z : w) z *= r0; for (auto & z : f) z *= r0;
+		cpx z0 = b[0];                                          	for (auto & z : b) z -= z0; for (auto & z : w) z -= z0; for (auto & z : f) z -= z0;
+		cpx r0 = std::polar(1.0,-arg(f.size()>0 ? f[0] : w[0]));	for (auto & z : b) z *= r0; for (auto & z : w) z *= r0; for (auto & z : f) z *= r0;
 		normalize();
 
 		double lambda = pow(abs(Rs[0].P.back()),1.0/Rs[0].degree());
 		for (auto & z : b) z *= lambda; for (auto & z : w) z *= lambda; for (auto & z : f) z *= lambda; normalize();
 
 		double err = sqrt(cost());
-		std::cout << std::setprecision (log10(1/err)-1) << std::fixed; Rs[0].P.precision = err; Rs[0].Q.precision = err;
+		std::cout << std::setprecision (log10(1/err)) << std::fixed; Rs[0].P.precision = err; Rs[0].Q.precision = err;
 		return lambda;
 	}
 
