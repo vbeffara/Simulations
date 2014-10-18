@@ -1,11 +1,12 @@
 #pragma once
+#include <vb/Hub.h>
 #include <vb/RationalFraction.h>
 #include <vb/Spheroidal.h>
 #include <iomanip>
 
 namespace vb {
 	class Constellation { public:
-		Constellation (const Spheroidal & T);
+		Constellation (Hypermap M, Hub H, int n=3);
 
 		void  	compute  	();
 		void  	normalize	();

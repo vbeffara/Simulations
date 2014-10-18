@@ -1,30 +1,21 @@
 #include <vb/Constellation.h>
 
 namespace vb {
-	Constellation::Constellation (const Spheroidal & T) {
-		for (int i=0; i<T.sigma.size(); ++i) {
-			if (!(T.initial[i]&2)) continue;
-			auto & v = T.V[T.E[i].src]; cpx z = v.z; unsigned d = v.adj.size()/2;
-			bool there=false; for (auto zz : b) if (zz==z) there=true;
-			if (!there) { b.push_back(z); bd.push_back(d); }
-		}
+	Constellation::Constellation (Hypermap M, Hub H, int n) {
+		Hypermap M2=M; M2.dessin(); for (int i=0; i<n; ++i) M2.split_edges();
+		Spheroidal T (M2,H); T.pack(); std::cerr << std::endl;
 
-		for (int i=0; i<T.sigma.size(); ++i) {
-			if (!(T.initial[i]&4)) continue;
-			auto & v = T.V[T.E[i].src]; cpx z = v.z; unsigned d = v.adj.size()/2;
-			bool there=false; for (auto zz : w) if (zz==z) there=true;
-			if (!there) { w.push_back(z); wd.push_back(d); }
-		}
+		int N = M.sigma.size();
 
-		for (int i=0; i<T.sigma.size(); ++i) {
-			if (!(T.initial[i]&8)) continue;
-			auto & v = T.V[T.E[i].src]; if (v.r<0) continue;
-			cpx z = v.z; unsigned d = v.adj.size()/2;
-			bool there=false; for (auto zz : f) if (zz==z) there=true;
-			if (!there) { f.push_back(z); fd.push_back(d); }
-		}
+		unsigned inf=0, dinf=0; for (auto c : M.phi.cycles()) { unsigned i = T.E[c[0]+3*N].src, d = T.V[i].adj.size(); if (d>dinf) { inf=i; dinf=d; } }
+		T.linear (1,-T.V[inf].z); T.inversion(); T.linear (-1/T.V[inf].r,0); T.output_pdf();
+		{ cpx z; while ((z = T.V[T.E[0].src].z) != 0.0) T.mobiusto0 (z); } T.linear (std::polar(1.0,-T.E[0].a)); T.output_pdf();
 
-		compute();
+		for (auto c : M.sigma.cycles())	{                                      	b.push_back(T.V[T.E[c[0]].src].z);    	bd.push_back(c.size()); }
+		for (auto c : M.alpha.cycles())	{                                      	w.push_back(T.V[T.E[c[0]+N].src].z);  	wd.push_back(c.size()); }
+		for (auto c : M.phi.cycles())  	{ if (T.E[c[0]+3*N].src==inf) continue;	f.push_back(T.V[T.E[c[0]+3*N].src].z);	fd.push_back(c.size()); }
+
+		compute(); double l = belyi(); T.linear(l); T.output_pdf();
 	}
 
 	void Constellation::compute () {

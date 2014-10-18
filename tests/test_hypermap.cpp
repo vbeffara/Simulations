@@ -16,23 +16,12 @@ int main (int argc, char ** argv) {
 	// Hypermap M { {{4,1,2},{3,0},{5,6}}, {{4,3},{1},{2},{0,5},{6}}, {{4,0,6,5,3,2,1}} };                        	// Long-tailed tripod - Lando page 89 - FAIL?
 	// Hypermap M { {{1},{5},{7},{9},{2,8,0},{4,3,6}}, {{2,1},{0,3},{4,5},{6,7},{8,9}}, {{2,1,0,4,5,6,7,3,8,9}} };	// Graph H - FAIL?
 	// Hypermap M { {{0,1,2},{3},{4}}, {{0,3,4},{1},{2}}, {{0,4,3,2,1}} };                                        	// Dessin H
-	Hypermap M { {{0,2,3},{1}}, {{0,1},{2,3}}, {{0,1,3},{2}} };                                                   	// Simple map - Lando page 107
+	// Hypermap M { {{0,2,3},{1}}, {{0,1},{2,3}}, {{0,1,3},{2}} };                                                	// Simple map - Lando page 107
+	Hypermap M = H_H3();
 
-	cout << M;
-	cout << "  sigma: " << M.sigma << endl;
-	cout << "  alpha: " << M.alpha << endl;
-	cout << "    phi: " << M.phi << endl;
-	cout << endl;
+	cout << M << endl;
 
-	if (!H['d']) M.dessin();
+	Constellation C (M,H);
 
-	for (int i=0; i<int(H['n']); ++i) M.split_edges(); Spheroidal T (M,H); T.pack(); cerr << endl;
-
-	unsigned i=0; while (!(T.initial[i]&8)) ++i; auto & v = T.V[T.E[i].src]; T.linear (1,-v.z); T.inversion(); T.linear (-1/v.r,0); T.output_pdf();
-	{ cpx z; while ((z = T.V[T.E[0].src].z) != 0.0) T.mobiusto0 (z); } T.linear (std::polar(1.0,-T.E[0].a)); T.output_pdf();
-
-	Constellation C (T);
-
-	double l = C.belyi(); T.linear(l); T.output_pdf();
 	C.find(); C.belyi(); cout << endl << C;
 }
