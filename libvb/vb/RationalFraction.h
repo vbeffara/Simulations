@@ -1,8 +1,6 @@
 #pragma once
 #include <vb/Polynomial.h>
 
-
-
 namespace vb {
 	class RationalFraction {
 	public:

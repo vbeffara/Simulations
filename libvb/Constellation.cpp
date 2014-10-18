@@ -80,11 +80,9 @@ namespace vb {
 		while (eps>1e-100) {
 			std::cerr << c << " (" << eps << ")          \r";
 			bool flag = false;
-			for (int i=0; i<bw.size(); ++i) {
-				bw[i] += eps; nc = cost(bw); if (nc<c) { c=nc; flag=true; } else { bw[i] -= eps; }
-				bw[i] -= eps; nc = cost(bw); if (nc<c) { c=nc; flag=true; } else { bw[i] += eps; }
-			}
-			if (!flag) eps /= 2;
+			for (auto & z : bw) {	z += eps; nc = cost(bw); if (nc<c) { c=nc; flag=true; } else { z -= eps; }
+			                     	z -= eps; nc = cost(bw); if (nc<c) { c=nc; flag=true; } else { z += eps; } }
+			if (!flag) eps /= 4;
 		}
 		std::cerr << std::endl;
 	}

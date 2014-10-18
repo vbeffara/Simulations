@@ -17,6 +17,7 @@ int main (int argc, char ** argv) {
 	// Hypermap M { {{1},{5},{7},{9},{2,8,0},{4,3,6}}, {{2,1},{0,3},{4,5},{6,7},{8,9}}, {{2,1,0,4,5,6,7,3,8,9}} };	// Graph H - FAIL?
 	// Hypermap M { {{0,1,2},{3},{4}}, {{0,3,4},{1},{2}}, {{0,4,3,2,1}} };                                        	// Dessin H
 	// Hypermap M { {{0,2,3},{1}}, {{0,1},{2,3}}, {{0,1,3},{2}} };                                                	// Simple map - Lando page 107
+	// Hypermap M = H_H1();
 	Hypermap M = H_H3();
 
 	cout << M << endl;
