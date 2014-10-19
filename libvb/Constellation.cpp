@@ -1,7 +1,7 @@
 #include <vb/Constellation.h>
 
 namespace vb {
-	Constellation::Constellation (Hypermap M, Hub H, int n) {
+	Constellation::Constellation (Hypermap M, Hub H, int n) : Image (600,600,"Constellation") {
 		Hypermap M2=M; M2.dessin(); for (int i=0; i<n; ++i) M2.split_edges();
 		Spheroidal T (M2,H); T.pack(); std::cerr << std::endl;
 
@@ -15,10 +15,10 @@ namespace vb {
 		for (auto c : M.alpha.cycles())	{                                      	w.push_back(T.V[T.E[c[0]+N].src].z);  	wd.push_back(c.size()); }
 		for (auto c : M.phi.cycles())  	{ if (T.E[c[0]+3*N].src==inf) continue;	f.push_back(T.V[T.E[c[0]+3*N].src].z);	fd.push_back(c.size()); }
 
-		compute(); double l = belyi(); T.linear(l); T.output_pdf();
+		from_points(); double l = belyi(); T.linear(l); T.output_pdf();
 	}
 
-	void Constellation::compute () {
+	void Constellation::from_points () {
 		RationalFraction<cpx> R;
 		for (int i=0; i<b.size(); ++i) for (int j=0; j<bd[i]; ++j) R.add_root(b[i]);
 		for (int i=0; i<f.size(); ++i) for (int j=0; j<fd[i]; ++j) R.add_pole(f[i]);
@@ -29,6 +29,11 @@ namespace vb {
 		for (int i=0; i<f.size(); ++i) for (int j=Rs.size(); j<fd[i]; ++j) Rs.push_back(Rs.back().derivative());
 	}
 
+	Color Constellation::compute (coo c) {
+		cpx z { (c.x-300)*2.0/300, (c.y-300)*2.0/300 };
+		return imag(Rs[0](z))>0 ? RED : BLUE;
+	}
+
 	void Constellation::normalize () {
 		RationalFraction<cpx> R;
 		for (int i=0; i<b.size(); ++i) for (int j=0; j<bd[i]; ++j) R.add_root(b[i]);
@@ -36,7 +41,7 @@ namespace vb {
 		cpx avg = 0; int d=0;
 		for (int i=0; i<w.size(); ++i) { d += wd[i]; avg += R(w[i])*cpx(wd[i]); }
 		l = cpx(d)/avg;
-		compute();
+		from_points();
 	}
 
 	double Constellation::belyi () {
@@ -64,7 +69,7 @@ namespace vb {
 		for (int i=0; i<n3; ++i) f[i] = cpx (xy[2*n1+2*n2+2*i],xy[2*n1+2*n2+2*i+1]);
 		l = cpx (xy[2*n1+2*n2+2*n3],xy[2*n1+2*n2+2*n3+1]);
 
-		compute(); return cost();
+		from_points(); return cost();
 	}
 
 	void Constellation::find () {
@@ -81,6 +86,11 @@ namespace vb {
 			for (auto & z : bw) {	z += eps; nc = cost(bw); if (nc<c) { c=nc; flag=true; } else { z -= eps; }
 			                     	z -= eps; nc = cost(bw); if (nc<c) { c=nc; flag=true; } else { z += eps; } }
 			if (!flag) eps /= 4;
+
+			if (visible()) {
+				for (int i=0; i<600; ++i) for (int j=0; j<600; ++j) put (coo(i,j),0);
+				tessel (0,0,599,599); update();
+			}
 		}
 		std::cerr << std::endl;
 	}
