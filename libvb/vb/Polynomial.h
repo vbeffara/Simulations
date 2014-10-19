@@ -68,9 +68,9 @@ namespace vb {
 		double eps = pow(10.0,-os.precision());
 		bool first=true;
 		for (int i=P.degree(); i>=0; --i) {
-			if (abs(P[i])    	<= eps) continue;
-			if (abs(P[i]-1.0)	<= eps) { if (i==0) os << 1; 	else { os <<        	P.v; if (i>1) os << "^" << i; } first=false; continue; }
-			if (abs(P[i]+1.0)	<= eps) { if (i==0) os << -1;	else { os << "- " <<	P.v; if (i>1) os << "^" << i; } first=false; continue; }
+			if (abs(P[i])     	<= eps) continue;
+			if (abs(P[i]-T(1))	<= eps) { if (i==0) os << 1; 	else { os <<        	P.v; if (i>1) os << "^" << i; } first=false; continue; }
+			if (abs(P[i]+T(1))	<= eps) { if (i==0) os << -1;	else { os << "- " <<	P.v; if (i>1) os << "^" << i; } first=false; continue; }
 			os << (first ? "" : " + ");
 			os << P[i];
 			if (i>0) os << " " << P.v; if (i>1) os << "^" << i;

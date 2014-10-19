@@ -15,11 +15,11 @@ namespace vb {
 		for (auto c : M.alpha.cycles())	{                                      	w.push_back(T.V[T.E[c[0]+N].src].z);  	wd.push_back(c.size()); }
 		for (auto c : M.phi.cycles())  	{ if (T.E[c[0]+3*N].src==inf) continue;	f.push_back(T.V[T.E[c[0]+3*N].src].z);	fd.push_back(c.size()); }
 
-		from_points(); double l = belyi(); T.linear(l); T.output_pdf();
+		from_points(); long double l = belyi(); T.linear(l); T.output_pdf();
 	}
 
 	void Constellation::from_points () {
-		RationalFraction<cpx> R;
+		RationalFraction<lcpx> R;
 		for (int i=0; i<b.size(); ++i) for (int j=0; j<bd[i]; ++j) R.add_root(b[i]);
 		for (int i=0; i<f.size(); ++i) for (int j=0; j<fd[i]; ++j) R.add_pole(f[i]);
 		Rs = {R};
@@ -30,56 +30,56 @@ namespace vb {
 	}
 
 	Color Constellation::compute (coo c) {
-		cpx z { (c.x-300)*2.0/300, (c.y-300)*2.0/300 };
+		lcpx z { (c.x-300)*2.0/300, (c.y-300)*2.0/300 };
 		return imag(Rs[0](z))>0 ? RED : BLUE;
 	}
 
 	void Constellation::normalize () {
-		RationalFraction<cpx> R;
+		RationalFraction<lcpx> R;
 		for (int i=0; i<b.size(); ++i) for (int j=0; j<bd[i]; ++j) R.add_root(b[i]);
 		for (int i=0; i<f.size(); ++i) for (int j=0; j<fd[i]; ++j) R.add_pole(f[i]);
-		cpx avg = 0; int d=0;
-		for (int i=0; i<w.size(); ++i) { d += wd[i]; avg += R(w[i])*cpx(wd[i]); }
-		l = cpx(d)/avg;
+		lcpx avg = 0; int d=0;
+		for (int i=0; i<w.size(); ++i) { d += wd[i]; avg += R(w[i])*lcpx(wd[i]); }
+		l = lcpx(d)/avg;
 		from_points();
 	}
 
-	double Constellation::belyi () {
-		cpx z0 = b[0];                                          	for (auto & z : b) z -= z0; for (auto & z : w) z -= z0; for (auto & z : f) z -= z0;
-		cpx r0 = std::polar(1.0,-arg(f.size()>0 ? f[0] : w[0]));	for (auto & z : b) z *= r0; for (auto & z : w) z *= r0; for (auto & z : f) z *= r0;
+	long double Constellation::belyi () {
+		lcpx z0 = b[0];                                           	for (auto & z : b) z -= z0; for (auto & z : w) z -= z0; for (auto & z : f) z -= z0;
+		lcpx r0 = std::polar(1.0L,-arg(f.size()>0 ? f[0] : w[0]));	for (auto & z : b) z *= r0; for (auto & z : w) z *= r0; for (auto & z : f) z *= r0;
 		normalize();
 
-		double lambda = pow(abs(Rs[0].P.back()),1.0/Rs[0].degree());
+		long double lambda = pow(abs(Rs[0].P.back()),1.0/Rs[0].degree());
 		for (auto & z : b) z *= lambda; for (auto & z : w) z *= lambda; for (auto & z : f) z *= lambda; normalize();
 
 		return lambda;
 	}
 
-	double Constellation::cost() const {
-		double out=0;
-		for (int i=0; i<w.size(); ++i) for (int j=0; j<wd[i]; ++j) out += norm (Rs[j](w[i]) - (j==0?1.0:0.0));
+	long double Constellation::cost() const {
+		long double out=0;
+		for (int i=0; i<w.size(); ++i) for (int j=0; j<wd[i]; ++j) out += norm (Rs[j](w[i]) - (j==0?1.0L:0.0L));
 		return out;
 	}
 
-	double Constellation::cost (const std::vector<double> & xy) {
+	long double Constellation::cost (const std::vector<long double> & xy) {
 		int n1 = b.size(), n2 = w.size(), n3 = f.size();
 
-		for (int i=0; i<n1; ++i) b[i] = cpx (xy[2*i],xy[2*i+1]);
-		for (int i=0; i<n2; ++i) w[i] = cpx (xy[2*n1+2*i],xy[2*n1+2*i+1]);
-		for (int i=0; i<n3; ++i) f[i] = cpx (xy[2*n1+2*n2+2*i],xy[2*n1+2*n2+2*i+1]);
-		l = cpx (xy[2*n1+2*n2+2*n3],xy[2*n1+2*n2+2*n3+1]);
+		for (int i=0; i<n1; ++i) b[i] = lcpx (xy[2*i],xy[2*i+1]);
+		for (int i=0; i<n2; ++i) w[i] = lcpx (xy[2*n1+2*i],xy[2*n1+2*i+1]);
+		for (int i=0; i<n3; ++i) f[i] = lcpx (xy[2*n1+2*n2+2*i],xy[2*n1+2*n2+2*i+1]);
+		l = lcpx (xy[2*n1+2*n2+2*n3],xy[2*n1+2*n2+2*n3+1]);
 
 		from_points(); return cost();
 	}
 
 	void Constellation::find () {
-		std::vector<double> bw;
+		std::vector<long double> bw;
 		for (auto z : b) { bw.push_back(real(z)); bw.push_back(imag(z)); }
 		for (auto z : w) { bw.push_back(real(z)); bw.push_back(imag(z)); }
 		for (auto z : f) { bw.push_back(real(z)); bw.push_back(imag(z)); }
 		bw.push_back(real(l)); bw.push_back(imag(l));
 
-		double c = cost(bw), eps = sqrt(c), nc = c;
+		long double c = cost(bw), eps = sqrt(c), nc = c;
 		while (eps>1e-100) {
 			std::cerr << c << " (" << eps << ")          \r";
 			bool flag = false;
@@ -96,7 +96,7 @@ namespace vb {
 	}
 
 	std::ostream & operator<< (std::ostream & os, const Constellation & C) {
-		double err = sqrt(C.cost()); os << std::setprecision (err<1e-3 ? log10(1/err) : 3) << std::fixed;
+		long double err = sqrt(C.cost()); os << std::setprecision (err<1e-3 ? log10(1/err) : 3) << std::fixed;
 
 		os << "Black vertices / zeros: " << std::endl;
 		for (int i=0; i<C.b.size(); ++i) { os << "| " << C.bd[i] << "\t" << C.b[i]; for (int j=0; j<C.bd[i]; ++j) os << "\t" << C.Rs[j](C.b[i]); os << std::endl; }
