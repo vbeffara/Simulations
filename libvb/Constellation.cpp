@@ -19,7 +19,7 @@ namespace vb {
 	}
 
 	void Constellation::compute () {
-		RationalFraction R;
+		RationalFraction<cpx> R;
 		for (int i=0; i<b.size(); ++i) for (int j=0; j<bd[i]; ++j) R.add_root(b[i]);
 		for (int i=0; i<f.size(); ++i) for (int j=0; j<fd[i]; ++j) R.add_pole(f[i]);
 		Rs = {R};
@@ -30,7 +30,7 @@ namespace vb {
 	}
 
 	void Constellation::normalize () {
-		RationalFraction R;
+		RationalFraction<cpx> R;
 		for (int i=0; i<b.size(); ++i) for (int j=0; j<bd[i]; ++j) R.add_root(b[i]);
 		for (int i=0; i<f.size(); ++i) for (int j=0; j<fd[i]; ++j) R.add_pole(f[i]);
 		cpx avg = 0; int d=0;

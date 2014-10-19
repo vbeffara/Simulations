@@ -20,7 +20,7 @@ namespace vb {
 		std::vector<unsigned>	bd,wd,fd;
 		cpx                  	l=1.0;
 
-		std::vector<RationalFraction>	Rs;
+		std::vector<RationalFraction<cpx>>	Rs;
 	};
 
 	std::ostream & operator<< (std::ostream & os, const Constellation & C);
