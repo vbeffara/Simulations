@@ -22,7 +22,7 @@ int main (int argc, char ** argv) {
 
 	cout << M << endl;
 
-	Constellation C (M,H,H['n']); if (H['v']) { C.show(); } C.find(); C.belyi();
+	Constellation<double> C (M,H,H['n']); if (H['v']) { C.show(); } C.find(); C.belyi();
 
 	cout << endl << C;
 }
