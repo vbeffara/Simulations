@@ -47,8 +47,6 @@ namespace vb {
 		double lambda = pow(abs(Rs[0].P.back()),1.0/Rs[0].degree());
 		for (auto & z : b) z *= lambda; for (auto & z : w) z *= lambda; for (auto & z : f) z *= lambda; normalize();
 
-		double err = sqrt(cost());
-		std::cout << std::setprecision (log10(1/err)) << std::fixed; Rs[0].P.precision = err; Rs[0].Q.precision = err;
 		return lambda;
 	}
 
@@ -88,6 +86,8 @@ namespace vb {
 	}
 
 	std::ostream & operator<< (std::ostream & os, const Constellation & C) {
+		double err = sqrt(C.cost()); os << std::setprecision (err<1e-3 ? log10(1/err) : 3) << std::fixed;
+
 		os << "Black vertices / zeros: " << std::endl;
 		for (int i=0; i<C.b.size(); ++i) { os << "| " << C.bd[i] << "\t" << C.b[i]; for (int j=0; j<C.bd[i]; ++j) os << "\t" << C.Rs[j](C.b[i]); os << std::endl; }
 		os << std::endl;

@@ -22,7 +22,7 @@ int main (int argc, char ** argv) {
 
 	cout << M << endl;
 
-	Constellation C (M,H);
+	Constellation C (M,H); C.find(); C.belyi();
 
-	C.find(); C.belyi(); cout << endl << C;
+	cout << endl << C;
 }
