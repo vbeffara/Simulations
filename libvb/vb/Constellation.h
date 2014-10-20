@@ -77,10 +77,12 @@ namespace vb {
 		cplx r0 = std::polar(T(1), -arg(f.size()>0 ? f[0] : w[0]));	for (auto & z : b) z *= r0; for (auto & z : w) z *= r0; for (auto & z : f) z *= r0;
 		normalize();
 
-		T lambda = pow(abs(R.P.back()),1.0/R.degree());
-		for (auto & z : b) z *= lambda; for (auto & z : w) z *= lambda; for (auto & z : f) z *= lambda; normalize();
+		T lambda1 = pow(abs(R.P.back()),1.0/R.degree());
+		for (auto & z : b) z *= lambda1; for (auto & z : w) z *= lambda1; for (auto & z : f) z *= lambda1; normalize();
+		T lambda2 = pow(abs(R.P.back()),1.0/R.degree());
+		for (auto & z : b) z *= lambda2; for (auto & z : w) z *= lambda2; for (auto & z : f) z *= lambda2; normalize();
 
-		return lambda;
+		return lambda1*lambda2;
 	}
 
 	template <typename T> auto Constellation<T>::logder (cplx z, int k) const -> cplx {
