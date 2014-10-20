@@ -65,9 +65,7 @@ namespace vb {
 	}
 
 	template <typename T> void Constellation<T>::normalize () {
-		RationalFraction<cplx> R;
-		for (unsigned i=0; i<b.size(); ++i) for (unsigned j=0; j<bd[i]; ++j) R.add_root(b[i]);
-		for (unsigned i=0; i<f.size(); ++i) for (unsigned j=0; j<fd[i]; ++j) R.add_pole(f[i]);
+		l = cplx(1); from_points();
 		cplx avg (0); unsigned d=0;
 		for (unsigned i=0; i<w.size(); ++i) { d += wd[i]; avg += R(w[i])*cplx(wd[i]); }
 		l = cplx(d)/avg;
