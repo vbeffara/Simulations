@@ -131,24 +131,15 @@ namespace vb {
 		double err = sqrt(C.cost()); os << std::setprecision (err<1e-3 ? log10(1/err) : 3) << std::fixed;
 
 		os << "Black vertices / zeros: " << std::endl;
-		for (unsigned i=0; i<C.b.size(); ++i) {
-			os << "| " << C.bd[i] << "\t" << C.b[i];
-			for (unsigned j=0; j<C.bd[i]; ++j) os << "\t" << C.Rs[j](C.b[i]); os << std::endl;
-		}
+		for (unsigned i=0; i<C.b.size(); ++i) os << "| " << C.bd[i] << "\t" << C.b[i] << std::endl;
 		os << std::endl;
 		os << "White vertices / ones: " << std::endl;
-		for (unsigned i=0; i<C.w.size(); ++i) {
-			os << "| " << C.wd[i] << "\t" << C.w[i];
-			for (unsigned j=0; j<C.wd[i]; ++j) os << "\t" << C.Rs[j](C.w[i]); os << std::endl;
-		}
+		for (unsigned i=0; i<C.w.size(); ++i) os << "| " << C.wd[i] << "\t" << C.w[i] << std::endl;
 		os << std::endl;
 		os << "Red vertices / poles: " << std::endl;
-		for (unsigned i=0; i<C.f.size(); ++i) {
-			os << "| " << C.fd[i] << "\t" << C.f[i];
-			for (unsigned j=0; j<C.fd[i]; ++j) os << "\t" << C.Rs[j](C.f[i]); os << std::endl;
-		}
+		for (unsigned i=0; i<C.f.size(); ++i) os << "| " << C.fd[i] << "\t" << C.f[i] << std::endl;
 		os << std::endl;
-		os << C.Rs[0] << std::endl;
+		os << C.R << std::endl;
 		return os;
 	}
 }
