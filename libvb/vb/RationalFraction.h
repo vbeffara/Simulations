@@ -4,7 +4,7 @@
 namespace vb {
 	template <typename T> class RationalFraction {
 	public:
-		RationalFraction (Polynomial<T> P_ = {{1}}, Polynomial<T> Q_ = {{1}}) : P(P_), Q(Q_) {};
+		RationalFraction (Polynomial<T> P_ = {{T(1)}}, Polynomial<T> Q_ = {{T(1)}}) : P(P_), Q(Q_) {};
 
 		T operator() (T z) const;
 

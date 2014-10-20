@@ -24,7 +24,7 @@ namespace vb {
 
 		std::vector<cplx>    	b,w,f;
 		std::vector<unsigned>	bd,wd,fd;
-		cplx                 	l=1.0;
+		cplx                 	l = T(1);
 
 		std::vector<RationalFraction<cplx>>	Rs;
 	};
@@ -47,7 +47,7 @@ namespace vb {
 		for (auto c : M.alpha.cycles())	{                                      	w.push_back(S.V[S.E[c[0]+N].src].z);  	wd.push_back(c.size()); }
 		for (auto c : M.phi.cycles())  	{ if (S.E[c[0]+3*N].src==inf) continue;	f.push_back(S.V[S.E[c[0]+3*N].src].z);	fd.push_back(c.size()); }
 
-		from_points(); T l = belyi(); S.linear(l); S.output_pdf();
+		from_points(); T l = belyi(); S.linear(double(l)); S.output_pdf();
 	}
 
 	template <typename T> void Constellation<T>::from_points () {
@@ -70,7 +70,7 @@ namespace vb {
 		RationalFraction<cplx> R;
 		for (unsigned i=0; i<b.size(); ++i) for (unsigned j=0; j<bd[i]; ++j) R.add_root(b[i]);
 		for (unsigned i=0; i<f.size(); ++i) for (unsigned j=0; j<fd[i]; ++j) R.add_pole(f[i]);
-		cplx avg = 0; unsigned d=0;
+		cplx avg (0); unsigned d=0;
 		for (unsigned i=0; i<w.size(); ++i) { d += wd[i]; avg += R(w[i])*cplx(wd[i]); }
 		l = cplx(d)/avg;
 		from_points();
@@ -128,7 +128,7 @@ namespace vb {
 	}
 
 	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation<T> & C) {
-		T err = sqrt(C.cost()); os << std::setprecision (err<1e-3 ? log10(1/err) : 3) << std::fixed;
+		double err = sqrt(C.cost()); os << std::setprecision (err<1e-3 ? log10(1/err) : 3) << std::fixed;
 
 		os << "Black vertices / zeros: " << std::endl;
 		for (unsigned i=0; i<C.b.size(); ++i) {

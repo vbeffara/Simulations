@@ -31,7 +31,7 @@ namespace vb {
 	template <typename T> Polynomial<T> Polynomial<T>::derivative () const {
 		std::vector<T> out (degree());
 		for (unsigned i=0; i<degree(); ++i) out[i] = T(i+1) * at(i+1);
-		if (out.empty()) out.push_back(0.0);
+		if (out.empty()) out.push_back(T(0));
 		return out;
 	}
 
@@ -42,7 +42,7 @@ namespace vb {
 	}
 
 	template <typename T> Polynomial<T> operator* (const Polynomial<T> & P, const Polynomial<T> & Q) {
-		std::vector<T> PQ (P.degree()+Q.degree()+1, 0.0);
+		std::vector<T> PQ (P.degree()+Q.degree()+1, T(0));
 		for (unsigned i=0; i<=P.degree(); ++i) {
 			for (unsigned j=0; j<=Q.degree(); ++j) {
 				PQ[i+j] += P[i] * Q[j];
@@ -53,7 +53,7 @@ namespace vb {
 
 	template <typename T> Polynomial<T> operator- (const Polynomial<T> & P, const Polynomial<T> & Q) {
 		Polynomial<T> PQ = P;
-		if (PQ.degree()<Q.degree()) PQ.resize(Q.degree()+1,0.0);
+		if (PQ.degree()<Q.degree()) PQ.resize(Q.degree()+1, T(0));
 		for (unsigned i=0; i<=Q.degree(); ++i) PQ[i] -= Q[i];
 		return PQ;
 	}
