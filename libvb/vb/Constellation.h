@@ -43,9 +43,9 @@ namespace vb {
 		S.linear (1,-S.V[inf].z); S.inversion(); S.linear (-1/S.V[inf].r,0); S.output_pdf();
 		{ cpx z; while ((z = S.V[S.E[0].src].z) != 0.0) S.mobiusto0 (z); } S.linear (std::polar(1.0,-S.E[0].a)); S.output_pdf();
 
-		for (auto c : M.sigma.cycles())	{                                      	b.push_back(S.V[S.E[c[0]].src].z);    	bd.push_back(c.size()); }
-		for (auto c : M.alpha.cycles())	{                                      	w.push_back(S.V[S.E[c[0]+N].src].z);  	wd.push_back(c.size()); }
-		for (auto c : M.phi.cycles())  	{ if (S.E[c[0]+3*N].src==inf) continue;	f.push_back(S.V[S.E[c[0]+3*N].src].z);	fd.push_back(c.size()); }
+		for (auto c : M.sigma.cycles())	{                                      	b.push_back(cplx(S.V[S.E[c[0]].src].z));    	bd.push_back(c.size()); }
+		for (auto c : M.alpha.cycles())	{                                      	w.push_back(cplx(S.V[S.E[c[0]+N].src].z));  	wd.push_back(c.size()); }
+		for (auto c : M.phi.cycles())  	{ if (S.E[c[0]+3*N].src==inf) continue;	f.push_back(cplx(S.V[S.E[c[0]+3*N].src].z));	fd.push_back(c.size()); }
 
 		from_points(); T l = belyi(); S.linear(double(l)); S.output_pdf();
 	}
