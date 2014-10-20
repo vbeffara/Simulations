@@ -4,7 +4,7 @@ def options (ctx) :
 	ctx.load ('compiler_c compiler_cxx')
 
 def configure (ctx) :
-	ctx.env.CXXFLAGS += [ '-std=c++0x' ]
+	ctx.env.CXXFLAGS += [ '-std=c++0x', '-fext-numeric-literals' ]
 	ctx.env.LINKFLAGS += [ '-std=c++0x' ]
 
 	ctx.load ('compiler_c compiler_cxx boost')
@@ -17,6 +17,7 @@ def configure (ctx) :
 	ctx.check    	(header_name=["string", "png++/png.hpp"],	msg='Checking for PNG++', 	define_name='HAVE_PNGPP')
 	ctx.check    	(lib='boost_system')
 	ctx.check    	(lib='boost_filesystem')
+	ctx.check    	(lib='quadmath')
 	ctx.check_boost ()
 
 	ctx.write_config_header ('libvb/vb/config.h')

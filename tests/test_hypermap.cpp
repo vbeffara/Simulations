@@ -1,3 +1,8 @@
+// #include <boost/multiprecision/float128.hpp>
+// #include <quadmath.h>
+// using number = boost::multiprecision::float128;
+using number = double;
+
 #include <vb/Constellation.h>
 #include <vb/Hub.h>
 #include <vb/Hypermap_lib.h>
@@ -32,7 +37,7 @@ int main (int argc, char ** argv) {
 
 	cout << M << endl;
 
-	Constellation<long double> C (M,H,H['n']); if (H['v']) { C.show(); } C.find(); C.belyi();
+	Constellation<number> C (M,H,H['n']); if (H['v']) { C.show(); } C.find(); C.belyi();
 
 	cout << endl << C;
 }

@@ -4,7 +4,7 @@ def build (ctx) :
               target = 'vb',
               includes = '.',
               export_includes = '.',
-              use = 'FFTW3 FLTK CAIRO PNG BOOST_SYSTEM BOOST_FILESYSTEM')
+              use = 'FFTW3 FLTK CAIRO PNG BOOST_SYSTEM BOOST_FILESYSTEM QUADMATH')
     ctx.install_files ('${PREFIX}/include/vb', 'vb/*.h')
 
 # vim: ft=python
