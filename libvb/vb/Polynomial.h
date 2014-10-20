@@ -60,14 +60,14 @@ namespace vb {
 
 	template <typename T> T Polynomial<T>::operator() (T z) const {
 		T out = back();
-		for (unsigned i=size()-2; i>=0; --i) out = out*z+at(i);
+		for (unsigned i=size()-1; i>0; --i) out = out*z+at(i-1);
 		return out;
 	}
 
 	template <typename T> std::ostream & operator<< (std::ostream & os, const Polynomial<T> & P) {
 		double eps = pow(10.0,-os.precision());
 		bool first=true;
-		for (unsigned i=P.degree(); i>=0; --i) {
+		for (unsigned j=P.degree()+1; j>0; --j) { unsigned i=j-1;
 			if (abs(P[i])     	<= eps) continue;
 			if (abs(P[i]-T(1))	<= eps) { if (i==0) os << 1; 	else { os <<        	P.v; if (i>1) os << "^" << i; } first=false; continue; }
 			if (abs(P[i]+T(1))	<= eps) { if (i==0) os << -1;	else { os << "- " <<	P.v; if (i>1) os << "^" << i; } first=false; continue; }
