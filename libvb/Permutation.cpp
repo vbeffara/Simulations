@@ -65,7 +65,7 @@ namespace vb {
 
 	Permutation Permutation::conjugate (const Permutation & s) const {
 		Permutation out(size());
-		for (int i=0; i<size(); ++i) out[s[i]]=s[at(i)];
+		for (unsigned i=0; i<size(); ++i) out[s[i]]=s[at(i)];
 		return out;
 	}
 
@@ -74,13 +74,13 @@ namespace vb {
 	}
 
 	bool connected (const Permutation & s, const Permutation & a) {
-		int n=s.size(); std::vector<unsigned> l(n); for (unsigned i=0; i<n; ++i) l[i]=i;
+		unsigned n=s.size(); std::vector<unsigned> l(n); for (unsigned i=0; i<n; ++i) l[i]=i;
 		bool dirty=true; while (dirty) {
 			dirty=false;
-			for (int i=0; i<n; ++i) if (l[s[i]]<l[i]) { l[i]=l[s[i]]; dirty=true; }
-			for (int i=0; i<n; ++i) if (l[a[i]]<l[i]) { l[i]=l[a[i]]; dirty=true; }
+			for (unsigned i=0; i<n; ++i) if (l[s[i]]<l[i]) { l[i]=l[s[i]]; dirty=true; }
+			for (unsigned i=0; i<n; ++i) if (l[a[i]]<l[i]) { l[i]=l[a[i]]; dirty=true; }
 		}
-		for (int i=0; i<n; ++i) if (l[i]>0) return false;
+		for (unsigned i=0; i<n; ++i) if (l[i]>0) return false;
 		return true;
 	}
 

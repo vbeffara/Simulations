@@ -52,13 +52,13 @@ namespace vb {
 
 	template <typename T> void Constellation<T>::from_points () {
 		RationalFraction<cplx> R;
-		for (int i=0; i<b.size(); ++i) for (int j=0; j<bd[i]; ++j) R.add_root(b[i]);
-		for (int i=0; i<f.size(); ++i) for (int j=0; j<fd[i]; ++j) R.add_pole(f[i]);
+		for (unsigned i=0; i<b.size(); ++i) for (unsigned j=0; j<bd[i]; ++j) R.add_root(b[i]);
+		for (unsigned i=0; i<f.size(); ++i) for (unsigned j=0; j<fd[i]; ++j) R.add_pole(f[i]);
 		Rs = {R};
 		for (auto & c : Rs[0].P) c *= l;
-		for (int i=0; i<b.size(); ++i) for (int j=Rs.size(); j<bd[i]; ++j) Rs.push_back(Rs.back().derivative());
-		for (int i=0; i<w.size(); ++i) for (int j=Rs.size(); j<wd[i]; ++j) Rs.push_back(Rs.back().derivative());
-		for (int i=0; i<f.size(); ++i) for (int j=Rs.size(); j<fd[i]; ++j) Rs.push_back(Rs.back().derivative());
+		for (unsigned i=0; i<b.size(); ++i) for (unsigned j=Rs.size(); j<bd[i]; ++j) Rs.push_back(Rs.back().derivative());
+		for (unsigned i=0; i<w.size(); ++i) for (unsigned j=Rs.size(); j<wd[i]; ++j) Rs.push_back(Rs.back().derivative());
+		for (unsigned i=0; i<f.size(); ++i) for (unsigned j=Rs.size(); j<fd[i]; ++j) Rs.push_back(Rs.back().derivative());
 	}
 
 	template <typename T> Color Constellation<T>::compute (coo c) {
@@ -68,10 +68,10 @@ namespace vb {
 
 	template <typename T> void Constellation<T>::normalize () {
 		RationalFraction<cplx> R;
-		for (int i=0; i<b.size(); ++i) for (int j=0; j<bd[i]; ++j) R.add_root(b[i]);
-		for (int i=0; i<f.size(); ++i) for (int j=0; j<fd[i]; ++j) R.add_pole(f[i]);
-		cplx avg = 0; int d=0;
-		for (int i=0; i<w.size(); ++i) { d += wd[i]; avg += R(w[i])*cplx(wd[i]); }
+		for (unsigned i=0; i<b.size(); ++i) for (unsigned j=0; j<bd[i]; ++j) R.add_root(b[i]);
+		for (unsigned i=0; i<f.size(); ++i) for (unsigned j=0; j<fd[i]; ++j) R.add_pole(f[i]);
+		cplx avg = 0; unsigned d=0;
+		for (unsigned i=0; i<w.size(); ++i) { d += wd[i]; avg += R(w[i])*cplx(wd[i]); }
 		l = cplx(d)/avg;
 		from_points();
 	}
@@ -89,16 +89,16 @@ namespace vb {
 
 	template <typename T> T Constellation<T>::cost() const {
 		T out (0);
-		for (int i=0; i<w.size(); ++i) for (int j=0; j<wd[i]; ++j) out += norm (Rs[j](w[i]) - (j==0 ? T(1) : T(0)));
+		for (unsigned i=0; i<w.size(); ++i) for (unsigned j=0; j<wd[i]; ++j) out += norm (Rs[j](w[i]) - (j==0 ? T(1) : T(0)));
 		return out;
 	}
 
 	template <typename T> T Constellation<T>::cost (const std::vector<T> & xy) {
-		int n1 = b.size(), n2 = w.size(), n3 = f.size();
+		unsigned n1 = b.size(), n2 = w.size(), n3 = f.size();
 
-		for (int i=0; i<n1; ++i) b[i] = cplx (xy[2*i],xy[2*i+1]);
-		for (int i=0; i<n2; ++i) w[i] = cplx (xy[2*n1+2*i],xy[2*n1+2*i+1]);
-		for (int i=0; i<n3; ++i) f[i] = cplx (xy[2*n1+2*n2+2*i],xy[2*n1+2*n2+2*i+1]);
+		for (unsigned i=0; i<n1; ++i) b[i] = cplx (xy[2*i],xy[2*i+1]);
+		for (unsigned i=0; i<n2; ++i) w[i] = cplx (xy[2*n1+2*i],xy[2*n1+2*i+1]);
+		for (unsigned i=0; i<n3; ++i) f[i] = cplx (xy[2*n1+2*n2+2*i],xy[2*n1+2*n2+2*i+1]);
 		l = cplx (xy[2*n1+2*n2+2*n3],xy[2*n1+2*n2+2*n3+1]);
 
 		from_points(); return cost();
@@ -131,13 +131,22 @@ namespace vb {
 		T err = sqrt(C.cost()); os << std::setprecision (err<1e-3 ? log10(1/err) : 3) << std::fixed;
 
 		os << "Black vertices / zeros: " << std::endl;
-		for (int i=0; i<C.b.size(); ++i) { os << "| " << C.bd[i] << "\t" << C.b[i]; for (int j=0; j<C.bd[i]; ++j) os << "\t" << C.Rs[j](C.b[i]); os << std::endl; }
+		for (unsigned i=0; i<C.b.size(); ++i) {
+			os << "| " << C.bd[i] << "\t" << C.b[i];
+			for (unsigned j=0; j<C.bd[i]; ++j) os << "\t" << C.Rs[j](C.b[i]); os << std::endl;
+		}
 		os << std::endl;
 		os << "White vertices / ones: " << std::endl;
-		for (int i=0; i<C.w.size(); ++i) { os << "| " << C.wd[i] << "\t" << C.w[i]; for (int j=0; j<C.wd[i]; ++j) os << "\t" << C.Rs[j](C.w[i]); os << std::endl; }
+		for (unsigned i=0; i<C.w.size(); ++i) {
+			os << "| " << C.wd[i] << "\t" << C.w[i];
+			for (unsigned j=0; j<C.wd[i]; ++j) os << "\t" << C.Rs[j](C.w[i]); os << std::endl;
+		}
 		os << std::endl;
 		os << "Red vertices / poles: " << std::endl;
-		for (int i=0; i<C.f.size(); ++i) { os << "| " << C.fd[i] << "\t" << C.f[i]; for (int j=0; j<C.fd[i]; ++j) os << "\t" << C.Rs[j](C.f[i]); os << std::endl; }
+		for (unsigned i=0; i<C.f.size(); ++i) {
+			os << "| " << C.fd[i] << "\t" << C.f[i];
+			for (unsigned j=0; j<C.fd[i]; ++j) os << "\t" << C.Rs[j](C.f[i]); os << std::endl;
+		}
 		os << std::endl;
 		os << C.Rs[0] << std::endl;
 		return os;

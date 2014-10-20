@@ -12,8 +12,8 @@ namespace vb {
 	void Hypermap::from_hypermap () {
 		Cycles sc = sigma.cycles();
 		int nb = sc.size(); V.resize(nb); E.resize(6*nb);
-		for (int i=0; i<E.size(); ++i) E[i].i=i;
-		for (int i=0; i<V.size(); ++i) V[i].i=i;
+		for (unsigned i=0; i<E.size(); ++i) E[i].i=i;
+		for (unsigned i=0; i<V.size(); ++i) V[i].i=i;
 		for (auto & v : V) {
 			v.z = NAN; v.bone=false; v.adj.clear();
 			for (int e : sc[v.i]) { E[e].a = NAN; E[e].src = v.i; }
@@ -23,7 +23,7 @@ namespace vb {
 
 	int Hypermap::euler () const { return sigma.cycles().size() + alpha.cycles().size() - sigma.size() + phi.cycles().size(); }
 
-	int	Hypermap::genus () const { return 1-euler()/2; }
+	unsigned	Hypermap::genus () const { return 1-euler()/2; }
 
 	bool Hypermap::is_graph () const {
 		for (auto v : alpha.cycles()) if (v.size() != 2) return false;
@@ -36,7 +36,7 @@ namespace vb {
 		return true;
 	}
 
-	bool Hypermap::is_simple (int d) const {
+	bool Hypermap::is_simple (unsigned d) const {
 		for (auto s : sigma.cycles())	if (s.size()<=d) return false;
 		for (auto f : phi.cycles())  	if (f.size()<=d) return false;
 		return true;
@@ -61,7 +61,7 @@ namespace vb {
 
 		sigma = sigma_c; alpha = alpha_c; phi = phi_c;
 		initial.resize (sigma.size(),0);
-		for (int i=0; i<N; ++i) {
+		for (unsigned i=0; i<N; ++i) {
 			initial[alpha[i]] = (initial[i]&1 ? 1 : 0);
 			if ((initial[i]&2) && (initial[alpha[sigma[sigma[sigma[alpha[i]]]]]]&2)) initial[alpha[i]] |= 4;
 		}
@@ -77,14 +77,14 @@ namespace vb {
 	}
 
 	Permutation Hypermap::rebasing (unsigned i) const {
-		int n=alpha.size(), m=0; std::vector<unsigned> s1(n,n), s2(n,n);
-		auto go = [&] (int i) { while (s1[i]==n) { s1[i]=m; s2[m]=i; ++m; i=alpha[i]; } };
+		unsigned n=alpha.size(), m=0; std::vector<unsigned> s1(n,n), s2(n,n);
+		auto go = [&] (unsigned i) { while (s1[i]==n) { s1[i]=m; s2[m]=i; ++m; i=alpha[i]; } };
 		go(i); for (int x : s2) go(phi[x]); return s1;
 	}
 
 	Permutation Hypermap::rebasing () const {
 		Permutation s = rebasing(0), a = alpha.conjugate(s), p = phi.conjugate(s);
-		for (int i=1; i<alpha.size(); ++i) {
+		for (unsigned i=1; i<alpha.size(); ++i) {
 			Permutation s2 = rebasing(i), a2 = alpha.conjugate(s2), p2 = phi.conjugate(s2);
 			if ((a2<a) || ((a2==a) && (p2<p))) { s=s2; a=a2; p=p2; }
 		}
@@ -159,11 +159,11 @@ namespace vb {
 
 	void Hypermap::relabel (const Permutation & p) {
 		sigma = sigma.conjugate(p); alpha = alpha.conjugate(p); phi = phi.conjugate(p);
-		std::vector<unsigned> b (sigma.size()); for (int i=0; i<sigma.size(); ++i) b[p[i]] = initial[i]; initial=b;
+		std::vector<unsigned> b (sigma.size()); for (unsigned i=0; i<sigma.size(); ++i) b[p[i]] = initial[i]; initial=b;
 	}
 
 	void Hypermap::dessin () {
-		Cycles new_a, new_f; int n=sigma.size(); initial.resize(6*n); Permutation alpha1 = alpha.inverse();
+		Cycles new_a, new_f; unsigned n=sigma.size(); initial.resize(6*n); Permutation alpha1 = alpha.inverse();
 		for (unsigned i=0; i<n; ++i) {
 			new_a.push_back({i,i+n}); new_a.push_back({i+2*n,i+3*n}); new_a.push_back({i+4*n,i+5*n});
 			new_f.push_back({i,i+2*n,i+4*n}); new_f.push_back({alpha1[i]+n,phi[i]+5*n,i+3*n});

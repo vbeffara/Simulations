@@ -6,8 +6,8 @@
 namespace vb {
 	class Hypermap {
 	public:
-		struct Vertex	{ int i;	cpx z;  	double r=1.0;	unsigned bone;	std::vector<int> adj;	bool fixed = false;	};
-		struct Edge  	{ int i;	int src;	double a=NAN;	              	                     	                   	};
+		struct Vertex	{ unsigned i;	cpx z;       	double r=1.0;	unsigned bone;	std::vector<unsigned> adj;	bool fixed = false;	};
+		struct Edge  	{ unsigned i;	unsigned src;	double a=NAN;	              	                          	                   	};
 
 		Hypermap (Permutation s, Permutation a, Permutation p)	: sigma(s), alpha(a), phi(p), initial(s.size(),3)          	{}
 		Hypermap (Cycles s, Cycles a, Cycles p)               	: Hypermap (Permutation(s), Permutation(a), Permutation(p))	{}
@@ -16,12 +16,12 @@ namespace vb {
 
 		bool operator== (const Hypermap & o) const { return (sigma==o.sigma) && (alpha==o.alpha); }
 
-		bool	validate        	() const;
-		bool	is_graph        	() const;
-		bool	is_triangulation	() const;
-		bool	is_simple       	(int d = 2) const; // ! parallel but non-consecutive edges (like an eye) are not detected
-		int 	euler           	() const;
-		int 	genus           	() const;
+		bool    	validate        	() const;
+		bool    	is_graph        	() const;
+		bool    	is_triangulation	() const;
+		bool    	is_simple       	(unsigned d = 2) const; // ! parallel but non-consecutive edges (like an eye) are not detected
+		int     	euler           	() const;
+		unsigned	genus           	() const;
 
 		std::string name () const; // For triangulations, assumed to be normalized
 

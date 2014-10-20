@@ -13,7 +13,7 @@ Image *img;
 
 void bndcnx (int ox, int oy) {
   int imin,imax;
-  int i,j,k;
+  int i,j;
 
   imin=0; imax=0;
   fifox[0]=ox; fifoy[0]=oy;
@@ -22,7 +22,6 @@ void bndcnx (int ox, int oy) {
   while (imin<=imax) {
     i=fifox[imin];
     j=fifoy[imin];
-    k=i+j*img->w();
     imin++;
     if ((i<img->w()-1)&&((*img).at(coo(i,j))&16)&&!((*img).at(coo(i+1,j))&2)) {
       fifox[++imax]=i+1;

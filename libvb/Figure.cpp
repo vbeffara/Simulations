@@ -44,11 +44,11 @@ namespace vb {
   void Path::draw (cairo_t * cr) {
     bool down = false; int l = 0;
     for (auto p : z) {
-      if (isnan(real(p))) { down = false; continue; }
+      if (std::isnan(real(p))) { down = false; continue; }
       if (!down) {
         if ((l>100) && (!this->p.ff)) { cairo_stroke(cr); l=0; }
         cairo_move_to (cr, p.real(), p.imag());
-        if (!isnan(real(p))) down = true;
+        if (!std::isnan(real(p))) down = true;
       }
       else { cairo_line_to (cr, p.real(), p.imag()); }
       ++l;

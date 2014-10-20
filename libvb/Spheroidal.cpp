@@ -74,7 +74,7 @@ namespace vb {
 	}
 
 	void Spheroidal::output_pdf () {
-		for (int e=0; e<sigma.size(); ++e) {
+		for (unsigned e=0; e<sigma.size(); ++e) {
 			if (!initial[e]) continue;
 			V[E[e].src].bone = std::max (V[E[e].src].bone,initial[e]);
 		}
