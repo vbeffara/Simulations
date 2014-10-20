@@ -16,6 +16,8 @@ namespace vb {
 		void	normalize  	();
 		T   	belyi      	();
 
+		cplx logder (cplx z, int k) const;
+
 		T   	cost	()	const;
 		T   	cost	(const std::vector<T> & xy);
 		void	find	();
@@ -26,7 +28,7 @@ namespace vb {
 		std::vector<unsigned>	bd,wd,fd;
 		cplx                 	l = T(1);
 
-		std::vector<RationalFraction<cplx>>	Rs;
+		RationalFraction<cplx> R;
 	};
 
 	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation<T> & C);
@@ -51,19 +53,15 @@ namespace vb {
 	}
 
 	template <typename T> void Constellation<T>::from_points () {
-		RationalFraction<cplx> R;
+		R = RationalFraction<cplx> ();
 		for (unsigned i=0; i<b.size(); ++i) for (unsigned j=0; j<bd[i]; ++j) R.add_root(b[i]);
 		for (unsigned i=0; i<f.size(); ++i) for (unsigned j=0; j<fd[i]; ++j) R.add_pole(f[i]);
-		Rs = {R};
-		for (auto & c : Rs[0].P) c *= l;
-		for (unsigned i=0; i<b.size(); ++i) for (unsigned j=Rs.size(); j<bd[i]; ++j) Rs.push_back(Rs.back().derivative());
-		for (unsigned i=0; i<w.size(); ++i) for (unsigned j=Rs.size(); j<wd[i]; ++j) Rs.push_back(Rs.back().derivative());
-		for (unsigned i=0; i<f.size(); ++i) for (unsigned j=Rs.size(); j<fd[i]; ++j) Rs.push_back(Rs.back().derivative());
+		for (auto & c : R.P) c *= l;
 	}
 
 	template <typename T> Color Constellation<T>::compute (coo c) {
 		cplx z { (c.x-300)*2.0/300, (c.y-300)*2.0/300 };
-		return imag(Rs[0](z))>0 ? RED : BLUE;
+		return imag(R(z))>0 ? RED : BLUE;
 	}
 
 	template <typename T> void Constellation<T>::normalize () {
@@ -81,15 +79,22 @@ namespace vb {
 		cplx r0 = std::polar(T(1), -arg(f.size()>0 ? f[0] : w[0]));	for (auto & z : b) z *= r0; for (auto & z : w) z *= r0; for (auto & z : f) z *= r0;
 		normalize();
 
-		T lambda = pow(abs(Rs[0].P.back()),1.0/Rs[0].degree());
+		T lambda = pow(abs(R.P.back()),1.0/R.degree());
 		for (auto & z : b) z *= lambda; for (auto & z : w) z *= lambda; for (auto & z : f) z *= lambda; normalize();
 
 		return lambda;
 	}
 
+	template <typename T> auto Constellation<T>::logder (cplx z, int k) const -> cplx {
+		cplx sum (0);
+		for (unsigned i=0; i<b.size(); ++i) sum += cplx(bd[i]) / pow (z-b[i], k);
+		for (unsigned i=0; i<f.size(); ++i) sum -= cplx(fd[i]) / pow (z-f[i], k);
+		return sum;
+	}
+
 	template <typename T> T Constellation<T>::cost() const {
 		T out (0);
-		for (unsigned i=0; i<w.size(); ++i) for (unsigned j=0; j<wd[i]; ++j) out += norm (Rs[j](w[i]) - (j==0 ? T(1) : T(0)));
+		for (unsigned i=0; i<w.size(); ++i) { out += norm (R(w[i]) - T(1)); for (unsigned j=1; j<wd[i]; ++j) out += norm(logder(w[i],j)); };
 		return out;
 	}
 
