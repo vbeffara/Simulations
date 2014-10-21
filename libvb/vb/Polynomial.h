@@ -19,6 +19,8 @@ namespace vb {
 		std::string v = "z";
 	};
 
+	template <typename T> Polynomial<T> operator* (const T & c, const Polynomial<T> & Q);
+
 	template <typename T> Polynomial<T> operator- (const Polynomial<T> & P, const Polynomial<T> & Q);
 	template <typename T> Polynomial<T> operator* (const Polynomial<T> & P, const Polynomial<T> & Q);
 
@@ -39,6 +41,10 @@ namespace vb {
 		push_back(T(0));
 		for (unsigned i=degree(); i>0; --i) at(i) = at(i-1) - l*at(i);
 		at(0) = -l*at(0);
+	}
+
+	template <typename T> Polynomial<T> operator* (const T & c, const Polynomial<T> & Q) {
+		std::vector<T> out (Q.degree()+1); for (unsigned i=0; i<out.size(); ++i) out[i] = c*Q[i]; return out;
 	}
 
 	template <typename T> Polynomial<T> operator* (const Polynomial<T> & P, const Polynomial<T> & Q) {
