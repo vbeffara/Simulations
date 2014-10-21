@@ -12,7 +12,7 @@ namespace vb {
 
 		Constellation (Hypermap M, Hub H, int n=3);
 
-		cplx	operator()	(cplx z)       	const { return P(z)/Q(z); }
+		cplx	operator()	(cplx z)       	const { return l*P(z)/Q(z); }
 		cplx	logder    	(cplx z, int k)	const;
 
 		void	from_points	();
@@ -27,9 +27,9 @@ namespace vb {
 
 		std::vector<cplx>    	b,w,f;
 		std::vector<unsigned>	bd,wd,fd;
-		cplx                 	l = T(1);
 
-		Polynomial<cplx> P,Q;
+		cplx            	l = T(1);
+		Polynomial<cplx>	P,Q;
 	};
 
 	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation<T> & C);
@@ -57,7 +57,6 @@ namespace vb {
 		P = Polynomial<cplx> (); Q = Polynomial<cplx> ();
 		for (unsigned i=0; i<b.size(); ++i) for (unsigned j=0; j<bd[i]; ++j) P.add_root(b[i]);
 		for (unsigned i=0; i<f.size(); ++i) for (unsigned j=0; j<fd[i]; ++j) Q.add_root(f[i]);
-		for (auto & c : P) c *= l;
 	}
 
 	template <typename T> Color Constellation<T>::compute (coo c) {
@@ -70,7 +69,6 @@ namespace vb {
 		cplx avg (0); unsigned d=0;
 		for (unsigned i=0; i<w.size(); ++i) { d += wd[i]; avg += (*this)(w[i])*cplx(wd[i]); }
 		l = cplx(d)/avg;
-		from_points();
 	}
 
 	template <typename T> T Constellation<T>::belyi () {
@@ -78,9 +76,9 @@ namespace vb {
 		cplx r0 = std::polar(T(1), -arg(f.size()>0 ? f[0] : w[0]));	for (auto & z : b) z *= r0; for (auto & z : w) z *= r0; for (auto & z : f) z *= r0;
 		normalize();
 
-		T lambda1 = pow(abs(P.back()),1.0/(P.degree()-Q.degree()));
+		T lambda1 = pow(abs(l),1.0/(P.degree()-Q.degree()));
 		for (auto & z : b) z *= lambda1; for (auto & z : w) z *= lambda1; for (auto & z : f) z *= lambda1; normalize();
-		T lambda2 = pow(abs(P.back()),1.0/(P.degree()-Q.degree()));
+		T lambda2 = pow(abs(l),1.0/(P.degree()-Q.degree()));
 		for (auto & z : b) z *= lambda2; for (auto & z : w) z *= lambda2; for (auto & z : f) z *= lambda2; normalize();
 
 		return lambda1*lambda2;
