@@ -4,8 +4,9 @@ def options (ctx) :
 	ctx.load ('compiler_c compiler_cxx')
 
 def configure (ctx) :
-	ctx.env.CXXFLAGS += [ '-std=c++0x', '-fext-numeric-literals' ]
-	ctx.env.LINKFLAGS += [ '-std=c++0x' ]
+	# ctx.env.CXXFLAGS += [ '-std=c++11', '-fext-numeric-literals' ] // for gcc 4.9 + boost 1.56
+	ctx.env.CXXFLAGS += [ '-std=c++11' ]
+	ctx.env.LINKFLAGS += [ '-std=c++11' ]
 
 	ctx.load ('compiler_c compiler_cxx boost')
 	ctx.define ('VB_ENDIAN', ctx.check_endianness(), 0)
@@ -13,11 +14,10 @@ def configure (ctx) :
 	ctx.check_cfg	(package='fftw3',                        	args='--cflags --libs')
 	ctx.check_cfg	(package='libpng',                       	args='--cflags --libs',   	uselib_store='PNG')
 	ctx.check_cfg	(package='',                             	args='--cflags --ldflags',	uselib_store='FLTK', path='fltk-config')
-	ctx.check_cfg	(package='x11',                          	args='--cflags --libs',   	mandatory=0)
 	ctx.check    	(header_name=["string", "png++/png.hpp"],	msg='Checking for PNG++', 	define_name='HAVE_PNGPP')
+	ctx.check    	(lib='quadmath',                         	mandatory=0,              	define_name='HAVE_QUADMATH')
 	ctx.check    	(lib='boost_system')
 	ctx.check    	(lib='boost_filesystem')
-	ctx.check    	(lib='quadmath')
 	ctx.check_boost ()
 
 	ctx.write_config_header ('libvb/vb/config.h')
