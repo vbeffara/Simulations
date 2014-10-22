@@ -147,7 +147,7 @@ namespace vb {
 		os << "Red vertices / poles: " << std::endl;
 		for (unsigned i=0; i<C.f.size(); ++i) os << "| " << C.fd[i] << "\t" << C.f[i] << std::endl;
 		os << std::endl;
-		os << RationalFraction<std::complex<T>> (C.P,C.Q) << std::endl;
+		os << RationalFraction<std::complex<T>> (C.l*C.P,C.Q) << std::endl;
 		return os;
 	}
 }
