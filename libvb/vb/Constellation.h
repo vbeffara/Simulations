@@ -7,7 +7,16 @@
 #include <iomanip>
 
 namespace vb {
-	template <typename T> class Constellation : public Image { public:
+	template <typename T> class Constellation;
+
+	template <typename T> class CPixel { public:
+		CPixel (Constellation<T> * C_, std::complex<T> z_ = 0) : C(C_), z(z_) {}
+		operator Color() { return imag((*C)(z))>0 ? RED : BLUE; }
+		Constellation<T> * C;
+		std::complex<T> z;
+	};
+
+	template <typename T> class Constellation : public Bitmap<CPixel<T>> { public:
 		using cplx = std::complex<T>;
 
 		Constellation (Hypermap M, Hub H, int n=3);
@@ -23,7 +32,7 @@ namespace vb {
 		T   	cost	(const std::vector<T> & xy);
 		void	find	();
 
-		virtual Color compute (coo c);
+		void	show	();
 
 		std::vector<cplx>    	b,w,f;
 		std::vector<unsigned>	bd,wd,fd;
@@ -36,7 +45,7 @@ namespace vb {
 
 	/***************************************************************************************************/
 
-	template <typename T> Constellation<T>::Constellation (Hypermap M, Hub H, int n) : Image (600,600,"Constellation") {
+	template <typename T> Constellation<T>::Constellation (Hypermap M, Hub H, int n) : Bitmap<CPixel<T>> (600,600,"Constellation") {
 		Hypermap M2=M; M2.dessin(); for (int i=0; i<n; ++i) M2.split_edges();
 		Spheroidal S (M2,H); S.pack(); std::cerr << std::endl;
 
@@ -53,15 +62,16 @@ namespace vb {
 		from_points(); T l = belyi(); S.linear(double(l)); S.output_pdf();
 	}
 
+	template <typename T> void Constellation<T>::show() {
+		Auto::start=Auto::now();
+		for (int i=0; i<600; ++i) for (int j=0; j<600; ++j) Bitmap<CPixel<T>>::put(coo(i,j), CPixel<T> (this, {(i-300)*2.0/300,(j-300)*2.0/300}));
+		Bitmap<CPixel<T>>::show();
+	}
+
 	template <typename T> void Constellation<T>::from_points () {
 		P = Polynomial<cplx> (); Q = Polynomial<cplx> ();
 		for (unsigned i=0; i<b.size(); ++i) for (unsigned j=0; j<bd[i]; ++j) P.add_root(b[i]);
 		for (unsigned i=0; i<f.size(); ++i) for (unsigned j=0; j<fd[i]; ++j) Q.add_root(f[i]);
-	}
-
-	template <typename T> Color Constellation<T>::compute (coo c) {
-		cplx z { (c.x-300)*2.0/300, (c.y-300)*2.0/300 };
-		return imag((*this)(z))>0 ? RED : BLUE;
 	}
 
 	template <typename T> void Constellation<T>::normalize () {
@@ -108,7 +118,7 @@ namespace vb {
 		for (unsigned i=0; i<n3; ++i) f[i] = cplx (xy[2*n1+2*n2+2*i],xy[2*n1+2*n2+2*i+1]);
 		l = cplx (xy[2*n1+2*n2+2*n3],xy[2*n1+2*n2+2*n3+1]);
 
-		from_points(); return cost();
+		from_points(); Auto::step(); return cost();
 	}
 
 	template <typename T> void Constellation<T>::find () {
@@ -125,11 +135,6 @@ namespace vb {
 			for (auto & z : bw) {	z += eps; nc = cost(bw); if (nc<c) { c=nc; flag=true; } else { z -= eps; }
 			                     	z -= eps; nc = cost(bw); if (nc<c) { c=nc; flag=true; } else { z += eps; } }
 			if (!flag) eps /= 4;
-
-			if (visible()) {
-				for (int i=0; i<600; ++i) for (int j=0; j<600; ++j) put (coo(i,j),0);
-				tessel (0,0,599,599); update();
-			}
 		}
 		std::cerr << std::endl;
 	}
