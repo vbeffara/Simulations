@@ -97,7 +97,6 @@ namespace vb {
 			out += norm ((*this)(w[i]) - T(1));
 			for (unsigned j=1; j<wd[i]; ++j) out += norm(logder(w[i],j));
 		}
-		T md (1); for (unsigned i=0; i<w.size(); ++i) for (unsigned j=0; j<w.size(); ++j) if (!(i==j)) md = std::min(md, norm(w[i]-w[j])); out /= md;
 		return out;
 	}
 
@@ -119,7 +118,7 @@ namespace vb {
 		for (auto z : f) { bw.push_back(real(z)); bw.push_back(imag(z)); }
 		bw.push_back(real(l)); bw.push_back(imag(l));
 
-		T c = cost(bw), eps = sqrt(c), nc = c;
+		T c = cost(bw), eps = sqrt(c)/10, nc = c;
 		while (eps>1e-100) {
 			std::cerr << c << " (" << eps << ")          \r";
 			bool flag = false;
