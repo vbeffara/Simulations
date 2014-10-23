@@ -86,12 +86,20 @@ namespace vb {
 		cplx r0 = std::polar(T(1), -arg(f.size()>0 ? f[0] : w[0]));	for (auto & z : b) z *= r0; for (auto & z : w) z *= r0; for (auto & z : f) z *= r0;
 		normalize();
 
-		T lambda1 = pow(abs(l),1.0/(P.degree()-Q.degree()));
+		cplx lambda1 = pow(l,1.0/(P.degree()-Q.degree()));
 		for (auto & z : b) z *= lambda1; for (auto & z : w) z *= lambda1; for (auto & z : f) z *= lambda1; normalize();
-		T lambda2 = pow(abs(l),1.0/(P.degree()-Q.degree()));
+		cplx lambda2 = pow(l,1.0/(P.degree()-Q.degree()));
 		for (auto & z : b) z *= lambda2; for (auto & z : w) z *= lambda2; for (auto & z : f) z *= lambda2; normalize();
 
-		return lambda1*lambda2;
+		cplx sum (0); for (unsigned i=0; i<b.size(); ++i) sum += cplx(bd[i])*b[i]; sum /= P.degree();
+		for (auto & z : b) z -= sum; for (auto & z : w) z -= sum; for (auto & z : f) z -= sum; normalize();
+
+		cpx lp = P.degree()>0 ? pow(P[0],1.0/P.degree()) : 1;
+		cpx lq = Q.degree()>0 ? pow(Q[0],1.0/Q.degree()) : 1;
+		cpx l  = (abs(lp)>abs(lq)) ? lp : lq;
+		for (auto & z : b) z /= l; for (auto & z : w) z /= l; for (auto & z : f) z /= l; normalize();
+
+		return abs(lambda1*lambda2);
 	}
 
 	template <typename T> auto Constellation<T>::logder (cplx z, int k) const -> cplx {
@@ -140,7 +148,7 @@ namespace vb {
 	}
 
 	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation<T> & C) {
-		double err = sqrt(C.cost()); os << std::setprecision (err<1e-3 ? log10(1/err) : 3) << std::fixed;
+		double err = sqrt(C.cost()); os << std::setprecision (err<1e-6 ? log10(1/err)-3 : 3) << std::fixed;
 
 		os << "Black vertices / zeros: " << std::endl;
 		for (unsigned i=0; i<C.b.size(); ++i) os << "| " << C.bd[i] << "\t" << C.b[i] << std::endl;
@@ -151,7 +159,8 @@ namespace vb {
 		os << "Red vertices / poles: " << std::endl;
 		for (unsigned i=0; i<C.f.size(); ++i) os << "| " << C.fd[i] << "\t" << C.f[i] << std::endl;
 		os << std::endl;
-		os << RationalFraction<std::complex<T>> (C.l*C.P,C.Q) << std::endl;
+		os << "lambda:= " << C.l << std::endl;
+		os << RationalFraction<std::complex<T>> (C.P,C.Q) << std::endl;
 		return os;
 	}
 }
