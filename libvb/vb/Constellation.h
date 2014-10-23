@@ -142,7 +142,7 @@ namespace vb {
 			bool flag = false;
 			for (auto & z : bw) {	z += eps; nc = cost(bw); if (nc<c) { c=nc; flag=true; } else { z -= eps; }
 			                     	z -= eps; nc = cost(bw); if (nc<c) { c=nc; flag=true; } else { z += eps; } }
-			if (!flag) eps /= 4;
+			if (!flag) eps /= 4; else eps *= 2;
 		}
 		std::cerr << std::endl;
 	}
