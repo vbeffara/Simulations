@@ -11,9 +11,10 @@ namespace vb {
 
 	template <typename T> class CPixel { public:
 		CPixel (Constellation<T> * C_, std::complex<T> z_ = 0) : C(C_), z(z_) {}
-		operator Color() { return imag((*C)(z))>0 ? RED : BLUE; }
+		operator Color() { if (prng.bernoulli(.01)) c = imag((*C)(z))>0 ? RED : BLUE; return c; }
 		Constellation<T> * C;
 		std::complex<T> z;
+		Color c;
 	};
 
 	template <typename T> class Constellation : public Bitmap<CPixel<T>> { public:
@@ -126,7 +127,7 @@ namespace vb {
 		for (unsigned i=0; i<n3; ++i) f[i] = cplx (xy[2*n1+2*n2+2*i],xy[2*n1+2*n2+2*i+1]);
 		l = cplx (xy[2*n1+2*n2+2*n3],xy[2*n1+2*n2+2*n3+1]);
 
-		from_points(); Auto::step(); return cost();
+		from_points(); return cost();
 	}
 
 	template <typename T> void Constellation<T>::find () {
@@ -141,7 +142,8 @@ namespace vb {
 			std::cerr << c << " (" << eps << ")          \r";
 			bool flag = false;
 			for (auto & z : bw) {	z += eps; nc = cost(bw); if (nc<c) { c=nc; flag=true; } else { z -= eps; }
-			                     	z -= eps; nc = cost(bw); if (nc<c) { c=nc; flag=true; } else { z += eps; } }
+			                     	z -= eps; nc = cost(bw); if (nc<c) { c=nc; flag=true; } else { z += eps; }
+			                     	Auto::step(); }
 			if (!flag) eps /= 4; else eps *= 2;
 		}
 		std::cerr << std::endl;
