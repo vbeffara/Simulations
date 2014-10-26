@@ -39,6 +39,7 @@ int main (int argc, char ** argv) {
 	cout << M << endl;
 
 	Constellation<double> C (M,H,H['n']); if (H['v']) { C.show(); } C.find(); C.belyi();
+	Constellation<long double> CC = cconvert <double,long double> (C); CC.find(); CC.belyi();
 
-	cout << endl << C;
+	cout << endl << CC;
 }

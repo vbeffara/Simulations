@@ -22,6 +22,7 @@ namespace vb {
 		using cplx = std::complex<T>;
 
 		Constellation (Hypermap M, Hub H, int n=3);
+		Constellation ();
 
 		cplx	operator()	(cplx z)       	const { return l*P(z)/Q(z); }
 		cplx	logder    	(cplx z, int k)	const;
@@ -67,6 +68,8 @@ namespace vb {
 
 		from_points(); T l = belyi(); S.linear(double(l)); S.output_pdf();
 	}
+
+	template <typename T> Constellation<T>::Constellation () {}
 
 	template <typename T> void Constellation<T>::show() {
 		img = new Bitmap<CPixel<T>> (600,600,"Constellation");
@@ -158,6 +161,14 @@ namespace vb {
 			if (!flag) eps /= 4; else eps *= 2;
 		}
 		std::cerr << std::endl;
+	}
+
+	template <typename T, typename U> Constellation<U> cconvert (Constellation<T> & C) {
+		Constellation<U> CC;
+		CC.bd = C.bd; CC.fd = C.fd; CC.wd = C.wd; CC.l = C.l;
+		for (auto z : C.b) CC.b.push_back(z); for (auto z : C.f) CC.f.push_back(z); for (auto z : C.w) CC.w.push_back(z);
+		CC.from_points();
+		return CC;
 	}
 
 	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation<T> & C) {
