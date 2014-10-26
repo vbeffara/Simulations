@@ -27,6 +27,7 @@ namespace vb {
 
 		void	from_points	();
 		void	normalize  	();
+		void	linear     	(cplx u, cplx v = cplx(0));
 		T   	belyi      	();
 
 		T   	cost	()	const;
@@ -82,23 +83,20 @@ namespace vb {
 		l = cplx(d)/avg;
 	}
 
+	template <typename T> void Constellation<T>::linear (cplx u, cplx v) {
+		for (auto & z : b) z = u*z+v; for (auto & z : f) z = u*z+v; for (auto & z : w) z = u*z+v; normalize();
+	}
+
 	template <typename T> T Constellation<T>::belyi () {
-		cplx z0 = b[0];                                            	for (auto & z : b) z -= z0; for (auto & z : w) z -= z0; for (auto & z : f) z -= z0;
-		cplx r0 = std::polar(T(1), -arg(f.size()>0 ? f[0] : w[0]));	for (auto & z : b) z *= r0; for (auto & z : w) z *= r0; for (auto & z : f) z *= r0;
-		normalize();
+		linear(1,-b[0]); linear(std::polar(T(1), -arg(f.size()>0 ? f[0] : w[0])));
 
-		cplx lambda1 = pow(l,1.0/(P.degree()-Q.degree()));
-		for (auto & z : b) z *= lambda1; for (auto & z : w) z *= lambda1; for (auto & z : f) z *= lambda1; normalize();
-		cplx lambda2 = pow(l,1.0/(P.degree()-Q.degree()));
-		for (auto & z : b) z *= lambda2; for (auto & z : w) z *= lambda2; for (auto & z : f) z *= lambda2; normalize();
-
-		cplx sum (0); for (unsigned i=0; i<b.size(); ++i) sum += cplx(bd[i])*b[i]; sum /= P.degree();
-		for (auto & z : b) z -= sum; for (auto & z : w) z -= sum; for (auto & z : f) z -= sum; normalize();
+		cplx lambda1 = pow(l,1.0/(P.degree()-Q.degree()));                                           	linear(lambda1);
+		cplx lambda2 = pow(l,1.0/(P.degree()-Q.degree()));                                           	linear(lambda2);
+		cplx sum (0); for (unsigned i=0; i<b.size(); ++i) sum += cplx(bd[i])*b[i]; sum /= P.degree();	linear (1,-sum);
 
 		cpx lp = P.degree()>0 ? pow(P[0],1.0/P.degree()) : 1;
 		cpx lq = Q.degree()>0 ? pow(Q[0],1.0/Q.degree()) : 1;
-		cpx l  = (abs(lp)>abs(lq)) ? lp : lq;
-		for (auto & z : b) z /= l; for (auto & z : w) z /= l; for (auto & z : f) z /= l; normalize();
+		cpx l  = (abs(lp)>abs(lq)) ? lp : lq; linear (cplx(1)/l);
 
 		return abs(lambda1*lambda2);
 	}
