@@ -17,8 +17,8 @@ namespace vb {
     template <typename T> void foi (std::ostream & os, T x, bool no1 = false, bool nom1 = false) {
 		T eps = pow(T(10),-os.precision());
 		if (fabs(x-round(x)) <= eps) {
-			if (nom1 && (int(round(x))==-1)) { os << "-"; return; }
-			if ((!no1) || (int(round(x))!=1)) os << int(round(x));
+			if (nom1 && (lround(x)==-1)) { os << "-"; return; }
+			if ((!no1) || (lround(x)!=1)) os << int(round(x));
 		} else os << x;
 	}
 

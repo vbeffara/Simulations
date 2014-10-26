@@ -5,6 +5,7 @@
 #include <vb/Spheroidal.h>
 #include <vb/cpx.h>
 #include <iomanip>
+#include <sstream>
 
 namespace vb {
 	template <typename T> class Constellation;
@@ -94,9 +95,18 @@ namespace vb {
 		cplx lambda2 = pow(l,1.0/(P.degree()-Q.degree()));                                           	linear(lambda2);
 		cplx sum (0); for (unsigned i=0; i<b.size(); ++i) sum += cplx(bd[i])*b[i]; sum /= P.degree();	linear (1,-sum);
 
-		cpx lp = P.degree()>0 ? pow(P[0],1.0/P.degree()) : 1;
-		cpx lq = Q.degree()>0 ? pow(Q[0],1.0/Q.degree()) : 1;
-		cpx l  = (abs(lp)>abs(lq)) ? lp : lq; linear (cplx(1)/l);
+		unsigned i=0; T eps = sqrt(cost()); while (abs(P[i])<=eps) ++i;
+		if (i<P.degree()) { cplx l = pow(P[i],1.0/(P.degree()-i)); linear (cplx(1)/l); }
+
+		i=0; eps = sqrt(cost()); while (abs(P[i])<=eps) ++i;
+		if (i<P.degree()) { cplx l = pow(P[i],1.0/(P.degree()-i)); linear (cplx(1)/l); }
+
+		unsigned j=0,m=0,jm=0; while (j<2*P.degree()) {
+			std::ostringstream os; os << *this; unsigned nm = os.str().size();
+			if ((m==0)||(nm<m)) { m=nm; jm=j; }
+			linear (std::polar (T(1), M_PI/P.degree())); ++j;
+		}
+		linear (std::polar (T(1), jm*M_PI/P.degree()));
 
 		return abs(lambda1*lambda2);
 	}
