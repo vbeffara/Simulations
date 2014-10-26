@@ -18,7 +18,7 @@ namespace vb {
 		Color c;
 	};
 
-	template <typename T> class Constellation : public Bitmap<CPixel<T>> { public:
+	template <typename T> class Constellation { public:
 		using cplx = std::complex<T>;
 
 		Constellation (Hypermap M, Hub H, int n=3);
@@ -40,15 +40,18 @@ namespace vb {
 		std::vector<cplx>    	b,w,f;
 		std::vector<unsigned>	bd,wd,fd;
 
-		cplx            	l = T(1);
-		Polynomial<cplx>	P,Q;
+		cplx             	l = T(1);
+		Polynomial<cplx> 	P,Q;
+		Bitmap<CPixel<T>>	*img = 0;
 	};
+
+	template <typename T, typename U> Constellation<U> cconvert (Constellation<T> & C);
 
 	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation<T> & C);
 
 	/***************************************************************************************************/
 
-	template <typename T> Constellation<T>::Constellation (Hypermap M, Hub H, int n) : Bitmap<CPixel<T>> (600,600,"Constellation") {
+	template <typename T> Constellation<T>::Constellation (Hypermap M, Hub H, int n) {
 		Hypermap M2=M; M2.dessin(); for (int i=0; i<n; ++i) M2.split_edges();
 		Spheroidal S (M2,H); S.pack(); std::cerr << std::endl;
 
@@ -66,9 +69,9 @@ namespace vb {
 	}
 
 	template <typename T> void Constellation<T>::show() {
-		Auto::start=Auto::now();
-		for (int i=0; i<600; ++i) for (int j=0; j<600; ++j) Bitmap<CPixel<T>>::put(coo(i,j), CPixel<T> (this, {(i-300)*2.0/300,(j-300)*2.0/300}));
-		Bitmap<CPixel<T>>::show();
+		img = new Bitmap<CPixel<T>> (600,600,"Constellation");
+		for (int i=0; i<600; ++i) for (int j=0; j<600; ++j) img->put(coo(i,j), CPixel<T> (this, {(i-300)*2.0/300,(j-300)*2.0/300}));
+		img->show();
 	}
 
 	template <typename T> void Constellation<T>::from_points () {
@@ -124,6 +127,7 @@ namespace vb {
 			out += norm ((*this)(w[i]) - T(1));
 			for (unsigned j=1; j<wd[i]; ++j) out += norm(logder(w[i],j));
 		}
+		if (img) img->step();
 		return out;
 	}
 
@@ -150,8 +154,7 @@ namespace vb {
 			std::cerr << c << " (" << eps << ")          \r";
 			bool flag = false;
 			for (auto & z : bw) {	z += eps; nc = cost(bw); if (nc<c) { c=nc; flag=true; } else { z -= eps; }
-			                     	z -= eps; nc = cost(bw); if (nc<c) { c=nc; flag=true; } else { z += eps; }
-			                     	Auto::step(); }
+			                     	z -= eps; nc = cost(bw); if (nc<c) { c=nc; flag=true; } else { z += eps; } }
 			if (!flag) eps /= 4; else eps *= 2;
 		}
 		std::cerr << std::endl;
