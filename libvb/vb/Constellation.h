@@ -104,9 +104,9 @@ namespace vb {
 		unsigned j=0,m=0,jm=0; while (j<2*P.degree()) {
 			std::ostringstream os; os << *this; unsigned nm = os.str().size();
 			if ((m==0)||(nm<m)) { m=nm; jm=j; }
-			linear (std::polar (T(1), M_PI/P.degree())); ++j;
+			linear (std::polar (T(1), T(4)*atan(T(1))/P.degree())); ++j;
 		}
-		linear (std::polar (T(1), jm*M_PI/P.degree()));
+		linear (std::polar (T(1), jm*T(4)*atan(T(1))/P.degree()));
 
 		return abs(lambda1*lambda2);
 	}

@@ -30,11 +30,12 @@ namespace vb {
 		os << "("; foi(os,real(z)); os << (neg ? " - " : " + "); foi(os,imag(z),true); os << " I)"; return os;
     }
 
-    static std::ostream & operator<< (std::ostream & os, const lcpx & z) {
+    static std::ostream & operator<< (std::ostream & os, lcpx z) {
 		double eps = pow(10.0,-os.precision());
-		if (fabs(imag(z)) <= eps) return os << (real(z)>=0 ? " " : "") << real(z);
-		if (fabs(real(z)) <= eps) return os << imag(z) << " I";
-		return os << "(" << real(z) << " + " << imag(z) << " I)";
+		if (fabs(imag(z)) <= eps) { foi(os,real(z)); return os; }
+		if (fabs(real(z)) <= eps) { foi(os,imag(z),true,true); os << " I"; return os; }
+		bool neg = false; if (imag(z)<0) { z = conj(z); neg = true; }
+		os << "("; foi(os,real(z)); os << (neg ? " - " : " + "); foi(os,imag(z),true); os << " I)"; return os;
     }
 
 #ifdef HAVE_QUADMATH
