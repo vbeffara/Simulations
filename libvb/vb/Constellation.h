@@ -95,11 +95,11 @@ namespace vb {
 	}
 
 	template <typename T> T Constellation<T>::belyi () {
-		linear(1,-b[0]); linear(std::polar(T(1), -arg(f.size()>0 ? f[0] : w[0])));
+		linear(T(1),-b[0]); linear(std::polar(T(1), -arg(f.size()>0 ? f[0] : w[0])));
 
-		cplx lambda1 = pow(l,T(1)/(P.degree()-Q.degree()));                                          	linear(lambda1);
-		cplx lambda2 = pow(l,T(1)/(P.degree()-Q.degree()));                                          	linear(lambda2);
-		cplx sum (0); for (unsigned i=0; i<b.size(); ++i) sum += cplx(bd[i])*b[i]; sum /= P.degree();	linear (1,-sum);
+		cplx lambda1 = pow(l,T(1)/(P.degree()-Q.degree()));                                          	linear (lambda1);
+		cplx lambda2 = pow(l,T(1)/(P.degree()-Q.degree()));                                          	linear (lambda2);
+		cplx sum (0); for (unsigned i=0; i<b.size(); ++i) sum += cplx(bd[i])*b[i]; sum /= P.degree();	linear (T(1),-sum);
 
 		unsigned i=0; T eps = sqrt(cost()); while (abs(P[i])<=eps) ++i;
 		if (i<P.degree()) { cplx l = pow(P[i],T(1)/(P.degree()-i)); linear (cplx(1)/l); }

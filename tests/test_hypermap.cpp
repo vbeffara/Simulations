@@ -5,7 +5,7 @@
 using namespace vb; using namespace std;
 
 int main (int argc, char ** argv) {
-	Hub H ("Testing",argc,argv,"n=3,m=228,d,v");
+	Hub H ("Testing",argc,argv,"n=3,m=228,d,v,q");
 	// Hypermap M { {{1},{3},{5},{0,4,2}}, {{0,1},{2,3},{4,5}}, {{0,1,2,3,4,5}} };                                	// Graph tripod
 	// Hypermap M { {{0,1,2}}, {{0},{1},{2}}, {{2,1,0}} };                                                        	// Dessin tripod
 	// Hypermap M { {{0,1,2,3}}, {{0},{1},{2},{3}}, {{3,2,1,0}} };                                                	// Dessin 4-star
@@ -41,7 +41,12 @@ int main (int argc, char ** argv) {
 	Constellation<float> C1 (M,H,H['n']); if (H['v']) { C1.show(); }   	C1.find();	C1.belyi();
 	Constellation<double> C2 = cconvert <float,double> (C1);           	C2.find();	C2.belyi();
 	Constellation<long double> C3 = cconvert <double,long double> (C2);	C3.find();	C3.belyi();
-	Constellation<float128> C4 = cconvert <long double,float128> (C3); 	C4.find();	C4.belyi();
 
-	cout << endl << C4;
+	if (H['q']) {
+		Constellation<float128> C4 = cconvert <long double,float128> (C3);	C4.find();	C4.belyi();
+		cout << endl << C4;
+	} else {
+		cout << endl << C3;
+	}
+
 }
