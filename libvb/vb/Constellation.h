@@ -73,7 +73,7 @@ namespace vb {
 
 	template <typename T> void Constellation<T>::show() {
 		img = new Bitmap<CPixel<T>> (600,600,"Constellation");
-		for (int i=0; i<600; ++i) for (int j=0; j<600; ++j) img->put(coo(i,j), CPixel<T> (this, {(i-300)*2.0/300,(j-300)*2.0/300}));
+		for (int i=0; i<600; ++i) for (int j=0; j<600; ++j) img->put(coo(i,j), CPixel<T> (this, {(i-300)*T(2)/300,(j-300)*T(2)/300}));
 		img->show();
 	}
 
@@ -97,30 +97,30 @@ namespace vb {
 	template <typename T> T Constellation<T>::belyi () {
 		linear(1,-b[0]); linear(std::polar(T(1), -arg(f.size()>0 ? f[0] : w[0])));
 
-		cplx lambda1 = pow(l,1.0/(P.degree()-Q.degree()));                                           	linear(lambda1);
-		cplx lambda2 = pow(l,1.0/(P.degree()-Q.degree()));                                           	linear(lambda2);
+		cplx lambda1 = pow(l,T(1)/(P.degree()-Q.degree()));                                          	linear(lambda1);
+		cplx lambda2 = pow(l,T(1)/(P.degree()-Q.degree()));                                          	linear(lambda2);
 		cplx sum (0); for (unsigned i=0; i<b.size(); ++i) sum += cplx(bd[i])*b[i]; sum /= P.degree();	linear (1,-sum);
 
 		unsigned i=0; T eps = sqrt(cost()); while (abs(P[i])<=eps) ++i;
-		if (i<P.degree()) { cplx l = pow(P[i],1.0/(P.degree()-i)); linear (cplx(1)/l); }
+		if (i<P.degree()) { cplx l = pow(P[i],T(1)/(P.degree()-i)); linear (cplx(1)/l); }
 
 		i=0; eps = sqrt(cost()); while (abs(P[i])<=eps) ++i;
-		if (i<P.degree()) { cplx l = pow(P[i],1.0/(P.degree()-i)); linear (cplx(1)/l); }
+		if (i<P.degree()) { cplx l = pow(P[i],T(1)/(P.degree()-i)); linear (cplx(1)/l); }
 
 		unsigned j=0,m=0,jm=0; while (j<2*P.degree()) {
 			std::ostringstream os; os << *this; unsigned nm = os.str().size();
 			if ((m==0)||(nm<m)) { m=nm; jm=j; }
-			linear (std::polar (T(1), T(4)*atan(T(1))/P.degree())); ++j;
+			linear (std::polar (T(1), T(4)*T(atan(T(1)))/P.degree())); ++j;
 		}
-		linear (std::polar (T(1), jm*T(4)*atan(T(1))/P.degree()));
+		linear (std::polar (T(1), jm*T(4)*T(atan(T(1)))/P.degree()));
 
 		return abs(lambda1*lambda2);
 	}
 
 	template <typename T> auto Constellation<T>::logder (cplx z, int k) const -> cplx {
 		cplx sum (0);
-		for (unsigned i=0; i<b.size(); ++i) sum += cplx(bd[i]) / pow (z-b[i], k);
-		for (unsigned i=0; i<f.size(); ++i) sum -= cplx(fd[i]) / pow (z-f[i], k);
+		for (unsigned i=0; i<b.size(); ++i) sum += cplx(bd[i]) / pow (z-b[i], T(k));
+		for (unsigned i=0; i<f.size(); ++i) sum -= cplx(fd[i]) / pow (z-f[i], T(k));
 		return sum;
 	}
 

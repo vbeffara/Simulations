@@ -38,8 +38,10 @@ int main (int argc, char ** argv) {
 
 	cout << M << endl;
 
-	Constellation<double> C (M,H,H['n']); if (H['v']) { C.show(); } C.find(); C.belyi();
-	Constellation<long double> CC = cconvert <double,long double> (C); CC.find(); CC.belyi();
+	Constellation<float> C1 (M,H,H['n']); if (H['v']) { C1.show(); }   	C1.find();	C1.belyi();
+	Constellation<double> C2 = cconvert <float,double> (C1);           	C2.find();	C2.belyi();
+	Constellation<long double> C3 = cconvert <double,long double> (C2);	C3.find();	C3.belyi();
+	Constellation<float128> C4 = cconvert <long double,float128> (C3); 	C4.find();	C4.belyi();
 
-	cout << endl << CC;
+	cout << endl << C4;
 }
