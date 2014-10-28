@@ -36,6 +36,8 @@ namespace vb {
 		T   	cost	(const std::vector<T> & xy);
 		void	find	();
 
+		std::vector<T>	gradcost	();
+
 		void	show	();
 
 		std::vector<cplx>    	b,w,f;
@@ -141,6 +143,42 @@ namespace vb {
 		l = cplx (xy[2*n1+2*n2+2*n3],xy[2*n1+2*n2+2*n3+1]);
 
 		from_points(); return cost();
+	}
+
+	template <typename T> std::vector<T> Constellation<T>::gradcost () {
+		std::vector<cplx> gradb, gradw, gradf;
+		for (unsigned j=0; j<b.size(); ++j) {
+			cplx out(0);
+			for (unsigned k=0; k<w.size(); ++k) {
+				out -= T(2) * logder(w[k],0) * T(10*bd[j]) / conj(w[k]-b[j]);
+				for (unsigned ll=1; ll<wd[k]; ++ll) out += T(2) * logder(w[k],ll) * T(ll*bd[j]) / pow(conj(w[k]-b[j]),T(ll+1));
+			}
+			gradb.push_back(out);
+		}
+		for (unsigned k=0; k<w.size(); ++k) {
+			cplx out(0);
+			out += T(20) * logder(w[k],0) * conj(logder(w[k],1));
+			for (unsigned ll=1; ll<wd[k]; ++ll) out -= T(2*ll) * logder(w[k],ll) * conj(logder(w[k],ll+1));
+			gradw.push_back(out);
+		}
+		for (unsigned j=0; j<f.size(); ++j) {
+			cplx out(0);
+			for (unsigned k=0; k<w.size(); ++k) {
+				out += T(2) * logder(w[k],0) * T(10*fd[j]) / conj(w[k]-f[j]);
+				for (unsigned ll=1; ll<wd[k]; ++ll) out -= T(2) * logder(w[k],ll) * T(ll*fd[j]) / pow(conj(w[k]-f[j]),T(ll+1));
+			}
+			gradf.push_back(out);
+		}
+		cplx gradl(0);
+		for (unsigned k=0; k<w.size(); ++k) gradl += T(2) * logder(w[k],0) * conj(T(10)/l);
+
+		std::vector<T> out;
+		for (unsigned i=0; i<b.size(); ++i) { out.push_back(real(gradb[i])); out.push_back(imag(gradb[i])); }
+		for (unsigned i=0; i<w.size(); ++i) { out.push_back(real(gradw[i])); out.push_back(imag(gradw[i])); }
+		for (unsigned i=0; i<f.size(); ++i) { out.push_back(real(gradf[i])); out.push_back(imag(gradf[i])); }
+		out.push_back(real(gradl)); out.push_back(imag(gradl));
+
+		return out;
 	}
 
 	template <typename T> void Constellation<T>::find () {
