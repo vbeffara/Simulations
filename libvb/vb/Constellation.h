@@ -117,7 +117,8 @@ namespace vb {
 		return abs(lambda1*lambda2);
 	}
 
-	template <typename T> auto Constellation<T>::logder (cplx z, int k) const -> cplx {
+	template <typename T> auto Constellation<T>::logder (cplx z, int k = 0) const -> cplx {
+		if (k==0) return T(10)*log((*this)(z));
 		cplx sum (0);
 		for (unsigned i=0; i<b.size(); ++i) sum += cplx(bd[i]) / pow (z-b[i], T(k));
 		for (unsigned i=0; i<f.size(); ++i) sum -= cplx(fd[i]) / pow (z-f[i], T(k));
@@ -126,10 +127,7 @@ namespace vb {
 
 	template <typename T> T Constellation<T>::cost() const {
 		T out (0);
-		for (unsigned i=0; i<w.size(); ++i) {
-			out += T(10) * norm ((*this)(w[i]) - T(1));
-			for (unsigned j=1; j<wd[i]; ++j) out += norm(logder(w[i],j));
-		}
+		for (unsigned i=0; i<w.size(); ++i) for (unsigned j=0; j<wd[i]; ++j) out += norm(logder(w[i],j));
 		if (img) img->step();
 		return out;
 	}
