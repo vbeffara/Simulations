@@ -32,11 +32,12 @@ namespace vb {
 		void	linear     	(cplx u, cplx v = cplx(0));
 		T   	belyi      	();
 
-		T   	cost	()	const;
-		T   	cost	(const std::vector<T> & xy);
-		void	find	();
+		T   	cost 	()	const;
+		T   	cost 	(const std::vector<T> & xy);
+		void	find 	();
+		void	findg	();
 
-		std::vector<T>	gradcost	();
+		std::vector<T>	gradcost	()	const;
 
 		void	show	();
 
@@ -103,6 +104,10 @@ namespace vb {
 		cplx lambda2 = pow(l,T(1)/(P.degree()-Q.degree()));                                          	linear (lambda2);
 		cplx sum (0); for (unsigned i=0; i<b.size(); ++i) sum += cplx(bd[i])*b[i]; sum /= P.degree();	linear (T(1),-sum);
 
+		{ Polynomial<cplx> & PQ = ( ((abs(P[0])>abs(Q[0])) || (Q.degree()==0)) ? P : Q);
+		unsigned i=0; T eps = sqrt(cost()); while (abs(PQ[i])<=eps) ++i;
+		if (i<PQ.degree()) { cplx l = pow(PQ[i],T(1)/(PQ.degree()-i)); linear (cplx(1)/l); } }
+
 		Polynomial<cplx> & PQ = ( ((abs(P[0])>abs(Q[0])) || (Q.degree()==0)) ? P : Q);
 		unsigned i=0; T eps = sqrt(cost()); while (abs(PQ[i])<=eps) ++i;
 		if (i<PQ.degree()) { cplx l = pow(PQ[i],T(1)/(PQ.degree()-i)); linear (cplx(1)/l); }
@@ -143,32 +148,25 @@ namespace vb {
 		from_points(); return cost();
 	}
 
-	template <typename T> std::vector<T> Constellation<T>::gradcost () {
-		std::vector<cplx> gradb, gradw, gradf;
-		for (unsigned j=0; j<b.size(); ++j) {
-			cplx out(0);
-			for (unsigned k=0; k<w.size(); ++k) {
-				out -= T(2) * logder(w[k],0) * T(10*bd[j]) / conj(w[k]-b[j]);
-				for (unsigned ll=1; ll<wd[k]; ++ll) out += T(2) * logder(w[k],ll) * T(ll*bd[j]) / pow(conj(w[k]-b[j]),T(ll+1));
-			}
-			gradb.push_back(out);
-		}
-		for (unsigned k=0; k<w.size(); ++k) {
-			cplx out(0);
-			out += T(20) * logder(w[k],0) * conj(logder(w[k],1));
-			for (unsigned ll=1; ll<wd[k]; ++ll) out -= T(2*ll) * logder(w[k],ll) * conj(logder(w[k],ll+1));
-			gradw.push_back(out);
-		}
-		for (unsigned j=0; j<f.size(); ++j) {
-			cplx out(0);
-			for (unsigned k=0; k<w.size(); ++k) {
-				out += T(2) * logder(w[k],0) * T(10*fd[j]) / conj(w[k]-f[j]);
-				for (unsigned ll=1; ll<wd[k]; ++ll) out -= T(2) * logder(w[k],ll) * T(ll*fd[j]) / pow(conj(w[k]-f[j]),T(ll+1));
-			}
-			gradf.push_back(out);
-		}
+	template <typename T> std::vector<T> Constellation<T>::gradcost () const {
+		static std::vector<cplx> gradb(b.size()), gradw(w.size()), gradf(f.size());
+		for (auto & z : gradb) z = cplx(0); for (auto & z : gradw) z = cplx(0); for (auto & z : gradf) z = cplx(0);
 		cplx gradl(0);
-		for (unsigned k=0; k<w.size(); ++k) gradl += T(2) * logder(w[k],0) * conj(T(10)/l);
+
+		for (unsigned k=0; k<w.size(); ++k) {
+			cplx lwk0 ( T(20) * logder(w[k],0) );
+			for (unsigned j=0; j<b.size(); ++j) { gradb[j] -= lwk0 * T(bd[j]) / conj(w[k]-b[j]); }
+			for (unsigned j=0; j<f.size(); ++j) { gradf[j] += lwk0 * T(fd[j]) / conj(w[k]-f[j]); }
+
+			gradw[k] += lwk0 * conj(logder(w[k],1)); gradl += lwk0 / conj(l);
+
+			for (unsigned ll=1; ll<wd[k]; ++ll) {
+				cplx lwkll ( T(2*ll) * logder(w[k],ll) );
+				for (unsigned j=0; j<b.size(); ++j) { gradb[j] += lwkll * T(bd[j]) / pow(conj(w[k]-b[j]),T(ll+1)); }
+				for (unsigned j=0; j<f.size(); ++j) { gradf[j] -= lwkll * T(fd[j]) / pow(conj(w[k]-f[j]),T(ll+1)); }
+				gradw[k] -= lwkll * conj(logder(w[k],ll+1));
+			}
+		}
 
 		std::vector<T> out;
 		for (unsigned i=0; i<b.size(); ++i) { out.push_back(real(gradb[i])); out.push_back(imag(gradb[i])); }
@@ -177,6 +175,26 @@ namespace vb {
 		out.push_back(real(gradl)); out.push_back(imag(gradl));
 
 		return out;
+	}
+
+	template <typename T> void Constellation<T>::findg () {
+		std::vector<T> bw;
+		for (auto z : b) { bw.push_back(real(z)); bw.push_back(imag(z)); }
+		for (auto z : w) { bw.push_back(real(z)); bw.push_back(imag(z)); }
+		for (auto z : f) { bw.push_back(real(z)); bw.push_back(imag(z)); }
+		bw.push_back(real(l)); bw.push_back(imag(l));
+
+		T c = cost(bw), eps = sqrt(c), nc = c;
+		while (eps>1e-100) {
+			std::cerr << c << " (" << eps << ")          \r";
+			bool flag = false;
+			c = cost(bw);
+			std::vector<T> grad = gradcost();
+			for (unsigned i=0; i<bw.size(); ++i) bw[i] -= eps * grad[i];
+			nc = cost(bw); if (nc<c) { c=nc; flag=true; } else { for (unsigned i=0; i<bw.size(); ++i) bw[i] += eps * grad[i]; }
+			if (!flag) eps /= 2; else eps *= 1.01;
+		}
+		std::cerr << std::endl;
 	}
 
 	template <typename T> void Constellation<T>::find () {
