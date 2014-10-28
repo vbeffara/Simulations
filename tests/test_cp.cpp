@@ -46,7 +46,7 @@ int main (int argc, char ** argv) {
 		x[3*i+2]      = .8*r;
 	}
 
-	Minimizer MM (3*m.n, Map_fg_circle_disk, &m);
+	Minimizer<double> MM (3*m.n, Map_fg_circle_disk, &m);
 	MM.cb = cb;
 
 	MM.minimize_qn (x);

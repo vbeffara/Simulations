@@ -347,6 +347,8 @@ namespace vb {
 
   Map &operator<< (Map &m, const Edge &e);
 
+  using Vector = Minimizer<double>::Vector;
+
   /** Compute the square distance to a balanced embedding.
    *
    * @param x       The list of point coordinates (3 per vertex).

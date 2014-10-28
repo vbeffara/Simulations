@@ -131,7 +131,7 @@ namespace vb {
       x[2*i+1] = v[i]->z.imag();
     }
 
-    Minimizer M (2*n, Map_fg_balance, this);
+    Minimizer<double> M (2*n, Map_fg_balance, this);
     double output = M.minimize_qn (x);
 
     for (int i=0; i<n; ++i) {

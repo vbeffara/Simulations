@@ -6,6 +6,8 @@ using namespace vb;
 
 #define DIM 400
 
+using Vector = Minimizer<double>::Vector;
+
 double f (const Vector &x, void *) {
   double o = 0;
   for (unsigned int i=0; i<DIM; ++i) o += (1 - cos(x[i]/(i+1)));
@@ -31,7 +33,7 @@ int main () {
   Vector x0(DIM); for (unsigned int i=0; i<DIM; ++i) x0[i] = cos(double(i));
   Vector W0(DIM); for (unsigned int i=0; i<DIM; ++i) W0[i] = (i+1)*(i+1);
 
-  Minimizer M (DIM,fg);
+  Minimizer<double> M (DIM,fg);
   double min = M.minimize_qn (x0);
   cout << "Final value: " << min << endl;
 }

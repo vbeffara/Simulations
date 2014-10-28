@@ -3,221 +3,308 @@
 #include <boost/numeric/ublas/matrix.hpp>
 
 namespace vb {
-  typedef boost::numeric::ublas::vector<double> Vector;
-  typedef boost::numeric::ublas::matrix<double> Matrix;
+	template <typename T> class Minimizer { public:
+		typedef boost::numeric::ublas::vector<double> Vector;
+		typedef boost::numeric::ublas::matrix<double> Matrix;
 
-  /** A class to minimize functions.
-   *
-   * It implements various algorithms, and which one to choose heavily
-   * depends on the function ... See the separate documentation for each
-   * of them, they are named minimize_*.
-   */
+		Minimizer (	unsigned int n_,
+		           	double f_ (const Vector &, void *),
+		           	Vector g_ (const Vector &, void *),
+		           	double fg_ (const Vector &, Vector &, void *),
+		           	void *context_ = 0);
 
-  class Minimizer {
-    public:
-      unsigned int n; ///< The dimension of the space.
+		Minimizer (	unsigned int n_,
+		           	double fg_ (const Vector &, Vector &, void *),
+		           	void *context_ = 0);
 
-      /** A pointer to the function to be minimized.
-       *
-       * That function should take a vb::Vector as the point at which
-       * it is to be computed, and a void* representing the "context" in
-       * which it is defined (typically a pointer to an object
-       * containing additional information, as in the case of graph
-       * embeddings.
-       *
-       * If possible, better use the vb::Minimize::fg form (simultaneous
-       * computation of the function and its gradient), as it tends to
-       * be quicker.
-       */
+		Minimizer (	unsigned int n_,
+		           	double f_ (const Vector &, void *),
+		           	Vector g_ (const Vector &, void *),
+		           	void *context_ = 0);
 
-      double (*f) (const Vector &, void *);
+		double compute (const Vector & x = Vector(0));
 
-      /** A pointer to the gradient of the function.
-       *
-       * Same remarks as for vb::Minimizer::f.
-       */
+		/** Line-search as a plug-in for a numerical optimization algorithm.
+		 *
+		 * It implements Wolfe's method. Reference : J.F. Bonnans et al.,
+		 * "Numerical Optimization" (2ed, Springer, 2006), p. 43.
+		 *
+		 * Parameters chosen : m1 = 0.3, m2 = 0.8.
+		 *
+		 * Careful if d is gx (for steepest gradient), because the
+		 * algorith _will_ change the value of gx as it goes so it might
+		 * lead to trouble ... That's why vb::Minimizer::minimize_grad
+		 * calls it as line_search(Vector(gx)).
+		 *
+		 * @todo Improve the choice of the new point using polynomial
+		 * interpolation instead of linear ? Not sure whether it actually
+		 * improves speed of convergence, but needs to be tried.
+		 *
+		 * @param d The direction of the search.
+		 */
 
-      Vector (*g) (const Vector &, void *);
+		void line_search (const Vector &d);
 
-      /** A pointer to joint computation of the function and its gradient.
-       *
-       * The function itself takes 3 arguments : a vb::Vector as the
-       * point at which the function is to be computed, a reference to a
-       * vb::Vector where it should store the computed gradient, and
-       * a void* pointing to the context of the computation, if any.
-       *
-       * This is the prefered way to specify the function to be
-       * minimized.
-       */
+		/** Function minimization by a steepest-descent algorithm.
+		 *
+		 * It has been called a "numerical absurdity", but it still works
+		 * pretty well compared to BFGS especially in very high dimension
+		 * (when storage of the approximate inverse Hessian is problematic).
+		 *
+		 * @param x0 The point from which to start.
+		 * @return   The value of the function at the end point.
+		 */
 
-      double (*fg) (const Vector &, Vector &, void *);
+		double minimize_grad (const Vector &x0);
 
-      /// Callback, takes current x, current error and the context.
+		/** A quasi-Newtonian minimization algorithm.
+		 *
+		 * It is the algorithm of Broyden, Fletcher, Goldfarb and Shanno (BFGS
+		 * method).  Reference : J.F. Bonnans et al., "Numerical Optimization"
+		 * (2ed, Springer, 2006), p. 54.
+		 *
+		 * In dimension N it has to maintain an N by N matrix, which limits it
+		 * to a few thousand dimensions.
+		 *
+		 * @todo Change the prototype to accept a true vb::Matrix instead
+		 * of a vector, and create a matrix storage type for diagonal
+		 * matrices.
+		 *
+		 * @param x0 The point from which to start.
+		 * @param W0 The initial estimate for the inverse Hessian (as a * diagonal matrix).
+		 * @return   The value of the function at the end point.
+		 */
 
-      void (*cb) (const Vector &, double, void *);
+		double minimize_bfgs (const Vector &x0, const Vector &W0 = Vector(0));
 
-      /** The context of all f and g computations.
-       *
-       * It is expected to point to an object, and will be passed to all
-       * calls to (*f), (*g) and (*fg), to implement the "black box"
-       * principle: The optimization algorithms don't care about it and
-       * only focus on the value of x.
-       *
-       * It is set at construction time, though you can always change it
-       * later on (though why would you ... better to build another
-       * vb::Minimizer probably ...).
-       */
+		/** The Fletcher-Reeves conjugate gradient algorithm.
+		 *
+		 * Reference: J.F. Bonnans et al., "Numerical Optimization" (2ed,
+		 * Springer, 2006), p. 73.
+		 *
+		 * @param x0 The point from which to start.
+		 * @return   The value of the function at the end point.
+		 */
 
-      void *context;
+		double minimize_fr (const Vector &x0);
 
-      Vector x;      ///< The current point of interest.
-      double fx;     ///< The value of the function at x.
-      Vector gx;     ///< The gradient of the function at x.
+		/** The Pollak-Ribiere conjugate gradient algorithm.
+		 *
+		 * Reference: J.F. Bonnans et al., "Numerical Optimization" (2ed,
+		 * Springer, 2006), p. 73.
+		 *
+		 * @param x0 The point from which to start.
+		 * @return   The value of the function at the end point.
+		 */
 
-      Vector old_x;  ///< The previous value of x, before the last line_search().
-      double old_fx; ///< The value of the function at old_x.
-      Vector old_gx; ///< The gradient of the function at old_x.
+		double minimize_pr (const Vector &x0);
 
-      double er; ///< An indicator of the current error, for logging.
-      int ler;   ///< The base-10 0logarithm of er.
+		/** The mixed quasi-Newton / conjugate gradient method.
+		 *
+		 * Reference: J.F. Bonnans et al., "Numerical Optimization" (2ed,
+		 * Springer, 2006), p. 74.
+		 *
+		 * If in doubt, choose this one !
+		 *
+		 * @param x0 The point from which to start.
+		 * @return   The value of the function at the end point.
+		 */
 
-      /** Compute the value of the function and its gradient.
-       *
-       * If fg is not NULL, it uses (*fg); if it is NULL, it will use
-       * (*f) and (*g) separately. Both work fine, but the first one is
-       * always faster.
-       *
-       * The default value (or an empty vector, or x itself) means that
-       * x already contains the correct point coordinates.
-       *
-       * @param x_ The point at which the computation is to be done.
-       * @return   The value of the function at x_.
-       */
+		double minimize_qn (const Vector &x0);
 
-      double compute (const Vector &x_ = Vector(0));
+		unsigned n;
 
-      Minimizer (unsigned int n_,
-                 double f_ (const Vector &, void *),
-                 Vector g_ (const Vector &, void *),
-                 double fg_ (const Vector &, Vector &, void *),
-                 void *context_);
+		double	(*f) 	(const Vector & x,             	void * context);
+		Vector	(*g) 	(const Vector & x,             	void * context);
+		double	(*fg)	(const Vector & x, Vector & fg,	void * context);
+		void  	(*cb)	(const Vector & x, double err, 	void * context);
 
-      /** The constructor for joint f and g computation.
-       *
-       * It calls init() after setting the functions. Logging and such
-       * need to be taken carre of separately.
-       *
-       * @param n_       The dimension of space.
-       * @param fg_      The function to which vb::Minimizer::fg will point.
-       * @param context_ The computation context that will be passed to * (*fg).
-       */
+		void *context;
 
-      Minimizer (unsigned int n_,
-                 double fg_ (const Vector &, Vector &, void *),
-                 void *context_ = NULL);
+		Vector x;      ///< The current point of interest.
+		double fx;     ///< The value of the function at x.
+		Vector gx;     ///< The gradient of the function at x.
 
-      /** The constructor for separate f and g computation.
-       *
-       * It calls init() after setting the functions. Logging and such
-       * need to be taken carre of separately.
-       *
-       * @param n_       The dimension of space.
-       * @param f_       The function to which vb::Minimizer::f will point.
-       * @param g_       The function to which vb::Minimizer::g will point.
-       * @param context_ The computation context that will be passed to * (*fg).
-       */
+		Vector old_x;  ///< The previous value of x, before the last line_search().
+		double old_fx; ///< The value of the function at old_x.
+		Vector old_gx; ///< The gradient of the function at old_x.
 
-      Minimizer (unsigned int n_,
-                 double f_ (const Vector &, void *),
-                 Vector g_ (const Vector &, void *),
-                 void *context_ = NULL);
+		double er; ///< An indicator of the current error, for logging.
+		int ler;   ///< The base-10 logarithm of er.
+	};
 
-      /** Line-search as a plug-in for a numerical optimization algorithm.
-       *
-       * It implements Wolfe's method. Reference : J.F. Bonnans et al.,
-       * "Numerical Optimization" (2ed, Springer, 2006), p. 43.
-       *
-       * Parameters chosen : m1 = 0.3, m2 = 0.8.
-       *
-       * Careful if d is gx (for steepest gradient), because the
-       * algorith _will_ change the value of gx as it goes so it might
-       * lead to trouble ... That's why vb::Minimizer::minimize_grad
-       * calls it as line_search(Vector(gx)).
-       *
-       * @todo Improve the choice of the new point using polynomial
-       * interpolation instead of linear ? Not sure whether it actually
-       * improves speed of convergence, but needs to be tried.
-       *
-       * @param d The direction of the search.
-       */
+	template <typename T> Minimizer<T>::Minimizer (unsigned int n_, double f_ (const Vector &, void *), Vector g_ (const Vector &, void *),
+			double fg_ (const Vector &, Vector &, void *), void *context_) :
+	    n(n_), f(f_), g(g_), fg(fg_), cb(NULL), context(context_), x(n), gx(n), old_x(n), old_gx(n), er(1.0), ler(0) {}
 
-      void line_search (const Vector &d);
+	template <typename T> Minimizer<T>::Minimizer (unsigned int n_, double fg_ (const Vector &, Vector &, void *), void *context_) :
+		Minimizer (n_,NULL,NULL,fg_,context_) {}
 
-      /** Function minimization by a steepest-descent algorithm.
-       *
-       * It has been called a "numerical absurdity", but it still works
-       * pretty well compared to BFGS especially in very high dimension
-       * (when storage of the approximate inverse Hessian is problematic).
-       *
-       * @param x0 The point from which to start.
-       * @return   The value of the function at the end point.
-       */
+	template <typename T> Minimizer<T>::Minimizer (unsigned int n_, double f_ (const Vector &, void *), Vector g_ (const Vector &, void *), void *context_) :
+		Minimizer (n_,f_,g_,NULL,context_) {}
 
-      double minimize_grad (const Vector &x0);
+	template <typename T> double Minimizer<T>::compute (const Vector &x_) {
+		if ((!x_.empty()) && (&x != &x_)) x=x_;
 
-      /** A quasi-Newtonian minimization algorithm.
-       *
-       * It is the algorithm of Broyden, Fletcher, Goldfarb and Shanno (BFGS
-       * method).  Reference : J.F. Bonnans et al., "Numerical Optimization"
-       * (2ed, Springer, 2006), p. 54.
-       *
-       * In dimension N it has to maintain an N by N matrix, which limits it
-       * to a few thousand dimensions.
-       *
-       * @todo Change the prototype to accept a true vb::Matrix instead
-       * of a vector, and create a matrix storage type for diagonal
-       * matrices.
-       *
-       * @param x0 The point from which to start.
-       * @param W0 The initial estimate for the inverse Hessian (as a * diagonal matrix).
-       * @return   The value of the function at the end point.
-       */
+		if (fg) {
+			fx = fg (x,gx,context);
+		} else {
+			fx = f(x,context);
+			gx = g(x,context);
+		}
 
-      double minimize_bfgs (const Vector &x0, const Vector &W0 = Vector(0));
+		return fx;
+	}
 
-      /** The Fletcher-Reeves conjugate gradient algorithm.
-       *
-       * Reference: J.F. Bonnans et al., "Numerical Optimization" (2ed,
-       * Springer, 2006), p. 73.
-       *
-       * @param x0 The point from which to start.
-       * @return   The value of the function at the end point.
-       */
+	template <typename T> void Minimizer<T>::line_search (const Vector &d) {
+		old_x.swap(x); old_fx=fx; old_gx.swap(gx);
 
-      double minimize_fr (const Vector &x0);
+		double qq_0 = .8 * inner_prod (old_gx,d);
+		double dir = (qq_0>0 ? -1 : 1);
+		double t_l = 0.0, t_r = 0.0, t = dir;
+		double y;
 
-      /** The Pollak-Ribiere conjugate gradient algorithm.
-       *
-       * Reference: J.F. Bonnans et al., "Numerical Optimization" (2ed,
-       * Springer, 2006), p. 73.
-       *
-       * @param x0 The point from which to start.
-       * @return   The value of the function at the end point.
-       */
+		bool refining = false;
 
-      double minimize_pr (const Vector &x0);
+		while (true) {
+			x = old_x + t*d;
 
-      /** The mixed quasi-Newton / conjugate gradient method.
-       *
-       * Reference: J.F. Bonnans et al., "Numerical Optimization" (2ed,
-       * Springer, 2006), p. 74.
-       *
-       * If in doubt, choose this one !
-       *
-       * @param x0 The point from which to start.
-       * @return   The value of the function at the end point.
-       */
+			compute();
 
-      double minimize_qn (const Vector &x0);
-  };
+			y = old_fx + .3 * t * qq_0;
+
+			if ((fx<=y) && (dir*inner_prod (gx,d) >= dir*qq_0)) break;
+			if (fx>y) { t_r=t; refining = true; } else t_l = t;
+			if (refining) t = (t_r+t_l)/2.0; else t *= 2.0;
+			if (t-t_l+1.0 == 1.0) break;
+		}
+	}
+
+	template <typename T> double Minimizer<T>::minimize_grad (const Vector &x0) {
+		compute(x0);
+		old_x  = x;
+		old_fx = fx+1;
+		old_gx = gx;
+
+		while (fx < old_fx) {
+			line_search (Vector(gx));
+		}
+		return fx;
+	}
+
+	template <typename T> double Minimizer<T>::minimize_bfgs (const Vector &x0, const Vector &W0) {
+		compute(x0);
+
+		old_x  = x;
+		old_fx = fx+1;
+		old_gx = gx;
+
+		Vector dx,dg,Wdg;
+		double dgdx,u;
+
+		Vector diag = W0;
+		if (diag.size() == 0) diag = Vector (x0.size(), double(1.0));
+		Matrix W(x0.size(),x0.size());
+		for (unsigned int i=0; i<x0.size(); ++i) W(i,i) = diag[i];
+
+		while (fx < old_fx) {
+			line_search(prod(W,gx));
+
+			dx = x - old_x;
+			dg = gx - old_gx;
+			Wdg = prod(W,dg);
+			dgdx = inner_prod(dg,dx);
+			dx /= dgdx;
+			u = dgdx + inner_prod(dg,Wdg);
+
+			W += outer_prod (u*dx-Wdg,dx) - outer_prod (dx,Wdg);
+		}
+
+		return fx;
+	}
+
+	template <typename T> double Minimizer<T>::minimize_fr (const Vector &x0) {
+		compute(x0);
+		old_x  = x;
+		old_fx = fx+1;
+		old_gx = gx;
+
+		Vector d(n);
+		Vector old_d(n);
+		bool first = true;
+
+		while (fx < old_fx) {
+			old_d = d; d = -gx;
+			if (!first) {
+				double c = inner_prod(gx,gx) / inner_prod(old_gx,old_gx);
+				d += c * old_d;
+			}
+			line_search(d);
+			first=false;
+		}
+
+		return fx;
+	}
+
+	template <typename T> double Minimizer<T>::minimize_pr (const Vector &x0) {
+		compute(x0);
+		old_x  = x;
+		old_fx = fx+1;
+		old_gx = gx;
+
+		Vector d(n);
+		Vector old_d(n);
+		Vector y(n);
+
+		bool first = true;
+
+		while (fx < old_fx) {
+			old_d.swap(d);
+			d = -gx;
+
+			if (!first) {
+				double c1 = inner_prod(old_gx,old_gx);
+
+				old_gx -= gx;
+
+				old_d *= inner_prod(old_gx,gx) / c1;
+				d -= old_d;
+			}
+
+			line_search(d);
+			first=false;
+		}
+
+		return fx;
+	}
+
+	template <typename T> double Minimizer<T>::minimize_qn (const Vector &x0) {
+		compute(x0);
+		old_x  = x;
+		old_fx = fx+1;
+		old_gx = gx;
+
+		Vector d(n);
+		Vector old_d(n);
+		Vector y(n);
+
+		bool first = true;
+
+		while (fx < old_fx) {
+			old_d.swap(d);
+			d = -gx;
+
+			if (!first) {
+				y = gx - old_gx;
+				d += old_d * inner_prod(y,gx) / inner_prod(y,old_d);
+			}
+
+			line_search(d);
+			first=false;
+
+			if (cb) cb(x,fx,context);
+		}
+
+		return fx;
+	}
 }
