@@ -5,7 +5,7 @@
 using namespace vb; using namespace std;
 
 int main (int argc, char ** argv) {
-	Hub H ("Testing",argc,argv,"n=3,m=228,d,v,q,f");
+	Hub H ("Testing",argc,argv,"n=3,m=228,d,v,q,f,g");
 	// Hypermap M { {{1},{3},{5},{0,4,2}}, {{0,1},{2,3},{4,5}}, {{0,1,2,3,4,5}} };                                	// Graph tripod
 	// Hypermap M { {{0,1,2}}, {{0},{1},{2}}, {{2,1,0}} };                                                        	// Dessin tripod
 	// Hypermap M { {{0,1,2,3}}, {{0},{1},{2},{3}}, {{3,2,1,0}} };                                                	// Dessin 4-star
@@ -20,13 +20,13 @@ int main (int argc, char ** argv) {
 	// Hypermap M = H_H1();
 	// Hypermap M = H_H3();
 
-	Hypermap M = {	{{0,2,4},{1,11,6},{3,7,8},{5,9,10}},
-	              	{{0,1},{2,3},{4,5},{6,7},{8,9},{10,11}},
-	              	{{0,6,3},{1,4,10},{2,8,5},{7,11,9}} }; // Tetrahedron
+	// Hypermap M = {	{{0,2,4},{1,11,6},{3,7,8},{5,9,10}},
+	//               	{{0,1},{2,3},{4,5},{6,7},{8,9},{10,11}},
+	//               	{{0,6,3},{1,4,10},{2,8,5},{7,11,9}} }; // Tetrahedron
 
-	// Hypermap M = {	{{0,7,8},{1,10,2},{3,12,4},{5,14,6},{9,23,16},{11,17,18},{13,19,20},{15,21,22}},
-	//               	{{0,1},{2,3},{4,5},{6,7},{8,9},{10,11},{12,13},{14,15},{16,17},{18,19},{20,21},{22,23}},
-	//               	{{0,2,4,6},{1,8,16,11},{3,10,18,13},{5,12,20,15},{7,14,22,9},{17,23,21,19}} }; // Cube
+	Hypermap M = {	{{0,7,8},{1,10,2},{3,12,4},{5,14,6},{9,23,16},{11,17,18},{13,19,20},{15,21,22}},
+	              	{{0,1},{2,3},{4,5},{6,7},{8,9},{10,11},{12,13},{14,15},{16,17},{18,19},{20,21},{22,23}},
+	              	{{0,2,4,6},{1,8,16,11},{3,10,18,13},{5,12,20,15},{7,14,22,9},{17,23,21,19}} }; // Cube
 
 	// Hypermap M = {	{{0,9,10},{1,12,2},{3,4,14},{5,16,6},{8,7,18},{11,39,20},{13,23,24},{15,27,28},{17,31,32},{19,35,36},
 	//               		{21,40,22},{25,42,26},{29,44,30},{33,46,34},{38,37,48},{41,59,50},{43,51,52},{45,53,54},{47,55,56},{49,57,58}},
@@ -40,16 +40,16 @@ int main (int argc, char ** argv) {
 
 	Constellation<double> C2;
 	if (H['f']) {
-		Constellation<float> C1 (M,H,H['n']); if (H['v']) { C1.show(); } C1.find(); C1.belyi(); C2 = cconvert <float,double> (C1);
+		Constellation<float> C1 (M,H,H['n']); if (H['v']) { C1.show(); } if (H['g']) C1.findg(); else C1.find(); C1.belyi(); C2 = cconvert <float,double> (C1);
 	} else {
 		C2 = {M,H,H['n']};
 	}
-	if (H['v']) { C2.show(); } C2.find(); C2.belyi();
+	if (H['v']) { C2.show(); } if (H['g']) C2.findg(); else C2.find(); C2.belyi();
 
-	Constellation<long double>	C3 = cconvert <double,long double> (C2);	if (H['v']) { C3.show(); }	C3.find();	C3.belyi();
+	Constellation<long double>	C3 = cconvert <double,long double> (C2);	if (H['v']) { C3.show(); }	if (H['g']) C3.findg(); else C3.find();	C3.belyi();
 
 	if (H['q']) {
-		Constellation<float128> C4 = cconvert <long double,float128> (C3);	C4.find();	C4.belyi();
+		Constellation<float128> C4 = cconvert <long double,float128> (C3);	if (H['g']) C4.findg(); else C4.find();	C4.belyi();
 		cout << endl << C4;
 	} else {
 		cout << endl << C3;
