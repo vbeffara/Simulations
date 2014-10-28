@@ -206,7 +206,7 @@ namespace vb {
 	}
 
 	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation<T> & C) {
-		double err = sqrt(C.cost()); os << std::setprecision (err<1e-6 ? log10(1/err)-3 : 3) << std::fixed; if (err==T(0)) os << std::setprecision(10);
+		double err = C.cost(); os << std::setprecision (err<1e-9 ? -log10(err)/3 : 3) << std::fixed; if (err==T(0)) os << std::setprecision(10);
 
 		os << "Black vertices / zeros: " << std::endl;
 		for (unsigned i=0; i<C.b.size(); ++i) os << "| " << C.bd[i] << "\t" << C.b[i] << std::endl;
