@@ -5,15 +5,15 @@
 using namespace vb; using namespace std;
 
 int main (int argc, char ** argv) {
-	Hub H ("Testing",argc,argv,"n=3,m=228,d,v,q");
+	Hub H ("Testing",argc,argv,"n=3,m=228,d,v,q,f");
 	// Hypermap M { {{1},{3},{5},{0,4,2}}, {{0,1},{2,3},{4,5}}, {{0,1,2,3,4,5}} };                                	// Graph tripod
 	// Hypermap M { {{0,1,2}}, {{0},{1},{2}}, {{2,1,0}} };                                                        	// Dessin tripod
 	// Hypermap M { {{0,1,2,3}}, {{0},{1},{2},{3}}, {{3,2,1,0}} };                                                	// Dessin 4-star
 	// Hypermap M { {{0,1,2,3,4}}, {{0},{1},{2},{3},{4}}, {{4,3,2,1,0}} };                                        	// Dessin 5-star
 	// Hypermap M { {{1},{5},{7},{3,4},{2,6,0}}, {{2,1},{0,3},{4,5},{6,7}}, {{2,1,0,4,5,3,6,7}} };                	// Long graph tripod - use n=4
 	// Hypermap M { {{2,1,0},{3}}, {{2},{1},{0,3}}, {{2,0,3,1}} };                                                	// Long dessin tripod - Lando page 87
-	// Hypermap M { {{0,1,2},{3,4},{5,6}}, {{0},{1,3},{2,5},{4},{6}}, {{0,2,6,5,1,4,3}} };                        	// Long-legged tripod - Lando page 88
-	// Hypermap M { {{4,1,2},{3,0},{5,6}}, {{4,3},{1},{2},{0,5},{6}}, {{4,0,6,5,3,2,1}} };                        	// Long-tailed tripod - Lando page 89
+	// Hypermap M { {{0,1,2},{3,4},{5,6}}, {{0},{1,3},{2,5},{4},{6}}, {{0,2,6,5,1,4,3}} };                        	// Long-legged tripod - Lando page 88 - use n=4
+	// Hypermap M { {{4,1,2},{3,0},{5,6}}, {{4,3},{1},{2},{0,5},{6}}, {{4,0,6,5,3,2,1}} };                        	// Long-tailed tripod - Lando page 89 - use n=4
 	// Hypermap M { {{1},{5},{7},{9},{2,8,0},{4,3,6}}, {{2,1},{0,3},{4,5},{6,7},{8,9}}, {{2,1,0,4,5,6,7,3,8,9}} };	// Graph H - use n=4
 	// Hypermap M { {{0,1,2},{3},{4}}, {{0,3,4},{1},{2}}, {{0,4,3,2,1}} };                                        	// Dessin H
 	// Hypermap M { {{0,2,3},{1}}, {{0,1},{2,3}}, {{0,1,3},{2}} };                                                	// Simple map - Lando page 107
@@ -38,9 +38,15 @@ int main (int argc, char ** argv) {
 
 	cout << M << endl;
 
-	Constellation<float> C1 (M,H,H['n']); if (H['v']) { C1.show(); }   	C1.find();	C1.belyi();
-	Constellation<double> C2 = cconvert <float,double> (C1);           	C2.find();	C2.belyi();
-	Constellation<long double> C3 = cconvert <double,long double> (C2);	C3.find();	C3.belyi();
+	Constellation<double> C2;
+	if (H['f']) {
+		Constellation<float> C1 (M,H,H['n']); if (H['v']) { C1.show(); } C1.find(); C1.belyi(); C2 = cconvert <float,double> (C1);
+	} else {
+		C2 = {M,H,H['n']};
+	}
+	if (H['v']) { C2.show(); } C2.find(); C2.belyi();
+
+	Constellation<long double>	C3 = cconvert <double,long double> (C2);	if (H['v']) { C3.show(); }	C3.find();	C3.belyi();
 
 	if (H['q']) {
 		Constellation<float128> C4 = cconvert <long double,float128> (C3);	C4.find();	C4.belyi();

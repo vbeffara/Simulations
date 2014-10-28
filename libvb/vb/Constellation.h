@@ -74,7 +74,7 @@ namespace vb {
 	template <typename T> void Constellation<T>::show() {
 		img = new Bitmap<CPixel<T>> (600,600,"Constellation");
 		for (int i=0; i<600; ++i) for (int j=0; j<600; ++j) img->put(coo(i,j), CPixel<T> (this, {(i-300)*T(2)/300,(j-300)*T(2)/300}));
-		img->show();
+		img->start = img->now(); img->show();
 	}
 
 	template <typename T> void Constellation<T>::from_points () {
@@ -101,18 +101,16 @@ namespace vb {
 		cplx lambda2 = pow(l,T(1)/(P.degree()-Q.degree()));                                          	linear (lambda2);
 		cplx sum (0); for (unsigned i=0; i<b.size(); ++i) sum += cplx(bd[i])*b[i]; sum /= P.degree();	linear (T(1),-sum);
 
-		unsigned i=0; T eps = sqrt(cost()); while (abs(P[i])<=eps) ++i;
-		if (i<P.degree()) { cplx l = pow(P[i],T(1)/(P.degree()-i)); linear (cplx(1)/l); }
+		Polynomial<cplx> & PQ = ( ((abs(P[0])>abs(Q[0])) || (Q.degree()==0)) ? P : Q);
+		unsigned i=0; T eps = sqrt(cost()); while (abs(PQ[i])<=eps) ++i;
+		if (i<PQ.degree()) { cplx l = pow(PQ[i],T(1)/(PQ.degree()-i)); linear (cplx(1)/l); }
 
-		i=0; eps = sqrt(cost()); while (abs(P[i])<=eps) ++i;
-		if (i<P.degree()) { cplx l = pow(P[i],T(1)/(P.degree()-i)); linear (cplx(1)/l); }
-
-		unsigned j=0,m=0,jm=0; while (j<2*P.degree()) {
+		unsigned j=0,m=0,jm=0; while (j<2*PQ.degree()) {
 			std::ostringstream os; os << *this; unsigned nm = os.str().size();
 			if ((m==0)||(nm<m)) { m=nm; jm=j; }
-			linear (std::polar (T(1), T(4)*T(atan(T(1)))/P.degree())); ++j;
+			linear (std::polar (T(1), T(4)*T(atan(T(1)))/PQ.degree())); ++j;
 		}
-		linear (std::polar (T(1), jm*T(4)*T(atan(T(1)))/P.degree()));
+		linear (std::polar (T(1), jm*T(4)*T(atan(T(1)))/PQ.degree()));
 
 		return abs(lambda1*lambda2);
 	}
@@ -127,7 +125,7 @@ namespace vb {
 	template <typename T> T Constellation<T>::cost() const {
 		T out (0);
 		for (unsigned i=0; i<w.size(); ++i) {
-			out += norm ((*this)(w[i]) - T(1));
+			out += T(10) * norm ((*this)(w[i]) - T(1));
 			for (unsigned j=1; j<wd[i]; ++j) out += norm(logder(w[i],j));
 		}
 		if (img) img->step();
@@ -172,7 +170,7 @@ namespace vb {
 	}
 
 	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation<T> & C) {
-		double err = sqrt(C.cost()); os << std::setprecision (err<1e-6 ? log10(1/err)-3 : 3) << std::fixed;
+		double err = sqrt(C.cost()); os << std::setprecision (err<1e-6 ? log10(1/err)-3 : 3) << std::fixed; if (err==T(0)) os << std::setprecision(10);
 
 		os << "Black vertices / zeros: " << std::endl;
 		for (unsigned i=0; i<C.b.size(); ++i) os << "| " << C.bd[i] << "\t" << C.b[i] << std::endl;
