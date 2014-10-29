@@ -12,12 +12,14 @@ class Ising3 : public Cube { public: CL_Parser & clp; int b; bool k; double beta
 		for (int k=0; k<=12; ++k) kaw.push_back(1/(1+exp(2*beta*(k-6))));
 		if     	(string(clp('c')) == "cube")     	bc_cube();
 		else if	(string(clp('c')) == "dobrushin")	bc_dobrushin();
+		else if	(string(clp('c')) == "step")     	bc_step();
 		else if	(string(clp('c')) == "hexagon")  	bc_hexagon();
 		else   	                                 	bc_bernoulli(double(clp('p')));
 	};
 
-	void bc_bernoulli (double p=.5)	{ for (auto c = begin(); c != end(); ++c) put(c, prng.bernoulli(p)	? 255 : 0);	b=0; }
-	void bc_dobrushin ()           	{ for (auto c = begin(); c != end(); ++c) put(c, c.y<sy/2         	? 255 : 0);	b=1; }
+	void bc_bernoulli (double p=.5)	{ for (auto c = begin(); c != end(); ++c) put(c, prng.bernoulli(p)                      	? 255 : 0);	b=0; }
+	void bc_dobrushin ()           	{ for (auto c = begin(); c != end(); ++c) put(c, c.y<sy/2                               	? 255 : 0);	b=1; }
+	void bc_step ()                	{ for (auto c = begin(); c != end(); ++c) put(c, (c.y<sy/2) || ((c.y==sy/2)&&(c.x<sx/2))	? 255 : 0);	b=1; }
 	void bc_cube ()                	{ for (auto c = begin(); c != end(); ++c) put(c, 0); b=0;
 	    for (int x=sx/10; x<9*sx/10; ++x) for (int y=sy/10; y<9*sy/10; ++y) for (int z=sz/10; z<9*sz/10; ++z) put(coo3(x,y,z), 255);
 	}
@@ -40,7 +42,7 @@ class Ising3 : public Cube { public: CL_Parser & clp; int b; bool k; double beta
 };
 
 int main (int argc, char ** argv) {
-	CL_Parser CLP (argc, argv, "n=50,b=1,t=0,p=.5,k,c=bernoulli|cube|dobrushin|hexagon,s=0");
+	CL_Parser CLP (argc, argv, "n=50,b=1,t=0,p=.5,k,c=bernoulli|cube|dobrushin|hexagon|step,s=0,m");
 	int T = CLP('t'); if (T==0) T = 2*int(CLP('n'));
     Ising3 C (CLP); C.show();
     { ProgressBar P (T); int s = CLP('s'); for (int t=0; t<T; ++t) {
@@ -50,5 +52,6 @@ int main (int argc, char ** argv) {
 		}
 		C.swipe(); P.set(t);
 	} }
+	if (CLP('m')) C.mirrors=false;
 	C.output_pov();
 }

@@ -32,10 +32,11 @@ namespace vb {
 			<< squares
 			<< new Pov_Object ("rotate 360*clock*y", false);
 
-		Pov_Scene SS; SS
-			<< new Pov_Camera (tri(1.25*sx,.9*sy,-1.5*sz), tri(0,0,0), 60)
-			<< new Pov_Light_Source	(tri(50*sx,30*sy,-15*sz))
-			<< corner << ground << cube;
-			SS.output_pov(s == "" ? title : s);
+		Pov_Scene SS;
+		SS	<< new Pov_Camera (tri(1.30*sx,.9*sy,-1.5*sz), tri(0,0,0), 60)
+		  	<< new Pov_Light_Source	(tri(50*sx,30*sy,-15*sz))
+		  	<< cube;
+		if (mirrors) SS << corner << ground;
+		SS.output_pov(s == "" ? title : s);
 	}
 }

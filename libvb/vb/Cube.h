@@ -40,6 +40,7 @@ namespace vb {
 		void output_pov (std::string s = "");
 
 		int sx,sy,sz; std::vector <unsigned char> data;
+		bool mirrors = true;
 	};
 
 	class Cube_iterator : public coo3 { public: Cube &c;
