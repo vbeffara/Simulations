@@ -6,21 +6,19 @@ using namespace vb;
 
 #define DIM 400
 
-using Vector = Minimizer<double>::Vector;
-
-double f (const Vector &x, void *) {
+double f (const Vector<double> &x, void *) {
   double o = 0;
   for (unsigned int i=0; i<DIM; ++i) o += (1 - cos(x[i]/(i+1)));
   return o;
 }
 
-Vector g (const Vector &x, void *) {
-  Vector out(DIM);
+Vector<double> g (const Vector<double> &x, void *) {
+  Vector<double> out(DIM);
   for (unsigned int i=0; i<DIM; ++i) out[i] = sin(x[i]/(i+1))/(i+1);
   return out;
 }
 
-double fg (const Vector &x, Vector &g, void *) {
+double fg (const Vector<double> &x, Vector<double> &g, void *) {
   double o = 0;
   for (unsigned int i=0; i<DIM; ++i) {
     o += (1 - cos(x[i]/(i+1)));
@@ -30,8 +28,8 @@ double fg (const Vector &x, Vector &g, void *) {
 }
 
 int main () {
-  Vector x0(DIM); for (unsigned int i=0; i<DIM; ++i) x0[i] = cos(double(i));
-  Vector W0(DIM); for (unsigned int i=0; i<DIM; ++i) W0[i] = (i+1)*(i+1);
+  Vector<double> x0(DIM); for (unsigned int i=0; i<DIM; ++i) x0[i] = cos(double(i));
+  Vector<double> W0(DIM); for (unsigned int i=0; i<DIM; ++i) W0[i] = (i+1)*(i+1);
 
   Minimizer<double> M (DIM,fg);
   double min = M.minimize_qn (x0);

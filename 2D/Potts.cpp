@@ -63,6 +63,14 @@ public:
         }
     }
 
+    void bc_quadripod2 () {
+        b=1;
+        for (int i=0; i<w(); ++i) for (int j=0; j<h(); ++j) {
+            if (i>j) { if (i+j<w()) put(coo(i,j),0); else put(coo(i,j),1); }
+            else { if (i+j<w()) put(coo(i,j),2); else put(coo(i,j),3); }
+        }
+    }
+
     void bc_dobrushin (bool r = false) {
         b=1;
         for (int i=0; i<w(); ++i) for (int j=0; j<h()/2; ++j)   put(coo(i,j),0);
@@ -99,7 +107,8 @@ public:
 int main (int argc, char ** argv) {
     CL_Parser CLP (argc,argv,"n=500,q=3,b=1");
     Potts P(CLP);
-    P.bc(1); for (auto & c : P) c=1;
+    for (auto & c : P) c=1;
+    P.bc_quadripod2();
     P.show();
 
     Console W;

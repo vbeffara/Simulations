@@ -8,7 +8,7 @@ using namespace std;
 int center = 6;
 int infinity = 13;
 
-void cb (const Vector &, double fx, void *) {
+void cb (const Vector<double> &, double fx, void *) {
 	cerr << fx << endl;
 }
 
@@ -36,7 +36,7 @@ int main (int argc, char ** argv) {
 	m.inscribe(m.face(Edge(1,m.v[1]->adj.back())));
 	m.balance(); m.show(); // m.pause();
 
-	Vector x(3*m.n);
+	Vector<double> x(3*m.n);
 
 	double r = 1.0/sqrt((double)m.n);
 

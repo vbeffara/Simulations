@@ -124,7 +124,7 @@ namespace vb {
   }
 
   double Map::balance () {
-    Vector x(2*n);
+    Vector<double> x(2*n);
 
     for (int i=0; i<n; ++i) {
       x[2*i]   = v[i]->z.real();
@@ -546,7 +546,7 @@ namespace vb {
     return m;
   }
 
-  double Map_fg_balance (const Vector &x, Vector &g, void *context) {
+  double Map_fg_balance (const Vector<double> &x, Vector<double> &g, void *context) {
     Map *m = (Map *) context;
     double c = 0.0;
 
@@ -567,7 +567,7 @@ namespace vb {
     return c;
   }
 
-  double Map_fg_circle_base (const Vector &x, Vector &g, void *context) {
+  double Map_fg_circle_base (const Vector<double> &x, Vector<double> &g, void *context) {
     Map *m = (Map *) context;
     double c = 0.0;
 
@@ -593,7 +593,7 @@ namespace vb {
     return c;
   }
 
-  double Map_fg_circle_bd (const Vector &x, Vector &g, void *context) {
+  double Map_fg_circle_bd (const Vector<double> &x, Vector<double> &g, void *context) {
     Map *m = (Map *) context;
     double c = Map_fg_circle_base (x,g,context);
 
@@ -604,7 +604,7 @@ namespace vb {
     return c;
   }
 
-  double Map_fg_circle_disk (const Vector &x, Vector &g, void *context) {
+  double Map_fg_circle_disk (const Vector<double> &x, Vector<double> &g, void *context) {
     Map *m = (Map *) context;
     double c = Map_fg_circle_base (x,g,context);
 

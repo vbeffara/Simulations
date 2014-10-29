@@ -347,8 +347,6 @@ namespace vb {
 
   Map &operator<< (Map &m, const Edge &e);
 
-  using Vector = Minimizer<double>::Vector;
-
   /** Compute the square distance to a balanced embedding.
    *
    * @param x       The list of point coordinates (3 per vertex).
@@ -357,7 +355,7 @@ namespace vb {
    * @return        The distance to being a circle packing.
    */
 
-  double Map_fg_balance (const Vector &x, Vector &g, void *context);
+  double Map_fg_balance (const Vector<double> &x, Vector<double> &g, void *context);
 
   /** Compute the square distance to a circle packing.
    *
@@ -371,7 +369,7 @@ namespace vb {
    * @return        The distance to being a circle packing.
    */
 
-  double Map_fg_circle_base (const Vector &x, Vector &g, void *context);
+  double Map_fg_circle_base (const Vector<double> &x, Vector<double> &g, void *context);
 
   /** Compute the square distance to a circle packing.
    *
@@ -385,7 +383,7 @@ namespace vb {
    * @return        The distance to being a circle packing.
    */
 
-  double Map_fg_circle_bd (const Vector &x, Vector &g, void *context);
+  double Map_fg_circle_bd (const Vector<double> &x, Vector<double> &g, void *context);
 
   /** Compute the square distance to a circle packing of the unit disk.
    *
@@ -398,5 +396,5 @@ namespace vb {
    * @return        The distance to being a circle packing.
    */
 
-  double Map_fg_circle_disk (const Vector &x, Vector &g, void *context);
+  double Map_fg_circle_disk (const Vector<double> &x, Vector<double> &g, void *context);
 }

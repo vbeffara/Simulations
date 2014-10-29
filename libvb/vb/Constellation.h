@@ -19,7 +19,6 @@ namespace vb {
 
 	template <typename T> class Constellation { public:
 		using cplx = std::complex<T>;
-		using Vector = typename Minimizer<T>::Vector;
 
 		Constellation (Hypermap M, Hub H, int n=3);
 		Constellation ();
@@ -33,13 +32,18 @@ namespace vb {
 		T   	belyi      	();
 
 		T   	cost 	()	const;
-		T   	cost 	(const Vector & xy);
+		T   	cost 	(const Vector<T> & xy);
 		void	find 	();
 		void	findg	();
 		void	findm	();
 
-		Vector	gradcost	()	const;
-		Vector	gradcost	(const Vector & xy);
+		Vector<T>	coovec 	(const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f, const cplx & l)	const;
+		void     	readcoo	(const Vector<T> & xy);
+
+		Vector<T>	gradcost	()	const;
+		Vector<T>	gradcost	(const Vector<T> & xy);
+
+		T	fg (const Vector<T> & xy, Vector<T> & df);
 
 		void	show	();
 
@@ -53,19 +57,14 @@ namespace vb {
 
 	template <typename T, typename U> Constellation<U> cconvert (Constellation<T> & C);
 
-	template <typename T> T Constellation_f (const typename Minimizer<T>::Vector & x, void * c) {
+	template <typename T> T Constellation_fg (const Vector<T> & xy, Vector<T> & df, void * c) {
 		Constellation<T> * C = (Constellation<T> *) c;
-		static T er (-1); T out = C->cost(x);
+		static T er (-1); T out = C->fg(xy,df);
 		if ((out<er)||(er<T(0))) { std::cerr << out << "          \r"; er = out; }
 		return out;
 	}
 
-	template <typename T> typename Minimizer<T>::Vector Constellation_g (const typename Minimizer<T>::Vector & x, void * c) {
-		Constellation<T> * C = (Constellation<T> *) c;
-		return C->gradcost(x);
-	}
-
-	template <typename T> void Constellation_cb (const typename Minimizer<T>::Vector &, T, void * c) {
+	template <typename T> void Constellation_cb (const Vector<T> &, T, void * c) {
 		Constellation<T> * C = (Constellation<T> *) c;
 		if (C->img) C->img->step();
 	}
@@ -156,18 +155,28 @@ namespace vb {
 		return out;
 	}
 
-	template <typename T> T Constellation<T>::cost (const Vector & xy) {
+	template <typename T> void Constellation<T>::readcoo (const Vector<T> & xy) {
 		unsigned n1 = b.size(), n2 = w.size(), n3 = f.size();
-
 		for (unsigned i=0; i<n1; ++i) b[i] = cplx (xy[2*i],xy[2*i+1]);
 		for (unsigned i=0; i<n2; ++i) w[i] = cplx (xy[2*n1+2*i],xy[2*n1+2*i+1]);
 		for (unsigned i=0; i<n3; ++i) f[i] = cplx (xy[2*n1+2*n2+2*i],xy[2*n1+2*n2+2*i+1]);
 		l = cplx (xy[2*n1+2*n2+2*n3],xy[2*n1+2*n2+2*n3+1]);
-
-		from_points(); return cost();
 	}
 
-	template <typename T> auto Constellation<T>::gradcost () const -> Vector {
+	template <typename T> T Constellation<T>::cost (const Vector<T> & xy) {
+		readcoo(xy); from_points(); return cost();
+	}
+
+	template <typename T> Vector<T> Constellation<T>::coovec (const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f, const cplx & l) const {
+		Vector<T> bw (2*(b.size()+w.size()+f.size()+1)); unsigned i=0;
+		for (auto z : b) { bw[i++] = (real(z)); bw[i++] = (imag(z)); }
+		for (auto z : w) { bw[i++] = (real(z)); bw[i++] = (imag(z)); }
+		for (auto z : f) { bw[i++] = (real(z)); bw[i++] = (imag(z)); }
+		bw[i++] = (real(l)); bw[i++] = (imag(l));
+		return bw;
+	}
+
+	template <typename T> auto Constellation<T>::gradcost () const -> Vector<T> {
 		static std::vector<cplx> gradb(b.size()), gradw(w.size()), gradf(f.size());
 		for (auto & z : gradb) z = cplx(0); for (auto & z : gradw) z = cplx(0); for (auto & z : gradf) z = cplx(0);
 		cplx gradl(0);
@@ -187,43 +196,26 @@ namespace vb {
 			}
 		}
 
-		std::vector<T> out;
-		for (unsigned i=0; i<b.size(); ++i) { out.push_back(real(gradb[i])); out.push_back(imag(gradb[i])); }
-		for (unsigned i=0; i<w.size(); ++i) { out.push_back(real(gradw[i])); out.push_back(imag(gradw[i])); }
-		for (unsigned i=0; i<f.size(); ++i) { out.push_back(real(gradf[i])); out.push_back(imag(gradf[i])); }
-		out.push_back(real(gradl)); out.push_back(imag(gradl));
-
-		Vector vout (out.size()); for (unsigned i=0; i<out.size(); ++i) vout[i]=out[i];
-
-		return vout;
+		return coovec (gradb,gradw,gradf,gradl);
 	}
 
-	template <typename T> auto Constellation<T>::gradcost (const Vector & xy) -> Vector {
-		unsigned n1 = b.size(), n2 = w.size(), n3 = f.size();
+	template <typename T> T Constellation<T>::fg (const Vector<T> & xy, Vector<T> & df) {
+		df = gradcost(xy); return cost();
+	}
 
-		for (unsigned i=0; i<n1; ++i) b[i] = cplx (xy[2*i],xy[2*i+1]);
-		for (unsigned i=0; i<n2; ++i) w[i] = cplx (xy[2*n1+2*i],xy[2*n1+2*i+1]);
-		for (unsigned i=0; i<n3; ++i) f[i] = cplx (xy[2*n1+2*n2+2*i],xy[2*n1+2*n2+2*i+1]);
-		l = cplx (xy[2*n1+2*n2+2*n3],xy[2*n1+2*n2+2*n3+1]);
-
-		from_points(); return gradcost();
+	template <typename T> auto Constellation<T>::gradcost (const Vector<T> & xy) -> Vector<T> {
+		readcoo(xy); from_points(); return gradcost();
 	}
 
 	template <typename T> void Constellation<T>::findg () {
-		std::vector<T> vbw;
-		for (auto z : b) { vbw.push_back(real(z)); vbw.push_back(imag(z)); }
-		for (auto z : w) { vbw.push_back(real(z)); vbw.push_back(imag(z)); }
-		for (auto z : f) { vbw.push_back(real(z)); vbw.push_back(imag(z)); }
-		vbw.push_back(real(l)); vbw.push_back(imag(l));
-
-		Vector bw (vbw.size()); for (unsigned i=0; i<vbw.size(); ++i) bw[i]=vbw[i];
+		Vector<T> bw = coovec(b,w,f,l);
 
 		T c = cost(bw), eps = sqrt(c), nc = c;
 		while (eps>1e-100) {
 			std::cerr << c << " (" << eps << ")          \r";
 			bool flag = false;
 			c = cost(bw);
-			Vector grad = gradcost();
+			Vector<T> grad = gradcost();
 			for (unsigned i=0; i<bw.size(); ++i) bw[i] -= eps * grad[i];
 			nc = cost(bw); if (nc<c) { c=nc; flag=true; } else { for (unsigned i=0; i<bw.size(); ++i) bw[i] += eps * grad[i]; }
 			if (!flag) eps /= 2; else eps *= 1.01;
@@ -232,13 +224,7 @@ namespace vb {
 	}
 
 	template <typename T> void Constellation<T>::find () {
-		std::vector<T> vbw;
-		for (auto z : b) { vbw.push_back(real(z)); vbw.push_back(imag(z)); }
-		for (auto z : w) { vbw.push_back(real(z)); vbw.push_back(imag(z)); }
-		for (auto z : f) { vbw.push_back(real(z)); vbw.push_back(imag(z)); }
-		vbw.push_back(real(l)); vbw.push_back(imag(l));
-
-		Vector bw (vbw.size()); for (unsigned i=0; i<vbw.size(); ++i) bw[i]=vbw[i];
+		Vector<T> bw = coovec(b,w,f,l);
 
 		T c = cost(bw), eps = sqrt(c)/10, nc = c;
 		while (eps>1e-100) {
@@ -252,14 +238,8 @@ namespace vb {
 	}
 
 	template <typename T> void Constellation<T>::findm () {
-		std::vector<T> vbw;
-		for (auto z : b) { vbw.push_back(real(z)); vbw.push_back(imag(z)); }
-		for (auto z : w) { vbw.push_back(real(z)); vbw.push_back(imag(z)); }
-		for (auto z : f) { vbw.push_back(real(z)); vbw.push_back(imag(z)); }
-		vbw.push_back(real(l)); vbw.push_back(imag(l));
-
-		Constellation<T>::Vector x (vbw.size()); for (unsigned i=0; i<vbw.size(); ++i) { x[i] = vbw[i]; }
-		Minimizer<T> M (vbw.size(),Constellation_f<T>,Constellation_g<T>,this); M.cb = Constellation_cb;
+		Vector<T> x = coovec(b,w,f,l);
+		Minimizer<T> M (x.size(),Constellation_fg<T>,this); M.cb = Constellation_cb;
 		M.minimize_qn (x);
 		cost(M.x);
 		std::cerr << std::endl;
