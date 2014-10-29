@@ -27,9 +27,14 @@ namespace vb {
 			* squares << new Pov_Box (tri(x-.5*sx,y-.5*sy,z-.5*sz), tri(x+1-.5*sx,y+1-.5*sy,z+1-.5*sz));
 		* squares << new Pov_Texture ("pigment { color rgb <.3,.5,.8> } normal { bumps .1 scale .1 } finish { reflection {0} ambient 0 diffuse .5 brilliance 1.5 roughness .1 }");
 
+		Pov_Union * squares2 = new Pov_Union();
+		for (int x=0; x<sx; ++x) for (int y=0; y<sy; ++y) for (int z=0; z<sz; ++z) if (at(coo3(x,y,z))==255/2)
+			* squares2 << new Pov_Box (tri(x-.5*sx,y-.5*sy,z-.5*sz), tri(x+1-.5*sx,y+1-.5*sy,z+1-.5*sz));
+		* squares2 << new Pov_Texture ("pigment { color rgb <.3,.5,.8> transmit .8 } normal { bumps .1 scale .1 } finish { reflection {0} ambient 0 diffuse .5 brilliance 1.5 roughness .1 }");
+
 		Pov_Union * cube = new Pov_Union(); *cube
 			<< new Pov_Frame (tri(-.5*sx,-.5*sy,-.5*sz), tri(.5*sx,.5*sy,.5*sz), "pigment { color rgb <.8,0,0> }")
-			<< squares
+			<< squares << squares2
 			<< new Pov_Object ("rotate 360*clock*y", false);
 
 		Pov_Scene SS;
