@@ -1,4 +1,5 @@
 #pragma once /// @file
+#include <vb/config.h>
 #include <complex>
 #include <iostream>
 

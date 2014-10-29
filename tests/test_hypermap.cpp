@@ -1,20 +1,21 @@
 #include <vb/Constellation.h>
 #include <vb/Hub.h>
+#include <vb/Minimizer.h>
 #include <vb/Hypermap_lib.h>
 
 using namespace vb; using namespace std;
 
 int main (int argc, char ** argv) {
-	Hub H ("Testing",argc,argv,"n=3,m=228,d,v,q,f,g");
+	Hub H ("Testing",argc,argv,"n=2,m=228,d,v,q,f,a=m"); // a in {'d','g','m'}
 	// Hypermap M { {{1},{3},{5},{0,4,2}}, {{0,1},{2,3},{4,5}}, {{0,1,2,3,4,5}} };                                	// Graph tripod
 	// Hypermap M { {{0,1,2}}, {{0},{1},{2}}, {{2,1,0}} };                                                        	// Dessin tripod
 	// Hypermap M { {{0,1,2,3}}, {{0},{1},{2},{3}}, {{3,2,1,0}} };                                                	// Dessin 4-star
 	// Hypermap M { {{0,1,2,3,4}}, {{0},{1},{2},{3},{4}}, {{4,3,2,1,0}} };                                        	// Dessin 5-star
-	// Hypermap M { {{1},{5},{7},{3,4},{2,6,0}}, {{2,1},{0,3},{4,5},{6,7}}, {{2,1,0,4,5,3,6,7}} };                	// Long graph tripod - use n=4
+	// Hypermap M { {{1},{5},{7},{3,4},{2,6,0}}, {{2,1},{0,3},{4,5},{6,7}}, {{2,1,0,4,5,3,6,7}} };                	// Long graph tripod
 	// Hypermap M { {{2,1,0},{3}}, {{2},{1},{0,3}}, {{2,0,3,1}} };                                                	// Long dessin tripod - Lando page 87
-	// Hypermap M { {{0,1,2},{3,4},{5,6}}, {{0},{1,3},{2,5},{4},{6}}, {{0,2,6,5,1,4,3}} };                        	// Long-legged tripod - Lando page 88 - use n=4
-	// Hypermap M { {{4,1,2},{3,0},{5,6}}, {{4,3},{1},{2},{0,5},{6}}, {{4,0,6,5,3,2,1}} };                        	// Long-tailed tripod - Lando page 89 - use n=4
-	// Hypermap M { {{1},{5},{7},{9},{2,8,0},{4,3,6}}, {{2,1},{0,3},{4,5},{6,7},{8,9}}, {{2,1,0,4,5,6,7,3,8,9}} };	// Graph H - use n=4
+	// Hypermap M { {{0,1,2},{3,4},{5,6}}, {{0},{1,3},{2,5},{4},{6}}, {{0,2,6,5,1,4,3}} };                        	// Long-legged tripod - Lando page 88
+	// Hypermap M { {{4,1,2},{3,0},{5,6}}, {{4,3},{1},{2},{0,5},{6}}, {{4,0,6,5,3,2,1}} };                        	// Long-tailed tripod - Lando page 89
+	// Hypermap M { {{1},{5},{7},{9},{2,8,0},{4,3,6}}, {{2,1},{0,3},{4,5},{6,7},{8,9}}, {{2,1,0,4,5,6,7,3,8,9}} };	// Graph H
 	// Hypermap M { {{0,1,2},{3},{4}}, {{0,3,4},{1},{2}}, {{0,4,3,2,1}} };                                        	// Dessin H
 	// Hypermap M { {{0,2,3},{1}}, {{0,1},{2,3}}, {{0,1,3},{2}} };                                                	// Simple map - Lando page 107
 	// Hypermap M = H_H1();
@@ -38,21 +39,17 @@ int main (int argc, char ** argv) {
 
 	cout << M << endl;
 
-	Constellation<double> C2;
-	if (H['f']) {
-		Constellation<float> C1 (M,H,H['n']); if (H['v']) { C1.show(); } if (H['g']) C1.findg(); else C1.find(); C1.belyi(); C2 = cconvert <float,double> (C1);
-	} else {
-		C2 = {M,H,H['n']};
-	}
-	if (H['v']) { C2.show(); } if (H['g']) C2.findg(); else C2.find(); C2.belyi();
-
-	Constellation<long double>	C3 = cconvert <double,long double> (C2);	if (H['v']) { C3.show(); }	if (H['g']) C3.findg(); else C3.find();	C3.belyi();
+	Constellation<double> C2 {M,H,H['n']};
+	if (H['v']) { C2.show(); }
+	if (H['a']=="d") C2.find(); else if (H['a']=="g") C2.findg(); else C2.findm();
+	C2.belyi();
 
 	if (H['q']) {
-		Constellation<float128> C4 = cconvert <long double,float128> (C3);	if (H['g']) C4.findg(); else C4.find();	C4.belyi();
+		Constellation<float128> C4 = cconvert <double,float128> (C2);
+		if (H['a']=="d") C4.find(); else if (H['a']=="g") C4.findg(); else C4.findm();
+		C4.belyi();
 		cout << endl << C4;
 	} else {
-		cout << endl << C3;
+		cout << endl << C2;
 	}
-
 }

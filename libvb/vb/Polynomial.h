@@ -1,5 +1,5 @@
 #pragma once
-#include <vb/cpx.h> // for operator<< override
+#include <vb/cpx.h>
 #include <iostream>
 #include <vector>
 

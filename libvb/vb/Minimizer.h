@@ -4,8 +4,8 @@
 
 namespace vb {
 	template <typename T> class Minimizer { public:
-		typedef boost::numeric::ublas::vector<T> Vector;
-		typedef boost::numeric::ublas::matrix<T> Matrix;
+		using Vector = boost::numeric::ublas::vector<T>;
+		using Matrix = boost::numeric::ublas::matrix<T>;
 
 		Minimizer (	unsigned int n_,
 		           	T f_ (const Vector &, void *),
