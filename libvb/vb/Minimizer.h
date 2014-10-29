@@ -155,21 +155,21 @@ namespace vb {
 	template <typename T> void Minimizer<T>::line_search (const Vector &d) {
 		old_x.swap(x); old_fx=fx; old_gx.swap(gx);
 
-		T qq_0 = .8 * inner_prod (old_gx,d);
-		T dir = (qq_0>0 ? -1 : 1);
-		T t_l = 0.0, t_r = 0.0, t = dir;
+		T qq_0 = T(.8) * inner_prod (old_gx,d);
+		T dir = (qq_0>T(0) ? T(-1) : T(1));
+		T t_l = T(0), t_r = T(0), t = dir;
 		T y;
 
 		bool refining = false;
 
 		while (true) {
 			x = old_x + t*d; compute();
-			y = old_fx + .3 * t * qq_0;
+			y = old_fx + T(.3) * t * qq_0;
 
 			if ((fx<=y) && (dir*inner_prod (gx,d) >= dir*qq_0)) break;
 			if (fx>y) { t_r=t; refining = true; } else t_l = t;
-			if (refining) t = (t_r+t_l)/2.0; else t *= 2.0;
-			if (t-t_l+1.0 == 1.0) break;
+			if (refining) t = (t_r+t_l)/T(2); else t *= T(2);
+			if (t-t_l+T(1) == T(1)) break;
 		}
 	}
 
@@ -271,7 +271,7 @@ namespace vb {
 	template <typename T> T Minimizer<T>::minimize_qn (const Vector &x0) {
 		compute(x0);
 		old_x  = x;
-		old_fx = fx+1;
+		old_fx = fx+T(1);
 		old_gx = gx;
 
 		Vector d(n);

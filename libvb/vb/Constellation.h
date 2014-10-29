@@ -96,7 +96,7 @@ namespace vb {
 	template <typename T> void Constellation<T>::show() {
 		img = new Bitmap<CPixel<T>> (600,600,"Constellation");
 		for (int i=0; i<600; ++i) for (int j=0; j<600; ++j) img->put(coo(i,j), CPixel<T> (this, {(i-300)*T(2)/300,(j-300)*T(2)/300}));
-		img->start = img->now(); img->show();
+		img->show();
 	}
 
 	template <typename T> void Constellation<T>::from_points () {
@@ -124,11 +124,11 @@ namespace vb {
 		cplx sum (0); for (unsigned i=0; i<b.size(); ++i) sum += cplx(bd[i])*b[i]; sum /= P.degree();	linear (T(1),-sum);
 
 		{ Polynomial<cplx> & PQ = ( ((abs(P[0])>abs(Q[0])) || (Q.degree()==0)) ? P : Q);
-		unsigned i=0; T eps = std::min(sqrt(cost()),T(.01)); while ((i<PQ.degree())&&(abs(PQ[i])<=eps)) ++i;
+		unsigned i=0; T eps = sqrt(cost()); while ((i<PQ.degree())&&(abs(PQ[i])<=eps)) ++i;
 		if (i<PQ.degree()) { cplx l = pow(PQ[i],T(1)/(PQ.degree()-i)); linear (cplx(1)/l); } }
 
 		Polynomial<cplx> & PQ = ( ((abs(P[0])>abs(Q[0])) || (Q.degree()==0)) ? P : Q);
-		unsigned i=0; T eps = std::min(sqrt(cost()),T(.01)); while ((i<PQ.degree())&&(abs(PQ[i])<=eps)) ++i;
+		unsigned i=0; T eps = sqrt(cost()); while ((i<PQ.degree())&&(abs(PQ[i])<=eps)) ++i;
 		if (i<PQ.degree()) { cplx l = pow(PQ[i],T(1)/(PQ.degree()-i)); linear (cplx(1)/l); }
 
 		unsigned j=0,m=0,jm=0; while (j<2*PQ.degree()) {
@@ -152,7 +152,7 @@ namespace vb {
 	template <typename T> T Constellation<T>::cost() const {
 		T out (0);
 		for (unsigned i=0; i<w.size(); ++i) for (unsigned j=0; j<wd[i]; ++j) out += norm(logder(w[i],j));
-		// if (img) img->step();
+		if (img) img->step();
 		return out;
 	}
 
@@ -274,7 +274,7 @@ namespace vb {
 	}
 
 	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation<T> & C) {
-		// double err = C.cost(); os << std::setprecision (err<1e-9 ? -log10(err)/3 : 3) << std::fixed; if (err==T(0)) os << std::setprecision(10);
+		double err = C.cost(); os << std::setprecision (err<1e-9 ? -log10(err)/3 : 3) << std::fixed; if (err==T(0)) os << std::setprecision(10);
 
 		os << "Black vertices / zeros: " << std::endl;
 		for (unsigned i=0; i<C.b.size(); ++i) os << "| " << C.bd[i] << "\t" << C.b[i] << std::endl;
