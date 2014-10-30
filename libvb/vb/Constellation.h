@@ -34,7 +34,6 @@ namespace vb {
 		T   	cost 	()	const;
 		T   	cost 	(const Vector<T> & xy);
 		void	find 	();
-		void	findg	();
 		void	findm	();
 
 		Vector<T>	coovec 	(const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f, const cplx & l)	const;
@@ -157,14 +156,6 @@ namespace vb {
 		from_points();
 	}
 
-	template <typename T> T Constellation<T>::cost() const {
-		T out (0);
-		for (unsigned i=0; i<w.size(); ++i) for (unsigned j=0; j<wd[i]; ++j) out += norm(logder(w[i],j));
-		return out;
-	}
-
-	template <typename T> T Constellation<T>::cost (const Vector<T> & xy) { readcoo(xy); return cost(); }
-
 	template <typename T> Vector<T> Constellation<T>::coovec (const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f, const cplx & l) const {
 		Vector<T> bw (2*(b.size()+w.size()+f.size()+1)); unsigned i=0;
 		for (auto z : b) { bw[i++] = (real(z)); bw[i++] = (imag(z)); }
@@ -173,6 +164,14 @@ namespace vb {
 		bw[i++] = (real(l)); bw[i++] = (imag(l));
 		return bw;
 	}
+
+	template <typename T> T Constellation<T>::cost() const {
+		T out (0);
+		for (unsigned i=0; i<w.size(); ++i) for (unsigned j=0; j<wd[i]; ++j) out += norm(logder(w[i],j));
+		return out;
+	}
+
+	template <typename T> T Constellation<T>::cost (const Vector<T> & xy) { readcoo(xy); return cost(); }
 
 	template <typename T> auto Constellation<T>::gradcost () const -> Vector<T> {
 		static std::vector<cplx> gradb(b.size()), gradw(w.size()), gradf(f.size());
@@ -197,6 +196,8 @@ namespace vb {
 		return coovec (gradb,gradw,gradf,gradl);
 	}
 
+	template <typename T> auto Constellation<T>::gradcost (const Vector<T> & xy) -> Vector<T> { readcoo(xy); return gradcost(); }
+
 	template <typename T> T Constellation<T>::fg (const Vector<T> & xy, Vector<T> & df) {
 		readcoo(xy);
 
@@ -220,28 +221,8 @@ namespace vb {
 			}
 		}
 
-		df = coovec (gradb,gradw,gradf,gradl);
+		noalias(df) = coovec (gradb,gradw,gradf,gradl);
 		return out;
-	}
-
-	template <typename T> auto Constellation<T>::gradcost (const Vector<T> & xy) -> Vector<T> {
-		readcoo(xy); return gradcost();
-	}
-
-	template <typename T> void Constellation<T>::findg () {
-		Vector<T> bw = coovec(b,w,f,l);
-
-		T c = cost(bw), eps = sqrt(c), nc = c;
-		while (eps>1e-100) {
-			std::cerr << c << " (" << eps << ")          \r";
-			bool flag = false;
-			c = cost(bw);
-			Vector<T> grad = gradcost();
-			for (unsigned i=0; i<bw.size(); ++i) bw[i] -= eps * grad[i];
-			nc = cost(bw); if (nc<c) { c=nc; flag=true; } else { for (unsigned i=0; i<bw.size(); ++i) bw[i] += eps * grad[i]; }
-			if (!flag) eps /= 2; else eps *= 1.01;
-		}
-		std::cerr << std::endl;
 	}
 
 	template <typename T> void Constellation<T>::find () {
