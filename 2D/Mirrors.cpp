@@ -42,11 +42,11 @@ class Mirrors : public Bitmap<Mirror> {
 public:
 	Mirrors (CL_Parser &CLP) :	Bitmap<Mirror> (CLP('n'),CLP('n'),"The mirror model"),
 	                          	p(CLP('p')), q(CLP('q')), f(CLP('f')) {}
-	int main ();
+	void main ();
 	double p, q, f;
 };
 
-int Mirrors::main () {
+void Mirrors::main () {
 	show();
 
 	while (true) {
