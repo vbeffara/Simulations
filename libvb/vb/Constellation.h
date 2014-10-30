@@ -59,13 +59,13 @@ namespace vb {
 
 	template <typename T> T Constellation_fg (const Vector<T> & xy, Vector<T> & df, void * c) {
 		Constellation<T> * C = (Constellation<T> *) c;
-		static T er (-1); T out = C->fg(xy,df);
-		if ((out<er)||(er<T(0))) { std::cerr << out << "          \r"; er = out; }
-		return out;
+		return C->fg(xy,df);
 	}
 
-	template <typename T> void Constellation_cb (const Vector<T> &, T, void * c) {
+	template <typename T> void Constellation_cb (const Vector<T> &, T f, void * c) {
 		Constellation<T> * C = (Constellation<T> *) c;
+		static T er (-1); T out = f;
+		if ((out<er)||(er<T(0))) { std::cerr << out << "          \r"; er = out; }
 		if (C->img) C->img->step();
 	}
 
@@ -148,6 +148,15 @@ namespace vb {
 		return sum;
 	}
 
+	template <typename T> void Constellation<T>::readcoo (const Vector<T> & xy) {
+		unsigned n1 = b.size(), n2 = w.size(), n3 = f.size();
+		for (unsigned i=0; i<n1; ++i) b[i] = cplx (xy[2*i],xy[2*i+1]);
+		for (unsigned i=0; i<n2; ++i) w[i] = cplx (xy[2*n1+2*i],xy[2*n1+2*i+1]);
+		for (unsigned i=0; i<n3; ++i) f[i] = cplx (xy[2*n1+2*n2+2*i],xy[2*n1+2*n2+2*i+1]);
+		l = cplx (xy[2*n1+2*n2+2*n3],xy[2*n1+2*n2+2*n3+1]);
+		from_points();
+	}
+
 	template <typename T> T Constellation<T>::cost() const {
 		T out (0);
 		for (unsigned i=0; i<w.size(); ++i) for (unsigned j=0; j<wd[i]; ++j) out += norm(logder(w[i],j));
@@ -155,17 +164,7 @@ namespace vb {
 		return out;
 	}
 
-	template <typename T> void Constellation<T>::readcoo (const Vector<T> & xy) {
-		unsigned n1 = b.size(), n2 = w.size(), n3 = f.size();
-		for (unsigned i=0; i<n1; ++i) b[i] = cplx (xy[2*i],xy[2*i+1]);
-		for (unsigned i=0; i<n2; ++i) w[i] = cplx (xy[2*n1+2*i],xy[2*n1+2*i+1]);
-		for (unsigned i=0; i<n3; ++i) f[i] = cplx (xy[2*n1+2*n2+2*i],xy[2*n1+2*n2+2*i+1]);
-		l = cplx (xy[2*n1+2*n2+2*n3],xy[2*n1+2*n2+2*n3+1]);
-	}
-
-	template <typename T> T Constellation<T>::cost (const Vector<T> & xy) {
-		readcoo(xy); from_points(); return cost();
-	}
+	template <typename T> T Constellation<T>::cost (const Vector<T> & xy) { readcoo(xy); return cost(); }
 
 	template <typename T> Vector<T> Constellation<T>::coovec (const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f, const cplx & l) const {
 		Vector<T> bw (2*(b.size()+w.size()+f.size()+1)); unsigned i=0;
@@ -200,11 +199,35 @@ namespace vb {
 	}
 
 	template <typename T> T Constellation<T>::fg (const Vector<T> & xy, Vector<T> & df) {
-		df = gradcost(xy); return cost();
+		readcoo(xy);
+
+		static std::vector<cplx> gradb(b.size()), gradw(w.size()), gradf(f.size());
+		for (auto & z : gradb) z = cplx(0); for (auto & z : gradw) z = cplx(0); for (auto & z : gradf) z = cplx(0);
+		cplx gradl(0);
+		T out (0);
+
+		for (unsigned k=0; k<w.size(); ++k) {
+			cplx lwk0 ( logder(w[k],0) ); out += norm(lwk0); lwk0 *= T(20);
+			for (unsigned j=0; j<b.size(); ++j) { gradb[j] -= lwk0 * T(bd[j]) / conj(w[k]-b[j]); }
+			for (unsigned j=0; j<f.size(); ++j) { gradf[j] += lwk0 * T(fd[j]) / conj(w[k]-f[j]); }
+			cplx lwknext (logder(w[k],1));
+			gradw[k] += lwk0 * conj(lwknext); gradl += lwk0 / conj(l);
+
+			for (unsigned ll=1; ll<wd[k]; ++ll) {
+				cplx lwkll = lwknext; lwknext = logder(w[k],ll+1); out += norm(lwkll); lwkll *= T(2*ll);
+				for (unsigned j=0; j<b.size(); ++j) { gradb[j] += lwkll * T(bd[j]) / pow(conj(w[k]-b[j]),T(ll+1)); }
+				for (unsigned j=0; j<f.size(); ++j) { gradf[j] -= lwkll * T(fd[j]) / pow(conj(w[k]-f[j]),T(ll+1)); }
+				gradw[k] -= lwkll * conj(lwknext);
+			}
+		}
+
+		if (img) img->step();
+		df = coovec (gradb,gradw,gradf,gradl);
+		return out;
 	}
 
 	template <typename T> auto Constellation<T>::gradcost (const Vector<T> & xy) -> Vector<T> {
-		readcoo(xy); from_points(); return gradcost();
+		readcoo(xy); return gradcost();
 	}
 
 	template <typename T> void Constellation<T>::findg () {
