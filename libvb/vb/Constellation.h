@@ -10,7 +10,7 @@ namespace vb {
 	template <typename T> class Constellation;
 
 	template <typename T> class CPixel { public:
-		CPixel (Constellation<T> * C_, std::complex<T> z_ = 0) : C(C_), z(z_) {}
+		CPixel (Constellation<T> * C_, std::complex<T> z_ = T(0)) : C(C_), z(z_) {}
 		operator Color() { if (prng.bernoulli(.01)) c = imag((*C)(z))>0 ? RED : BLUE; return c; }
 		Constellation<T> * C;
 		std::complex<T> z;
@@ -93,7 +93,7 @@ namespace vb {
 
 	template <typename T> void Constellation<T>::show() {
 		img = new Bitmap<CPixel<T>> (600,600,"Constellation");
-		for (int i=0; i<600; ++i) for (int j=0; j<600; ++j) img->put(coo(i,j), CPixel<T> (this, {(i-300)*T(2)/300,(j-300)*T(2)/300}));
+		for (int i=0; i<600; ++i) for (int j=0; j<600; ++j) img->put(coo(i,j), CPixel<T> (this, {T(i-300)/300,T(j-300)/300}));
 		img->show();
 	}
 
