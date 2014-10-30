@@ -39,16 +39,11 @@ int main (int argc, char ** argv) {
 
 	cout << M << endl;
 
-	Constellation<double> C2 {M,H,H['n']};
-	if (H['v']) { C2.show(); }
-	C2.findm(); /* C2.find(); */ C2.belyi(); C2.belyi();
+	Constellation<double> C2 {M,H,H['n']}; if (H['v']) C2.show(); C2.findm();
 
-	if (H['q']) {
-		Constellation<float128> C4 = cconvert <double,float128> (C2);
-		if (H['a']=="d") C4.find(); else if (H['a']=="g") C4.findg(); else C4.findm();
-		C4.find(); C4.belyi();
-		cout << endl << C4;
-	} else {
-		cout << endl << C2;
-	}
+	if (!H['q']) { C2.belyi(); cout << endl << C2; return 0; }
+
+	Constellation<long double>	C3 = cconvert <double, long double> (C2); 	C3.findm();
+	Constellation<float128>   	C4 = cconvert <long double,float128> (C3);	C4.findm();
+	C4.belyi(); cout << endl << C4;
 }
