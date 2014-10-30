@@ -68,5 +68,7 @@ int main(int argc, char ** argv)
     for (int y=0; y<n; ++y)
       img.put(coo(x,y),color[cluster[x+n*y]]);
 
+  delete[] connect; delete[] color; delete[] cluster;
+
   return 0;
 }
