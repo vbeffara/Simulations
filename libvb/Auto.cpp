@@ -7,7 +7,7 @@ namespace vb {
 
 	Auto::~Auto () { remove_task(task); }
 
-    int Auto::add_task (double period, std::function<void()> task) { 
+    int Auto::add_task (double period, std::function<void()> task) {
 		tasks.emplace_back(now(),Duration(period),task);
 		return tasks.size()-1;
 	}
@@ -17,7 +17,7 @@ namespace vb {
 	void Auto::run () {
 		for (Task & t : tasks) if (t.active && (now() >= t.next)) { t(); t.next = now() + t.period; }
 		double time = Duration(now()-start).count();
-		if (time < 1) slice += slice/10; else slice = std::min (n_call / (time*100), slice + slice/10.0);
+		if (time>1) slice = std::min (n_call / (time*100), slice + slice/100.0);
 		next = slice;
 	}
 }

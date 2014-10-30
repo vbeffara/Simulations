@@ -160,7 +160,6 @@ namespace vb {
 	template <typename T> T Constellation<T>::cost() const {
 		T out (0);
 		for (unsigned i=0; i<w.size(); ++i) for (unsigned j=0; j<wd[i]; ++j) out += norm(logder(w[i],j));
-		if (img) img->step();
 		return out;
 	}
 
@@ -221,7 +220,6 @@ namespace vb {
 			}
 		}
 
-		if (img) img->step();
 		df = coovec (gradb,gradw,gradf,gradl);
 		return out;
 	}
