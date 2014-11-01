@@ -3,11 +3,13 @@
 #include <map>
 
 /*
- * Sources in the literature:
+ * Naming: m_* are genus 0 "true" maps, lat_* are genus 1 maps, rest are genus 0 hypermaps
  *
- * KS: Khadjavi-Scharaschkin
- * SV: Sherbet-Voevodski
- * Z: Zvonkin
+ * Sources in the literature:
+ *	KS: Khadjavi-Scharaschkin
+ *	LZ: Lando-Zvonkin
+ *	SV: Sherbet-Voevodski
+ *	Z: Zvonkin
  */
 
 namespace vb {
