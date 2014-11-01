@@ -6,7 +6,7 @@ using namespace vb;
 using namespace std;
 
 int main (int argc, char ** argv) {
-	Hub H ("Toroidal triangulation",argc,argv,"n=4,o=0,m=4,f,g=C5");
+	Hub H ("Toroidal triangulation",argc,argv,"n=4,o=0,m=4,f,g=lat_C5");
 	HLib HL; Toroidal G (HL.at(H['g']),H);
 
 	for (int i=0; i<int(H['o']); ++i) { G.split_edges(); G.from_hypermap(); }
@@ -21,7 +21,7 @@ int main (int argc, char ** argv) {
 		cpx lambda = pow(theta2/theta3,4);
 		cpx j = 256.0 * pow(1.0-lambda+pow(lambda,2),3) / pow(lambda*(1.0-lambda),2);
 
-		cout << "  tau = " << G.m << endl;
+		cout << "  tau = " << G.m << "     " << endl;
 		cout << "  j   = " << j << endl;
 
 		if (i<int(H['n'])) { G.split_edges(); G.from_hypermap(); }
