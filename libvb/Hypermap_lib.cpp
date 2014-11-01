@@ -82,4 +82,22 @@ namespace vb {
 		phi[n-1]=4*n; phi[2*n]=2*n-1; phi[3*n]=0; phi[4*n]=4*n-1; phi[6*n-1]=2*n;
 		return Hypermap (sigma, alpha, phi);
 	}
+
+	HLib::HLib () {
+		emplace ("T",   	H_T   	() );
+		emplace ("TT",  	H_TT  	() );
+		emplace ("TL",  	H_TL  	() );
+		emplace ("TL2", 	H_TL2 	() );
+		emplace ("TL3", 	H_TL3 	() );
+		emplace ("H1",  	H_H1  	() );
+		emplace ("H2",  	H_H2  	() );
+		emplace ("H67", 	H_H67 	() );
+		emplace ("H3",  	H_H3  	() );
+		emplace ("C5",  	H_C5  	() );
+		emplace ("SV",  	H_SV  	() );
+		emplace ("B",   	H_B   	() );
+		emplace ("E",   	H_E   	() );
+		emplace ("KS5", 	H_KS5T	() );
+		emplace ("KS5T",	H_KS5T	() );
+	}
 }

@@ -11,6 +11,7 @@ namespace vb {
 
 		Hypermap (Permutation s, Permutation a, Permutation p)	: sigma(s), alpha(a), phi(p), initial(s.size(),3)          	{}
 		Hypermap (Cycles s, Cycles a, Cycles p)               	: Hypermap (Permutation(s), Permutation(a), Permutation(p))	{}
+		Hypermap () {}
 
 		void from_hypermap	();	//< If the Hypermap part is correct, fill in V and E.
 

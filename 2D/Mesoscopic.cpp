@@ -7,7 +7,7 @@ using namespace std;
 
 int main (int argc, char ** argv) {
 	Hub H ("Toroidal triangulation",argc,argv,"n=4,o=0,m=4,f,g=C5");
-	Toroidal G (H_lib(H['g']),H);
+	HLib HL; Toroidal G (HL.at(H['g']),H);
 
 	for (int i=H['o']; i<=int(H['n']); ++i) {
 		cerr << "Step " << i << ": " << G;
