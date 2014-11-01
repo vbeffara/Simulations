@@ -22,7 +22,7 @@ int main (int argc, char ** argv) {
 		cout << "  tau = " << G.m << endl;
 		cout << "  j   = " << j << endl;
 
-		if (i<int(H['n'])) G.split_edges();
+		if (i<int(H['n'])) { G.split_edges(); G.from_hypermap(); }
 	}
 
 	G.output_pdf();
