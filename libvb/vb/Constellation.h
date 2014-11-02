@@ -11,7 +11,7 @@ namespace vb {
 
 	template <typename T> class CPixel { public:
 		CPixel (Constellation<T> * C_, std::complex<T> z_ = T(0)) : C(C_), z(z_) {}
-		operator Color() { if (prng.bernoulli(.01)) c = imag((*C)(C->center + C->scale*z))>0 ? RED : BLUE; return c; }
+		operator Color() { if (C->slow || prng.bernoulli(.01)) c = imag((*C)(C->center + C->scale*z))>0 ? RED : BLUE; return c; }
 		Constellation<T> * C;
 		std::complex<T> z;
 		Color c;
@@ -52,7 +52,7 @@ namespace vb {
 		cplx             	l = T(1);
 		Polynomial<cplx> 	P,Q;
 		Bitmap<CPixel<T>>	*img = 0;
-		cplx center; T scale;
+		cplx center; T scale; bool slow=false;
 	};
 
 	template <typename T, typename U> Constellation<U> cconvert (Constellation<T> & C);
