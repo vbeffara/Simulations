@@ -11,7 +11,7 @@ namespace vb {
 
 	template <typename T> class CPixel { public:
 		CPixel (Constellation<T> * C_, std::complex<T> z_ = T(0)) : C(C_), z(z_) {}
-		operator Color() { if (prng.bernoulli(.01)) c = imag((*C)(z))>0 ? RED : BLUE; return c; }
+		operator Color() { if (prng.bernoulli(.01)) c = imag((*C)(C->center + C->scale*z))>0 ? RED : BLUE; return c; }
 		Constellation<T> * C;
 		std::complex<T> z;
 		Color c;
@@ -52,6 +52,7 @@ namespace vb {
 		cplx             	l = T(1);
 		Polynomial<cplx> 	P,Q;
 		Bitmap<CPixel<T>>	*img = 0;
+		cplx center; T scale;
 	};
 
 	template <typename T, typename U> Constellation<U> cconvert (Constellation<T> & C);
@@ -101,6 +102,11 @@ namespace vb {
 		P = Polynomial<cplx> (); Q = Polynomial<cplx> ();
 		for (unsigned i=0; i<b.size(); ++i) for (unsigned j=0; j<bd[i]; ++j) P.add_root(b[i]);
 		for (unsigned i=0; i<f.size(); ++i) for (unsigned j=0; j<fd[i]; ++j) Q.add_root(f[i]);
+		T xmin(0), xmax(0), ymin(0), ymax(0);
+		for (auto z : b) { xmin=std::min(xmin,real(z)); xmax=std::max(xmax,real(z)); ymin=std::min(ymin,imag(z)); ymax=std::max(ymax,imag(z)); }
+		for (auto z : f) { xmin=std::min(xmin,real(z)); xmax=std::max(xmax,real(z)); ymin=std::min(ymin,imag(z)); ymax=std::max(ymax,imag(z)); }
+		for (auto z : w) { xmin=std::min(xmin,real(z)); xmax=std::max(xmax,real(z)); ymin=std::min(ymin,imag(z)); ymax=std::max(ymax,imag(z)); }
+		center = { (xmin+xmax)/T(2), (ymin+ymax)/T(2) }; scale = T(.75) * std::max(xmax-xmin,ymax-ymin);
 	}
 
 	template <typename T> void Constellation<T>::normalize () {
