@@ -8,6 +8,8 @@
 // r: seed for the PRNG, set to 0 for time-based
 // s: number of vertices
 
+// S-E+F = 2, 3F=2E, S=2+F/2, F=2d, S=2+d
+
 #include <vb/Pairings.h>
 #include <vb/PRNG.h>
 #include <vb/ProgressBar.h>
@@ -31,6 +33,7 @@ int main (int argc, char ** argv) {
 		Permutation sigma = (alpha*phi).inverse(); Hypermap M (sigma,alpha,phi);   	if (M.genus() != g)       	continue;
 		bool good=true; for (auto & c : sigma.cycles()) if (c.size()<d) good=false;	if (!good)                	continue;
 		if (D>0) for (auto & c : sigma.cycles()) if (c.size()>D) good=false;       	if (!good)                	continue;
+		if (H['o']) for (auto & c : sigma.cycles()) if (c.size()%2) good=false;    	if (!good)                	continue;
 
 		M.normalize();
 		bool there = false; for (Hypermap & O : v) if (O==M) there = true;
@@ -52,7 +55,7 @@ int main (int argc, char ** argv) {
 				// int nsub = H['n']; if (!H['c']) { M.dessin(); --nsub; } for (int i=0; i<nsub; ++i) M.split_edges(); M.simplify(1);
 				// Toroidal T (M,H); T.pack();
 				// cout << "     Modulus: tau=" << T.m << endl << endl;
-				Constellation<double> C {M,H,H['n']}; C.show(); C.findm(); C.belyi(); cout << endl << C << endl; C.img->hide();
+				Constellation<double> C {M,H,H['n'],false}; C.show(); C.findm(); C.belyi(); cout << endl << C << endl; C.img->hide();
 				// T.output_pdf();
 			}
 		}

@@ -20,7 +20,7 @@ namespace vb {
 	template <typename T> class Constellation { public:
 		using cplx = std::complex<T>;
 
-		Constellation (Hypermap M, Hub H, int n=3);
+		Constellation (Hypermap M, Hub H, int n=3, bool d=true);
 		Constellation ();
 
 		cplx	operator()	(cplx z)       	const { return l*P(z)/Q(z); }
@@ -73,21 +73,47 @@ namespace vb {
 
 	/***************************************************************************************************/
 
-	template <typename T> Constellation<T>::Constellation (Hypermap M, Hub H, int n) {
-		Hypermap M2=M; M2.dessin(); for (int i=0; i<n; ++i) M2.split_edges();
-		Spheroidal S (M2,H); S.pack(); std::cerr << std::endl;
+	template <typename T> Constellation<T>::Constellation (Hypermap M, Hub H, int n, bool d) {
+		int N = M.sigma.size(); Hypermap M2=M;
 
-		int N = M.sigma.size();
+		if (d) {
+			M2.dessin(); for (int i=0; i<n; ++i) M2.split_edges();
+			Spheroidal S (M2,H); S.pack(); std::cerr << std::endl;
 
-		unsigned inf=0, dinf=0; for (auto c : M.phi.cycles()) { unsigned i = S.E[c[0]+3*N].src, d = S.V[i].adj.size(); if (d>dinf) { inf=i; dinf=d; } }
-		S.linear (1,-S.V[inf].z); S.inversion(); S.linear (-1/S.V[inf].r,0); S.output_pdf();
-		{ cpx z; while ((z = S.V[S.E[0].src].z) != 0.0) S.mobiusto0 (z); } S.linear (std::polar(1.0,-S.E[0].a)); S.output_pdf();
+			unsigned inf=0, dinf=0; for (auto c : M.phi.cycles()) { unsigned i = S.E[c[0]+3*N].src, d = S.V[i].adj.size(); if (d>dinf) { inf=i; dinf=d; } }
+			S.linear (1,-S.V[inf].z); S.inversion(); S.linear (-1/S.V[inf].r,0); S.output_pdf();
+			{ cpx z; while ((z = S.V[S.E[0].src].z) != 0.0) S.mobiusto0 (z); } S.linear (std::polar(1.0,-S.E[0].a)); S.output_pdf();
 
-		for (auto c : M.sigma.cycles())	{                                      	b.push_back(cplx(S.V[S.E[c[0]].src].z));    	bd.push_back(c.size()); }
-		for (auto c : M.alpha.cycles())	{                                      	w.push_back(cplx(S.V[S.E[c[0]+N].src].z));  	wd.push_back(c.size()); }
-		for (auto c : M.phi.cycles())  	{ if (S.E[c[0]+3*N].src==inf) continue;	f.push_back(cplx(S.V[S.E[c[0]+3*N].src].z));	fd.push_back(c.size()); }
+			for (auto c : M.sigma.cycles())	{                                      	b.push_back(cplx(S.V[S.E[c[0]].src].z));    	bd.push_back(c.size()); }
+			for (auto c : M.alpha.cycles())	{                                      	w.push_back(cplx(S.V[S.E[c[0]+N].src].z));  	wd.push_back(c.size()); }
+			for (auto c : M.phi.cycles())  	{ if (S.E[c[0]+3*N].src==inf) continue;	f.push_back(cplx(S.V[S.E[c[0]+3*N].src].z));	fd.push_back(c.size()); }
 
-		from_points(); T l = belyi(); S.linear(double(l)); S.output_pdf();
+			from_points(); T l = belyi(); S.linear(double(l)); S.output_pdf();
+		} else { // assumes triangulation with even degrees
+			std::vector<int> type (N,-1); type[0]=0; bool done=false; while (!done) {
+				done=true; for (unsigned i=0; i<N; ++i) {
+					if (type[i]==-1) continue;
+					if (type[M.sigma[i]]==-1) { type[M.sigma[i]] = (type[i]+3)%6; done=false; }
+					if ((type[i]<3)&&(type[M.alpha[i]]==-1)) { type[M.alpha[i]] = ((type[i]+1)%3)+3; done=false; }
+				}
+			}
+
+			for (unsigned i=0; i<N; ++i) M2.initial[i] = 1;
+			for (int i=0; i<n; ++i) M2.split_edges();
+			Spheroidal S (M2,H); S.pack(); std::cerr << std::endl;
+
+			unsigned inf=0; for (auto & c : M.sigma.cycles()) if (type[c[0]]%3 == 2) { inf=c[0]; break; }
+			S.linear (1,-S.V[S.E[inf].src].z); S.inversion(); S.linear (-1/S.V[S.E[inf].src].r,0); S.output_pdf();
+			{ cpx z; while ((z = S.V[S.E[0].src].z) != 0.0) S.mobiusto0 (z); } S.linear (std::polar(1.0,-S.E[0].a)); S.output_pdf();
+
+			for (auto c : M.sigma.cycles()) {
+				if (type[c[0]]%3 == 0) {                         	b.push_back(cplx(S.V[S.E[c[0]].src].z));	bd.push_back(c.size()/2); }
+				if (type[c[0]]%3 == 1) {                         	w.push_back(cplx(S.V[S.E[c[0]].src].z));	wd.push_back(c.size()/2); }
+				if (type[c[0]]%3 == 2) { if (inf==c[0]) continue;	f.push_back(cplx(S.V[S.E[c[0]].src].z));	fd.push_back(c.size()/2); }
+			}
+
+			from_points(); T l = belyi(); S.linear(double(l)); S.output_pdf();
+		}
 	}
 
 	template <typename T> Constellation<T>::Constellation () {}
