@@ -74,7 +74,7 @@ namespace vb {
 	/***************************************************************************************************/
 
 	template <typename T> Constellation<T>::Constellation (Hypermap M, Hub H, int n, bool d) {
-		int N = M.sigma.size(); Hypermap M2=M;
+		unsigned N = M.sigma.size(); Hypermap M2=M;
 
 		if (d) {
 			M2.dessin(); for (int i=0; i<n; ++i) M2.split_edges();
@@ -132,7 +132,7 @@ namespace vb {
 		for (auto z : b) { xmin=std::min(xmin,real(z)); xmax=std::max(xmax,real(z)); ymin=std::min(ymin,imag(z)); ymax=std::max(ymax,imag(z)); }
 		for (auto z : f) { xmin=std::min(xmin,real(z)); xmax=std::max(xmax,real(z)); ymin=std::min(ymin,imag(z)); ymax=std::max(ymax,imag(z)); }
 		for (auto z : w) { xmin=std::min(xmin,real(z)); xmax=std::max(xmax,real(z)); ymin=std::min(ymin,imag(z)); ymax=std::max(ymax,imag(z)); }
-		center = { (xmin+xmax)/T(2), (ymin+ymax)/T(2) }; scale = T(.75) * std::max(xmax-xmin,ymax-ymin);
+		center = cplx { (xmin+xmax)/T(2), (ymin+ymax)/T(2) }; scale = T(.75) * std::max(xmax-xmin,ymax-ymin);
 	}
 
 	template <typename T> void Constellation<T>::normalize () {
