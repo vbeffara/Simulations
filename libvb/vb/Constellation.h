@@ -23,8 +23,8 @@ namespace vb {
 		Constellation (Hypermap M, Hub H, int n=3, bool d=true);
 		Constellation ();
 
-		cplx	operator()	(cplx z)       	const { return l*P(z)/Q(z); }
-		cplx	logder    	(cplx z, int k)	const;
+		cplx	operator()	(cplx z)         	const { return l*P(z)/Q(z); }
+		cplx	logder    	(cplx z, int k=0)	const;
 
 		void	from_points	();
 		void	normalize  	();
@@ -171,7 +171,7 @@ namespace vb {
 		return abs(lambda1*lambda2);
 	}
 
-	template <typename T> auto Constellation<T>::logder (cplx z, int k = 0) const -> cplx {
+	template <typename T> auto Constellation<T>::logder (cplx z, int k) const -> cplx {
 		if (k==0) return T(10)*log((*this)(z));
 		cplx sum (0);
 		for (unsigned i=0; i<b.size(); ++i) sum += cplx(bd[i]) / pow (z-b[i], T(k));
