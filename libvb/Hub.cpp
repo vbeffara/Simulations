@@ -10,10 +10,7 @@ namespace vb {
 		std::vector<std::string> cs;	boost::split (cs, c, boost::is_any_of(", "), boost::token_compress_on);
 		std::vector<std::string> fs;	boost::split (fs, argv[0], boost::is_any_of("/\\"));
 
-		prog = fs.back(); dir = "output/"; // + prog + "/";
-		// boost::filesystem::path p (prog);
-		// std::cerr << "Creating directory: " << p << std::endl;
-		// boost::filesystem::create_directory(p); // BUG with boost 1.56 ...
+		prog = fs.back(); dir = "output/" + prog + "/"; boost::filesystem::create_directories(dir);
 
 		std::string getopt_arg ("h");
 		for (auto s : cs) {

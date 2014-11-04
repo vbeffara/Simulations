@@ -4,7 +4,6 @@ def options (ctx) :
 	ctx.load ('compiler_c compiler_cxx')
 
 def configure (ctx) :
-	# ctx.env.CXXFLAGS += [ '-std=c++11', '-fext-numeric-literals' ] // for gcc 4.9 + boost 1.56
 	ctx.env.CXXFLAGS += [ '-std=c++11' ]
 	ctx.env.LINKFLAGS += [ '-std=c++11' ]
 
