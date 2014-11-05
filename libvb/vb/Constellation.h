@@ -31,6 +31,7 @@ namespace vb {
 		void	normalize  	();                        	// choose l to make ones ones
 		void	make_l_1   	();                        	// rescale to make l equal to 1
 		void	make_c_0   	();                        	// shift everybody to make sum(black)=0
+		void	make_p_1   	();                        	// try to have reasonable scaling
 		void	belyi      	();                        	// does too many things at once
 
 		T           	cost    	()	const;
@@ -39,6 +40,7 @@ namespace vb {
 
 		void	find 	();
 		void	findm	();
+		void	findn	();
 
 		Vector<cplx>	vec    	(const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f, const cplx & l)	const;
 		Vector<T>   	coovec 	(const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f, const cplx & l)	const;
@@ -68,7 +70,7 @@ namespace vb {
 	template <typename T> void Constellation_cb (const Vector<T> &, T f, void * c) {
 		Constellation<T> * C = (Constellation<T> *) c;
 		static T er (-1); T out = f;
-		if ((out<er)||(er<T(0))) { std::cerr << out << "          \n"; er = out; }
+		if ((out<er)||(er<T(0))) { std::cerr << out << "          \r"; er = out; }
 		if (C->img) C->img->step();
 	}
 
@@ -155,23 +157,24 @@ namespace vb {
 		cplx sum(0); for (unsigned i=0; i<b.size(); ++i) sum += T(bd[i])*b[i]; sum /= P.degree(); linear (T(1),-sum); normalize();
 	}
 
+	template <typename T> void Constellation<T>::make_p_1 () {
+		T eps = pow(cost()-norm(l-T(1.0)),T(.25)); if (eps > T(.1)) eps = T(.1);
+		unsigned i=0; while (norm(P[i])<eps) ++i;
+		unsigned j=0; while (norm(Q[j])<eps) ++j;
+		bool is_P; cplx l(1);
+
+		if (Q.degree()==0) is_P=true;
+		else if (i==j) is_P = (norm(P[i])>norm(Q[i]));
+		else is_P = (i<j);
+
+		if ((is_P) && (i<P.degree()))  l = pow(P[i],T(1.0)/T(P.degree()-i));
+		if ((!is_P) && (j<Q.degree())) l = pow(Q[j],T(1.0)/T(Q.degree()-j));
+		if ((l!=cplx(0.0))&&(norm(l)>eps)) { linear(T(1)/l); normalize(); }
+	}
+
 	template <typename T> void Constellation<T>::belyi () {
-		make_c_0(); make_l_1();
-
-		{ Polynomial<cplx> & PQ = ( ((abs(P[0])>abs(Q[0])) || (Q.degree()==0)) ? P : Q);
-		unsigned i=0; T eps = sqrt(cost()); while ((i<PQ.degree())&&(abs(PQ[i])<=eps)) ++i;
-		if (i<PQ.degree()) { cplx l = pow(PQ[i],T(1)/(PQ.degree()-i)); linear (cplx(1)/l); normalize(); } }
-
-		Polynomial<cplx> & PQ = ( ((abs(P[0])>abs(Q[0])) || (Q.degree()==0)) ? P : Q);
-		unsigned i=0; T eps = sqrt(cost()); while ((i<PQ.degree())&&(abs(PQ[i])<=eps)) ++i;
-		if (i<PQ.degree()) { cplx l = pow(PQ[i],T(1)/(PQ.degree()-i)); linear (cplx(1)/l); normalize(); }
-
-		unsigned j=0,m=0,jm=0; while (j<2*PQ.degree()) {
-			std::ostringstream os; os << *this; unsigned nm = os.str().size();
-			if ((m==0)||(nm<m)) { m=nm; jm=j; }
-			linear (std::polar (T(1), T(4)*T(atan(T(1)))/PQ.degree())); normalize(); ++j;
-		}
-		linear (std::polar (T(1), jm*T(4)*T(atan(T(1)))/PQ.degree())); normalize();
+		make_c_0(); make_l_1(); normalize();
+		make_p_1(); make_p_1(); make_p_1();
 	}
 
 	template <typename T> auto Constellation<T>::logder (cplx z, int k) const -> cplx {
@@ -216,17 +219,18 @@ namespace vb {
 	}
 
 	template <typename T> auto Constellation<T>::vcost() const -> Vector<cplx> {
-		Vector<cplx> out (P.degree()); int k=0;
+		Vector<cplx> out (P.degree()+2); int k=0;
 		for (unsigned i=0; i<w.size(); ++i) for (unsigned j=0; j<wd[i]; ++j) out[k++] = logder(w[i],j);
+		cplx sb(0); for (unsigned i=0; i<b.size(); ++i) sb += T(bd[i])*b[i]; out[k++] = sb;
+		out[k++] = l-T(1);
 		return out;
 	}
 
 	template <typename T> T Constellation<T>::cost () const	{ T out(0); for (auto z : vcost()) out += norm(z); return out; }
 
 	template <typename T> auto Constellation<T>::jacvcost () const -> Matrix<cplx> { // m_ij = \partial_j(f_i)
-		Matrix<cplx> out(P.degree(),P.degree()+2);
-		unsigned i=0; for (unsigned ii=0; ii<w.size(); ++ii) for (unsigned id=0; id<wd[ii]; ++id) {
-			unsigned j=0;
+		Matrix<cplx> out(P.degree()+2,P.degree()+2);
+		unsigned i=0,j=0; for (unsigned ii=0; ii<w.size(); ++ii) for (unsigned id=0; id<wd[ii]; ++id) { j=0;
 			for (unsigned jj=0; jj<b.size(); ++jj)	if (id==0)     	out(i,j++) = - T(10*bd[jj]) / (w[ii]-b[jj]);
 			                                      	else           	out(i,j++) = T(id*bd[jj]) / pow(w[ii]-b[jj],T(id+1));
 			for (unsigned jj=0; jj<w.size(); ++jj)	if (jj!=ii)    	out(i,j++) = T(0);
@@ -237,6 +241,8 @@ namespace vb {
 			                                      	if (id==0)     	out(i,j++) = T(10)/l; else out(i,j++) = T(0);
 			++i;
 		}
+		j=0; for (unsigned jj=0; jj<b.size(); ++jj) out(i,j++) = T(bd[jj]); while (j<out.size2()) out(i,j++) = T(0); ++i;
+		j=0; for (unsigned jj=0; jj<out.size2()-1; ++jj) out(i,j++) = T(0); out(i,j++) = T(1); ++i;
 		return out;
 	}
 
@@ -271,6 +277,19 @@ namespace vb {
 		std::cerr << std::endl;
 	}
 
+	template <typename T> void Constellation<T>::findn () {
+		Vector<cplx> x = vec(b,w,f,l); T c = cost(), old_c = c + T(1);
+		while (c<old_c) {
+			std::cerr << c << "             \r"	;
+			old_c = c; auto old_x = x;
+			auto J = jacvcost(); auto IJ=J; inv(J,IJ);
+			auto C = vcost(); x = x - prod(IJ,C);
+			readvec(x); c = cost();
+			if (c > old_c) readvec(old_x);
+		}
+		std::cerr << std::endl;
+	}
+
 	template <typename T, typename U> Constellation<U> cconvert (Constellation<T> & C) {
 		Constellation<U> CC;
 		CC.bd = C.bd; CC.fd = C.fd; CC.wd = C.wd; CC.l = C.l;
@@ -280,7 +299,7 @@ namespace vb {
 	}
 
 	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation<T> & C) {
-		double err = C.cost(); os << std::setprecision (err<1e-12 ? -log10(err)/2-3 : 3) << std::fixed; if (err==T(0)) os << std::setprecision(10);
+		double err = C.cost() - norm(C.l-T(1)); os << std::setprecision (err<1e-9 ? -log10(err)/3 : 3) << std::fixed; if (err==T(0)) os << std::setprecision(10);
 
 		os << "Black vertices / zeros: " << std::endl;
 		for (unsigned i=0; i<C.b.size(); ++i) os << "| " << C.bd[i] << "\t" << C.b[i] << std::endl;
