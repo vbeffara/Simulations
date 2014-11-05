@@ -43,6 +43,9 @@ namespace vb {
 		Vector<T>	gradcost	()	const;
 		Vector<T>	gradcost	(const Vector<T> & xy);
 
+		Matrix<cplx>	jacvcost	()	const;
+		Matrix<cplx>	jacvcost	(const Vector<T> & xy);
+
 		T	fg (const Vector<T> & xy, Vector<T> & df);
 
 		void	show	();
@@ -201,6 +204,7 @@ namespace vb {
 		for (unsigned i=0; i<w.size(); ++i) for (unsigned j=0; j<wd[i]; ++j) out[k++] = logder(w[i],j);
 		return out;
 	}
+
 	template <typename T> T Constellation<T>::cost () const	{ T out(0); for (auto z : vcost()) out += norm(z); return out; }
 
 	template <typename T> auto Constellation<T>::gradcost () const -> Vector<T> {
@@ -226,10 +230,46 @@ namespace vb {
 		return coovec (gradb,gradw,gradf,gradl);
 	}
 
-	template <typename T> auto Constellation<T>::gradcost (const Vector<T> & xy) -> Vector<T> { readcoo(xy); return gradcost(); }
+	template <typename T> auto Constellation<T>::jacvcost () const -> Matrix<cplx> { // m_{i,j} = \partial_j(f_i)
+		Matrix<cplx> out(P.degree(),P.degree()+2,cplx(0));
+		unsigned i=0; for (unsigned ii=0; ii<w.size(); ++ii) for (unsigned id=0; id<wd[ii]; ++id) { // f_i is logder(w[ii],id)
+			unsigned j=0;
+			for (unsigned jj=0; jj<b.size(); ++jj) { // v_j is b[jj]
+				if (id==0) out(i,j) = - T(10*bd[jj]) / (w[ii]-b[jj]);
+				else out(i,j) = T(id*bd[jj]) / pow(w[ii]-b[jj],T(id+1));
+				++j;
+			}
+			for (unsigned jj=0; jj<w.size(); ++jj) { // v_j is w[jj]
+				if (jj!=ii) out(i,j) = T(0);
+				else if (id==0) out(i,j) = T(10) * logder(w[ii],1);
+				else out(i,j) = - T(id) * logder(w[ii],id+1);
+				++j;
+			}
+			for (unsigned jj=0; jj<f.size(); ++jj) { // v_j is f[jj]
+				if (id==0) out(i,j) = T(10*fd[jj]) / (w[ii]-f[jj]);
+				else out(i,j) = - T(id*fd[jj]) / pow(w[ii]-f[jj],T(id+1));
+				++j;
+			}
+			{ // v_j is l
+				// w_ij = \partial_l logder(w[ii],id)
+				if (id==0) out(i,j) = T(10)/l;
+				else out(i,j) = T(0);
+				++j;
+			}
+			assert (j==out.size2());
+			++i;
+		}
+		assert (i==out.size1()); return out;
+	}
+
+	template <typename T> T   	Constellation<T>::cost    	(const Vector<T> & xy)                	{ readcoo(xy); return cost(); }
+	template <typename T> auto	Constellation<T>::gradcost	(const Vector<T> & xy) -> Vector<T>   	{ readcoo(xy); return gradcost(); }
+	template <typename T> auto	Constellation<T>::jacvcost	(const Vector<T> & xy) -> Matrix<cplx>	{ readcoo(xy); return jacvcost(); }
 
 	template <typename T> T Constellation<T>::fg (const Vector<T> & xy, Vector<T> & df) {
 		readcoo(xy);
+		Vector<cplx> V = vcost();
+		Matrix<cplx> J = jacvcost();
 
 		static std::vector<cplx> gradb(b.size()), gradw(w.size()), gradf(f.size());
 		for (auto & z : gradb) z = cplx(0); for (auto & z : gradw) z = cplx(0); for (auto & z : gradf) z = cplx(0);
@@ -250,6 +290,25 @@ namespace vb {
 				gradw[k] -= lwkll * conj(lwknext);
 			}
 		}
+
+		Vector<cplx> blabla (P.degree()+2,cplx(0));
+		for (unsigned j=0; j<blabla.size(); ++j) for (unsigned i=0; i<V.size(); ++i) blabla(j) += T(2) * V(i) * conj(J(i,j));
+
+		cplx bla;
+		// gradb[j] = 2 sum V(i) conj(J(i,j))
+		for (unsigned i=0; i<b.size(); ++i)
+			std::cerr << "|b| " << gradb[i]/blabla(i) << " --- " << gradb[i] << " --- " << blabla(i) << "\n";
+
+		// gradw[j] = 2 sum V(i) conj(J(i,nb+j))
+		for (unsigned i=0; i<w.size(); ++i)
+			std::cerr << "|w| " << gradw[i]/blabla(b.size()+i) << " --- " << gradw[i] << " --- " << blabla(b.size()+i) << "\n";
+
+		// gradf[j] = 2 sum V(i) conj(J(i,nb+nw+j))
+		for (unsigned i=0; i<f.size(); ++i)
+			std::cerr << "|f| " << gradf[i]/blabla(b.size()+w.size()+i) << " --- " << gradf[i] << " --- " << blabla(b.size()+w.size()+i) << "\n";
+
+		// gradl = 2 sum V(i) conj(J(i,nb+nw+nf))
+		std::cerr << "|l| " << gradl/blabla(b.size()+w.size()+f.size()) << " --- " << gradl << " --- " << blabla(b.size()+w.size()+f.size()) << "\n";
 
 		noalias(df) = coovec (gradb,gradw,gradf,gradl);
 		return out;
