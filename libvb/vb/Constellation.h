@@ -269,49 +269,16 @@ namespace vb {
 	template <typename T> T Constellation<T>::fg (const Vector<T> & xy, Vector<T> & df) {
 		readcoo(xy);
 		Vector<cplx> V = vcost();
-		Matrix<cplx> J = jacvcost();
+		Vector<cplx> W = prod (V,conj(jacvcost()));
 
-		static std::vector<cplx> gradb(b.size()), gradw(w.size()), gradf(f.size());
-		for (auto & z : gradb) z = cplx(0); for (auto & z : gradw) z = cplx(0); for (auto & z : gradf) z = cplx(0);
-		cplx gradl(0);
-		T out (0);
-
-		for (unsigned k=0; k<w.size(); ++k) {
-			cplx lwk0 ( logder(w[k],0) ); out += norm(lwk0); lwk0 *= T(20);
-			for (unsigned j=0; j<b.size(); ++j) { gradb[j] -= lwk0 * T(bd[j]) / conj(w[k]-b[j]); }
-			for (unsigned j=0; j<f.size(); ++j) { gradf[j] += lwk0 * T(fd[j]) / conj(w[k]-f[j]); }
-			cplx lwknext (logder(w[k],1));
-			gradw[k] += lwk0 * conj(lwknext); gradl += lwk0 / conj(l);
-
-			for (unsigned ll=1; ll<wd[k]; ++ll) {
-				cplx lwkll = lwknext; lwknext = logder(w[k],ll+1); out += norm(lwkll); lwkll *= T(2*ll);
-				for (unsigned j=0; j<b.size(); ++j) { gradb[j] += lwkll * T(bd[j]) / pow(conj(w[k]-b[j]),T(ll+1)); }
-				for (unsigned j=0; j<f.size(); ++j) { gradf[j] -= lwkll * T(fd[j]) / pow(conj(w[k]-f[j]),T(ll+1)); }
-				gradw[k] -= lwkll * conj(lwknext);
-			}
-		}
-
-		Vector<cplx> blabla (P.degree()+2,cplx(0));
-		for (unsigned j=0; j<blabla.size(); ++j) for (unsigned i=0; i<V.size(); ++i) blabla(j) += T(2) * V(i) * conj(J(i,j));
-
-		cplx bla;
-		// gradb[j] = 2 sum V(i) conj(J(i,j))
-		for (unsigned i=0; i<b.size(); ++i)
-			std::cerr << "|b| " << gradb[i]/blabla(i) << " --- " << gradb[i] << " --- " << blabla(i) << "\n";
-
-		// gradw[j] = 2 sum V(i) conj(J(i,nb+j))
-		for (unsigned i=0; i<w.size(); ++i)
-			std::cerr << "|w| " << gradw[i]/blabla(b.size()+i) << " --- " << gradw[i] << " --- " << blabla(b.size()+i) << "\n";
-
-		// gradf[j] = 2 sum V(i) conj(J(i,nb+nw+j))
-		for (unsigned i=0; i<f.size(); ++i)
-			std::cerr << "|f| " << gradf[i]/blabla(b.size()+w.size()+i) << " --- " << gradf[i] << " --- " << blabla(b.size()+w.size()+i) << "\n";
-
-		// gradl = 2 sum V(i) conj(J(i,nb+nw+nf))
-		std::cerr << "|l| " << gradl/blabla(b.size()+w.size()+f.size()) << " --- " << gradl << " --- " << blabla(b.size()+w.size()+f.size()) << "\n";
+		std::vector<cplx> gradb(b.size()), gradw(w.size()), gradf(f.size());
+		for (unsigned i=0; i<b.size(); ++i) gradb[i] = W(i);
+		for (unsigned i=0; i<w.size(); ++i) gradw[i] = W(b.size()+i);
+		for (unsigned i=0; i<f.size(); ++i) gradf[i] = W(b.size()+w.size()+i);
+		cplx gradl = W(b.size()+w.size()+f.size());
 
 		noalias(df) = coovec (gradb,gradw,gradf,gradl);
-		return out;
+		T ans(0); for (unsigned i=0; i<V.size(); ++i) ans += norm(V(i)); return ans;
 	}
 
 	template <typename T> void Constellation<T>::find () {
