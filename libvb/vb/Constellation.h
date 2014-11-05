@@ -26,10 +26,10 @@ namespace vb {
 		cplx	operator()	(cplx z)         	const { return l*P(z)/Q(z); }
 		cplx	logder    	(cplx z, int k=0)	const;
 
-		void	from_points	();
-		void	normalize  	();
-		void	linear     	(cplx u, cplx v = cplx(0));
-		T   	belyi      	();
+		void	from_points	();                        	// compute P and Q, don't touch l
+		void	linear     	(cplx u, cplx v = cplx(0));	// move the points, recompute P and Q, don't touch l
+		void	normalize  	();                        	// choose l to make ones ones
+		T   	belyi      	();                        	// does too many things at once
 
 		T           	cost    	()	const;
 		Vector<cplx>	vcost   	()	const;
@@ -65,7 +65,7 @@ namespace vb {
 	template <typename T> void Constellation_cb (const Vector<T> &, T f, void * c) {
 		Constellation<T> * C = (Constellation<T> *) c;
 		static T er (-1); T out = f;
-		if ((out<er)||(er<T(0))) { std::cerr << out << "          \r"; er = out; }
+		if ((out<er)||(er<T(0))) { std::cerr << C->l << " " << out << "          \r"; er = out; }
 		if (C->img) C->img->step();
 	}
 
@@ -134,37 +134,37 @@ namespace vb {
 	}
 
 	template <typename T> void Constellation<T>::normalize () {
-		l = cplx(1); from_points();
+		l = cplx(1);
 		cplx avg (0); unsigned d=0;
 		for (unsigned i=0; i<w.size(); ++i) { d += wd[i]; avg += (*this)(w[i])*cplx(wd[i]); }
 		l = cplx(d)/avg;
 	}
 
 	template <typename T> void Constellation<T>::linear (cplx u, cplx v) {
-		for (auto & z : b) z = u*z+v; for (auto & z : f) z = u*z+v; for (auto & z : w) z = u*z+v; normalize();
+		for (auto & z : b) z = u*z+v; for (auto & z : f) z = u*z+v; for (auto & z : w) z = u*z+v; from_points();
 	}
 
 	template <typename T> T Constellation<T>::belyi () {
 		linear(T(1),-b[0]); linear(std::polar(T(1), -arg(f.size()>0 ? f[0] : w[0])));
 
-		cplx lambda1 = pow(l,T(1)/(P.degree()-Q.degree()));                                          	linear (lambda1);
-		cplx lambda2 = pow(l,T(1)/(P.degree()-Q.degree()));                                          	linear (lambda2);
-		cplx sum (0); for (unsigned i=0; i<b.size(); ++i) sum += cplx(bd[i])*b[i]; sum /= P.degree();	linear (T(1),-sum);
+		cplx lambda1 = pow(l,T(1)/(P.degree()-Q.degree()));                                          	linear (lambda1); normalize();
+		cplx lambda2 = pow(l,T(1)/(P.degree()-Q.degree()));                                          	linear (lambda2); normalize();
+		cplx sum (0); for (unsigned i=0; i<b.size(); ++i) sum += cplx(bd[i])*b[i]; sum /= P.degree();	linear (T(1),-sum); normalize();
 
 		{ Polynomial<cplx> & PQ = ( ((abs(P[0])>abs(Q[0])) || (Q.degree()==0)) ? P : Q);
 		unsigned i=0; T eps = sqrt(cost()); while ((i<PQ.degree())&&(abs(PQ[i])<=eps)) ++i;
-		if (i<PQ.degree()) { cplx l = pow(PQ[i],T(1)/(PQ.degree()-i)); linear (cplx(1)/l); } }
+		if (i<PQ.degree()) { cplx l = pow(PQ[i],T(1)/(PQ.degree()-i)); linear (cplx(1)/l); normalize(); } }
 
 		Polynomial<cplx> & PQ = ( ((abs(P[0])>abs(Q[0])) || (Q.degree()==0)) ? P : Q);
 		unsigned i=0; T eps = sqrt(cost()); while ((i<PQ.degree())&&(abs(PQ[i])<=eps)) ++i;
-		if (i<PQ.degree()) { cplx l = pow(PQ[i],T(1)/(PQ.degree()-i)); linear (cplx(1)/l); }
+		if (i<PQ.degree()) { cplx l = pow(PQ[i],T(1)/(PQ.degree()-i)); linear (cplx(1)/l); normalize(); }
 
 		unsigned j=0,m=0,jm=0; while (j<2*PQ.degree()) {
 			std::ostringstream os; os << *this; unsigned nm = os.str().size();
 			if ((m==0)||(nm<m)) { m=nm; jm=j; }
-			linear (std::polar (T(1), T(4)*T(atan(T(1)))/PQ.degree())); ++j;
+			linear (std::polar (T(1), T(4)*T(atan(T(1)))/PQ.degree())); normalize(); ++j;
 		}
-		linear (std::polar (T(1), jm*T(4)*T(atan(T(1)))/PQ.degree()));
+		linear (std::polar (T(1), jm*T(4)*T(atan(T(1)))/PQ.degree())); normalize();
 
 		return abs(lambda1*lambda2);
 	}
