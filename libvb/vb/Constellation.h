@@ -40,9 +40,6 @@ namespace vb {
 		Vector<T>	coovec 	(const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f, const cplx & l)	const;
 		void     	readcoo	(const Vector<T> & xy);
 
-		Vector<T>	gradcost	()	const;
-		Vector<T>	gradcost	(const Vector<T> & xy);
-
 		Matrix<cplx>	jacvcost	()	const;
 		Matrix<cplx>	jacvcost	(const Vector<T> & xy);
 
@@ -207,29 +204,6 @@ namespace vb {
 
 	template <typename T> T Constellation<T>::cost () const	{ T out(0); for (auto z : vcost()) out += norm(z); return out; }
 
-	template <typename T> auto Constellation<T>::gradcost () const -> Vector<T> {
-		static std::vector<cplx> gradb(b.size()), gradw(w.size()), gradf(f.size());
-		for (auto & z : gradb) z = cplx(0); for (auto & z : gradw) z = cplx(0); for (auto & z : gradf) z = cplx(0);
-		cplx gradl(0);
-
-		for (unsigned k=0; k<w.size(); ++k) {
-			cplx lwk0 ( T(20) * logder(w[k],0) );
-			for (unsigned j=0; j<b.size(); ++j) { gradb[j] -= lwk0 * T(bd[j]) / conj(w[k]-b[j]); }
-			for (unsigned j=0; j<f.size(); ++j) { gradf[j] += lwk0 * T(fd[j]) / conj(w[k]-f[j]); }
-
-			gradw[k] += lwk0 * conj(logder(w[k],1)); gradl += lwk0 / conj(l);
-
-			for (unsigned ll=1; ll<wd[k]; ++ll) {
-				cplx lwkll ( T(2*ll) * logder(w[k],ll) );
-				for (unsigned j=0; j<b.size(); ++j) { gradb[j] += lwkll * T(bd[j]) / pow(conj(w[k]-b[j]),T(ll+1)); }
-				for (unsigned j=0; j<f.size(); ++j) { gradf[j] -= lwkll * T(fd[j]) / pow(conj(w[k]-f[j]),T(ll+1)); }
-				gradw[k] -= lwkll * conj(logder(w[k],ll+1));
-			}
-		}
-
-		return coovec (gradb,gradw,gradf,gradl);
-	}
-
 	template <typename T> auto Constellation<T>::jacvcost () const -> Matrix<cplx> {
 		Matrix<cplx> out(P.degree(),P.degree()+2);
 		unsigned i=0; for (unsigned ii=0; ii<w.size(); ++ii) for (unsigned id=0; id<wd[ii]; ++id) {
@@ -248,7 +222,6 @@ namespace vb {
 	}
 
 	template <typename T> T   	Constellation<T>::cost    	(const Vector<T> & xy)                	{ readcoo(xy); return cost(); }
-	template <typename T> auto	Constellation<T>::gradcost	(const Vector<T> & xy) -> Vector<T>   	{ readcoo(xy); return gradcost(); }
 	template <typename T> auto	Constellation<T>::jacvcost	(const Vector<T> & xy) -> Matrix<cplx>	{ readcoo(xy); return jacvcost(); }
 
 	template <typename T> T Constellation<T>::fg (const Vector<T> & xy, Vector<T> & df) {
