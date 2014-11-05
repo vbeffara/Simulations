@@ -33,7 +33,7 @@ int main (int argc, char ** argv) {
 		Permutation sigma = (alpha*phi).inverse(); Hypermap M (sigma,alpha,phi);   	if (M.genus() != g)       	continue;
 		bool good=true; for (auto & c : sigma.cycles()) if (c.size()<d) good=false;	if (!good)                	continue;
 		if (D>0) for (auto & c : sigma.cycles()) if (c.size()>D) good=false;       	if (!good)                	continue;
-		if (H['o']) for (auto & c : sigma.cycles()) if (c.size()%2) good=false;    	if (!good)                	continue;
+		// if (H['o']) for (auto & c : sigma.cycles()) if (c.size()%2) good=false; 	if (!good)                	continue;
 
 		M.normalize();
 		bool there = false; for (Hypermap & O : v) if (O==M) there = true;
@@ -55,7 +55,8 @@ int main (int argc, char ** argv) {
 				// int nsub = H['n']; if (!H['c']) { M.dessin(); --nsub; } for (int i=0; i<nsub; ++i) M.split_edges(); M.simplify(1);
 				// Toroidal T (M,H); T.pack();
 				// cout << "     Modulus: tau=" << T.m << endl << endl;
-				Constellation<double> C {M,H,H['n'],false}; C.show(); C.findm(); C.belyi(); cout << endl << C << endl; C.img->hide();
+				Constellation<long double> C {M,H,H['n']};
+				C.show(); C.findn(); C.belyi(); C.slow=true; C.img->update(); cout << endl << C << endl; C.img->pause(); C.img->hide();
 				// T.output_pdf();
 			}
 		}
