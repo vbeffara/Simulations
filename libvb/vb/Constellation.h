@@ -31,18 +31,16 @@ namespace vb {
 		void	linear     	(cplx u, cplx v = cplx(0));
 		T   	belyi      	();
 
-		Vector<cplx>	vcost	()	const;
-		T           	cost 	()	const;
-		T           	cost 	(const Vector<T> & xy);
-		void        	find 	();
-		void        	findm	();
+		T           	cost    	()	const;
+		Vector<cplx>	vcost   	()	const;
+		Matrix<cplx>	jacvcost	()	const;
+
+		void	find 	();
+		void	findm	();
 
 		Vector<cplx>	vec    	(const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f, const cplx & l)	const;
 		Vector<T>   	coovec 	(const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f, const cplx & l)	const;
 		void        	readcoo	(const Vector<T> & xy);
-
-		Matrix<cplx>	jacvcost	()	const;
-		Matrix<cplx>	jacvcost	(const Vector<T> & xy);
 
 		T	fg (const Vector<T> & xy, Vector<T> & df);
 
@@ -228,9 +226,6 @@ namespace vb {
 		return out;
 	}
 
-	template <typename T> T   	Constellation<T>::cost    	(const Vector<T> & xy)                	{ readcoo(xy); return cost(); }
-	template <typename T> auto	Constellation<T>::jacvcost	(const Vector<T> & xy) -> Matrix<cplx>	{ readcoo(xy); return jacvcost(); }
-
 	template <typename T> T Constellation<T>::fg (const Vector<T> & xy, Vector<T> & df) {
 		readcoo(xy);
 		Vector<cplx> V = vcost();
@@ -258,7 +253,7 @@ namespace vb {
 		Vector<T> x = coovec(b,w,f,l);
 		Minimizer<T> M (x.size(),Constellation_fg<T>,this); M.cb = Constellation_cb;
 		M.minimize_qn (x);
-		cost(M.x);
+		readcoo(M.x);
 		std::cerr << std::endl;
 	}
 
