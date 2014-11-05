@@ -31,10 +31,11 @@ namespace vb {
 		void	linear     	(cplx u, cplx v = cplx(0));
 		T   	belyi      	();
 
-		T   	cost 	()	const;
-		T   	cost 	(const Vector<T> & xy);
-		void	find 	();
-		void	findm	();
+		Vector<cplx>	vcost	()	const;
+		T           	cost 	()	const;
+		T           	cost 	(const Vector<T> & xy);
+		void        	find 	();
+		void        	findm	();
 
 		Vector<T>	coovec 	(const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f, const cplx & l)	const;
 		void     	readcoo	(const Vector<T> & xy);
@@ -197,13 +198,12 @@ namespace vb {
 		return bw;
 	}
 
-	template <typename T> T Constellation<T>::cost() const {
-		T out (0);
-		for (unsigned i=0; i<w.size(); ++i) for (unsigned j=0; j<wd[i]; ++j) out += norm(logder(w[i],j));
+	template <typename T> auto Constellation<T>::vcost() const -> Vector<cplx> {
+		Vector<cplx> out (P.degree()); int k=0;
+		for (unsigned i=0; i<w.size(); ++i) for (unsigned j=0; j<wd[i]; ++j) out[k++] = logder(w[i],j);
 		return out;
 	}
-
-	template <typename T> T Constellation<T>::cost (const Vector<T> & xy) { readcoo(xy); return cost(); }
+	template <typename T> T Constellation<T>::cost () const	{ T out(0); for (auto z : vcost()) out += norm(z); return out; }
 
 	template <typename T> auto Constellation<T>::gradcost () const -> Vector<T> {
 		static std::vector<cplx> gradb(b.size()), gradw(w.size()), gradf(f.size());
