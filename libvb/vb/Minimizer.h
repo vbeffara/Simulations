@@ -1,13 +1,8 @@
 #pragma once /// @file
-#include <boost/numeric/ublas/vector.hpp>
-#include <boost/numeric/ublas/matrix.hpp>
+#include <vb/LinearAlgebra.h>
 
 namespace vb {
-	template <typename T> using Vector = boost::numeric::ublas::vector<T>;
-
 	template <typename T> class Minimizer { public:
-		using Matrix = boost::numeric::ublas::matrix<T>;
-
 		Minimizer (	unsigned int n_,
 		           	T f_ (const Vector<T> &, void *),
 		           	Vector<T> g_ (const Vector<T> &, void *),
@@ -67,7 +62,7 @@ namespace vb {
 		 * In dimension N it has to maintain an N by N matrix, which limits it
 		 * to a few thousand dimensions.
 		 *
-		 * @todo Change the prototype to accept a true vb::Matrix instead
+		 * @todo Change the prototype to accept a true vb::Matrix<T> instead
 		 * of a vector, and create a matrix storage type for diagonal
 		 * matrices.
 		 *
@@ -195,7 +190,7 @@ namespace vb {
 
 		Vector<T> diag = W0;
 		if (diag.size() == 0) diag = Vector<T> (x0.size(), T(1.0));
-		Matrix W(x0.size(),x0.size());
+		Matrix<T> W(x0.size(),x0.size());
 		for (unsigned int i=0; i<x0.size(); ++i) W(i,i) = diag[i];
 
 		while (fx < old_fx) {
