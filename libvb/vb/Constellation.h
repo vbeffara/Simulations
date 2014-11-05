@@ -37,8 +37,9 @@ namespace vb {
 		void        	find 	();
 		void        	findm	();
 
-		Vector<T>	coovec 	(const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f, const cplx & l)	const;
-		void     	readcoo	(const Vector<T> & xy);
+		Vector<cplx>	vec    	(const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f, const cplx & l)	const;
+		Vector<T>   	coovec 	(const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f, const cplx & l)	const;
+		void        	readcoo	(const Vector<T> & xy);
 
 		Matrix<cplx>	jacvcost	()	const;
 		Matrix<cplx>	jacvcost	(const Vector<T> & xy);
@@ -185,6 +186,12 @@ namespace vb {
 		for (unsigned i=0; i<n3; ++i) f[i] = cplx (xy[2*n1+2*n2+2*i],xy[2*n1+2*n2+2*i+1]);
 		l = cplx (xy[2*n1+2*n2+2*n3],xy[2*n1+2*n2+2*n3+1]);
 		from_points();
+	}
+
+	template <typename T> auto Constellation<T>::vec (const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f, const cplx & l) const -> Vector<cplx> {
+		Vector<cplx> bw (b.size()+w.size()+f.size()+1); unsigned i=0;
+		for (auto z : b) { bw[i++] = z; } for (auto z : w) { bw[i++] = z; } for (auto z : f) { bw[i++] = z; } bw[i++] = l;
+		return bw;
 	}
 
 	template <typename T> Vector<T> Constellation<T>::coovec (const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f, const cplx & l) const {
