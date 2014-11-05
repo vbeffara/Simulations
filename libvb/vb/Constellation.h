@@ -230,36 +230,21 @@ namespace vb {
 		return coovec (gradb,gradw,gradf,gradl);
 	}
 
-	template <typename T> auto Constellation<T>::jacvcost () const -> Matrix<cplx> { // m_{i,j} = \partial_j(f_i)
-		Matrix<cplx> out(P.degree(),P.degree()+2,cplx(0));
-		unsigned i=0; for (unsigned ii=0; ii<w.size(); ++ii) for (unsigned id=0; id<wd[ii]; ++id) { // f_i is logder(w[ii],id)
+	template <typename T> auto Constellation<T>::jacvcost () const -> Matrix<cplx> {
+		Matrix<cplx> out(P.degree(),P.degree()+2);
+		unsigned i=0; for (unsigned ii=0; ii<w.size(); ++ii) for (unsigned id=0; id<wd[ii]; ++id) {
 			unsigned j=0;
-			for (unsigned jj=0; jj<b.size(); ++jj) { // v_j is b[jj]
-				if (id==0) out(i,j) = - T(10*bd[jj]) / (w[ii]-b[jj]);
-				else out(i,j) = T(id*bd[jj]) / pow(w[ii]-b[jj],T(id+1));
-				++j;
-			}
-			for (unsigned jj=0; jj<w.size(); ++jj) { // v_j is w[jj]
-				if (jj!=ii) out(i,j) = T(0);
-				else if (id==0) out(i,j) = T(10) * logder(w[ii],1);
-				else out(i,j) = - T(id) * logder(w[ii],id+1);
-				++j;
-			}
-			for (unsigned jj=0; jj<f.size(); ++jj) { // v_j is f[jj]
-				if (id==0) out(i,j) = T(10*fd[jj]) / (w[ii]-f[jj]);
-				else out(i,j) = - T(id*fd[jj]) / pow(w[ii]-f[jj],T(id+1));
-				++j;
-			}
-			{ // v_j is l
-				// w_ij = \partial_l logder(w[ii],id)
-				if (id==0) out(i,j) = T(10)/l;
-				else out(i,j) = T(0);
-				++j;
-			}
-			assert (j==out.size2());
+			for (unsigned jj=0; jj<b.size(); ++jj)	if (id==0)     	out(i,j++) = - T(10*bd[jj]) / (w[ii]-b[jj]);
+			                                      	else           	out(i,j++) = T(id*bd[jj]) / pow(w[ii]-b[jj],T(id+1));
+			for (unsigned jj=0; jj<w.size(); ++jj)	if (jj!=ii)    	out(i,j++) = T(0);
+			                                      	else if (id==0)	out(i,j++) = T(10) * logder(w[ii],1);
+			                                      	else           	out(i,j++) = - T(id) * logder(w[ii],id+1);
+			for (unsigned jj=0; jj<f.size(); ++jj)	if (id==0)     	out(i,j++) = T(10*fd[jj]) / (w[ii]-f[jj]);
+			                                      	else           	out(i,j++) = - T(id*fd[jj]) / pow(w[ii]-f[jj],T(id+1));
+			                                      	if (id==0)     	out(i,j++) = T(10)/l; else out(i,j++) = T(0);
 			++i;
 		}
-		assert (i==out.size1()); return out;
+		return out;
 	}
 
 	template <typename T> T   	Constellation<T>::cost    	(const Vector<T> & xy)                	{ readcoo(xy); return cost(); }

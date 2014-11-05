@@ -13,11 +13,6 @@ int main (int argc, char ** argv) {
 
 	Constellation<double> C2 {M,H,H['n']}; if (H['v']) C2.show(); C2.findm();
 
-	// Matrix<cpx> J (C2.jacvcost());
-	// cerr << setprecision(10) << fixed;
-	// cerr << "det: " << det(J) << endl;
-	// printmath(cerr,J); cerr << endl;
-
 	if (H['v']&&H['p']) { C2.belyi(); C2.slow=true; C2.img->update(); C2.img->pause(); } delete C2.img;
 	if (!(H['q']||H['l'])) { C2.belyi(); cout << endl << C2; return 0; }
 
