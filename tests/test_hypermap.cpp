@@ -16,5 +16,5 @@ int main (int argc, char ** argv) {
 	if (H['v']) { C.show(); C.belyi(); C.slow=true; C.img->update(); C.img->pause(); delete C.img; }
 	if (!H['q']) { C.belyi(); cout << endl << C; return 0; }
 
-	Constellation<float128>	Cq = cconvert <long double,float128> (C); Cq.findm(); Cq.belyi(); cout << endl << Cq;
+	Constellation<float128>	Cq = cconvert <long double,float128> (C); Cq.findn(); Cq.belyi(); cout << endl << Cq;
 }

@@ -34,9 +34,10 @@ namespace vb {
 		void	make_p_1   	();                        	// try to have reasonable scaling
 		void	belyi      	();                        	// does too many things at once
 
-		T           	cost    	()	const;
-		Vector<cplx>	vcost   	()	const;
-		Matrix<cplx>	jacvcost	()	const;
+		T           	cost    	()     	const;
+		T           	cost    	(int k)	const;
+		Vector<cplx>	vcost   	()     	const;
+		Matrix<cplx>	jacvcost	()     	const;
 
 		void	find 	();
 		void	findm	();
@@ -228,6 +229,12 @@ namespace vb {
 
 	template <typename T> T Constellation<T>::cost () const	{ T out(0); for (auto z : vcost()) out += norm(z); return out; }
 
+	template <typename T> T Constellation<T>::cost (int k) const {
+		Vector<cplx> v (vcost()); T out(0);
+		for (unsigned i=0; i<v.size()-k; ++i) out += norm(v(i));
+		return out;
+	}
+
 	template <typename T> auto Constellation<T>::jacvcost () const -> Matrix<cplx> { // m_ij = \partial_j(f_i)
 		Matrix<cplx> out(P.degree()+2,P.degree()+2);
 		unsigned i=0,j=0; for (unsigned ii=0; ii<w.size(); ++ii) for (unsigned id=0; id<wd[ii]; ++id) { j=0;
@@ -299,8 +306,11 @@ namespace vb {
 	}
 
 	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation<T> & C) {
-		double err = C.cost() - norm(C.l-T(1)); os << std::setprecision (err<1e-9 ? -log10(err)/3 : 3) << std::fixed; if (err==T(0)) os << std::setprecision(10);
+		T err = C.cost(1); int nd = std::max (5,-int(log10(err))/2-7); if (err==T(0)) nd=10;
+		os << std::setprecision(nd);
+		os << std::fixed;
 
+		os << "Keeping " << nd << " digits." << std::endl;
 		os << "Black vertices / zeros: " << std::endl;
 		for (unsigned i=0; i<C.b.size(); ++i) os << "| " << C.bd[i] << "\t" << C.b[i] << std::endl;
 		os << std::endl;
