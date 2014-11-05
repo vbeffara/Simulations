@@ -43,6 +43,7 @@ namespace vb {
 		Vector<cplx>	vec    	(const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f, const cplx & l)	const;
 		Vector<T>   	coovec 	(const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f, const cplx & l)	const;
 		void        	readcoo	(const Vector<T> & xy);
+		void        	readvec	(const Vector<cplx> & xy);
 
 		T	fg (const Vector<T> & xy, Vector<T> & df);
 
@@ -67,7 +68,7 @@ namespace vb {
 	template <typename T> void Constellation_cb (const Vector<T> &, T f, void * c) {
 		Constellation<T> * C = (Constellation<T> *) c;
 		static T er (-1); T out = f;
-		if ((out<er)||(er<T(0))) { std::cerr << C->P[C->P.degree()-1] << "\t" << C->l << "\t" << out << "          \r"; er = out; }
+		if ((out<er)||(er<T(0))) { std::cerr << out << "          \n"; er = out; }
 		if (C->img) C->img->step();
 	}
 
@@ -187,6 +188,15 @@ namespace vb {
 		for (unsigned i=0; i<n2; ++i) w[i] = cplx (xy[2*n1+2*i],xy[2*n1+2*i+1]);
 		for (unsigned i=0; i<n3; ++i) f[i] = cplx (xy[2*n1+2*n2+2*i],xy[2*n1+2*n2+2*i+1]);
 		l = cplx (xy[2*n1+2*n2+2*n3],xy[2*n1+2*n2+2*n3+1]);
+		from_points();
+	}
+
+	template <typename T> void Constellation<T>::readvec (const Vector<cplx> & xy) {
+		unsigned n1 = b.size(), n2 = w.size(), n3 = f.size();
+		for (unsigned i=0; i<n1; ++i) b[i] = xy[i];
+		for (unsigned i=0; i<n2; ++i) w[i] = xy[n1+i];
+		for (unsigned i=0; i<n3; ++i) f[i] = xy[n1+n2+i];
+		l = xy[n1+n2+n3];
 		from_points();
 	}
 
