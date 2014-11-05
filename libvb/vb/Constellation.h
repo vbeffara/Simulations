@@ -227,15 +227,9 @@ namespace vb {
 	template <typename T> T Constellation<T>::fg (const Vector<T> & xy, Vector<T> & df) {
 		readcoo(xy);
 		Vector<cplx> V = vcost();
-		Vector<cplx> W = prod (V,conj(jacvcost()));
+		Vector<cplx> W = prod(V,conj(jacvcost()));
 
-		std::vector<cplx> gradb(b.size()), gradw(w.size()), gradf(f.size());
-		for (unsigned i=0; i<b.size(); ++i) gradb[i] = W(i);
-		for (unsigned i=0; i<w.size(); ++i) gradw[i] = W(b.size()+i);
-		for (unsigned i=0; i<f.size(); ++i) gradf[i] = W(b.size()+w.size()+i);
-		cplx gradl = W(b.size()+w.size()+f.size());
-
-		noalias(df) = coovec (gradb,gradw,gradf,gradl);
+		for (unsigned i=0; i<W.size(); ++i) { df(2*i) = real(W(i)); df(2*i+1) = imag(W(i)); }
 		T ans(0); for (unsigned i=0; i<V.size(); ++i) ans += norm(V(i)); return ans;
 	}
 
