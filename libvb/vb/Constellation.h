@@ -29,7 +29,9 @@ namespace vb {
 		void	from_points	();                        	// compute P and Q, don't touch l
 		void	linear     	(cplx u, cplx v = cplx(0));	// move the points, recompute P and Q, don't touch l
 		void	normalize  	();                        	// choose l to make ones ones
-		T   	belyi      	();                        	// does too many things at once
+		void	make_l_1   	();                        	// rescale to make l equal to 1
+		void	make_c_0   	();                        	// shift everybody to make sum(black)=0
+		void	belyi      	();                        	// does too many things at once
 
 		T           	cost    	()	const;
 		Vector<cplx>	vcost   	()	const;
@@ -65,7 +67,7 @@ namespace vb {
 	template <typename T> void Constellation_cb (const Vector<T> &, T f, void * c) {
 		Constellation<T> * C = (Constellation<T> *) c;
 		static T er (-1); T out = f;
-		if ((out<er)||(er<T(0))) { std::cerr << C->l << " " << out << "          \r"; er = out; }
+		if ((out<er)||(er<T(0))) { std::cerr << C->P[C->P.degree()-1] << "\t" << C->l << "\t" << out << "          \r"; er = out; }
 		if (C->img) C->img->step();
 	}
 
@@ -111,7 +113,7 @@ namespace vb {
 			}
 		}
 
-		from_points(); T l = belyi(); S.linear(double(l)); S.output_pdf();
+		from_points(); make_c_0(); make_l_1();
 	}
 
 	template <typename T> Constellation<T>::Constellation () {}
@@ -144,12 +146,16 @@ namespace vb {
 		for (auto & z : b) z = u*z+v; for (auto & z : f) z = u*z+v; for (auto & z : w) z = u*z+v; from_points();
 	}
 
-	template <typename T> T Constellation<T>::belyi () {
-		linear(T(1),-b[0]); linear(std::polar(T(1), -arg(f.size()>0 ? f[0] : w[0])));
+	template <typename T> void Constellation<T>::make_l_1 () {
+		normalize(); linear (pow(l,T(1)/T(P.degree()-Q.degree()))); l=T(1);
+	}
 
-		cplx lambda1 = pow(l,T(1)/(P.degree()-Q.degree()));                                          	linear (lambda1); normalize();
-		cplx lambda2 = pow(l,T(1)/(P.degree()-Q.degree()));                                          	linear (lambda2); normalize();
-		cplx sum (0); for (unsigned i=0; i<b.size(); ++i) sum += cplx(bd[i])*b[i]; sum /= P.degree();	linear (T(1),-sum); normalize();
+	template <typename T> void Constellation<T>::make_c_0 () {
+		cplx sum(0); for (unsigned i=0; i<b.size(); ++i) sum += T(bd[i])*b[i]; sum /= P.degree(); linear (T(1),-sum); normalize();
+	}
+
+	template <typename T> void Constellation<T>::belyi () {
+		make_c_0(); make_l_1();
 
 		{ Polynomial<cplx> & PQ = ( ((abs(P[0])>abs(Q[0])) || (Q.degree()==0)) ? P : Q);
 		unsigned i=0; T eps = sqrt(cost()); while ((i<PQ.degree())&&(abs(PQ[i])<=eps)) ++i;
@@ -165,8 +171,6 @@ namespace vb {
 			linear (std::polar (T(1), T(4)*T(atan(T(1)))/PQ.degree())); normalize(); ++j;
 		}
 		linear (std::polar (T(1), jm*T(4)*T(atan(T(1)))/PQ.degree())); normalize();
-
-		return abs(lambda1*lambda2);
 	}
 
 	template <typename T> auto Constellation<T>::logder (cplx z, int k) const -> cplx {
@@ -209,7 +213,7 @@ namespace vb {
 
 	template <typename T> T Constellation<T>::cost () const	{ T out(0); for (auto z : vcost()) out += norm(z); return out; }
 
-	template <typename T> auto Constellation<T>::jacvcost () const -> Matrix<cplx> {
+	template <typename T> auto Constellation<T>::jacvcost () const -> Matrix<cplx> { // m_ij = \partial_j(f_i)
 		Matrix<cplx> out(P.degree(),P.degree()+2);
 		unsigned i=0; for (unsigned ii=0; ii<w.size(); ++ii) for (unsigned id=0; id<wd[ii]; ++id) {
 			unsigned j=0;
