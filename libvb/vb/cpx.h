@@ -8,6 +8,10 @@
 #include <quadmath.h>
 #endif
 
+#ifdef HAVE_GMP
+#include <boost/multiprecision/gmp.hpp>
+#endif
+
 namespace vb {
 	using cpx = std::complex<double>;
 	using lcpx = std::complex<long double>;
@@ -19,7 +23,7 @@ namespace vb {
 		T eps = pow(T(10),-os.precision());
 		if (fabs(x-round(x)) <= eps) {
 			if (nom1 && (lround(x)==-1)) { os << "-"; return; }
-			if ((!no1) || (lround(x)!=1)) os << int(round(x));
+			if ((!no1) || (lround(x)!=1)) { T r(round(x)); os << int(r); }
 		} else os << x;
 	}
 
@@ -50,7 +54,18 @@ namespace vb {
 		bool neg = false; if (imag(z)<0) { z = conj(z); neg = true; }
 		os << "("; foi(os,real(z)); os << (neg ? " - " : " + "); foi(os,imag(z),true); os << " I)"; return os;
     }
-#else
-    using float128 = long double;
+#endif
+
+#ifdef HAVE_GMP
+	using gmp100 = boost::multiprecision::mpf_float_100;
+	using cpx100 = std::complex<gmp100>;
+
+    static std::ostream & operator<< (std::ostream & os, cpx100 z) {
+		double eps = pow(10.0,-os.precision());
+		if (fabs(imag(z)) <= eps) { foi(os,real(z)); return os; }
+		if (fabs(real(z)) <= eps) { foi(os,imag(z),true,true); os << " I"; return os; }
+		bool neg = false; if (imag(z)<0) { z = conj(z); neg = true; }
+		os << "("; foi(os,real(z)); os << (neg ? " - " : " + "); foi(os,imag(z),true); os << " I)"; return os;
+    }
 #endif
 };
