@@ -151,7 +151,7 @@ namespace vb {
 	}
 
 	template <typename T> void Constellation<T>::make_l_1 () {
-		normalize(); linear (pow(l,T(1)/T(P.degree()-Q.degree()))); l=T(1);
+		normalize(); linear (pow(l,cplx(T(1)/T(P.degree()-Q.degree())))); l=T(1);
 	}
 
 	template <typename T> void Constellation<T>::make_c_0 () {
@@ -168,8 +168,8 @@ namespace vb {
 		else if (i==j) is_P = (norm(P[i])>norm(Q[i]));
 		else is_P = (i<j);
 
-		if ((is_P) && (i<P.degree()))  l = pow(P[i],T(1.0)/T(P.degree()-i));
-		if ((!is_P) && (j<Q.degree())) l = pow(Q[j],T(1.0)/T(Q.degree()-j));
+		if ((is_P) && (i<P.degree()))  l = pow(P[i],cplx(T(1)/T(P.degree()-i)));
+		if ((!is_P) && (j<Q.degree())) l = pow(Q[j],cplx(T(1)/T(Q.degree()-j)));
 		if ((l!=cplx(0.0))&&(norm(l)>eps)) { linear(T(1)/l); normalize(); }
 	}
 
@@ -181,8 +181,8 @@ namespace vb {
 	template <typename T> auto Constellation<T>::logder (cplx z, int k) const -> cplx {
 		if (k==0) return T(10)*log((*this)(z));
 		cplx sum (0);
-		for (unsigned i=0; i<b.size(); ++i) sum += cplx(bd[i]) / pow (z-b[i], T(k));
-		for (unsigned i=0; i<f.size(); ++i) sum -= cplx(fd[i]) / pow (z-f[i], T(k));
+		for (unsigned i=0; i<b.size(); ++i) sum += cplx(bd[i]) / pow (z-b[i], cplx(k));
+		for (unsigned i=0; i<f.size(); ++i) sum -= cplx(fd[i]) / pow (z-f[i], cplx(k));
 		return sum;
 	}
 
@@ -238,13 +238,13 @@ namespace vb {
 	template <typename T> auto Constellation<T>::jacvcost () const -> Matrix<cplx> { // m_ij = \partial_j(f_i)
 		Matrix<cplx> out(P.degree()+2,P.degree()+2);
 		unsigned i=0,j=0; for (unsigned ii=0; ii<w.size(); ++ii) for (unsigned id=0; id<wd[ii]; ++id) { j=0;
-			for (unsigned jj=0; jj<b.size(); ++jj)	if (id==0)     	out(i,j++) = - T(10*bd[jj]) / (w[ii]-b[jj]);
-			                                      	else           	out(i,j++) = T(id*bd[jj]) / pow(w[ii]-b[jj],T(id+1));
+			for (unsigned jj=0; jj<b.size(); ++jj)	if (id==0)     	out(i,j++) = T(- T(10*bd[jj])) / (w[ii]-b[jj]);
+			                                      	else           	out(i,j++) = T(id*bd[jj]) / pow(w[ii]-b[jj],cplx(id+1));
 			for (unsigned jj=0; jj<w.size(); ++jj)	if (jj!=ii)    	out(i,j++) = T(0);
 			                                      	else if (id==0)	out(i,j++) = T(10) * logder(w[ii],1);
-			                                      	else           	out(i,j++) = - T(id) * logder(w[ii],id+1);
+			                                      	else           	out(i,j++) = T(- T(id)) * logder(w[ii],id+1);
 			for (unsigned jj=0; jj<f.size(); ++jj)	if (id==0)     	out(i,j++) = T(10*fd[jj]) / (w[ii]-f[jj]);
-			                                      	else           	out(i,j++) = - T(id*fd[jj]) / pow(w[ii]-f[jj],T(id+1));
+			                                      	else           	out(i,j++) = T(- T(id*fd[jj])) / pow(w[ii]-f[jj],cplx(id+1));
 			                                      	if (id==0)     	out(i,j++) = T(10)/l; else out(i,j++) = T(0);
 			++i;
 		}
@@ -306,7 +306,7 @@ namespace vb {
 	}
 
 	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation<T> & C) {
-		T err = C.cost(1); int nd = std::max (5,-int(log10(err))/2-7); if (err==T(0)) nd=10;
+		T err (C.cost(1)); T lerr (-log10(err)); int nd = std::max (5,int(lerr)/2-7); if (err==T(0)) nd=10;
 		os << std::setprecision(nd);
 		os << std::fixed;
 
