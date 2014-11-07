@@ -34,17 +34,16 @@ namespace vb {
 		void	make_p_1   	();                        	// try to have reasonable scaling
 		void	belyi      	();                        	// does too many things at once
 
-		T           	cost    	()     	const;
-		T           	cost    	(int k)	const;
-		Vector<cplx>	vcost   	()     	const;
-		Matrix<cplx>	jacvcost	()     	const;
+		T           	cost    	()	const;
+		Vector<cplx>	vcost   	()	const;
+		Matrix<cplx>	jacvcost	()	const;
 
 		void	find 	();
 		void	findm	();
 		void	findn	();
 
-		Vector<cplx>	vec    	(const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f, const cplx & l)	const;
-		Vector<T>   	coovec 	(const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f, const cplx & l)	const;
+		Vector<cplx>	vec    	(const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f)	const;
+		Vector<T>   	coovec 	(const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f)	const;
 		void        	readcoo	(const Vector<T> & xy);
 		void        	readvec	(const Vector<cplx> & xy);
 
@@ -159,7 +158,7 @@ namespace vb {
 	}
 
 	template <typename T> void Constellation<T>::make_p_1 () {
-		T eps = pow(cost()-norm(l-T(1.0)),T(.25)); if (eps > T(.1)) eps = T(.1);
+		T eps = pow(cost(),T(.25)); if (eps > T(.1)) eps = T(.1);
 		unsigned i=0; while (norm(P[i])<eps) ++i;
 		unsigned j=0; while (norm(Q[j])<eps) ++j;
 		bool is_P; cplx l(1);
@@ -191,7 +190,6 @@ namespace vb {
 		for (unsigned i=0; i<n1; ++i) b[i] = cplx (xy[2*i],xy[2*i+1]);
 		for (unsigned i=0; i<n2; ++i) w[i] = cplx (xy[2*n1+2*i],xy[2*n1+2*i+1]);
 		for (unsigned i=0; i<n3; ++i) f[i] = cplx (xy[2*n1+2*n2+2*i],xy[2*n1+2*n2+2*i+1]);
-		l = cplx (xy[2*n1+2*n2+2*n3],xy[2*n1+2*n2+2*n3+1]);
 		from_points();
 	}
 
@@ -200,43 +198,34 @@ namespace vb {
 		for (unsigned i=0; i<n1; ++i) b[i] = xy[i];
 		for (unsigned i=0; i<n2; ++i) w[i] = xy[n1+i];
 		for (unsigned i=0; i<n3; ++i) f[i] = xy[n1+n2+i];
-		l = xy[n1+n2+n3];
 		from_points();
 	}
 
-	template <typename T> auto Constellation<T>::vec (const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f, const cplx & l) const -> Vector<cplx> {
-		Vector<cplx> bw (b.size()+w.size()+f.size()+1); unsigned i=0;
-		for (auto z : b) { bw[i++] = z; } for (auto z : w) { bw[i++] = z; } for (auto z : f) { bw[i++] = z; } bw[i++] = l;
+	template <typename T> auto Constellation<T>::vec (const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f) const -> Vector<cplx> {
+		Vector<cplx> bw (b.size()+w.size()+f.size()); unsigned i=0;
+		for (auto z : b) { bw[i++] = z; } for (auto z : w) { bw[i++] = z; } for (auto z : f) { bw[i++] = z; }
 		return bw;
 	}
 
-	template <typename T> Vector<T> Constellation<T>::coovec (const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f, const cplx & l) const {
-		Vector<T> bw (2*(b.size()+w.size()+f.size()+1)); unsigned i=0;
+	template <typename T> Vector<T> Constellation<T>::coovec (const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f) const {
+		Vector<T> bw (2*(b.size()+w.size()+f.size())); unsigned i=0;
 		for (auto z : b) { bw[i++] = (real(z)); bw[i++] = (imag(z)); }
 		for (auto z : w) { bw[i++] = (real(z)); bw[i++] = (imag(z)); }
 		for (auto z : f) { bw[i++] = (real(z)); bw[i++] = (imag(z)); }
-		bw[i++] = (real(l)); bw[i++] = (imag(l));
 		return bw;
 	}
 
 	template <typename T> auto Constellation<T>::vcost() const -> Vector<cplx> {
-		Vector<cplx> out (P.degree()+2); int k=0;
+		Vector<cplx> out (P.degree()+1); int k=0;
 		for (unsigned i=0; i<w.size(); ++i) for (unsigned j=0; j<wd[i]; ++j) out[k++] = logder(w[i],j);
 		cplx sb(0); for (unsigned i=0; i<b.size(); ++i) sb += T(bd[i])*b[i]; out[k++] = sb;
-		out[k++] = l-T(1);
 		return out;
 	}
 
 	template <typename T> T Constellation<T>::cost () const	{ T out(0); for (auto z : vcost()) out += norm(z); return out; }
 
-	template <typename T> T Constellation<T>::cost (int k) const {
-		Vector<cplx> v (vcost()); T out(0);
-		for (unsigned i=0; i<v.size()-k; ++i) out += norm(v(i));
-		return out;
-	}
-
 	template <typename T> auto Constellation<T>::jacvcost () const -> Matrix<cplx> { // m_ij = \partial_j(f_i)
-		Matrix<cplx> out(P.degree()+2,P.degree()+2);
+		Matrix<cplx> out(P.degree()+1,P.degree()+1);
 		unsigned i=0,j=0; for (unsigned ii=0; ii<w.size(); ++ii) for (unsigned id=0; id<wd[ii]; ++id) { j=0;
 			for (unsigned jj=0; jj<b.size(); ++jj)	if (id==0)     	out(i,j++) = T(- T(10*bd[jj])) / (w[ii]-b[jj]);
 			                                      	else           	out(i,j++) = T(id*bd[jj]) / pow(w[ii]-b[jj],cplx(id+1));
@@ -245,11 +234,9 @@ namespace vb {
 			                                      	else           	out(i,j++) = T(- T(id)) * logder(w[ii],id+1);
 			for (unsigned jj=0; jj<f.size(); ++jj)	if (id==0)     	out(i,j++) = T(10*fd[jj]) / (w[ii]-f[jj]);
 			                                      	else           	out(i,j++) = T(- T(id*fd[jj])) / pow(w[ii]-f[jj],cplx(id+1));
-			                                      	if (id==0)     	out(i,j++) = T(10)/l; else out(i,j++) = T(0);
 			++i;
 		}
 		j=0; for (unsigned jj=0; jj<b.size(); ++jj) out(i,j++) = T(bd[jj]); while (j<out.size2()) out(i,j++) = T(0); ++i;
-		j=0; for (unsigned jj=0; jj<out.size2()-1; ++jj) out(i,j++) = T(0); out(i,j++) = T(1); ++i;
 		return out;
 	}
 
@@ -263,7 +250,7 @@ namespace vb {
 	}
 
 	template <typename T> void Constellation<T>::find () {
-		Vector<T> bw = coovec(b,w,f,l);
+		make_l_1(); Vector<T> bw = coovec(b,w,f);
 
 		T c = cost(bw), eps = sqrt(c)/10, nc = c;
 		while (eps>1e-100) {
@@ -277,7 +264,7 @@ namespace vb {
 	}
 
 	template <typename T> void Constellation<T>::findm () {
-		Vector<T> x = coovec(b,w,f,l);
+		make_l_1(); Vector<T> x = coovec(b,w,f);
 		Minimizer<T> M (x.size(),Constellation_fg<T>,this); M.cb = Constellation_cb;
 		M.minimize_qn (x);
 		readcoo(M.x);
@@ -285,12 +272,12 @@ namespace vb {
 	}
 
 	template <typename T> void Constellation<T>::findn () {
-		Vector<cplx> x = vec(b,w,f,l); T c = cost(), old_c = c + T(1);
+		make_l_1(); Vector<cplx> x = vec(b,w,f); Matrix<cplx> IJ (P.degree()+1,P.degree()+1);
+		T c = cost(), old_c = c + T(1);
 		while (c<old_c) {
 			std::cerr << c << "             \r"	;
 			old_c = c; auto old_x = x;
-			auto J = jacvcost(); auto IJ=J; inv(J,IJ);
-			auto C = vcost(); x = x - prod(IJ,C);
+			inv(jacvcost(),IJ); x -= prod(IJ,vcost());
 			readvec(x); c = cost();
 			if (c > old_c) readvec(old_x);
 		}
@@ -306,7 +293,7 @@ namespace vb {
 	}
 
 	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation<T> & C) {
-		T err (C.cost(1)); T lerr (-log10(err)); int nd = std::max (5,int(lerr)/2-7); if (err==T(0)) nd=10;
+		T err (C.cost()); T lerr (-log10(err)); int nd = std::max (5,int(lerr)/2-7); if (err==T(0)) nd=10;
 		os << std::setprecision(nd);
 		os << std::fixed;
 
