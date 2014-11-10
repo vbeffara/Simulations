@@ -5,29 +5,22 @@
 namespace vb {
 	using bigint = boost::multiprecision::number<boost::multiprecision::gmp_int>;
 
-	template <typename T> Polynomial<T> guess (T x, T eps);
-	template <typename T> Polynomial<T> guess (T x, int leps, unsigned d);
+	template <typename T> Polynomial<bigint> guess (T x, T eps);
+	template <typename T> Polynomial<bigint> guess (T x, int leps, unsigned d);
 
 	template <typename T> Polynomial<complex<T>> guess (complex<T> x, T eps);
 	template <typename T> Polynomial<complex<T>> guess (complex<T> x, int leps, unsigned d);
 
-	/***************************************************************************************/
+	/* Real-valued version **************************************************************************************/
 
-	template <typename T> Polynomial<T> guess (T x, T eps) {
+	template <typename T> Polynomial<bigint> guess (T x, T eps) {
 		int leps (T(-log10(eps))); assert (leps>20);
-		Polynomial<T> P;
-		for (unsigned d=2; d<=10; ++d) { P = guess(x,leps,d); if ((P.degree()>1) || (P[1]!=1)) break; }
+		Polynomial<bigint> P;
+		for (unsigned d=2; d<=10; ++d) { P = guess(x,leps,d); if (P.degree()>0) break; }
 		return P;
 	}
 
-	template <typename T> Polynomial<complex<T>> guess (complex<T> x, T eps) {
-		int leps (T(-log10(eps))); assert (leps>20);
-		Polynomial<complex<T>> P;
-		for (unsigned d=2; d<=10; ++d) { P = guess(x,leps,d); if ((P.degree()>1) || (P[1]!=complex<T>(1))) break; }
-		return P;
-	}
-
-	template <typename T> Polynomial<T> guess (T x, int leps, unsigned d) {
+	template <typename T> Polynomial<bigint> guess (T x, int leps, unsigned d) {
 		unsigned ndig = leps-12; bigint m = pow(bigint(10),ndig);
 		T t(1);
 		ZZ_mat<mpz_t> M(d+1, d+2);
@@ -36,17 +29,26 @@ namespace vb {
 		lllReduction(M);
 		vector<Z_NR<mpz_t>> o; shortestVector(M,o);
 
-		Polynomial<T> P(vector<T>(d+1));
+		Polynomial<bigint> P(vector<bigint>(d+1));
 
 		for (unsigned j=0; j<d+1; ++j) {
 			bigint ai (o[j].getData());
 			if (ai!=0) for (unsigned i=0; i<=d; ++i) P[i] += ai * bigint(M[j][i+1].getData());
 		}
 
-		Polynomial<T> PP = P.derivative();
+		Polynomial<bigint> PP = P.derivative();
 		T xx=x, ox=x+1; while (abs(xx-ox) > pow(T(.1),ndig+20)) { ox = xx; xx -= P(xx)/PP(xx); }
 
-		if (abs(x-xx)*pow(T(10),ndig) > 1e-10) P = Polynomial<T> {{-x,1}};
+		if (abs(x-xx)*pow(T(10),ndig) > 1e-10) P = Polynomial<bigint> {{0}};
+		return P;
+	}
+
+	/* Complex-valued version **************************************************************************************/
+
+	template <typename T> Polynomial<complex<T>> guess (complex<T> x, T eps) {
+		int leps (T(-log10(eps))); assert (leps>20);
+		Polynomial<complex<T>> P;
+		for (unsigned d=2; d<=10; ++d) { P = guess(x,leps,d); if ((P.degree()>1) || (P[1]!=complex<T>(1))) break; }
 		return P;
 	}
 

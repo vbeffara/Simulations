@@ -14,8 +14,10 @@ int main (int argc, char ** argv) {
 
 	cout << setprecision(100);
 	for (auto x : xs) {
-		cout << "   x = " << x << endl;
-		cout << "P[z] = " << guess (x, gmp100(1e-80)) << endl << endl;
+		cout << "x = " << x << endl;
+		Polynomial<bigint> P = guess (x, gmp100(1e-80));
+		if (P.degree()>0) cout << "  root of " << P << endl;
+		cout << endl;
 	}
 
 	cpx100 z (gmp100("0.1722882583776278670500267959231284336682007863854856624427574750255049273322927690638923632"),

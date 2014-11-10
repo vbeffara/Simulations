@@ -10,7 +10,7 @@ namespace vb {
 
 		using std::vector<T>::at; using std::vector<T>::size; using std::vector<T>::back; using std::vector<T>::push_back;
 
-		T operator() (T z) const;
+		template <typename U> U operator() (U z) const;
 
 		unsigned     	degree    	() const;
 		Polynomial<T>	derivative	() const;
@@ -64,9 +64,9 @@ namespace vb {
 		return PQ;
 	}
 
-	template <typename T> T Polynomial<T>::operator() (T z) const {
-		T out = back();
-		for (unsigned i=size()-1; i>0; --i) out = out*z+at(i-1);
+	template <typename T> template <typename U> U Polynomial<T>::operator() (U z) const {
+		U out = U(back());
+		for (unsigned i=size()-1; i>0; --i) out = out*z+U(at(i-1));
 		return out;
 	}
 
@@ -74,9 +74,9 @@ namespace vb {
 		double eps = pow(10.0,-os.precision());
 		bool first=true;
 		for (unsigned j=P.degree()+1; j>0; --j) { unsigned i=j-1;
-			if (abs(P[i])	<= eps) continue;
+			if (abs(P[i]) <= abs(T(eps))) continue;
 			os << (first ? "" : " + ");
-			if ((i==0) || (abs(P[i]-T(1))>eps)) os << P[i];
+			if ((i==0) || (abs(P[i]-T(1)) > abs(T(eps)))) os << P[i];
 			if (i>0) os << " " << P.v; if (i>1) os << "^" << i;
 			first = false;
 		}
