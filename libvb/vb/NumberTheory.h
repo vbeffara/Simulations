@@ -3,13 +3,11 @@
 #include <fplll.h>
 
 namespace vb {
-	using bigint = boost::multiprecision::number<boost::multiprecision::gmp_int>;
-
 	template <typename T> Polynomial<bigint> guess (T x, T eps);
 	template <typename T> Polynomial<bigint> guess (T x, int leps, unsigned d);
 
-	template <typename T> Polynomial<complex<T>> guess (complex<T> x, T eps);
-	template <typename T> Polynomial<complex<T>> guess (complex<T> x, int leps, unsigned d);
+	template <typename T> Polynomial<cpxint> guess (complex<T> x, T eps);
+	template <typename T> Polynomial<cpxint> guess (complex<T> x, int leps, unsigned d);
 
 	/* Real-valued version **************************************************************************************/
 
@@ -45,14 +43,14 @@ namespace vb {
 
 	/* Complex-valued version **************************************************************************************/
 
-	template <typename T> Polynomial<complex<T>> guess (complex<T> x, T eps) {
+	template <typename T> Polynomial<cpxint> guess (complex<T> x, T eps) {
 		int leps (T(-log10(eps))); assert (leps>20);
-		Polynomial<complex<T>> P;
-		for (unsigned d=2; d<=10; ++d) { P = guess(x,leps,d); if ((P.degree()>1) || (P[1]!=complex<T>(1))) break; }
+		Polynomial<cpxint> P;
+		for (unsigned d=2; d<=10; ++d) { P = guess(x,leps,d); if (P.degree()>0) break; }
 		return P;
 	}
 
-	template <typename T> Polynomial<complex<T>> guess (complex<T> x, int leps, unsigned d) {
+	template <typename T> Polynomial<cpxint> guess (complex<T> x, int leps, unsigned d) {
 		unsigned ndig = leps-12; bigint m = pow(bigint(10),ndig);
 		complex<T> t(1);
 		ZZ_mat<mpz_t> M(2*(d+1), 2*(d+2));
@@ -68,21 +66,18 @@ namespace vb {
 		lllReduction(M);
 		vector<Z_NR<mpz_t>> o; shortestVector(M,o);
 
-		vector<T> tmp(2*(d+1));
+		vector<bigint> tmp(2*(d+1));
 		for (unsigned j=0; j<2*(d+1); ++j) {
 			bigint ai (o[j].getData());
 			if (ai!=0) for (unsigned i=0; i<2*(d+1); ++i) tmp[i] += ai * bigint(M[j][i+2].getData());
 		}
 
-		Polynomial<complex<T>> P(vector<complex<T>>(d+1)); for (unsigned i=0; i<=d; ++i) P[i] = complex<T> (tmp[2*i],tmp[2*i+1]);
+		Polynomial<cpxint> P(vector<cpxint>(d+1)); for (unsigned i=0; i<=d; ++i) P[i] = cpxint (tmp[2*i],tmp[2*i+1]);
 
-		Polynomial<complex<T>> PP = P.derivative();
-		complex<T> xx=x, ox=x+complex<T>(1); while (abs(xx-ox) > pow(T(.1),ndig+20)) {
-			if (P(xx)==complex<T>(0)) break;
-			ox = xx; xx -= P(xx)/PP(xx);
-		}
+		Polynomial<cpxint> PP = P.derivative();
+		complex<T> xx=x, ox=x+complex<T>(1); while (abs(xx-ox) > pow(T(.1),ndig+20)) { ox = xx; xx -= P(xx)/PP(xx); }
 
-		if (abs(x-xx)*pow(T(10),ndig) > 1e-10) P = Polynomial<complex<T>> {{-x,complex<T>(1)}};
+		if (abs(x-xx)*pow(T(10),ndig) > 1e-10) P = std::vector<cpxint> {{0}};
 		return P;
 	}
 }

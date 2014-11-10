@@ -83,4 +83,30 @@ namespace vb {
 		if (first) os << 0;
 		return os;
 	}
+
+	template <> std::ostream & operator<< (std::ostream & os, const Polynomial<bigint> & P) {
+		bool first=true;
+		for (unsigned j=P.degree()+1; j>0; --j) { unsigned i=j-1;
+			if (P[i] == 0) continue;
+			os << (first ? "" : " + ");
+			if ((i==0) || (P[i] != 1)) os << P[i];
+			if (i>0) os << " " << P.v; if (i>1) os << "^" << i;
+			first = false;
+		}
+		if (first) os << 0;
+		return os;
+	}
+
+	template <> std::ostream & operator<< (std::ostream & os, const Polynomial<cpxint> & P) {
+		bool first=true;
+		for (unsigned j=P.degree()+1; j>0; --j) { unsigned i=j-1;
+			if (P[i] == cpxint(0)) continue;
+			os << (first ? "" : " + ");
+			if ((i==0) || (P[i] != cpxint(1))) os << P[i];
+			if (i>0) os << " " << P.v; if (i>1) os << "^" << i;
+			first = false;
+		}
+		if (first) os << 0;
+		return os;
+	}
 }
