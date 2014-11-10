@@ -14,7 +14,8 @@ namespace vb {
 	template <typename T> Polynomial<bigint> guess (T x, T eps) {
 		int leps (T(-log10(eps))); assert (leps>20);
 		Polynomial<bigint> P;
-		for (unsigned d=2; d<=10; ++d) { P = guess(x,leps,d); if (P.degree()>0) break; }
+		for (unsigned d=1; d<=10; ++d) { P = guess(x,leps,d); if (P.degree()>0) break; }
+		if (P[P.degree()]<0) P = bigint(-1) * P;
 		return P;
 	}
 
@@ -46,7 +47,9 @@ namespace vb {
 	template <typename T> Polynomial<cpxint> guess (complex<T> x, T eps) {
 		int leps (T(-log10(eps))); assert (leps>20);
 		Polynomial<cpxint> P;
-		for (unsigned d=2; d<=10; ++d) { P = guess(x,leps,d); if (P.degree()>0) break; }
+		for (unsigned d=1; d<=10; ++d) { P = guess(x,leps,d); if (P.degree()>0) break; }
+		if (abs(imag(P[P.degree()])) > abs(real(P[P.degree()]))) P = cpxint(0,1) * P;
+		if (real(P[P.degree()]) < 0) P = cpxint(-1) * P;
 		return P;
 	}
 

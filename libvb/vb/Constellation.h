@@ -1,7 +1,7 @@
 #pragma once
 #include <vb/Bitmap.h>
 #include <vb/Minimizer.h>
-#include <vb/Polynomial.h>
+#include <vb/NumberTheory.h>
 #include <vb/Spheroidal.h>
 #include <iomanip>
 #include <sstream>
@@ -307,6 +307,40 @@ namespace vb {
 		for (unsigned i=0; i<C.f.size(); ++i) os << "| " << C.fd[i] << "\t" << C.f[i] << std::endl;
 		os << std::endl;
 		os << "lambda := " << C.l << std::endl;
+		os << "P[z_]  := " << C.P << std::endl;
+		os << "Q[z_]  := " << C.Q << std::endl;
+		return os;
+	}
+
+	template <> std::ostream & operator<< (std::ostream & os, const Constellation<gmp100> & C) {
+		using T = gmp100;
+		T err (C.cost()); T lerr (-log10(err)); int nd = std::max (5,int(lerr)/2-7); if (err==T(0)) nd=10;
+		os << std::setprecision(nd) << std::fixed;
+		os << "Keeping " << nd << " digits." << std::endl << std::endl;
+
+		os << "Black vertices / zeros: " << std::endl;
+		for (unsigned i=0; i<C.b.size(); ++i) {
+			os << "| " << C.bd[i] << "\t" << C.b[i] << std::endl;
+			Polynomial<cpxint> P = guess (C.b[i],T(pow(T(.1),nd)));
+			if (P.degree()>0) os << "|\t\troot of " << P << std::endl;
+		}
+		os << std::endl;
+		os << "White vertices / ones: " << std::endl;
+		for (unsigned i=0; i<C.w.size(); ++i) {
+			os << "| " << C.wd[i] << "\t" << C.w[i] << std::endl;
+			Polynomial<cpxint> P = guess (C.w[i],T(pow(T(.1),nd)));
+			if (P.degree()>0) os << "|\t\troot of " << P << std::endl;
+		}
+		os << std::endl;
+		os << "Red vertices / poles: " << std::endl;
+		for (unsigned i=0; i<C.f.size(); ++i) {
+			os << "| " << C.fd[i] << "\t" << C.f[i] << std::endl;
+			Polynomial<cpxint> P = guess (C.f[i],T(pow(T(.1),nd)));
+			if (P.degree()>0) os << "|\t\troot of " << P << std::endl;
+		}
+		os << std::endl;
+		os << "lambda := " << C.l << std::endl;
+		Polynomial<cpxint> L = guess (C.l,T(pow(T(.1),nd))); if (L.degree()>0) os << "L[z_]  := " << L << std::endl;
 		os << "P[z_]  := " << C.P << std::endl;
 		os << "Q[z_]  := " << C.Q << std::endl;
 		return os;
