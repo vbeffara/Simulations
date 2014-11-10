@@ -99,12 +99,29 @@ public:
 		for (int i=3*w()/4; i<w(); ++i)  	put(coo(i,h()-1),3);
 	}
 
-	void bc_123 (int d) {
+	void bc_123 (int d=0) {
 		b=1; int c=0;
 		for (int i=0; i<w()-1; ++i) { put(coo(i,0),c);          	c = (c+1)%q; }
 		for (int i=0; i<h()-1; ++i) { put(coo(w()-1,i),c);      	c = (c+1)%q; }
 		for (int i=0; i<w()-1; ++i) { put(coo(w()-1-i,h()-1),c);	c = (c+1)%q; }
 		for (int i=0; i<h()-1; ++i) { put(coo(0,h()-1-i),c);    	c = (c+1)%q; }
+		for (int i=0; i<d; ++i) for (int j=0; j<d; ++j) put(coo(i,j),0);
+	}
+
+	void bc_12123333 () {
+		b=1;
+		for (int i=0; i<w(); ++i) for (int j=0; j<h(); ++j) put(coo(i,j), (j>h()/2) ? ((i+j)%2) : 2);
+	}
+
+	void bc_1231234444 () {
+		b=1;
+		for (int i=0; i<w(); ++i) for (int j=0; j<h(); ++j) put(coo(i,j), (j>h()/2) ? ((i+j)%3) : 3);
+	}
+
+	void bc_mostlyfree (int d=0) {
+		for (int i=0; i<w(); ++i) for (int j=0; j<h(); ++j) put(coo(i,j),q);
+		for (int i=1; i<w()-1; ++i) for (int j=1; j<h()-1; ++j) put(coo(i,j),prng.uniform_int(q));
+		b=1;
 		for (int i=0; i<d; ++i) for (int j=0; j<d; ++j) put(coo(i,j),0);
 	}
 
@@ -117,7 +134,7 @@ int main (int argc, char ** argv) {
 	CL_Parser CLP (argc,argv,"n=500,q=3,b=1");
 	Potts P(CLP);
 	for (auto & c : P) c=1;
-	P.bc_123(10);
+	P.bc_mostlyfree(50);
 	P.show();
 
 	Console W;
