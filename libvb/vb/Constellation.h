@@ -170,11 +170,11 @@ namespace vb {
 		if ((is_P) && (i<P.degree()))  l = pow(P[i],cplx(T(1)/T(P.degree()-i)));
 		if ((!is_P) && (j<Q.degree())) l = pow(Q[j],cplx(T(1)/T(Q.degree()-j)));
 		if ((l!=cplx(0.0))&&(norm(l)>eps)) { linear(T(1)/l); normalize(); }
+		if (norm(l-cplx(1))>eps) make_p_1();
 	}
 
 	template <typename T> void Constellation<T>::belyi () {
-		make_c_0(); make_l_1(); normalize();
-		make_p_1(); make_p_1(); make_p_1();
+		make_c_0(); make_l_1(); normalize(); make_p_1();
 	}
 
 	template <typename T> auto Constellation<T>::logder (cplx z, int k) const -> cplx {
@@ -294,10 +294,9 @@ namespace vb {
 
 	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation<T> & C) {
 		T err (C.cost()); T lerr (-log10(err)); int nd = std::max (5,int(lerr)/2-7); if (err==T(0)) nd=10;
-		os << std::setprecision(nd);
-		os << std::fixed;
-
+		os << std::setprecision(nd) << std::fixed;
 		os << "Keeping " << nd << " digits." << std::endl;
+
 		os << "Black vertices / zeros: " << std::endl;
 		for (unsigned i=0; i<C.b.size(); ++i) os << "| " << C.bd[i] << "\t" << C.b[i] << std::endl;
 		os << std::endl;
