@@ -3,7 +3,7 @@
 #include <vb/Hypermap.h>
 #include <vb/Image.h>
 #include <vb/LinearAlgebra.h>
-#include <vb/NumberTheory.h>
+#include <vb/Polynomial.h>
 
 namespace vb {
 	template <typename T> class Constellation { public:
@@ -48,14 +48,6 @@ namespace vb {
 	};
 
 	template <typename T, typename U> Constellation<U> cconvert (Constellation<T> & C);
-
-	template <typename T> T Constellation_fg (const Vector<T> & xy, Vector<T> & df, void * c) {
-		Constellation<T> * C = (Constellation<T> *) c; return C->fg(xy,df);
-	}
-
-	template <typename T> void Constellation_cb (const Vector<T> &, T f, void *) {
-		static T er (-1); if ((f<er)||(er<T(0))) { std::cerr << f << "          \r"; er = f; }
-	}
 
 	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation<T> & C);
 }

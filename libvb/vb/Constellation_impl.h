@@ -1,6 +1,7 @@
 #pragma once
 #include <vb/Constellation.h>
 #include <vb/Minimizer.h>
+#include <vb/NumberTheory.h>
 #include <vb/Spheroidal.h>
 #include <iomanip>
 #include <sstream>
@@ -178,6 +179,14 @@ namespace vb {
 			if (!flag) eps /= 4; else eps *= 2;
 		}
 		std::cerr << std::endl;
+	}
+
+	template <typename T> T Constellation_fg (const Vector<T> & xy, Vector<T> & df, void * c) {
+		Constellation<T> * C = (Constellation<T> *) c; return C->fg(xy,df);
+	}
+
+	template <typename T> void Constellation_cb (const Vector<T> &, T f, void *) {
+		static T er (-1); if ((f<er)||(er<T(0))) { std::cerr << f << "          \r"; er = f; }
 	}
 
 	template <typename T> void Constellation<T>::findm () {
