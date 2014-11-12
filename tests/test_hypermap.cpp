@@ -13,7 +13,7 @@ int main (int argc, char ** argv) {
 
 	Constellation<double> C {M,H,H['n']};
 	C.findn();
-	if (H['v']) { C.show(); C.belyi(); C.slow=true; C.img->update(); C.img->pause(); delete C.img; }
+	if (H['v']) { C.belyi(); Image * I = C.draw(600); I->show(); I->pause(); I->hide(); delete I; }
 	if (!H['q']) { C.belyi(); cout << endl << C; return 0; }
 
 	#ifdef HAVE_COMPLEX_GMP

@@ -1,21 +1,11 @@
 #pragma once
-#include <vb/Bitmap.h>
 #include <vb/Hub.h>
 #include <vb/Hypermap.h>
+#include <vb/Image.h>
 #include <vb/LinearAlgebra.h>
 #include <vb/NumberTheory.h>
 
 namespace vb {
-	template <typename T> class Constellation;
-
-	template <typename T> class CPixel { public:
-		CPixel (Constellation<T> * C_, std::complex<T> z_ = T(0)) : C(C_), z(z_) {}
-		operator Color() { if (C->slow || prng.bernoulli(.01)) c = imag((*C)(C->center + C->scale*z))>0 ? WHITE : BLUE; return c; }
-		Constellation<T> * C;
-		std::complex<T> z;
-		Color c;
-	};
-
 	template <typename T> class Constellation { public:
 		using cplx = std::complex<T>;
 
@@ -48,29 +38,23 @@ namespace vb {
 
 		T	fg (const Vector<T> & xy, Vector<T> & df);
 
-		void	show	();
+		Image *	draw	(unsigned l) const;
 
 		std::vector<cplx>    	b,w,f;
 		std::vector<unsigned>	bd,wd,fd;
 
-		cplx             	l = T(1);
-		Polynomial<cplx> 	P,Q;
-		Bitmap<CPixel<T>>	*img = 0;
-		cplx center; T scale; bool slow=false;
+		cplx            	l = T(1);
+		Polynomial<cplx>	P,Q;
 	};
 
 	template <typename T, typename U> Constellation<U> cconvert (Constellation<T> & C);
 
 	template <typename T> T Constellation_fg (const Vector<T> & xy, Vector<T> & df, void * c) {
-		Constellation<T> * C = (Constellation<T> *) c;
-		return C->fg(xy,df);
+		Constellation<T> * C = (Constellation<T> *) c; return C->fg(xy,df);
 	}
 
-	template <typename T> void Constellation_cb (const Vector<T> &, T f, void * c) {
-		Constellation<T> * C = (Constellation<T> *) c;
-		static T er (-1); T out = f;
-		if ((out<er)||(er<T(0))) { std::cerr << out << "          \r"; er = out; }
-		if (C->img) C->img->step();
+	template <typename T> void Constellation_cb (const Vector<T> &, T f, void *) {
+		static T er (-1); if ((f<er)||(er<T(0))) { std::cerr << f << "          \r"; er = f; }
 	}
 
 	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation<T> & C);
