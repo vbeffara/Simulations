@@ -9,7 +9,7 @@ namespace vb {
 	template <typename T> class Constellation { public:
 		using cplx = std::complex<T>;
 
-		Constellation (Hypermap M, Hub H, int n=3, bool d=true);
+		Constellation (Hypermap M, Hub H, int n=3);
 		Constellation ();
 
 		cplx	operator()	(cplx z)         	const { return l*P(z)/Q(z); }
