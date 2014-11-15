@@ -241,10 +241,10 @@ namespace vb {
 			if (P.degree()>0) os << "|\t\troot of " << P << std::endl;
 		}
 		os << std::endl;
-		os << "lambda := " << C.l << std::endl;
-		Polynomial<cpxint> L = guess (C.l,T(pow(T(.1),nd))); if (L.degree()>0) os << "L[z_]  := " << L << std::endl;
-		os << "P[z_]  := " << C.P << std::endl;
-		os << "Q[z_]  := " << C.Q << std::endl;
+		os << u8"λ     := " << C.l << std::endl;
+		Polynomial<cpxint> L = guess (C.l,T(pow(T(.1),nd))); if (L.degree()>0) os << u8"Λ[z_] := " << L << std::endl;
+		os << "P[z_] := " << C.P << std::endl;
+		os << "Q[z_] := " << C.Q << std::endl;
 		return os;
 	}
 
