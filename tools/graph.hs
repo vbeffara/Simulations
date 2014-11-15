@@ -12,8 +12,7 @@ main :: IO ()
 main = do
     args <- getArgs
     putStrLn "digraph {"
-    putStrLn "  ordering = \"out\""
-    putStrLn "  mclimit = 100"
+    putStrLn "  rankdir = LR"
     files <- find always (extension ==? ".h") "libvb"
     mapM_ (print . drop 6) files
     contents <- mapM readFile files
