@@ -1,12 +1,11 @@
 #pragma once /// \file
 #include <vb/PRNG.h>
 #include <vb/coo.h>
-#include <vector>
 
 namespace vb {
 	template <typename T> class Array_iterator;
 
-	template <typename T> class Array { public: 
+	template <typename T> class Array { public:
 		Array (int w, int h, T d) :  W(w), H(h), data (w*h,d) {};
 
 		T &      	at	(coo z)      	{ return data[z.x + W*z.y]; }

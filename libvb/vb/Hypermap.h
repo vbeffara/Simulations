@@ -1,7 +1,6 @@
 #pragma once /// @file
 #include <vb/Permutation.h>
 #include <vb/cpx.h>
-#include <iostream>
 
 namespace vb {
 	class Hypermap {

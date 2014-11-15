@@ -1,7 +1,5 @@
 #pragma once
-
 #include <vb/Image.h>
-#include <vector>
 
 namespace vb {
 	struct QuadIndex { coo z; int d; };
