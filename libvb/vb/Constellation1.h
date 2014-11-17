@@ -24,8 +24,8 @@ namespace vb {
 		// void	make_p_1   	();                        	// try to have reasonable scaling
 		// void	belyi      	();                        	// does too many things at once
 
-		cplx	my_sigma	(cplx z) const;
-		cplx	my_zeta 	(cplx z) const;
+		cplx	my_lsigma	(cplx z) const;
+		cplx	my_zeta  	(cplx z) const;
 
 		T           	cost    	()	const;
 		Vector<cplx>	vcost   	()	const;
@@ -46,6 +46,7 @@ namespace vb {
 		std::vector<unsigned>	bd,wd,fd;
 
 		cplx	l = T(1), tau = cplx(0,1), q=q_(tau);
+		cplx	et1,th1p0;
 		int 	dx,dy,d;
 	};
 

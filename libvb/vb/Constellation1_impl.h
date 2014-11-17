@@ -21,7 +21,7 @@ namespace vb {
 	template <typename T> Constellation1<T>::Constellation1 () {}
 
 	template <typename T> void Constellation1<T>::from_points () {
-		q = q_(tau);
+		q = q_(tau); et1 = eta1_(q); th1p0 = theta1prime_(0,q);
 		cplx sz(0); for (unsigned i=0; i<b.size(); ++i) sz += T(bd[i])*b[i];
 		cplx sp(0); for (unsigned i=0; i<f.size(); ++i) sp += T(fd[i])*f[i];
 		dy = round(imag(sz-sp)/imag(tau)); dx = round(real(sz-sp-T(dy)*tau));
@@ -66,14 +66,14 @@ namespace vb {
 	//	make_c_0(); make_l_1(); normalize(); make_p_1();
 	// }
 
-	template <typename T> auto Constellation1<T>::my_sigma (cplx z) const -> cplx { return exp(eta1_(q)*z*z) * theta1_(M_PI*z,q) / (M_PI*theta1prime_(0,q)); }
-	template <typename T> auto Constellation1<T>::my_zeta (cplx z) const -> cplx { return theta1prime_(M_PI*z,q) / theta1_(M_PI*z,q); }
+	template <typename T> auto Constellation1<T>::my_lsigma	(cplx z) const -> cplx { return et1*z*z + log(theta1_(M_PI*z,q) / (M_PI*th1p0)); }
+	template <typename T> auto Constellation1<T>::my_zeta  	(cplx z) const -> cplx { return theta1prime_(M_PI*z,q) / theta1_(M_PI*z,q); }
 
 	template <typename T> auto Constellation1<T>::logder (cplx z, int k) const -> cplx {
 		if (k==0) { // 0th : sum(log(sigma)) = log(prod(sigma))
-			cplx out (l * my_sigma (z-b[0]+T(dx)+tau*T(dy)));
-			for (unsigned i=0; i<b.size(); ++i) out *= pow(my_sigma(z-b[i]),bd[i] - (i==0?1:0));
-			for (unsigned i=0; i<f.size(); ++i) out /= pow(my_sigma(z-f[i]),fd[i]);
+			cplx out (l * exp(my_lsigma(z-b[0]+T(dx)+tau*T(dy))));
+			for (unsigned i=0; i<b.size(); ++i) out *= exp(my_lsigma(z-b[i]) * T(bd[i] - (i==0?1:0)));
+			for (unsigned i=0; i<f.size(); ++i) out /= exp(my_lsigma(z-f[i]) * T(fd[i]));
 			return log(out);
 		}
 		if (k==1) { // 1st : sum(sigma'/sigma) = sum(zeta)
