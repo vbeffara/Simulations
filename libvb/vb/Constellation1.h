@@ -45,7 +45,7 @@ namespace vb {
 		std::vector<cplx>    	b,w,f;
 		std::vector<unsigned>	bd,wd,fd;
 
-		cplx	l = T(1), tau = cplx(0,1), q=q_(tau);
+		cplx	ll = T(0), tau = cplx(0,1), q=q_(tau);
 		cplx	et1,th1p0;
 		int 	dx,dy,d;
 	};

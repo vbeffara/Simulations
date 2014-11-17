@@ -28,10 +28,10 @@ namespace vb {
 	}
 
 	template <typename T> void Constellation1<T>::normalize () {
-		l = cplx(1);
+		ll = cplx(0);
 		cplx avg (0); unsigned d=0;
-		for (unsigned i=0; i<w.size(); ++i) { d += wd[i]; avg += (*this)(w[i])*cplx(wd[i]); }
-		l = cplx(d)/avg;
+		for (unsigned i=0; i<w.size(); ++i) { d += wd[i]; avg += logder(w[i],0) * T(wd[i]); }
+		ll = - avg/T(d);
 	}
 
 	// template <typename T> void Constellation1<T>::linear (cplx u, cplx v) {
@@ -66,15 +66,15 @@ namespace vb {
 	//	make_c_0(); make_l_1(); normalize(); make_p_1();
 	// }
 
-	template <typename T> auto Constellation1<T>::my_lsigma	(cplx z) const -> cplx { return et1*z*z + log(theta1_(M_PI*z,q) / (M_PI*th1p0)); }
+	template <typename T> auto Constellation1<T>::my_lsigma	(cplx z) const -> cplx { return et1*z*z + log(theta1_(M_PI*z,q)); }
 	template <typename T> auto Constellation1<T>::my_zeta  	(cplx z) const -> cplx { return theta1prime_(M_PI*z,q) / theta1_(M_PI*z,q); }
 
 	template <typename T> auto Constellation1<T>::logder (cplx z, int k) const -> cplx {
 		if (k==0) { // 0th : sum(log(sigma)) = log(prod(sigma))
-			cplx out (l * exp(my_lsigma(z-b[0]+T(dx)+tau*T(dy))));
-			for (unsigned i=0; i<b.size(); ++i) out *= exp(my_lsigma(z-b[i]) * T(bd[i] - (i==0?1:0)));
-			for (unsigned i=0; i<f.size(); ++i) out /= exp(my_lsigma(z-f[i]) * T(fd[i]));
-			return log(out);
+			cplx out (ll + my_lsigma(z-b[0]+T(dx)+tau*T(dy)));
+			for (unsigned i=0; i<b.size(); ++i) out += my_lsigma(z-b[i]) * T(bd[i] - (i==0?1:0));
+			for (unsigned i=0; i<f.size(); ++i) out -= my_lsigma(z-f[i]) * T(fd[i]);
+			return out - cplx(0,2*M_PI) * T(round(real(out/cplx(0,2*M_PI))));
 		}
 		if (k==1) { // 1st : sum(sigma'/sigma) = sum(zeta)
 			cplx out (my_zeta(z-b[0]+T(dx)+tau*T(dy)));
@@ -189,7 +189,7 @@ namespace vb {
 
 	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation1<T> & C) {
 		os << "tau = " << C.tau << std::endl;
-		os << "log(lambda) = " << log(C.l) << std::endl;
+		os << "log(lambda) = " << C.ll << std::endl;
 		os << "log(cost) = " << log(C.cost()) << std::endl;
 		os << std::endl;
 		T err (C.cost()); T lerr (-log10(err)); int nd = std::max (5,int(lerr)/2-7); if (err==T(0)) nd=10;
