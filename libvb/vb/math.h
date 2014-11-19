@@ -22,13 +22,13 @@ namespace vb {
 
 	template <typename T> std::complex<T> theta1_ (const std::complex<T> & z, const std::complex<T> & q) {
 		std::complex<T> out(0), old(1);
-		for (int n=0; out!=old; ++n) { old=out; out += 2.0 * pow(-1,n) * pow(q, (n+.5)*(n+.5)) * sin(cpx(2*n+1)*z); }
+		for (int n=0; out!=old; ++n) { old=out; out += std::complex<T>(2.0 * pow(T(-1),n)) * std::complex<T> ( pow(q, (n+.5)*(n+.5)) * sin(T(2*n+1)*z) ); }
 		return out;
 	}
 
 	template <typename T> std::complex<T> theta1prime_ (const std::complex<T> & z, const std::complex<T> & q) {
 		std::complex<T> out(0), old(1);
-		for (int n=0; out!=old; ++n) { old=out; out += 2.0 * pow(-1,n) * pow(q, (n+.5)*(n+.5)) * cpx(2*n+1) * cos(cpx(2*n+1)*z); }
+		for (int n=0; out!=old; ++n) { old=out; out += std::complex<T>(2.0 * pow(T(-1),n)) * std::complex<T> ( pow(q, (n+.5)*(n+.5)) * T(2*n+1) * cos(T(2*n+1)*z) ); }
 		return out;
 	}
 
@@ -38,8 +38,8 @@ namespace vb {
 		return out;
 	}
 
-	static cpx theta1third_ (cpx z, cpx q) {
-		cpx out(0), old(1);
+	template <typename T> std::complex<T> theta1third_ (const std::complex<T> & z, const std::complex<T> & q) {
+		std::complex<T> out(0), old(1);
 		for (int n=0; out!=old; ++n) { old=out; out -= 2.0 * pow(-1,n) * pow(q, (n+.5)*(n+.5)) * pow(cpx(2*n+1),3) * cos(cpx(2*n+1)*z); }
 		return out;
 	}
@@ -63,7 +63,7 @@ namespace vb {
 	}
 
 	template <typename T> std::complex<T> eta1_ (const std::complex<T> & q) {
-		return - ( 16*atan(1)*atan(1)/ 6 ) * theta1third_(0,q) / theta1prime_(std::complex<T>(0),q);
+		return std::complex<T>(T(-16)*atan(T(1))*atan(T(1))/T(6)) * theta1third_(std::complex<T>(0),q) / theta1prime_(std::complex<T>(0),q);
 	}
 
 	template <typename T> std::complex<T> sigma_ (const std::complex<T> & z, const std::complex<T> & q) {

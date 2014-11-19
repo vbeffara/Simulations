@@ -36,7 +36,7 @@ namespace vb {
 	}
 
 	template <typename T> auto Constellation1<T>::my_lsigma	(cplx z) const -> cplx { return et1*z*z + log(theta1_(cplx(T(4)*atan(T(1)))*z,q)); }
-	template <typename T> auto Constellation1<T>::my_zeta  	(cplx z) const -> cplx { return theta1prime_(M_PI*z,q) / theta1_(M_PI*z,q); }
+	template <typename T> auto Constellation1<T>::my_zeta  	(cplx z) const -> cplx { return theta1prime_(cplx(T(4)*atan(T(1)))*z,q) / theta1_(cplx(T(4)*atan(T(1)))*z,q); }
 
 	template <typename T> auto Constellation1<T>::logderp (cplx z, int k) const -> cplx {
 		if (k==0) return my_lsigma (z);	 // 0th : sum(log(sigma)) = log(prod(sigma))
