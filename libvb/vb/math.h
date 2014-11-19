@@ -18,16 +18,16 @@ namespace vb {
 	static unsigned long long binom  	(unsigned long long n, unsigned long long k)	{ return fact(n)/fact(k)/fact(n-k);	}
 	static unsigned long long catalan	(unsigned long long n)                      	{ return binom(2*n,n)/(n+1);       	}
 
-	static cpx q_ (cpx tau) { return exp(I*M_PI*tau); }
+	template <typename T> std::complex<T> q_ (const std::complex<T> & tau) { return exp(std::complex<T>(0,1)*T(4*atan(T(1)))*tau); }
 
-	static cpx theta1_ (cpx z, cpx q) {
-		cpx out(0), old(1);
+	template <typename T> std::complex<T> theta1_ (const std::complex<T> & z, const std::complex<T> & q) {
+		std::complex<T> out(0), old(1);
 		for (int n=0; out!=old; ++n) { old=out; out += 2.0 * pow(-1,n) * pow(q, (n+.5)*(n+.5)) * sin(cpx(2*n+1)*z); }
 		return out;
 	}
 
-	static cpx theta1prime_ (cpx z, cpx q) {
-		cpx out(0), old(1);
+	template <typename T> std::complex<T> theta1prime_ (const std::complex<T> & z, const std::complex<T> & q) {
+		std::complex<T> out(0), old(1);
 		for (int n=0; out!=old; ++n) { old=out; out += 2.0 * pow(-1,n) * pow(q, (n+.5)*(n+.5)) * cpx(2*n+1) * cos(cpx(2*n+1)*z); }
 		return out;
 	}
@@ -62,12 +62,12 @@ namespace vb {
 		return out;
 	}
 
-	static cpx eta1_ (cpx q) {
-		return - ( M_PI*M_PI / 6 ) * theta1third_(0,q) / theta1prime_(0,q);
+	template <typename T> std::complex<T> eta1_ (const std::complex<T> & q) {
+		return - ( 16*atan(1)*atan(1)/ 6 ) * theta1third_(0,q) / theta1prime_(std::complex<T>(0),q);
 	}
 
-	static cpx sigma_ (cpx z, cpx q) {
-		return exp(eta1_(q)*z*z) * theta1_(M_PI*z,q) / (M_PI*theta1prime_(0,q));
+	template <typename T> std::complex<T> sigma_ (const std::complex<T> & z, const std::complex<T> & q) {
+		return exp(eta1_(q)*z*z) * theta1_(M_PI*z,q) / (M_PI*theta1prime_(0.0,q));
 	}
 
 	static cpx e1_ (cpx q) {
