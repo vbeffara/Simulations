@@ -13,16 +13,12 @@ namespace vb {
 		Constellation1 (Hypermap M, Hub H, int n=3);
 		Constellation1 ();
 
-		cplx	operator()	(cplx z)         	const;
-		cplx	logder    	(cplx z, int k=0)	const;
+		cplx	operator()	(cplx z)	const;
+		cplx	logderp (cplx z, int k) const;
+		cplx	logder	(cplx z, int k)	const;
 
-		void   	from_points	();                        	// compute P and Q, don't touch l
-		// void	linear     	(cplx u, cplx v = cplx(0));	// move the points, recompute P and Q, don't touch l
-		void   	normalize  	();                        	// choose l to make ones ones
-		// void	make_l_1   	();                        	// rescale to make l equal to 1
-		// void	make_c_0   	();                        	// shift everybody to make sum(black)=0
-		// void	make_p_1   	();                        	// try to have reasonable scaling
-		// void	belyi      	();                        	// does too many things at once
+		void	from_points	();	// compute P and Q, don't touch l
+		void	normalize  	();	// choose l to make ones ones
 
 		cplx	my_lsigma	(cplx z) const;
 		cplx	my_zeta  	(cplx z) const;
@@ -30,12 +26,12 @@ namespace vb {
 		T           	cost    	()	const;
 		Vector<cplx>	vcost   	()	const;
 		Matrix<cplx>	jacvcost	()	const;
+		Matrix<cplx>	jacnum  	();
 
 		void	find 	();
-		void	findm	();
 		void	findn	();
 
-		Vector<cplx>	vec    	(const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f, const cplx & t)	const;
+		Vector<cplx>	vec    	(const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f, const cplx & t, const cplx & l)	const;
 		void        	readvec	(const Vector<cplx> & xy);
 
 		T	fg (const Vector<T> & xy, Vector<T> & df);

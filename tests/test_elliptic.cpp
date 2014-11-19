@@ -50,7 +50,7 @@ int main (int argc, char ** argv) {
 
 	Hub H ("Testing 1",argc,argv,"n=3,m=228,v,q,g=lat_csquare,p");
 	Hypermap M = HLib().at(H['g']); cout << M << endl;
-	Constellation1<double> C {M,H,H['n']}; C.find();
+	Constellation1<double> C {M,H,H['n']}; C.findn();
 	cout << C << endl;
-	if (H['v']) { Image * img = C.draw(600); img->show(); img->pause(); }
+	if (H['v']) { Image * img = C.draw(800); img->show(); img->pause(); }
 }
