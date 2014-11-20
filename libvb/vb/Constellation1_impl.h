@@ -48,7 +48,7 @@ namespace vb {
 		cplx out (logderp (z-b[0]+T(dx)+tau*T(dy), k));
 		for (unsigned i=0; i<b.size(); ++i) out += logderp (z-b[i], k) * T(bd[i] - (i==0?1:0));
 		for (unsigned i=0; i<f.size(); ++i) out -= logderp (z-f[i], k) * T(fd[i]);
-		if (k==0) { out += ll; out -= cplx(0,2*M_PI) * T(round(real(out/cplx(0,2*M_PI)))); }
+		if (k==0) { out += ll; out -= cplx(0,T(8)*atan(T(1))) * T(round(real(out/cplx(0,T(8)*atan(T(1)))))); }
 		if (k==1) { out *= M_PI; }
 		return out;
 	}
@@ -70,7 +70,6 @@ namespace vb {
 		for (auto z : w) { bw[i++] = z; }
 		for (auto z : f) { bw[i++] = z; }
 		bw[i++] = t; bw[i++] = l;
-		static bool first=true; if (first) { first=false; std::cerr << bw.size() << " variables" << std::endl; }
 		return bw;
 	}
 
@@ -79,7 +78,6 @@ namespace vb {
 		for (unsigned i=0; i<w.size(); ++i) for (unsigned j=0; j<wd[i]; ++j) out[k++] = logder(w[i],j);
 		cplx sz (T(-dx)+cplx(T(-dy)*tau)); for (unsigned i=0; i<b.size(); ++i) sz += T(bd[i]) * b[i]; out[k++] = sz;
 		cplx sf (0); for (unsigned i=0; i<f.size(); ++i) sf -= T(fd[i]) * f[i]; out[k++] = sf;
-		static bool first=true; if (first) { first=false; std::cerr << out.size() << " equations" << std::endl; }
 		return out;
 	}
 
@@ -104,7 +102,7 @@ namespace vb {
 
 	template <typename T> auto Constellation1<T>::jacnum  () -> Matrix<cplx> {
 		Vector<cplx> x = vec (b,w,f,tau,ll), c = vcost(); Matrix<cplx> out (d+2,d+2);
-		T eps = std::min (T(.1), T(sqrt(cost())/T(1000)));
+		T eps = std::min (T(.1), T(T(sqrt(cost()))/T(10000)));
 		for (unsigned j=0; j<x.size(); ++j) {
 			x[j] += eps; readvec(x); Vector<cplx> dc = vcost() - c; x[j] -= eps;
 			for (unsigned i=0; i<c.size(); ++i) out(i,j) = dc[i] / eps;
@@ -142,9 +140,7 @@ namespace vb {
 		while (c<old_c) {
 			std::cerr << c << "             \r"	;
 			old_c = c; auto old_x = x;
-			// std::cerr << jacnum() << std::endl << det(jacnum()) << std::endl;
 			inv(jacnum(),IJ); x -= prod(IJ,vcost());
-			// std::cerr << x << std::endl;
 			readvec(x); c = cost();
 			if (c > old_c) readvec(old_x);
 		}
@@ -161,10 +157,9 @@ namespace vb {
 
 	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation1<T> & C) {
 		T err (C.cost()); T lerr (-log10(err)); int nd = std::max (5,int(lerr)/2-7); if (err==T(0)) nd=10;
-		os << std::setprecision(15) << std::fixed;
+		os << std::setprecision(nd) << std::fixed;
 		os << "tau = " << C.tau << std::endl;
 		os << "log(lambda) = " << C.ll << std::endl;
-		os << "log(cost) = " << log(C.cost()) << std::endl;
 		os << std::endl;
 		os << "Keeping " << nd << " digits." << std::endl;
 		os << std::endl;
@@ -176,6 +171,38 @@ namespace vb {
 		os << std::endl;
 		os << "Red vertices / poles: " << std::endl;
 		for (unsigned i=0; i<C.f.size(); ++i) os << "| " << C.fd[i] << "\t" << C.f[i] << std::endl;
+		return os;
+	}
+
+	template <> std::ostream & operator<< (std::ostream & os, const Constellation1<gmp100> & C) {
+		using T = gmp100;
+		T err (C.cost()); T lerr (-log10(err)); int nd = std::max (5,int(lerr)/2-12); if (err==T(0)) nd=10;
+		os << std::setprecision(nd) << std::fixed;
+		os << "tau = " << C.tau << std::endl;
+		os << "log(lambda) = " << C.ll << std::endl;
+		os << std::endl;
+		os << "Keeping " << nd << " digits." << std::endl;
+		os << std::endl;
+		os << "Black vertices / zeros: " << std::endl;
+		for (unsigned i=0; i<C.b.size(); ++i) {
+			os << "| " << C.bd[i] << "\t" << C.b[i] << std::endl;
+			Polynomial<cpxint> P = guess (C.b[i],T(pow(T(.1),nd)));
+			if (P.degree()>0) os << "|\t\troot of " << P << std::endl;
+		}
+		os << std::endl;
+		os << "White vertices / ones: " << std::endl;
+		for (unsigned i=0; i<C.w.size(); ++i) {
+			os << "| " << C.wd[i] << "\t" << C.w[i] << std::endl;
+			Polynomial<cpxint> P = guess (C.w[i],T(pow(T(.1),nd)));
+			if (P.degree()>0) os << "|\t\troot of " << P << std::endl;
+		}
+		os << std::endl;
+		os << "Red vertices / poles: " << std::endl;
+		for (unsigned i=0; i<C.f.size(); ++i) {
+			os << "| " << C.fd[i] << "\t" << C.f[i] << std::endl;
+			Polynomial<cpxint> P = guess (C.f[i],T(pow(T(.1),nd)));
+			if (P.degree()>0) os << "|\t\troot of " << P << std::endl;
+		}
 		return os;
 	}
 

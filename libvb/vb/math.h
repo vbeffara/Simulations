@@ -22,43 +22,43 @@ namespace vb {
 
 	template <typename T> std::complex<T> theta1_ (const std::complex<T> & z, const std::complex<T> & q) {
 		std::complex<T> out(0), old(1);
-		for (int n=0; out!=old; ++n) { old=out; out += std::complex<T>(2.0 * pow(T(-1),n)) * std::complex<T> ( pow(q, (n+.5)*(n+.5)) * sin(T(2*n+1)*z) ); }
+		for (int n=0; out!=old; ++n) { old=out; out += std::complex<T>(T(2) * pow(T(-1),n)) * std::complex<T> ( pow(q, (n+.5)*(n+.5)) * sin(T(2*n+1)*z) ); }
 		return out;
 	}
 
 	template <typename T> std::complex<T> theta1prime_ (const std::complex<T> & z, const std::complex<T> & q) {
 		std::complex<T> out(0), old(1);
-		for (int n=0; out!=old; ++n) { old=out; out += std::complex<T>(2.0 * pow(T(-1),n)) * std::complex<T> ( pow(q, (n+.5)*(n+.5)) * T(2*n+1) * cos(T(2*n+1)*z) ); }
+		for (int n=0; out!=old; ++n) { old=out; out += std::complex<T>(T(2) * pow(T(-1),n)) * std::complex<T> ( pow(q, (n+.5)*(n+.5)) * T(2*n+1) * cos(T(2*n+1)*z) ); }
 		return out;
 	}
 
-	static cpx theta1second_ (cpx z, cpx q) {
-		cpx out(0), old(1);
-		for (int n=0; out!=old; ++n) { old=out; out -= 2.0 * pow(-1,n) * pow(q, (n+.5)*(n+.5)) * pow(cpx(2*n+1),2) * sin(cpx(2*n+1)*z); }
+	template <typename T> std::complex<T> theta1second_ (std::complex<T> z, std::complex<T> q) {
+		std::complex<T> out(0), old(1);
+		for (int n=0; out!=old; ++n) { old=out; out -= T(2) * pow(-1,n) * pow(q, (n+.5)*(n+.5)) * pow(std::complex<T>(2*n+1),2) * sin(std::complex<T>(2*n+1)*z); }
 		return out;
 	}
 
 	template <typename T> std::complex<T> theta1third_ (const std::complex<T> & z, const std::complex<T> & q) {
 		std::complex<T> out(0), old(1);
-		for (int n=0; out!=old; ++n) { old=out; out -= 2.0 * pow(-1,n) * pow(q, (n+.5)*(n+.5)) * pow(cpx(2*n+1),3) * cos(cpx(2*n+1)*z); }
+		for (int n=0; out!=old; ++n) { old=out; out -= std::complex<T>(T(2) * pow(T(-1),n)) * pow(q, (n+.5)*(n+.5)) * std::complex<T>(std::complex<T>(pow(T(2*n+1),3)) * std::complex<T>(cos(T(2*n+1)*z))); }
 		return out;
 	}
 
-	static cpx theta2_ (cpx z, cpx q) {
-		cpx out(0), old(1);
-		for (int n=0; out!=old; ++n) { old=out; out += 2.0 * pow(q, (n+.5)*(n+.5)) * cos(cpx(2*n+1)*z); }
+	template <typename T> std::complex<T> theta2_ (std::complex<T> z, std::complex<T> q) {
+		std::complex<T> out(0), old(1);
+		for (int n=0; out!=old; ++n) { old=out; out += T(2) * pow(q, (n+.5)*(n+.5)) * cos(std::complex<T>(2*n+1)*z); }
 		return out;
 	}
 
-	static cpx theta3_ (cpx z, cpx q) {
-		cpx out(1), old(2);
-		for (int n=1; out!=old; ++n) { old=out; out += 2.0 * pow(q, n*n) * cos(cpx(2*n)*z); }
+	template <typename T> std::complex<T> theta3_ (std::complex<T> z, std::complex<T> q) {
+		std::complex<T> out(1), old(2);
+		for (int n=1; out!=old; ++n) { old=out; out += T(2) * pow(q, n*n) * cos(std::complex<T>(2*n)*z); }
 		return out;
 	}
 
-	static cpx theta4_ (cpx z, cpx q) {
-		cpx out(1), old(2);
-		for (int n=1; out!=old; ++n) { old=out; out += 2.0 * pow(-q, n*n) * cos(cpx(2*n)*z); }
+	template <typename T> std::complex<T> theta4_ (std::complex<T> z, std::complex<T> q) {
+		std::complex<T> out(1), old(2);
+		for (int n=1; out!=old; ++n) { old=out; out += T(2) * pow(-q, n*n) * cos(std::complex<T>(2*n)*z); }
 		return out;
 	}
 
@@ -70,25 +70,25 @@ namespace vb {
 		return exp(eta1_(q)*z*z) * theta1_(M_PI*z,q) / (M_PI*theta1prime_(0.0,q));
 	}
 
-	static cpx e1_ (cpx q) {
-		return M_PI*M_PI * (pow(theta2_(0,q),4) + 2.0 * pow(theta4_(0,q),4)) / 3.0;
+	template <typename T> std::complex<T> e1_ (std::complex<T> q) {
+		return M_PI*M_PI * (pow(theta2_(0,q),4) + T(2) * pow(theta4_(0,q),4)) / T(3);
 	}
 
-	static cpx zeta_ (cpx z, cpx q) {
-		return 2.0 * z * eta1_(q) + M_PI * theta1prime_(M_PI*z,q) / theta1_(M_PI*z,q);
+	template <typename T> std::complex<T> zeta_ (std::complex<T> z, std::complex<T> q) {
+		return T(2) * z * eta1_(q) + M_PI * theta1prime_(M_PI*z,q) / theta1_(M_PI*z,q);
 	}
 
-	static cpx wp_ (cpx z, cpx q) {
+	template <typename T> std::complex<T> wp_ (std::complex<T> z, std::complex<T> q) {
 		return e1_(q) + pow(M_PI*theta3_(0,q)*theta4_(0,q)*theta2_(M_PI*z,q)/theta1_(M_PI*z,q) ,2);
 	}
 
-	static cpx g2_ (cpx q) {
-		cpx a=theta2_(0,q), b=theta3_(0,q);
+	template <typename T> std::complex<T> g2_ (std::complex<T> q) {
+		std::complex<T> a=theta2_(0,q), b=theta3_(0,q);
 		return pow(M_PI,4)/(.75)*(pow(a,8)-pow(a,4)*pow(b,4)+pow(b,8));
 	}
 
-	static cpx g3_ (cpx q) {
-		cpx a=theta2_(0,q), b=theta3_(0,q);
+	template <typename T> std::complex<T> g3_ (std::complex<T> q) {
+		std::complex<T> a=theta2_(0,q), b=theta3_(0,q);
 		return pow(M_PI,6)/(pow(1.5,3))*(pow(a,12)-1.5*(pow(a,8)*pow(b,4)+pow(a,4)*pow(b,8))+pow(b,12));
 	}
 }
