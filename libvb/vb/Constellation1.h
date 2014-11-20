@@ -14,14 +14,27 @@ namespace vb {
 		Constellation1 ();
 
 		cplx	operator()	(cplx z)	const;
-		cplx	logderp (cplx z, int k) const;
-		cplx	logder	(cplx z, int k)	const;
+		cplx	logderp   	(cplx z, int k) const;
+		cplx	logderp_z 	(cplx z, int k) const;
+		cplx	logderp_t 	(cplx z, int k) const;
+		cplx	logder    	(cplx z, int k)	const;
+		cplx	logder_z  	(cplx z, int k)	const;
+		cplx	logder_t  	(cplx z, int k)	const;
 
 		void	from_points	();	// compute P and Q, don't touch l
 		void	normalize  	();	// choose l to make ones ones
 
-		cplx	my_lsigma	(cplx z) const;
-		cplx	my_zeta  	(cplx z) const;
+		cplx	my_lsigma  	(cplx z) const;
+		cplx	my_lsigma_z	(cplx z) const;
+		cplx	my_lsigma_t	(cplx z) const;
+		cplx	my_zeta    	(cplx z) const;
+		cplx	my_zeta_z  	(cplx z) const;
+		cplx	my_zeta_t  	(cplx z) const;
+		cplx	my_wp      	(cplx z) const;
+		cplx	my_wp_z    	(cplx z) const;
+		cplx	my_wp_t    	(cplx z) const;
+		cplx	my_wp_zz   	(cplx z) const;
+		cplx	my_wp_zt   	(cplx z) const;
 
 		T           	cost    	()	const;
 		Vector<cplx>	vcost   	()	const;
@@ -42,7 +55,7 @@ namespace vb {
 		std::vector<unsigned>	bd,wd,fd;
 
 		cplx	ll = T(0), tau = cplx(0,1), q=q_(tau);
-		cplx	et1,th1p0;
+		cplx	et1,th1p0,mt3t4p2,mt3t4p2_q;
 		int 	dx,dy,d;
 	};
 

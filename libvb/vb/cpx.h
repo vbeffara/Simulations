@@ -57,10 +57,9 @@ namespace vb {
 #endif
 
 #ifdef HAVE_GMP
-	using bigint = boost::multiprecision::number<boost::multiprecision::gmp_int>;
+	using bigint = boost::multiprecision::number<boost::multiprecision::gmp_int,boost::multiprecision::et_off>;
 	using cpxint = std::complex<bigint>;
-	using gmp100 = boost::multiprecision::mpf_float_100;
-	// using gmp100 = boost::multiprecision::number<boost::multiprecision::gmp_float<100>,boost::multiprecision::et_off>;
+	using gmp100 = boost::multiprecision::number<boost::multiprecision::gmp_float<100>,boost::multiprecision::et_off>;
 	using cpx100 = std::complex<gmp100>;
 
     template <typename T> void foii (std::ostream & os, T x, bool no1 = false, bool nom1 = false) {

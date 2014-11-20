@@ -21,7 +21,10 @@ namespace vb {
 	template <typename T> Constellation1<T>::Constellation1 () {}
 
 	template <typename T> void Constellation1<T>::from_points () {
-		q = q_(tau); et1 = eta1_(q); th1p0 = theta1prime_(cplx(0),q);
+		q = q_(tau); et1 = eta1_(q); th1p0 = theta1_z(cplx(0),q);
+		mt3t4p2 = - pow(theta4_(std::complex<T>(0),q),2) * pow(theta3_(std::complex<T>(0),q),2) * pow(pi_<T>(),2);
+		mt3t4p2_q = - T(2) * theta4_q(cplx(0),q) * theta4_(std::complex<T>(0),q) * pow(theta3_(std::complex<T>(0),q),2) * pow(pi_<T>(),2)
+			- pow(theta4_(std::complex<T>(0),q),2) * T(2) * theta3_q(cplx(0),q) * theta3_(std::complex<T>(0),q) * pow(pi_<T>(),2);
 		cplx sz(0); for (unsigned i=0; i<b.size(); ++i) sz += T(bd[i])*b[i];
 		cplx sp(0); for (unsigned i=0; i<f.size(); ++i) sp += T(fd[i])*f[i];
 		dy = round(double(T(imag(sz-sp)/imag(tau)))); dx = round(double(T(real(sz-sp-T(dy)*tau))));
@@ -35,21 +38,103 @@ namespace vb {
 		ll = - avg/T(d);
 	}
 
-	template <typename T> auto Constellation1<T>::my_lsigma	(cplx z) const -> cplx { return et1*z*z + log(theta1_(cplx(T(4)*atan(T(1)))*z,q)); }
-	template <typename T> auto Constellation1<T>::my_zeta  	(cplx z) const -> cplx { return theta1prime_(cplx(T(4)*atan(T(1)))*z,q) / theta1_(cplx(T(4)*atan(T(1)))*z,q); }
+	template <typename T> auto Constellation1<T>::my_lsigma (cplx z) const -> cplx {
+		return et1*z*z + log(theta1_(pi_<T>()*z,q));
+	}
+
+	template <typename T> auto Constellation1<T>::my_lsigma_z (cplx z) const -> cplx {
+		return T(2)*et1*z + pi_<T>()*theta1_z(pi_<T>()*z,q)/theta1_(pi_<T>()*z,q);
+	}
+
+	template <typename T> auto Constellation1<T>::my_lsigma_t (cplx z) const -> cplx {
+		return q_t(tau) * (eta1_q(q)*z*z + theta1_q(pi_<T>()*z,q)/theta1_(pi_<T>()*z,q));
+	}
+
+	template <typename T> auto Constellation1<T>::my_zeta (cplx z) const -> cplx {
+		return pi_<T>() * theta1_z(pi_<T>()*z,q) / theta1_(pi_<T>()*z,q);
+	}
+
+	template <typename T> auto Constellation1<T>::my_zeta_z (cplx z) const -> cplx {
+		return pow(pi_<T>(),2) * (theta1_(pi_<T>()*z,q)*theta1_zz(pi_<T>()*z,q) - theta1_z(pi_<T>()*z,q)*theta1_z(pi_<T>()*z,q)) / (pow(theta1_(pi_<T>()*z,q),2));
+	}
+
+	template <typename T> auto Constellation1<T>::my_zeta_t (cplx z) const -> cplx {
+		return pi_<T>() * q_t(tau) * (theta1_(pi_<T>()*z,q)*theta1_zq(pi_<T>()*z,q) - theta1_z(pi_<T>()*z,q)*theta1_q(pi_<T>()*z,q)) / pow(theta1_(pi_<T>()*z,q),2);
+	}
+
+	template <typename T> auto Constellation1<T>::my_wp (cplx z) const -> cplx {
+		return mt3t4p2 * pow(theta2_(pi_<T>()*z,q),2) / pow(theta1_(pi_<T>()*z,q),2);
+	}
+
+	template <typename T> auto Constellation1<T>::my_wp_t (cplx z) const -> cplx {
+		return mt3t4p2 * T(2) * q_t(tau) * theta2_(pi_<T>()*z,q) * theta2_q(pi_<T>()*z,q) / pow(theta1_(pi_<T>()*z,q),2)
+			- mt3t4p2 * T(2) * q_t(tau) * pow(theta2_(pi_<T>()*z,q),2) * theta1_q(pi_<T>()*z,q) / pow(theta1_(pi_<T>()*z,q),3)
+			+ mt3t4p2_q * pow(theta2_(pi_<T>()*z,q),2) / pow(theta1_(pi_<T>()*z,q),2);
+	}
+
+	template <typename T> auto Constellation1<T>::my_wp_z (cplx z) const -> cplx {
+		return mt3t4p2 * T(2) * pi_<T>() * theta2_(pi_<T>()*z,q) * theta2_z(pi_<T>()*z,q) / pow(theta1_(pi_<T>()*z,q),2)
+			- mt3t4p2 * T(2) * pi_<T>() * pow(theta2_(pi_<T>()*z,q),2) * theta1_z(pi_<T>()*z,q) / pow(theta1_(pi_<T>()*z,q),3);
+	}
+
+	template <typename T> auto Constellation1<T>::my_wp_zz (cplx z) const -> cplx {
+		assert (!"not reached");
+		return mt3t4p2 * T(2) * pow(pi_<T>(),2) * theta2_(pi_<T>()*z,q) * theta2_z(pi_<T>()*z,q) / pow(theta1_(pi_<T>()*z,q),2)
+			+ mt3t4p2 * T(2) * pow(pi_<T>(),2) * theta2_(pi_<T>()*z,q) * theta2_z(pi_<T>()*z,q) / pow(theta1_(pi_<T>()*z,q),2)
+			+ mt3t4p2 * T(2) * pow(pi_<T>(),2) * theta2_(pi_<T>()*z,q) * theta2_z(pi_<T>()*z,q) / pow(theta1_(pi_<T>()*z,q),2)
+			- mt3t4p2 * T(2) * pow(pi_<T>(),2) * pow(theta2_(pi_<T>()*z,q),2) * theta1_z(pi_<T>()*z,q) / pow(theta1_(pi_<T>()*z,q),3)
+			- mt3t4p2 * T(2) * pow(pi_<T>(),2) * pow(theta2_(pi_<T>()*z,q),2) * theta1_z(pi_<T>()*z,q) / pow(theta1_(pi_<T>()*z,q),3)
+			- mt3t4p2 * T(2) * pow(pi_<T>(),2) * pow(theta2_(pi_<T>()*z,q),2) * theta1_z(pi_<T>()*z,q) / pow(theta1_(pi_<T>()*z,q),3);
+	}
+
+	template <typename T> auto Constellation1<T>::my_wp_zt (cplx z) const -> cplx {
+		assert (!"not reached");
+		return cplx(0); /* TO IMPLEMENT TODO BUG XXX */
+	}
 
 	template <typename T> auto Constellation1<T>::logderp (cplx z, int k) const -> cplx {
-		if (k==0) return my_lsigma (z);	 // 0th : sum(log(sigma)) = log(prod(sigma))
-		if (k==1) return my_zeta (z);  	 // 1st : sum(sigma'/sigma) = sum(zeta)
-		assert (!"Derivatives starting from 2 not implemented!");
+		if (k==0) return my_lsigma (z);	// 0th : sum(log(sigma)) = log(prod(sigma))
+		if (k==1) return my_zeta (z);  	// 1st : sum(sigma'/sigma) = sum(zeta)
+		if (k==2) return my_wp (z);    	// 2nd : sum(zeta') = - sum(wp)
+		if (k==3) return my_wp_z (z);  	// 3rd : - sum(wp')
+		assert (!"Derivatives of higher order not implemented!");
+	}
+
+	template <typename T> auto Constellation1<T>::logderp_z (cplx z, int k) const -> cplx {
+		if (k==0) return my_lsigma_z (z);	// 0th : sum(log(sigma)) = log(prod(sigma))
+		if (k==1) return my_zeta_z (z);  	// 1st : sum(sigma'/sigma) = sum(zeta)
+		if (k==2) return my_wp_z (z);    	// 2nd : sum(zeta') = - sum(wp)
+		if (k==3) return my_wp_zz (z);   	// 3rd : - sum(wp')
+		assert (!"Derivatives of higher order not implemented!");
+	}
+
+	template <typename T> auto Constellation1<T>::logderp_t (cplx z, int k) const -> cplx {
+		if (k==0) return my_lsigma_t (z);	// 0th : sum(log(sigma)) = log(prod(sigma))
+		if (k==1) return my_zeta_t (z);  	// 1st : sum(sigma'/sigma) = sum(zeta)
+		if (k==2) return my_wp_t (z);    	// 2nd : sum(zeta') = - sum(wp)
+		if (k==3) return my_wp_zt (z);   	// 3rd : - sum(wp')
+		assert (!"Derivatives of higher order not implemented!");
 	}
 
 	template <typename T> auto Constellation1<T>::logder (cplx z, int k) const -> cplx {
 		cplx out (logderp (z-b[0]+T(dx)+tau*T(dy), k));
 		for (unsigned i=0; i<b.size(); ++i) out += logderp (z-b[i], k) * T(bd[i] - (i==0?1:0));
 		for (unsigned i=0; i<f.size(); ++i) out -= logderp (z-f[i], k) * T(fd[i]);
-		if (k==0) { out += ll; out -= cplx(0,T(8)*atan(T(1))) * T(round(real(out/cplx(0,T(8)*atan(T(1)))))); }
-		if (k==1) { out *= M_PI; }
+		if (k==0) { out += ll; out -= cplx(0,T(2)*pi_<T>()) * T(round(real(out/cplx(0,T(2)*pi_<T>())))); }
+		return out;
+	}
+
+	template <typename T> auto Constellation1<T>::logder_z (cplx z, int k) const -> cplx {
+		cplx out (logderp_z (z-b[0]+T(dx)+tau*T(dy), k));
+		for (unsigned i=0; i<b.size(); ++i) out += logderp_z (z-b[i], k) * T(bd[i] - (i==0?1:0));
+		for (unsigned i=0; i<f.size(); ++i) out -= logderp_z (z-f[i], k) * T(fd[i]);
+		return out;
+	}
+
+	template <typename T> auto Constellation1<T>::logder_t (cplx z, int k) const -> cplx {
+		cplx out (logderp_t (z-b[0]+T(dx)+tau*T(dy), k) + T(dy) * logderp_z (z-b[0]+T(dx)+tau*T(dy), k));
+		for (unsigned i=0; i<b.size(); ++i) out += logderp_t (z-b[i], k) * T(bd[i] - (i==0?1:0));
+		for (unsigned i=0; i<f.size(); ++i) out -= logderp_t (z-f[i], k) * T(fd[i]);
 		return out;
 	}
 
@@ -84,25 +169,37 @@ namespace vb {
 	template <typename T> T Constellation1<T>::cost () const	{ T out(0); for (auto z : vcost()) out += norm(z); return out; }
 
 	template <typename T> auto Constellation1<T>::jacvcost () const -> Matrix<cplx> { // m_ij = \partial_j(f_i)
-		Matrix<cplx> out(d+2,d+2);
-		// unsigned i=0,j=0; for (unsigned ii=0; ii<w.size(); ++ii) for (unsigned id=0; id<wd[ii]; ++id) { j=0; // f_i is logder(w[ii],id)
-		// //	for (unsigned jj=0; jj<b.size(); ++jj)	if (id==0)     	out(i,j++) = T(- T(10*bd[jj])) / (w[ii]-b[jj]);
-		// //	                                      	else           	out(i,j++) = T(id*bd[jj]) / pow(w[ii]-b[jj],cplx(id+1));
-		// //	for (unsigned jj=0; jj<w.size(); ++jj)	if (jj!=ii)    	out(i,j++) = T(0);
-		// //	                                      	else if (id==0)	out(i,j++) = T(10) * logder(w[ii],1);
-		// //	                                      	else           	out(i,j++) = T(- T(id)) * logder(w[ii],id+1);
-		// //	for (unsigned jj=0; jj<f.size(); ++jj)	if (id==0)     	out(i,j++) = T(10*fd[jj]) / (w[ii]-f[jj]);
-		// //	                                      	else           	out(i,j++) = T(- T(id*fd[jj])) / pow(w[ii]-f[jj],cplx(id+1));
-		// //	++i;
-		// ++i; } // f_i is sum(z*dz) recentered
-		// ++i; // f_i is sum(f*df)
-		// ++i; // assert (i==d+2);
+		Matrix<cplx> out(d+2,d+2,cplx(0));
+		unsigned i=0,j=0; for (unsigned ii=0; ii<w.size(); ++ii) for (unsigned id=0; id<wd[ii]; ++id) { j=0; // f_i is logder(w[ii],id)
+			out(i,j) = - logderp_z (w[ii]-b[0]+T(dx)+tau*T(dy), id);
+			for (unsigned jj=0; jj<b.size(); ++jj)	out(i,j++) -= T(bd[jj] - (jj==0?1:0)) * logderp_z (w[ii]-b[jj],id);
+			for (unsigned jj=0; jj<w.size(); ++jj)	out(i,j++) = (ii==jj) ? logder_z (w[ii],id) : cplx(0);
+			for (unsigned jj=0; jj<f.size(); ++jj)	out(i,j++) = T(fd[jj]) * logderp_z (w[ii]-f[jj], id);
+			out(i,j++) = logder_t (w[ii],id);
+			out(i,j++) = cplx(id==0 ? 1 : 0);
+			assert (j==unsigned(d+2));
+		++i; } { j=0; // f_i is sum(z*dz) recentered
+			for (unsigned jj=0; jj<b.size(); ++jj)	out(i,j++) = T(bd[jj]);
+			for (unsigned jj=0; jj<w.size(); ++jj)	out(i,j++) = 0;
+			for (unsigned jj=0; jj<f.size(); ++jj)	out(i,j++) = 0;
+			out(i,j++) = - T(dy);
+			out(i,j++) = cplx(0);
+			assert (j==unsigned(d+2));
+		++i; } { j=0; // f_i is -sum(f*df) recentered
+			for (unsigned jj=0; jj<b.size(); ++jj)	out(i,j++) = 0;
+			for (unsigned jj=0; jj<w.size(); ++jj)	out(i,j++) = 0;
+			for (unsigned jj=0; jj<f.size(); ++jj)	out(i,j++) = -T(fd[jj]);
+			out(i,j++) = cplx(0);
+			out(i,j++) = cplx(0);
+			assert (j==unsigned(d+2));
+		++i; }
+		assert (i==unsigned(d+2));
 		return out;
 	}
 
 	template <typename T> auto Constellation1<T>::jacnum  () -> Matrix<cplx> {
 		Vector<cplx> x = vec (b,w,f,tau,ll), c = vcost(); Matrix<cplx> out (d+2,d+2);
-		T eps = std::min (T(.1), T(T(sqrt(cost()))/T(10000)));
+		T eps = std::min (T(.00001), T(T(cost())/T(100)));
 		for (unsigned j=0; j<x.size(); ++j) {
 			x[j] += eps; readvec(x); Vector<cplx> dc = vcost() - c; x[j] -= eps;
 			for (unsigned i=0; i<c.size(); ++i) out(i,j) = dc[i] / eps;
