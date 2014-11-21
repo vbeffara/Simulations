@@ -38,59 +38,17 @@ namespace vb {
 		ll = - avg/T(d);
 	}
 
-	template <typename T> auto Constellation1<T>::my_lsigma (cplx z) const -> cplx {
-		return et1*z*z + log(theta1_(pi_<T>()*z,q));
-	}
+	template <typename T> auto Constellation1<T>::my_lsigma  	(cplx z) const -> cplx { return log(sigma_(z,q)); }
+	template <typename T> auto Constellation1<T>::my_lsigma_z	(cplx z) const -> cplx { return my_zeta(z); }
+	template <typename T> auto Constellation1<T>::my_lsigma_t	(cplx z) const -> cplx { return q_t(tau) * sigma_q(z,q) / sigma_(z,q); }
 
-	template <typename T> auto Constellation1<T>::my_lsigma_z (cplx z) const -> cplx {
-		return T(2)*et1*z + pi_<T>()*theta1_z(pi_<T>()*z,q)/theta1_(pi_<T>()*z,q);
-	}
+	template <typename T> auto Constellation1<T>::my_zeta  	(cplx z) const -> cplx { return zeta_(z,q); }
+	template <typename T> auto Constellation1<T>::my_zeta_z	(cplx z) const -> cplx { return - my_wp(z); }
+	template <typename T> auto Constellation1<T>::my_zeta_t	(cplx z) const -> cplx { return q_t(tau) * zeta_q(z,q); }
 
-	template <typename T> auto Constellation1<T>::my_lsigma_t (cplx z) const -> cplx {
-		return q_t(tau) * (eta1_q(q)*z*z + theta1_q(pi_<T>()*z,q)/theta1_(pi_<T>()*z,q));
-	}
-
-	template <typename T> auto Constellation1<T>::my_zeta (cplx z) const -> cplx {
-		return pi_<T>() * theta1_z(pi_<T>()*z,q) / theta1_(pi_<T>()*z,q);
-	}
-
-	template <typename T> auto Constellation1<T>::my_zeta_z (cplx z) const -> cplx {
-		return pow(pi_<T>(),2) * (theta1_(pi_<T>()*z,q)*theta1_zz(pi_<T>()*z,q) - theta1_z(pi_<T>()*z,q)*theta1_z(pi_<T>()*z,q)) / (pow(theta1_(pi_<T>()*z,q),2));
-	}
-
-	template <typename T> auto Constellation1<T>::my_zeta_t (cplx z) const -> cplx {
-		return pi_<T>() * q_t(tau) * (theta1_(pi_<T>()*z,q)*theta1_zq(pi_<T>()*z,q) - theta1_z(pi_<T>()*z,q)*theta1_q(pi_<T>()*z,q)) / pow(theta1_(pi_<T>()*z,q),2);
-	}
-
-	template <typename T> auto Constellation1<T>::my_wp (cplx z) const -> cplx {
-		return mt3t4p2 * pow(theta2_(pi_<T>()*z,q),2) / pow(theta1_(pi_<T>()*z,q),2);
-	}
-
-	template <typename T> auto Constellation1<T>::my_wp_t (cplx z) const -> cplx {
-		return mt3t4p2 * T(2) * q_t(tau) * theta2_(pi_<T>()*z,q) * theta2_q(pi_<T>()*z,q) / pow(theta1_(pi_<T>()*z,q),2)
-			- mt3t4p2 * T(2) * q_t(tau) * pow(theta2_(pi_<T>()*z,q),2) * theta1_q(pi_<T>()*z,q) / pow(theta1_(pi_<T>()*z,q),3)
-			+ mt3t4p2_q * pow(theta2_(pi_<T>()*z,q),2) / pow(theta1_(pi_<T>()*z,q),2);
-	}
-
-	template <typename T> auto Constellation1<T>::my_wp_z (cplx z) const -> cplx {
-		return mt3t4p2 * T(2) * pi_<T>() * theta2_(pi_<T>()*z,q) * theta2_z(pi_<T>()*z,q) / pow(theta1_(pi_<T>()*z,q),2)
-			- mt3t4p2 * T(2) * pi_<T>() * pow(theta2_(pi_<T>()*z,q),2) * theta1_z(pi_<T>()*z,q) / pow(theta1_(pi_<T>()*z,q),3);
-	}
-
-	template <typename T> auto Constellation1<T>::my_wp_zz (cplx z) const -> cplx {
-		assert (!"not reached");
-		return mt3t4p2 * T(2) * pow(pi_<T>(),2) * theta2_(pi_<T>()*z,q) * theta2_z(pi_<T>()*z,q) / pow(theta1_(pi_<T>()*z,q),2)
-			+ mt3t4p2 * T(2) * pow(pi_<T>(),2) * theta2_(pi_<T>()*z,q) * theta2_z(pi_<T>()*z,q) / pow(theta1_(pi_<T>()*z,q),2)
-			+ mt3t4p2 * T(2) * pow(pi_<T>(),2) * theta2_(pi_<T>()*z,q) * theta2_z(pi_<T>()*z,q) / pow(theta1_(pi_<T>()*z,q),2)
-			- mt3t4p2 * T(2) * pow(pi_<T>(),2) * pow(theta2_(pi_<T>()*z,q),2) * theta1_z(pi_<T>()*z,q) / pow(theta1_(pi_<T>()*z,q),3)
-			- mt3t4p2 * T(2) * pow(pi_<T>(),2) * pow(theta2_(pi_<T>()*z,q),2) * theta1_z(pi_<T>()*z,q) / pow(theta1_(pi_<T>()*z,q),3)
-			- mt3t4p2 * T(2) * pow(pi_<T>(),2) * pow(theta2_(pi_<T>()*z,q),2) * theta1_z(pi_<T>()*z,q) / pow(theta1_(pi_<T>()*z,q),3);
-	}
-
-	template <typename T> auto Constellation1<T>::my_wp_zt (cplx z) const -> cplx {
-		assert (!"not reached");
-		return cplx(0); /* TO IMPLEMENT TODO BUG XXX */
-	}
+	template <typename T> auto Constellation1<T>::my_wp  	(cplx z) const -> cplx { return wp_(z,q); }
+	template <typename T> auto Constellation1<T>::my_wp_z	(cplx z) const -> cplx { return wp_z(z,q); }
+	template <typename T> auto Constellation1<T>::my_wp_t	(cplx z) const -> cplx { return q_t(tau) * wp_q(z,q); }
 
 	template <typename T> auto Constellation1<T>::logderp (cplx z, int k) const -> cplx {
 		if (k==0) return my_lsigma (z);	// 0th : sum(log(sigma)) = log(prod(sigma))
@@ -104,7 +62,6 @@ namespace vb {
 		if (k==0) return my_lsigma_z (z);	// 0th : sum(log(sigma)) = log(prod(sigma))
 		if (k==1) return my_zeta_z (z);  	// 1st : sum(sigma'/sigma) = sum(zeta)
 		if (k==2) return my_wp_z (z);    	// 2nd : sum(zeta') = - sum(wp)
-		if (k==3) return my_wp_zz (z);   	// 3rd : - sum(wp')
 		assert (!"Derivatives of higher order not implemented!");
 	}
 
@@ -112,7 +69,6 @@ namespace vb {
 		if (k==0) return my_lsigma_t (z);	// 0th : sum(log(sigma)) = log(prod(sigma))
 		if (k==1) return my_zeta_t (z);  	// 1st : sum(sigma'/sigma) = sum(zeta)
 		if (k==2) return my_wp_t (z);    	// 2nd : sum(zeta') = - sum(wp)
-		if (k==3) return my_wp_zt (z);   	// 3rd : - sum(wp')
 		assert (!"Derivatives of higher order not implemented!");
 	}
 
@@ -199,7 +155,7 @@ namespace vb {
 
 	template <typename T> auto Constellation1<T>::jacnum  () -> Matrix<cplx> {
 		Vector<cplx> x = vec (b,w,f,tau,ll), c = vcost(); Matrix<cplx> out (d+2,d+2);
-		T eps = std::min (T(.00001), T(T(cost())/T(100)));
+		T eps (.00001);
 		for (unsigned j=0; j<x.size(); ++j) {
 			x[j] += eps; readvec(x); Vector<cplx> dc = vcost() - c; x[j] -= eps;
 			for (unsigned i=0; i<c.size(); ++i) out(i,j) = dc[i] / eps;

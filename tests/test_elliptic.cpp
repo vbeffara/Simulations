@@ -12,16 +12,14 @@ int main (int argc, char ** argv) {
 	cout << M << endl;
 
 	Constellation1<double> C {M,H,H['n']};
-	printmath (cerr,C.jacnum()); cerr << endl << endl;
-	printmath (cerr,C.jacvcost()); cerr << endl << endl;
 	C.findn();
-
 
 	if (H['v']) { Image * I = C.draw(600); I->show(); I->pause(); I->hide(); delete I; }
 	if (!H['q']) { cout << endl << C; return 0; }
 
 	#ifdef HAVE_COMPLEX_GMP
-	Constellation1<gmp100> Cq = cconvert <double,gmp100> (C); Cq.findn(); cout << endl << Cq;
+	Constellation1<gmp100> Cq = cconvert <double,gmp100> (C);
+	Cq.findn(); cout << endl << Cq;
 	#else
 	cerr << "No std::complex<boost::numeric::whatever> support!" << endl;
 	#endif
