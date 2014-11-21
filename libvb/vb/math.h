@@ -26,61 +26,67 @@ namespace vb {
 
 	template <typename T> std::complex<T> theta1_ (const std::complex<T> & z, const std::complex<T> & q) {
 		std::complex<T> out(0), old(1);
-		for (int n=0; out!=old; ++n) { old=out; out += T(2) * pow(T(-1),n) * pow(q, (n+.5)*(n+.5)) * sin(T(2*n+1)*z); }
+		for (int n=0; out!=old; ++n) { old=out; out += T(2) * pow(T(-1),n) * pow(q, T((n+.5)*(n+.5))) * sin(T(2*n+1)*z); }
 		return out;
 	}
 
 	template <typename T> std::complex<T> theta1_z (const std::complex<T> & z, const std::complex<T> & q) {
 		std::complex<T> out(0), old(1);
-		for (int n=0; out!=old; ++n) { old=out; out += T(2) * pow(T(-1),n) * pow(q, (n+.5)*(n+.5)) * T(2*n+1) * cos(T(2*n+1)*z); }
+		for (int n=0; out!=old; ++n) { old=out; out += T(2) * pow(T(-1),n) * pow(q, T((n+.5)*(n+.5))) * T(2*n+1) * cos(T(2*n+1)*z); }
 		return out;
 	}
 
 	template <typename T> std::complex<T> theta1_q (const std::complex<T> & z, const std::complex<T> & q) {
 		std::complex<T> out(0), old(1);
-		for (int n=0; out!=old; ++n) { old=out; out += T(2) * pow(T(-1),n) * T((n+.5)*(n+.5)) * pow(q, (n+.5)*(n+.5)-1) * sin(T(2*n+1)*z); }
+		for (int n=0; out!=old; ++n) { old=out; out += T(2) * pow(T(-1),n) * T((n+.5)*(n+.5)) * pow(q, T((n+.5)*(n+.5)-1)) * sin(T(2*n+1)*z); }
 		return out;
 	}
 
 	template <typename T> std::complex<T> theta1_zq (const std::complex<T> & z, const std::complex<T> & q) {
 		std::complex<T> out(0), old(1);
-		for (int n=0; out!=old; ++n) { old=out; out += T(2) * pow(T(-1),n) * T((n+.5)*(n+.5)) * pow(q, (n+.5)*(n+.5)-1) * T(2*n+1) * cos(T(2*n+1)*z); }
+		for (int n=0; out!=old; ++n) { old=out; out += T(2) * pow(T(-1),n) * T((n+.5)*(n+.5)) * pow(q, T((n+.5)*(n+.5)-1)) * T(2*n+1) * cos(T(2*n+1)*z); }
 		return out;
 	}
 
 	template <typename T> std::complex<T> theta1_zz (std::complex<T> z, std::complex<T> q) {
 		std::complex<T> out(0), old(1);
-		for (int n=0; out!=old; ++n) { old=out; out -= T(2) * pow(-1,n) * pow(q, (n+.5)*(n+.5)) * pow(T(2*n+1),2) * sin(T(2*n+1)*z); }
+		for (int n=0; out!=old; ++n) { old=out; out -= T(2) * pow(-1,n) * pow(q, T((n+.5)*(n+.5))) * pow(T(2*n+1),2) * sin(T(2*n+1)*z); }
+		return out;
+	}
+
+	template <typename T> std::complex<T> theta1_zzq (std::complex<T> z, std::complex<T> q) {
+		std::complex<T> out(0), old(1);
+		for (int n=0; out!=old; ++n) { old=out; out -= T(2) * pow(-1,n) * T((n+.5)*(n+.5)) * pow(q, T((n+.5)*(n+.5)-1)) * pow(T(2*n+1),2) * sin(T(2*n+1)*z); }
 		return out;
 	}
 
 	template <typename T> std::complex<T> theta1_zzz (const std::complex<T> & z, const std::complex<T> & q) {
 		std::complex<T> out(0), old(1);
-		for (int n=0; out!=old; ++n) { old=out; out -= T(2) * pow(T(-1),n) * pow(q, (n+.5)*(n+.5)) * pow(T(2*n+1),3) * cos(T(2*n+1)*z); }
+		for (int n=0; out!=old; ++n) { old=out; out -= T(2) * pow(T(-1),n) * pow(q, T((n+.5)*(n+.5))) * pow(T(2*n+1),3) * cos(T(2*n+1)*z); }
 		return out;
 	}
 
 	template <typename T> std::complex<T> theta1_zzzq (const std::complex<T> & z, const std::complex<T> & q) {
 		std::complex<T> out(0), old(1);
-		for (int n=0; out!=old; ++n) { old=out; out -= T(2) * pow(T(-1),n) * T((n+.5)*(n+.5)) * pow(q, (n+.5)*(n+.5)-1) * pow(T(2*n+1),3) * cos(T(2*n+1)*z); }
+		for (int n=0; out!=old; ++n) { old=out; out -= T(2) * pow(T(-1),n) * T((n+.5)*(n+.5)) * pow(q, T((n+.5)*(n+.5)-1)) * pow(T(2*n+1),3) * cos(T(2*n+1)*z); }
 		return out;
 	}
 
 	template <typename T> std::complex<T> theta2_ (std::complex<T> z, std::complex<T> q) {
 		std::complex<T> out(0), old(1);
-		for (int n=0; out!=old; ++n) { old=out; out += T(2) * pow(q, (n+.5)*(n+.5)) * cos(T(2*n+1)*z); }
+		for (int n=0; out!=old; ++n) { old=out; out += T(2) * pow(q, T((n+.5)*(n+.5))) * cos(T(2*n+1)*z); }
 		return out;
 	}
 
 	template <typename T> std::complex<T> theta2_z (std::complex<T> z, std::complex<T> q) {
 		std::complex<T> out(0), old(1);
-		for (int n=0; out!=old; ++n) { old=out; out -= T(2) * pow(q, (n+.5)*(n+.5)) * T(2*n+1) * sin(T(2*n+1)*z); }
+		for (int n=0; out!=old; ++n) { old=out; out -= T(2) * pow(q, T((n+.5)*(n+.5))) * T(2*n+1) * sin(T(2*n+1)*z); }
 		return out;
 	}
 
 	template <typename T> std::complex<T> theta2_q (std::complex<T> z, std::complex<T> q) {
 		std::complex<T> out(0), old(1);
-		for (int n=0; out!=old; ++n) { old=out; out += T(2) * T((n+.5)*(n+.5)) * pow(q, (n+.5)*(n+.5)-1) * cos(T(2*n+1)*z); }
+		for (int n=0; out!=old; ++n) { old=out; out += T(2) * T((n+.5)*(n+.5)) * pow(q, T((n+.5)*(n+.5)-1)) * cos(T(2*n+1)*z); }
 		return out;
 	}
 
@@ -104,41 +110,69 @@ namespace vb {
 
 	template <typename T> std::complex<T> theta4_q (std::complex<T> z, std::complex<T> q) {
 		std::complex<T> out(0), old(1);
-		for (int n=1; out!=old; ++n) { old=out; out -= T(2) * T(n*n) * pow(-q, n*n-1) * cos(T(2*n)*z); }
+		for (int n=1; out!=old; ++n) { old=out; out -= T(2) * T(n*n) * pow(-q, T(n*n-1)) * cos(T(2*n)*z); }
 		return out;
 	}
 
 	template <typename T> std::complex<T> eta1_ (const std::complex<T> & q) {
-		return - pi_<T>()*pi_<T>() * theta1_zzz(std::complex<T>(0),q) / theta1_z(std::complex<T>(0),q) / T(6);
+		return - pi_<T>()*pi_<T>()/T(6) * theta1_zzz(std::complex<T>(0),q) / theta1_z(std::complex<T>(0),q);
 	}
 
 	template <typename T> std::complex<T> eta1_q (const std::complex<T> & q) {
-		return - pi_<T>()*pi_<T>()/T(6) * (theta1_z(std::complex<T>(0),q)*theta1_zzzq(std::complex<T>(0),q) - theta1_zzz(std::complex<T>(0),q)*theta1_zq(std::complex<T>(0),q)) / pow(theta1_z(std::complex<T>(0),q),2);
+		return - pi_<T>()*pi_<T>()/T(6) * (theta1_z(std::complex<T>(0),q)*theta1_zzzq(std::complex<T>(0),q)
+			- theta1_zzz(std::complex<T>(0),q)*theta1_zq(std::complex<T>(0),q)) / pow(theta1_z(std::complex<T>(0),q),2);
 	}
 
 	template <typename T> std::complex<T> sigma_ (const std::complex<T> & z, const std::complex<T> & q) {
-		return exp(eta1_(q)*z*z) * theta1_(pi_<T>()*z,q) / (pi_<T>()*theta1prime_(0.0,q));
+		return exp(eta1_(q)*z*z) * theta1_(pi_<T>()*z,q) / (pi_<T>()*theta1_z(std::complex<T>(0),q));
+	}
+
+	template <typename T> std::complex<T> sigma_q (const std::complex<T> & z, const std::complex<T> & q) {
+		return z*z*eta1_q(q) * exp(eta1_(q)*z*z) * theta1_(pi_<T>()*z,q) / (pi_<T>()*theta1_z(std::complex<T>(0),q))
+			+ exp(eta1_(q)*z*z) * theta1_q(pi_<T>()*z,q) / (pi_<T>()*theta1_z(std::complex<T>(0),q))
+			- exp(eta1_(q)*z*z) * theta1_(pi_<T>()*z,q) * theta1_zq(std::complex<T>(0),q) / (pi_<T>()*pow(theta1_z(std::complex<T>(0),q),2));
 	}
 
 	template <typename T> std::complex<T> e1_ (std::complex<T> q) {
 		return pi_<T>()*pi_<T>() * (pow(theta2_(std::complex<T>(0),q),4) + T(2) * pow(theta4_(std::complex<T>(0),q),4)) / T(3);
 	}
 
+	template <typename T> std::complex<T> e1_q (std::complex<T> q) {
+		return pi_<T>()*pi_<T>() * (T(4) * theta2_q(std::complex<T>(0),q) * pow(theta2_(std::complex<T>(0),q),3)
+			+ T(8) * theta4_q(std::complex<T>(0),q) * pow(theta4_(std::complex<T>(0),q),3) ) / T(3);
+	}
+
 	template <typename T> std::complex<T> zeta_ (std::complex<T> z, std::complex<T> q) {
-		return T(2) * z * eta1_(q) + pi_<T>() * theta1prime_(pi_<T>()*z,q) / theta1_(pi_<T>()*z,q);
+		return T(2) * z * eta1_(q) + pi_<T>() * theta1_z(pi_<T>()*z,q) / theta1_(pi_<T>()*z,q);
+	}
+
+	template <typename T> std::complex<T> zeta_q (std::complex<T> z, std::complex<T> q) {
+		return T(2) * z * eta1_q(q)
+		+ pi_<T>() * theta1_zq(pi_<T>()*z,q) / theta1_(pi_<T>()*z,q)
+		- pi_<T>() * theta1_z(pi_<T>()*z,q) * theta1_q(pi_<T>()*z,q) / pow(theta1_(pi_<T>()*z,q),2);
 	}
 
 	template <typename T> std::complex<T> wp_ (std::complex<T> z, std::complex<T> q) {
 		return e1_(q) + pow(pi_<T>()*theta3_(std::complex<T>(0),q)*theta4_(std::complex<T>(0),q)*theta2_(pi_<T>()*z,q)/theta1_(pi_<T>()*z,q) ,2);
 	}
 
+	template <typename T> std::complex<T> wp_z (std::complex<T> z, std::complex<T> q) {
+		return T(2) * pi_<T>() * (theta2_z(pi_<T>()*z,q)/theta2_(pi_<T>()*z,q) - theta1_z(pi_<T>()*z,q)/theta1_(pi_<T>()*z,q)) * (wp_(z,q)-e1_(q));
+	}
+
+	template <typename T> std::complex<T> wp_q (std::complex<T> z, std::complex<T> q) {
+		return e1_q(q) + T(2) * (wp_(z,q)-e1_(q)) * (theta3_q(std::complex<T>(0),q)/theta3_(std::complex<T>(0),q)
+			+ theta4_q(std::complex<T>(0),q)/theta4_(std::complex<T>(0),q)
+			+ theta2_q(pi_<T>()*z,q)/theta2_(pi_<T>()*z,q) - theta1_q(pi_<T>()*z,q)/theta1_(pi_<T>()*z,q));
+	}
+
 	template <typename T> std::complex<T> g2_ (std::complex<T> q) {
-		std::complex<T> a=theta2_(0,q), b=theta3_(0,q);
-		return pow(pi_<T>(),4)/(.75)*(pow(a,8)-pow(a,4)*pow(b,4)+pow(b,8));
+		std::complex<T> a=theta2_(std::complex<T>(0),q), b=theta3_(std::complex<T>(0),q);
+		return pow(pi_<T>(),4)/T(.75)*(pow(a,8)-pow(a,4)*pow(b,4)+pow(b,8));
 	}
 
 	template <typename T> std::complex<T> g3_ (std::complex<T> q) {
-		std::complex<T> a=theta2_(0,q), b=theta3_(0,q);
-		return pow(pi_<T>(),6)/(pow(1.5,3))*(pow(a,12)-1.5*(pow(a,8)*pow(b,4)+pow(a,4)*pow(b,8))+pow(b,12));
+		std::complex<T> a=theta2_(std::complex<T>(0),q), b=theta3_(std::complex<T>(0),q);
+		return pow(pi_<T>(),6)/(pow(T(1.5),3))*(pow(a,12)-T(1.5)*(pow(a,8)*pow(b,4)+pow(a,4)*pow(b,8))+pow(b,12));
 	}
 }
