@@ -233,32 +233,35 @@ namespace vb {
 		using T = gmp100;
 		T err (C.cost()); T lerr (-log10(err)); int nd = std::max (5,int(lerr)/2-12); if (err==T(0)) nd=10;
 		os << std::setprecision(nd) << std::fixed;
+		T eps = pow(T(.1),nd-5);
+
 		os << "log(lambda) = " << C.ll << std::endl;
 		os << "tau         = " << C.tau << std::endl;
-		{ Polynomial<cpxint> P = guess(C.tau,T(pow(T(.1),nd))); if (P.degree()>0) os << "\t\troot of " << P << std::endl; }
+		{ Polynomial<cpxint> P = guess(C.tau,eps); if (P.degree()>0) os << "\t\troot of " << P << std::endl; }
 		std::complex<T> ll = pow(theta2_(std::complex<T>(0),C.q)/theta3_(std::complex<T>(0),C.q),4), jj = T(256) * pow(T(1)-ll+ll*ll,3) / pow(ll*(T(1)-ll),2);
 		os << "invariant j = " << jj << std::endl;
+		{ Polynomial<cpxint> P = guess(jj,eps); if (P.degree()>0) os << "\t\troot of " << P << std::endl; }
 		os << std::endl;
 		os << "Keeping " << nd << " digits." << std::endl;
 		os << std::endl;
 		os << "Black vertices / zeros: " << std::endl;
 		for (unsigned i=0; i<C.b.size(); ++i) {
 			os << "| " << C.bd[i] << "\t" << C.b[i] << std::endl;
-			Polynomial<cpxint> P = guess (C.b[i],T(pow(T(.1),nd)));
+			Polynomial<cpxint> P = guess (C.b[i],eps);
 			if (P.degree()>0) os << "|\t\troot of " << P << std::endl;
 		}
 		os << std::endl;
 		os << "White vertices / ones: " << std::endl;
 		for (unsigned i=0; i<C.w.size(); ++i) {
 			os << "| " << C.wd[i] << "\t" << C.w[i] << std::endl;
-			Polynomial<cpxint> P = guess (C.w[i],T(pow(T(.1),nd)));
+			Polynomial<cpxint> P = guess (C.w[i],eps);
 			if (P.degree()>0) os << "|\t\troot of " << P << std::endl;
 		}
 		os << std::endl;
 		os << "Red vertices / poles: " << std::endl;
 		for (unsigned i=0; i<C.f.size(); ++i) {
 			os << "| " << C.fd[i] << "\t" << C.f[i] << std::endl;
-			Polynomial<cpxint> P = guess (C.f[i],T(pow(T(.1),nd)));
+			Polynomial<cpxint> P = guess (C.f[i],eps);
 			if (P.degree()>0) os << "|\t\troot of " << P << std::endl;
 		}
 		return os;
