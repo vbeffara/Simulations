@@ -193,7 +193,7 @@ namespace vb {
 		while (c<old_c) {
 			std::cerr << c << "             \r"	;
 			old_c = c; auto old_x = x;
-			inv(jacnum(),IJ); x -= prod(IJ,vcost());
+			inv(jacvcost(),IJ); x -= prod(IJ,vcost());
 			readvec(x); c = cost();
 			if (c > old_c) readvec(old_x);
 		}
