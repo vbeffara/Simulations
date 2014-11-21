@@ -211,8 +211,10 @@ namespace vb {
 	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation1<T> & C) {
 		T err (C.cost()); T lerr (-log10(err)); int nd = std::max (5,int(lerr)/2-7); if (err==T(0)) nd=10;
 		os << std::setprecision(nd) << std::fixed;
-		os << "tau = " << C.tau << std::endl;
 		os << "log(lambda) = " << C.ll << std::endl;
+		os << "tau         = " << C.tau << std::endl;
+		std::complex<T> ll = pow(theta2_(std::complex<T>(0),C.q)/theta3_(std::complex<T>(0),C.q),4), jj = T(256) * pow(T(1)-ll+ll*ll,3) / pow(ll*(T(1)-ll),2);
+		os << "invariant j = " << jj << std::endl;
 		os << std::endl;
 		os << "Keeping " << nd << " digits." << std::endl;
 		os << std::endl;
@@ -231,8 +233,11 @@ namespace vb {
 		using T = gmp100;
 		T err (C.cost()); T lerr (-log10(err)); int nd = std::max (5,int(lerr)/2-12); if (err==T(0)) nd=10;
 		os << std::setprecision(nd) << std::fixed;
-		os << "tau = " << C.tau << std::endl;
 		os << "log(lambda) = " << C.ll << std::endl;
+		os << "tau         = " << C.tau << std::endl;
+		{ Polynomial<cpxint> P = guess(C.tau,T(pow(T(.1),nd))); if (P.degree()>0) os << "\t\troot of " << P << std::endl; }
+		std::complex<T> ll = pow(theta2_(std::complex<T>(0),C.q)/theta3_(std::complex<T>(0),C.q),4), jj = T(256) * pow(T(1)-ll+ll*ll,3) / pow(ll*(T(1)-ll),2);
+		os << "invariant j = " << jj << std::endl;
 		os << std::endl;
 		os << "Keeping " << nd << " digits." << std::endl;
 		os << std::endl;
