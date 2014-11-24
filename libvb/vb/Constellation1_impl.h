@@ -21,10 +21,7 @@ namespace vb {
 	template <typename T> Constellation1<T>::Constellation1 () {}
 
 	template <typename T> void Constellation1<T>::from_points () {
-		q = q_(tau); et1 = eta1_(q); th1p0 = theta1_z(cplx(0),q);
-		mt3t4p2 = - pow(theta4_(std::complex<T>(0),q),2) * pow(theta3_(std::complex<T>(0),q),2) * pow(pi_<T>(),2);
-		mt3t4p2_q = - T(2) * theta4_q(cplx(0),q) * theta4_(std::complex<T>(0),q) * pow(theta3_(std::complex<T>(0),q),2) * pow(pi_<T>(),2)
-			- pow(theta4_(std::complex<T>(0),q),2) * T(2) * theta3_q(cplx(0),q) * theta3_(std::complex<T>(0),q) * pow(pi_<T>(),2);
+		q = q_(tau);
 		cplx sz(0); for (unsigned i=0; i<b.size(); ++i) sz += T(bd[i])*b[i];
 		cplx sp(0); for (unsigned i=0; i<f.size(); ++i) sp += T(fd[i])*f[i];
 		dy = round(double(T(imag(sz-sp)/imag(tau)))); dx = round(double(T(real(sz-sp-T(dy)*tau))));
@@ -42,37 +39,30 @@ namespace vb {
 		ll = - avg/T(d);
 	}
 
-	template <typename T> auto Constellation1<T>::my_lsigma  	(cplx z) const -> cplx { return log(sigma_(z,q)); }
-	template <typename T> auto Constellation1<T>::my_lsigma_z	(cplx z) const -> cplx { return my_zeta(z); }
-	template <typename T> auto Constellation1<T>::my_lsigma_t	(cplx z) const -> cplx { return q_t(tau) * sigma_q(z,q) / sigma_(z,q); }
-
-	template <typename T> auto Constellation1<T>::my_zeta  	(cplx z) const -> cplx { return zeta_(z,q); }
-	template <typename T> auto Constellation1<T>::my_zeta_z	(cplx z) const -> cplx { return - my_wp(z); }
-	template <typename T> auto Constellation1<T>::my_zeta_t	(cplx z) const -> cplx { return q_t(tau) * zeta_q(z,q); }
-
-	template <typename T> auto Constellation1<T>::my_wp  	(cplx z) const -> cplx { return wp_(z,q); }
-	template <typename T> auto Constellation1<T>::my_wp_z	(cplx z) const -> cplx { return wp_z(z,q); }
-	template <typename T> auto Constellation1<T>::my_wp_t	(cplx z) const -> cplx { return q_t(tau) * wp_q(z,q); }
+	template <typename T> void Constellation1<T>::shift (cplx z) {
+		for (auto & u : b) u += z; for (auto & u : w) u += z; for (auto & u : f) u += z;
+		from_points();
+	}
 
 	template <typename T> auto Constellation1<T>::logderp (cplx z, int k) const -> cplx {
-		if (k==0) return my_lsigma (z);	// 0th : sum(log(sigma)) = log(prod(sigma))
-		if (k==1) return my_zeta (z);  	// 1st : sum(sigma'/sigma) = sum(zeta)
-		if (k==2) return my_wp (z);    	// 2nd : sum(zeta') = - sum(wp)
-		if (k==3) return my_wp_z (z);  	// 3rd : - sum(wp')
+		if (k==0) return log(sigma_(z,q));
+		if (k==1) return zeta_(z,q);
+		if (k==2) return wp_(z,q);
+		if (k==3) return wp_z(z,q);
 		assert (!"Derivatives of higher order not implemented!");
 	}
 
 	template <typename T> auto Constellation1<T>::logderp_z (cplx z, int k) const -> cplx {
-		if (k==0) return my_lsigma_z (z);	// 0th : sum(log(sigma)) = log(prod(sigma))
-		if (k==1) return my_zeta_z (z);  	// 1st : sum(sigma'/sigma) = sum(zeta)
-		if (k==2) return my_wp_z (z);    	// 2nd : sum(zeta') = - sum(wp)
+		if (k==0) return zeta_(z,q);
+		if (k==1) return - wp_(z,q);
+		if (k==2) return wp_z(z,q);
 		assert (!"Derivatives of higher order not implemented!");
 	}
 
 	template <typename T> auto Constellation1<T>::logderp_t (cplx z, int k) const -> cplx {
-		if (k==0) return my_lsigma_t (z);	// 0th : sum(log(sigma)) = log(prod(sigma))
-		if (k==1) return my_zeta_t (z);  	// 1st : sum(sigma'/sigma) = sum(zeta)
-		if (k==2) return my_wp_t (z);    	// 2nd : sum(zeta') = - sum(wp)
+		if (k==0) return q_t(tau) * sigma_q(z,q) / sigma_(z,q);
+		if (k==1) return q_t(tau) * zeta_q(z,q);
+		if (k==2) return q_t(tau) * wp_q(z,q);
 		assert (!"Derivatives of higher order not implemented!");
 	}
 
@@ -181,14 +171,6 @@ namespace vb {
 			if (!flag) eps /= 1.618; else eps *= 1.1;
 		}
 		return c;
-	}
-
-	template <typename T> T Constellation1_fg (const Vector<T> & xy, Vector<T> & df, void * c) {
-		Constellation1<T> * C = (Constellation1<T> *) c; return C->fg(xy,df);
-	}
-
-	template <typename T> void Constellation1_cb (const Vector<T> &, T f, void *) {
-		static T er (-1); if ((f<er)||(er<T(0))) { std::cerr << f << "          \r"; er = f; }
 	}
 
 	template <typename T> T Constellation1<T>::findn () {

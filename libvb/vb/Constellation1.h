@@ -23,18 +23,7 @@ namespace vb {
 
 		void	from_points	();	// compute P and Q, don't touch l
 		void	normalize  	();	// choose l to make ones ones
-
-		cplx	my_lsigma  	(cplx z) const;
-		cplx	my_lsigma_z	(cplx z) const;
-		cplx	my_lsigma_t	(cplx z) const;
-		cplx	my_zeta    	(cplx z) const;
-		cplx	my_zeta_z  	(cplx z) const;
-		cplx	my_zeta_t  	(cplx z) const;
-		cplx	my_wp      	(cplx z) const;
-		cplx	my_wp_z    	(cplx z) const;
-		cplx	my_wp_t    	(cplx z) const;
-		cplx	my_wp_zz   	(cplx z) const;
-		cplx	my_wp_zt   	(cplx z) const;
+		void	shift      	(cplx z);
 
 		T           	cost    	()	const;
 		Vector<cplx>	vcost   	()	const;
@@ -54,8 +43,7 @@ namespace vb {
 		std::vector<cplx>    	b,w,f;
 		std::vector<unsigned>	bd,wd,fd;
 
-		cplx	ll = T(0), tau = cplx(0,1), q=q_(tau);
-		cplx	et1,th1p0,mt3t4p2,mt3t4p2_q;
+		cplx	ll = T(0), tau = cplx(0,1), q = q_(tau);
 		int 	dx,dy,d;
 	};
 
