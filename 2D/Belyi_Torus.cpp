@@ -7,10 +7,10 @@
 // r: seed for the PRNG, set to 0 for time-based
 // s: number of vertices
 
+#include <vb/Constellation1.h>
 #include <vb/Pairings.h>
 #include <vb/PRNG.h>
 #include <vb/ProgressBar.h>
-#include <vb/Toroidal.h>
 
 using namespace vb; using namespace std;
 
@@ -35,23 +35,21 @@ int main (int argc, char ** argv) {
 		if (H['f']) { Hypermap MM = M; MM.mirror(); MM.normalize(); for (Hypermap & O : v) if (O==MM) there = true; }
 		if (!there) {
 			v.push_back(M);
+			ostringstream os; os << "Toroidal enumeration (s=" << s << ", pass " << M.sigma.passport() << ", i=" << v.size() << ")"; H.title = os.str();
+			Constellation1<double> C {M,H,H['n']}; C.findn();
 
 			cout << "Sigma: " << M.sigma << endl;
 			cout << "Alpha: " << M.alpha << endl;
 			cout << "Phi:   " << M.phi << endl;
 			cout << endl;
-			cout << "     Order number: " << v.size() << endl;
-			cout << "     Name:         " << M.name() << endl;
-			cout << "     Passport:     " << M.sigma.passport() << endl;
+			cout << "     Order number:    " << v.size() << endl;
+			// cout << "     Name:            " << M.name() << endl;
+			cout << "     Passport:        " << M.sigma.passport() << endl;
+			cout << "     Modulus:         " << C.tau << endl;
+			cout << "     Klein invariant: " << j_(q_(C.tau)) << endl;
 			cout << endl;
 
-			if (H['o']) {
-				ostringstream os; os << "Toroidal enumeration (s=" << s << ", pass " << M.sigma.passport() << ", i=" << v.size() << ")"; H.title = os.str();
-				int nsub = H['n']; if (!H['c']) { M.dessin(); --nsub; } for (int i=0; i<nsub; ++i) M.split_edges(); M.simplify(1);
-				Toroidal T (M,H); T.pack();
-				cout << "     Modulus: tau=" << T.m << endl << endl;
-				T.output_pdf();
-			}
+			if (H['o']) { Image * img = C.draw(500); img->title = H.title; img->output(); img->hide(); delete img; }
 		}
 	}
 }
