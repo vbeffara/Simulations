@@ -237,7 +237,7 @@ namespace vb {
 		os << "log(lambda) = " << C.ll << std::endl;
 		os << "tau         = " << C.tau << std::endl;
 		{ Polynomial<cpxint> P = guess(C.tau,eps); if (P.degree()>0) os << "\t\troot of " << P << std::endl; }
-		std::complex<T> ll = pow(theta2_(std::complex<T>(0),C.q)/theta3_(std::complex<T>(0),C.q),4), jj = T(256) * pow(T(1)-ll+ll*ll,3) / pow(ll*(T(1)-ll),2);
+		std::complex<T> jj = j_(C.q);
 		os << "invariant j = " << jj << std::endl;
 		{ Polynomial<cpxint> P = guess(jj,eps); if (P.degree()>0) os << "\t\troot of " << P << std::endl; }
 		os << std::endl;

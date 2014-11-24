@@ -175,4 +175,9 @@ namespace vb {
 		std::complex<T> a=theta2_(std::complex<T>(0),q), b=theta3_(std::complex<T>(0),q);
 		return pow(pi_<T>(),6)/(pow(T(1.5),3))*(pow(a,12)-T(1.5)*(pow(a,8)*pow(b,4)+pow(a,4)*pow(b,8))+pow(b,12));
 	}
+
+	template <typename T> std::complex<T> j_ (std::complex<T> q) {
+		std::complex<T> ll = pow(theta2_(std::complex<T>(0),q)/theta3_(std::complex<T>(0),q),4);
+		return T(256) * pow(T(1)-ll+ll*ll,3) / pow(ll*(T(1)-ll),2);
+	}
 }
