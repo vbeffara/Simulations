@@ -14,7 +14,7 @@ int main (int argc, char ** argv) {
 	Constellation1<double> C {M,H,H['n']};
 	C.findn();
 
-	if (H['v']) { Image * I = C.draw(600); I->show(); I->pause(); I->hide(); delete I; }
+	if (H['v']) { Image * I = new Image (600,600,"Test Elliptic"); C.draw(*I); I->show(); I->pause(); I->hide(); delete I; }
 	if (!H['q']) { cout << endl << C; return 0; }
 
 	#ifdef HAVE_COMPLEX_GMP

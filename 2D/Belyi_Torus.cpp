@@ -25,6 +25,7 @@ int main (int argc, char ** argv) {
 
 	vector<Hypermap> v; unsigned target = 0; if ((d==0) && (g==1) && (!H['f']) && (s<ntri.size())) target = ntri[s];
 
+	Image img (500,500,"Belyi_Torus");
 	while ((target==0)||(v.size()<target)) {
 		Permutation alpha = Pairings(a).rand();                                    	if (!connected(phi,alpha))	continue;
 		Permutation sigma = (alpha*phi).inverse(); Hypermap M (sigma,alpha,phi);   	if (M.genus() != g)       	continue;
@@ -51,7 +52,7 @@ int main (int argc, char ** argv) {
 			cout << "     Klein invariant: " << j_(q_(C.tau)) << endl;
 			cout << endl;
 
-			if (H['o']) { Image * img = C.draw(500); img->title = H.title; img->output(); img->hide(); }
+			if (H['o']) { img.title = H.title; img.label(img.title.c_str()); if (!img.visible()) img.show(); C.draw(img); img.output(); }
 		}
 	}
 }

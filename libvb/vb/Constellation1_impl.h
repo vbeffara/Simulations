@@ -270,18 +270,14 @@ namespace vb {
 		return os;
 	}
 
-	template <typename T> Image * Constellation1<T>::draw (unsigned l) const {
+	template <typename T> void Constellation1<T>::draw (Image & img) const {
 		T xmin = std::min(T(0),real(tau)), xmax = std::max(T(1),real(T(1)+tau)), ymin = T(0), ymax = imag(tau);
 		cplx center { (xmin+xmax)/T(2), (ymin+ymax)/T(2) }; T scale = T(.75) * std::max(xmax-xmin,ymax-ymin);
 
-		Image * img = new Image (l,l,"Constellation1"); img->show();
+		int l = img.w(); img.start = img.now();
 		for (unsigned j=0; j<l; ++j) for (unsigned i=0; i<l; ++i) {
 			cplx z {T(i),T(j)}; z = conj(z)*T(2.0/l) + cplx{-1,1}; z = center + scale*z;
-			img->put(coo(i,j), imag((*this)(z))>0 ? Color(200,255,255) : Color(200,200,255));
+			img.put(coo(i,j), imag((*this)(z))>0 ? Color(200,255,255) : Color(200,200,255));
 		}
-		for (auto z : b) { z = (z-center)/scale; z = (z-cplx{-1,1})*T(l/2); double x=real(z), y=imag(z); img->put (coo(x,-y), BLACK); }
-		for (auto z : w) { z = (z-center)/scale; z = (z-cplx{-1,1})*T(l/2); double x=real(z), y=imag(z); img->put (coo(x,-y), WHITE); }
-		for (auto z : f) { z = (z-center)/scale; z = (z-cplx{-1,1})*T(l/2); double x=real(z), y=imag(z); img->put (coo(x,-y), RED); }
-		return img;
 	};
 }

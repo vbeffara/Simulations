@@ -49,7 +49,7 @@ namespace vb {
 
 		T	fg (const Vector<T> & xy, Vector<T> & df);
 
-		Image *	draw	(unsigned l) const;
+		void	draw	(Image & img) const;
 
 		std::vector<cplx>    	b,w,f;
 		std::vector<unsigned>	bd,wd,fd;
