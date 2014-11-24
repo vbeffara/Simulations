@@ -17,8 +17,8 @@ using namespace vb; using namespace std;
 vector<unsigned> ntri { 0, 1, 5, 46, 669 };
 
 int main (int argc, char ** argv) {
-	Hub H ("Toroidal enumeration", argc, argv, "s=1,m=228,r=1,o,d=0,g=1,f,n=2");
-	unsigned s=H['s'], g=H['g'], a=6*(s+2*g-2), r=H['r'], d=H['d'];
+	Hub H ("Toroidal enumeration", argc, argv, "s=1,m=228,r=1,o,d=0,D=0,g=1,f,n=2");
+	unsigned s=H['s'], g=H['g'], a=6*(s+2*g-2), r=H['r'], d=H['d'], D=H['D'];
 	assert (a>0); if (g!=1) assert(!H['o']); if (r>0) prng.seed(r);
 
 	Cycles phi_c; for (unsigned i=0; i<a/3; ++i) phi_c.push_back ({3*i,3*i+1,3*i+2}); Permutation phi(phi_c);
@@ -27,9 +27,10 @@ int main (int argc, char ** argv) {
 
 	Image img (500,500,"Belyi_Torus");
 	while ((target==0)||(v.size()<target)) {
-		Permutation alpha = Pairings(a).rand();                                    	if (!connected(phi,alpha))	continue;
-		Permutation sigma = (alpha*phi).inverse(); Hypermap M (sigma,alpha,phi);   	if (M.genus() != g)       	continue;
-		bool good=true; for (auto & c : sigma.cycles()) if (c.size()<d) good=false;	if (!good)                	continue;
+		Permutation alpha = Pairings(a).rand();                                        	if (!connected(phi,alpha))	continue;
+		Permutation sigma = (alpha*phi).inverse(); Hypermap M (sigma,alpha,phi);       	if (M.genus() != g)       	continue;
+		bool good=true; for (auto & c : sigma.cycles()) if (c.size()<d) good=false;    	if (!good)                	continue;
+		good=true; if (D>0) for (auto & c : sigma.cycles()) if (c.size()>D) good=false;	if (!good)                	continue;
 
 		M.normalize();
 		bool there = false; for (Hypermap & O : v) if (O==M) there = true;
@@ -41,7 +42,6 @@ int main (int argc, char ** argv) {
 			cout << "Phi:   " << M.phi << endl;
 			cout << endl;
 			cout << "     Order number:    " << v.size() << endl;
-			// cout << "     Name:            " << M.name() << endl;
 			cout << "     Passport:        " << M.sigma.passport() << endl;
 
 			ostringstream os; os << "Toroidal enumeration (s=" << s << ", pass " << M.sigma.passport() << ", i=" << v.size() << ")"; H.title = os.str();
