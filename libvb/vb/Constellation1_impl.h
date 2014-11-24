@@ -257,9 +257,13 @@ namespace vb {
 		cplx center { (xmin+xmax)/T(2), (ymin+ymax)/T(2) }; T scale = T(.75) * std::max(xmax-xmin,ymax-ymin);
 
 		int l = img.w(); img.start = img.now();
-		for (unsigned j=0; j<l; ++j) for (unsigned i=0; i<l; ++i) {
-			cplx z {T(i),T(j)}; z = conj(z)*T(2.0/l) + cplx{-1,1}; z = center + scale*z;
-			img.put(coo(i,j), imag((*this)(z))>0 ? Color(200,255,255) : Color(200,200,255));
-		}
+		for (auto & c : img) c = Color(0);
+		img.tessel(0,0,img.w()-1,img.h()-1,[&](coo c) {
+			cplx z {T(c.x),T(c.y)}; z = conj(z)*T(2.0/l) + cplx{-1,1}; z = center + scale*z;
+			if ((T(0)<=imag(z)) && (imag(z)<=imag(tau)) && (real(z) >= real(tau)*imag(z)/imag(tau)) && (real(z) <= T(1)+real(tau)*imag(z)/imag(tau)))
+				return imag((*this)(z))>0 ? Color(150,200,200) : Color(150,150,200);
+			return imag((*this)(z))>0 ? Color(200,250,250) : Color(200,200,250);
+		});
+		img.update();
 	};
 }

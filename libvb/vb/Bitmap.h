@@ -13,11 +13,13 @@ namespace vb {
 		void	put 	(coo z, T const & c)	{ Array<T>::put(z,c);  step(); }
 		void	putp	(coo z, T const & c)	{ Array<T>::putp(z,c); step(); }
 
-		virtual T	compute	(coo)  	{ return dflt; }
-		T        	lazy   	(coo z)	{ if (at(z) == dflt) put(z, compute(z)); return at(z); }
+		virtual T	compute	(coo)                            	{ return dflt; }
+		T        	lazy   	(coo z)                          	{ if (at(z) == dflt) put(z, compute(z)); return at(z); }
+		T        	lazy   	(coo z, std::function <T(coo)> f)	{ if (at(z) == dflt) put(z, f(z)); return at(z); }
 
 		void fill (coo z, T c, int adj = 4);
 		void tessel (int xmin, int ymin, int xmax, int ymax);
+		void tessel (int xmin, int ymin, int xmax, int ymax, std::function <T(coo)> f);
 
 	private:
 		Color * stage;	///< The raw pixel data of the screen representation.
@@ -45,11 +47,15 @@ namespace vb {
 	}
 
 	template<typename T> void Bitmap<T>::tessel (int xmin, int ymin, int xmax, int ymax) {
-		Color tmp = lazy (coo(xmin,ymin)); bool mono = true;
-		for (int i=xmin; i<=xmax; ++i) { if (lazy(coo(i,ymin)) != tmp) mono=false; if (lazy(coo(i,ymax)) != tmp) mono=false; }
-		for (int j=ymin; j<=ymax; ++j) { if (lazy(coo(xmin,j)) != tmp) mono=false; if (lazy(coo(xmax,j)) != tmp) mono=false; }
+		tessel(xmin,ymin,xmax,ymax,[&](coo c){ return compute(c); });
+	}
+
+	template <typename T> void Bitmap<T>::tessel (int xmin, int ymin, int xmax, int ymax, std::function <T(coo)> f) {
+		Color tmp = lazy (coo(xmin,ymin),f); bool mono = true;
+		for (int i=xmin; i<=xmax; ++i) { if (lazy(coo(i,ymin),f) != tmp) mono=false; if (lazy(coo(i,ymax),f) != tmp) mono=false; }
+		for (int j=ymin; j<=ymax; ++j) { if (lazy(coo(xmin,j),f) != tmp) mono=false; if (lazy(coo(xmax,j),f) != tmp) mono=false; }
 		if (mono) { for (int i=xmin+1; i<xmax; ++i) for (int j=ymin+1; j<ymax; ++j) at(coo(i,j)) = tmp; }
-		else if ((xmax-xmin) > std::max(ymax-ymin,1))	{ int xmed=(xmin+xmax)>>1; tessel (xmin,ymin,xmed,ymax); tessel (xmed,ymin,xmax,ymax); }
-		else if (ymax>ymin+1)                        	{ int ymed=(ymin+ymax)>>1; tessel (xmin,ymin,xmax,ymed); tessel (xmin,ymed,xmax,ymax); }
+		else if ((xmax-xmin) > std::max(ymax-ymin,1))	{ int xmed=(xmin+xmax)>>1; tessel (xmin,ymin,xmed,ymax,f); tessel (xmed,ymin,xmax,ymax,f); }
+		else if (ymax>ymin+1)                        	{ int ymed=(ymin+ymax)>>1; tessel (xmin,ymin,xmax,ymed,f); tessel (xmin,ymed,xmax,ymax,f); }
 	}
 }
