@@ -1,4 +1,3 @@
-// c: do not draw face centers
 // d: minimum degree of the triangulation
 // f: identify maps obtained after mirror flip
 // g: genus of the triangulation
@@ -18,7 +17,7 @@ using namespace vb; using namespace std;
 vector<unsigned> ntri { 0, 1, 5, 46, 669 };
 
 int main (int argc, char ** argv) {
-	Hub H ("Toroidal enumeration", argc, argv, "s=1,m=228,r=1,o,d=0,g=1,f,n=4,c");
+	Hub H ("Toroidal enumeration", argc, argv, "s=1,m=228,r=1,o,d=0,g=1,f,n=2");
 	unsigned s=H['s'], g=H['g'], a=6*(s+2*g-2), r=H['r'], d=H['d'];
 	assert (a>0); if (g!=1) assert(!H['o']); if (r>0) prng.seed(r);
 
