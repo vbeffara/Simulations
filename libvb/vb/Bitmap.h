@@ -13,12 +13,9 @@ namespace vb {
 		void	put 	(coo z, T const & c)	{ Array<T>::put(z,c);  step(); }
 		void	putp	(coo z, T const & c)	{ Array<T>::putp(z,c); step(); }
 
-		virtual T	compute	(coo)                            	{ return dflt; }
-		T        	lazy   	(coo z)                          	{ if (at(z) == dflt) put(z, compute(z)); return at(z); }
-		T        	lazy   	(coo z, std::function <T(coo)> f)	{ if (at(z) == dflt) put(z, f(z)); return at(z); }
+		T	lazy	(coo z, std::function <T(coo)> f)	{ if (at(z) == dflt) put(z, f(z)); return at(z); }
 
 		void fill (coo z, T c, int adj = 4);
-		void tessel (int xmin, int ymin, int xmax, int ymax);
 		void tessel (int xmin, int ymin, int xmax, int ymax, std::function <T(coo)> f);
 
 	private:
@@ -44,10 +41,6 @@ namespace vb {
 				coo nij = ij + dz[d]; if (contains(nij) && (at(nij) == in)) { xy.push_back(nij); at(nij)=c; }
 			}
 		}
-	}
-
-	template<typename T> void Bitmap<T>::tessel (int xmin, int ymin, int xmax, int ymax) {
-		tessel(xmin,ymin,xmax,ymax,[&](coo c){ return compute(c); });
 	}
 
 	template <typename T> void Bitmap<T>::tessel (int xmin, int ymin, int xmax, int ymax, std::function <T(coo)> f) {

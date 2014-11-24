@@ -106,7 +106,7 @@ int main (int argc, char ** argv) {
   for (int i=0;i<sle.w();i++) sle.put (coo(i,0),INSIDE);
 
   sle.show();
-  sle.tessel (0,1,sle.w()-1,sle.h()-1);
+  sle.tessel (0,1,sle.w()-1,sle.h()-1, [&](coo c){ return sle.compute(c); });
   sle.edge_detect();
   sle.output_png();
 

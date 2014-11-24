@@ -23,7 +23,7 @@ int main (int argc, char *argv[]) {
   vb::CL_Parser CLP (argc,argv,"n=500");
   int n = CLP ('n');
   Sample S (n);
-  S.tessel (0,0, n-1,n-1);
+  S.tessel (0,0, n-1,n-1, [&](coo c){ return S.compute(c); });
   S.output();
   return 0;
 }
