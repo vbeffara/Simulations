@@ -28,6 +28,10 @@ namespace vb {
 		cplx sz(0); for (unsigned i=0; i<b.size(); ++i) sz += T(bd[i])*b[i];
 		cplx sp(0); for (unsigned i=0; i<f.size(); ++i) sp += T(fd[i])*f[i];
 		dy = round(double(T(imag(sz-sp)/imag(tau)))); dx = round(double(T(real(sz-sp-T(dy)*tau))));
+		for (unsigned i=0; i<b.size(); ++i) {
+			int ddx = round(double(dx)/bd[i]); if (ddx != 0) { b[i] -= T(ddx); dx -= int(bd[i])*ddx; }
+			int ddy = round(double(dy)/bd[i]); if (ddy != 0) { b[i] -= T(ddy)*tau; dy -= int(bd[i])*ddy; }
+		}
 	}
 
 	template <typename T> void Constellation1<T>::normalize () {
@@ -163,12 +167,12 @@ namespace vb {
 		return out;
 	}
 
-	template <typename T> void Constellation1<T>::find () {
+	template <typename T> T Constellation1<T>::find (T e) {
 		Vector<cplx> bw = vec(b,w,f,tau,ll);
 		T c = cost(), eps = std::min(T(.1),c), nc = c;
 
-		while (eps>1e-100) {
-			std::cerr << "\r" << c << " (" << eps << ") [" << tau << "]          ";
+		while (eps>e) {
+			std::cerr << "\r" << c << " (" << eps << ")        ";
 			bool flag = false;
 			for (auto & z : bw) {	z += eps; readvec(bw); nc = cost(); if (nc<c) { c=nc; flag=true; } else { z -= eps; }
 			                     	z -= eps; readvec(bw); nc = cost(); if (nc<c) { c=nc; flag=true; } else { z += eps; }
@@ -176,7 +180,7 @@ namespace vb {
 			                     	z -= cplx(0,eps); readvec(bw); nc = cost(); if (nc<c) { c=nc; flag=true; } else { z += cplx(0,eps); } }
 			if (!flag) eps /= 1.618; else eps *= 1.1;
 		}
-		std::cerr << std::endl;
+		return c;
 	}
 
 	template <typename T> T Constellation1_fg (const Vector<T> & xy, Vector<T> & df, void * c) {
@@ -187,16 +191,16 @@ namespace vb {
 		static T er (-1); if ((f<er)||(er<T(0))) { std::cerr << f << "          \r"; er = f; }
 	}
 
-	template <typename T> void Constellation1<T>::findn () {
+	template <typename T> T Constellation1<T>::findn () {
 		Vector<cplx> x = vec(b,w,f,tau,ll); Matrix<cplx> IJ (x.size(),x.size());
-		T c = cost(), old_c = c + T(1);
+		T c = cost(), old_c = c + T(1); auto old_x = x;
 		while (c<old_c) {
 			std::cerr << c << "             \r"	;
-			old_c = c; auto old_x = x;
+			old_c = c; old_x = x;
 			inv(jacvcost(),IJ); x -= prod(IJ,vcost());
 			readvec(x); c = cost();
-			if (c > old_c) readvec(old_x);
 		}
+		readvec(old_x); return old_c;
 	}
 
 	template <typename T, typename U> Constellation1<U> cconvert (Constellation1<T> & C) {
@@ -267,10 +271,7 @@ namespace vb {
 	}
 
 	template <typename T> Image * Constellation1<T>::draw (unsigned l) const {
-		T xmin(0), xmax(0), ymin(0), ymax(0);
-		for (auto z : b) { xmin=std::min(xmin,real(z)); xmax=std::max(xmax,real(z)); ymin=std::min(ymin,imag(z)); ymax=std::max(ymax,imag(z)); }
-		for (auto z : f) { xmin=std::min(xmin,real(z)); xmax=std::max(xmax,real(z)); ymin=std::min(ymin,imag(z)); ymax=std::max(ymax,imag(z)); }
-		for (auto z : w) { xmin=std::min(xmin,real(z)); xmax=std::max(xmax,real(z)); ymin=std::min(ymin,imag(z)); ymax=std::max(ymax,imag(z)); }
+		T xmin = std::min(T(0),real(tau)), xmax = std::max(T(1),real(T(1)+tau)), ymin = T(0), ymax = imag(tau);
 		cplx center { (xmin+xmax)/T(2), (ymin+ymax)/T(2) }; T scale = T(.75) * std::max(xmax-xmin,ymax-ymin);
 
 		Image * img = new Image (l,l,"Constellation1"); img->show();

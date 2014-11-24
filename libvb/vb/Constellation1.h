@@ -41,8 +41,8 @@ namespace vb {
 		Matrix<cplx>	jacvcost	()	const;
 		Matrix<cplx>	jacnum  	();
 
-		void	find 	();
-		void	findn	();
+		T	find 	(T eps = T(1e-100));
+		T	findn	();
 
 		Vector<cplx>	vec    	(const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f, const cplx & t, const cplx & l)	const;
 		void        	readvec	(const Vector<cplx> & xy);

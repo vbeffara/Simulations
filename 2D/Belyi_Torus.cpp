@@ -35,9 +35,6 @@ int main (int argc, char ** argv) {
 		if (H['f']) { Hypermap MM = M; MM.mirror(); MM.normalize(); for (Hypermap & O : v) if (O==MM) there = true; }
 		if (!there) {
 			v.push_back(M);
-			ostringstream os; os << "Toroidal enumeration (s=" << s << ", pass " << M.sigma.passport() << ", i=" << v.size() << ")"; H.title = os.str();
-			Constellation1<double> C {M,H,H['n']}; C.findn();
-
 			cout << "Sigma: " << M.sigma << endl;
 			cout << "Alpha: " << M.alpha << endl;
 			cout << "Phi:   " << M.phi << endl;
@@ -45,11 +42,16 @@ int main (int argc, char ** argv) {
 			cout << "     Order number:    " << v.size() << endl;
 			// cout << "     Name:            " << M.name() << endl;
 			cout << "     Passport:        " << M.sigma.passport() << endl;
+
+			ostringstream os; os << "Toroidal enumeration (s=" << s << ", pass " << M.sigma.passport() << ", i=" << v.size() << ")"; H.title = os.str();
+			Constellation1<double> C {M,H,H['n']}; double er = C.findn();
+			if (er>.01) { double u = .1; while ((er>.01)&&(u>1e-20)) { C.find(u); er=C.findn(); u/=10; } }
+			cout << "     Final error:     " << er << endl;
 			cout << "     Modulus:         " << C.tau << endl;
 			cout << "     Klein invariant: " << j_(q_(C.tau)) << endl;
 			cout << endl;
 
-			if (H['o']) { Image * img = C.draw(500); img->title = H.title; img->output(); img->hide(); delete img; }
+			if (H['o']) { Image * img = C.draw(500); img->title = H.title; img->output(); img->hide(); }
 		}
 	}
 }
