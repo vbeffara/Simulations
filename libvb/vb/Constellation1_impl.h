@@ -8,7 +8,7 @@
 namespace vb {
 	template <typename T> Constellation1<T>::Constellation1 (Hypermap M, Hub H, int n) {
 		Hypermap M2 (M); M2.dessin(); for (int i=0; i<n; ++i) M2.split_edges();
-		Toroidal S (M2,H); S.pack(); std::cerr << std::endl; S.output_pdf();
+		Toroidal S (M2,H); S.pack(); S.output_pdf();
 
 		unsigned N = M.sigma.size(); d=0;
 		for (auto c : M.sigma.cycles())	{ b.push_back(cplx(S.V[S.E[c[0]].src].z));    	bd.push_back(c.size()); d+=bd.back(); }
@@ -197,7 +197,6 @@ namespace vb {
 			readvec(x); c = cost();
 			if (c > old_c) readvec(old_x);
 		}
-		std::cerr << std::endl;
 	}
 
 	template <typename T, typename U> Constellation1<U> cconvert (Constellation1<T> & C) {
