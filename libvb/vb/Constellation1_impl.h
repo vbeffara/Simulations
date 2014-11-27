@@ -1,5 +1,6 @@
 #pragma once
 #include <vb/Constellation1.h>
+#include <vb/Elliptic.h>
 #include <vb/Minimizer.h>
 #include <vb/NumberTheory.h>
 #include <vb/Toroidal.h>
@@ -20,7 +21,7 @@ namespace vb {
 	template <typename T> Constellation1<T>::Constellation1 () {}
 
 	template <typename T> void Constellation1<T>::from_points () {
-		q = q_(tau);
+		q = q_(tau); E = Elliptic<T> { q };
 		cplx sz(0); for (unsigned i=0; i<b.size(); ++i) sz += T(bd[i])*b[i];
 		cplx sp(0); for (unsigned i=0; i<f.size(); ++i) sp += T(fd[i])*f[i];
 		dy = round(double(T(imag(sz-sp)/imag(tau)))); dx = round(double(T(real(sz-sp-T(dy)*tau))));

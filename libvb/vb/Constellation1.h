@@ -1,4 +1,5 @@
 #pragma once
+#include <vb/Elliptic.h>
 #include <vb/Hub.h>
 #include <vb/Hypermap.h>
 #include <vb/Image.h>
@@ -43,8 +44,9 @@ namespace vb {
 		std::vector<cplx>    	b,w,f;
 		std::vector<unsigned>	bd,wd,fd;
 
-		cplx	ll = T(0), tau = cplx(0,1), q = q_(tau);
-		int 	dx,dy,d;
+		cplx       	ll = T(0), tau = cplx(0,1), q = q_(tau);
+		Elliptic<T>	E { q };
+		int        	dx,dy,d;
 	};
 
 	template <typename T, typename U> Constellation1<U> cconvert (Constellation1<T> & C);
