@@ -199,7 +199,7 @@ namespace vb {
 		os << std::setprecision(nd) << std::fixed;
 		os << "log(lambda) = " << C.ll << std::endl;
 		os << "tau         = " << C.tau << std::endl;
-		std::complex<T> jj = j_(C.q);
+		std::complex<T> jj = C.E.j();
 		os << "invariant j = " << jj << std::endl;
 		os << std::endl;
 		os << "Keeping " << nd << " digits." << std::endl;
@@ -224,7 +224,7 @@ namespace vb {
 		os << "log(lambda) = " << C.ll << std::endl;
 		os << "tau         = " << C.tau << std::endl;
 		{ Polynomial<cpxint> P = guess(C.tau,eps); if (P.degree()>0) os << "\t\troot of " << P << std::endl; }
-		std::complex<T> jj = j_(C.q);
+		std::complex<T> jj = C.E.j();
 		os << "invariant j = " << jj << std::endl;
 		{ Polynomial<cpxint> P = guess(jj,eps); if (P.degree()>0) os << "\t\troot of " << P << std::endl; }
 		os << std::endl;

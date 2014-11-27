@@ -49,7 +49,7 @@ int main (int argc, char ** argv) {
 			if (er>.01) { double u = .1; while ((er>.01)&&(u>1e-20)) { C.find(u); er=C.findn(); u/=10; } }
 			cout << "     Final error:     " << er << endl;
 			cout << "     Modulus:         " << C.tau << endl;
-			cout << "     Klein invariant: " << j_(q_(C.tau)) << endl;
+			cout << "     Klein invariant: " << C.E.j() << endl;
 			cout << endl;
 
 			if (H['o']) { img.title = H.title; img.label(img.title.c_str()); if (!img.visible()) img.show(); C.draw(img); img.output(); }

@@ -149,8 +149,8 @@ namespace vb {
 			return pow(pi_<T>(),6)/(pow(T(1.5),3))*(pow(a,12)-T(1.5)*(pow(a,8)*pow(b,4)+pow(a,4)*pow(b,8))+pow(b,12));
 		}
 
-		cplx j_ () const {
-			cplx ll = pow(theta2_(0,q)/theta3_(0,q),4);
+		cplx j () const {
+			cplx ll = pow(theta2(cplx(0))/theta3(cplx(0)),4);
 			return T(256) * pow(T(1)-ll+ll*ll,3) / pow(ll*(T(1)-ll),2);
 		}
 
