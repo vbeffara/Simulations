@@ -14,8 +14,7 @@ namespace vb {
 		for (auto c : M.sigma.cycles())	{ b.push_back(cplx(S.V[S.E[c[0]].src].z));    	bd.push_back(c.size()); d+=bd.back(); }
 		for (auto c : M.alpha.cycles())	{ w.push_back(cplx(S.V[S.E[c[0]+N].src].z));  	wd.push_back(c.size()); }
 		for (auto c : M.phi.cycles())  	{ f.push_back(cplx(S.V[S.E[c[0]+3*N].src].z));	fd.push_back(c.size()); }
-		tau = S.m;
-		from_points(); normalize();
+		tau = S.m; shift(-b[0]); normalize();
 	}
 
 	template <typename T> Constellation1<T>::Constellation1 () {}
@@ -25,9 +24,9 @@ namespace vb {
 		cplx sz(0); for (unsigned i=0; i<b.size(); ++i) sz += T(bd[i])*b[i];
 		cplx sp(0); for (unsigned i=0; i<f.size(); ++i) sp += T(fd[i])*f[i];
 		dy = round(double(T(imag(sz-sp)/imag(tau)))); dx = round(double(T(real(sz-sp-T(dy)*tau))));
-		for (unsigned i=0; i<b.size(); ++i) {
-			int ddx = round(double(dx)/bd[i]); if (ddx != 0) { b[i] -= T(ddx); dx -= int(bd[i])*ddx; }
-			int ddy = round(double(dy)/bd[i]); if (ddy != 0) { b[i] -= T(ddy)*tau; dy -= int(bd[i])*ddy; }
+		for (unsigned i=0; i<f.size(); ++i) {
+			int ddx = round(double(dx)/fd[i]); if (ddx != 0) { f[i] += T(ddx); dx -= int(fd[i])*ddx; }
+			int ddy = round(double(dy)/fd[i]); if (ddy != 0) { f[i] += T(ddy)*tau; dy -= int(fd[i])*ddy; }
 		}
 	}
 
@@ -111,8 +110,10 @@ namespace vb {
 	template <typename T> auto Constellation1<T>::vcost() const -> Vector<cplx> {
 		Vector<cplx> out (d+2); int k=0;
 		for (unsigned i=0; i<w.size(); ++i) for (unsigned j=0; j<wd[i]; ++j) out[k++] = logder(w[i],j);
-		cplx sz (T(-dx)+cplx(T(-dy)*tau)); for (unsigned i=0; i<b.size(); ++i) sz += T(bd[i]) * b[i]; out[k++] = sz;
-		cplx sf (0); for (unsigned i=0; i<f.size(); ++i) sf -= T(fd[i]) * f[i]; out[k++] = sf;
+		cplx sz (T(-dx)+cplx(T(-dy)*tau));
+		for (unsigned i=0; i<b.size(); ++i) sz += T(bd[i]) * b[i];
+		for (unsigned i=0; i<f.size(); ++i) sz -= T(fd[i]) * f[i]; out[k++] = sz;
+		out[k++] = b[0];
 		return out;
 	}
 
@@ -131,14 +132,14 @@ namespace vb {
 		++i; } { j=0; // f_i is sum(z*dz) recentered
 			for (unsigned jj=0; jj<b.size(); ++jj)	out(i,j++) = T(bd[jj]);
 			for (unsigned jj=0; jj<w.size(); ++jj)	out(i,j++) = 0;
-			for (unsigned jj=0; jj<f.size(); ++jj)	out(i,j++) = 0;
+			for (unsigned jj=0; jj<f.size(); ++jj)	out(i,j++) = -T(fd[jj]);
 			out(i,j++) = - T(dy);
 			out(i,j++) = cplx(0);
 			assert (j==unsigned(d+2));
 		++i; } { j=0; // f_i is -sum(f*df) recentered
-			for (unsigned jj=0; jj<b.size(); ++jj)	out(i,j++) = 0;
+			for (unsigned jj=0; jj<b.size(); ++jj)	out(i,j++) = jj==0 ? T(1) : T(0);
 			for (unsigned jj=0; jj<w.size(); ++jj)	out(i,j++) = 0;
-			for (unsigned jj=0; jj<f.size(); ++jj)	out(i,j++) = -T(fd[jj]);
+			for (unsigned jj=0; jj<f.size(); ++jj)	out(i,j++) = 0;
 			out(i,j++) = cplx(0);
 			out(i,j++) = cplx(0);
 			assert (j==unsigned(d+2));

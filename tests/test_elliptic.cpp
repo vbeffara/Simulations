@@ -6,7 +6,7 @@
 using namespace vb; using namespace std;
 
 int main (int argc, char ** argv) {
-	Hub H ("Hypermap of genus 1",argc,argv,"n=3,m=228,v,q,g=lat_csquare,p");
+	Hub H ("Hypermap of genus 1",argc,argv,"n=3,m=228,v,w,q,g=lat_csquare,p");
 
 	auto M = HLib().at(H['g']);
 	cout << M << endl;
