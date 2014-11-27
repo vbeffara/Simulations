@@ -52,7 +52,7 @@ int main (int argc, char ** argv) {
 			cout << "     Klein invariant: " << j_(q_(C.tau)) << endl;
 			cout << endl;
 
-			if (H['o']) { C.shift(-C.b[0]); img.title = H.title; img.label(img.title.c_str()); if (!img.visible()) img.show(); C.draw(img); img.output(); }
+			if (H['o']) { img.title = H.title; img.label(img.title.c_str()); if (!img.visible()) img.show(); C.draw(img); img.output(); }
 		}
 	}
 }

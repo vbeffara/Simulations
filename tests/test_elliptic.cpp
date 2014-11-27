@@ -14,12 +14,13 @@ int main (int argc, char ** argv) {
 	Constellation1<double> C {M,H,H['n']};
 	C.findn();
 
-	if (H['v']) { Image * I = new Image (600,600,"Test Elliptic"); C.draw(*I); I->show(); I->pause(); I->hide(); delete I; }
-	if (!H['q']) { C.shift(-C.b[0]); cout << endl << C; return 0; }
+	if (H['v']) { Image I (600,600,"Test Elliptic"); I.show(); C.draw(I); I.pause(); I.hide(); }
+	if (!H['q']) { cout << endl << C; return 0; }
 
 	#ifdef HAVE_COMPLEX_GMP
 	Constellation1<gmp100> Cq = cconvert <double,gmp100> (C);
 	Cq.findn(); cout << endl << Cq;
+	if (H['w']) { Image I (600,600,"Test Elliptic (GMP)"); I.show(); Cq.draw(I); I.pause(); I.hide(); }
 	#else
 	cerr << "No std::complex<boost::numeric::whatever> support!" << endl;
 	#endif
