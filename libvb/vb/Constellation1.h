@@ -5,7 +5,6 @@
 #include <vb/Image.h>
 #include <vb/LinearAlgebra.h>
 #include <vb/Polynomial.h>
-#include <vb/math.h>
 
 namespace vb {
 	template <typename T> class Constellation1 { public:
@@ -44,7 +43,7 @@ namespace vb {
 		std::vector<cplx>    	b,w,f;
 		std::vector<unsigned>	bd,wd,fd;
 
-		cplx       	ll = T(0), tau = cplx(0,1), q = q_(tau);
+		cplx       	ll = T(0), tau = cplx(0,1), q = q_(tau), qt = q_t(tau);
 		Elliptic<T>	E { q };
 		int        	dx,dy,d;
 	};

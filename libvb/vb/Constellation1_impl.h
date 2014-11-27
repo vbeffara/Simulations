@@ -1,6 +1,5 @@
 #pragma once
 #include <vb/Constellation1.h>
-#include <vb/Elliptic.h>
 #include <vb/Minimizer.h>
 #include <vb/NumberTheory.h>
 #include <vb/Toroidal.h>
@@ -21,7 +20,7 @@ namespace vb {
 	template <typename T> Constellation1<T>::Constellation1 () {}
 
 	template <typename T> void Constellation1<T>::from_points () {
-		q = q_(tau); E = Elliptic<T> { q };
+		q = q_(tau); qt = q_t(tau); E = Elliptic<T> { q };
 		cplx sz(0); for (unsigned i=0; i<b.size(); ++i) sz += T(bd[i])*b[i];
 		cplx sp(0); for (unsigned i=0; i<f.size(); ++i) sp += T(fd[i])*f[i];
 		dy = round(double(T(imag(sz-sp)/imag(tau)))); dx = round(double(T(real(sz-sp-T(dy)*tau))));
@@ -45,24 +44,24 @@ namespace vb {
 	}
 
 	template <typename T> auto Constellation1<T>::logderp (cplx z, int k) const -> cplx {
-		if (k==0) return log(sigma_(z,q));
-		if (k==1) return zeta_(z,q);
-		if (k==2) return wp_(z,q);
-		if (k==3) return wp_z(z,q);
+		if (k==0) return log(E.sigma(z));
+		if (k==1) return E.zeta(z);
+		if (k==2) return E.wp(z);
+		if (k==3) return E.wp_z(z);
 		assert (!"Derivatives of higher order not implemented!");
 	}
 
 	template <typename T> auto Constellation1<T>::logderp_z (cplx z, int k) const -> cplx {
-		if (k==0) return zeta_(z,q);
-		if (k==1) return - wp_(z,q);
-		if (k==2) return wp_z(z,q);
+		if (k==0) return E.zeta(z);
+		if (k==1) return - E.wp(z);
+		if (k==2) return E.wp_z(z);
 		assert (!"Derivatives of higher order not implemented!");
 	}
 
 	template <typename T> auto Constellation1<T>::logderp_t (cplx z, int k) const -> cplx {
-		if (k==0) return q_t(tau) * sigma_q(z,q) / sigma_(z,q);
-		if (k==1) return q_t(tau) * zeta_q(z,q);
-		if (k==2) return q_t(tau) * wp_q(z,q);
+		if (k==0) return qt * E.sigma_q(z) / E.sigma(z);
+		if (k==1) return qt * E.zeta_q(z);
+		if (k==2) return qt * E.wp_q(z);
 		assert (!"Derivatives of higher order not implemented!");
 	}
 
@@ -200,7 +199,7 @@ namespace vb {
 		os << std::setprecision(nd) << std::fixed;
 		os << "log(lambda) = " << C.ll << std::endl;
 		os << "tau         = " << C.tau << std::endl;
-		std::complex<T> ll = pow(theta2_(std::complex<T>(0),C.q)/theta3_(std::complex<T>(0),C.q),4), jj = T(256) * pow(T(1)-ll+ll*ll,3) / pow(ll*(T(1)-ll),2);
+		std::complex<T> jj = j_(C.q);
 		os << "invariant j = " << jj << std::endl;
 		os << std::endl;
 		os << "Keeping " << nd << " digits." << std::endl;
