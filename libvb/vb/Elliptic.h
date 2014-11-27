@@ -5,71 +5,71 @@ namespace vb {
 	template <typename T> class Elliptic { public:
 		using cplx = std::complex<T>;
 
-		Elliptic (const cplx & q_) : q(q_), eta1_(eta1()), eta1_q_(eta1_q()), e1_(e1()) {}
+		Elliptic (const cplx & q_) : q(q_), q14(pow(q,T(.25))), eta1_(eta1()), eta1_q_(eta1_q()), e1_(e1()) {}
 
 		cplx theta1 (const cplx & z) const {
 			cplx out(cplx(0)), old(1);
-			for (int n=0; out!=old; ++n) { old=out; out += T(2) * pow(T(-1),n) * pow(q, T((n+.5)*(n+.5))) * sin(T(2*n+1)*z); }
+			for (int n=0; out!=old; ++n) { old=out; out += T(2 * pow(-1,n)) * q14 * pow(q, n*(n+1)) * sin(T(2*n+1)*z); }
 			return out;
 		}
 
 		cplx theta1_z (const cplx & z) const {
 			cplx out(cplx(0)), old(1);
-			for (int n=0; out!=old; ++n) { old=out; out += T(2) * pow(T(-1),n) * pow(q, T((n+.5)*(n+.5))) * T(2*n+1) * cos(T(2*n+1)*z); }
+			for (int n=0; out!=old; ++n) { old=out; out += T(2 * pow(-1,n)) * q14 * pow(q, n*(n+1)) * T(2*n+1) * cos(T(2*n+1)*z); }
 			return out;
 		}
 
 		cplx theta1_q (const cplx & z) const {
 			cplx out(cplx(0)), old(1);
-			for (int n=0; out!=old; ++n) { old=out; out += T(2) * pow(T(-1),n) * T((n+.5)*(n+.5)) * pow(q, T((n+.5)*(n+.5)-1)) * sin(T(2*n+1)*z); }
+			for (int n=0; out!=old; ++n) { old=out; out += T(2 * pow(-1,n)) * T((n+.5)*(n+.5)) * q14 * pow(q, n*(n+1)-1) * sin(T(2*n+1)*z); }
 			return out;
 		}
 
 		cplx theta1_zq (const cplx & z) const {
 			cplx out(cplx(0)), old(1);
-			for (int n=0; out!=old; ++n) { old=out; out += T(2) * pow(T(-1),n) * T((n+.5)*(n+.5)) * pow(q, T((n+.5)*(n+.5)-1)) * T(2*n+1) * cos(T(2*n+1)*z); }
+			for (int n=0; out!=old; ++n) { old=out; out += T(2 * pow(-1,n)) * T((n+.5)*(n+.5)) * q14 * pow(q, n*(n+1)-1) * T(2*n+1) * cos(T(2*n+1)*z); }
 			return out;
 		}
 
 		cplx theta1_zz (const cplx & z) const {
 			cplx out(cplx(0)), old(1);
-			for (int n=0; out!=old; ++n) { old=out; out -= T(2) * pow(-1,n) * pow(q, T((n+.5)*(n+.5))) * pow(T(2*n+1),2) * sin(T(2*n+1)*z); }
+			for (int n=0; out!=old; ++n) { old=out; out -= T(2 * pow(-1,n)) * q14 * pow(q, n*(n+1)) * T(pow(2*n+1,2)) * sin(T(2*n+1)*z); }
 			return out;
 		}
 
 		cplx theta1_zzq (const cplx & z) const {
 			cplx out(cplx(0)), old(1);
-			for (int n=0; out!=old; ++n) { old=out; out -= T(2) * pow(-1,n) * T((n+.5)*(n+.5)) * pow(q, T((n+.5)*(n+.5)-1)) * pow(T(2*n+1),2) * sin(T(2*n+1)*z); }
+			for (int n=0; out!=old; ++n) { old=out; out -= T(2 * pow(-1,n)) * T((n+.5)*(n+.5)) * q14 * pow(q, n*(n+1)-1) * T(pow(2*n+1,2)) * sin(T(2*n+1)*z); }
 			return out;
 		}
 
 		cplx theta1_zzz (const cplx & z) const {
 			cplx out(cplx(0)), old(1);
-			for (int n=0; out!=old; ++n) { old=out; out -= T(2) * pow(T(-1),n) * pow(q, T((n+.5)*(n+.5))) * pow(T(2*n+1),3) * cos(T(2*n+1)*z); }
+			for (int n=0; out!=old; ++n) { old=out; out -= T(2 * pow(-1,n)) * q14 * pow(q, n*(n+1)) * T(pow(2*n+1,3)) * cos(T(2*n+1)*z); }
 			return out;
 		}
 
 		cplx theta1_zzzq (const cplx & z) const {
 			cplx out(cplx(0)), old(1);
-			for (int n=0; out!=old; ++n) { old=out; out -= T(2) * pow(T(-1),n) * T((n+.5)*(n+.5)) * pow(q, T((n+.5)*(n+.5)-1)) * pow(T(2*n+1),3) * cos(T(2*n+1)*z); }
+			for (int n=0; out!=old; ++n) { old=out; out -= T(2 * pow(-1,n)) * T((n+.5)*(n+.5)) * q14 * pow(q, n*(n+1)-1) * T(pow(2*n+1,3)) * cos(T(2*n+1)*z); }
 			return out;
 		}
 
 		cplx theta2 (const cplx & z) const {
 			cplx out(cplx(0)), old(1);
-			for (int n=0; out!=old; ++n) { old=out; out += T(2) * pow(q, T((n+.5)*(n+.5))) * cos(T(2*n+1)*z); }
+			for (int n=0; out!=old; ++n) { old=out; out += T(2) * q14 * pow(q, n*(n+1)) * cos(T(2*n+1)*z); }
 			return out;
 		}
 
 		cplx theta2_z (const cplx & z) const {
 			cplx out(cplx(0)), old(1);
-			for (int n=0; out!=old; ++n) { old=out; out -= T(2) * pow(q, T((n+.5)*(n+.5))) * T(2*n+1) * sin(T(2*n+1)*z); }
+			for (int n=0; out!=old; ++n) { old=out; out -= T(2) * q14 * pow(q, n*(n+1)) * T(2*n+1) * sin(T(2*n+1)*z); }
 			return out;
 		}
 
 		cplx theta2_q (const cplx & z) const {
 			cplx out(cplx(0)), old(1);
-			for (int n=0; out!=old; ++n) { old=out; out += T(2) * T((n+.5)*(n+.5)) * pow(q, T((n+.5)*(n+.5)-1)) * cos(T(2*n+1)*z); }
+			for (int n=0; out!=old; ++n) { old=out; out += T(2) * T((n+.5)*(n+.5)) * q14 * pow(q, n*(n+1)-1) * cos(T(2*n+1)*z); }
 			return out;
 		}
 
@@ -93,7 +93,7 @@ namespace vb {
 
 		cplx theta4_q (const cplx & z) const {
 			cplx out(cplx(0)), old(1);
-			for (int n=1; out!=old; ++n) { old=out; out -= T(2) * T(n*n) * pow(-q, T(n*n-1)) * cos(T(2*n)*z); }
+			for (int n=1; out!=old; ++n) { old=out; out -= T(2) * T(n*n) * pow(-q, n*n-1) * cos(T(2*n)*z); }
 			return out;
 		}
 
@@ -157,6 +157,6 @@ namespace vb {
 		cplx q;
 
 	private:
-		cplx eta1_, eta1_q_, e1_;
+		cplx q14, eta1_, eta1_q_, e1_;
 	};
 }
