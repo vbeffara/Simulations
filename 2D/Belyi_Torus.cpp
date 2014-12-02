@@ -8,6 +8,7 @@
 // s: number of vertices
 
 #include <vb/Constellation1.h>
+#include <vb/NumberTheory.h>
 #include <vb/Pairings.h>
 #include <vb/PRNG.h>
 #include <vb/ProgressBar.h>
@@ -17,7 +18,7 @@ using namespace vb; using namespace std;
 vector<unsigned> ntri { 0, 1, 5, 46, 669 };
 
 int main (int argc, char ** argv) {
-	Hub H ("Toroidal enumeration", argc, argv, "s=1,m=228,r=1,o,d=0,D=0,g=1,f,n=2");
+	Hub H ("Toroidal enumeration", argc, argv, "s=1,m=228,r=1,o,d=0,D=0,g=1,f,n=2,q");
 	unsigned s=H['s'], g=H['g'], a=6*(s+2*g-2), r=H['r'], d=H['d'], D=H['D'];
 	assert (a>0); if (g!=1) assert(!H['o']); if (r>0) prng.seed(r);
 
@@ -45,14 +46,26 @@ int main (int argc, char ** argv) {
 			cout << "     Passport:        " << M.sigma.passport() << endl;
 
 			ostringstream os; os << "Toroidal enumeration (s=" << s << ", pass " << M.sigma.passport() << ", i=" << v.size() << ")"; H.title = os.str();
-			Constellation1<double> C {M,H,H['n']}; double er = C.findn();
-			if (er>.01) { double u = .1; while ((er>.01)&&(u>1e-20)) { C.find(u); er=C.findn(); u/=10; } }
-			cout << "     Final error:     " << er << endl;
-			cout << "     Modulus:         " << C.tau << endl;
-			cout << "     Klein invariant: " << C.E.j() << endl;
-			cout << endl;
+			Constellation1<double> C {M,H,H['n']}; double er = C.cost();
+			if (!H['q']) {
+				cout << "     Final error:     " << er << endl;
+				cout << "     Modulus:         " << C.tau << endl;
+				cout << "     Klein invariant: " << C.E.j() << endl;
+				cout << endl;
+			}
 
 			if (H['o']) { img.title = H.title; img.label(img.title.c_str()); if (!img.visible()) img.show(); C.draw(img); img.output(); }
+
+			if (H['q']) {
+				Constellation1<gmp100> CC = cconvert<double,gmp100> (C); gmp100 c = CC.findn(); int lc = - int(log10(c));
+				int nd = std::max(10,lc/2-15); gmp100 eps = pow(gmp100(.1),nd);
+				cout << fixed << setprecision(std::min(nd,80));
+				cout << "     Modulus:         " << CC.tau << endl;
+				if (nd>30) { Polynomial<cpxint> P = guess(CC.tau,eps); if (P.degree()>0) cout << "        root of " << P << std::endl; }
+				cout << "     Klein invariant: " << CC.E.j() << endl;
+				if (nd>30) { Polynomial<cpxint> P = guess(CC.E.j(),eps); if (P.degree()>0) cout << "        root of " << P << std::endl; }
+				cout << endl << scientific << setprecision(6);
+			}
 		}
 	}
 }

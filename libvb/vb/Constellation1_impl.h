@@ -7,14 +7,15 @@
 
 namespace vb {
 	template <typename T> Constellation1<T>::Constellation1 (Hypermap M, Hub H, int n) {
-		Hypermap M2 (M); M2.dessin(); for (int i=0; i<n; ++i) M2.split_edges();
-		Toroidal S (M2,H); S.pack(); S.output_pdf();
-
-		unsigned N = M.sigma.size(); d=0;
-		for (auto c : M.sigma.cycles())	{ b.push_back(cplx(S.V[S.E[c[0]].src].z));    	bd.push_back(c.size()); d+=bd.back(); }
-		for (auto c : M.alpha.cycles())	{ w.push_back(cplx(S.V[S.E[c[0]+N].src].z));  	wd.push_back(c.size()); }
-		for (auto c : M.phi.cycles())  	{ f.push_back(cplx(S.V[S.E[c[0]+3*N].src].z));	fd.push_back(c.size()); }
-		tau = S.m; shift(-b[0]); normalize();
+		Hypermap M2 (M); M2.dessin();
+		do {
+			M2.split_edges(); Toroidal S (M2,H); S.pack(); S.output_pdf();
+			unsigned N = M.sigma.size(); d=0;
+			b.clear(); for (auto c : M.sigma.cycles())	{ b.push_back(cplx(S.V[S.E[c[0]].src].z));    	bd.push_back(c.size()); d+=bd.back(); }
+			w.clear(); for (auto c : M.alpha.cycles())	{ w.push_back(cplx(S.V[S.E[c[0]+N].src].z));  	wd.push_back(c.size()); }
+			f.clear(); for (auto c : M.phi.cycles())  	{ f.push_back(cplx(S.V[S.E[c[0]+3*N].src].z));	fd.push_back(c.size()); }
+			tau = S.m; shift(-b[0]); normalize(); findn();
+		} while (cost()>T(1e-6));
 	}
 
 	template <typename T> Constellation1<T>::Constellation1 () {}
@@ -90,6 +91,7 @@ namespace vb {
 	template <typename T> auto Constellation1<T>::operator() (cplx z) const -> cplx { return exp(logder(z,0)); }
 
 	template <typename T> void Constellation1<T>::readvec (const Vector<cplx> & xy) {
+		if (imag(xy[d])<0) return;
 		unsigned i=0;
 		for (auto & z : b) z = xy[i++];
 		for (auto & z : w) z = xy[i++];
@@ -195,7 +197,7 @@ namespace vb {
 	}
 
 	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation1<T> & C) {
-		T err (C.cost()); T lerr (-log10(err)); int nd = std::max (5,int(lerr)/2-7); if (err==T(0)) nd=10;
+		T err (C.cost()); T lerr (-log10(err)); int nd = std::max (5,int(lerr)/2-10); if (err==T(0)) nd=10;
 		os << std::setprecision(nd) << std::fixed;
 		os << "log(lambda) = " << C.ll << std::endl;
 		os << "tau         = " << C.tau << std::endl;

@@ -9,13 +9,21 @@ namespace vb {
 
 		cplx theta1 (const cplx & z) const {
 			cplx out(cplx(0)), old(1);
-			for (int n=0; out!=old; ++n) { old=out; out += T(2 * pow(-1,n)) * q14 * pow(q, n*(n+1)) * sin(T(2*n+1)*z); }
+			for (int n=0; out!=old; ++n) {
+				old=out;
+				cplx dd = T(2 * pow(-1,n)) * q14 * pow(q, n*(n+1)) * sin(T(2*n+1)*z);
+				if (std::isnormal(double(real(dd)))) out += dd;
+			}
 			return out;
 		}
 
 		cplx theta1_z (const cplx & z) const {
 			cplx out(cplx(0)), old(1);
-			for (int n=0; out!=old; ++n) { old=out; out += T(2 * pow(-1,n)) * q14 * pow(q, n*(n+1)) * T(2*n+1) * cos(T(2*n+1)*z); }
+			for (int n=0; out!=old; ++n) {
+				old=out;
+				auto dd = T(2 * pow(-1,n)) * q14 * pow(q, n*(n+1)) * T(2*n+1) * cos(T(2*n+1)*z);
+				if (std::isnormal(double(real(dd)))) out += dd;
+			}
 			return out;
 		}
 
