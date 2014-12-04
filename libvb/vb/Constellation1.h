@@ -4,13 +4,12 @@
 #include <vb/Hypermap.h>
 #include <vb/Image.h>
 #include <vb/LinearAlgebra.h>
-#include <vb/Polynomial.h>
 
 namespace vb {
 	template <typename T> class Constellation1 { public:
 		using cplx = std::complex<T>;
 
-		Constellation1 (Hypermap M, Hub H, int n=3);
+		Constellation1 (const Hypermap & M, const Hub & H);
 		Constellation1 ();
 
 		cplx	operator()	(cplx z)	const;

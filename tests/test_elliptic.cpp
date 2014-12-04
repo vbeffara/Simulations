@@ -11,7 +11,7 @@ int main (int argc, char ** argv) {
 	auto M = HLib().at(H['g']);
 	cout << M << endl;
 
-	Constellation1<double> C {M,H,H['n']};
+	Constellation1<double> C {M,H};
 	C.findn();
 
 	if (H['v']) { Image I (600,600,"Test Elliptic"); I.show(); C.draw(I); I.pause(); I.hide(); }

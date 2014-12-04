@@ -1,12 +1,11 @@
 #pragma once
 #include <vb/Constellation1.h>
-#include <vb/Minimizer.h>
 #include <vb/NumberTheory.h>
 #include <vb/Toroidal.h>
 #include <iomanip>
 
 namespace vb {
-	template <typename T> Constellation1<T>::Constellation1 (Hypermap M, Hub H, int n) {
+	template <typename T> Constellation1<T>::Constellation1 (const Hypermap & M, const Hub & H) {
 		Hypermap M2 (M); M2.dessin();
 		do {
 			M2.split_edges(); Toroidal S (M2,H); S.pack(); S.output_pdf();
