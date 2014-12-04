@@ -12,30 +12,10 @@ namespace vb {
 		Constellation1 (const Hypermap & M, const Hub & H);
 		Constellation1 ();
 
-		cplx	operator()	(cplx z)	const;
-		cplx	logderp   	(cplx z, int k) const;
-		cplx	logderp_z 	(cplx z, int k) const;
-		cplx	logderp_t 	(cplx z, int k) const;
-		cplx	logder    	(cplx z, int k)	const;
-		cplx	logder_z  	(cplx z, int k)	const;
-		cplx	logder_t  	(cplx z, int k)	const;
-
-		void	from_points	();	// compute P and Q, don't touch l
-		void	normalize  	();	// choose l to make ones ones
-		void	shift      	(cplx z);
-
-		T           	cost    	()	const;
-		Vector<cplx>	vcost   	()	const;
-		Matrix<cplx>	jacvcost	()	const;
-		Matrix<cplx>	jacnum  	();
-
-		T	find 	(T eps = T(1e-100));
-		T	findn	();
-
-		Vector<cplx>	vec    	(const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f, const cplx & t, const cplx & l)	const;
-		void        	readvec	(const Vector<cplx> & xy);
-
-		T	fg (const Vector<T> & xy, Vector<T> & df);
+		void	from_points	();
+		cplx	operator() 	(cplx z)	const;
+		T   	cost       	()      	const;
+		T   	findn      	();
 
 		void	draw	(Image & img) const;
 
@@ -44,7 +24,26 @@ namespace vb {
 
 		cplx       	ll = T(0), tau = cplx(0,1), q = q_(tau), qt = q_t(tau);
 		Elliptic<T>	E { q };
-		int        	dx,dy,d;
+
+		int	dx,dy,d;
+
+	private:
+		Vector<cplx>	vcost   	()	const;
+		Matrix<cplx>	jacvcost	()	const;
+		Matrix<cplx>	jacnum  	();
+
+		cplx	logderp  	(cplx z, int k) const;
+		cplx	logderp_z	(cplx z, int k) const;
+		cplx	logderp_t	(cplx z, int k) const;
+		cplx	logder   	(cplx z, int k)	const;
+		cplx	logder_z 	(cplx z, int k)	const;
+		cplx	logder_t 	(cplx z, int k)	const;
+
+		void	normalize	();
+		void	shift    	(cplx z);
+
+		Vector<cplx>	vec    	(const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f, const cplx & t, const cplx & l)	const;
+		void        	readvec	(const Vector<cplx> & xy);
 	};
 
 	template <typename T, typename U> Constellation1<U> cconvert (Constellation1<T> & C);

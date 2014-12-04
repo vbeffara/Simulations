@@ -159,22 +159,6 @@ namespace vb {
 		return out;
 	}
 
-	template <typename T> T Constellation1<T>::find (T e) {
-		Vector<cplx> bw = vec(b,w,f,tau,ll);
-		T c = cost(), eps = std::min(T(.1),c), nc = c;
-
-		while (eps>e) {
-			std::cerr << "\r" << c << " (" << eps << ")        ";
-			bool flag = false;
-			for (auto & z : bw) {	z += eps; readvec(bw); nc = cost(); if (nc<c) { c=nc; flag=true; } else { z -= eps; }
-			                     	z -= eps; readvec(bw); nc = cost(); if (nc<c) { c=nc; flag=true; } else { z += eps; }
-			                     	z += cplx(0,eps); readvec(bw); nc = cost(); if (nc<c) { c=nc; flag=true; } else { z -= cplx(0,eps); }
-			                     	z -= cplx(0,eps); readvec(bw); nc = cost(); if (nc<c) { c=nc; flag=true; } else { z += cplx(0,eps); } }
-			if (!flag) eps /= 1.618; else eps *= 1.1;
-		}
-		return c;
-	}
-
 	template <typename T> T Constellation1<T>::findn () {
 		Vector<cplx> x = vec(b,w,f,tau,ll); Matrix<cplx> IJ (x.size(),x.size());
 		T c = cost(), old_c = c + T(1); auto old_x = x;
@@ -198,10 +182,11 @@ namespace vb {
 	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation1<T> & C) {
 		T err (C.cost()); T lerr (-log10(err)); int nd = std::max (5,int(lerr)/2-10); if (err==T(0)) nd=10;
 		os << std::setprecision(nd) << std::fixed;
-		os << "log(lambda) = " << C.ll << std::endl;
-		os << "tau         = " << C.tau << std::endl;
-		std::complex<T> jj = C.E.j();
-		os << "invariant j = " << jj << std::endl;
+		os << "Modulus tau  = " << C.tau << std::endl;
+		os << "Invariant j  = " << C.E.j() << std::endl;
+		os << "Invariant g2 = " << C.E.g2() << std::endl;
+		os << "Invariant g3 = " << C.E.g3() << std::endl;
+		os << "log(lambda)  = " << C.ll << std::endl;
 		os << std::endl;
 		os << "Keeping " << nd << " digits." << std::endl;
 		os << std::endl;
