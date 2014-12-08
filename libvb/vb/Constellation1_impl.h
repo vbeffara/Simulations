@@ -160,12 +160,12 @@ namespace vb {
 	}
 
 	template <typename T> T Constellation1<T>::findn () {
-		Vector<cplx> x = vec(b,w,f,tau,ll); Matrix<cplx> IJ (x.size(),x.size());
+		Vector<cplx> x = vec(b,w,f,tau,ll);
 		T c = cost(), old_c = c + T(1); auto old_x = x;
 		while (c<old_c) {
 			std::cerr << c << "             \r"	;
 			old_c = c; old_x = x;
-			inv(jacvcost(),IJ); x -= prod(IJ,vcost());
+			x -= solve(jacvcost(),vcost());
 			readvec(x); c = cost();
 		}
 		readvec(old_x); return old_c;

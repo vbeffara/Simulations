@@ -71,6 +71,14 @@ namespace vb {
 		return true;
 	}
 
+	template <typename T> Vector<T> solve (const Matrix<T> & A, const Vector<T> & y) {
+		Matrix<T> AA(A); Vector<T> x(y);
+		ublas::permutation_matrix<size_t> pm(A.size1());
+		my_lu_factorize(AA, pm);
+		lu_substitute(AA, pm, x);
+		return x;
+	}
+
 	template <typename T> void printmath (std::ostream & os, const Vector<T> & v) {
 		os << "{"; bool first=true;
 		for (unsigned i=0; i<v.size(); ++i) { os << (first ? " " : ", ") << v(i); first = false; }
