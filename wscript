@@ -14,13 +14,12 @@ def configure (ctx) :
 	ctx.check_cfg	(package='libpng',                       	args='--cflags --libs',   	uselib_store='PNG')
 	ctx.check_cfg	(package='',                             	args='--cflags --ldflags',	uselib_store='FLTK', path='fltk-config')
 	ctx.check    	(header_name=["string", "png++/png.hpp"],	msg='Checking for PNG++', 	define_name='HAVE_PNGPP')
-	ctx.check    	(lib='gmp',                              	mandatory=0,              	define_name='HAVE_GMP')
-	ctx.check    	(lib='mpfr',                             	mandatory=0,              	define_name='HAVE_MPFR')
-	ctx.check    	(lib='quadmath',                         	mandatory=0,              	define_name='HAVE_QUADMATH')
-	ctx.check    	(lib='fplll',                            	mandatory=0,              	define_name='HAVE_FPLLL')
+	ctx.check    	(lib='gmp',                              	                          	define_name='HAVE_GMP')
+	ctx.check    	(lib='mpfr',                             	                          	define_name='HAVE_MPFR')
+	ctx.check    	(lib='fplll',                            	                          	define_name='HAVE_FPLLL')
+	ctx.check_boost ()
 	ctx.check    	(lib='boost_system')
 	ctx.check    	(lib='boost_filesystem')
-	ctx.check_boost ()
 	ctx.check_cxx	(msg="Checking complex<mpf_float> validity", use=['GMP'], errmsg='no', mandatory=0, define_name='HAVE_COMPLEX_GMP',
 	             	code="""#include <boost/multiprecision/gmp.hpp>\nint main () { exp(std::complex<boost::multiprecision::mpf_float_100>()); }""")
 
