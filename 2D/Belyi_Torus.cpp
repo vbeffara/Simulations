@@ -26,7 +26,7 @@ int main (int argc, char ** argv) {
 
 	vector<Hypermap> v; unsigned target = 0; if ((d==0) && (g==1) && (!H['f']) && (s<ntri.size())) target = ntri[s];
 
-	Image img (500,500,"Belyi_Torus");
+	Image img (800,800,"Belyi_Torus");
 	while ((target==0)||(v.size()<target)) {
 		Permutation alpha = Pairings(a).rand();                                        	if (!connected(phi,alpha))	continue;
 		Permutation sigma = (alpha*phi).inverse(); Hypermap M (sigma,alpha,phi);       	if (M.genus() != g)       	continue;
@@ -51,6 +51,8 @@ int main (int argc, char ** argv) {
 				cout << "     Final error:     " << er << endl;
 				cout << "     Modulus:         " << C.tau << endl;
 				cout << "     Klein invariant: " << C.E.j() << endl;
+				cout << "     g2 coefficient:  " << C.E.g2() << endl;
+				cout << "     g3 coefficient:  " << C.E.g3() << endl;
 				cout << endl;
 			}
 
@@ -64,6 +66,10 @@ int main (int argc, char ** argv) {
 				if (nd>30) { Polynomial<cpxint> P = guess(CC.tau,eps); if (P.degree()>0) cout << "        root of " << P << std::endl; }
 				cout << "     Klein invariant: " << CC.E.j() << endl;
 				if (nd>30) { Polynomial<cpxint> P = guess(CC.E.j(),eps); if (P.degree()>0) cout << "        root of " << P << std::endl; }
+				cout << "     g2 coefficient:  " << CC.E.g2() << endl;
+				if (nd>30) { Polynomial<cpxint> P = guess(CC.E.g2(),eps); if (P.degree()>0) cout << "        root of " << P << std::endl; }
+				cout << "     g3 coefficient:  " << CC.E.g3() << endl;
+				if (nd>30) { Polynomial<cpxint> P = guess(CC.E.g3(),eps); if (P.degree()>0) cout << "        root of " << P << std::endl; }
 				cout << endl << scientific << setprecision(6);
 			}
 		}
