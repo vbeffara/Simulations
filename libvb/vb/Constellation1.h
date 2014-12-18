@@ -16,6 +16,7 @@ namespace vb {
 		cplx	operator() 	(cplx z)	const;
 		T   	cost       	()      	const;
 		T   	findn      	();
+		cplx	reduce     	(cplx z)	const;
 
 		void	draw	(Image & img) const;
 

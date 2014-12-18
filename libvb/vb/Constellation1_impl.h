@@ -13,8 +13,8 @@ namespace vb {
 			b.clear(); for (auto c : M.sigma.cycles())	{ b.push_back(cplx(S.V[S.E[c[0]].src].z));    	bd.push_back(c.size()); d+=bd.back(); }
 			w.clear(); for (auto c : M.alpha.cycles())	{ w.push_back(cplx(S.V[S.E[c[0]+N].src].z));  	wd.push_back(c.size()); }
 			f.clear(); for (auto c : M.phi.cycles())  	{ f.push_back(cplx(S.V[S.E[c[0]+3*N].src].z));	fd.push_back(c.size()); }
-			tau = S.m; shift(-b[0]); normalize(); findn();
-		} while (cost()>T(1e-6));
+			tau = S.m; shift(-b[0]); normalize();
+		} while (findn() > T(1e-6));
 	}
 
 	template <typename T> Constellation1<T>::Constellation1 () {}
@@ -88,6 +88,14 @@ namespace vb {
 	}
 
 	template <typename T> auto Constellation1<T>::operator() (cplx z) const -> cplx { return exp(logder(z,0)); }
+
+	template <typename T> auto Constellation1<T>::reduce (cplx z) const -> cplx {
+		while (imag(z) < - imag(tau)/T(2))                   	z += tau;
+		while (imag(z) > imag(tau)/T(2))                     	z -= tau;
+		while (real(z) < real(tau)*imag(z)/imag(tau) - T(.5))	z += T(1);
+		while (real(z) > real(tau)*imag(z)/imag(tau) + T(.5))	z -= T(1);
+		return z;
+	}
 
 	template <typename T> void Constellation1<T>::readvec (const Vector<cplx> & xy) {
 		if (imag(xy[d])<0) return;
@@ -168,7 +176,11 @@ namespace vb {
 			x -= solve(jacvcost(),vcost());
 			readvec(x); c = cost();
 		}
-		readvec(old_x); return old_c;
+		readvec(old_x); T bound = sqrt(sqrt(old_c));
+		for (int i=0; i<b.size(); ++i) for (int j=0; j<b.size(); ++j) if (i!=j) if (abs(reduce(b[i]-b[j])) < bound) old_c += T(1);
+		for (int i=0; i<w.size(); ++i) for (int j=0; j<w.size(); ++j) if (i!=j) if (abs(reduce(w[i]-w[j])) < bound) old_c += T(1);
+		for (int i=0; i<f.size(); ++i) for (int j=0; j<f.size(); ++j) if (i!=j) if (abs(reduce(f[i]-f[j])) < bound) old_c += T(1);
+		return old_c;
 	}
 
 	template <typename T, typename U> Constellation1<U> cconvert (Constellation1<T> & C) {
