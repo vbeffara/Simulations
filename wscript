@@ -4,7 +4,7 @@ def options (ctx) :
 	ctx.load ('compiler_c compiler_cxx')
 
 def configure (ctx) :
-	ctx.env.CXXFLAGS += [ '-std=c++11' ]
+	ctx.env.CXXFLAGS += [ '-std=c++11', '-fext-numeric-literals', '-I%s/libvb' % ctx.path.abspath() ] # Kludge to override system <complex> header
 	ctx.env.LINKFLAGS += [ '-std=c++11' ]
 
 	ctx.load ('compiler_c compiler_cxx boost')
