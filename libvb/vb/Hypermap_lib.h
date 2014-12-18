@@ -13,7 +13,8 @@
  */
 
 namespace vb {
-	Hypermap H_artem (int n);	// Triangular lattice with one edge type split into n edges
+	Hypermap H_artem 	(int n);	// Triangular lattice with one edge type split into n edges
+	Hypermap H_genus1	(int n);	// One arbitrary triangulation of the torus with n vertices
 
 	class HLib : public std::map <std::string,Hypermap> { public: HLib (); };
 }
