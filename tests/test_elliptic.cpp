@@ -1,16 +1,22 @@
 #include <vb/Constellation1.h>
 #include <vb/Hub.h>
 #include <vb/Hypermap_lib.h>
+#include <vb/ProgressBar.h>
 #include <vb/math.h>
 
 using namespace vb; using namespace std;
 
 int main (int argc, char ** argv) {
-	Hub H ("Hypermap of genus 1",argc,argv,"n=3,m=228,v,w,q,g=lat_csquare,p");
+	Hub H ("Hypermap of genus 1",argc,argv,"m=228,v,w,q,n=0,g=lat_csquare,p,f=0,s=0");
 
-	auto M = HLib().at(H['g']);
+	int n = H['n'];
+	auto M = n ? H_genus1(n) : HLib().at(H['g']);
+	int f = H['f']; if (f) {
+		if (int(H['s'])) prng.seed(int(H['s']));
+		for (int i=0; i<f; ++i) M.flip(prng.uniform_int(M.sigma.size()));
+	}
+
 	cout << M << endl;
-
 	Constellation1<double> C {M,H};
 	C.findn();
 
