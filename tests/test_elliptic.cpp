@@ -20,14 +20,16 @@ int main (int argc, char ** argv) {
 	Constellation1<double> C {M,H};
 	C.findn();
 
+	if (!H['q']) { cout << endl << C; }
 	if (H['v']) { Image I (600,600,"Test Elliptic"); I.show(); C.draw(I); I.pause(); I.hide(); }
-	if (!H['q']) { cout << endl << C; return 0; }
 
-	#ifdef HAVE_COMPLEX_GMP
-	Constellation1<gmp100> Cq = cconvert <double,gmp100> (C);
-	Cq.findn(); cout << endl << Cq;
-	if (H['w']) { Image I (600,600,"Test Elliptic (GMP)"); I.show(); Cq.draw(I); I.pause(); I.hide(); }
-	#else
-	cerr << "No std::complex<boost::numeric::whatever> support!" << endl;
-	#endif
+	if (H['q']) {
+#ifdef HAVE_COMPLEX_GMP
+		Constellation1<gmp100> Cq = cconvert <double,gmp100> (C);
+		Cq.findn(); cout << endl << Cq;
+		if (H['w']) { Image I (600,600,"Test Elliptic (GMP)"); I.show(); Cq.draw(I); I.pause(); I.hide(); }
+#else
+		cerr << "No std::complex<boost::numeric::whatever> support!" << endl;
+#endif
+	}
 }
