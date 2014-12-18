@@ -1,6 +1,7 @@
 #pragma once /// \file
 #include <vb/Picture.h>
 #include <vb/Array.h>
+#include <vb/cpx.h>
 
 namespace vb {
 	template <typename T> class Bitmap : public Picture, public Array<T> { public:
@@ -41,6 +42,17 @@ namespace vb {
 				coo nij = ij + dz[d]; if (contains(nij) && (at(nij) == in)) { xy.push_back(nij); at(nij)=c; }
 			}
 		}
+	}
+
+	template <typename T> std::function <Color(coo)> aa (std::function <Color(std::complex<T>)> f) {
+		return [&](coo c) {
+			using cplx = std::complex<T>;
+			cplx z (c.x,c.y); int r(0), g(0), b(0), a(0);
+			for (int i=-1; i<=1; ++i) for (int j=-1; j<=1; ++j) {
+				Color c = f(z + cplx{i/3.0,j/3.0}); r+=c.r; g+=c.g; b+=c.b; a+=c.a;
+			}
+			return Color(r/9,g/9,b/9,a/9);
+		};
 	}
 
 	template <typename T> void Bitmap<T>::tessel (int xmin, int ymin, int xmax, int ymax, std::function <T(coo)> f) {

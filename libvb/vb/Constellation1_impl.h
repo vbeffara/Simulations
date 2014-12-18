@@ -257,12 +257,12 @@ namespace vb {
 
 		int l = img.w(); img.start = img.now();
 		for (auto & c : img) c = Color(0);
-		img.tessel(0,0,img.w()-1,img.h()-1,[&](coo c) {
-			cplx z {T(c.x),T(c.y)}; z = conj(z)*T(2.0/l) + cplx{-1,1}; z = center + scale*z;
+		img.tessel(0,0,img.w()-1,img.h()-1,aa<T>([&](cplx z) {
+			z = conj(z)*T(2.0/l) + cplx{-1,1}; z = center + scale*z;
 			if ((T(0)<=imag(z)) && (imag(z)<=imag(tau)) && (real(z) >= real(tau)*imag(z)/imag(tau)) && (real(z) <= T(1)+real(tau)*imag(z)/imag(tau)))
 				return imag((*this)(z))>0 ? Color(150,200,200) : Color(150,150,200);
 			return imag((*this)(z))>0 ? Color(200,250,250) : Color(200,200,250);
-		});
+		}));
 		img.update();
 	};
 }
