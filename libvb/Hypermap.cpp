@@ -74,6 +74,7 @@ namespace vb {
 		if ((e==sigma[e])||(f==sigma[f])) return;
 		sigma[a]=e; sigma[e]=c; sigma[d]=j; sigma[g]=b; sigma[i]=f; sigma[f]=h;
 		phi[a]=g; phi[g]=f; phi[f]=a; phi[d]=e; phi[e]=i; phi[i]=d;
+		alpha = (phi * sigma).inverse();
 	}
 
 	Permutation Hypermap::rebasing (unsigned i) const {
