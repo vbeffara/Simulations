@@ -26,13 +26,21 @@ namespace vb {
 
 	template <typename T> auto Elliptic<T>::theta1_q (const cplx & z) const -> cplx {
 		cplx out(cplx(0)), old(1);
-		for (int n=0; out!=old; ++n) { old=out; out += T(2 * pow(-1,n)) * T((n+.5)*(n+.5)) * q14 * pow(q, n*(n+1)-1) * sin(T(2*n+1)*z); }
+		for (int n=0; out!=old; ++n) {
+			old=out;
+			auto dd = T(2 * pow(-1,n)) * T((n+.5)*(n+.5)) * q14 * pow(q, n*(n+1)-1) * sin(T(2*n+1)*z);
+			if (std::isnormal(double(real(dd)))) out += dd;
+		}
 		return out;
 	}
 
 	template <typename T> auto Elliptic<T>::theta1_zq (const cplx & z) const -> cplx {
 		cplx out(cplx(0)), old(1);
-		for (int n=0; out!=old; ++n) { old=out; out += T(2 * pow(-1,n)) * T((n+.5)*(n+.5)) * q14 * pow(q, n*(n+1)-1) * T(2*n+1) * cos(T(2*n+1)*z); }
+		for (int n=0; out!=old; ++n) {
+			old=out;
+			auto dd = T(2 * pow(-1,n)) * T((n+.5)*(n+.5)) * q14 * pow(q, n*(n+1)-1) * T(2*n+1) * cos(T(2*n+1)*z);
+			if (std::isnormal(double(real(dd)))) out += dd;
+		}
 		return out;
 	}
 
@@ -62,7 +70,11 @@ namespace vb {
 
 	template <typename T> auto Elliptic<T>::theta2 (const cplx & z) const -> cplx {
 		cplx out(cplx(0)), old(1);
-		for (int n=0; out!=old; ++n) { old=out; out += T(2) * q14 * pow(q, n*(n+1)) * cos(T(2*n+1)*z); }
+		for (int n=0; out!=old; ++n) {
+			old=out;
+			auto dd = T(2) * q14 * pow(q, n*(n+1)) * cos(T(2*n+1)*z);
+			if (std::isnormal(double(real(dd)))) out += dd;
+		}
 		return out;
 	}
 
