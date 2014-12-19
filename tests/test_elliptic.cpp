@@ -7,7 +7,7 @@
 using namespace vb; using namespace std;
 
 int main (int argc, char ** argv) {
-	Hub H ("Hypermap of genus 1",argc,argv,"m=228,v,w,q,n=0,g=lat_csquare,p,f=0,s=0");
+	Hub H ("Hypermap of genus 1",argc,argv,"m=228,v,w,q,n=0,g=lat_csquare,p,f=0,s=0,a");
 
 	int n = H['n'];
 	auto M = n ? H_genus1(n) : HLib().at(H['g']);
@@ -21,7 +21,7 @@ int main (int argc, char ** argv) {
 	C.findn();
 
 	if (!H['q']) { cout << endl << C; }
-	if (H['v']) { Image I (600,600,"Test Elliptic"); I.show(); C.draw(I); I.pause(); I.hide(); }
+	if (H['v']) { Image I (800,800,"Test Elliptic"); I.show(); C.draw(I,H['a']); I.pause(); I.hide(); }
 
 	if (H['q']) {
 #ifdef HAVE_COMPLEX_GMP

@@ -18,7 +18,7 @@ namespace vb {
 		T   	findn      	();
 		cplx	reduce     	(cplx z)	const;
 
-		void	draw	(Image & img) const;
+		void	draw	(Image & img, bool smooth = true) const;
 
 		std::vector<cplx>    	b,w,f;
 		std::vector<unsigned>	bd,wd,fd;
