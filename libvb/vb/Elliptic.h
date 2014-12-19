@@ -42,6 +42,8 @@ namespace vb {
 		cplx q;
 
 	private:
+		cplx sum (std::function <cplx(int)>) const;
+
 		cplx q14, eta1_, eta1_q_, e1_;
 	};
 }
