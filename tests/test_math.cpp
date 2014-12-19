@@ -1,6 +1,9 @@
 #include <vb/Elliptic.h>
 #include <vb/math.h>
 
+#define bla(f) 	{ cout << #f << " " << EE.f()  	<<	E.f() 	<< "\n\t\t\t" << norm(EE.f()  	- cpx(double(real(E.f())),double(imag(E.f()))))  	<< endl; }
+#define blaz(f)	{ cout << #f << " " << EE.f(zz)	<<	E.f(z)	<< "\n\t\t\t" << norm(EE.f(zz)	- cpx(double(real(E.f(z))),double(imag(E.f(z)))))	<< endl; }
+
 using namespace vb; using namespace std;
 
 int main (int argc, char ** argv) {
@@ -13,41 +16,22 @@ int main (int argc, char ** argv) {
 	cout << "q   = " << qq << q << endl;
 	cout << "q_t = " << q_t(ttau) << q_t(tau) << endl;
 	cout << endl;
-	cout << "g2 = " << EE.g2() << E.g2() << endl;
-	cout << "g3 = " << EE.g3() << E.g3() << endl;
+	bla(g2); bla(g3);
 	cout << endl;
-	cout << "theta1      = " << EE.theta1(zz) << E.theta1(z) << endl;
-	cout << "theta1_z    = " << EE.theta1_z(zz) << E.theta1_z(z) << endl;
-	cout << "theta1_zz   = " << EE.theta1_zz(zz) << E.theta1_zz(z) << endl;
-	cout << "theta1_zzz  = " << EE.theta1_zzz(zz) << E.theta1_zzz(z) << endl;
-	cout << "theta1_q    = " << EE.theta1_q(zz) << E.theta1_q(z) << endl;
-	cout << "theta1_zq   = " << EE.theta1_zq(zz) << E.theta1_zq(z) << endl;
-	cout << "theta1_zzq  = " << EE.theta1_zzq(zz) << E.theta1_zzq(z) << endl;
-	cout << "theta1_zzzq = " << EE.theta1_zzzq(zz) << E.theta1_zzzq(z) << endl;
+	blaz(theta1); blaz(theta1_z); blaz(theta1_zz); blaz(theta1_zzz); blaz(theta1_q); blaz(theta1_zq); blaz(theta1_zzq); blaz(theta1_zzzq);
 	cout << endl;
-	cout << "theta2   = " << EE.theta2(zz) << E.theta2(z) << endl;
-	cout << "theta2_z = " << EE.theta2_z(zz) << E.theta2_z(z) << endl;
-	cout << "theta2_q = " << EE.theta2_q(zz) << E.theta2_q(z) << endl;
+	blaz(theta2); blaz(theta2_z); blaz(theta2_q);
 	cout << endl;
-	cout << "theta3   = " << EE.theta3(zz) << E.theta3(z) << endl;
-	// cout << "theta3_z = " << EE.theta3_z(z) << endl;
-	cout << "theta3_q = " << EE.theta3_q(zz) << E.theta3_q(z) << endl;
+	blaz(theta3); blaz(theta3_q);
 	cout << endl;
-	cout << "theta4   = " << EE.theta4(zz) << E.theta4(z) << endl;
-	// cout << "theta4_z = " << EE.theta3_z(z) << endl;
-	cout << "theta4_q = " << EE.theta4_q(zz) << E.theta4_q(z) << endl;
+	blaz(theta4); blaz(theta4_q);
 	cout << endl;
-	cout << "eta1   = " << EE.eta1() << E.eta1() << endl;
-	cout << "eta1_q = " << EE.eta1_q() << E.eta1_q() << endl;
+	bla(eta1); bla(eta1_q);
 	cout << endl;
-	cout << "sigma   = " << EE.sigma(zz) << E.sigma(z) << endl;
-	cout << "sigma_q = " << EE.sigma_q(zz) << E.sigma_q(z) << endl;
+	blaz(sigma); blaz(sigma_q);
 	cout << endl;
-	cout << "zeta   = " << EE.zeta(zz) << E.zeta(z) << endl;
-	cout << "zeta_q = " << EE.zeta_q(zz) << E.zeta_q(z) << endl;
+	blaz(zeta); blaz(zeta_q);
 	cout << endl;
-	cout << "wp   = " << EE.wp(zz) << E.wp(z) << endl;
-	cout << "wp_z = " << EE.wp_z(zz) << E.wp_z(z) << endl;
-	cout << "wp_q = " << EE.wp_q(zz) << E.wp_q(z) << endl;
+	blaz(wp); blaz(wp_z); blaz(wp_q);
 	cout << endl;
 }
