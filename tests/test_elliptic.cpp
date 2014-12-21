@@ -7,10 +7,11 @@
 using namespace vb; using namespace std;
 
 int main (int argc, char ** argv) {
-	Hub H ("Hypermap of genus 1",argc,argv,"m=228,v,w,q,n=0,g=lat_csquare,p,f=0,s=0,a");
+	Hub H ("Hypermap of genus 1",argc,argv,"m=228,v,w,q,n=0,g=lat_csquare,p,f=0,s=0,a,r=0");
 
-	int n = H['n'];
-	auto M = n ? H_genus1(n) : HLib().at(H['g']);
+	auto M = HLib().at(H['g']);
+	int n = H['n']; if (n) M = H_genus1(n);
+	int r = H['r']; if (r) M = H_artem(r);
 	int f = H['f']; if (f) {
 		if (int(H['s'])) prng.seed(int(H['s']));
 		for (int i=0; i<f; ++i) M.flip(prng.uniform_int(M.sigma.size()));
