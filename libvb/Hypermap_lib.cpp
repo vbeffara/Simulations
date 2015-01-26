@@ -150,6 +150,16 @@ namespace vb {
 		return Hypermap (sigma, alpha, phi);
 	}
 
+	Hypermap H_genus0 (int n) {
+		std::vector<unsigned> sigma(6*n), alpha(6*n), phi(6*n);
+		for (int i=0; i<n; ++i) { int j = (i+1)%n, k = (i+n-1)%n;
+			sigma[i]=j; sigma[n+i]=3*n+k; sigma[2*n+i]=n+i; sigma[3*n+i]=4*n+j; sigma[4*n+i]=2*n+i; sigma[5*n+i]=5*n+k;
+			alpha[i]=n+i; alpha[n+i]=i; alpha[2*n+i]=3*n+i; alpha[3*n+i]=2*n+i; alpha[4*n+i]=5*n+i; alpha[5*n+i]=4*n+i;
+			phi[i]=2*n+i; phi[n+i]=k; phi[2*n+i]=n+j; phi[3*n+i]=4*n+i; phi[4*n+i]=5*n+j; phi[5*n+i]=3*n+k;
+		}
+		return Hypermap (sigma, alpha, phi);
+	}
+
 	Hypermap H_genus1 (int n) {
 		std::vector<unsigned> sigma(6*n), alpha(6*n), phi(6*n);
 		for (int i=0; i<n; ++i) { int j = (i+1)%n, k = (i+n-1)%n;
