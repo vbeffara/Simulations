@@ -249,21 +249,22 @@ namespace vb {
 		return os;
 	}
 
-	template <typename T> Image * Constellation<T>::draw (unsigned l) const {
+	template <typename T> void Constellation<T>::draw (Image & img, bool smooth) const {
 		T xmin(0), xmax(0), ymin(0), ymax(0);
 		for (auto z : b) { xmin=std::min(xmin,real(z)); xmax=std::max(xmax,real(z)); ymin=std::min(ymin,imag(z)); ymax=std::max(ymax,imag(z)); }
 		for (auto z : f) { xmin=std::min(xmin,real(z)); xmax=std::max(xmax,real(z)); ymin=std::min(ymin,imag(z)); ymax=std::max(ymax,imag(z)); }
 		for (auto z : w) { xmin=std::min(xmin,real(z)); xmax=std::max(xmax,real(z)); ymin=std::min(ymin,imag(z)); ymax=std::max(ymax,imag(z)); }
 		cplx center { (xmin+xmax)/T(2), (ymin+ymax)/T(2) }; T scale = T(.75) * std::max(xmax-xmin,ymax-ymin);
 
-		Image * img = new Image (l,l,"Constellation");
-		for (unsigned i=0; i<l; ++i) for (unsigned j=0; j<l; ++j) {
-			cplx z {T(i),T(j)}; z = conj(z)*T(2.0/l) + cplx{-1,1}; z = center + scale*z;
-			img->put(coo(i,j), imag((*this)(z))>0 ? Color(200,255,200) : Color(200,200,255));
-		}
-		for (auto z : b) { z = (z-center)/scale; z = (z-cplx{-1,1})*T(l/2); double x=real(z), y=imag(z); img->put (coo(x,-y), BLACK); }
-		for (auto z : w) { z = (z-center)/scale; z = (z-cplx{-1,1})*T(l/2); double x=real(z), y=imag(z); img->put (coo(x,-y), WHITE); }
-		for (auto z : f) { z = (z-center)/scale; z = (z-cplx{-1,1})*T(l/2); double x=real(z), y=imag(z); img->put (coo(x,-y), RED); }
-		return img;
+		int l = img.w(); img.start = img.now();
+		for (auto & c : img) c = Color(0);
+
+		auto f = [&](cplx z) {
+			z = conj(z)*T(2.0/l) + cplx{-1,1}; z = center + scale*z;
+			return imag((*this)(z))>0 ? Color(200,250,250) : Color(200,200,250);
+		};
+
+		img.tessel(0,0,img.w()-1,img.h()-1, smooth ? aa<T>(f) : [&](coo c){ return f(cplx(c.x,c.y)); });
+		img.update();
 	};
 }
