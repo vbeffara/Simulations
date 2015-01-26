@@ -173,7 +173,7 @@ namespace vb {
 		std::cerr << std::endl;
 	}
 
-	template <typename T> void Constellation<T>::findn () {
+	template <typename T> T Constellation<T>::findn () {
 		make_l_1(); Vector<cplx> x = vec(b,w,f); Matrix<cplx> IJ (P.degree()+1,P.degree()+1);
 		T c = cost(), old_c = c + T(1);
 		while (c<old_c) {
@@ -184,6 +184,7 @@ namespace vb {
 			if (c > old_c) readvec(old_x);
 		}
 		std::cerr << std::endl;
+		return old_c;
 	}
 
 	template <typename T, typename U> Constellation<U> cconvert (Constellation<T> & C) {

@@ -29,7 +29,7 @@ namespace vb {
 
 		void	find 	();
 		void	findm	();
-		void	findn	();
+		T   	findn	();
 
 		Vector<cplx>	vec    	(const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f)	const;
 		Vector<T>   	coovec 	(const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f)	const;
