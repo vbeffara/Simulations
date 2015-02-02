@@ -27,7 +27,7 @@ namespace vb {
 		Vector<cplx>	vcost   	()	const;
 		Matrix<cplx>	jacvcost	()	const;
 
-		void	find 	();
+		void	find 	(T t = T(0));
 		void	findm	();
 		T   	findn	();
 

@@ -116,7 +116,11 @@ namespace vb {
 		return out;
 	}
 
-	template <typename T> T Constellation<T>::cost () const	{ T out(0); for (auto z : vcost()) out += norm(z); return out; }
+	template <typename T> T Constellation<T>::cost () const	{
+	    T out(0); for (auto z : vcost()) out += norm(z);
+	    if (std::isnan(double(out))) out = T(1.234567e89);
+	    return out;
+	}
 
 	template <typename T> auto Constellation<T>::jacvcost () const -> Matrix<cplx> { // m_ij = \partial_j(f_i)
 		Matrix<cplx> out(P.degree()+1,P.degree()+1);
@@ -143,11 +147,11 @@ namespace vb {
 		T ans(0); for (unsigned i=0; i<V.size(); ++i) ans += norm(V(i)); return ans;
 	}
 
-	template <typename T> void Constellation<T>::find () {
+	template <typename T> void Constellation<T>::find (T t) {
 		make_l_1(); Vector<T> bw = coovec(b,w,f);
 
 		readcoo(bw); T c = cost(), eps = sqrt(c)/10, nc = c;
-		while (eps>1e-100) {
+		while ((c>t)&&(eps>1e-100)) {
 			std::cerr << c << " (" << eps << ")          \r";
 			bool flag = false;
 			for (auto & z : bw) {	z += eps; readcoo(bw); nc = cost(); if (nc<c) { c=nc; flag=true; } else { z -= eps; }
@@ -174,7 +178,8 @@ namespace vb {
 	}
 
 	template <typename T> T Constellation<T>::findn () {
-		make_l_1(); Vector<cplx> x = vec(b,w,f); Matrix<cplx> IJ (P.degree()+1,P.degree()+1);
+		// make_l_1();
+		Vector<cplx> x = vec(b,w,f); Matrix<cplx> IJ (P.degree()+1,P.degree()+1);
 		T c = cost(), old_c = c + T(1);
 		while (c<old_c) {
 			std::cerr << c << "             \r"	;
