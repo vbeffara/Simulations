@@ -5,7 +5,7 @@
 namespace vb {
 	template <typename T> class Constellation1 : public Constellation<T> { public:
 		using cplx = std::complex<T>;
-		using Constellation<T>::b; using Constellation<T>::w; using Constellation<T>::f;
+		using Constellation<T>::b; using Constellation<T>::w; using Constellation<T>::f; using  Constellation<T>::p;
 
 		Constellation1 (const Hypermap & M, const Hub & H);
 		Constellation1 ();
@@ -17,7 +17,7 @@ namespace vb {
 
 		void	draw	(Image & img, bool smooth = true) const;
 
-		cplx       	ll = T(0), tau = cplx(0,1), q = q_(tau), qt = q_t(tau);
+		cplx       	tau = cplx(0,1), q = q_(tau), qt = q_t(tau);
 		Elliptic<T>	E { q };
 
 		int	dx,dy,d;

@@ -6,7 +6,7 @@
 
 namespace vb {
 	template <typename T> Constellation1<T>::Constellation1 (const Hypermap & M, const Hub & H) {
-		Hypermap M2 (M); M2.dessin();
+		Hypermap M2 (M); M2.dessin(); p = { cplx(0,1), T(0) };
 		do {
 			M2.split_edges(); Toroidal S (M2,H); S.pack(); S.output_pdf();
 			unsigned N = M.sigma.size(); d=0;
@@ -17,7 +17,7 @@ namespace vb {
 		} while (findn() > T(1e-6));
 	}
 
-	template <typename T> Constellation1<T>::Constellation1 () {}
+	template <typename T> Constellation1<T>::Constellation1 () { p = { cplx(0,1), T(0) }; }
 
 	template <typename T> void Constellation1<T>::from_points () {
 		q = q_(tau); qt = q_t(tau); E = Elliptic<T> { q };
@@ -33,9 +33,9 @@ namespace vb {
 	template <typename T> void Constellation1<T>::normalize () {
 		cplx sf(0); int sdf(0); for (auto zd : f) { sdf += zd.d; sf += zd.z * T(zd.d); }
 		for (auto & zd : b) zd.z -= sf/T(sdf); for (auto & zd : w) zd.z -= sf/T(sdf); for (auto & zd : f) zd.z -= sf/T(sdf);
-		ll = cplx(0); cplx avg (0); unsigned d=0;
+		p[1] = cplx(0); cplx avg (0); unsigned d=0;
 		for (auto zd : w) { d += zd.d; avg += logder(zd.z,0) * T(zd.d); }
-		ll = - avg/T(d);
+		p[1] = - avg/T(d);
 	}
 
 	template <typename T> void Constellation1<T>::shift (cplx z) {
@@ -69,7 +69,7 @@ namespace vb {
 		cplx out (logderp (z-b[0].z+T(dx)+tau*T(dy), k));
 		{ int i=0; for (auto zd : b) out += logderp (z-zd.z, k) * T(zd.d - (i++ == 0?1:0)); }
 		for (auto zd : f) out -= logderp (z-zd.z, k) * T(zd.d);
-		if (k==0) { out += ll; out -= cplx(0,T(2)*pi_<T>()) * T(round(real(out/cplx(0,T(2)*pi_<T>())))); }
+		if (k==0) { out += p[1]; out -= cplx(0,T(2)*pi_<T>()) * T(round(real(out/cplx(0,T(2)*pi_<T>())))); }
 		return out;
 	}
 
@@ -103,7 +103,7 @@ namespace vb {
 		for (auto & zd : b) zd.z = xy[i++];
 		for (auto & zd : w) zd.z = xy[i++];
 		for (auto & zd : f) zd.z = xy[i++];
-		tau = xy[i++]; ll = xy[i++];
+		tau = xy[i++]; p[1] = xy[i++];
 		from_points();
 	}
 
@@ -166,7 +166,7 @@ namespace vb {
 	}
 
 	template <typename T> auto Constellation1<T>::jacnum  () -> Matrix<cplx> {
-		Vector<cplx> x = vec (tau,ll), c = vcost(); Matrix<cplx> out (d+2,d+2);
+		Vector<cplx> x = vec (tau,p[1]), c = vcost(); Matrix<cplx> out (d+2,d+2);
 		T eps (.00001);
 		for (unsigned j=0; j<x.size(); ++j) {
 			x[j] += eps; readvec(x); Vector<cplx> dc = vcost() - c; x[j] -= eps;
@@ -176,7 +176,7 @@ namespace vb {
 	}
 
 	template <typename T> T Constellation1<T>::findn () {
-		Vector<cplx> x = vec(tau,ll);
+		Vector<cplx> x = vec(tau,p[1]);
 		T c = cost(), old_c = c + T(1); auto old_x = x;
 		while (c<old_c) {
 			std::cerr << c << "             \r"	;
@@ -189,7 +189,7 @@ namespace vb {
 
 	template <typename T, typename U> Constellation1<U> cconvert (Constellation1<T> & C) {
 		Constellation1<U> CC;
-		CC.ll = C.ll; CC.tau = C.tau; CC.d = C.d;
+		CC.p[1] = C.p[1]; CC.tau = C.tau; CC.d = C.d;
 		for (auto zd : C.b) CC.b.push_back({std::complex<U>(zd.z), zd.d});
 		for (auto zd : C.w) CC.w.push_back({std::complex<U>(zd.z), zd.d});
 		for (auto zd : C.f) CC.f.push_back({std::complex<U>(zd.z), zd.d});
@@ -204,7 +204,7 @@ namespace vb {
 		os << "Invariant j  = " << C.E.j() << std::endl;
 		os << "Invariant g2 = " << C.E.g2() << std::endl;
 		os << "Invariant g3 = " << C.E.g3() << std::endl;
-		os << "log(lambda)  = " << C.ll << std::endl;
+		os << "log(lambda)  = " << C.p[1] << std::endl;
 		os << std::endl;
 		os << "Keeping " << nd << " digits." << std::endl;
 		os << std::endl;
@@ -225,7 +225,7 @@ namespace vb {
 		os << std::setprecision(nd) << std::fixed;
 		T eps = pow(T(.1),nd-5);
 
-		os << "log(lambda) = " << C.ll << std::endl;
+		os << "log(lambda) = " << C.p[1] << std::endl;
 		os << "tau         = " << C.tau << std::endl;
 		{ Polynomial<cpxint> P = guess(C.tau,eps); if (P.degree()>0) os << "\t\troot of " << P << std::endl; }
 		std::complex<T> jj = C.E.j();
