@@ -6,11 +6,11 @@
 #include <vb/Polynomial.h>
 
 namespace vb {
-	template <typename T> class Constellation { public:
+	template <typename T> class Constellation0 { public:
 		using cplx = std::complex<T>;
 
-		Constellation (Hypermap M, Hub H, int n=3);
-		Constellation ();
+		Constellation0 (Hypermap M, Hub H, int n=3);
+		Constellation0 ();
 
 		cplx	operator()	(cplx z)         	const { return l*P(z)/Q(z); }
 		cplx	logder    	(cplx z, int k=0)	const;
@@ -47,7 +47,7 @@ namespace vb {
 		Polynomial<cplx>	P,Q;
 	};
 
-	template <typename T, typename U> Constellation<U> cconvert (Constellation<T> & C);
+	template <typename T, typename U> Constellation0<U> cconvert (Constellation0<T> & C);
 
-	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation<T> & C);
+	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation0<T> & C);
 }

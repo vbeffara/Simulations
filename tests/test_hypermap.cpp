@@ -1,4 +1,4 @@
-#include <vb/Constellation.h>
+#include <vb/Constellation0.h>
 #include <vb/Hub.h>
 #include <vb/Minimizer.h>
 #include <vb/Hypermap_lib.h>
@@ -24,7 +24,7 @@ int main (int argc, char ** argv) {
 	}
 	cout << M << endl;
 
-	Constellation<double> C {M,H,H['n']};
+	Constellation0<double> C {M,H,H['n']};
 
 	double c = C.findn();
 	cerr << "-n- " << C.cost() << endl;
@@ -39,7 +39,7 @@ int main (int argc, char ** argv) {
 	if (!H['q']) { C.belyi(); cout << endl << C; return 0; }
 
 	#ifdef HAVE_COMPLEX_GMP
-	Constellation<gmp100>	Cq = cconvert <double,gmp100> (C); Cq.findn(); Cq.belyi();
+	Constellation0<gmp100>	Cq = cconvert <double,gmp100> (C); Cq.findn(); Cq.belyi();
 	if (H['w']) { Image I (800,800,"Test Elliptic"); I.show(); Cq.draw(I,H['a']); I.pause(); I.hide(); }
 	cout << endl << Cq;
 	#else
