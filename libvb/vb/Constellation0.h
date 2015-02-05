@@ -1,13 +1,11 @@
 #pragma once
-#include <vb/Hub.h>
-#include <vb/Hypermap.h>
-#include <vb/Image.h>
-#include <vb/LinearAlgebra.h>
+#include <vb/Constellation.h>
 #include <vb/Polynomial.h>
 
 namespace vb {
-	template <typename T> class Constellation0 { public:
+	template <typename T> class Constellation0 : public Constellation<T> { public:
 		using cplx = std::complex<T>;
+		using Constellation<T>::b;  using Constellation<T>::w;  using Constellation<T>::f;
 
 		Constellation0 (Hypermap M, Hub H, int n=3);
 		Constellation0 ();
@@ -31,17 +29,14 @@ namespace vb {
 		void	findm	();
 		T   	findn	();
 
-		Vector<cplx>	vec    	(const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f)	const;
-		Vector<T>   	coovec 	(const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f)	const;
+		Vector<cplx>	vec    	(const std::vector<Star<T>> & b, const std::vector<Star<T>> & w, const std::vector<Star<T>> & f)	const;
+		Vector<T>   	coovec 	(const std::vector<Star<T>> & b, const std::vector<Star<T>> & w, const std::vector<Star<T>> & f)	const;
 		void        	readcoo	(const Vector<T> & xy);
 		void        	readvec	(const Vector<cplx> & xy);
 
 		T	fg (const Vector<T> & xy, Vector<T> & df);
 
 		void	draw	(Image & img, bool smooth = true) const;
-
-		std::vector<cplx>    	b,w,f;
-		std::vector<unsigned>	bd,wd,fd;
 
 		cplx            	l = T(1);
 		Polynomial<cplx>	P,Q;

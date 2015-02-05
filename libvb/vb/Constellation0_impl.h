@@ -17,9 +17,9 @@ namespace vb {
 		{ cpx z; while ((z = S.V[S.E[0].src].z) != 0.0) S.mobiusto0 (z); } S.linear (std::polar(1.0,-S.E[0].a));
 		S.output_pdf();
 
-		for (auto c : M.sigma.cycles())	{                                      	b.push_back(cplx(S.V[S.E[c[0]].src].z));    	bd.push_back(c.size()); }
-		for (auto c : M.alpha.cycles())	{                                      	w.push_back(cplx(S.V[S.E[c[0]+N].src].z));  	wd.push_back(c.size()); }
-		for (auto c : M.phi.cycles())  	{ if (S.E[c[0]+3*N].src==inf) continue;	f.push_back(cplx(S.V[S.E[c[0]+3*N].src].z));	fd.push_back(c.size()); }
+		for (auto c : M.sigma.cycles())	{                                      	b.push_back( { S.V[S.E[c[0]].src].z,    	c.size() } ); }
+		for (auto c : M.alpha.cycles())	{                                      	w.push_back( { S.V[S.E[c[0]+N].src].z,  	c.size() } ); }
+		for (auto c : M.phi.cycles())  	{ if (S.E[c[0]+3*N].src==inf) continue;	f.push_back( { S.V[S.E[c[0]+3*N].src].z,	c.size() } ); }
 
 		from_points(); make_c_0(); make_l_1();
 	}
@@ -28,19 +28,19 @@ namespace vb {
 
 	template <typename T> void Constellation0<T>::from_points () {
 		P = Polynomial<cplx> (); Q = Polynomial<cplx> ();
-		for (unsigned i=0; i<b.size(); ++i) for (unsigned j=0; j<bd[i]; ++j) P.add_root(b[i]);
-		for (unsigned i=0; i<f.size(); ++i) for (unsigned j=0; j<fd[i]; ++j) Q.add_root(f[i]);
+		for (auto zd : b) for (unsigned j=0; j<zd.d; ++j) P.add_root(zd.z);
+		for (auto zd : f) for (unsigned j=0; j<zd.d; ++j) Q.add_root(zd.z);
 	}
 
 	template <typename T> void Constellation0<T>::normalize () {
 		l = cplx(1);
 		cplx avg (0); unsigned d=0;
-		for (unsigned i=0; i<w.size(); ++i) { d += wd[i]; avg += (*this)(w[i])*cplx(wd[i]); }
+		for (auto zd : w) { d += zd.d; avg += (*this)(zd.z)*cplx(zd.d); }
 		l = cplx(d)/avg;
 	}
 
 	template <typename T> void Constellation0<T>::linear (cplx u, cplx v) {
-		for (auto & z : b) z = u*z+v; for (auto & z : f) z = u*z+v; for (auto & z : w) z = u*z+v; from_points();
+		for (auto & zd : b) zd.z = u*zd.z+v; for (auto & zd : f) zd.z = u*zd.z+v; for (auto & zd : w) zd.z = u*zd.z+v; from_points();
 	}
 
 	template <typename T> void Constellation0<T>::make_l_1 () {
@@ -48,7 +48,7 @@ namespace vb {
 	}
 
 	template <typename T> void Constellation0<T>::make_c_0 () {
-		cplx sum(0); for (unsigned i=0; i<b.size(); ++i) sum += T(bd[i])*b[i]; sum /= P.degree(); linear (T(1),-sum); normalize();
+		cplx sum(0); for (auto zd : b) sum += T(zd.d)*zd.z; sum /= P.degree(); linear (T(1),-sum); normalize();
 	}
 
 	template <typename T> void Constellation0<T>::make_p_1 () {
@@ -74,45 +74,45 @@ namespace vb {
 	template <typename T> auto Constellation0<T>::logder (cplx z, int k) const -> cplx {
 		if (k==0) return T(10)*log((*this)(z));
 		cplx sum (0);
-		for (unsigned i=0; i<b.size(); ++i) sum += cplx(bd[i]) / pow (z-b[i], cplx(k));
-		for (unsigned i=0; i<f.size(); ++i) sum -= cplx(fd[i]) / pow (z-f[i], cplx(k));
+		for (auto zd : b) sum += cplx(zd.d) / pow (z-zd.z, cplx(k));
+		for (auto zd : f) sum -= cplx(zd.d) / pow (z-zd.z, cplx(k));
 		return sum;
 	}
 
 	template <typename T> void Constellation0<T>::readcoo (const Vector<T> & xy) {
 		unsigned n1 = b.size(), n2 = w.size(), n3 = f.size();
-		for (unsigned i=0; i<n1; ++i) b[i] = cplx (xy[2*i],xy[2*i+1]);
-		for (unsigned i=0; i<n2; ++i) w[i] = cplx (xy[2*n1+2*i],xy[2*n1+2*i+1]);
-		for (unsigned i=0; i<n3; ++i) f[i] = cplx (xy[2*n1+2*n2+2*i],xy[2*n1+2*n2+2*i+1]);
+		for (unsigned i=0; i<n1; ++i) b[i].z = cplx (xy[2*i],xy[2*i+1]);
+		for (unsigned i=0; i<n2; ++i) w[i].z = cplx (xy[2*n1+2*i],xy[2*n1+2*i+1]);
+		for (unsigned i=0; i<n3; ++i) f[i].z = cplx (xy[2*n1+2*n2+2*i],xy[2*n1+2*n2+2*i+1]);
 		from_points();
 	}
 
 	template <typename T> void Constellation0<T>::readvec (const Vector<cplx> & xy) {
 		unsigned n1 = b.size(), n2 = w.size(), n3 = f.size();
-		for (unsigned i=0; i<n1; ++i) b[i] = xy[i];
-		for (unsigned i=0; i<n2; ++i) w[i] = xy[n1+i];
-		for (unsigned i=0; i<n3; ++i) f[i] = xy[n1+n2+i];
+		for (unsigned i=0; i<n1; ++i) b[i].z = xy[i];
+		for (unsigned i=0; i<n2; ++i) w[i].z = xy[n1+i];
+		for (unsigned i=0; i<n3; ++i) f[i].z = xy[n1+n2+i];
 		from_points();
 	}
 
-	template <typename T> auto Constellation0<T>::vec (const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f) const -> Vector<cplx> {
+	template <typename T> auto Constellation0<T>::vec (const std::vector<Star<T>> & b, const std::vector<Star<T>> & w, const std::vector<Star<T>> & f) const -> Vector<cplx> {
 		Vector<cplx> bw (b.size()+w.size()+f.size()); unsigned i=0;
-		for (auto z : b) { bw[i++] = z; } for (auto z : w) { bw[i++] = z; } for (auto z : f) { bw[i++] = z; }
+		for (auto z : b) { bw[i++] = z.z; } for (auto z : w) { bw[i++] = z.z; } for (auto z : f) { bw[i++] = z.z; }
 		return bw;
 	}
 
-	template <typename T> Vector<T> Constellation0<T>::coovec (const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f) const {
+	template <typename T> Vector<T> Constellation0<T>::coovec (const std::vector<Star<T>> & b, const std::vector<Star<T>> & w, const std::vector<Star<T>> & f) const {
 		Vector<T> bw (2*(b.size()+w.size()+f.size())); unsigned i=0;
-		for (auto z : b) { bw[i++] = (real(z)); bw[i++] = (imag(z)); }
-		for (auto z : w) { bw[i++] = (real(z)); bw[i++] = (imag(z)); }
-		for (auto z : f) { bw[i++] = (real(z)); bw[i++] = (imag(z)); }
+		for (auto z : b) { bw[i++] = (real(z.z)); bw[i++] = (imag(z.z)); }
+		for (auto z : w) { bw[i++] = (real(z.z)); bw[i++] = (imag(z.z)); }
+		for (auto z : f) { bw[i++] = (real(z.z)); bw[i++] = (imag(z.z)); }
 		return bw;
 	}
 
 	template <typename T> auto Constellation0<T>::vcost() const -> Vector<cplx> {
 		Vector<cplx> out (P.degree()+1); int k=0;
-		for (unsigned i=0; i<w.size(); ++i) for (unsigned j=0; j<wd[i]; ++j) out[k++] = logder(w[i],j);
-		cplx sb(0); for (unsigned i=0; i<b.size(); ++i) sb += T(bd[i])*b[i]; out[k++] = sb;
+		for (auto zd : w) for (unsigned j=0; j<zd.d; ++j) out[k++] = logder(zd.z,j);
+		cplx sb(0); for (auto zd : b) sb += T(zd.d)*zd.z; out[k++] = sb;
 		return out;
 	}
 
@@ -124,17 +124,17 @@ namespace vb {
 
 	template <typename T> auto Constellation0<T>::jacvcost () const -> Matrix<cplx> { // m_ij = \partial_j(f_i)
 		Matrix<cplx> out(P.degree()+1,P.degree()+1);
-		unsigned i=0,j=0; for (unsigned ii=0; ii<w.size(); ++ii) for (unsigned id=0; id<wd[ii]; ++id) { j=0;
-			for (unsigned jj=0; jj<b.size(); ++jj)	if (id==0)     	out(i,j++) = T(- T(10*bd[jj])) / (w[ii]-b[jj]);
-			                                      	else           	out(i,j++) = T(id*bd[jj]) / pow(w[ii]-b[jj],cplx(id+1));
+		unsigned i=0,j=0; for (unsigned ii=0; ii<w.size(); ++ii) for (unsigned id=0; id<w[ii].d; ++id) { j=0;
+			for (unsigned jj=0; jj<b.size(); ++jj)	if (id==0)     	out(i,j++) = T(- T(10*b[jj].d)) / (w[ii].z-b[jj].z);
+			                                      	else           	out(i,j++) = T(id*b[jj].d) / pow(w[ii].z-b[jj].z,cplx(id+1));
 			for (unsigned jj=0; jj<w.size(); ++jj)	if (jj!=ii)    	out(i,j++) = T(0);
-			                                      	else if (id==0)	out(i,j++) = T(10) * logder(w[ii],1);
-			                                      	else           	out(i,j++) = T(- T(id)) * logder(w[ii],id+1);
-			for (unsigned jj=0; jj<f.size(); ++jj)	if (id==0)     	out(i,j++) = T(10*fd[jj]) / (w[ii]-f[jj]);
-			                                      	else           	out(i,j++) = T(- T(id*fd[jj])) / pow(w[ii]-f[jj],cplx(id+1));
+			                                      	else if (id==0)	out(i,j++) = T(10) * logder(w[ii].z,1);
+			                                      	else           	out(i,j++) = T(- T(id)) * logder(w[ii].z,id+1);
+			for (unsigned jj=0; jj<f.size(); ++jj)	if (id==0)     	out(i,j++) = T(10*f[jj].d) / (w[ii].z-f[jj].z);
+			                                      	else           	out(i,j++) = T(- T(id*f[jj].d)) / pow(w[ii].z-f[jj].z,cplx(id+1));
 			++i;
 		}
-		j=0; for (unsigned jj=0; jj<b.size(); ++jj) out(i,j++) = T(bd[jj]); while (j<out.size2()) out(i,j++) = T(0); ++i;
+		j=0; for (unsigned jj=0; jj<b.size(); ++jj) out(i,j++) = T(b[jj].d); while (j<out.size2()) out(i,j++) = T(0); ++i;
 		return out;
 	}
 
@@ -194,8 +194,10 @@ namespace vb {
 
 	template <typename T, typename U> Constellation0<U> cconvert (Constellation0<T> & C) {
 		Constellation0<U> CC;
-		CC.bd = C.bd; CC.fd = C.fd; CC.wd = C.wd; CC.l = C.l;
-		for (auto z : C.b) CC.b.push_back(z); for (auto z : C.f) CC.f.push_back(z); for (auto z : C.w) CC.w.push_back(z);
+		CC.l = C.l;
+		for (auto zd : C.b) CC.b.push_back({std::complex<U>(zd.z), zd.d});
+		for (auto zd : C.w) CC.w.push_back({std::complex<U>(zd.z), zd.d});
+		for (auto zd : C.f) CC.f.push_back({std::complex<U>(zd.z), zd.d});
 		CC.from_points();
 		return CC;
 	}
@@ -206,13 +208,13 @@ namespace vb {
 		os << "Keeping " << nd << " digits." << std::endl;
 
 		os << "Black vertices / zeros: " << std::endl;
-		for (unsigned i=0; i<C.b.size(); ++i) os << "| " << C.bd[i] << "\t" << C.b[i] << std::endl;
+		for (unsigned i=0; i<C.b.size(); ++i) os << "| " << C.b[i].d << "\t" << C.b[i].z << std::endl;
 		os << std::endl;
 		os << "White vertices / ones: " << std::endl;
-		for (unsigned i=0; i<C.w.size(); ++i) os << "| " << C.wd[i] << "\t" << C.w[i] << std::endl;
+		for (unsigned i=0; i<C.w.size(); ++i) os << "| " << C.w[i].d << "\t" << C.w[i].z << std::endl;
 		os << std::endl;
 		os << "Red vertices / poles: " << std::endl;
-		for (unsigned i=0; i<C.f.size(); ++i) os << "| " << C.fd[i] << "\t" << C.f[i] << std::endl;
+		for (unsigned i=0; i<C.f.size(); ++i) os << "| " << C.f[i].d << "\t" << C.f[i].z << std::endl;
 		os << std::endl;
 		os << "lambda := " << C.l << std::endl;
 		os << "P[z_]  := " << C.P << std::endl;
@@ -228,22 +230,22 @@ namespace vb {
 
 		os << "Black vertices / zeros: " << std::endl;
 		for (unsigned i=0; i<C.b.size(); ++i) {
-			os << "| " << C.bd[i] << "\t" << C.b[i] << std::endl;
-			Polynomial<cpxint> P = guess (C.b[i],T(pow(T(.1),nd)));
+			os << "| " << C.b[i].d << "\t" << C.b[i].z << std::endl;
+			Polynomial<cpxint> P = guess (C.b[i].z,T(pow(T(.1),nd)));
 			if (P.degree()>0) os << "|\t\troot of " << P << std::endl;
 		}
 		os << std::endl;
 		os << "White vertices / ones: " << std::endl;
 		for (unsigned i=0; i<C.w.size(); ++i) {
-			os << "| " << C.wd[i] << "\t" << C.w[i] << std::endl;
-			Polynomial<cpxint> P = guess (C.w[i],T(pow(T(.1),nd)));
+			os << "| " << C.w[i].d << "\t" << C.w[i].z << std::endl;
+			Polynomial<cpxint> P = guess (C.w[i].z,T(pow(T(.1),nd)));
 			if (P.degree()>0) os << "|\t\troot of " << P << std::endl;
 		}
 		os << std::endl;
 		os << "Red vertices / poles: " << std::endl;
 		for (unsigned i=0; i<C.f.size(); ++i) {
-			os << "| " << C.fd[i] << "\t" << C.f[i] << std::endl;
-			Polynomial<cpxint> P = guess (C.f[i],T(pow(T(.1),nd)));
+			os << "| " << C.f[i].d << "\t" << C.f[i].z << std::endl;
+			Polynomial<cpxint> P = guess (C.f[i].z,T(pow(T(.1),nd)));
 			if (P.degree()>0) os << "|\t\troot of " << P << std::endl;
 		}
 		os << std::endl;
@@ -256,9 +258,9 @@ namespace vb {
 
 	template <typename T> void Constellation0<T>::draw (Image & img, bool smooth) const {
 		T xmin(0), xmax(0), ymin(0), ymax(0);
-		for (auto z : b) { xmin=std::min(xmin,real(z)); xmax=std::max(xmax,real(z)); ymin=std::min(ymin,imag(z)); ymax=std::max(ymax,imag(z)); }
-		for (auto z : f) { xmin=std::min(xmin,real(z)); xmax=std::max(xmax,real(z)); ymin=std::min(ymin,imag(z)); ymax=std::max(ymax,imag(z)); }
-		for (auto z : w) { xmin=std::min(xmin,real(z)); xmax=std::max(xmax,real(z)); ymin=std::min(ymin,imag(z)); ymax=std::max(ymax,imag(z)); }
+		for (auto z : b) { xmin=std::min(xmin,real(z.z)); xmax=std::max(xmax,real(z.z)); ymin=std::min(ymin,imag(z.z)); ymax=std::max(ymax,imag(z.z)); }
+		for (auto z : f) { xmin=std::min(xmin,real(z.z)); xmax=std::max(xmax,real(z.z)); ymin=std::min(ymin,imag(z.z)); ymax=std::max(ymax,imag(z.z)); }
+		for (auto z : w) { xmin=std::min(xmin,real(z.z)); xmax=std::max(xmax,real(z.z)); ymin=std::min(ymin,imag(z.z)); ymax=std::max(ymax,imag(z.z)); }
 		cplx center { (xmin+xmax)/T(2), (ymin+ymax)/T(2) }; T scale = T(.75) * std::max(xmax-xmin,ymax-ymin);
 
 		int l = img.w(); img.start = img.now();

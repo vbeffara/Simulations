@@ -1,13 +1,11 @@
 #pragma once
+#include <vb/Constellation.h>
 #include <vb/Elliptic.h>
-#include <vb/Hub.h>
-#include <vb/Hypermap.h>
-#include <vb/Image.h>
-#include <vb/LinearAlgebra.h>
 
 namespace vb {
-	template <typename T> class Constellation1 { public:
+	template <typename T> class Constellation1 : public Constellation<T> { public:
 		using cplx = std::complex<T>;
+		using Constellation<T>::b;  using Constellation<T>::w;  using Constellation<T>::f;
 
 		Constellation1 (const Hypermap & M, const Hub & H);
 		Constellation1 ();
@@ -19,9 +17,6 @@ namespace vb {
 		cplx	reduce     	(cplx z)	const;
 
 		void	draw	(Image & img, bool smooth = true) const;
-
-		std::vector<cplx>    	b,w,f;
-		std::vector<unsigned>	bd,wd,fd;
 
 		cplx       	ll = T(0), tau = cplx(0,1), q = q_(tau), qt = q_t(tau);
 		Elliptic<T>	E { q };
@@ -43,7 +38,7 @@ namespace vb {
 		void	normalize	();
 		void	shift    	(cplx z);
 
-		Vector<cplx>	vec    	(const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f, const cplx & t, const cplx & l)	const;
+		Vector<cplx>	vec    	(const std::vector<Star<T>> & b, const std::vector<Star<T>> & w, const std::vector<Star<T>> & f, const cplx & t, const cplx & l)	const;
 		void        	readvec	(const Vector<cplx> & xy);
 	};
 

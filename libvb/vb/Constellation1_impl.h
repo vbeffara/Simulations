@@ -10,10 +10,10 @@ namespace vb {
 		do {
 			M2.split_edges(); Toroidal S (M2,H); S.pack(); S.output_pdf();
 			unsigned N = M.sigma.size(); d=0;
-			b.clear(); for (auto c : M.sigma.cycles())	{ b.push_back(cplx(S.V[S.E[c[0]].src].z));    	bd.push_back(c.size()); d+=bd.back(); }
-			w.clear(); for (auto c : M.alpha.cycles())	{ w.push_back(cplx(S.V[S.E[c[0]+N].src].z));  	wd.push_back(c.size()); }
-			f.clear(); for (auto c : M.phi.cycles())  	{ f.push_back(cplx(S.V[S.E[c[0]+3*N].src].z));	fd.push_back(c.size()); }
-			tau = S.m; shift(-b[0]); normalize();
+			b.clear(); for (auto c : M.sigma.cycles())	{ b.push_back( { S.V[S.E[c[0]].src].z,    	c.size() } ); d += c.size(); }
+			w.clear(); for (auto c : M.alpha.cycles())	{ w.push_back( { S.V[S.E[c[0]+N].src].z,  	c.size() } ); }
+			f.clear(); for (auto c : M.phi.cycles())  	{ f.push_back( { S.V[S.E[c[0]+3*N].src].z,	c.size() } ); }
+			tau = S.m; shift(-b[0].z); normalize();
 		} while (findn() > T(1e-6));
 	}
 
@@ -21,25 +21,25 @@ namespace vb {
 
 	template <typename T> void Constellation1<T>::from_points () {
 		q = q_(tau); qt = q_t(tau); E = Elliptic<T> { q };
-		cplx sz(0); for (unsigned i=0; i<b.size(); ++i) sz += T(bd[i])*b[i];
-		cplx sp(0); for (unsigned i=0; i<f.size(); ++i) sp += T(fd[i])*f[i];
+		cplx sz(0); for (auto zd : b) sz += T(zd.d)*zd.z;
+		cplx sp(0); for (auto zd : f) sp += T(zd.d)*zd.z;
 		dy = round(double(T(imag(sz-sp)/imag(tau)))); dx = round(double(T(real(sz-sp-T(dy)*tau))));
-		for (unsigned i=0; i<f.size(); ++i) {
-			int ddx = round(double(dx)/fd[i]); if (ddx != 0) { f[i] += T(ddx); dx -= int(fd[i])*ddx; }
-			int ddy = round(double(dy)/fd[i]); if (ddy != 0) { f[i] += T(ddy)*tau; dy -= int(fd[i])*ddy; }
+		for (auto & zd : f) {
+			int ddx = round(double(dx)/zd.d); if (ddx != 0) { zd.z += T(ddx); dx -= int(zd.d)*ddx; }
+			int ddy = round(double(dy)/zd.d); if (ddy != 0) { zd.z += T(ddy)*tau; dy -= int(zd.d)*ddy; }
 		}
 	}
 
 	template <typename T> void Constellation1<T>::normalize () {
-		cplx sf(0); int sdf(0); for (unsigned i=0; i<f.size(); ++i) { sdf+=fd[i]; sf += f[i] * T(fd[i]); }
-		for (auto & z : b) z -= sf/T(sdf); for (auto & z : w) z -= sf/T(sdf); for (auto & z : f) z -= sf/T(sdf);
+		cplx sf(0); int sdf(0); for (auto zd : f) { sdf += zd.d; sf += zd.z * T(zd.d); }
+		for (auto & zd : b) zd.z -= sf/T(sdf); for (auto & zd : w) zd.z -= sf/T(sdf); for (auto & zd : f) zd.z -= sf/T(sdf);
 		ll = cplx(0); cplx avg (0); unsigned d=0;
-		for (unsigned i=0; i<w.size(); ++i) { d += wd[i]; avg += logder(w[i],0) * T(wd[i]); }
+		for (auto zd : w) { d += zd.d; avg += logder(zd.z,0) * T(zd.d); }
 		ll = - avg/T(d);
 	}
 
 	template <typename T> void Constellation1<T>::shift (cplx z) {
-		for (auto & u : b) u += z; for (auto & u : w) u += z; for (auto & u : f) u += z;
+		for (auto & zd : b) zd.z += z; for (auto & zd : w) zd.z += z; for (auto & zd : f) zd.z += z;
 		from_points();
 	}
 
@@ -66,24 +66,24 @@ namespace vb {
 	}
 
 	template <typename T> auto Constellation1<T>::logder (cplx z, int k) const -> cplx {
-		cplx out (logderp (z-b[0]+T(dx)+tau*T(dy), k));
-		for (unsigned i=0; i<b.size(); ++i) out += logderp (z-b[i], k) * T(bd[i] - (i==0?1:0));
-		for (unsigned i=0; i<f.size(); ++i) out -= logderp (z-f[i], k) * T(fd[i]);
+		cplx out (logderp (z-b[0].z+T(dx)+tau*T(dy), k));
+		{ int i=0; for (auto zd : b) out += logderp (z-zd.z, k) * T(zd.d - (i++ == 0?1:0)); }
+		for (auto zd : f) out -= logderp (z-zd.z, k) * T(zd.d);
 		if (k==0) { out += ll; out -= cplx(0,T(2)*pi_<T>()) * T(round(real(out/cplx(0,T(2)*pi_<T>())))); }
 		return out;
 	}
 
 	template <typename T> auto Constellation1<T>::logder_z (cplx z, int k) const -> cplx {
-		cplx out (logderp_z (z-b[0]+T(dx)+tau*T(dy), k));
-		for (unsigned i=0; i<b.size(); ++i) out += logderp_z (z-b[i], k) * T(bd[i] - (i==0?1:0));
-		for (unsigned i=0; i<f.size(); ++i) out -= logderp_z (z-f[i], k) * T(fd[i]);
+		cplx out (logderp_z (z-b[0].z+T(dx)+tau*T(dy), k));
+		{ int i=0; for (auto zd : b) out += logderp_z (z-zd.z, k) * T(zd.d - (i++ == 0?1:0)); }
+		for (auto zd : f) out -= logderp_z (z-zd.z, k) * T(zd.d);
 		return out;
 	}
 
 	template <typename T> auto Constellation1<T>::logder_t (cplx z, int k) const -> cplx {
-		cplx out (logderp_t (z-b[0]+T(dx)+tau*T(dy), k) + T(dy) * logderp_z (z-b[0]+T(dx)+tau*T(dy), k));
-		for (unsigned i=0; i<b.size(); ++i) out += logderp_t (z-b[i], k) * T(bd[i] - (i==0?1:0));
-		for (unsigned i=0; i<f.size(); ++i) out -= logderp_t (z-f[i], k) * T(fd[i]);
+		cplx out (logderp_t (z-b[0].z+T(dx)+tau*T(dy), k) + T(dy) * logderp_z (z-b[0].z+T(dx)+tau*T(dy), k));
+		{ int i=0; for (auto zd : b) out += logderp_t (z-zd.z, k) * T(zd.d - (i++ == 0?1:0)); }
+		for (auto zd : f) out -= logderp_t (z-zd.z, k) * T(zd.d);
 		return out;
 	}
 
@@ -100,29 +100,29 @@ namespace vb {
 	template <typename T> void Constellation1<T>::readvec (const Vector<cplx> & xy) {
 		if (imag(xy[d])<0) return;
 		unsigned i=0;
-		for (auto & z : b) z = xy[i++];
-		for (auto & z : w) z = xy[i++];
-		for (auto & z : f) z = xy[i++];
+		for (auto & zd : b) zd.z = xy[i++];
+		for (auto & zd : w) zd.z = xy[i++];
+		for (auto & zd : f) zd.z = xy[i++];
 		tau = xy[i++]; ll = xy[i++];
 		from_points();
 	}
 
-	template <typename T> auto Constellation1<T>::vec (const std::vector<cplx> & b, const std::vector<cplx> & w, const std::vector<cplx> & f, const cplx & t, const cplx & l) const -> Vector<cplx> {
+	template <typename T> auto Constellation1<T>::vec (const std::vector<Star<T>> & b, const std::vector<Star<T>> & w, const std::vector<Star<T>> & f, const cplx & t, const cplx & l) const -> Vector<cplx> {
 		Vector<cplx> bw (b.size()+w.size()+f.size()+2); unsigned i=0;
-		for (auto z : b) { bw[i++] = z; }
-		for (auto z : w) { bw[i++] = z; }
-		for (auto z : f) { bw[i++] = z; }
+		for (auto zd : b) { bw[i++] = zd.z; }
+		for (auto zd : w) { bw[i++] = zd.z; }
+		for (auto zd : f) { bw[i++] = zd.z; }
 		bw[i++] = t; bw[i++] = l;
 		return bw;
 	}
 
 	template <typename T> auto Constellation1<T>::vcost() const -> Vector<cplx> {
 		Vector<cplx> out (d+2); int k=0;
-		for (unsigned i=0; i<w.size(); ++i) for (unsigned j=0; j<wd[i]; ++j) out[k++] = logder(w[i],j);
+		for (auto zd : w) for (unsigned j=0; j<zd.d; ++j) out[k++] = logder(zd.z,j);
 		cplx sz (T(-dx)+cplx(T(-dy)*tau));
-		for (unsigned i=0; i<b.size(); ++i) sz += T(bd[i]) * b[i];
-		for (unsigned i=0; i<f.size(); ++i) sz -= T(fd[i]) * f[i]; out[k++] = sz;
-		out[k++] = b[0];
+		for (auto zd : b) sz += T(zd.d) * zd.z;
+		for (auto zd : f) sz -= T(zd.d) * zd.z; out[k++] = sz;
+		out[k++] = b[0].z;
 		return out;
 	}
 
@@ -130,18 +130,18 @@ namespace vb {
 
 	template <typename T> auto Constellation1<T>::jacvcost () const -> Matrix<cplx> { // m_ij = \partial_j(f_i)
 		Matrix<cplx> out(d+2,d+2,cplx(0));
-		unsigned i=0,j=0; for (unsigned ii=0; ii<w.size(); ++ii) for (unsigned id=0; id<wd[ii]; ++id) { j=0; // f_i is logder(w[ii],id)
-			out(i,j) = - logderp_z (w[ii]-b[0]+T(dx)+tau*T(dy), id);
-			for (unsigned jj=0; jj<b.size(); ++jj)	out(i,j++) -= T(bd[jj] - (jj==0?1:0)) * logderp_z (w[ii]-b[jj],id);
-			for (unsigned jj=0; jj<w.size(); ++jj)	out(i,j++) = (ii==jj) ? logder_z (w[ii],id) : cplx(0);
-			for (unsigned jj=0; jj<f.size(); ++jj)	out(i,j++) = T(fd[jj]) * logderp_z (w[ii]-f[jj], id);
-			out(i,j++) = logder_t (w[ii],id);
+		unsigned i=0,j=0; for (unsigned ii=0; ii<w.size(); ++ii) for (unsigned id=0; id<w[ii].d; ++id) { j=0; // f_i is logder(w[ii],id)
+			out(i,j) = - logderp_z (w[ii].z-b[0].z+T(dx)+tau*T(dy), id);
+			for (unsigned jj=0; jj<b.size(); ++jj)	out(i,j++) -= T(b[jj].d - (jj==0?1:0)) * logderp_z (w[ii].z-b[jj].z,id);
+			for (unsigned jj=0; jj<w.size(); ++jj)	out(i,j++) = (ii==jj) ? logder_z (w[ii].z,id) : cplx(0);
+			for (unsigned jj=0; jj<f.size(); ++jj)	out(i,j++) = T(f[jj].d) * logderp_z (w[ii].z-f[jj].z, id);
+			out(i,j++) = logder_t (w[ii].z,id);
 			out(i,j++) = cplx(id==0 ? 1 : 0);
 			assert (j==unsigned(d+2));
 		++i; } { j=0; // f_i is sum(z*dz) recentered
-			for (unsigned jj=0; jj<b.size(); ++jj)	out(i,j++) = T(bd[jj]);
+			for (unsigned jj=0; jj<b.size(); ++jj)	out(i,j++) = T(b[jj].d);
 			for (unsigned jj=0; jj<w.size(); ++jj)	out(i,j++) = 0;
-			for (unsigned jj=0; jj<f.size(); ++jj)	out(i,j++) = -T(fd[jj]);
+			for (unsigned jj=0; jj<f.size(); ++jj)	out(i,j++) = -T(f[jj].d);
 			out(i,j++) = - T(dy);
 			out(i,j++) = cplx(0);
 			assert (j==unsigned(d+2));
@@ -177,16 +177,18 @@ namespace vb {
 			readvec(x); c = cost();
 		}
 		readvec(old_x); T bound = sqrt(sqrt(old_c));
-		for (int i=0; i<b.size(); ++i) for (int j=0; j<b.size(); ++j) if (i!=j) if (abs(reduce(b[i]-b[j])) < bound) old_c += T(1);
-		for (int i=0; i<w.size(); ++i) for (int j=0; j<w.size(); ++j) if (i!=j) if (abs(reduce(w[i]-w[j])) < bound) old_c += T(1);
-		for (int i=0; i<f.size(); ++i) for (int j=0; j<f.size(); ++j) if (i!=j) if (abs(reduce(f[i]-f[j])) < bound) old_c += T(1);
+		for (int i=0; i<b.size(); ++i) for (int j=0; j<b.size(); ++j) if (i!=j) if (abs(reduce(b[i].z-b[j].z)) < bound) old_c += T(1);
+		for (int i=0; i<w.size(); ++i) for (int j=0; j<w.size(); ++j) if (i!=j) if (abs(reduce(w[i].z-w[j].z)) < bound) old_c += T(1);
+		for (int i=0; i<f.size(); ++i) for (int j=0; j<f.size(); ++j) if (i!=j) if (abs(reduce(f[i].z-f[j].z)) < bound) old_c += T(1);
 		return old_c;
 	}
 
 	template <typename T, typename U> Constellation1<U> cconvert (Constellation1<T> & C) {
 		Constellation1<U> CC;
-		CC.bd = C.bd; CC.fd = C.fd; CC.wd = C.wd; CC.ll = C.ll; CC.tau = C.tau; CC.d = C.d;
-		for (auto z : C.b) CC.b.push_back(z); for (auto z : C.f) CC.f.push_back(z); for (auto z : C.w) CC.w.push_back(z);
+		CC.ll = C.ll; CC.tau = C.tau; CC.d = C.d;
+		for (auto zd : C.b) CC.b.push_back({std::complex<U>(zd.z), zd.d});
+		for (auto zd : C.w) CC.w.push_back({std::complex<U>(zd.z), zd.d});
+		for (auto zd : C.f) CC.f.push_back({std::complex<U>(zd.z), zd.d});
 		CC.from_points();
 		return CC;
 	}
@@ -203,13 +205,13 @@ namespace vb {
 		os << "Keeping " << nd << " digits." << std::endl;
 		os << std::endl;
 		os << "Black vertices / zeros: " << std::endl;
-		for (unsigned i=0; i<C.b.size(); ++i) os << "| " << C.bd[i] << "\t" << C.b[i] << std::endl;
+		for (unsigned i=0; i<C.b.size(); ++i) os << "| " << C.b[i].d << "\t" << C.b[i].z << std::endl;
 		os << std::endl;
 		os << "White vertices / ones: " << std::endl;
-		for (unsigned i=0; i<C.w.size(); ++i) os << "| " << C.wd[i] << "\t" << C.w[i] << std::endl;
+		for (unsigned i=0; i<C.w.size(); ++i) os << "| " << C.w[i].d << "\t" << C.w[i].z << std::endl;
 		os << std::endl;
 		os << "Red vertices / poles: " << std::endl;
-		for (unsigned i=0; i<C.f.size(); ++i) os << "| " << C.fd[i] << "\t" << C.f[i] << std::endl;
+		for (unsigned i=0; i<C.f.size(); ++i) os << "| " << C.f[i].d << "\t" << C.f[i].z << std::endl;
 		return os;
 	}
 
@@ -230,22 +232,22 @@ namespace vb {
 		os << std::endl;
 		os << "Black vertices / zeros: " << std::endl;
 		for (unsigned i=0; i<C.b.size(); ++i) {
-			os << "| " << C.bd[i] << "\t" << C.b[i] << std::endl;
-			Polynomial<cpxint> P = guess (C.b[i],eps);
+			os << "| " << C.b[i].d << "\t" << C.b[i].z << std::endl;
+			Polynomial<cpxint> P = guess (C.b[i].z,eps);
 			if (P.degree()>0) os << "|\t\troot of " << P << std::endl;
 		}
 		os << std::endl;
 		os << "White vertices / ones: " << std::endl;
 		for (unsigned i=0; i<C.w.size(); ++i) {
-			os << "| " << C.wd[i] << "\t" << C.w[i] << std::endl;
-			Polynomial<cpxint> P = guess (C.w[i],eps);
+			os << "| " << C.w[i].d << "\t" << C.w[i].z << std::endl;
+			Polynomial<cpxint> P = guess (C.w[i].z,eps);
 			if (P.degree()>0) os << "|\t\troot of " << P << std::endl;
 		}
 		os << std::endl;
 		os << "Red vertices / poles: " << std::endl;
 		for (unsigned i=0; i<C.f.size(); ++i) {
-			os << "| " << C.fd[i] << "\t" << C.f[i] << std::endl;
-			Polynomial<cpxint> P = guess (C.f[i],eps);
+			os << "| " << C.f[i].d << "\t" << C.f[i].z << std::endl;
+			Polynomial<cpxint> P = guess (C.f[i].z,eps);
 			if (P.degree()>0) os << "|\t\troot of " << P << std::endl;
 		}
 		return os;
