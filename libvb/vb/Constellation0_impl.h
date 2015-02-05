@@ -178,17 +178,15 @@ namespace vb {
 	}
 
 	template <typename T> T Constellation0<T>::findn () {
-		// make_l_1();
-		Vector<cplx> x = vec(b,w,f); Matrix<cplx> IJ (P.degree()+1,P.degree()+1);
-		T c = cost(), old_c = c + T(1);
+		Vector<cplx> x = vec(b,w,f);
+		T c = cost(), old_c = c + T(1); auto old_x = x;
 		while (c<old_c) {
 			std::cerr << c << "             \r"	;
-			old_c = c; auto old_x = x;
-			inv(jacvcost(),IJ); x -= prod(IJ,vcost());
+			old_c = c; old_x = x;
+			x -= solve(jacvcost(),vcost());
 			readvec(x); c = cost();
-			if (c > old_c) readvec(old_x);
 		}
-		std::cerr << std::endl;
+		readvec(old_x);
 		return old_c;
 	}
 
