@@ -7,6 +7,7 @@
 
 namespace vb {
 	template <typename T> Constellation0<T>::Constellation0 (Hypermap M, Hub H, int n) {
+		p = { T(1) };
 		Hypermap M2 (M); M2.dessin(); for (int i=0; i<n; ++i) M2.split_edges();
 		Spheroidal S (M2,H); S.pack(); std::cerr << std::endl;
 
@@ -24,7 +25,7 @@ namespace vb {
 		from_points(); make_c_0(); make_l_1();
 	}
 
-	template <typename T> Constellation0<T>::Constellation0 () {}
+	template <typename T> Constellation0<T>::Constellation0 () { p = { T(1) }; }
 
 	template <typename T> void Constellation0<T>::from_points () {
 		P = Polynomial<cplx> (); Q = Polynomial<cplx> ();
@@ -33,10 +34,10 @@ namespace vb {
 	}
 
 	template <typename T> void Constellation0<T>::normalize () {
-		l = cplx(1);
+		p[0] = cplx(1);
 		cplx avg (0); unsigned d=0;
 		for (auto zd : w) { d += zd.d; avg += (*this)(zd.z)*cplx(zd.d); }
-		l = cplx(d)/avg;
+		p[0] = cplx(d)/avg;
 	}
 
 	template <typename T> void Constellation0<T>::linear (cplx u, cplx v) {
@@ -44,7 +45,7 @@ namespace vb {
 	}
 
 	template <typename T> void Constellation0<T>::make_l_1 () {
-		normalize(); linear (pow(l,cplx(T(1)/T(P.degree()-Q.degree())))); l=T(1);
+		normalize(); linear (pow(p[0],cplx(T(1)/T(P.degree()-Q.degree())))); p[0]=T(1);
 	}
 
 	template <typename T> void Constellation0<T>::make_c_0 () {
@@ -95,7 +96,7 @@ namespace vb {
 		from_points();
 	}
 
-	template <typename T> auto Constellation0<T>::vec (const std::vector<Star<T>> & b, const std::vector<Star<T>> & w, const std::vector<Star<T>> & f) const -> Vector<cplx> {
+	template <typename T> auto Constellation0<T>::vec () const -> Vector<cplx> {
 		Vector<cplx> bw (b.size()+w.size()+f.size()); unsigned i=0;
 		for (auto z : b) { bw[i++] = z.z; } for (auto z : w) { bw[i++] = z.z; } for (auto z : f) { bw[i++] = z.z; }
 		return bw;
@@ -138,15 +139,6 @@ namespace vb {
 		return out;
 	}
 
-	template <typename T> T Constellation0<T>::fg (const Vector<T> & xy, Vector<T> & df) {
-		readcoo(xy);
-		Vector<cplx> V = vcost();
-		Vector<cplx> W = prod(V,conj(jacvcost()));
-
-		for (unsigned i=0; i<W.size(); ++i) { df(2*i) = real(W(i)); df(2*i+1) = imag(W(i)); }
-		T ans(0); for (unsigned i=0; i<V.size(); ++i) ans += norm(V(i)); return ans;
-	}
-
 	template <typename T> void Constellation0<T>::find (T t) {
 		make_l_1(); Vector<T> bw = coovec(b,w,f);
 
@@ -161,24 +153,8 @@ namespace vb {
 		std::cerr << std::endl;
 	}
 
-	template <typename T> T Constellation0_fg (const Vector<T> & xy, Vector<T> & df, void * c) {
-		Constellation0<T> * C = (Constellation0<T> *) c; return C->fg(xy,df);
-	}
-
-	template <typename T> void Constellation0_cb (const Vector<T> &, T f, void *) {
-		static T er (-1); if ((f<er)||(er<T(0))) { std::cerr << f << "          \r"; er = f; }
-	}
-
-	template <typename T> void Constellation0<T>::findm () {
-		make_l_1(); Vector<T> x = coovec(b,w,f);
-		Minimizer<T> M (x.size(),Constellation0_fg<T>,this); M.cb = Constellation0_cb;
-		M.minimize_qn (x);
-		readcoo(M.x);
-		std::cerr << std::endl;
-	}
-
 	template <typename T> T Constellation0<T>::findn () {
-		Vector<cplx> x = vec(b,w,f);
+		Vector<cplx> x = vec();
 		T c = cost(), old_c = c + T(1); auto old_x = x;
 		while (c<old_c) {
 			std::cerr << c << "             \r"	;
@@ -191,10 +167,10 @@ namespace vb {
 
 	template <typename T, typename U> Constellation0<U> cconvert (Constellation0<T> & C) {
 		Constellation0<U> CC;
-		CC.l = C.l;
 		for (auto zd : C.b) CC.b.push_back({std::complex<U>(zd.z), zd.d});
 		for (auto zd : C.w) CC.w.push_back({std::complex<U>(zd.z), zd.d});
 		for (auto zd : C.f) CC.f.push_back({std::complex<U>(zd.z), zd.d});
+		for (auto z : C.p)  CC.p.push_back(std::complex<U>(z));
 		CC.from_points();
 		return CC;
 	}
@@ -213,7 +189,7 @@ namespace vb {
 		os << "Red vertices / poles: " << std::endl;
 		for (unsigned i=0; i<C.f.size(); ++i) os << "| " << C.f[i].d << "\t" << C.f[i].z << std::endl;
 		os << std::endl;
-		os << "lambda := " << C.l << std::endl;
+		os << "lambda := " << C.p[0] << std::endl;
 		os << "P[z_]  := " << C.P << std::endl;
 		os << "Q[z_]  := " << C.Q << std::endl;
 		return os;
@@ -246,8 +222,8 @@ namespace vb {
 			if (P.degree()>0) os << "|\t\troot of " << P << std::endl;
 		}
 		os << std::endl;
-		os << u8"λ     := " << C.l << std::endl;
-		Polynomial<cpxint> L = guess (C.l,T(pow(T(.1),nd))); if (L.degree()>0) os << u8"Λ[z_] := " << L << std::endl;
+		os << u8"λ     := " << C.p[0] << std::endl;
+		Polynomial<cpxint> L = guess (C.p[0],T(pow(T(.1),nd))); if (L.degree()>0) os << u8"Λ[z_] := " << L << std::endl;
 		os << "P[z_] := " << C.P << std::endl;
 		os << "Q[z_] := " << C.Q << std::endl;
 		return os;

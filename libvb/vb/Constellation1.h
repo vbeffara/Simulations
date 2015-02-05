@@ -14,7 +14,6 @@ namespace vb {
 		cplx	operator() 	(cplx z)	const;
 		T   	cost       	()      	const;
 		T   	findn      	();
-		cplx	reduce     	(cplx z)	const;
 
 		void	draw	(Image & img, bool smooth = true) const;
 
@@ -28,6 +27,7 @@ namespace vb {
 		Matrix<cplx>	jacvcost	()	const;
 		Matrix<cplx>	jacnum  	();
 
+		cplx	reduce   	(cplx z)	const;
 		cplx	logderp  	(cplx z, int k) const;
 		cplx	logderp_z	(cplx z, int k) const;
 		cplx	logderp_t	(cplx z, int k) const;
@@ -38,7 +38,7 @@ namespace vb {
 		void	normalize	();
 		void	shift    	(cplx z);
 
-		Vector<cplx>	vec    	(const std::vector<Star<T>> & b, const std::vector<Star<T>> & w, const std::vector<Star<T>> & f, const cplx & t, const cplx & l)	const;
+		Vector<cplx>	vec    	(const cplx & t, const cplx & l)	const;
 		void        	readvec	(const Vector<cplx> & xy);
 	};
 
