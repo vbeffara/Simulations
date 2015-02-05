@@ -186,8 +186,7 @@ namespace vb {
 			x -= solve(jacvcost(),vcost());
 			readvec(x); c = cost();
 		}
-		readvec(old_x);
-		return old_c;
+		readvec(old_x); return old_c;
 	}
 
 	template <typename T, typename U> Constellation0<U> cconvert (Constellation0<T> & C) {

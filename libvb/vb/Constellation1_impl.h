@@ -126,7 +126,15 @@ namespace vb {
 		return out;
 	}
 
-	template <typename T> T Constellation1<T>::cost () const	{ T out(0); for (auto z : vcost()) out += norm(z); return out; }
+	template <typename T> T Constellation1<T>::cost () const {
+		T out(0);
+		for (auto z : vcost()) out += norm(z);
+		T bound = sqrt(sqrt(out));
+		for (int i=0; i<b.size(); ++i) for (int j=0; j<b.size(); ++j) if (i!=j) if (abs(reduce(b[i].z-b[j].z)) < bound) out += T(1);
+		for (int i=0; i<w.size(); ++i) for (int j=0; j<w.size(); ++j) if (i!=j) if (abs(reduce(w[i].z-w[j].z)) < bound) out += T(1);
+		for (int i=0; i<f.size(); ++i) for (int j=0; j<f.size(); ++j) if (i!=j) if (abs(reduce(f[i].z-f[j].z)) < bound) out += T(1);
+		return out;
+}
 
 	template <typename T> auto Constellation1<T>::jacvcost () const -> Matrix<cplx> { // m_ij = \partial_j(f_i)
 		Matrix<cplx> out(d+2,d+2,cplx(0));
@@ -176,11 +184,7 @@ namespace vb {
 			x -= solve(jacvcost(),vcost());
 			readvec(x); c = cost();
 		}
-		readvec(old_x); T bound = sqrt(sqrt(old_c));
-		for (int i=0; i<b.size(); ++i) for (int j=0; j<b.size(); ++j) if (i!=j) if (abs(reduce(b[i].z-b[j].z)) < bound) old_c += T(1);
-		for (int i=0; i<w.size(); ++i) for (int j=0; j<w.size(); ++j) if (i!=j) if (abs(reduce(w[i].z-w[j].z)) < bound) old_c += T(1);
-		for (int i=0; i<f.size(); ++i) for (int j=0; j<f.size(); ++j) if (i!=j) if (abs(reduce(f[i].z-f[j].z)) < bound) old_c += T(1);
-		return old_c;
+		readvec(old_x); return old_c;
 	}
 
 	template <typename T, typename U> Constellation1<U> cconvert (Constellation1<T> & C) {
