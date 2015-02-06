@@ -13,15 +13,13 @@ namespace vb {
 		unsigned N = M.sigma.size(), inf = 0, dinf = 0;
 		for (auto c : M.phi.cycles()) { unsigned i = S.E[c[0]+3*N].src, d = S.V[i].adj.size(); if (d>dinf) { inf=i; dinf=d; } }
 
-		S.linear (1,-S.V[inf].z); S.inversion(); S.linear (-1/S.V[inf].r,0); S.output_pdf();
-		{ cpx z; while ((z = S.V[S.E[0].src].z) != 0.0) S.mobiusto0 (z); } S.linear (std::polar(1.0,-S.E[0].a));
-		S.output_pdf();
+		S.linear (1,-S.V[inf].z); S.inversion(); S.linear (-1/S.V[inf].r,0); S.mobiusto0 (S.V[S.E[0].src].z);
 
-		for (auto c : M.sigma.cycles())	{                                      	b.push_back( { S.V[S.E[c[0]].src].z,    	c.size() } ); }
-		for (auto c : M.alpha.cycles())	{                                      	w.push_back( { S.V[S.E[c[0]+N].src].z,  	c.size() } ); }
-		for (auto c : M.phi.cycles())  	{ if (S.E[c[0]+3*N].src==inf) continue;	f.push_back( { S.V[S.E[c[0]+3*N].src].z,	c.size() } ); }
+		for (auto c : M.sigma.cycles())	{                              	b.push_back( { S.V[S.E[c[0]].src].z,    	c.size() } ); }
+		for (auto c : M.alpha.cycles())	{                              	w.push_back( { S.V[S.E[c[0]+N].src].z,  	c.size() } ); }
+		for (auto c : M.phi.cycles())  	{ if (S.E[c[0]+3*N].src != inf)	f.push_back( { S.V[S.E[c[0]+3*N].src].z,	c.size() } ); }
 
-		from_points(); make_c_0(); make_l_1();
+		from_points(); make_c_0();
 	}
 
 	template <typename T> Constellation0<T>::Constellation0 () { p = { T(1) }; }
