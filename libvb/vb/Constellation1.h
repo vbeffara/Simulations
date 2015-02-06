@@ -6,14 +6,13 @@ namespace vb {
 	template <typename T> class Constellation1 : public Constellation<T> { public:
 		using cplx = std::complex<T>;
 		using Constellation<T>::b; using Constellation<T>::w; using Constellation<T>::f; using  Constellation<T>::p;
-		using Constellation<T>::findn;
+		using Constellation<T>::findn; using Constellation<T>::cost;
 
 		Constellation1 (const Hypermap & M, const Hub & H);
 		Constellation1 ();
 
 		void	from_points	();
 		cplx	operator() 	(cplx z)	const;
-		T   	cost       	()      	const;
 
 		void	draw	(Image & img, bool smooth = true) const;
 

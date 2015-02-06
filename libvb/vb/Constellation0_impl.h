@@ -117,12 +117,6 @@ namespace vb {
 		return out;
 	}
 
-	template <typename T> T Constellation0<T>::cost () const	{
-	    T out(0); for (auto z : vcost()) out += norm(z);
-	    if (std::isnan(double(out))) out = T(1.234567e89);
-	    return out;
-	}
-
 	template <typename T> auto Constellation0<T>::jacvcost () const -> Matrix<cplx> { // m_ij = \partial_j(f_i)
 		Matrix<cplx> out(P.degree()+1,P.degree()+1);
 		unsigned i=0,j=0; for (unsigned ii=0; ii<w.size(); ++ii) for (unsigned id=0; id<w[ii].d; ++id) { j=0;

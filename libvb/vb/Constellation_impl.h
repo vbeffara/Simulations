@@ -17,4 +17,14 @@ namespace vb {
 		}
 		readvec(old_x); return old_c;
 	}
+
+	template <typename T> T Constellation<T>::cost () const {
+	    T out(0); for (auto z : vcost()) out += norm(z);
+		T bound = sqrt(sqrt(out));
+		for (int i=0; i<b.size(); ++i) for (int j=0; j<b.size(); ++j) if (i!=j) if (abs(reduce(b[i].z-b[j].z)) < bound) out += T(1);
+		for (int i=0; i<w.size(); ++i) for (int j=0; j<w.size(); ++j) if (i!=j) if (abs(reduce(w[i].z-w[j].z)) < bound) out += T(1);
+		for (int i=0; i<f.size(); ++i) for (int j=0; j<f.size(); ++j) if (i!=j) if (abs(reduce(f[i].z-f[j].z)) < bound) out += T(1);
+	    if (std::isnan(double(out))) out = T(1.234567e89);
+	    return out;
+	}
 }

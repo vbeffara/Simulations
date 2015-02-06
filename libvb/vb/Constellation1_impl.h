@@ -126,16 +126,6 @@ namespace vb {
 		return out;
 	}
 
-	template <typename T> T Constellation1<T>::cost () const {
-		T out(0);
-		for (auto z : vcost()) out += norm(z);
-		T bound = sqrt(sqrt(out));
-		for (int i=0; i<b.size(); ++i) for (int j=0; j<b.size(); ++j) if (i!=j) if (abs(reduce(b[i].z-b[j].z)) < bound) out += T(1);
-		for (int i=0; i<w.size(); ++i) for (int j=0; j<w.size(); ++j) if (i!=j) if (abs(reduce(w[i].z-w[j].z)) < bound) out += T(1);
-		for (int i=0; i<f.size(); ++i) for (int j=0; j<f.size(); ++j) if (i!=j) if (abs(reduce(f[i].z-f[j].z)) < bound) out += T(1);
-		return out;
-}
-
 	template <typename T> auto Constellation1<T>::jacvcost () const -> Matrix<cplx> { // m_ij = \partial_j(f_i)
 		Matrix<cplx> out(d+2,d+2,cplx(0));
 		unsigned i=0,j=0; for (unsigned ii=0; ii<w.size(); ++ii) for (unsigned id=0; id<w[ii].d; ++id) { j=0; // f_i is logder(w[ii],id)

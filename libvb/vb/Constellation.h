@@ -18,10 +18,12 @@ namespace vb {
 
 		virtual	Vector<cplx>	vec     	()                       	const	=0;
 		virtual	void        	readvec 	(const Vector<cplx> & xy)	     	=0;
-		virtual	T           	cost    	()                       	const	=0;
 		virtual	Vector<cplx>	vcost   	()                       	const	=0;
 		virtual	Matrix<cplx>	jacvcost	()                       	const	=0;
 
+		virtual cplx reduce (const cplx & z) const { return z; }
+
+		T	cost 	()	const;
 		T	findn	();
 	};
 }
