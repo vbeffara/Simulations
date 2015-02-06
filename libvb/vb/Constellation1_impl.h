@@ -13,20 +13,20 @@ namespace vb {
 			b.clear(); for (auto c : M.sigma.cycles())	{ b.push_back( { S.V[S.E[c[0]].src].z,    	c.size() } ); d += c.size(); }
 			w.clear(); for (auto c : M.alpha.cycles())	{ w.push_back( { S.V[S.E[c[0]+N].src].z,  	c.size() } ); }
 			f.clear(); for (auto c : M.phi.cycles())  	{ f.push_back( { S.V[S.E[c[0]+3*N].src].z,	c.size() } ); }
-			tau = S.m; shift(-b[0].z); normalize();
+			p[0] = S.m; shift(-b[0].z); normalize();
 		} while (findn() > T(1e-6));
 	}
 
 	template <typename T> Constellation1<T>::Constellation1 () { p = { cplx(0,1), T(0) }; }
 
 	template <typename T> void Constellation1<T>::from_points () {
-		q = q_(tau); qt = q_t(tau); E = Elliptic<T> { q };
+		q = q_(p[0]); qt = q_t(p[0]); E = Elliptic<T> { q };
 		cplx sz(0); for (auto zd : b) sz += T(zd.d)*zd.z;
 		cplx sp(0); for (auto zd : f) sp += T(zd.d)*zd.z;
-		dy = round(double(T(imag(sz-sp)/imag(tau)))); dx = round(double(T(real(sz-sp-T(dy)*tau))));
+		dy = round(double(T(imag(sz-sp)/imag(p[0])))); dx = round(double(T(real(sz-sp-T(dy)*p[0]))));
 		for (auto & zd : f) {
 			int ddx = round(double(dx)/zd.d); if (ddx != 0) { zd.z += T(ddx); dx -= int(zd.d)*ddx; }
-			int ddy = round(double(dy)/zd.d); if (ddy != 0) { zd.z += T(ddy)*tau; dy -= int(zd.d)*ddy; }
+			int ddy = round(double(dy)/zd.d); if (ddy != 0) { zd.z += T(ddy)*p[0]; dy -= int(zd.d)*ddy; }
 		}
 	}
 
@@ -66,7 +66,7 @@ namespace vb {
 	}
 
 	template <typename T> auto Constellation1<T>::logder (cplx z, int k) const -> cplx {
-		cplx out (logderp (z-b[0].z+T(dx)+tau*T(dy), k));
+		cplx out (logderp (z-b[0].z+T(dx)+tau()*T(dy), k));
 		{ int i=0; for (auto zd : b) out += logderp (z-zd.z, k) * T(zd.d - (i++ == 0?1:0)); }
 		for (auto zd : f) out -= logderp (z-zd.z, k) * T(zd.d);
 		if (k==0) { out += p[1]; out -= cplx(0,T(2)*pi_<T>()) * T(round(real(out/cplx(0,T(2)*pi_<T>())))); }
@@ -74,14 +74,14 @@ namespace vb {
 	}
 
 	template <typename T> auto Constellation1<T>::logder_z (cplx z, int k) const -> cplx {
-		cplx out (logderp_z (z-b[0].z+T(dx)+tau*T(dy), k));
+		cplx out (logderp_z (z-b[0].z+T(dx)+tau()*T(dy), k));
 		{ int i=0; for (auto zd : b) out += logderp_z (z-zd.z, k) * T(zd.d - (i++ == 0?1:0)); }
 		for (auto zd : f) out -= logderp_z (z-zd.z, k) * T(zd.d);
 		return out;
 	}
 
 	template <typename T> auto Constellation1<T>::logder_t (cplx z, int k) const -> cplx {
-		cplx out (logderp_t (z-b[0].z+T(dx)+tau*T(dy), k) + T(dy) * logderp_z (z-b[0].z+T(dx)+tau*T(dy), k));
+		cplx out (logderp_t (z-b[0].z+T(dx)+tau()*T(dy), k) + T(dy) * logderp_z (z-b[0].z+T(dx)+tau()*T(dy), k));
 		{ int i=0; for (auto zd : b) out += logderp_t (z-zd.z, k) * T(zd.d - (i++ == 0?1:0)); }
 		for (auto zd : f) out -= logderp_t (z-zd.z, k) * T(zd.d);
 		return out;
@@ -90,10 +90,10 @@ namespace vb {
 	template <typename T> auto Constellation1<T>::operator() (cplx z) const -> cplx { return exp(logder(z,0)); }
 
 	template <typename T> auto Constellation1<T>::reduce (cplx z) const -> cplx {
-		while (imag(z) < - imag(tau)/T(2))                   	z += tau;
-		while (imag(z) > imag(tau)/T(2))                     	z -= tau;
-		while (real(z) < real(tau)*imag(z)/imag(tau) - T(.5))	z += T(1);
-		while (real(z) > real(tau)*imag(z)/imag(tau) + T(.5))	z -= T(1);
+		while (imag(z) < - imag(tau())/T(2))                     	z += tau();
+		while (imag(z) > imag(tau())/T(2))                       	z -= tau();
+		while (real(z) < real(tau())*imag(z)/imag(tau()) - T(.5))	z += T(1);
+		while (real(z) > real(tau())*imag(z)/imag(tau()) + T(.5))	z -= T(1);
 		return z;
 	}
 
@@ -103,7 +103,7 @@ namespace vb {
 		for (auto & zd : b) zd.z = xy[i++];
 		for (auto & zd : w) zd.z = xy[i++];
 		for (auto & zd : f) zd.z = xy[i++];
-		tau = xy[i++]; p[1] = xy[i++];
+		p[0] = xy[i++]; p[1] = xy[i++];
 		from_points();
 	}
 
@@ -119,7 +119,7 @@ namespace vb {
 	template <typename T> auto Constellation1<T>::vcost() const -> Vector<cplx> {
 		Vector<cplx> out (d+2); int k=0;
 		for (auto zd : w) for (unsigned j=0; j<zd.d; ++j) out[k++] = logder(zd.z,j);
-		cplx sz (T(-dx)+cplx(T(-dy)*tau));
+		cplx sz (T(-dx)+cplx(T(-dy)*tau()));
 		for (auto zd : b) sz += T(zd.d) * zd.z;
 		for (auto zd : f) sz -= T(zd.d) * zd.z; out[k++] = sz;
 		out[k++] = b[0].z;
@@ -139,7 +139,7 @@ namespace vb {
 	template <typename T> auto Constellation1<T>::jacvcost () const -> Matrix<cplx> { // m_ij = \partial_j(f_i)
 		Matrix<cplx> out(d+2,d+2,cplx(0));
 		unsigned i=0,j=0; for (unsigned ii=0; ii<w.size(); ++ii) for (unsigned id=0; id<w[ii].d; ++id) { j=0; // f_i is logder(w[ii],id)
-			out(i,j) = - logderp_z (w[ii].z-b[0].z+T(dx)+tau*T(dy), id);
+			out(i,j) = - logderp_z (w[ii].z-b[0].z+T(dx)+tau()*T(dy), id);
 			for (unsigned jj=0; jj<b.size(); ++jj)	out(i,j++) -= T(b[jj].d - (jj==0?1:0)) * logderp_z (w[ii].z-b[jj].z,id);
 			for (unsigned jj=0; jj<w.size(); ++jj)	out(i,j++) = (ii==jj) ? logder_z (w[ii].z,id) : cplx(0);
 			for (unsigned jj=0; jj<f.size(); ++jj)	out(i,j++) = T(f[jj].d) * logderp_z (w[ii].z-f[jj].z, id);
@@ -166,7 +166,7 @@ namespace vb {
 	}
 
 	template <typename T> auto Constellation1<T>::jacnum  () -> Matrix<cplx> {
-		Vector<cplx> x = vec (tau,p[1]), c = vcost(); Matrix<cplx> out (d+2,d+2);
+		Vector<cplx> x = vec (p[0],p[1]), c = vcost(); Matrix<cplx> out (d+2,d+2);
 		T eps (.00001);
 		for (unsigned j=0; j<x.size(); ++j) {
 			x[j] += eps; readvec(x); Vector<cplx> dc = vcost() - c; x[j] -= eps;
@@ -176,7 +176,7 @@ namespace vb {
 	}
 
 	template <typename T> T Constellation1<T>::findn () {
-		Vector<cplx> x = vec(tau,p[1]);
+		Vector<cplx> x = vec(p[0],p[1]);
 		T c = cost(), old_c = c + T(1); auto old_x = x;
 		while (c<old_c) {
 			std::cerr << c << "             \r"	;
@@ -189,7 +189,7 @@ namespace vb {
 
 	template <typename T, typename U> Constellation1<U> cconvert (Constellation1<T> & C) {
 		Constellation1<U> CC;
-		CC.p[1] = C.p[1]; CC.tau = C.tau; CC.d = C.d;
+		CC.p[1] = C.p[1]; CC.p[0] = C.p[0]; CC.d = C.d;
 		for (auto zd : C.b) CC.b.push_back({std::complex<U>(zd.z), zd.d});
 		for (auto zd : C.w) CC.w.push_back({std::complex<U>(zd.z), zd.d});
 		for (auto zd : C.f) CC.f.push_back({std::complex<U>(zd.z), zd.d});
@@ -200,7 +200,7 @@ namespace vb {
 	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation1<T> & C) {
 		T err (C.cost()); T lerr (-log10(err)); int nd = std::max (5,int(lerr)/2-10); if (err==T(0)) nd=10;
 		os << std::setprecision(nd) << std::fixed;
-		os << "Modulus tau  = " << C.tau << std::endl;
+		os << "Modulus tau  = " << C.tau() << std::endl;
 		os << "Invariant j  = " << C.E.j() << std::endl;
 		os << "Invariant g2 = " << C.E.g2() << std::endl;
 		os << "Invariant g3 = " << C.E.g3() << std::endl;
@@ -226,8 +226,8 @@ namespace vb {
 		T eps = pow(T(.1),nd-5);
 
 		os << "log(lambda) = " << C.p[1] << std::endl;
-		os << "tau         = " << C.tau << std::endl;
-		{ Polynomial<cpxint> P = guess(C.tau,eps); if (P.degree()>0) os << "\t\troot of " << P << std::endl; }
+		os << "tau         = " << C.p[0] << std::endl;
+		{ Polynomial<cpxint> P = guess(C.p[0],eps); if (P.degree()>0) os << "\t\troot of " << P << std::endl; }
 		std::complex<T> jj = C.E.j();
 		os << "invariant j = " << jj << std::endl;
 		{ Polynomial<cpxint> P = guess(jj,eps); if (P.degree()>0) os << "\t\troot of " << P << std::endl; }
@@ -258,7 +258,7 @@ namespace vb {
 	}
 
 	template <typename T> void Constellation1<T>::draw (Image & img, bool smooth) const {
-		T xmin = std::min(T(0),real(tau)), xmax = std::max(T(1),real(T(1)+tau)), ymin = T(0), ymax = imag(tau);
+		T xmin = std::min(T(0),real(tau())), xmax = std::max(T(1),real(T(1)+tau())), ymin = T(0), ymax = imag(tau());
 		cplx center { (xmin+xmax)/T(2), (ymin+ymax)/T(2) }; T scale = T(.75) * std::max(xmax-xmin,ymax-ymin);
 
 		int l = img.w(); img.start = img.now();
@@ -266,7 +266,7 @@ namespace vb {
 
 		auto f = [&](cplx z) {
 			z = conj(z)*T(2.0/l) + cplx{-1,1}; z = center + scale*z;
-			if ((T(0)<=imag(z)) && (imag(z)<=imag(tau)) && (real(z) >= real(tau)*imag(z)/imag(tau)) && (real(z) <= T(1)+real(tau)*imag(z)/imag(tau)))
+			if ((T(0)<=imag(z)) && (imag(z)<=imag(tau())) && (real(z) >= real(tau())*imag(z)/imag(tau())) && (real(z) <= T(1)+real(tau())*imag(z)/imag(tau())))
 				return imag((*this)(z))>0 ? Color(150,200,200) : Color(150,150,200);
 			return imag((*this)(z))>0 ? Color(200,250,250) : Color(200,200,250);
 		};

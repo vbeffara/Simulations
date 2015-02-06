@@ -17,8 +17,10 @@ namespace vb {
 
 		void	draw	(Image & img, bool smooth = true) const;
 
-		cplx       	tau = cplx(0,1), q = q_(tau), qt = q_t(tau);
+		cplx       	q = q_(cplx(0,1)), qt = q_t(cplx(0,1));
 		Elliptic<T>	E { q };
+
+		cplx tau () const { return p[0]; }
 
 		int	dx,dy,d;
 

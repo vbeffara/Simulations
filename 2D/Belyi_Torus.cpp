@@ -49,7 +49,7 @@ int main (int argc, char ** argv) {
 			Constellation1<double> C {M,H}; double er = C.cost();
 			if (!H['q']) {
 				cout << "     Final error:     " << er << endl;
-				cout << "     Modulus:         " << C.tau << endl;
+				cout << "     Modulus:         " << C.tau() << endl;
 				cout << "     Klein invariant: " << C.E.j() << endl;
 				cout << "     g2 coefficient:  " << C.E.g2() << endl;
 				cout << "     g3 coefficient:  " << C.E.g3() << endl;
@@ -62,8 +62,8 @@ int main (int argc, char ** argv) {
 				Constellation1<gmp100> CC = cconvert<double,gmp100> (C); gmp100 c = CC.findn(); int lc = - int(log10(c));
 				int nd = std::max(10,lc/2-15); gmp100 eps = pow(gmp100(.1),nd);
 				cout << fixed << setprecision(std::min(nd,80));
-				cout << "     Modulus:         " << CC.tau << endl;
-				if (nd>30) { Polynomial<cpxint> P = guess(CC.tau,eps); if (P.degree()>0) cout << "        root of " << P << std::endl; }
+				cout << "     Modulus:         " << CC.tau() << endl;
+				if (nd>30) { Polynomial<cpxint> P = guess(CC.tau(),eps); if (P.degree()>0) cout << "        root of " << P << std::endl; }
 				cout << "     Klein invariant: " << CC.E.j() << endl;
 				if (nd>30) { Polynomial<cpxint> P = guess(CC.E.j(),eps); if (P.degree()>0) cout << "        root of " << P << std::endl; }
 				cout << "     g2 coefficient:  " << CC.E.g2() << endl;
