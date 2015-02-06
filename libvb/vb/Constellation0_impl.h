@@ -20,9 +20,18 @@ namespace vb {
 		for (auto c : M.phi.cycles())  	{ if (S.E[c[0]+3*N].src != inf)	f.push_back( { S.V[S.E[c[0]+3*N].src].z,	c.size() } ); }
 
 		from_points(); make_c_0();
+		// linear (T(1),-b[0].z);
 	}
 
 	template <typename T> Constellation0<T>::Constellation0 () { p = { T(1) }; }
+
+	template <typename T> auto Constellation0<T>::operator() (cplx z) const -> cplx {
+		cplx out (p[0]);
+		for (auto zd : b) out *= pow (z-zd.z, zd.d);
+		for (auto zd : f) out /= pow (z-zd.z, zd.d);
+		return out;
+	}
+
 
 	template <typename T> void Constellation0<T>::from_points () {
 		P = Polynomial<cplx> (); Q = Polynomial<cplx> ();
@@ -72,8 +81,8 @@ namespace vb {
 	template <typename T> auto Constellation0<T>::logder (cplx z, int k) const -> cplx {
 		if (k==0) return T(10)*log((*this)(z));
 		cplx sum (0);
-		for (auto zd : b) sum += cplx(zd.d) / pow (z-zd.z, cplx(k));
-		for (auto zd : f) sum -= cplx(zd.d) / pow (z-zd.z, cplx(k));
+		for (auto zd : b) sum += cplx(zd.d) / pow (z-zd.z, k);
+		for (auto zd : f) sum -= cplx(zd.d) / pow (z-zd.z, k);
 		return sum;
 	}
 
@@ -113,6 +122,7 @@ namespace vb {
 		Vector<cplx> out (P.degree()+1); int k=0;
 		for (auto zd : w) for (unsigned j=0; j<zd.d; ++j) out[k++] = logder(zd.z,j);
 		cplx sb(0); for (auto zd : b) sb += T(zd.d)*zd.z; out[k++] = sb;
+		// cplx sb(0); sb += b[0].z; out[k++] = sb;
 		return out;
 	}
 
@@ -129,6 +139,7 @@ namespace vb {
 			++i;
 		}
 		j=0; for (unsigned jj=0; jj<b.size(); ++jj) out(i,j++) = T(b[jj].d); while (j<out.size2()) out(i,j++) = T(0); ++i;
+		// j=0; for (unsigned jj=0; jj<b.size(); ++jj) out(i,j++) = (jj==0 ? T(1) : T(0)); while (j<out.size2()) out(i,j++) = T(0); ++i;
 		return out;
 	}
 

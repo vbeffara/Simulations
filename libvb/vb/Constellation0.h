@@ -15,7 +15,7 @@ namespace vb {
 		Constellation0 ();
 
 		void	from_points	();     	// compute P and Q, don't touch l
-		cplx	operator() 	(cplx z)	const { return p[0]*P(z)/Q(z); }
+		cplx	operator() 	(cplx z)	const;
 
 		void	draw	(Image & img, bool smooth = true) const;
 
