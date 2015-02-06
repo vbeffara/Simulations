@@ -153,18 +153,6 @@ namespace vb {
 		std::cerr << std::endl;
 	}
 
-	template <typename T> T Constellation0<T>::findn () {
-		Vector<cplx> x = vec();
-		T c = cost(), old_c = c + T(1); auto old_x = x;
-		while (c<old_c) {
-			std::cerr << c << "             \r"	;
-			old_c = c; old_x = x;
-			x -= solve(jacvcost(),vcost());
-			readvec(x); c = cost();
-		}
-		readvec(old_x); return old_c;
-	}
-
 	template <typename T, typename U> Constellation0<U> cconvert (Constellation0<T> & C) {
 		Constellation0<U> CC;
 		for (auto zd : C.b) CC.b.push_back({std::complex<U>(zd.z), zd.d});

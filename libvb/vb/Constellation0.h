@@ -6,6 +6,7 @@ namespace vb {
 	template <typename T> class Constellation0 : public Constellation<T> { public:
 		using cplx = std::complex<T>;
 		using Constellation<T>::b; using Constellation<T>::w; using Constellation<T>::f; using Constellation<T>::p;
+		using Constellation<T>::findn;
 
 		Constellation0 (Hypermap M, Hub H, int n=3);
 		Constellation0 ();
@@ -13,7 +14,6 @@ namespace vb {
 		void	from_points	();     	// compute P and Q, don't touch l
 		cplx	operator() 	(cplx z)	const { return p[0]*P(z)/Q(z); }
 		T   	cost       	()      	const;
-		T   	findn      	();
 
 		void	draw	(Image & img, bool smooth = true) const;
 
@@ -32,7 +32,6 @@ namespace vb {
 
 		Vector<cplx>	vcost   	()	const;
 		Matrix<cplx>	jacvcost	()	const;
-
 
 		Vector<cplx>	vec    	()                                                                                              	const;
 		Vector<T>   	coovec 	(const std::vector<Star<T>> & b, const std::vector<Star<T>> & w, const std::vector<Star<T>> & f)	const;

@@ -107,12 +107,12 @@ namespace vb {
 		from_points();
 	}
 
-	template <typename T> auto Constellation1<T>::vec (const cplx & t, const cplx & l) const -> Vector<cplx> {
+	template <typename T> auto Constellation1<T>::vec () const -> Vector<cplx> {
 		Vector<cplx> bw (b.size()+w.size()+f.size()+2); unsigned i=0;
 		for (auto zd : b) { bw[i++] = zd.z; }
 		for (auto zd : w) { bw[i++] = zd.z; }
 		for (auto zd : f) { bw[i++] = zd.z; }
-		bw[i++] = t; bw[i++] = l;
+		bw[i++] = p[0]; bw[i++] = p[1];
 		return bw;
 	}
 
@@ -166,25 +166,13 @@ namespace vb {
 	}
 
 	template <typename T> auto Constellation1<T>::jacnum  () -> Matrix<cplx> {
-		Vector<cplx> x = vec (p[0],p[1]), c = vcost(); Matrix<cplx> out (d+2,d+2);
+		Vector<cplx> x = vec(), c = vcost(); Matrix<cplx> out (d+2,d+2);
 		T eps (.00001);
 		for (unsigned j=0; j<x.size(); ++j) {
 			x[j] += eps; readvec(x); Vector<cplx> dc = vcost() - c; x[j] -= eps;
 			for (unsigned i=0; i<c.size(); ++i) out(i,j) = dc[i] / eps;
 		}
 		return out;
-	}
-
-	template <typename T> T Constellation1<T>::findn () {
-		Vector<cplx> x = vec(p[0],p[1]);
-		T c = cost(), old_c = c + T(1); auto old_x = x;
-		while (c<old_c) {
-			std::cerr << c << "             \r"	;
-			old_c = c; old_x = x;
-			x -= solve(jacvcost(),vcost());
-			readvec(x); c = cost();
-		}
-		readvec(old_x); return old_c;
 	}
 
 	template <typename T, typename U> Constellation1<U> cconvert (Constellation1<T> & C) {
