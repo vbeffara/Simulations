@@ -108,11 +108,11 @@ namespace vb {
 	}
 
 	template <typename T> auto Constellation1<T>::vec () const -> Vector<cplx> {
-		Vector<cplx> bw (b.size()+w.size()+f.size()+2); unsigned i=0;
+		Vector<cplx> bw (b.size()+w.size()+f.size()+p.size()); unsigned i=0;
 		for (auto zd : b) { bw[i++] = zd.z; }
 		for (auto zd : w) { bw[i++] = zd.z; }
 		for (auto zd : f) { bw[i++] = zd.z; }
-		bw[i++] = p[0]; bw[i++] = p[1];
+		for (auto z  : p) { bw[i++] = z; }
 		return bw;
 	}
 

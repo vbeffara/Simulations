@@ -1,8 +1,5 @@
 #pragma once
 #include <vb/Constellation.h>
-#include <vb/Minimizer.h>
-#include <vb/NumberTheory.h>
-#include <vb/Spheroidal.h>
 #include <iomanip>
 
 namespace vb {

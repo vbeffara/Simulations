@@ -1,5 +1,8 @@
 #pragma once
 #include <vb/Constellation.h>
+#include <vb/Hub.h>
+#include <vb/Hypermap.h>
+#include <vb/Image.h>
 #include <vb/Polynomial.h>
 
 namespace vb {

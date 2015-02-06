@@ -1,6 +1,9 @@
 #pragma once
 #include <vb/Constellation.h>
 #include <vb/Elliptic.h>
+#include <vb/Hub.h>
+#include <vb/Hypermap.h>
+#include <vb/Image.h>
 
 namespace vb {
 	template <typename T> class Constellation1 : public Constellation<T> { public:

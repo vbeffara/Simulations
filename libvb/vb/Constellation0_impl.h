@@ -1,6 +1,5 @@
 #pragma once
 #include <vb/Constellation0.h>
-#include <vb/Minimizer.h>
 #include <vb/NumberTheory.h>
 #include <vb/Spheroidal.h>
 #include <iomanip>
@@ -98,7 +97,9 @@ namespace vb {
 
 	template <typename T> auto Constellation0<T>::vec () const -> Vector<cplx> {
 		Vector<cplx> bw (b.size()+w.size()+f.size()); unsigned i=0;
-		for (auto z : b) { bw[i++] = z.z; } for (auto z : w) { bw[i++] = z.z; } for (auto z : f) { bw[i++] = z.z; }
+		for (auto zd : b) { bw[i++] = zd.z; }
+		for (auto zd : w) { bw[i++] = zd.z; }
+		for (auto zd : f) { bw[i++] = zd.z; }
 		return bw;
 	}
 

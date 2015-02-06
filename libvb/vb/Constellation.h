@@ -1,7 +1,4 @@
 #pragma once
-#include <vb/Hub.h>
-#include <vb/Hypermap.h>
-#include <vb/Image.h>
 #include <vb/LinearAlgebra.h>
 
 namespace vb {
