@@ -50,8 +50,8 @@ namespace vb {
 	}
 
 	template <typename T> void Constellation0<T>::make_c_0 () {
-		int deg=0; for (auto zd : b) deg += zd.d;
-		cplx sum(0); for (auto zd : b) sum += T(zd.d)*zd.z; sum /= deg; linear (T(1),-sum); normalize();
+		int deg=0; cplx sum(0); for (auto zd : b) { deg += zd.d; sum += T(zd.d)*zd.z; }
+		sum /= deg; linear (T(1),-sum); normalize();
 	}
 
 	template <typename T> void Constellation0<T>::make_p_1 () {
@@ -213,7 +213,7 @@ namespace vb {
 		os << std::endl;
 		os << u8"λ     := " << C.p[0] << std::endl;
 		Polynomial<cpxint> L = guess (C.p[0],T(pow(T(.1),nd))); if (L.degree()>0) os << u8"Λ[z_] := " << L << std::endl;
-		Polynomial<cpx100> P; for (auto zd : C.f) for (unsigned j=0; j<zd.d; ++j) P.add_root(zd.z); os << "P[z_] := " << P << std::endl;
+		Polynomial<cpx100> P; for (auto zd : C.b) for (unsigned j=0; j<zd.d; ++j) P.add_root(zd.z); os << "P[z_] := " << P << std::endl;
 		Polynomial<cpx100> Q; for (auto zd : C.f) for (unsigned j=0; j<zd.d; ++j) Q.add_root(zd.z); os << "Q[z_] := " << Q << std::endl;
 		return os;
 	}
