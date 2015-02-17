@@ -1,6 +1,7 @@
 #pragma once
 #include <vb/Constellation0.h>
 #include <vb/NumberTheory.h>
+#include <vb/Polynomial.h>
 #include <vb/Spheroidal.h>
 #include <iomanip>
 
@@ -19,7 +20,7 @@ namespace vb {
 		for (auto c : M.alpha.cycles())	{                              	w.push_back( { S.V[S.E[c[0]+N].src].z,  	c.size() } ); }
 		for (auto c : M.phi.cycles())  	{ if (S.E[c[0]+3*N].src != inf)	f.push_back( { S.V[S.E[c[0]+3*N].src].z,	c.size() } ); }
 
-		from_points(); make_c_0();
+		make_c_0();
 		// linear (T(1),-b[0].z);
 	}
 
@@ -32,13 +33,6 @@ namespace vb {
 		return out;
 	}
 
-
-	template <typename T> void Constellation0<T>::from_points () {
-		P = Polynomial<cplx> (); Q = Polynomial<cplx> ();
-		for (auto zd : b) for (unsigned j=0; j<zd.d; ++j) P.add_root(zd.z);
-		for (auto zd : f) for (unsigned j=0; j<zd.d; ++j) Q.add_root(zd.z);
-	}
-
 	template <typename T> void Constellation0<T>::normalize () {
 		p[0] = cplx(1);
 		cplx avg (0); unsigned d=0;
@@ -47,19 +41,24 @@ namespace vb {
 	}
 
 	template <typename T> void Constellation0<T>::linear (cplx u, cplx v) {
-		for (auto & zd : b) zd.z = u*zd.z+v; for (auto & zd : f) zd.z = u*zd.z+v; for (auto & zd : w) zd.z = u*zd.z+v; from_points();
+		for (auto & zd : b) zd.z = u*zd.z+v; for (auto & zd : f) zd.z = u*zd.z+v; for (auto & zd : w) zd.z = u*zd.z+v;
 	}
 
 	template <typename T> void Constellation0<T>::make_l_1 () {
-		normalize(); linear (pow(p[0],cplx(T(1)/T(P.degree()-Q.degree())))); p[0]=T(1);
+		normalize();
+		int deg=0; for (auto zd : b) deg += zd.d; for (auto zd : f) deg -= zd.d;
+		linear (pow(p[0],cplx(T(1)/T(deg)))); p[0]=T(1);
 	}
 
 	template <typename T> void Constellation0<T>::make_c_0 () {
-		cplx sum(0); for (auto zd : b) sum += T(zd.d)*zd.z; sum /= P.degree(); linear (T(1),-sum); normalize();
+		int deg=0; for (auto zd : b) deg += zd.d;
+		cplx sum(0); for (auto zd : b) sum += T(zd.d)*zd.z; sum /= deg; linear (T(1),-sum); normalize();
 	}
 
 	template <typename T> void Constellation0<T>::make_p_1 () {
 		T eps = pow(cost(),T(.25)); if (eps > T(.1)) eps = T(.1);
+		Polynomial<cplx> P; for (auto zd : b) for (unsigned j=0; j<zd.d; ++j) P.add_root(zd.z);
+		Polynomial<cplx> Q; for (auto zd : f) for (unsigned j=0; j<zd.d; ++j) Q.add_root(zd.z);
 		unsigned i=0; while (norm(P[i])<eps) ++i;
 		unsigned j=0; while (norm(Q[j])<eps) ++j;
 		bool is_P; cplx l(1);
@@ -91,7 +90,6 @@ namespace vb {
 		for (unsigned i=0; i<n1; ++i) b[i].z = cplx (xy[2*i],xy[2*i+1]);
 		for (unsigned i=0; i<n2; ++i) w[i].z = cplx (xy[2*n1+2*i],xy[2*n1+2*i+1]);
 		for (unsigned i=0; i<n3; ++i) f[i].z = cplx (xy[2*n1+2*n2+2*i],xy[2*n1+2*n2+2*i+1]);
-		from_points();
 	}
 
 	template <typename T> void Constellation0<T>::readvec (const Vector<cplx> & xy) {
@@ -99,7 +97,6 @@ namespace vb {
 		for (unsigned i=0; i<n1; ++i) b[i].z = xy[i];
 		for (unsigned i=0; i<n2; ++i) w[i].z = xy[n1+i];
 		for (unsigned i=0; i<n3; ++i) f[i].z = xy[n1+n2+i];
-		from_points();
 	}
 
 	template <typename T> auto Constellation0<T>::vec () const -> Vector<cplx> {
@@ -119,7 +116,8 @@ namespace vb {
 	}
 
 	template <typename T> auto Constellation0<T>::vcost() const -> Vector<cplx> {
-		Vector<cplx> out (P.degree()+1); int k=0;
+		int deg=0; for (auto zd : b) deg += zd.d;
+		Vector<cplx> out (deg+1); int k=0;
 		for (auto zd : w) for (unsigned j=0; j<zd.d; ++j) out[k++] = logder(zd.z,j);
 		cplx sb(0); for (auto zd : b) sb += T(zd.d)*zd.z; out[k++] = sb;
 		// cplx sb(0); sb += b[0].z; out[k++] = sb;
@@ -127,7 +125,8 @@ namespace vb {
 	}
 
 	template <typename T> auto Constellation0<T>::jacvcost () const -> Matrix<cplx> { // m_ij = \partial_j(f_i)
-		Matrix<cplx> out(P.degree()+1,P.degree()+1);
+		int deg=0; for (auto zd : b) deg += zd.d;
+		Matrix<cplx> out(deg+1,deg+1);
 		unsigned i=0,j=0; for (unsigned ii=0; ii<w.size(); ++ii) for (unsigned id=0; id<w[ii].d; ++id) { j=0;
 			for (unsigned jj=0; jj<b.size(); ++jj)	if (id==0)     	out(i,j++) = T(- T(10*b[jj].d)) / (w[ii].z-b[jj].z);
 			                                      	else           	out(i,j++) = T(id*b[jj].d) / pow(w[ii].z-b[jj].z,cplx(id+1));
@@ -163,7 +162,6 @@ namespace vb {
 		for (auto zd : C.w) CC.w.push_back({std::complex<U>(zd.z), zd.d});
 		for (auto zd : C.f) CC.f.push_back({std::complex<U>(zd.z), zd.d});
 		for (auto z : C.p)  CC.p.push_back(std::complex<U>(z));
-		CC.from_points();
 		return CC;
 	}
 
@@ -181,9 +179,9 @@ namespace vb {
 		os << "Red vertices / poles: " << std::endl;
 		for (unsigned i=0; i<C.f.size(); ++i) os << "| " << C.f[i].d << "\t" << C.f[i].z << std::endl;
 		os << std::endl;
-		os << "lambda := " << C.p[0] << std::endl;
-		os << "P[z_]  := " << C.P << std::endl;
-		os << "Q[z_]  := " << C.Q << std::endl;
+		os << u8"λ     := " << C.p[0] << std::endl;
+		Polynomial<std::complex<T>> P; for (auto zd : C.b) for (unsigned j=0; j<zd.d; ++j) P.add_root(zd.z); os << "P[z_] := " << P << std::endl;
+		Polynomial<std::complex<T>> Q; for (auto zd : C.f) for (unsigned j=0; j<zd.d; ++j) Q.add_root(zd.z); os << "Q[z_] := " << Q << std::endl;
 		return os;
 	}
 
@@ -216,8 +214,8 @@ namespace vb {
 		os << std::endl;
 		os << u8"λ     := " << C.p[0] << std::endl;
 		Polynomial<cpxint> L = guess (C.p[0],T(pow(T(.1),nd))); if (L.degree()>0) os << u8"Λ[z_] := " << L << std::endl;
-		os << "P[z_] := " << C.P << std::endl;
-		os << "Q[z_] := " << C.Q << std::endl;
+		Polynomial<cpx100> P; for (auto zd : C.f) for (unsigned j=0; j<zd.d; ++j) P.add_root(zd.z); os << "P[z_] := " << P << std::endl;
+		Polynomial<cpx100> Q; for (auto zd : C.f) for (unsigned j=0; j<zd.d; ++j) Q.add_root(zd.z); os << "Q[z_] := " << Q << std::endl;
 		return os;
 	}
 

@@ -3,7 +3,6 @@
 #include <vb/Hub.h>
 #include <vb/Hypermap.h>
 #include <vb/Image.h>
-#include <vb/Polynomial.h>
 
 namespace vb {
 	template <typename T> class Constellation0 : public Constellation<T> { public:
@@ -14,12 +13,9 @@ namespace vb {
 		Constellation0 (Hypermap M, Hub H, int n=3);
 		Constellation0 ();
 
-		void	from_points	();     	// compute P and Q, don't touch l
-		cplx	operator() 	(cplx z)	const;
+		cplx	operator()	(cplx z)	const;
 
 		void	draw	(Image & img, bool smooth = true) const;
-
-		Polynomial<cplx>	P,Q;
 
 		void	find 	(T t = T(0));
 		void	belyi	();	// does too many things at once
