@@ -5,22 +5,18 @@
 #include <iomanip>
 
 namespace vb {
-	template <typename T> Constellation0<T>::Constellation0 (Hypermap M, Hub H, int n) {
-		p = { T(1) };
-		Hypermap M2 (M); M2.dessin(); for (int i=0; i<n; ++i) M2.split_edges();
-		Spheroidal S (M2,H); S.pack(); std::cerr << std::endl;
-
-		unsigned N = M.sigma.size(), inf = 0, dinf = 0;
-		for (auto c : M.phi.cycles()) { unsigned i = S.E[c[0]+3*N].src, d = S.V[i].adj.size(); if (d>dinf) { inf=i; dinf=d; } }
-
-		S.linear (1,-S.V[inf].z); S.inversion(); S.linear (-1/S.V[inf].r,0); S.mobiusto0 (S.V[S.E[0].src].z);
-
-		for (auto c : M.sigma.cycles())	{                              	b.push_back( { S.V[S.E[c[0]].src].z,    	c.size() } ); }
-		for (auto c : M.alpha.cycles())	{                              	w.push_back( { S.V[S.E[c[0]+N].src].z,  	c.size() } ); }
-		for (auto c : M.phi.cycles())  	{ if (S.E[c[0]+3*N].src != inf)	f.push_back( { S.V[S.E[c[0]+3*N].src].z,	c.size() } ); }
-
-		make_c_0();
-		// linear (T(1),-b[0].z);
+	template <typename T> Constellation0<T>::Constellation0 (const Hypermap & M, const Hub & H) {
+		Hypermap M2 (M); M2.dessin(); p = { T(1) };
+		do {
+			M2.split_edges(); Spheroidal S (M2,H); S.pack(); std::cerr << std::endl;
+			unsigned N = M.sigma.size(), inf=0, dinf=0;
+			for (auto c : M.phi.cycles()) { unsigned i = S.E[c[0]+3*N].src, d = S.V[i].adj.size(); if (d>dinf) { inf=i; dinf=d; } }
+			S.linear (1,-S.V[inf].z); S.inversion(); S.linear (-1/S.V[inf].r,0); S.mobiusto0 (S.V[S.E[0].src].z);
+			b.clear(); for (auto c : M.sigma.cycles())	{                              	b.push_back( { S.V[S.E[c[0]].src].z,    	c.size() } ); }
+			w.clear(); for (auto c : M.alpha.cycles())	{                              	w.push_back( { S.V[S.E[c[0]+N].src].z,  	c.size() } ); }
+			f.clear(); for (auto c : M.phi.cycles())  	{ if (S.E[c[0]+3*N].src != inf)	f.push_back( { S.V[S.E[c[0]+3*N].src].z,	c.size() } ); }
+			make_c_0();
+		} while (findn() > T(1e-6));
 	}
 
 	template <typename T> Constellation0<T>::Constellation0 () { p = { T(1) }; }

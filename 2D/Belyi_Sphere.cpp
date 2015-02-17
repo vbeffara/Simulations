@@ -55,7 +55,7 @@ int main (int argc, char ** argv) {
 				// int nsub = H['n']; if (!H['c']) { M.dessin(); --nsub; } for (int i=0; i<nsub; ++i) M.split_edges(); M.simplify(1);
 				// Toroidal T (M,H); T.pack();
 				// cout << "     Modulus: tau=" << T.m << endl << endl;
-				Constellation0<double> C {M,H,H['n']}; C.findn(); C.belyi(); cout << endl << C << endl;
+				Constellation0<double> C {M,H}; C.belyi(); cout << endl << C << endl;
 				// T.output_pdf();
 			}
 		}

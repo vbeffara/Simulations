@@ -10,7 +10,7 @@ namespace vb {
 		using Constellation<T>::b; using Constellation<T>::w; using Constellation<T>::f; using Constellation<T>::p;
 		using Constellation<T>::findn; using Constellation<T>::cost;
 
-		Constellation0 (Hypermap M, Hub H, int n=3);
+		Constellation0 (const Hypermap & M, const Hub & H);
 		Constellation0 ();
 
 		cplx	operator()	(cplx z)	const;

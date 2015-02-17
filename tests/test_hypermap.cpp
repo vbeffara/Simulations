@@ -24,17 +24,8 @@ int main (int argc, char ** argv) {
 	}
 	cout << M << endl;
 
-	Constellation0<double> C {M,H,H['n']};
+	Constellation0<double> C {M,H};
 
-	double c = C.findn();
-	cerr << "-n- " << C.cost() << endl;
-	while ((c!=1.234567e89)&&(c>.001)) {
-		C.find(c/2);
-		cerr << "-f- " << C.cost() << endl;
-		c = C.findn();
-		cerr << "-n- " << C.cost() << endl;
-		if (isnan(c)) exit(1);
-	}
 	if (H['v']) { C.belyi(); Image I (800,800,"Test Elliptic"); I.show(); C.draw(I,H['a']); I.pause(); I.hide(); }
 	if (!H['q']) { C.belyi(); cout << endl << C; return 0; }
 
