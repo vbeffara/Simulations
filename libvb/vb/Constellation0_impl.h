@@ -1,7 +1,6 @@
 #pragma once
 #include <vb/Constellation0.h>
 #include <vb/NumberTheory.h>
-#include <vb/Polynomial.h>
 #include <vb/Spheroidal.h>
 #include <iomanip>
 
