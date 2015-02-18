@@ -226,7 +226,9 @@ namespace vb {
 
 		auto f = [&](cplx z) {
 			z = conj(z)*T(2.0/l) + cplx{-1,1}; z = center + scale*z; z = (*this)(z);
-			// z = cplx(2)*z-cplx(1); z = z + z*sqrt(cplx(1)-cplx(1)/(z*z)); return Color(128+127*sin(arg(z)));
+			// z = cplx(4)*z-cplx(2); z *= cplx(1) + sqrt(cplx(1)-cplx(4)/(z*z));
+			// T h = T(.5) + arg (z) / T(2*M_PI); T s = T(1) / sqrt(norm(z));
+			// return HSV(double(h),double(s),double(s));
 			return imag(z)>0 ? Color(200,250,250) : Color(200,200,250);
 		};
 
