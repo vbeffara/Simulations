@@ -225,8 +225,9 @@ namespace vb {
 		for (auto & c : img) c = Color(0);
 
 		auto f = [&](cplx z) {
-			z = conj(z)*T(2.0/l) + cplx{-1,1}; z = center + scale*z;
-			return imag((*this)(z))>0 ? Color(200,250,250) : Color(200,200,250);
+			z = conj(z)*T(2.0/l) + cplx{-1,1}; z = center + scale*z; z = (*this)(z);
+			// z = cplx(2)*z-cplx(1); z = z + z*sqrt(cplx(1)-cplx(1)/(z*z)); return Color(128+127*sin(arg(z)));
+			return imag(z)>0 ? Color(200,250,250) : Color(200,200,250);
 		};
 
 		img.tessel(0,0,img.w()-1,img.h()-1, smooth ? aa<T>(f) : [&](coo c){ return f(cplx(c.x,c.y)); });
