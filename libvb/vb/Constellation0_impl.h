@@ -156,7 +156,7 @@ namespace vb {
 		for (auto zd : C.b) CC.b.push_back({std::complex<U>(zd.z), zd.d});
 		for (auto zd : C.w) CC.w.push_back({std::complex<U>(zd.z), zd.d});
 		for (auto zd : C.f) CC.f.push_back({std::complex<U>(zd.z), zd.d});
-		for (auto z : C.p)  CC.p.push_back(std::complex<U>(z));
+		CC.p.clear(); for (auto z : C.p)  CC.p.push_back(std::complex<U>(z));
 		return CC;
 	}
 
