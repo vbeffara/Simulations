@@ -26,7 +26,7 @@ int main (int argc, char ** argv) {
 
 	if (H['q']) {
 #ifdef HAVE_COMPLEX_GMP
-		Constellation1<gmp100> Cq = cconvert <double,gmp100> (C);
+		Constellation1<gmp100> Cq (C);
 		Cq.findn(); cout << endl << Cq;
 		if (H['w']) { Image I (600,600,"Test Elliptic (GMP)"); I.show(); Cq.draw(I); I.pause(); I.hide(); }
 #else

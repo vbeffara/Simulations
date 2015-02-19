@@ -19,6 +19,10 @@ namespace vb {
 
 	template <typename T> Constellation1<T>::Constellation1 () { p = { cplx(0,1), T(0) }; }
 
+	template <typename T> template <typename U> Constellation1<T>::Constellation1 (const Constellation1<U> & C) : Constellation<T>(C) {
+		d = C.d; from_points();
+	};
+
 	template <typename T> void Constellation1<T>::from_points () {
 		q = q_(p[0]); qt = q_t(p[0]); E = Elliptic<T> { q };
 		cplx sz(0); for (auto zd : b) sz += T(zd.d)*zd.z;
@@ -163,16 +167,6 @@ namespace vb {
 			for (unsigned i=0; i<c.size(); ++i) out(i,j) = dc[i] / eps;
 		}
 		return out;
-	}
-
-	template <typename T, typename U> Constellation1<U> cconvert (Constellation1<T> & C) {
-		Constellation1<U> CC;
-		for (auto zd : C.b) CC.b.push_back({std::complex<U>(zd.z), zd.d});
-		for (auto zd : C.w) CC.w.push_back({std::complex<U>(zd.z), zd.d});
-		for (auto zd : C.f) CC.f.push_back({std::complex<U>(zd.z), zd.d});
-		CC.p.clear(); for (auto z : C.p)  CC.p.push_back(std::complex<U>(z));
-		CC.d = C.d; CC.from_points();
-		return CC;
 	}
 
 	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation1<T> & C) {

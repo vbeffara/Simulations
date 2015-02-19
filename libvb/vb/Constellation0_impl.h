@@ -21,6 +21,8 @@ namespace vb {
 
 	template <typename T> Constellation0<T>::Constellation0 () { p = { T(1) }; }
 
+	template <typename T> template <typename U> Constellation0<T>::Constellation0 (const Constellation0<U> & C) : Constellation<T>(C) {};
+
 	template <typename T> auto Constellation0<T>::operator() (cplx z) const -> cplx {
 		cplx out (p[0]);
 		for (auto zd : b) out *= pow (z-zd.z, zd.d);
@@ -149,15 +151,6 @@ namespace vb {
 			if (!flag) eps /= 4; else eps *= 2;
 		}
 		std::cerr << std::endl;
-	}
-
-	template <typename T, typename U> Constellation0<U> cconvert (Constellation0<T> & C) {
-		Constellation0<U> CC;
-		for (auto zd : C.b) CC.b.push_back({std::complex<U>(zd.z), zd.d});
-		for (auto zd : C.w) CC.w.push_back({std::complex<U>(zd.z), zd.d});
-		for (auto zd : C.f) CC.f.push_back({std::complex<U>(zd.z), zd.d});
-		CC.p.clear(); for (auto z : C.p)  CC.p.push_back(std::complex<U>(z));
-		return CC;
 	}
 
 	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation0<T> & C) {

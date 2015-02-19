@@ -1,4 +1,5 @@
 #pragma once
+
 #include <vb/Constellation.h>
 #include <vb/Hub.h>
 #include <vb/Hypermap.h>
@@ -9,8 +10,9 @@ namespace vb {
 		using Constellation<T>::b; using Constellation<T>::w; using Constellation<T>::f; using Constellation<T>::p;
 		using Constellation<T>::findn; using Constellation<T>::cost;
 
-		Constellation0 (const Hypermap & M, const Hub & H);
-		Constellation0 ();
+		Constellation0                      	();
+		Constellation0                      	(const Hypermap & M, const Hub & H);
+		template <typename U> Constellation0	(const Constellation0<U> & C);
 
 		cplx	operator()	(cplx z)	const;
 
@@ -35,8 +37,6 @@ namespace vb {
 		void        	readcoo	(const Vector<T> & xy);
 		void        	readvec	(const Vector<cplx> & xy);
 	};
-
-	template <typename T, typename U> Constellation0<U> cconvert (Constellation0<T> & C);
 
 	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation0<T> & C);
 }

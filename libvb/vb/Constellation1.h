@@ -10,8 +10,9 @@ namespace vb {
 		using Constellation<T>::b; using Constellation<T>::w; using Constellation<T>::f; using Constellation<T>::p;
 		using Constellation<T>::findn; using Constellation<T>::cost;
 
-		Constellation1 (const Hypermap & M, const Hub & H);
-		Constellation1 ();
+		Constellation1                      	();
+		Constellation1                      	(const Hypermap & M, const Hub & H);
+		template <typename U> Constellation1	(const Constellation1<U> & C);
 
 		void	from_points	();
 		cplx	operator() 	(cplx z)	const;
@@ -44,8 +45,6 @@ namespace vb {
 		Vector<cplx>	vec    	()	const;
 		void        	readvec	(const Vector<cplx> & xy);
 	};
-
-	template <typename T, typename U> Constellation1<U> cconvert (Constellation1<T> & C);
 
 	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation1<T> & C);
 }

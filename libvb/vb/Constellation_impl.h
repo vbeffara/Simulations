@@ -3,6 +3,15 @@
 #include <iomanip>
 
 namespace vb {
+	template <typename T> Constellation<T>::Constellation () {};
+
+	template <typename T> template <typename U> Constellation<T>::Constellation (const Constellation<U> & C) {
+		for (auto zd : C.b) b.push_back({std::complex<T>(zd.z), zd.d});
+		for (auto zd : C.w) w.push_back({std::complex<T>(zd.z), zd.d});
+		for (auto zd : C.f) f.push_back({std::complex<T>(zd.z), zd.d});
+		for (auto z : C.p)  p.push_back(std::complex<T>(z));
+	};
+
 	template <typename T> T Constellation<T>::findn () {
 		Vector<cplx> x = vec();
 		T c = cost(), old_c = c + T(1); auto old_x = x;

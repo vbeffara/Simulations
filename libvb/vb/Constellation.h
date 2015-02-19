@@ -14,6 +14,9 @@ namespace vb {
 		std::vector<Star<T>>	b,w,f;
 		std::vector<cplx>   	p;
 
+		Constellation                      	();
+		template <typename U> Constellation	(const Constellation<U> & C);
+
 		virtual	Vector<cplx>	vec     	()                       	const	=0;
 		virtual	void        	readvec 	(const Vector<cplx> & xy)	     	=0;
 		virtual	Vector<cplx>	vcost   	()                       	const	=0;

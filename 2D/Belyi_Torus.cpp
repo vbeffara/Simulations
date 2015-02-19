@@ -59,7 +59,7 @@ int main (int argc, char ** argv) {
 			if (H['o']) { img.title = H.title; img.label(img.title.c_str()); if (!img.visible()) img.show(); C.draw(img); img.output(); }
 
 			if (H['q']) {
-				Constellation1<gmp100> CC = cconvert<double,gmp100> (C); gmp100 c = CC.findn(); int lc = - int(log10(c));
+				Constellation1<gmp100> CC (C); gmp100 c = CC.findn(); int lc = - int(log10(c));
 				int nd = std::max(10,lc/2-15); gmp100 eps = pow(gmp100(.1),nd);
 				cout << fixed << setprecision(std::min(nd,80));
 				cout << "     Modulus:         " << CC.tau() << endl;
