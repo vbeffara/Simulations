@@ -19,8 +19,6 @@ namespace vb {
 		} while (findn() > T(1e-6));
 	}
 
-	template <typename T> Constellation0<T>::Constellation0 () { p = { T(1) }; }
-
 	template <typename T> template <typename U> Constellation0<T>::Constellation0 (const Constellation0<U> & C) : Constellation<T>(C) {};
 
 	template <typename T> auto Constellation0<T>::operator() (cplx z) const -> cplx {

@@ -10,7 +10,6 @@ namespace vb {
 		using Constellation<T>::b; using Constellation<T>::w; using Constellation<T>::f; using Constellation<T>::p;
 		using Constellation<T>::findn; using Constellation<T>::cost;
 
-		Constellation1                      	();
 		Constellation1                      	(const Hypermap & M, const Hub & H);
 		template <typename U> Constellation1	(const Constellation1<U> & C);
 
