@@ -3,7 +3,6 @@
 #include <vb/Elliptic.h>
 #include <vb/Hub.h>
 #include <vb/Hypermap.h>
-#include <vb/Image.h>
 
 namespace vb {
 	template <typename T> class Constellation1 : public Constellation<T> { public:
@@ -17,12 +16,12 @@ namespace vb {
 		void	from_points	();
 		cplx	operator() 	(cplx z)	const;
 
-		void	draw	(Image & img, bool smooth = true) const;
-
 		cplx       	q = q_(cplx(0,1)), qt = q_t(cplx(0,1));
 		Elliptic<T>	E { q };
 
 		cplx tau () const { return p[0]; }
+
+		std::pair<cplx,cplx>	bounds	()	const;
 
 		int	dx,dy,d;
 

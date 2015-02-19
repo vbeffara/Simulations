@@ -214,25 +214,11 @@ namespace vb {
 		return os;
 	}
 
-	template <typename T> void Constellation0<T>::draw (Image & img, bool smooth) const {
+	template <typename T> auto Constellation0<T>::bounds () const -> std::pair<cplx,cplx> {
 		T xmin(0), xmax(0), ymin(0), ymax(0);
 		for (auto z : b) { xmin=std::min(xmin,real(z.z)); xmax=std::max(xmax,real(z.z)); ymin=std::min(ymin,imag(z.z)); ymax=std::max(ymax,imag(z.z)); }
 		for (auto z : f) { xmin=std::min(xmin,real(z.z)); xmax=std::max(xmax,real(z.z)); ymin=std::min(ymin,imag(z.z)); ymax=std::max(ymax,imag(z.z)); }
 		for (auto z : w) { xmin=std::min(xmin,real(z.z)); xmax=std::max(xmax,real(z.z)); ymin=std::min(ymin,imag(z.z)); ymax=std::max(ymax,imag(z.z)); }
-		cplx center { (xmin+xmax)/T(2), (ymin+ymax)/T(2) }; T scale = T(.75) * std::max(xmax-xmin,ymax-ymin);
-
-		int l = img.w(); img.start = img.now();
-		for (auto & c : img) c = Color(0);
-
-		auto f = [&](cplx z) {
-			z = conj(z)*T(2.0/l) + cplx{-1,1}; z = center + scale*z; z = (*this)(z);
-			// z = cplx(4)*z-cplx(2); z *= cplx(1) + sqrt(cplx(1)-cplx(4)/(z*z));
-			// T h = T(.5) + arg (z) / T(2*M_PI); T s = T(1) / sqrt(norm(z));
-			// return HSV(double(h),double(s),double(s));
-			return imag(z)>0 ? Color(200,250,250) : Color(200,200,250);
-		};
-
-		img.tessel(0,0,img.w()-1,img.h()-1, smooth ? aa<T>(f) : [&](coo c){ return f(cplx(c.x,c.y)); });
-		img.update();
-	};
+		return { {xmin,ymin}, {xmax,ymax} };
+	}
 }

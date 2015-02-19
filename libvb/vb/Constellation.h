@@ -1,4 +1,5 @@
 #pragma once
+#include <vb/Image.h>
 #include <vb/LinearAlgebra.h>
 
 namespace vb {
@@ -18,7 +19,11 @@ namespace vb {
 		virtual	Vector<cplx>	vcost   	()                       	const	=0;
 		virtual	Matrix<cplx>	jacvcost	()                       	const	=0;
 
-		virtual cplx reduce (const cplx & z) const { return z; }
+		virtual	cplx                	operator()	(cplx z)        	const	=0;
+		virtual	cplx                	reduce    	(const cplx & z)	const	{ return z; }
+		virtual	std::pair<cplx,cplx>	bounds    	()              	const	=0;
+
+		void	draw	(Image & img, bool smooth = true) const;
 
 		T	cost 	()	const;
 		T	findn	();

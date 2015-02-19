@@ -2,7 +2,6 @@
 #include <vb/Constellation.h>
 #include <vb/Hub.h>
 #include <vb/Hypermap.h>
-#include <vb/Image.h>
 
 namespace vb {
 	template <typename T> class Constellation0 : public Constellation<T> { public:
@@ -15,10 +14,10 @@ namespace vb {
 
 		cplx	operator()	(cplx z)	const;
 
-		void	draw	(Image & img, bool smooth = true) const;
-
 		void	find 	(T t = T(0));
 		void	belyi	();	// does too many things at once
+
+		std::pair<cplx,cplx>	bounds	()	const;
 
 	private:
 		cplx	logder   	(cplx z, int k=0)          	const;

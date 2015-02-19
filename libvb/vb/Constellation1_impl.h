@@ -235,21 +235,8 @@ namespace vb {
 		return os;
 	}
 
-	template <typename T> void Constellation1<T>::draw (Image & img, bool smooth) const {
+	template <typename T> auto Constellation1<T>::bounds () const -> std::pair<cplx,cplx> {
 		T xmin = std::min(T(0),real(tau())), xmax = std::max(T(1),real(T(1)+tau())), ymin = T(0), ymax = imag(tau());
-		cplx center { (xmin+xmax)/T(2), (ymin+ymax)/T(2) }; T scale = T(.75) * std::max(xmax-xmin,ymax-ymin);
-
-		int l = img.w(); img.start = img.now();
-		for (auto & c : img) c = Color(0);
-
-		auto f = [&](cplx z) {
-			z = conj(z)*T(2.0/l) + cplx{-1,1}; z = center + scale*z;
-			if ((T(0)<=imag(z)) && (imag(z)<=imag(tau())) && (real(z) >= real(tau())*imag(z)/imag(tau())) && (real(z) <= T(1)+real(tau())*imag(z)/imag(tau())))
-				return imag((*this)(z))>0 ? Color(150,200,200) : Color(150,150,200);
-			return imag((*this)(z))>0 ? Color(200,250,250) : Color(200,200,250);
-		};
-
-		img.tessel(0,0,img.w()-1,img.h()-1, smooth ? aa<T>(f) : [&](coo c){ return f(cplx(c.x,c.y)); });
-		img.update();
-	};
+		return { {xmin,ymin}, {xmax,ymax} };
+	}
 }
