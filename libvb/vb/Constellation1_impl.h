@@ -68,28 +68,30 @@ namespace vb {
 	}
 
 	template <typename T> auto Constellation1<T>::logder (cplx z, int k) const -> cplx {
-		cplx out (logderp (z-b[0].z+T(dx)+tau()*T(dy), k));
-		{ int i=0; for (auto zd : b) out += logderp (z-zd.z, k) * T(zd.d - (i++ == 0?1:0)); }
+		cplx out (logderp (z-b[0].z+T(dx)+tau()*T(dy), k) - logderp (z-b[0].z, k));
+		for (auto zd : b) out += logderp (z-zd.z, k) * T(zd.d);
 		for (auto zd : f) out -= logderp (z-zd.z, k) * T(zd.d);
 		if (k==0) { out += p[1]; out -= cplx(0,T(2)*pi_<T>()) * T(round(real(out/cplx(0,T(2)*pi_<T>())))); }
 		return out;
 	}
 
 	template <typename T> auto Constellation1<T>::logder_z (cplx z, int k) const -> cplx {
-		cplx out (logderp_z (z-b[0].z+T(dx)+tau()*T(dy), k));
-		{ int i=0; for (auto zd : b) out += logderp_z (z-zd.z, k) * T(zd.d - (i++ == 0?1:0)); }
+		cplx out (logderp_z (z-b[0].z+T(dx)+tau()*T(dy), k) - logderp_z (z-b[0].z, k));
+		for (auto zd : b) out += logderp_z (z-zd.z, k) * T(zd.d);
 		for (auto zd : f) out -= logderp_z (z-zd.z, k) * T(zd.d);
 		return out;
 	}
 
 	template <typename T> auto Constellation1<T>::logder_t (cplx z, int k) const -> cplx {
-		cplx out (logderp_t (z-b[0].z+T(dx)+tau()*T(dy), k) + T(dy) * logderp_z (z-b[0].z+T(dx)+tau()*T(dy), k));
-		{ int i=0; for (auto zd : b) out += logderp_t (z-zd.z, k) * T(zd.d - (i++ == 0?1:0)); }
+		cplx out (logderp_t (z-b[0].z+T(dx)+tau()*T(dy), k) + T(dy) * logderp_z (z-b[0].z+T(dx)+tau()*T(dy), k) - logderp_t (z-b[0].z, k));
+		for (auto zd : b) out += logderp_t (z-zd.z, k) * T(zd.d);
 		for (auto zd : f) out -= logderp_t (z-zd.z, k) * T(zd.d);
 		return out;
 	}
 
-	template <typename T> auto Constellation1<T>::operator() (cplx z) const -> cplx { return exp(logder(z,0)); }
+	template <typename T> auto Constellation1<T>::operator() (cplx z) const -> cplx {
+		return exp(logder(z,0));
+	}
 
 	template <typename T> auto Constellation1<T>::reduce (cplx z) const -> cplx {
 		while (imag(z) < - imag(tau())/T(2))                     	z += tau();
@@ -175,6 +177,7 @@ namespace vb {
 		os << "Invariant g2 = " << C.E.g2() << std::endl;
 		os << "Invariant g3 = " << C.E.g3() << std::endl;
 		os << "log(lambda)  = " << C.p[1] << std::endl;
+		os << "Corr. shift  = " << C.dx << " " << C.dy << std::endl;
 		os << std::endl;
 		os << "Keeping " << nd << " digits." << std::endl;
 		os << std::endl;
