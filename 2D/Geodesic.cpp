@@ -88,11 +88,11 @@ class QG : public Image { public:
 			PB.set (t);
 			while (I.at(Q.top().z).d < Q.top().d) Q.pop();
 			Info im = Q.top(); Q.pop();
-			for (int k=0; k<4; ++k) {
+			for (int k=0; k<8; ++k) {
 				coo nz = im.z + dz[k];
 				if (!(contains(nz))) continue;
 				Info & ni = I.at(nz);
-				double nd = im.d + ni.f;
+				double nd = im.d + (k<4?.5:sqrt(.5)) * (im.f+ni.f);
 				if (ni.d > nd) { ni.d = nd; ni.next = im.z; Q.push (ni); }
 			}
 		}
