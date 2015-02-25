@@ -10,6 +10,7 @@ namespace vb {
 		for (auto zd : C.w) w.push_back({std::complex<T>(zd.z), zd.d});
 		for (auto zd : C.f) f.push_back({std::complex<T>(zd.z), zd.d});
 		for (auto z : C.p)  p.push_back(std::complex<T>(z));
+		dim = b.size() + w.size() + f.size() + p.size();
 	};
 
 	template <typename T> T Constellation<T>::findn () {

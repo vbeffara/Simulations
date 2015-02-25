@@ -8,7 +8,7 @@ namespace vb {
 	template <typename T> class Constellation1 : public Constellation<T> { public:
 		using cplx = std::complex<T>;
 		using Constellation<T>::b; using Constellation<T>::w; using Constellation<T>::f; using Constellation<T>::p;
-		using Constellation<T>::findn; using Constellation<T>::cost;
+		using Constellation<T>::findn; using Constellation<T>::cost; using Constellation<T>::dim;
 
 		Constellation1                      	(const Hypermap & M, const Hub & H);
 		template <typename U> Constellation1	(const Constellation1<U> & C);
@@ -22,7 +22,7 @@ namespace vb {
 
 		std::pair<cplx,cplx>	bounds	()	const;
 
-		int	dx,dy,d;
+		int	dx,dy;
 
 	private:
 		Vector<cplx>	vcost   	()	const;

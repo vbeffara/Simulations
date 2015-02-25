@@ -9,16 +9,17 @@ namespace vb {
 		Hypermap M2 (M); M2.dessin(); p = { cplx(0,1), T(0) };
 		do {
 			M2.split_edges(); Toroidal S (M2,H); S.pack(); S.output_pdf();
-			unsigned N = M.sigma.size(); d=0;
-			b.clear(); for (auto c : M.sigma.cycles())	{ b.push_back( { S.V[S.E[c[0]].src].z,    	c.size() } ); d += c.size(); }
-			w.clear(); for (auto c : M.alpha.cycles())	{ w.push_back( { S.V[S.E[c[0]+N].src].z,  	c.size() } ); }
-			f.clear(); for (auto c : M.phi.cycles())  	{ f.push_back( { S.V[S.E[c[0]+3*N].src].z,	c.size() } ); }
+			unsigned N = M.sigma.size();
+			b.clear(); for (auto c : M.sigma.cycles())	b.push_back( { S.V[S.E[c[0]].src].z,    	c.size() } );
+			w.clear(); for (auto c : M.alpha.cycles())	w.push_back( { S.V[S.E[c[0]+N].src].z,  	c.size() } );
+			f.clear(); for (auto c : M.phi.cycles())  	f.push_back( { S.V[S.E[c[0]+3*N].src].z,	c.size() } );
+			dim = b.size() + w.size() + f.size() + p.size();
 			p[0] = S.m; shift(-b[0].z); normalize();
 		} while (findn() > T(1e-6));
 	}
 
 	template <typename T> template <typename U> Constellation1<T>::Constellation1 (const Constellation1<U> & C) : Constellation<T>(C) {
-		d = C.d; from_points();
+		from_points();
 	};
 
 	template <typename T> void Constellation1<T>::from_points () {
@@ -114,7 +115,7 @@ namespace vb {
 	}
 
 	template <typename T> auto Constellation1<T>::vec () const -> Vector<cplx> {
-		Vector<cplx> bw (b.size()+w.size()+f.size()+p.size()); unsigned i=0;
+		Vector<cplx> bw (dim); unsigned i=0;
 		for (auto zd : b) { bw[i++] = zd.z; }
 		for (auto zd : w) { bw[i++] = zd.z; }
 		for (auto zd : f) { bw[i++] = zd.z; }
@@ -123,7 +124,7 @@ namespace vb {
 	}
 
 	template <typename T> auto Constellation1<T>::vcost() const -> Vector<cplx> {
-		Vector<cplx> out (d+2); int k=0;
+		Vector<cplx> out (dim); int k=0;
 		for (auto zd : w) for (unsigned j=0; j<zd.d; ++j) out[k++] = logder(zd.z,j);
 		cplx sz (T(-dx)+cplx(T(-dy)*tau()));
 		for (auto zd : b) sz += T(zd.d) * zd.z;
@@ -133,7 +134,7 @@ namespace vb {
 	}
 
 	template <typename T> auto Constellation1<T>::jacvcost () const -> Matrix<cplx> { // m_ij = \partial_j(f_i)
-		Matrix<cplx> out(d+2,d+2,cplx(0));
+		Matrix<cplx> out(dim,dim,cplx(0));
 		unsigned i=0,j=0; for (unsigned ii=0; ii<w.size(); ++ii) for (unsigned id=0; id<w[ii].d; ++id) { j=0; // f_i is logder(w[ii],id)
 			out(i,j) = - logderp_z (w[ii].z-b[0].z+T(dx)+tau()*T(dy), id);
 			for (unsigned jj=0; jj<b.size(); ++jj)	out(i,j++) -= T(b[jj].d - (jj==0?1:0)) * logderp_z (w[ii].z-b[jj].z,id);
@@ -141,28 +142,28 @@ namespace vb {
 			for (unsigned jj=0; jj<f.size(); ++jj)	out(i,j++) = T(f[jj].d) * logderp_z (w[ii].z-f[jj].z, id);
 			out(i,j++) = logder_t (w[ii].z,id);
 			out(i,j++) = cplx(id==0 ? 1 : 0);
-			assert (j==unsigned(d+2));
+			assert (j==dim);
 		++i; } { j=0; // f_i is sum(z*dz) recentered
 			for (unsigned jj=0; jj<b.size(); ++jj)	out(i,j++) = T(b[jj].d);
 			for (unsigned jj=0; jj<w.size(); ++jj)	out(i,j++) = 0;
 			for (unsigned jj=0; jj<f.size(); ++jj)	out(i,j++) = -T(f[jj].d);
 			out(i,j++) = - T(dy);
 			out(i,j++) = cplx(0);
-			assert (j==unsigned(d+2));
+			assert (j==dim);
 		++i; } { j=0; // f_i is -sum(f*df) recentered
 			for (unsigned jj=0; jj<b.size(); ++jj)	out(i,j++) = jj==0 ? T(1) : T(0);
 			for (unsigned jj=0; jj<w.size(); ++jj)	out(i,j++) = 0;
 			for (unsigned jj=0; jj<f.size(); ++jj)	out(i,j++) = 0;
 			out(i,j++) = cplx(0);
 			out(i,j++) = cplx(0);
-			assert (j==unsigned(d+2));
+			assert (j==dim);
 		++i; }
-		assert (i==unsigned(d+2));
+		assert (i==dim);
 		return out;
 	}
 
 	template <typename T> auto Constellation1<T>::jacnum  () -> Matrix<cplx> {
-		Vector<cplx> x = vec(), c = vcost(); Matrix<cplx> out (d+2,d+2);
+		Vector<cplx> x = vec(), c = vcost(); Matrix<cplx> out (dim,dim);
 		T eps (.00001);
 		for (unsigned j=0; j<x.size(); ++j) {
 			x[j] += eps; readvec(x); Vector<cplx> dc = vcost() - c; x[j] -= eps;

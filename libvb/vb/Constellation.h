@@ -14,6 +14,8 @@ namespace vb {
 		std::vector<Star<T>>	b,w,f;
 		std::vector<cplx>   	p;
 
+		unsigned dim {0};
+
 		Constellation                      	();
 		template <typename U> Constellation	(const Constellation<U> & C);
 
