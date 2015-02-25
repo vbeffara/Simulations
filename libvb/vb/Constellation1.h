@@ -16,8 +16,7 @@ namespace vb {
 		void	from_points	();
 		cplx	operator() 	(cplx z)	const;
 
-		cplx       	q = q_(cplx(0,1)), qt = q_t(cplx(0,1));
-		Elliptic<T>	E { q };
+		Elliptic<T>	E { q_(cplx(0,1)) };
 
 		cplx tau () const { return p[0]; }
 
@@ -33,6 +32,7 @@ namespace vb {
 		cplx	reduce   	(cplx z)	const;
 		cplx	logderp  	(cplx z, int k) const;
 		cplx	logderp_z	(cplx z, int k) const;
+		cplx	logderp_q	(cplx z, int k) const;
 		cplx	logderp_t	(cplx z, int k) const;
 		cplx	logder   	(cplx z, int k)	const;
 		cplx	logder_z 	(cplx z, int k)	const;

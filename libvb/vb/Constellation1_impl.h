@@ -22,10 +22,9 @@ namespace vb {
 	};
 
 	template <typename T> void Constellation1<T>::from_points () {
-		q = q_(p[0]); qt = q_t(p[0]); E = Elliptic<T> { q };
-		cplx sz(0); for (auto zd : b) sz += T(zd.d)*zd.z;
-		cplx sp(0); for (auto zd : f) sp += T(zd.d)*zd.z;
-		dy = round(double(T(imag(sz-sp)/imag(p[0])))); dx = round(double(T(real(sz-sp-T(dy)*p[0]))));
+		E = Elliptic<T> { q_(p[0]) };
+		cplx szp(0); for (auto zd : b) szp += T(zd.d)*zd.z; for (auto zd : f) szp -= T(zd.d)*zd.z;
+		dy = round(double(T(imag(szp)/imag(p[0])))); dx = round(double(T(real(szp-T(dy)*p[0]))));
 		for (auto & zd : f) {
 			int ddx = round(double(dx)/zd.d); if (ddx != 0) { zd.z += T(ddx); dx -= int(zd.d)*ddx; }
 			int ddy = round(double(dy)/zd.d); if (ddy != 0) { zd.z += T(ddy)*p[0]; dy -= int(zd.d)*ddy; }
@@ -60,11 +59,15 @@ namespace vb {
 		assert (!"Derivatives of higher order not implemented!");
 	}
 
-	template <typename T> auto Constellation1<T>::logderp_t (cplx z, int k) const -> cplx {
-		if (k==0) return qt * E.sigma_q(z) / E.sigma(z);
-		if (k==1) return qt * E.zeta_q(z);
-		if (k==2) return qt * E.wp_q(z);
+	template <typename T> auto Constellation1<T>::logderp_q (cplx z, int k) const -> cplx {
+		if (k==0) return E.sigma_q(z) / E.sigma(z);
+		if (k==1) return E.zeta_q(z);
+		if (k==2) return E.wp_q(z);
 		assert (!"Derivatives of higher order not implemented!");
+	}
+
+	template <typename T> auto Constellation1<T>::logderp_t (cplx z, int k) const -> cplx {
+		return std::complex<T>(0,pi_<T>()) * E.q * logderp_q(z,k);
 	}
 
 	template <typename T> auto Constellation1<T>::logder (cplx z, int k) const -> cplx {
@@ -102,12 +105,11 @@ namespace vb {
 	}
 
 	template <typename T> void Constellation1<T>::readvec (const Vector<cplx> & xy) {
-		if (imag(xy[d])<0) return;
 		unsigned i=0;
 		for (auto & zd : b) zd.z = xy[i++];
 		for (auto & zd : w) zd.z = xy[i++];
 		for (auto & zd : f) zd.z = xy[i++];
-		p[0] = xy[i++]; p[1] = xy[i++];
+		for (auto & z  : p) z    = xy[i++];
 		from_points();
 	}
 
