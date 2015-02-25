@@ -8,21 +8,21 @@
 
 using namespace vb; using namespace std;
 
-class Info { 
-	public: 
+class Info {
+	public:
 		Info (coo _z, coo _n, double _d, double _f) : z(_z), next(_n), d(_d), f(_f) {}
 		bool operator< (const Info &o) const { return d > o.d; }
 
-		coo z,next; 
+		coo z,next;
 		double d,f;
 	};
 
-class QG : public Image { public: 
+class QG : public Image { public:
 	QG (Hub & H) : Image (1<<int(H['n']), 1<<int(H['n']), H.title), I(w(),h(),Info(0,0,0,0)), g(H['g']), n(H['n']) {
 		if     	(H['w'] == "dyadic") 	fill_dyadic	(H['z']);
 		else if	(H['w'] == "boolean")	fill_boolean (H['z']);
 		else if	(H['w'] == "white")  	fill_white ();
-		else if	(H['w'] == "free")   	fill_free ();
+		else if	(H['w'] == "free")   	fill_free (H['z']);
 		else   	                     	cerr << "Noise type " << H['w'] << " unknown, no noise for you!" << endl;
 
 		minf = maxf = I.at(0).f; for (auto & u : I) { minf = min (minf,u.f); maxf = max (maxf,u.f); }
@@ -58,18 +58,19 @@ class QG : public Image { public:
 
 	void fill_white () { for (auto & u : I) u.f = prng.gaussian() * sqrt((double)n); }
 
-	void fill_free () {
+	void fill_free (int n0 = 0) {
 		cpx *in = (cpx*) fftw_alloc_complex(W*H), *out = (cpx*) fftw_alloc_complex(W*H);
 		fftw_plan p = fftw_plan_dft_2d (W, H, (fftw_complex*) in, (fftw_complex*) out, FFTW_FORWARD, FFTW_ESTIMATE);
 
 		vector<double> sinarrayi(W), sinarrayj(H);
 		for (int i=0; i<W; ++i) sinarrayi[i] = sin(M_PI * i/W);
 		for (int j=0; j<H; ++j) sinarrayj[j] = sin(M_PI * j/H);
-		
+
 		for (int j=0; j<H; ++j) for (int i=0; i<W; ++i) {
-			if ((i==0)&&(j==0)) break;
+			if ((i==0)&&(j==0)) continue;
 			double norm = sqrt (W*H*(sinarrayi[i]*sinarrayi[i] + sinarrayj[j]*sinarrayj[j]));
 			in[i+W*j] = cpx (prng.gaussian(),prng.gaussian()) * sqrt(M_PI/2) / norm;
+			if (norm > sqrt(W*H) * (1-n0/100.0)) in[i+W*j]=0;
 		}
 		in[0] = cpx (0,0);
 
