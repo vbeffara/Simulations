@@ -74,7 +74,7 @@ namespace vb {
 	}
 
 	template <typename T> auto Constellation0<T>::logder (cplx z, int k) const -> cplx {
-		if (k==0) return T(10)*log((*this)(z));
+		if (k==0) return log((*this)(z));
 		cplx sum (0);
 		for (auto zd : b) sum += cplx(zd.d) / pow (z-zd.z, k);
 		for (auto zd : f) sum -= cplx(zd.d) / pow (z-zd.z, k);
@@ -106,12 +106,12 @@ namespace vb {
 	template <typename T> auto Constellation0<T>::jacvcost () const -> Matrix<cplx> { // m_ij = \partial_j(f_i)
 		Matrix<cplx> out(dim,dim);
 		unsigned i=0,j=0; for (unsigned ii=0; ii<w.size(); ++ii) for (unsigned id=0; id<w[ii].d; ++id) { j=0;
-			for (unsigned jj=0; jj<b.size(); ++jj)	if (id==0)     	out(i,j++) = T(- T(10*b[jj].d)) / (w[ii].z-b[jj].z);
+			for (unsigned jj=0; jj<b.size(); ++jj)	if (id==0)     	out(i,j++) = T(- T(b[jj].d)) / (w[ii].z-b[jj].z);
 			                                      	else           	out(i,j++) = T(id*b[jj].d) / pow(w[ii].z-b[jj].z,cplx(id+1));
 			for (unsigned jj=0; jj<w.size(); ++jj)	if (jj!=ii)    	out(i,j++) = T(0);
-			                                      	else if (id==0)	out(i,j++) = T(10) * logder(w[ii].z,1);
+			                                      	else if (id==0)	out(i,j++) = logder(w[ii].z,1);
 			                                      	else           	out(i,j++) = T(- T(id)) * logder(w[ii].z,id+1);
-			for (unsigned jj=0; jj<f.size(); ++jj)	if (id==0)     	out(i,j++) = T(10*f[jj].d) / (w[ii].z-f[jj].z);
+			for (unsigned jj=0; jj<f.size(); ++jj)	if (id==0)     	out(i,j++) = T(f[jj].d) / (w[ii].z-f[jj].z);
 			                                      	else           	out(i,j++) = T(- T(id*f[jj].d)) / pow(w[ii].z-f[jj].z,cplx(id+1));
 			++i;
 		}
