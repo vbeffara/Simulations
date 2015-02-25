@@ -8,7 +8,7 @@ namespace vb {
 	template <typename T> class Constellation0 : public Constellation<T> { public:
 		using cplx = std::complex<T>;
 		using Constellation<T>::b; using Constellation<T>::w; using Constellation<T>::f; using Constellation<T>::p;
-		using Constellation<T>::findn; using Constellation<T>::cost;
+		using Constellation<T>::findn; using Constellation<T>::cost; using Constellation<T>::dim;
 
 		Constellation0                      	(const Hypermap & M, const Hub & H);
 		template <typename U> Constellation0	(const Constellation0<U> & C);

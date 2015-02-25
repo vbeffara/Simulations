@@ -15,11 +15,12 @@ namespace vb {
 			b.clear(); for (auto c : M.sigma.cycles())	{                              	b.push_back( { S.V[S.E[c[0]].src].z,    	c.size() } ); }
 			w.clear(); for (auto c : M.alpha.cycles())	{                              	w.push_back( { S.V[S.E[c[0]+N].src].z,  	c.size() } ); }
 			f.clear(); for (auto c : M.phi.cycles())  	{ if (S.E[c[0]+3*N].src != inf)	f.push_back( { S.V[S.E[c[0]+3*N].src].z,	c.size() } ); }
+			dim = b.size() + w.size() + f.size();
 			make_c_0();
 		} while (findn() > T(1e-6));
 	}
 
-	template <typename T> template <typename U> Constellation0<T>::Constellation0 (const Constellation0<U> & C) : Constellation<T>(C) {};
+	template <typename T> template <typename U> Constellation0<T>::Constellation0 (const Constellation0<U> & C) : Constellation<T>(C) { dim--; };
 
 	template <typename T> auto Constellation0<T>::operator() (cplx z) const -> cplx {
 		cplx out (p[0]);
@@ -81,14 +82,14 @@ namespace vb {
 	}
 
 	template <typename T> void Constellation0<T>::readvec (const Vector<cplx> & xy) {
-		unsigned n1 = b.size(), n2 = w.size(), n3 = f.size();
-		for (unsigned i=0; i<n1; ++i) b[i].z = xy[i];
-		for (unsigned i=0; i<n2; ++i) w[i].z = xy[n1+i];
-		for (unsigned i=0; i<n3; ++i) f[i].z = xy[n1+n2+i];
+		unsigned i=0;
+		for (auto & zd : b) zd.z = xy[i++];
+		for (auto & zd : w) zd.z = xy[i++];
+		for (auto & zd : f) zd.z = xy[i++];
 	}
 
 	template <typename T> auto Constellation0<T>::vec () const -> Vector<cplx> {
-		Vector<cplx> bw (b.size()+w.size()+f.size()); unsigned i=0;
+		Vector<cplx> bw (dim); unsigned i=0;
 		for (auto zd : b) { bw[i++] = zd.z; }
 		for (auto zd : w) { bw[i++] = zd.z; }
 		for (auto zd : f) { bw[i++] = zd.z; }
@@ -96,16 +97,14 @@ namespace vb {
 	}
 
 	template <typename T> auto Constellation0<T>::vcost() const -> Vector<cplx> {
-		int deg=0; for (auto zd : b) deg += zd.d;
-		Vector<cplx> out (deg+1); int k=0;
+		Vector<cplx> out (dim); int k=0;
 		for (auto zd : w) for (unsigned j=0; j<zd.d; ++j) out[k++] = logder(zd.z,j);
 		cplx sb(0); for (auto zd : b) sb += T(zd.d)*zd.z; out[k++] = sb;
 		return out;
 	}
 
 	template <typename T> auto Constellation0<T>::jacvcost () const -> Matrix<cplx> { // m_ij = \partial_j(f_i)
-		int deg=0; for (auto zd : b) deg += zd.d;
-		Matrix<cplx> out(deg+1,deg+1);
+		Matrix<cplx> out(dim,dim);
 		unsigned i=0,j=0; for (unsigned ii=0; ii<w.size(); ++ii) for (unsigned id=0; id<w[ii].d; ++id) { j=0;
 			for (unsigned jj=0; jj<b.size(); ++jj)	if (id==0)     	out(i,j++) = T(- T(10*b[jj].d)) / (w[ii].z-b[jj].z);
 			                                      	else           	out(i,j++) = T(id*b[jj].d) / pow(w[ii].z-b[jj].z,cplx(id+1));
