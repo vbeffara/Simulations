@@ -15,24 +15,34 @@ namespace vb {
 
 		cplx	operator()	(cplx z)	const;
 
-		void	belyi	();	// does too many things at once
-
 		std::pair<cplx,cplx>	bounds	()	const;
 
+		void	belyi	();	// does too many things at once
+
+
+
+
 	private:
+		Vector<cplx>	vec    	()	const;
+		void        	readvec	(const Vector<cplx> & xy);
+
+		Vector<cplx>	vcost   	()	const;
+		Matrix<cplx>	jacvcost	()	const;
+
+
 		cplx	logder   	(cplx z, int k=0)          	const;
 		void	linear   	(cplx u, cplx v = cplx(0));	// move the points, recompute P and Q, don't touch l
 		void	normalize	();                        	// choose l to make ones ones
 		void	make_l_1 	();                        	// rescale to make l equal to 1
 		void	make_c_0 	();                        	// shift everybody to make sum(black)=0
 		void	make_p_1 	();                        	// try to have reasonable scaling
-
-		Vector<cplx>	vcost   	()	const;
-		Matrix<cplx>	jacvcost	()	const;
-
-		Vector<cplx>	vec    	()	const;
-		void        	readvec	(const Vector<cplx> & xy);
 	};
+
+
+
+
+
+
 
 	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation0<T> & C);
 }

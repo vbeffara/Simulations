@@ -13,18 +13,19 @@ namespace vb {
 		Constellation1                      	(const Hypermap & M, const Hub & H);
 		template <typename U> Constellation1	(const Constellation1<U> & C);
 
-		void	from_points	();
-		cplx	operator() 	(cplx z)	const;
-
-		Elliptic<T>	E { q_(cplx(0,1)) };
-
-		cplx tau () const { return p[0]; }
+		cplx	operator()	(cplx z)	const;
 
 		std::pair<cplx,cplx>	bounds	()	const;
 
-		int	dx,dy;
+		cplx tau () const { return p[0]; }
+
+		int        	dx,dy;
+		Elliptic<T>	E { q_(cplx(0,1)) };
 
 	private:
+		Vector<cplx>	vec    	()	const;
+		void        	readvec	(const Vector<cplx> & xy);
+
 		Vector<cplx>	vcost   	()	const;
 		Matrix<cplx>	jacvcost	()	const;
 		Matrix<cplx>	jacnum  	();
@@ -38,11 +39,9 @@ namespace vb {
 		cplx	logder_z 	(cplx z, int k)	const;
 		cplx	logder_t 	(cplx z, int k)	const;
 
-		void	normalize	();
-		void	shift    	(cplx z);
-
-		Vector<cplx>	vec    	()	const;
-		void        	readvec	(const Vector<cplx> & xy);
+		void	from_points	();
+		void	normalize  	();
+		void	shift      	(cplx z);
 	};
 
 	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation1<T> & C);
