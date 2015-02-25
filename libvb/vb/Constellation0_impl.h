@@ -80,13 +80,6 @@ namespace vb {
 		return sum;
 	}
 
-	template <typename T> void Constellation0<T>::readcoo (const Vector<T> & xy) {
-		unsigned n1 = b.size(), n2 = w.size(), n3 = f.size();
-		for (unsigned i=0; i<n1; ++i) b[i].z = cplx (xy[2*i],xy[2*i+1]);
-		for (unsigned i=0; i<n2; ++i) w[i].z = cplx (xy[2*n1+2*i],xy[2*n1+2*i+1]);
-		for (unsigned i=0; i<n3; ++i) f[i].z = cplx (xy[2*n1+2*n2+2*i],xy[2*n1+2*n2+2*i+1]);
-	}
-
 	template <typename T> void Constellation0<T>::readvec (const Vector<cplx> & xy) {
 		unsigned n1 = b.size(), n2 = w.size(), n3 = f.size();
 		for (unsigned i=0; i<n1; ++i) b[i].z = xy[i];
@@ -102,20 +95,11 @@ namespace vb {
 		return bw;
 	}
 
-	template <typename T> Vector<T> Constellation0<T>::coovec (const std::vector<Star<T>> & b, const std::vector<Star<T>> & w, const std::vector<Star<T>> & f) const {
-		Vector<T> bw (2*(b.size()+w.size()+f.size())); unsigned i=0;
-		for (auto z : b) { bw[i++] = (real(z.z)); bw[i++] = (imag(z.z)); }
-		for (auto z : w) { bw[i++] = (real(z.z)); bw[i++] = (imag(z.z)); }
-		for (auto z : f) { bw[i++] = (real(z.z)); bw[i++] = (imag(z.z)); }
-		return bw;
-	}
-
 	template <typename T> auto Constellation0<T>::vcost() const -> Vector<cplx> {
 		int deg=0; for (auto zd : b) deg += zd.d;
 		Vector<cplx> out (deg+1); int k=0;
 		for (auto zd : w) for (unsigned j=0; j<zd.d; ++j) out[k++] = logder(zd.z,j);
 		cplx sb(0); for (auto zd : b) sb += T(zd.d)*zd.z; out[k++] = sb;
-		// cplx sb(0); sb += b[0].z; out[k++] = sb;
 		return out;
 	}
 
@@ -133,22 +117,7 @@ namespace vb {
 			++i;
 		}
 		j=0; for (unsigned jj=0; jj<b.size(); ++jj) out(i,j++) = T(b[jj].d); while (j<out.size2()) out(i,j++) = T(0); ++i;
-		// j=0; for (unsigned jj=0; jj<b.size(); ++jj) out(i,j++) = (jj==0 ? T(1) : T(0)); while (j<out.size2()) out(i,j++) = T(0); ++i;
 		return out;
-	}
-
-	template <typename T> void Constellation0<T>::find (T t) {
-		make_l_1(); Vector<T> bw = coovec(b,w,f);
-
-		readcoo(bw); T c = cost(), eps = sqrt(c)/10, nc = c;
-		while ((c>t)&&(eps>1e-100)) {
-			std::cerr << c << " (" << eps << ")          \r";
-			bool flag = false;
-			for (auto & z : bw) {	z += eps; readcoo(bw); nc = cost(); if (nc<c) { c=nc; flag=true; } else { z -= eps; }
-			                     	z -= eps; readcoo(bw); nc = cost(); if (nc<c) { c=nc; flag=true; } else { z += eps; } }
-			if (!flag) eps /= 4; else eps *= 2;
-		}
-		std::cerr << std::endl;
 	}
 
 	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation0<T> & C) {

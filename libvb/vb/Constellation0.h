@@ -15,7 +15,6 @@ namespace vb {
 
 		cplx	operator()	(cplx z)	const;
 
-		void	find 	(T t = T(0));
 		void	belyi	();	// does too many things at once
 
 		std::pair<cplx,cplx>	bounds	()	const;
@@ -31,9 +30,7 @@ namespace vb {
 		Vector<cplx>	vcost   	()	const;
 		Matrix<cplx>	jacvcost	()	const;
 
-		Vector<cplx>	vec    	()                                                                                              	const;
-		Vector<T>   	coovec 	(const std::vector<Star<T>> & b, const std::vector<Star<T>> & w, const std::vector<Star<T>> & f)	const;
-		void        	readcoo	(const Vector<T> & xy);
+		Vector<cplx>	vec    	()	const;
 		void        	readvec	(const Vector<cplx> & xy);
 	};
 
