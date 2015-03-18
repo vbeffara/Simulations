@@ -201,12 +201,15 @@ namespace vb {
 		os << std::setprecision(nd) << std::fixed;
 		T eps = pow(T(.1),nd-5);
 
-		os << "log(lambda) = " << C.p[1] << std::endl;
-		os << "tau         = " << C.p[0] << std::endl;
+		os << "log(lambda)  = " << C.p[1] << std::endl;
+		os << "tau          = " << C.p[0] << std::endl;
 		{ Polynomial<cpxint> P = guess(C.p[0],eps); if (P.degree()>0) os << "\t\troot of " << P << std::endl; }
-		std::complex<T> jj = C.E.j();
-		os << "invariant j = " << jj << std::endl;
-		{ Polynomial<cpxint> P = guess(jj,eps); if (P.degree()>0) os << "\t\troot of " << P << std::endl; }
+		os << "invariant j  = " << C.E.j() << std::endl;
+		{ Polynomial<cpxint> P = guess(C.E.j(),eps); if (P.degree()>0) os << "\t\troot of " << P << std::endl; }
+		os << "invariant g2 = " << C.E.g2() << std::endl;
+		{ Polynomial<cpxint> P = guess(C.E.g2(),eps); if (P.degree()>0) os << "\t\troot of " << P << std::endl; }
+		os << "invariant g3 = " << C.E.g3() << std::endl;
+		{ Polynomial<cpxint> P = guess(C.E.g3(),eps); if (P.degree()>0) os << "\t\troot of " << P << std::endl; }
 		os << std::endl;
 		os << "Keeping " << nd << " digits." << std::endl;
 		os << std::endl;
