@@ -26,7 +26,7 @@ int main (int argc, char ** argv) {
 
 	vector<Hypermap> v; unsigned target = 0; if ((d==0) && (g==1) && (!H['f']) && (s<ntri.size())) target = ntri[s];
 
-	Image img (800,800,"Belyi_Torus");
+	Image img (500,500,"Belyi_Torus");
 	while ((target==0)||(v.size()<target)) {
 		Permutation alpha = Pairings(a).rand();                                        	if (!connected(phi,alpha))	continue;
 		Permutation sigma = (alpha*phi).inverse(); Hypermap M (sigma,alpha,phi);       	if (M.genus() != g)       	continue;
@@ -56,7 +56,7 @@ int main (int argc, char ** argv) {
 				cout << endl;
 			}
 
-			if (H['o']) { img.title = H.title; img.label(img.title.c_str()); if (!img.visible()) img.show(); C.draw(img); img.output(); }
+			if (H['o']) { img.title = H.title; img.label(img.title.c_str()); if (!img.visible()) img.show(); C.draw(img); img.prog = H.prog; img.output(); }
 
 			if (H['q']) {
 				Constellation1<gmp100> CC (C); gmp100 c = CC.findn(); int lc = - int(log10(c));
