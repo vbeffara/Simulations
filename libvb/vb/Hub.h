@@ -19,9 +19,14 @@ namespace vb {
 
 	class Hub : public std::map <char,Value> {
 	public:
+		Hub ();
 		Hub (std::string t, int argc, char ** argv, std::string c = "");
 
-		std::string title="title", prog="prog", dir="dir", help="help";
+		void init (std::string t, int argc, char ** argv, std::string c = "");
+
+		std::string title="undefined", prog="undefined", dir="undefined", help="undefined";
 		std::map <char,bool> has_arg;
 	};
+
+	extern Hub H;
 }

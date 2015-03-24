@@ -5,7 +5,7 @@ using namespace vb; using namespace std;
 const Color INSIDE(0), LEFTSIDE(HSV(0,.8,.8)), RIGHTSIDE(HSV(.5,.8,.8));
 
 class SLE : public Image { public:
-    SLE (Hub &H) : Image(2*int(H['n']),H['n'],H.title), n(h()*h()), kappa(H['k']), W(n,0), Wmin(n+1,0), Wmax(n+1,0) {
+    SLE (int n_, double k_) : Image(2*n_,n_,H.title), n(h()*h()), kappa(k_), W(n,0), Wmin(n+1,0), Wmax(n+1,0) {
         prog = H.prog;
         for (int i=0; i<w(); i++) put (coo(i,0),INSIDE);
         for (int i=1; i<n; i++) W[i] = W[i-1] + prng.gaussian();
@@ -46,10 +46,10 @@ class SLE : public Image { public:
 };
 
 int main (int argc, char ** argv) {
-    Hub H ("Schramm-Loewner Evolution", argc,argv, "n=300,k=2.666666666667,r=0,a");
+    H.init ("Schramm-Loewner Evolution", argc,argv, "n=300,k=2.666666666667,r=0,a");
     int r = H['r']; if (r) prng.seed(r);
 
-    SLE sle (H); sle.show();
+    SLE sle (H['n'],H['k']); sle.show();
     if (H['a']) sle.tessel (0,1,sle.w()-1,sle.h()-1, aa<double> ([&](cpx z){ return sle.compute(z); }));
     else { sle.tessel (0,1,sle.w()-1,sle.h()-1, [&](coo c){ return sle.compute({double(c.x),double(c.y)}); }); sle.edge_detect(); }
     sle.output_png();
