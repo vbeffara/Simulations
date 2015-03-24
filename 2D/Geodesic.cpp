@@ -40,7 +40,7 @@ class QG : public Image { public:
 	void fill_dyadic (int n0) {
 		for (int l=n-1; l>=n0; --l) {
 			int ll = 1<<l;
-			for (int i=0; i<W/ll; ++i) for (int j=0; j<H/ll; ++j) {
+			for (int i=0; i<ww/ll; ++i) for (int j=0; j<hh/ll; ++j) {
 				double g = prng.gaussian();
 				for (int x=i*ll; x<(i+1)*ll; ++x) for (int y=j*ll; y<(j+1)*ll; ++y) I.at(coo(x,y)).f += g;
 			}
@@ -50,7 +50,7 @@ class QG : public Image { public:
 	void fill_boolean (int n0) {
 		for (int l=n-1; l>=n0; --l) {
 			int ll = 1<<l;
-			for (int i=0; i<W/ll; ++i) for (int j=0; j<H/ll; ++j) {
+			for (int i=0; i<ww/ll; ++i) for (int j=0; j<hh/ll; ++j) {
 				double g = prng.uniform_real(-1,1);
 				for (int x=i*ll; x<(i+1)*ll; ++x) for (int y=j*ll; y<(j+1)*ll; ++y) I.at(coo(x,y)).f += g;
 			}
@@ -60,23 +60,23 @@ class QG : public Image { public:
 	void fill_white () { for (auto & u : I) u.f = prng.gaussian() * sqrt((double)n); }
 
 	void fill_free (int n0 = 0) {
-		cpx *in = (cpx*) fftw_alloc_complex(W*H), *out = (cpx*) fftw_alloc_complex(W*H);
-		fftw_plan p = fftw_plan_dft_2d (W, H, (fftw_complex*) in, (fftw_complex*) out, FFTW_FORWARD, FFTW_ESTIMATE);
+		cpx *in = (cpx*) fftw_alloc_complex(ww*hh), *out = (cpx*) fftw_alloc_complex(ww*hh);
+		fftw_plan p = fftw_plan_dft_2d (ww, hh, (fftw_complex*) in, (fftw_complex*) out, FFTW_FORWARD, FFTW_ESTIMATE);
 
-		vector<double> sinarrayi(W), sinarrayj(H);
-		for (int i=0; i<W; ++i) sinarrayi[i] = sin(M_PI * i/W);
-		for (int j=0; j<H; ++j) sinarrayj[j] = sin(M_PI * j/H);
+		vector<double> sinarrayi(ww), sinarrayj(hh);
+		for (int i=0; i<ww; ++i) sinarrayi[i] = sin(M_PI * i/ww);
+		for (int j=0; j<hh; ++j) sinarrayj[j] = sin(M_PI * j/hh);
 
-		for (int j=0; j<H; ++j) for (int i=0; i<W; ++i) {
+		for (int j=0; j<hh; ++j) for (int i=0; i<ww; ++i) {
 			if ((i==0)&&(j==0)) continue;
-			double norm = sqrt (W*H*(sinarrayi[i]*sinarrayi[i] + sinarrayj[j]*sinarrayj[j]));
-			in[i+W*j] = cpx (prng.gaussian(),prng.gaussian()) * sqrt(M_PI/2) / norm;
-			if (norm > sqrt(W*H) * (1-n0/100.0)) in[i+W*j]=0;
+			double norm = sqrt (ww*hh*(sinarrayi[i]*sinarrayi[i] + sinarrayj[j]*sinarrayj[j]));
+			in[i+ww*j] = cpx (prng.gaussian(),prng.gaussian()) * sqrt(M_PI/2) / norm;
+			if (norm > sqrt(ww*hh) * (1-n0/100.0)) in[i+ww*j]=0;
 		}
 		in[0] = cpx (0,0);
 
 		fftw_execute(p);
-		for (int j=0; j<H; ++j) for (int i=0; i<W; ++i) I.at(coo(i,j)).f = real(out[i+W*j]);
+		for (int j=0; j<hh; ++j) for (int i=0; i<ww; ++i) I.at(coo(i,j)).f = real(out[i+ww*j]);
 		fftw_destroy_plan(p); fftw_free(in); fftw_free(out);
 	}
 
