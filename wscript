@@ -35,9 +35,14 @@ def unit_test (ctx, prog, ext, checksum):
 
 	pprint ('NORMAL', "Running %s :" % prog.ljust(32), sep='')
 
-	file = "output/%s.%s" % (prog,ext)
+	file = "output/%s/%s.%s" % (prog,prog,ext)
 	if os.path.exists(file): os.remove(file)
 	subprocess.call ('./build/tests/' + prog)
+	if not os.path.exists(file):
+		pprint ('RED',    "failed")
+		pprint ('YELLOW', "  (%s not created)" % file)
+		exit (1)
+
 	sum = hashlib.md5 (open(file).read()).hexdigest()
 
 	if sum == checksum:
