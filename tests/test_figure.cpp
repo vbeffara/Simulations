@@ -1,12 +1,13 @@
-/// @file
 #include <vb/Figure.h>
+#include <vb/Hub.h>
 #include <vb/PRNG.h>
 
 using namespace vb;
 
 Color randomcolor() { return HSV (prng.uniform_real(0,1),1,1); }
 
-int main (int, char **) {
+int main (int argc, char ** argv) {
+	H.init ("Test Figure",argc,argv,"");
 	Figure F;
 	for (int i=0; i<10; ++i)
 		F.add (new Segment(	cpx(prng.uniform_real(-5,5),prng.uniform_real(-5,5)),
@@ -15,5 +16,5 @@ int main (int, char **) {
 
 	for (int i=1; i<=5; ++i) F.add (new Circle (cpx(0,0), i));
 
-	F.show(); F.pause(); F.output ("output/test_figure");
+	F.show(); F.pause(); F.output();
 }
