@@ -24,7 +24,7 @@ namespace vb {
 
 		void init (std::string t, int argc, char ** argv, std::string c = "");
 
-		std::string title="undefined", prog="undefined", dir="undefined", help="undefined";
+		std::string title="undefined", prog="undefined", dir="output/", help="undefined";
 		std::map <char,bool> has_arg;
 	};
 
