@@ -1,23 +1,16 @@
-// SLE - Schramm's Stochastic Loewner Evolution - v2 (multiscale)
-
-#include <vb/CL_Parser.h>
+#include <vb/Hub.h>
 #include <vb/Image.h>
-#include <vb/PRNG.h>
+using namespace vb; using namespace std;
 
-using namespace std;
-using namespace vb;
-
-#define DONTKNOW  Color(0)
-#define INSIDE    Color(0)
-#define LEFTSIDE  Color(100)
-#define RIGHTSIDE Color(150)
+const Color INSIDE(0), LEFTSIDE(HSV(0,.8,.8)), RIGHTSIDE(HSV(.5,.8,.8));
 
 class SLE : public Image { public:
-    SLE (CL_Parser &CLP) : Image(2*int(CLP('n')),CLP('n'),"SLE"), n(h()*h()), kappa(CLP('k')), W(n,0) {
+    SLE (Hub &H) : Image(2*int(H['n']),H['n'],H.title), n(h()*h()), kappa(H['k']), W(n,0), Wmin(n+1,0), Wmax(n+1,0) {
+        prog = H.prog;
+        for (int i=0; i<w(); i++) put (coo(i,0),INSIDE);
         for (int i=1; i<n; i++) W[i] = W[i-1] + prng.gaussian();
-        double d = W[n-1]/n; for (int i=1; i<n;i++) W[i] -= i*d;
+        double d = W[n-1]/(n-1); for (int i=1; i<n;i++) W[i] -= i*d;
 
-        Wmin.resize(n+1); Wmax.resize(n+1);
         Wmax[n]=W[n-1]; Wmin[n]=W[n-1];
         for (int i=n-1; i>0; i--) { Wmin[i] = min (W[i-1], Wmin[i+1]); Wmax[i] = max (W[i-1], Wmax[i+1]); }
         Wmin[0]=Wmin[1]; Wmax[0]=Wmax[1];
@@ -53,18 +46,11 @@ class SLE : public Image { public:
 };
 
 int main (int argc, char ** argv) {
-    CL_Parser CLP (argc,argv,"n=300,k=2.666666666667,r=0,l=1,a");
+    Hub H ("Schramm-Loewner Evolution", argc,argv, "n=300,k=2.666666666667,r=0,a");
+    int r = H['r']; if (r) prng.seed(r);
 
-    int r = CLP('r'); if (r) prng.seed(r);
-
-    SLE sle (CLP);
-
-    for (int i=0;i<sle.w();i++) sle.put (coo(i,0),INSIDE);
-
-    sle.show();
-    if (CLP('a')) sle.tessel (0,1,sle.w()-1,sle.h()-1, aa<double> ([&](cpx z){ return sle.compute(z); }));
+    SLE sle (H); sle.show();
+    if (H['a']) sle.tessel (0,1,sle.w()-1,sle.h()-1, aa<double> ([&](cpx z){ return sle.compute(z); }));
     else { sle.tessel (0,1,sle.w()-1,sle.h()-1, [&](coo c){ return sle.compute({double(c.x),double(c.y)}); }); sle.edge_detect(); }
     sle.output_png();
-
-    return 0;
 }
