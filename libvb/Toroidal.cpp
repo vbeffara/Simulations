@@ -7,7 +7,7 @@ namespace vb {
 	Toroidal::Toroidal (Hypermap M, Hub H) : Hypermap(M), m(I) {
 		assert (genus()==1);
 		from_hypermap();
-		prog = H.prog; mode = H['m']; title = H.title;
+		mode = H['m']; title = H.title;
 	}
 
 	void Toroidal::pack () {

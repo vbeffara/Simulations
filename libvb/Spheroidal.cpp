@@ -7,7 +7,7 @@ namespace vb {
 	Spheroidal::Spheroidal (Hypermap M, Hub H) : Hypermap(M) {
 		assert (genus()==0);
 		from_hypermap();
-		prog = H.prog; mode = H['m']; title = H.title;
+		mode = H['m']; title = H.title;
 	}
 
 	void Spheroidal::pack () {

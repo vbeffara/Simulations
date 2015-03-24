@@ -46,8 +46,6 @@ namespace vb {
 		std::vector<Vertex>	V;
 		std::vector<Edge>  	E;
 
-		std::string prog;
-
 	protected:
 		double alpha_xyz	(double x, double y, double z)	const;
 		double ccn      	(int n)                       	const;
