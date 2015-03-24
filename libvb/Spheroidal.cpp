@@ -111,6 +111,6 @@ namespace vb {
 			}
 		}
 
-		F.title = title; F.prog = prog; F.output_pdf();
+		F.title = title; F.output_pdf();
 	}
 }

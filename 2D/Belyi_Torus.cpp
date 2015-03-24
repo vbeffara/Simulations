@@ -56,7 +56,7 @@ int main (int argc, char ** argv) {
 				cout << endl;
 			}
 
-			if (H['o']) { img.title = H.title; img.label(img.title.c_str()); if (!img.visible()) img.show(); C.draw(img); img.prog = H.prog; img.output(); }
+			if (H['o']) { img.title = H.title; img.label(img.title.c_str()); if (!img.visible()) img.show(); C.draw(img); img.output(); }
 
 			if (H['q']) {
 				Constellation1<gmp100> CC (C); gmp100 c = CC.findn(); int lc = - int(log10(c));

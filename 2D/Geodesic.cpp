@@ -19,7 +19,6 @@ class Info {
 
 class QG : public Image { public:
 	QG (Hub & H) : Image (1<<int(H['n']), 1<<int(H['n']), H.title), I(w(),h(),Info(0,0,0,0)), g(H['g']), n(H['n']) {
-		prog = H.prog;
 		if     	(H['w'] == "dyadic") 	fill_dyadic	(H['z']);
 		else if	(H['w'] == "boolean")	fill_boolean (H['z']);
 		else if	(H['w'] == "white")  	fill_white ();
