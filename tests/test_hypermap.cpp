@@ -6,7 +6,7 @@
 using namespace vb; using namespace std;
 
 int main (int argc, char ** argv) {
-	Hub H ("Hypermap of genus 0",argc,argv,"n=2,m=228,v,w,q,g=m_cube,p,a,b,f=0,s=0,u=0,d=1,D=0");
+	H.init ("Hypermap of genus 0",argc,argv,"n=2,m=228,v,w,q,g=m_cube,p,a,b,f=0,s=0,u=0,d=1,D=0");
 
 	auto M = HLib().at(H['g']);
 	int u = H['u']; if (u) M = H_genus0(u);

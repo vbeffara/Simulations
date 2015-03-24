@@ -58,7 +58,7 @@ class Stuck : public Bitmap<Stat> { public:
 };
 
 int main (int argc, char ** argv) {
-	Hub H ("Stuck walk on the square lattice",argc,argv,"n=200,a=.1432,b=5,v=0");
+	H.init ("Stuck walk on the square lattice",argc,argv,"n=200,a=.1432,b=5,v=0");
 	Stuck S(H); S.show();
 	if (double(H['v'])>0) S.snapshot_setup("Stuck",H['v']);
 	S.run();

@@ -20,7 +20,7 @@ using namespace vb; using namespace std;
 vector<unsigned> ntri { 0, 1, 5, 46, 669 };
 
 int main (int argc, char ** argv) {
-	Hub H ("Spheroidal enumeration", argc, argv, "s=3,m=228,r=1,o,d=0,D=0,g=0,f,n=2,c");
+	H.init ("Spheroidal enumeration", argc, argv, "s=3,m=228,r=1,o,d=0,D=0,g=0,f,n=2,c");
 	unsigned s=H['s'], g=0, a=6*(s-2), r=H['r'], d=H['d'], D=H['D'];
 	assert (a>0); if (r>0) prng.seed(r);
 

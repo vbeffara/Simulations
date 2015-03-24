@@ -20,7 +20,6 @@ namespace vb {
 	class Hub : public std::map <char,Value> {
 	public:
 		Hub ();
-		Hub (std::string t, int argc, char ** argv, std::string c = "");
 
 		void init (std::string t, int argc, char ** argv, std::string c = "");
 

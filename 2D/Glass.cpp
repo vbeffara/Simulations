@@ -82,7 +82,7 @@ void init_ok_connect6 (void) {
 }
 
 int main (int argc, char **argv) {
-  Hub H ("Glassy Glauber dynamics for percolation",argc,argv,"n=300,p=.5,c=none");
+  H.init ("Glassy Glauber dynamics for percolation",argc,argv,"n=300,p=.5,c=none");
   int    n = H['n'];
   double p = H['p'];
   string c = H['c'];

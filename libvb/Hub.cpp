@@ -8,8 +8,6 @@
 namespace vb {
 	Hub::Hub () {}
 
-	Hub::Hub (std::string t, int argc, char ** argv, std::string c) { init (t,argc,argv,c); }
-
 	void Hub::init (std::string t, int argc, char ** argv, std::string c) {
 		title = t; help = "Syntax : " + c;
 

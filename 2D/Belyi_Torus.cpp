@@ -18,7 +18,7 @@ using namespace vb; using namespace std;
 vector<unsigned> ntri { 0, 1, 5, 46, 669 };
 
 int main (int argc, char ** argv) {
-	Hub H ("Toroidal enumeration", argc, argv, "s=1,m=228,r=1,o,d=0,D=0,g=1,f,n=2,q");
+	H.init ("Toroidal enumeration", argc, argv, "s=1,m=228,r=1,o,d=0,D=0,g=1,f,n=2,q");
 	unsigned s=H['s'], g=H['g'], a=6*(s+2*g-2), r=H['r'], d=H['d'], D=H['D'];
 	assert (a>0); if (g!=1) assert(!H['o']); if (r>0) prng.seed(r);
 

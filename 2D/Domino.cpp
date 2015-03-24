@@ -43,7 +43,7 @@ class Tiling : public Bitmap<Half> { public:
             }
         }
     }
-    
+
     int flip (coo c) {
         if (at(c).type == 0) return 0;
         unsigned char d = at(c).d; coo oc = c + dz[d] + dz[(d+1)%4];
@@ -57,7 +57,7 @@ class Tiling : public Bitmap<Half> { public:
 };
 
 int main (int argc, char ** argv) {
-    Hub H ("Domino tiling",argc,argv,"n=200,o=aztec|hill|hole|flat,b=0,f=0,r=1,d"); Tiling T(H);
+    H.init ("Domino tiling",argc,argv,"n=200,o=aztec|hill|hole|flat,b=0,f=0,r=1,d"); Tiling T(H);
     if (H['d']) halfcolors = dicolors;
     Console C; C.watch(T.r,"r"); C.manage(T.r,0.0,1.0); C.show();
     T.show(); T.pause();

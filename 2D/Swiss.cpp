@@ -59,6 +59,6 @@ public:
 };
 
 int main (int argc, char ** argv) {
-    Hub H ("The Swiss Journalist",argc,argv,"n=600,c=0,p=.8,q=.35");
+    H.init ("The Swiss Journalist",argc,argv,"n=600,c=0,p=.8,q=.35");
     World w(H); w.show(); w.pause(); w.run();
 }

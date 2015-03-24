@@ -18,6 +18,6 @@ public:
 };
 
 int main (int argc, char ** argv) {
-    Hub H ("Loop-erased random walk",argc,argv,"n=500");
+    H.init ("Loop-erased random walk",argc,argv,"n=500");
     LERW(H).output();
 }

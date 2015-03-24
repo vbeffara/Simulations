@@ -125,7 +125,7 @@ class QG : public Image { public:
 };
 
 int main (int argc, char **argv) {
-	Hub H ("Random 2D geometry", argc, argv, "w=free,n=9,z=0,g=1,s=0,b,i");
+	H.init ("Random 2D geometry", argc, argv, "w=free,n=9,z=0,g=1,s=0,b,i");
 	if (int s = H['s']) prng.seed(s);
 	int n = H['n'], nn = 1<<n;
 

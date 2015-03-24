@@ -29,6 +29,6 @@ class ACP : public Bitmap<Site> { public:
 };
 
 int main (int argc, char ** argv) {
-	Hub H ("Contact process with aging", argc, argv, "n=400,d=.01,a=.1,z=0,m=5,b=.2,r=.1");
+	H.init ("Contact process with aging", argc, argv, "n=400,d=.01,a=.1,z=0,m=5,b=.2,r=.1");
 	ACP A (H); A.show(); while (true) A.run();
 }
