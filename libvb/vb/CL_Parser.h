@@ -7,5 +7,5 @@ namespace vb {
 	public:
 		CL_Parser (int argc, char** argv, std::string syntax) { H.init ("(no title set)", argc, argv, syntax); };
 		Value operator() (char c) { return H[c]; }
-	};
+	} __attribute__ ((deprecated));
 }
