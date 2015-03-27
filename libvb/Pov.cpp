@@ -1,4 +1,5 @@
 /// \file
+#include <vb/Hub.h>
 #include <vb/Pov.h>
 #include <fstream>
 #include <sstream>
@@ -13,8 +14,8 @@ namespace vb {
 	}
 
 	void Pov_Object::output_pov (const std::string &s) {
-		std::ostringstream os; os << "output/" << s << ".pov";
-		std::ofstream f (os.str().c_str()); output_pov(f);
+		std::string os = H.dir + s + ".pov";
+		std::ofstream f (os.c_str()); output_pov(f);
 	}
 
 	Pov_Object & Pov_Object::operator<< (tri a)   	{ return (*this) << new Pov_Coordinate (a); }
