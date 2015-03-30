@@ -17,8 +17,8 @@ namespace vb {
 		void	put 	(coo z, T const & c)	{ at(z) = c; }
 		void	putp	(coo z, T const & c)	{ atp(z) = c; }
 
-		bool	contains	(coo z)  	{ return (z.x>=0) && (z.y>=0) && (z.x<ww) && (z.y<hh); }
-		coo 	rand    	(int b=0)	{ return coo (b+prng.uniform_int(ww-2*b), b+prng.uniform_int(hh-2*b)); }
+		bool	contains	(coo z)  	const	{ return (z.x>=0) && (z.y>=0) && (z.x<ww) && (z.y<hh); }
+		coo 	rand    	(int b=0)	const	{ return coo (b+prng.uniform_int(ww-2*b), b+prng.uniform_int(hh-2*b)); }
 
 		typedef Array_iterator<T> iterator;
 		iterator	begin	()	{ return iterator (*this, coo(0,0)); 	}
