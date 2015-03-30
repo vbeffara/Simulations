@@ -12,7 +12,9 @@ namespace vb {
 		title = t; help = "Syntax : " + c;
 
 		std::vector<std::string> fs;	boost::split (fs, argv[0], boost::is_any_of("/\\"));
-		prog = fs.back(); dir = "output/" + prog + "/"; boost::filesystem::create_directories(dir);
+		prog = fs.back(); dir = "output/" + prog + "/";
+		boost::filesystem::create_directories(dir);
+		boost::filesystem::create_directories(dir + "snapshots");
 
 		std::vector<std::string> cs;	if (c.size()) boost::split (cs, c, boost::is_any_of(", "), boost::token_compress_on);
 
