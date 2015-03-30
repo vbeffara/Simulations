@@ -40,12 +40,11 @@ class pt : public ptt { public:
 		xf() -= di; xi() += di; yf() -= dj; yi() += dj;
 	}
 
-	pt reverse () {
+	void reverse () {
 		if     	(xf()==0) { xf()=1; xi()--; }
 		else if	(xf()==1) { xf()=0; xi()++; }
 		else if	(yf()==0) { yf()=1; yi()--; }
 		else if	(yf()==1) { yf()=0; yi()++; }
-		return (*this);
 	}
 };
 
@@ -55,76 +54,60 @@ pt nopoint (-1,-1,-1,-1);
 
 typedef pair<pt,pt> ptpair;
 
-pt geodesique (pt p, const Array<double> & o, ostream *os = 0) {
-	set<pt> S;
-	while (true) {
-		if (! o.contains(coo(p.xi(),p.yi()))) break;
-		if (os) (*os) << p;
-		p.step(o);
-		if (S.count(p)) break;
-		S.insert(p);
-	}
-	if (os) (*os) << endl;
-
-	if (! o.contains(coo(p.xi(),p.yi()))) return nopoint;
-
-	pt p_min = p; p.step(o);
-	while (p != p_min) {
-		if (p < p_min) p_min = p;
-		p.step(o);
+class Lamination : public Array<double> { public:
+	Lamination (int n) : Array<double> (n,n,0) {
+		for (auto & v : *this) v = tan(prng.uniform_real(0,M_PI));
 	}
 
-	return p_min;
-}
+	pt geodesique (pt p, ostream *os = 0) const {
+		set<pt> S;
+		while (true) {
+			if (!contains(coo(p.xi(),p.yi()))) break;
+			if (os) (*os) << p;
+			p.step(*this);
+			if (S.count(p)) break;
+			S.insert(p);
+		}
+		if (os) (*os) << endl;
 
-pair<pt,pt> leaf (pt p, const Array<double> & o, ostream *os = 0) {
-	pt p1 = geodesique (pt(p), o);
-	p.reverse();
-	pt p2 = geodesique (pt(p), o);
+		if (!contains(coo(p.xi(),p.yi()))) return nopoint;
 
-	if ((os != 0) && (p1 != p2)) {
-		geodesique (pt(p), o, os);
-		p.reverse();
-		geodesique (p, o, os);
+		pt p_min = p; p.step(*this);
+		while (p != p_min) {
+			if (p < p_min) p_min = p;
+			p.step(*this);
+		}
+
+		return p_min;
 	}
 
-	if (p1<p2) return pair<pt,pt>(p1,p2);
-	else       return pair<pt,pt>(p2,p1);
-}
+	pair<pt,pt> leaf (pt p, ostream *os = 0) const {
+		pt p1 = geodesique (p,os); p.reverse(); pt p2 = geodesique (p,os);
+		if (p1<p2) return {p1,p2}; else return {p2,p1};
+	}
 
-set<pt> connections (const Array<double> & o, ostream *os = 0) {
-	set<ptpair> S;
-	set<pt> P;
+	set<pt> connections () const {
+		set<ptpair> S;
+		set<pt> P;
 
-	for (int i=0; i<o.ww; ++i) {
-		for (int j=0; j<o.hh; ++j) {
-			for (double x=0.01; x<1; x+=.01) {
-				pair<pt,pt> pp = leaf (pt(i,j,x,0),o,os);
+		for (int i=0; i<ww; ++i) {
+			for (int j=0; j<hh; ++j) {
+				for (double x=0.01; x<1; x+=.01) {
+					pair<pt,pt> pp = leaf (pt(i,j,x,0),0);
 
-				if ((pp.first != nopoint) && (pp.second != nopoint)) {
-					if (S.count(pp) == 0) {
-						S.insert (pp);
-						P.insert (pt(i,j,x,0));
+					if ((pp.first != nopoint) && (pp.second != nopoint)) {
+						if (S.count(pp) == 0) { S.insert (pp); P.insert (pt(i,j,x,0)); }
 					}
-				}
 
-				pp = leaf (pt(i,j,0,x),o,os);
+					pp = leaf (pt(i,j,0,x),0);
 
-				if ((pp.first != nopoint) && (pp.second != nopoint)) {
-					if (S.count(pp) == 0) {
-						S.insert (pp);
-						P.insert (pt(i,j,0,x));
+					if ((pp.first != nopoint) && (pp.second != nopoint)) {
+						if (S.count(pp) == 0) { S.insert (pp); P.insert (pt(i,j,0,x)); }
 					}
 				}
 			}
 		}
-	}
-	return P;
-}
-
-class Lamination : public Array<double> { public:
-	Lamination (int n) : Array<double> (n,n,0) {
-		for (auto & v : *this) v = tan(prng.uniform_real(0,M_PI));
+		return P;
 	}
 };
 
@@ -133,22 +116,16 @@ int main (int argc, char ** argv) {
 	Lamination o (H['n']);
 
 	for (int i=0; i<o.ww; ++i) for (int j=0; j<o.hh; ++j) {
-		geodesique (pt(i,j,0,0),o,&cout);
-		geodesique (pt(i,j,1,0),o,&cout);
-		geodesique (pt(i,j,0,1),o,&cout);
-		geodesique (pt(i,j,1,1),o,&cout);
+		o.geodesique (pt(i,j,0,0),&cout);
+		o.geodesique (pt(i,j,1,0),&cout);
+		o.geodesique (pt(i,j,0,1),&cout);
+		o.geodesique (pt(i,j,1,1),&cout);
 	}
 
 	if (H['c']) {
-		set<pt> P = connections (o,&cout);
+		set<pt> P = o.connections();
 		set<pt> E;
-		for (pt i : P) {
-			pair<pt,pt> pp = leaf(i,o,0);
-			E.insert (pp.first); E.insert (pp.second);
-		}
-		for (pt i : E) {
-			geodesique (i,o,0);
-			cerr << i << endl;
-		}
+		for (pt i : P) { auto pp = o.leaf(i,0); E.insert (pp.first); E.insert (pp.second); }
+		for (pt i : E) { o.geodesique (i,&cerr); }
 	}
 }
