@@ -26,12 +26,12 @@ int main (int argc, char ** argv) {
 
 	Constellation0<double> C {M,H};
 
-	if (H['v']) { C.belyi(); Image I (800,800,"Test Elliptic"); I.show(); C.draw(I,H['a'],H['b']); I.pause(); I.hide(); }
+	if (H['v']) { C.belyi(); Image I (800,800); I.show(); C.draw(I,H['a'],H['b']); I.pause(); I.hide(); }
 	if (!H['q']) { C.belyi(); cout << endl << C; return 0; }
 
 	#ifdef HAVE_COMPLEX_GMP
 	Constellation0<gmp100>	Cq (C); Cq.findn(); Cq.belyi();
-	if (H['w']) { Image I (800,800,"Test Elliptic"); I.show(); Cq.draw(I,H['a'],H['b']); I.pause(); I.hide(); }
+	if (H['w']) { Image I (800,800); I.show(); Cq.draw(I,H['a'],H['b']); I.pause(); I.hide(); }
 	cout << endl << Cq;
 	#else
 	cerr << "No std::complex<boost::numeric::whatever> support!" << endl;

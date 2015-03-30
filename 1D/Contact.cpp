@@ -13,7 +13,7 @@ class Site { public:
 };
 
 class Contact : public Automaton<Site> { public:
-	Contact (Hub & H) : Automaton<Site> (H['n'],1,H.title,H['p']) {
+	Contact (Hub & H) : Automaton<Site> (H['n'],1,H['p']) {
 		for (auto &s : (*this)) if (prng.bernoulli(H['e'])) s = 2;
 
 		add_rule (1,     	{ {},            	{{0,0}} 	});

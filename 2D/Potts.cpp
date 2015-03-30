@@ -16,7 +16,7 @@ public:
 
 class Potts : public Bitmap<Spin> {
 public:
-	Potts (CL_Parser & CLP) : Bitmap<Spin> (int(CLP('n')), int(CLP('n')), "Potts model"), q(CLP('q')), beta(CLP('b')), b(0) {
+	Potts (CL_Parser & CLP) : Bitmap<Spin> (int(CLP('n')), int(CLP('n'))), q(CLP('q')), beta(CLP('b')), b(0) {
 		for (int i=0; i<w(); ++i) for (int j=0; j<h(); ++j) put (coo(i,j), prng.uniform_int(q));
 		beta *= log(1+sqrt(double(q)));
 	}

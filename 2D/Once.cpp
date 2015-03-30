@@ -9,7 +9,7 @@ int main(int argc, char ** argv) {
     double a = CLP('a'); a=1/(1+a);
     int L = pow((double)n,.33);
 
-    CoarseImage img(n,n,"A vertex once-reinforced random walk",L); img.show();
+    CoarseImage img(n,n,L); img.show();
 
     for (coo z(n/2,n/2);;) {
         img.put (z,1);

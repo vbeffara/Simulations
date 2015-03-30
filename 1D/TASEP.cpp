@@ -23,7 +23,7 @@ class TASEP : public vector<int> {
 int main (int argc, char ** argv) {
 	CL_Parser CLP (argc,argv,"n=1280,r=.4,e=0,d=0"); TASEP T(CLP);
 
-	Image I (T.size(),700,"TASEP"); I.show();
+	Image I (T.size(),700); I.show();
 	for (int t=0,u=0 ;; ++t,++u) {
 		for (int j=0; j<u; ++j) for (unsigned i=0; i<T.size(); ++i) T.step();
 		for (unsigned i=0; i<T.size(); ++i) I.put(coo(i,t%I.h()),C[T[i]]);

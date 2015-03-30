@@ -8,10 +8,10 @@ int main(int argc, char ** argv)
 {
   // Parameters from the command line
 
-  CL_Parser CLP (argc,argv,"n=300,p=.3,q=.4");
-  int n = CLP('n');
-  double p = CLP('p');
-  double q = CLP('q');
+  H.init ("Divide-and-color model", argc,argv, "n=300,p=.3,q=.4");
+  int n = H['n'];
+  double p = H['p'];
+  double q = H['q'];
 
   // Connectivity (&1 -> to the right, &2 -> downwards)
 
@@ -62,7 +62,7 @@ int main(int argc, char ** argv)
   for (int i=0; i<n*n; ++i)
     color[i] = (char) prng.bernoulli(q);
 
-  Image img (n,n, "Divide-and-color model");
+  Image img (n,n);
 
   for (int x=0; x<n; ++x)
     for (int y=0; y<n; ++y)

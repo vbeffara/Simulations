@@ -49,7 +49,7 @@ namespace vb {
 
 	class Console : public AutoWindow {
 	public:
-		Console () : AutoWindow (400,0,"Console") {}
+		Console () : AutoWindow (400,0) { label("Console"); }
 
 		void add (Fl_Widget *S) { size (w(),h()+S->h()); AutoWindow::add (S); }
 

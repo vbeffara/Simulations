@@ -5,7 +5,7 @@
 
 namespace vb {
 	template <typename T> class Bitmap : public Picture, public Array<T> { public:
-		Bitmap (int wd, int ht, const std::string &tit, T d=0);
+		Bitmap (int wd, int ht, T d=0);
 
 		using Array<T>::at;   	using Array<T>::atp;
 		using Array<T>::begin;	using Array<T>::end;
@@ -30,8 +30,8 @@ namespace vb {
 		}
 	};
 
-	template<typename T> Bitmap<T>::Bitmap (int wd, int ht, const std::string &tit, T d) :
-		Picture(wd,ht,tit), Array<T>(wd,ht,d), stage ((Color *) (cairo_image_surface_get_data (surface))), z0(0), dflt(d) {}
+	template<typename T> Bitmap<T>::Bitmap (int wd, int ht, T d) :
+		Picture(wd,ht), Array<T>(wd,ht,d), stage ((Color *) (cairo_image_surface_get_data (surface))), z0(0), dflt(d) {}
 
 	template<typename T> void Bitmap<T>::fill (coo z, T c, int adj) {
 		T in = at(z); if (in == c) return;

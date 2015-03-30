@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
 	int n = H['n'];
 	double beta = H['b'];
 
-	Image img(n,n, H.title);
+	Image img(n,n);
 
 	if (beta > betac)	{ for (int x=1; x<n-1; x++) for (int y=1; y<n-1; y++) img.put(coo(x,y), x<(n>>1)          	? LEFT : RIGHT);	}
 	else             	{ for (int x=1; x<n-1; x++) for (int y=1; y<n-1; y++) img.put(coo(x,y), prng.bernoulli(.5)	? LEFT : RIGHT);	}

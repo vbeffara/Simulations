@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
   double p = H['p'];
   int n = H['n'];
 
-  Image img (n,n,H.title);
+  Image img (n,n);
 
   /* conditions initiales */
 

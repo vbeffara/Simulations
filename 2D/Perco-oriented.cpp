@@ -9,7 +9,7 @@ int main (int argc, char **argv) {
   const int n = CLP('n');
   const double p = CLP('p');
 
-  vb::Image img (n,n,"Oriented site-percolation");
+  vb::Image img (n,n);
   img.show();
 
   img.put(coo(0,0),255);

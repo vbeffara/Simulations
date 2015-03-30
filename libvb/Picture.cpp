@@ -9,14 +9,14 @@
 #include <sstream>
 
 namespace vb {
-	Picture::Picture (int wd, int ht, const std::string &t) :
-		AutoWindow (wd, ht, t.c_str()),
+	Picture::Picture (int wd, int ht) :
+		AutoWindow (wd, ht),
 
 		surface (cairo_image_surface_create (CAIRO_FORMAT_RGB24, w(), h())),
 		cr      (cairo_create (surface)),
 		stride  (cairo_image_surface_get_stride (surface) / sizeof(Color)),
 
-		snapshot_prefix(t), snapshot_number(0), snapshot_period(0.0), snapshot_task(-1)
+		snapshot_prefix(H.title), snapshot_number(0), snapshot_period(0.0), snapshot_task(-1)
 	{ }
 
 	Picture::~Picture () {
@@ -49,7 +49,7 @@ namespace vb {
 
 	void Picture::output_png (const std::string &s) {
 		paint();
-		std::string os = H.dir + (s == "" ? title : s) + ".png";
+		std::string os = H.dir + (s == "" ? H.title : s) + ".png";
 		cairo_surface_write_to_png (surface, os.c_str());
 	}
 

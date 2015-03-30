@@ -22,13 +22,13 @@ int main (int argc, char ** argv) {
 	C.findn();
 
 	if (!H['q']) { cout << endl << C; }
-	if (H['v']) { Image I (800,800,"Test Elliptic"); I.show(); C.draw(I,H['a'],H['b']); I.pause(); I.hide(); }
+	if (H['v']) { Image I (800,800); I.show(); C.draw(I,H['a'],H['b']); I.pause(); I.hide(); }
 
 	if (H['q']) {
 #ifdef HAVE_COMPLEX_GMP
 		Constellation1<gmp100> Cq (C);
 		Cq.findn(); cout << endl << Cq;
-		if (H['w']) { Image I (600,600,"Test Elliptic (GMP)"); I.show(); Cq.draw(I); I.pause(); I.hide(); }
+		if (H['w']) { Image I (600,600); I.show(); Cq.draw(I); I.pause(); I.hide(); }
 #else
 		cerr << "No std::complex<boost::numeric::whatever> support!" << endl;
 #endif

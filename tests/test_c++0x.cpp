@@ -1,10 +1,11 @@
-#include <vb/PRNG.h>
+#include <vb/Hub.h>
 #include <vb/Image.h>
 
 using namespace vb;
 
-int main (int, char **) {
-    Image I (500,500,"Testing C++11 features");
+int main (int argc, char ** argv) {
+    H.init ("Testing C++11 features", argc,argv, "");
+    Image I (500,500);
 
     // Loop over the whole image
     for (auto & v : I) v = prng.uniform_int(255);

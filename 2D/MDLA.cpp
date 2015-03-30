@@ -16,7 +16,7 @@ int main (int argc, char ** argv) {
     double t = CLP('t'); // Snapshot interval for movies
     double a = CLP('a'); // Contagion probability
 
-    Image img (2*n,2*n, "A Multi-particle DLA");
+    Image img (2*n,2*n);
 
     for (Color & c : img) if (g) c = AWAY; else c = prng.bernoulli(p) ? ALIVE : EMPTY;
     img.put (coo(n,n),DEAD); img.show();

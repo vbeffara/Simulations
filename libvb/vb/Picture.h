@@ -13,7 +13,7 @@ namespace vb {
 
 	class Picture : public AutoWindow {
 	public:
-		Picture (int wd, int ht, const std::string &t = "Picture");
+		Picture (int wd, int ht);
 		~Picture ();
 
 		/// Resize the window.

@@ -14,8 +14,8 @@ public:
 
 class IsingCFTP : public Bitmap<Site> {
 public:
-	IsingCFTP (CL_Parser & CLP) : Bitmap<Site> (CLP('n'), CLP('n'), "CFTP for Ising"), b(CLP('b')), d(0), s(CLP('s')),
-								  status (w(),h(),"current status") {
+	IsingCFTP (CL_Parser & CLP) : Bitmap<Site> (CLP('n'), CLP('n')), b(CLP('b')), d(0), s(CLP('s')),
+								  status (w(),h()) {
 		for (int i=0; i<w(); ++i) for (int j=0; j<h(); ++j) put (coo(i,j),1); snap();
 		b *= log(1+sqrt(double(2)));
 		for (int i=0; i<=4; ++i) p.push_back (exp(b*i) / (exp(b*i) + exp(b*(4-i))));

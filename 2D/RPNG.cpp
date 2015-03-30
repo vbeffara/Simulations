@@ -13,7 +13,7 @@ int main (int argc, char **argv) {
   const bool f = CLP('f');
   const double c = CLP('c');
 
-  CoarseImage img (n,n,"RPNG",10);
+  CoarseImage img (n,n,10);
   img.show();
 
   int *height = new int[n];

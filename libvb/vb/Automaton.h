@@ -17,7 +17,7 @@ namespace vb {
 	};
 
 	template <class T> class Automaton : public std::vector<T> { public:
-		Automaton (int n_, T s, std::string title, bool p = true) : std::vector<T>(n_,s), n(n_), y(0), lt(0), pause(p), I(n,500,title) {}
+		Automaton (int n_, T s, bool p = true) : std::vector<T>(n_,s), n(n_), y(0), lt(0), pause(p), I(n,500) {}
 
 		T & atp (int i) { int j = i%n; if (j<0) j+=n; return (*this)[j]; }
 

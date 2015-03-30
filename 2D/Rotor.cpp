@@ -10,7 +10,7 @@ int main (int argc, char ** argv) {
 	CL_Parser CLP (argc, argv, "n=500");
 	int n = CLP('n');
 
-	Image img (n,n,"The Rotor-Router model");
+	Image img (n,n);
 	img.show();
 
 	coo z(n/2,n/2);

@@ -11,7 +11,7 @@ class Sample : public Image {
 public:
 	int n;
 
-	Sample (int _n) : Image (_n,_n,H.title), n(_n) {}
+	Sample (int _n) : Image (_n,_n), n(_n) {}
 
 	vb::Color compute (coo z) {
 		int d = norm (z-coo(n/2,n/2));

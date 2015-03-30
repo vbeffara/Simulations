@@ -16,8 +16,6 @@ double omx = sqrt(3.0);
 class Perco_Schramm : public Figure {
 public:
 	Perco_Schramm (CL_Parser &CLP) : w(2*int(CLP('n'))), h(int(CLP('l')) ? CLP('l') : w-1), mask(w*h,true) {
-		title = "Perco_Schramm";
-
 		for (int i=0; i < w/2; ++i)     cols.push_back (true);
 		for (int i=0; i < w/2; ++i)     cols.push_back (false);
 		for (int i=0; i < (w-1)*h; ++i) cols.push_back (prng.bernoulli(CLP('p')));

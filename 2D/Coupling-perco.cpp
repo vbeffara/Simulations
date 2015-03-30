@@ -230,9 +230,9 @@ int main (int, char **) {
   int i;
   Image *img,*img1,*img2;
 
-  img1 = new Image (N,N,"The first configuration");
-  img2 = new Image (N,N,"The second configuration");
-  img = new Image(N,N,"The difference");
+  img1 = new Image (N,N); img1->label("The first configuration");
+  img2 = new Image (N,N); img2->label("The second configuration");
+  img = new Image(N,N); img->label("The difference");
 
   pick (img1,test1);
   for (i=0;i<N*N;i++) img2 -> put (coo(i,0), (*img1).at(coo(i,0)));

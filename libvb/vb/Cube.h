@@ -13,7 +13,7 @@ namespace vb {
 	class Cube_iterator;
 
 	class Cube : public Bitmap <Adder> { public:
-		Cube (int x, int y, int z, const std::string &name);
+		Cube (int x, int y, int z);
 
 		int 	index	(coo3 c) 	{ return c.x + sx*c.y + sx*sy*c.z; }
 		coo3	rand 	(int b=0)	{ return coo3 (b+prng.uniform_int(sx-2*b), b+prng.uniform_int(sy-2*b), b+prng.uniform_int(sz-2*b)); }

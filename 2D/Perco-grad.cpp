@@ -20,7 +20,7 @@ int main (int argc, char ** argv) {
 
   if (w*h==0) { w=n; h=n; }
 
-  Image img (w,h,"Gradient percolation cluster");
+  Image img (w,h);
 
   for (int x=0; x<w; ++x) {
     for (int y=0; y<h; ++y) {

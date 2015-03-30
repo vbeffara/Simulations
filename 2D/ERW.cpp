@@ -65,7 +65,7 @@ class ERW : public CoarseImage {
 public:
   double p,q,r;
 
-  ERW (int n, CL_Parser CLP) : CoarseImage (n,n, "An excited random walk", pow(n,.33)),
+  ERW (int n, CL_Parser CLP) : CoarseImage (n,n,pow(n,.33)),
                                p(CLP('p')), q(CLP('q')), r(CLP('r')) { z0 = coo(n/2,n/2); };
 
   void run () {

@@ -15,7 +15,7 @@ namespace vb {
        * @param rel    Whether the path is stored as relative or absolute jumps.
        */
 
-      OldPath (int l, const std::string & title_, bool rel = false);
+      OldPath (int l, bool rel = false);
 
       /** Output the path as an image.
        *

@@ -13,8 +13,8 @@ namespace vb {
 	};
 
 	class CoarseImage : public Bitmap<CoarseCell> { public:
-		CoarseImage (int wd, int ht, const std::string &title, int l) :
-			Bitmap<CoarseCell> (1+(wd-1)/l,1+(ht-1)/l,title,l),
+		CoarseImage (int wd, int ht, int l) :
+			Bitmap<CoarseCell> (1+(wd-1)/l,1+(ht-1)/l,l),
 			true_width(wd), true_height(ht), L(l), LL(l*l), z0(0) {}
 
 		char at (coo z) const {

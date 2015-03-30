@@ -63,7 +63,7 @@ namespace vb {
 
 	/*********************************************************/
 
-	Figure::Figure (bool _o) : Picture (600,600,H.title), ortho(_o) {}
+	Figure::Figure (bool _o) : Picture (600,600), ortho(_o) {}
 
 	double Figure::left () {
 		double l = 0.0;
@@ -141,7 +141,7 @@ namespace vb {
 	}
 
 	void Figure::output_pdf (const std::string &s) {
-		std::string os = H.dir + (s == "" ? title : s) + ".pdf";
+		std::string os = H.dir + (s == "" ? H.title : s) + ".pdf";
 
 		double real_h = w() * (top()-bottom()) / (right()-left());
 

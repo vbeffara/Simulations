@@ -13,7 +13,7 @@ int main (int argc, char **argv) {
   double l = CLP('l');
   double d = CLP('d');
 
-  Image img (n,n,"Broken line process");
+  Image img (n,n);
   img.show();
 
   vector <int> field (n);

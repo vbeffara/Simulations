@@ -1,12 +1,11 @@
-#include <vb/CL_Parser.h>
+#include <vb/Hub.h>
 #include <vb/Image.h>
-#include <vb/PRNG.h>
 
 using namespace vb;
 
 class Glauber : public Image {
   public:
-    Glauber (int n_) : Image(n_,n_,"Glauber dynamics at zero temperature"), n(n_) { };
+    Glauber (int n_) : Image(n_,n_), n(n_) { };
     void fill (double p);
     void step (int i=-1, int j=-1);
   private:
@@ -35,9 +34,9 @@ void Glauber::step (int i, int j) {
 }
 
 int main (int argc, char ** argv) {
-  CL_Parser CLP (argc, argv, "n=500,p=.51");
-  int    n = CLP('n');
-  double p = CLP('p');
+  H.init ("Glauber dynamics at zero temperature", argc,argv, "n=500,p=.51");
+  int    n = H['n'];
+  double p = H['p'];
 
   Glauber G(n);
   G.fill(p);

@@ -40,7 +40,7 @@ public:
 
 class Mirrors : public Bitmap<Mirror> {
 public:
-	Mirrors (CL_Parser &CLP) :	Bitmap<Mirror> (CLP('n'),CLP('n'),"The mirror model"),
+	Mirrors (CL_Parser &CLP) :	Bitmap<Mirror> (CLP('n'),CLP('n')),
 	                          	p(CLP('p')), q(CLP('q')), f(CLP('f')) {}
 	void main ();
 	double p, q, f;

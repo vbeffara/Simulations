@@ -57,7 +57,7 @@ int main (int argc, char **argv) {
   if (m==0) m=n;
   if (q==0) q=p;
 
-  img = new Image (n,m,"Bond-percolation");
+  img = new Image (n,m);
   fifox = new int[m*n];
   fifoy = new int[m*n];
 

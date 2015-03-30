@@ -1,8 +1,9 @@
 #include <vb/Cube.h>
+#include <vb/Hub.h>
 #include <vb/Pov.h>
 
 namespace vb {
-	Cube::Cube (int x, int y, int z, const std::string &name) : Bitmap <Adder> (x+z,y+z,name), sx(x), sy(y), sz(z), data(sx*sy*sz,0) {
+	Cube::Cube (int x, int y, int z) : Bitmap <Adder> (x+z,y+z), sx(x), sy(y), sz(z), data(sx*sy*sz,0) {
 		for (int x=0; x<sz; ++x) for (int y=0; y<sz; ++y) at(coo(sx+x,sy+y)) = (x/10+y/10) % 2 ? 200 : 150;
 		for (int x=0; x<sx; ++x) for (int y=0; y<sy; ++y) at(coo(x,y)).dim(sz);
 		for (int x=0; x<sx; ++x) for (int z=0; z<sz; ++z) at(coo(x,z+sy)).dim(sy);
@@ -42,6 +43,6 @@ namespace vb {
 		  	<< new Pov_Light_Source	(tri(50*sx,30*sy,-15*sz))
 		  	<< cube;
 		if (mirrors) SS << corner << ground;
-		SS.output_pov(s == "" ? title : s);
+		SS.output_pov(s == "" ? H.title : s);
 	}
 }

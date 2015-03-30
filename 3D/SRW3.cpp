@@ -7,7 +7,7 @@ using namespace vb; using namespace std;
 
 class SRW3 : public Cube {
 public:
-	SRW3 (int n_) : Cube (n_, n_, n_, H.title), n(n_), pos(n/2,n/2,n/2) {}
+	SRW3 (int n_) : Cube (n_, n_, n_), n(n_), pos(n/2,n/2,n/2) {}
 	void step () { pos = pos + dz3[prng.uniform_int(6)]; putp(pos,255); }
 
 	int n; coo3 pos;

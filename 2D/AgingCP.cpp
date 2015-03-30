@@ -11,7 +11,7 @@ class Site { public:
 };
 
 class ACP : public Bitmap<Site> { public:
-	ACP (Hub & H) : Bitmap<Site> (int(H['n']), int(H['n']), H.title), kid(H['z']), maxage (H['m']) {
+	ACP (Hub & H) : Bitmap<Site> (int(H['n']), int(H['n'])), kid(H['z']), maxage (H['m']) {
 		put (coo(w()/2,h()/2),1);
 		P = { H['d'], H['a'] };
 		for (int i=0; i<int(H['m']) - kid; ++i) P.push_back (double(H['b']) + double(H['r'])*i);

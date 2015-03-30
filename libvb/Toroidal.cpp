@@ -111,6 +111,6 @@ namespace vb {
 		}
 
 		F.add (new Polygon ({0,1,cpx(1)+m,m}, Pen(0,0,Color(0,0,0,50),1)));
-		F.title = title; F.output_pdf();
+		F.output_pdf();
 	}
 }

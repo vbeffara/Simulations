@@ -96,7 +96,7 @@ int main (int argc, char **argv) {
     exit (1);
   }
 
-  Image img (n,n,H.title);
+  Image img (n,n);
 
   img.fill(0,0);
   for (int i=0; i<n; i++) img.put(coo(i,n/2),255);

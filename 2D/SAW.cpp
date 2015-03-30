@@ -11,7 +11,7 @@ int main(int argc, char ** argv) {
   int n = CLP('n');
   int t = CLP('t');
 
-  OldPath P (n,"A self-avoiding walk",true);
+  OldPath P (n,true);
   ProgressBar PB (t);
 
   for (int i=0;i<t;) {

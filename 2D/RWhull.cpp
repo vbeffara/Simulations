@@ -41,7 +41,7 @@ public:
 
 class Snake : public Bitmap<Stat> {
 public:
-	Snake (int n_) : Bitmap<Stat> (6*n_,6*n_,"The path of a snake"), n(n_) {
+	Snake (int n_) : Bitmap<Stat> (6*n_,6*n_), n(n_) {
 		p.push_back(coo(3*n,3*n));
 		put (p.back(),1); show();
 	};

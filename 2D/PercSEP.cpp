@@ -17,7 +17,7 @@ public:
 
 class PercSEP : public Bitmap<Site> {
 public:
-	PercSEP (CL_Parser & CLP) : Bitmap<Site> (2*int(CLP('n')), CLP('n'), "Exclusion in Percolation"),
+	PercSEP (CL_Parser & CLP) : Bitmap<Site> (2*int(CLP('n')), CLP('n')),
 			flow(0), d(CLP('d')), tasym(CLP('t')) {
 		for (int i=0; i<w(); ++i)
 			for (int j=0; j<h(); ++j)

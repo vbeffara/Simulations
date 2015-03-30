@@ -2,13 +2,14 @@
 /// Implementation of the vb::AutoWindow class
 
 #include <vb/AutoWindow.h>
+#include <vb/Hub.h>
 #include <FL/Fl.H>
 
 namespace vb {
 	void close_window (Fl_Widget *) { exit(1); }
 
-	AutoWindow::AutoWindow (int wd, int ht, const std::string &t) : Auto(.05), Fl_Double_Window (wd, ht), title(t), paused (false) {
-		label (title.c_str());
+	AutoWindow::AutoWindow (int wd, int ht) : Auto(.05), Fl_Double_Window (wd, ht), paused (false) {
+		label (H.title.c_str());
 		callback(close_window);
 	}
 

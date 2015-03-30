@@ -39,7 +39,7 @@ void Automaton::randomize (double e) {
 
 void Automaton::shift () {
   for (int i=0; i<size; ++i)
-    alt[i] = (main[i]&MAIN_BIT) 
+    alt[i] = (main[i]&MAIN_BIT)
       + (main[(i+size-1)%size]&R1_BIT)
       + (main[(i+size-1)%size]&R2_BIT)
       + (main[(i+1)%size]&L1_BIT)
@@ -83,12 +83,12 @@ void Automaton::effect (double r) {
 }
 
 int main (int argc, char **argv) {
-  CL_Parser CLP (argc,argv,"n=500,e=.03,r=.05");
-  const int n = CLP('n');
-  const double e = CLP('e');
-  const double r = CLP('r');
+  H.init ("1D cellular automaton", argc,argv, "n=500,e=.03,r=.05");
+  const int n = H['n'];
+  const double e = H['e'];
+  const double r = H['r'];
 
-  Image img (n,n,"Cellular automaton");
+  Image img (n,n);
   img.show();
 
   Automaton a(n);
