@@ -22,11 +22,11 @@ class Bouncy : public CoarseImage { public:
 int main (int argc, char ** argv) {
 	map <string, function<coo(coo)>> jumps;
 
-	jumps.emplace ( "none", [](coo z) {                          	return coo(0,                  	0);                  	} );
-	jumps.emplace ( "line", [](coo z) { double p = H['p'];       	return coo(- p*z.x,            	- p*z.y);            	} );
-	jumps.emplace ( "idla", [](coo z) {                          	return coo(- z.x,              	- z.y);              	} );
-	jumps.emplace ( "sign", [](coo z) {                          	return coo(- sign(z.x),        	- sign(z.y));        	} );
-	jumps.emplace ( "sqrt", [](coo z) { double l = sqrt(norm(z));	return coo(- sign(z.x)*sqrt(l),	- sign(z.y)*sqrt(l));	} );
+	jumps.emplace ( "none", [](coo z) {                            	return coo(0,            	0);            	} );
+	jumps.emplace ( "line", [](coo z) { double p = H['p'];         	return coo(- p*z.x,      	- p*z.y);      	} );
+	jumps.emplace ( "idla", [](coo z) {                            	return coo(- z.x,        	- z.y);        	} );
+	jumps.emplace ( "sign", [](coo z) {                            	return coo(- sign(z.x),  	- sign(z.y));  	} );
+	jumps.emplace ( "sqrt", [](coo z) { double l = 1+sqrt(norm(z));	return coo(- z.x/sqrt(l),	- z.y/sqrt(l));	} );
 
 	H.init ("Bouncy internal DLA", argc,argv, "n=2000,j=sqrt,p=.01");
 	Bouncy B (H['n'],jumps.at(H['j']));
