@@ -14,7 +14,8 @@ namespace vb {
 		coo 	operator- 	(const coo & z)	const	{ return coo (x-z.x, y-z.y); }
 		coo 	operator- 	()             	const	{ return coo (-x,-y); }
 
-		coo	operator/	(int d)	const	{ return coo (x/d,y/d);}
+		coo	operator*	(int d)	const	{ return coo (x*d,y*d); }
+		coo	operator/	(int d)	const	{ return coo (x/d,y/d); }
 
 		void	operator+=	(const coo & z)		{ x+=z.x; y+=z.y; }
 	};
