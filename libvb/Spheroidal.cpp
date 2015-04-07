@@ -12,7 +12,10 @@ namespace vb {
 
 	void Spheroidal::pack () {
 		for (auto & v : V) v.fixed = false;
-		for (auto f : phi.cycles()) if (f.size()==3) {
+		for (auto f : phi.cycles()) {
+			if (f.size()!=3) continue;
+			bool bad=false; for (int i=0; i<3; ++i) { if (V[E[f[i]].src].adj.size()==2) bad=true; }
+			if (bad && (phi.cycles().size()>2)) continue;
 			V[E[f[0]].src].fixed = true;	E[f[0]].a=M_PI/3; 	E[sigma[f[0]]].a = 0;
 			V[E[f[1]].src].fixed = true;	E[f[1]].a=-M_PI/3;	E[sigma[f[1]]].a = -2*M_PI/3;
 			V[E[f[2]].src].fixed = true;	E[f[2]].a=M_PI;   	E[sigma[f[2]]].a = 2*M_PI/3;
