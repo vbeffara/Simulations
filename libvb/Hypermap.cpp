@@ -197,10 +197,11 @@ namespace vb {
 		while ((e > 1e-3) || (e < old_e)) {
 			std::cerr << e << "      \r"; old_e = e; e = 0;
 			for (auto & v : V) {
-				int n = v.adj.size(); if ((v.fixed) || (n==2)) continue;
-				double s=0, r0=v.r, r1, r2=V[v.adj.back()].r;
-				for (int ll : v.adj) { r1=r2; r2=V[ll].r; s += alpha_xyz (r0,r1,r2); }
-				double c=cos(s/n), nr=ccn(n) * (1-c + sqrt(2*(1-c))) / (1+c);
+				int n = v.adj.size(), nn=n; if ((v.fixed) || (n==2)) continue;
+				std::vector<double> flower; for (int ll : v.adj) { flower.push_back(V[ll].r); if (V[ll].r == 0) nn -= 2; }
+				double s=0;
+				for (int i=0; i<n; ++i) { double r1=flower[i], r2=flower[(i+1)%n]; if ((r1>0)&&(r2>0)) s += alpha_xyz (v.r,r1,r2); }
+				double c=cos(s/nn), nr=ccn(nn) * (1-c + sqrt(2*(1-c))) / (1+c);
 				e += fabs(1-nr);
 				v.r *= 1.1 * nr - .1;
 			}
