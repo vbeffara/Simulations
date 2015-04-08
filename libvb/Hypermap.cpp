@@ -192,19 +192,17 @@ namespace vb {
 	}
 
 	void Hypermap::acpa () {
-		double e = 1, old_e = 2;
 		for (auto & v : V) if (v.adj.size()==2) v.r=0;
-		while ((e > 1e-3) || (e < old_e)) {
-			std::cerr << e << "      \r"; old_e = e; e = 0;
+		double e = 1; while (true) {
+			double old_e = e; e = 0;
 			for (auto & v : V) {
-				int n = v.adj.size(), nn=n; if ((v.fixed) || (n==2)) continue;
-				std::vector<double> flower; for (int ll : v.adj) { flower.push_back(V[ll].r); if (V[ll].r == 0) nn -= 2; }
-				double s=0;
-				for (int i=0; i<n; ++i) { double r1=flower[i], r2=flower[(i+1)%n]; if ((r1>0)&&(r2>0)) s += alpha_xyz (v.r,r1,r2); }
-				double c=cos(s/nn), nr=ccn(nn) * (1-c + sqrt(2*(1-c))) / (1+c);
-				e += fabs(1-nr);
-				v.r *= 1.1 * nr - .1;
+				int n = v.adj.size(); if ((v.fixed) || (n==2)) continue;
+				double s = alpha_xyz (v.r,V[v.adj[0]].r,V[v.adj[n-1]].r); for (int i=0; i<n-1; ++i) s += alpha_xyz (v.r,V[v.adj[i]].r,V[v.adj[i+1]].r);
+				e += fabs(s-2*M_PI);
+				double c = cos(s/n); v.r *= ccn(n) * (1-c + sqrt(2*(1-c))) / (1+c);
 			}
+			std::cerr << e << "       \r";
+			if ((e<1e-3) && (e>=old_e)) break;
 		}
 	}
 }
