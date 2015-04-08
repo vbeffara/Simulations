@@ -193,16 +193,19 @@ namespace vb {
 
 	void Hypermap::acpa () {
 		for (auto & v : V) if (v.adj.size()==2) v.r=0;
+		std::vector<double> r (V.size()); for (int i=0; i<V.size(); ++i) r[i] = V[i].r;
 		double e = 1; while (true) {
 			double old_e = e; e = 0;
-			for (auto & v : V) {
-				int n = v.adj.size(); if ((v.fixed) || (n==2)) continue;
-				double s = alpha_xyz (v.r,V[v.adj[0]].r,V[v.adj[n-1]].r); for (int i=0; i<n-1; ++i) s += alpha_xyz (v.r,V[v.adj[i]].r,V[v.adj[i+1]].r);
+			for (int i=0; i<V.size(); ++i) {
+				if (V[i].fixed) continue;
+				auto & adj = V[i].adj; int n = adj.size(); if (n==2) continue;
+				double s = alpha_xyz (r[i],r[adj[0]],r[adj[n-1]]); for (int j=0; j<n-1; ++j) s += alpha_xyz (r[i],r[adj[j]],r[adj[j+1]]);
 				e += fabs(s-2*M_PI);
-				double c = cos(s/n); v.r *= ccn(n) * (1-c + sqrt(2*(1-c))) / (1+c);
+				double c = cos(s/n); r[i] *= ccn(n) * (1-c + sqrt(2*(1-c))) / (1+c);
 			}
-			std::cerr << e << "       \r";
 			if ((e<1e-3) && (e>=old_e)) break;
+			std::cerr << e << "       \r";
 		}
+		for (int i=0; i<V.size(); ++i) V[i].r = r[i];
 	}
 }
