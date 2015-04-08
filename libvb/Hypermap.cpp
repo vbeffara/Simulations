@@ -194,18 +194,24 @@ namespace vb {
 	void Hypermap::acpa () {
 		for (auto & v : V) if (v.adj.size()==2) v.r=0;
 		std::vector<double> r (V.size()); for (int i=0; i<V.size(); ++i) r[i] = V[i].r;
-		double e = 1; while (true) {
-			double old_e = e; e = 0;
+		std::vector<double> oe (V.size(),1), ne (V.size(),1);
+		double e = 1; for (int t=1 ;; ++t) {
+			std::swap(oe,ne);
 			for (int i=0; i<V.size(); ++i) {
-				if (V[i].fixed) continue;
-				auto & adj = V[i].adj; int n = adj.size(); if (n==2) continue;
+				if (V[i].fixed) { ne[i]=0; continue; }
+				auto & adj = V[i].adj; int n = adj.size(); if (n==2) { ne[i]=0; continue; }
 				double s = alpha_xyz (r[i],r[adj[0]],r[adj[n-1]]); for (int j=0; j<n-1; ++j) s += alpha_xyz (r[i],r[adj[j]],r[adj[j+1]]);
-				e += fabs(s-2*M_PI);
+				ne[i] = fabs(s-2*M_PI);
 				double c = cos(s/n); r[i] *= ccn(n) * (1-c + sqrt(2*(1-c))) / (1+c);
 			}
-			if ((e<1e-3) && (e>=old_e)) break;
+			double old_e = e; e = 0; for (auto ee : ne) e += ee; if ((e<1e-3) && (e>=old_e)) break;
+			if (!(t%5)) {
+				double rr=0; int m=0; for (int i=0; i<ne.size(); ++i) if (oe[i]>0) { rr += ne[i]/oe[i]; ++m; }
+				if (m>0) rr /= m; if ((rr<0)||(rr>=1)||(e>1)) rr=0;
+				for (int i=0; i<V.size(); ++i) V[i].r = (rr*V[i].r-r[i])/(rr-1);
+			} else
+				for (int i=0; i<V.size(); ++i) V[i].r = r[i];
 			std::cerr << e << "       \r";
 		}
-		for (int i=0; i<V.size(); ++i) V[i].r = r[i];
 	}
 }
