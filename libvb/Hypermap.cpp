@@ -196,7 +196,10 @@ namespace vb {
 		std::vector<double> r (V.size()); for (int i=0; i<V.size(); ++i) r[i] = V[i].r;
 		std::vector<double> oe (V.size(),1), ne (V.size(),1);
 		double e = 1; for (int t=1 ;; ++t) {
-			std::swap(oe,ne);
+			if ((t%10)==0) {
+				std::swap(oe,ne);
+				for (int i=0; i<V.size(); ++i) V[i].r = r[i];
+			}
 			for (int i=0; i<V.size(); ++i) {
 				if (V[i].fixed) { ne[i]=0; continue; }
 				auto & adj = V[i].adj; int n = adj.size(); if (n==2) { ne[i]=0; continue; }
@@ -205,12 +208,11 @@ namespace vb {
 				double c = cos(s/n); r[i] *= ccn(n) * (1-c + sqrt(2*(1-c))) / (1+c);
 			}
 			double old_e = e; e = 0; for (auto ee : ne) e += ee; if ((e<1e-3) && (e>=old_e)) break;
-			if (!(t%5)) {
+			if ((t%1000)==999) {
 				double rr=0; int m=0; for (int i=0; i<ne.size(); ++i) if (oe[i]>0) { rr += ne[i]/oe[i]; ++m; }
 				if (m>0) rr /= m; if ((rr<0)||(rr>=1)||(e>1)) rr=0;
-				for (int i=0; i<V.size(); ++i) V[i].r = (rr*V[i].r-r[i])/(rr-1);
-			} else
-				for (int i=0; i<V.size(); ++i) V[i].r = r[i];
+				for (int i=0; i<V.size(); ++i) { V[i].r = (rr*V[i].r-r[i])/(rr-1); r[i] = V[i].r; }
+			}
 			std::cerr << e << "       \r";
 		}
 	}
