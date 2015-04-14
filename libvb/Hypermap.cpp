@@ -191,29 +191,30 @@ namespace vb {
 		return p[n];
 	}
 
-	void Hypermap::acpa () {
-		for (auto & v : V) if (v.adj.size()==2) v.r=0;
-		std::vector<double> r (V.size()); for (int i=0; i<V.size(); ++i) r[i] = V[i].r;
-		std::vector<double> oe (V.size(),1), ne (V.size(),1);
-		double e = 1; for (int t=1 ;; ++t) {
-			if ((t%10)==0) {
-				std::swap(oe,ne);
-				for (int i=0; i<V.size(); ++i) V[i].r = r[i];
-			}
-			for (int i=0; i<V.size(); ++i) {
-				if (V[i].fixed) { ne[i]=0; continue; }
-				auto & adj = V[i].adj; int n = adj.size(); if (n==2) { ne[i]=0; continue; }
-				double s = alpha_xyz (r[i],r[adj[0]],r[adj[n-1]]); for (int j=0; j<n-1; ++j) s += alpha_xyz (r[i],r[adj[j]],r[adj[j+1]]);
-				ne[i] = fabs(s-2*M_PI);
-				double c = cos(s/n); r[i] *= ccn(n) * (1-c + sqrt(2*(1-c))) / (1+c);
-			}
-			double old_e = e; e = 0; for (auto ee : ne) e += ee; if ((e<1e-3) && (e>=old_e)) break;
-			if ((t%1000)==999) {
-				double rr=0; int m=0; for (int i=0; i<ne.size(); ++i) if (oe[i]>0) { rr += ne[i]/oe[i]; ++m; }
-				if (m>0) rr /= m; if ((rr<0)||(rr>=1)||(e>1)) rr=0;
-				for (int i=0; i<V.size(); ++i) { V[i].r = (rr*V[i].r-r[i])/(rr-1); r[i] = V[i].r; }
-			}
-			std::cerr << e << "       \r";
+	double acpa_step (const Hypermap & M, const std::vector<double> in, std::vector<double> & out, std::vector<double> & er) {
+		out = in; double se = 0;
+		for (int i=0; i<out.size(); ++i) {
+			if (M.V[i].fixed) continue;
+			auto & adj = M.V[i].adj; int n = adj.size(); if (n==2) continue;
+			double s = M.alpha_xyz (out[i],out[adj[0]],out[adj[n-1]]);
+			for (int j=0; j<n-1; ++j) s += M.alpha_xyz (out[i],out[adj[j]],out[adj[j+1]]);
+			er[i] = s-2*M_PI; se += fabs(er[i]);
+			double c = cos(s/n); out[i] *= M.ccn(n) * (1-c + sqrt(2*(1-c))) / (1+c);
 		}
+		return se;
+	}
+
+	void Hypermap::acpa () {
+		std::vector<double> r (V.size(),0), old_r = r;
+		std::vector<double> e (V.size(),0), old_e = e;
+
+		for (int i=0; i<V.size(); ++i) if (V[i].adj.size() > 2) r[i] = V[i].r;
+		double se = 0;
+		for (int t=1 ;; ++t) {
+			double old_se = se; se = acpa_step(*this,r,r,e);
+			if ((se<1e-3) && (se>=old_se)) break;
+			std::cerr << t << " " << se << "           \r";
+		}
+		for (int i=0; i<V.size(); ++i) V[i].r = r[i];
 	}
 }
