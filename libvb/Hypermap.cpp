@@ -205,15 +205,32 @@ namespace vb {
 	}
 
 	void Hypermap::acpa () {
-		std::vector<double> r (V.size(),0), old_r = r;
-		std::vector<double> e (V.size(),0), old_e = e;
+		std::vector<double> r (V.size(),0), old_r (V.size(),0);
+		std::vector<double> e (V.size(),0), old_e (V.size(),0);
+		std::vector<double> l (V.size(),0), ll = l;
 
 		for (int i=0; i<V.size(); ++i) if (V[i].adj.size() > 2) r[i] = V[i].r;
-		double se = 0;
+		double se = 1;
 		for (int t=1 ;; ++t) {
-			double old_se = se; se = acpa_step(*this,r,r,e);
-			if ((se<1e-3) && (se>=old_se)) break;
-			std::cerr << t << " " << se << "           \r";
+			std::swap (old_e,e); std::swap (old_r,r);
+			double old_se = se; se = acpa_step(*this,old_r,r,e); if ((se<1e-3) && (se>=old_se)) break;
+			double sl=0, sv=0;
+			for (int i=0; i<e.size(); ++i) {
+				if (old_e[i]==0) continue;
+				double x = (old_e[i]-e[i])/old_e[i];
+				l[i] = .9 * l[i] + .1 * x;
+				ll[i] = .9 * ll[i] + .1 * x*x;
+				double v = (ll[i]-l[i]*l[i])/(l[i]*l[i]);
+				sv += v; sl += l[i];
+			}
+			std::cerr << t << " " << se << "       " << sl/V.size() << "        " << sv/V.size() << "          \r";
+			if (sv/V.size() < 1e-6) {
+				for (int i=0; i<V.size(); ++i) {
+					if (old_e[i]==0) continue;
+					double nr = (r[i] - (1-l[i])*old_r[i])/l[i];
+					if (nr>0) { r[i] = nr; l[i] = 0; }
+				}
+			}
 		}
 		for (int i=0; i<V.size(); ++i) V[i].r = r[i];
 	}
