@@ -205,30 +205,36 @@ namespace vb {
 	}
 
 	void Hypermap::acpa () {
-		std::vector<double> r (V.size(),0), old_r (V.size(),0);
-		std::vector<double> e (V.size(),0), old_e (V.size(),0);
-		std::vector<double> l (V.size(),0), ll = l;
+		int n = V.size();
+		std::vector<double> r (n,0), old_r (n,0), e (n,1), old_e (n,0), l (n,0), ll (n,0);
 
-		for (int i=0; i<V.size(); ++i) if (V[i].adj.size() > 2) r[i] = V[i].r;
-		double se = 1;
+		int   	m  	= pow(n,.25);	// Steps between looks
+		double	eps	= .1;        	// Dampening of the decay estimator
+		double	mvm	= .01;       	// Threshold to trigger the jump
+		double	tgt	= 1e-8;      	// Target per-vertex error
+
+		for (int i=0; i<n; ++i) if (V[i].adj.size() > 2) { r[i] = V[i].r; }
 		for (int t=1 ;; ++t) {
-			std::swap (old_e,e); std::swap (old_r,r);
-			double old_se = se; se = acpa_step(*this,old_r,r,e); if ((se<1e-3) && (se>=old_se)) break;
-			double sl=0, sv=0;
-			for (int i=0; i<e.size(); ++i) {
+			old_e = e; old_r=r; double se = 0;
+			for (int i=0; i<m; ++i) se = acpa_step(*this,r,r,e);
+			if (se/n<tgt) break;
+			double mv=0;
+			for (int i=0; i<n; ++i) {
 				if (old_e[i]==0) continue;
-				double x = (old_e[i]-e[i])/old_e[i];
-				l[i] = .9 * l[i] + .1 * x;
-				ll[i] = .9 * ll[i] + .1 * x*x;
-				double v = (ll[i]-l[i]*l[i])/(l[i]*l[i]);
-				sv += v; sl += l[i];
+				double x = (old_e[i]-e[i])/old_e[i]; // if (x<0) x=0;
+				l[i] 	= (1-eps) * l[i] 	+ eps * x;
+				ll[i]	= (1-eps) * ll[i]	+ eps * x*x;
+				if (l[i]==0) continue;
+				double v = (ll[i]-l[i]*l[i])/(ll[i]);
+				if (v>mv) mv=v;
 			}
-			std::cerr << t << " " << se << "       " << sl/V.size() << "        " << sv/V.size() << "          \r";
-			if (sv/V.size() < 1e-6) {
+			std::cerr << t << " " << se/n << " " << mv << "            \r";
+			if (mv<mvm) {
 				for (int i=0; i<V.size(); ++i) {
-					if (old_e[i]==0) continue;
-					double nr = (r[i] - (1-l[i])*old_r[i])/l[i];
-					if (nr>0) { r[i] = nr; l[i] = 0; }
+					if (old_e[i]!=0) {
+						double nr = (r[i] - (1-l[i])*old_r[i])/l[i];
+						if (nr>0) r[i] = nr;
+					}
 				}
 			}
 		}
