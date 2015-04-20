@@ -15,8 +15,9 @@ class Bounces : public map <string, function<coo(coo)>> { public:
 		emplace ( "soft", [](coo z) { int k = z.x > 2 * abs(z.y) ? H['a'] : 1;	return coo(- sign(z.x),  	- sign(z.y)) * k;                  	} );
 		emplace ( "sqrt", [](coo z) { double l = 1+sqrt(norm(z));             	return coo(- z.x/sqrt(l),	- z.y/sqrt(l));                    	} );
 
-		emplace ( "maxi", [](coo z) {                	return (abs(z.x)>abs(z.y)) ? coo(-sign(z.x),0) : coo(0,-sign(z.y)); } );
-		emplace ( "max2", [](coo z) { int a = H['a'];	return (abs(z.x)>abs(z.y)) ? coo(-sign(z.x),0) : coo(0,-a*sign(z.y)); } );
+		emplace ( "maxi", [](coo z) {                                        	return (abs(z.x)>abs(z.y)) ? coo(-sign(z.x),0) : coo(0,-sign(z.y)); } );
+		emplace ( "max2", [](coo z) { int a = H['a'];                        	return (abs(z.x)>abs(z.y)) ? coo(-sign(z.x),0) : coo(0,-a*sign(z.y)); } );
+		emplace ( "maxb", [](coo z) { double l = pow(norm(z),double(H['b']));	return (abs(z.x)>abs(z.y)) ? coo(-l*sign(z.x),0) : coo(0,-l*sign(z.y)); } );
 
 		emplace ( "dent", [](coo z) {	if (z.x+z.y > 2 * abs(z.x-z.y))	return (z.y>z.x) ? coo(-1,0) : coo(0,-1);
 		                             	else                           	return (abs(z.y)>abs(z.x)) ? coo(0,-sign(z.y)) : coo(-sign(z.x),0);	} );
@@ -36,7 +37,7 @@ class Bouncy : public CoarseImage { public:
 };
 
 int main (int argc, char ** argv) {
-	H.init ("Bouncy internal DLA", argc,argv, "n=1000,j=sqrt,p=.1,a=2");
+	H.init ("Bouncy internal DLA", argc,argv, "n=1000,j=sqrt,p=.1,a=2,b=.5");
 	Bouncy B (H['n'],H['j']);
 	B.show(); B.run(); B.output();
 }
