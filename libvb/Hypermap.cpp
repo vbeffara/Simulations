@@ -199,7 +199,7 @@ namespace vb {
 			double s = M.alpha_xyz (out[i],out[adj[0]],out[adj[n-1]]);
 			for (int j=0; j<n-1; ++j) s += M.alpha_xyz (out[i],out[adj[j]],out[adj[j+1]]);
 			er[i] = s-2*M_PI; se += fabs(er[i]);
-			double c = cos(s/n); out[i] *= M.ccn(n) * (1-c + sqrt(2*(1-c))) / (1+c);
+			double c = cos(s/n); double nr = M.ccn(n) * (1-c + sqrt(2*(1-c))) / (1+c); out[i] *= 1.1*nr - .1;
 		}
 		return se;
 	}
