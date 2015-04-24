@@ -180,4 +180,92 @@ namespace vb {
 		for (auto z : w) { xmin=std::min(xmin,real(z.z)); xmax=std::max(xmax,real(z.z)); ymin=std::min(ymin,imag(z.z)); ymax=std::max(ymax,imag(z.z)); }
 		return { {xmin,ymin}, {xmax,ymax} };
 	}
+
+	template <typename T> Hypermap Constellation0<T>::explore () const {
+		std::vector<Star<T>> Z; for (auto z : b) Z.push_back(z); for (auto z : f) Z.push_back(z); for (auto z : w) Z.push_back(z);
+
+		unsigned long maxdeg=0; for (auto z : Z) maxdeg = std::max (maxdeg, z.d);
+
+		auto bd = bounds(); T large = abs(bd.first-bd.second), mindist = large;
+		for (int i=0; i<Z.size(); ++i) for (int j=0; j<Z.size(); ++j) if (i!=j) mindist = std::min (mindist, abs(Z[j].z-Z[i].z));
+
+		T rad = mindist/5;
+
+		std::vector<std::vector<cplx>> hands;
+		std::vector<std::vector<unsigned>> halfedges;
+		unsigned index = 0;
+
+		for (Star<T> z : Z) {
+			std::vector<cplx> hs;
+			std::vector<unsigned> he;
+
+			cplx u = z.z + rad*exp(cplx(0,.001)); T s = imag((*this)(u));
+			for (int i=0; i<10*z.d; ++i) {
+				u = z.z + exp(cplx(0,2*M_PI/(10*z.d))) * (u-z.z);
+				T ns = imag((*this)(u));
+				if (s*ns<0) {
+					hs.push_back(u); s=ns;
+					he.push_back(index++);
+				}
+			}
+			hands.push_back(hs);
+			halfedges.push_back(he);
+		}
+
+		std::vector<cplx> hs;
+		std::vector<unsigned> he;
+		cplx u = large*exp(cplx(0,.001));
+		T s = imag((*this)(u));
+		for (int i=0; i<10*maxdeg; ++i) {
+			u = exp(cplx(0,-2*M_PI/(10*maxdeg))) * u;
+			T ns = imag((*this)(u));
+			if (s*ns<0) {
+				hs.push_back(u); s=ns;
+				he.push_back(index++);
+			}
+		}
+		hands.push_back(hs);
+		halfedges.push_back(he);
+
+		std::vector<std::vector<unsigned>> pairs;
+
+		for (int i=0; i<Z.size(); ++i) {
+			for (int j=0; j<hands[i].size(); ++j) {
+				auto l = hands[i][j];
+				auto r = Z[i].z + exp(cplx(0,-2*M_PI/(10*Z[i].d))) * (l-Z[i].z);
+				auto sl = imag((*this)(l));
+				bool looking = true;
+				while (looking) {
+					cplx nz = l + exp(cplx(0,M_PI/3)) * (r-l);
+					if (abs(nz)>large) {
+						T d = large; int h = -1; int k=hands.size()-1;
+						for (int kk=0; kk<hands[k].size(); ++kk) {
+							T nd = abs(nz-hands[k][kk]);
+							if (nd < d) { d = abs(nz-hands[k][kk]); h = kk; }
+						}
+						assert (h>=0);
+						pairs.push_back({halfedges[i][j],halfedges[k][h]});
+						looking = false;
+					}
+					for (int k=0; k<Z.size(); ++k) if (abs(nz-Z[k].z) < rad) {
+						T d = rad; int h = -1;
+						for (int kk=0; kk<hands[k].size(); ++kk) {
+							T nd = abs(nz-hands[k][kk]);
+							if (nd < d) { d = abs(nz-hands[k][kk]); h = kk; }
+						}
+						assert (h>=0);
+						if (halfedges[i][j] < halfedges[k][h])
+							pairs.push_back({halfedges[i][j],halfedges[k][h]});
+						looking = false;
+					}
+					if (sl*imag((*this)(nz))>0) l=nz; else r=nz;
+				}
+			}
+		}
+
+		assert (pairs.size()==index/2);
+		Permutation sigma(halfedges), alpha(pairs), phi((sigma*alpha).inverse());
+		for (auto & c : phi.cycles()) assert (c.size()==3);
+		return Hypermap (sigma,alpha,phi);
+	}
 }

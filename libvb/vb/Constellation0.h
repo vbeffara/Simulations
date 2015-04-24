@@ -19,7 +19,7 @@ namespace vb {
 
 		void	belyi	();	// does too many things at once
 
-
+		Hypermap	explore	()	const; // Recover the hypermap
 
 
 	private:
