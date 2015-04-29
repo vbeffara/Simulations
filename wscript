@@ -18,8 +18,6 @@ def configure (ctx) :
 	ctx.check    	(lib='mpfr',                             	                          	define_name='HAVE_MPFR')
 	ctx.check    	(lib='fplll',                            	                          	define_name='HAVE_FPLLL')
 	ctx.check_boost ()
-	ctx.check    	(lib='boost_system')
-	ctx.check    	(lib='boost_filesystem')
 	ctx.check_cxx	(msg="Checking complex<mpf_float> validity", use=['GMP'], errmsg='no', mandatory=0, define_name='HAVE_COMPLEX_GMP',
 	             	code="""#include <boost/multiprecision/gmp.hpp>\nint main () { exp(std::complex<boost::multiprecision::mpf_float_100>()); }""")
 

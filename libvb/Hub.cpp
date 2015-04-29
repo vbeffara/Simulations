@@ -3,7 +3,7 @@
 #include <vector>
 #include <getopt.h>
 #include <boost/algorithm/string.hpp>
-#include <boost/filesystem.hpp>
+#include <sys/stat.h>
 
 namespace vb {
 	Hub::Hub () {}
@@ -13,8 +13,8 @@ namespace vb {
 
 		std::vector<std::string> fs;	boost::split (fs, argv[0], boost::is_any_of("/\\"));
 		prog = fs.back(); dir = "output/" + prog + "/";
-		boost::filesystem::create_directories(dir);
-		boost::filesystem::create_directories(dir + "snapshots");
+		mode_t mode = S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH;
+		mkdir("output", mode); mkdir(dir.c_str(), mode); mkdir((dir + "snapshots").c_str(), mode);
 
 		std::vector<std::string> cs;	if (c.size()) boost::split (cs, c, boost::is_any_of(", "), boost::token_compress_on);
 
