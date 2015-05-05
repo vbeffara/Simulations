@@ -25,7 +25,6 @@ namespace vb {
 
 	inline std::ostream & operator<< (std::ostream & os, const coo z) { return os << "(" << z.x << "," << z.y << ")"; }
 
-	const coo dz[8] = { coo(1,0), coo(0,1), coo(-1,0), coo(0,-1), coo(1,1), coo(-1,-1), coo(-1,1), coo(1,-1) };
 	const coo J (0,1);
 
 	class rect { public: coo ul,br;
@@ -40,5 +39,6 @@ namespace vb {
 		coo3	operator+ 	(const coo3 & c)	const	{ return coo3 (x+c.x, y+c.y, z+c.z); }
 	};
 
-	const coo3 dz3[6] = { coo3(1,0,0), coo3(-1,0,0), coo3(0,1,0), coo3(0,-1,0), coo3(0,0,1), coo3(0,0,-1) };
+	extern const coo dz[8];
+	extern const coo3 dz3[6];
 };
