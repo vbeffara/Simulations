@@ -7,7 +7,8 @@
 namespace vb {
 	template <typename T> Constellation0<T>::Constellation0 (const Hypermap & M, const Hub & H) {
 		Hypermap M2 (M); M2.dessin(); p = { T(1) };
-		do {
+		Hypermap M3 (M2); M3.normalize();
+		while (true) {
 			M2.split_edges(); Spheroidal S (M2,H); S.pack(); std::cerr << std::endl;
 			unsigned N = M.sigma.size(), inf=0, dinf=0;
 			for (auto c : M.phi.cycles()) { unsigned i = S.E[c[0]+3*N].src, d = S.V[i].adj.size(); if (d>dinf) { inf=i; dinf=d; } }
@@ -17,7 +18,9 @@ namespace vb {
 			f.clear(); for (auto c : M.phi.cycles())  	{ if (S.E[c[0]+3*N].src != inf)	f.push_back( { S.V[S.E[c[0]+3*N].src].z,	c.size() } ); }
 			dim = b.size() + w.size() + f.size();
 			make_c_0();
-		} while (findn() > T(1e-6));
+			if (findn() > T(1e-6)) continue;
+			if (auto M4 = explore()) { M4->normalize(); if (M3==M4) break; }
+		}
 	}
 
 	template <typename T> template <typename U> Constellation0<T>::Constellation0 (const Constellation0<U> & C) : Constellation<T>(C) { dim--; };
@@ -181,7 +184,7 @@ namespace vb {
 		return { {xmin,ymin}, {xmax,ymax} };
 	}
 
-	template <typename T> Hypermap Constellation0<T>::explore () const {
+	template <typename T> boost::optional<Hypermap> Constellation0<T>::explore () const {
 		std::vector<Star<T>> Z; for (auto z : b) Z.push_back(z); for (auto z : f) Z.push_back(z); for (auto z : w) Z.push_back(z);
 
 		unsigned long maxdeg=0; for (auto z : Z) maxdeg = std::max (maxdeg, z.d);
@@ -208,6 +211,7 @@ namespace vb {
 					he.push_back(index++);
 				}
 			}
+			if (hs.size()!=2*z.d) return boost::none;
 			hands.push_back(hs);
 			halfedges.push_back(he);
 		}
@@ -243,7 +247,7 @@ namespace vb {
 							T nd = abs(nz-hands[k][kk]);
 							if (nd < d) { d = abs(nz-hands[k][kk]); h = kk; }
 						}
-						assert (h>=0);
+						if (h<0) return boost::none;
 						pairs.push_back({halfedges[i][j],halfedges[k][h]});
 						looking = false;
 					}
@@ -253,7 +257,7 @@ namespace vb {
 							T nd = abs(nz-hands[k][kk]);
 							if (nd < d) { d = abs(nz-hands[k][kk]); h = kk; }
 						}
-						assert (h>=0);
+						if (h<0) return boost::none;
 						if (halfedges[i][j] < halfedges[k][h])
 							pairs.push_back({halfedges[i][j],halfedges[k][h]});
 						looking = false;
@@ -263,9 +267,10 @@ namespace vb {
 			}
 		}
 
-		assert (pairs.size()==index/2);
+		if (pairs.size() != index/2) return boost::none;
 		Permutation sigma(halfedges), alpha(pairs), phi((sigma*alpha).inverse());
-		for (auto & c : phi.cycles()) assert (c.size()==3);
+		for (auto & c : phi.cycles()) if (c.size() != 3) return boost::none;
+
 		return Hypermap (sigma,alpha,phi);
 	}
 }

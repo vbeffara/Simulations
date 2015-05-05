@@ -3,6 +3,7 @@
 #include <vb/Constellation.h>
 #include <vb/Hub.h>
 #include <vb/Hypermap.h>
+#include <boost/optional.hpp>
 
 namespace vb {
 	template <typename T> class Constellation0 : public Constellation<T> { public:
@@ -19,7 +20,7 @@ namespace vb {
 
 		void	belyi	();	// does too many things at once
 
-		Hypermap	explore	()	const; // Recover the hypermap
+		boost::optional<Hypermap>	explore	()	const; // Recover the hypermap
 
 
 	private:
