@@ -2,6 +2,7 @@
 #include <vb/Picture.h>
 #include <vb/Array.h>
 #include <vb/cpx.h>
+#include <future>
 
 namespace vb {
 	template <typename T> class Bitmap : public Picture, public Array<T> { public:
@@ -17,7 +18,7 @@ namespace vb {
 		T	lazy	(coo z, std::function <T(coo)> f)	{ if (at(z) == dflt) put(z, f(z)); return at(z); }
 
 		void fill (coo z, T c, int adj = 4);
-		void tessel (int xmin, int ymin, int xmax, int ymax, std::function <T(coo)> f);
+		void tessel (coo ul, coo lr, std::function <T(coo)> f);
 
 	private:
 		Color * stage;	///< The raw pixel data of the screen representation.
@@ -55,12 +56,49 @@ namespace vb {
 		};
 	}
 
-	template <typename T> void Bitmap<T>::tessel (int xmin, int ymin, int xmax, int ymax, std::function <T(coo)> f) {
-		Color tmp = lazy (coo(xmin,ymin),f); bool mono = true;
-		for (int i=xmin; i<=xmax; ++i) { if (lazy(coo(i,ymin),f) != tmp) mono=false; if (lazy(coo(i,ymax),f) != tmp) mono=false; }
-		for (int j=ymin; j<=ymax; ++j) { if (lazy(coo(xmin,j),f) != tmp) mono=false; if (lazy(coo(xmax,j),f) != tmp) mono=false; }
-		if (mono) { for (int i=xmin+1; i<xmax; ++i) for (int j=ymin+1; j<ymax; ++j) at(coo(i,j)) = tmp; }
-		else if ((xmax-xmin) > std::max(ymax-ymin,1))	{ int xmed=(xmin+xmax)>>1; tessel (xmin,ymin,xmed,ymax,f); tessel (xmed,ymin,xmax,ymax,f); }
-		else if (ymax>ymin+1)                        	{ int ymed=(ymin+ymax)>>1; tessel (xmin,ymin,xmax,ymed,f); tessel (xmin,ymed,xmax,ymax,f); }
-	}
+    template <typename T> void Bitmap<T>::tessel (coo ul, coo lr, std::function <T(coo)> f) {
+        std::function<void(coo,coo,int)> line = [&] (coo s, coo d, int l) {
+            if (l>10) {
+                auto l1 = std::async (std::launch::async, line, s, d, l/2);
+                auto l2 = std::async (std::launch::async, line, s+d*(l/2), d, l-(l/2));
+                l1.get(); l2.get();
+            } else {
+                for (int i=0; i<l; ++i) { at(s) = f(s); s += d; }
+            }
+        };
+
+        std::function<void(coo,coo)> go = [&] (coo ul, coo lr) {
+            Color tmp = at(ul); bool mono = true; coo z = ul;
+            for (; mono && (z != coo {lr.x,ul.y}); z += {1,0}) mono = mono && (at(z) == tmp);
+            for (; mono && (z != coo {lr.x,lr.y}); z += {0,1}) mono = mono && (at(z) == tmp);
+            for (; mono && (z != coo {ul.x,lr.y}); z += {-1,0}) mono = mono && (at(z) == tmp);
+            for (; mono && (z != coo {ul.x,ul.y}); z += {0,-1}) mono = mono && (at(z) == tmp);
+
+            int size = std::min(lr.x-ul.x,lr.y-ul.y); if (size <= 1) return;
+            if (mono) { for (int i=ul.x+1; i<lr.x; ++i) for (int j=ul.y+1; j<lr.y; ++j) at(coo(i,j)) = tmp; return; }
+
+            coo ul_ = (lr.x-ul.x > lr.y-ul.y) ? coo {(ul.x+lr.x)/2,ul.y} : coo {ul.x,(ul.y+lr.y)/2};
+            coo lr_ = (lr.x-ul.x > lr.y-ul.y) ? coo {(ul.x+lr.x)/2,lr.y} : coo {lr.x,(ul.y+lr.y)/2};
+            coo dd_ = (lr.x-ul.x > lr.y-ul.y) ? coo {0,1} : coo {1,0};
+            line (ul_,dd_,size);
+
+            if (size>10) {
+                auto t1 = std::async (std::launch::async, go, ul, lr_); go (ul_,lr); t1.get();
+            } else {
+                go (ul,lr_); go (ul_,lr);
+            }
+        };
+
+        auto main = std::async (std::launch::async, [&]() {
+            auto l1 = std::async (std::launch::async, line, ul, coo(1,0), lr.x-ul.x);
+            auto l2 = std::async (std::launch::async, line, coo(lr.x,ul.y), coo(0,1), lr.y-ul.y);
+            auto l3 = std::async (std::launch::async, line, lr, coo(-1,0), lr.x-ul.x);
+            auto l4 = std::async (std::launch::async, line, coo(ul.x,lr.y), coo(0,-1), lr.y-ul.y);
+            l1.get(); l2.get(); l3.get(); l4.get();
+            go (ul, lr);
+        } );
+
+        start = now();
+        while (main.wait_for(std::chrono::milliseconds(100)) != std::future_status::ready) update(); main.get();
+    }
 }

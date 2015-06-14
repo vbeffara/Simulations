@@ -49,7 +49,7 @@ namespace vb {
 			return HSV ((imag(z)>0)?0:.5, .8, s);
 		};
 
-		img.tessel(0,0,img.w()-1,img.h()-1, smooth ? aa<T>(f) : [&](coo c){ return f(cplx(c.x,c.y)); });
+		img.tessel({0,0},{img.w()-1,img.h()-1}, smooth ? aa<T>(f) : [&](coo c){ return f(cplx(c.x,c.y)); });
 		img.update();
 	};
 }
