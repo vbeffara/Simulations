@@ -4,8 +4,8 @@ def options (ctx) :
 	ctx.load ('compiler_c compiler_cxx')
 
 def configure (ctx) :
-	ctx.env.CXXFLAGS += [ '-std=c++11', '-fext-numeric-literals', '-I%s/libvb' % ctx.path.abspath() ] # Kludge to override system <complex> header
-	ctx.env.LINKFLAGS += [ '-std=c++11' ]
+	ctx.env.CXXFLAGS += [ '-std=c++14', '-fext-numeric-literals' ]
+	ctx.env.LINKFLAGS += [ '-std=c++14' ]
 
 	ctx.load ('compiler_c compiler_cxx boost')
 	ctx.define ('VB_ENDIAN', ctx.check_endianness(), 0)
