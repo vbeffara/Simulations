@@ -37,6 +37,9 @@ class BCs : public map <string, function<void(Ising3&)>> { public:
 		emplace ("cube", [](Ising3 &I) { I.b=0;
 		    for (int x=I.sx/10; x<9*I.sx/10; ++x) for (int y=I.sy/10; y<9*I.sy/10; ++y) for (int z=I.sz/10; z<9*I.sz/10; ++z) I.put(coo3(x,y,z), 255);
 		} );
+		emplace ("slope", [](Ising3 &I) { I.b=1;
+			for (auto c = I.begin(); c != I.end(); ++c) if ((c.y-I.sy/2) < double(H['p'])*(c.z-I.sz/2)) I.put(c,255);
+		} );
 	}
 };
 
