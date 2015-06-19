@@ -43,6 +43,7 @@ class Bouncy : public CoarseImage { public:
 				if (H['g']) {
 					Color c = tree->at((z+z0)*2);
 					if ((c==BLACK) || (prng.bernoulli(H['u']))) c = HSV(prng.uniform_real(),1,1);
+					if (H['i'] && (norm(nz)<10)) c = nz.y>0 ? Indexed(0) : Indexed(1);
 					tree->put ((nz+z0)*2, c); tree->put (z+nz+z0*2, c);
 				}
 				put(nz,1); nz += jump(nz);
@@ -56,7 +57,7 @@ class Bouncy : public CoarseImage { public:
 };
 
 int main (int argc, char ** argv) {
-	H.init ("Internal DLA", argc,argv, "n=1000,j=idla,p=.1,a=2,b=.5,g,u=0");
+	H.init ("Internal DLA", argc,argv, "n=1000,j=idla,p=.1,a=2,b=.5,g,u=0,i");
 	Bouncy B (H['n'],H['j']);
 	B.run(); if (H['g']) B.tree->output(); else B.output();
 }
