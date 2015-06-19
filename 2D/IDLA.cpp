@@ -1,4 +1,5 @@
 #include <vb/CoarseImage.h>
+#include <vb/Image.h>
 #include <vb/Hub.h>
 #include <vb/math.h>
 #include <map>
@@ -29,15 +30,33 @@ class Bounces : public map <string, function<coo(coo)>> { public:
 };
 
 class Bouncy : public CoarseImage { public:
-	Bouncy (int n, string j) : CoarseImage (n,n,pow(n,.25)), jump(Bounces().at(j)) { z0 = {n/2,n/2}; };
+	Bouncy (int n, string j) : CoarseImage (n,n,pow(n,.25)), jump(Bounces().at(j)) {
+		z0 = {n/2,n/2};
+		if (H['g']) { tree = make_unique<Image> (2*n-1,2*n-1); tree->put(z0*2,WHITE); tree->show(); } else { show(); }
+	};
 
-	void run () { coo z (0,0); while (contains(z)) { coo zz = at(z) ? dz[prng.uniform_int(4)] : jump(z); put(z,1); z += zz; } }
+	void run () {
+		coo z (0,0); while (true) {
+			coo nz = z;
+			if (at(nz)) { nz += dz[prng.uniform_int(4)]; if (!contains(nz)) break; }
+			if (!at(nz)) {
+				if (H['g']) {
+					Color c = tree->at((z+z0)*2);
+					if ((c==BLACK) || (prng.bernoulli(H['u']))) c = HSV(prng.uniform_real(),1,1);
+					tree->put ((nz+z0)*2, c); tree->put (z+nz+z0*2, c);
+				}
+				put(nz,1); nz += jump(nz);
+			}
+			z = nz;
+		}
+	}
 
 	function <coo(coo)> jump;
+	unique_ptr <Image> tree;
 };
 
 int main (int argc, char ** argv) {
-	H.init ("Bouncy internal DLA", argc,argv, "n=1000,j=sqrt,p=.1,a=2,b=.5");
+	H.init ("Internal DLA", argc,argv, "n=1000,j=idla,p=.1,a=2,b=.5,g,u=0");
 	Bouncy B (H['n'],H['j']);
-	B.show(); B.run(); B.output();
+	B.run(); if (H['g']) B.tree->output(); else B.output();
 }
