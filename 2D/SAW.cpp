@@ -1,4 +1,4 @@
-#include <vb/CL_Parser.h>
+#include <vb/Hub.h>
 #include <vb/PRNG.h>
 #include <vb/Path.h>
 #include <vb/ProgressBar.h>
@@ -7,9 +7,9 @@ using namespace std;
 using namespace vb;
 
 int main(int argc, char ** argv) {
-  CL_Parser CLP (argc,argv,"n=500,t=5000");
-  int n = CLP('n');
-  int t = CLP('t');
+  H.init ("Self-avoiding walk",argc,argv,"n=500,t=5000");
+  int n = H['n'];
+  int t = H['t'];
 
   OldPath P (n,true);
   ProgressBar PB (t);

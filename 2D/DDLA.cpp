@@ -1,12 +1,11 @@
-#include <vb/CL_Parser.h>
+#include <vb/Hub.h>
 #include <vb/Point.h>
 
 using namespace vb; using namespace std;
 
 class DDLA : public CoarseImage {
 public:
-	DDLA (CL_Parser & CLP) : CoarseImage (CLP('n'),CLP('n'), CLP('f') ? pow(double(CLP('n')),.33) : 1),
-			f(CLP('f')), n(CLP('n')), cursum(0), p(CLP('p')) {
+	DDLA (int n_) : CoarseImage (n_, n_, H['f'] ? pow(n_,.33) : 1), f(H['f']), n(n_), cursum(0), p(H['p']) {
 		put(0,1);
 		pq << Point(1,prng.exponential()/p) << Point(J,prng.exponential()/(1-p));
 	};
@@ -42,6 +41,6 @@ public:
 };
 
 int main (int argc, char ** argv) {
-	CL_Parser CLP (argc,argv,"n=750,p=.5,f");
-	DDLA img (CLP); img.show(); img.run(); img.output();
+	H.init ("Directed DLA",argc,argv,"n=750,p=.5,f");
+	DDLA img (H['n']); img.show(); img.run(); img.output();
 }
