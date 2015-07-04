@@ -23,7 +23,7 @@ namespace vb {
 		Color ()               	: Color (0,0,0,0)	{}
 
 		bool operator== (const Color &o) const { return (r==o.r) && (g==o.g) && (b==o.b) && (a==o.a); }
-		bool operator!= (const Color &o) const { return ! operator== (o); }
+		bool operator!= (const Color &o) const { return (r!=o.r) || (g!=o.g) || (b!=o.b) || (a!=o.a); }
 
 		operator int () { return (r+g+b)/3; }
 	};
