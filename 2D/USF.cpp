@@ -112,8 +112,6 @@ class UST : public Bitmap<Point> { public:
 			at(tz).t = SITE; put (tz+dz[d],EDGE); at(tz+dz[d]).d = d;
 			z += dz[d];
 		}
-
-		pause();
 	}
 
 	int n;
