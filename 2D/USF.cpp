@@ -102,7 +102,7 @@ class USF : public Bitmap<Point> { public:
 			vector<double> pp (4,0);
 			double minp = 0;
 			for (int d=0; d<4; ++d) if (P.contains(z+dz[d])) minp = min (minp, P.at(z+dz[d]));
-			for (int d=0; d<4; ++d) if (P.contains(z+dz[d])) pp[d] = exp(P.at(z+dz[d]) - minp);
+			for (int d=0; d<4; ++d) if (P.contains(z+dz[d])) pp[d] = (d<2 ? aa : 1) * exp(P.at(z+dz[d]) - minp);
 			double s=0; for (auto p : pp) s += p; for (auto &p : pp) p /= s;
 			int d = prng.discrete(pp);
 
