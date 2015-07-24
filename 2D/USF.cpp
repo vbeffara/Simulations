@@ -1,6 +1,5 @@
 #include <vb/Bitmap.h>
 #include <vb/Hub.h>
-#include <vb/ProgressBar.h>
 
 using namespace vb; using namespace std;
 
@@ -26,8 +25,9 @@ class Point { public:
 	Type t = VOID;
 };
 
-class UST : public Bitmap<Point> { public:
-	UST (int n_) : Bitmap<Point> (2*n_,2*n_+1), n(n_) {}
+class USF : public Bitmap<Point> { public:
+	USF (int n_) : Bitmap<Point> (2*n_,2*n_+1), n(n_), root (2*n-1,2*(n/2)), start (1,2*(n/4)) {
+	}
 
 	void lerw (coo z0, bool killed = false) {
 		coo z = z0;
@@ -67,37 +67,42 @@ class UST : public Bitmap<Point> { public:
 
 	void special () {
 		double aa = double(H['a']); aa=aa*aa;
+		double laa = log(2+2*aa);
 
-		Array<double> P (n,n+1,0); P.at(coo(n-1,n/2)) = 1;
-		{ ProgressBar PB (10*n*n);
-			for (int t=0; t<10*n*n; ++t) {
-				PB.set(t);
-				// cerr << ".";
-				for (int i=0; i<n; ++i) for (int j=0; j<n+1; ++j) {
+		Array<double> P (n,n+1,0);
+		double er = 1;
+		while (er > 1e-12) {
+			er = 0;
+			#pragma omp parallel for reduction(+:er) schedule(static)
+			for (int i=0; i<n; ++i) {
+				for (int j=0; j<n+1; ++j) {
 					if ((i==n-1) && (j==n/2)) continue;
-					coo z (i,j);
-					double s=0;
-					for (int d=0; d<4; ++d) if (P.contains(z + dz[d])) {
-						if ((d==0)||(d==1)) s += aa * P.at(z+dz[d]);
-						else s += P.at(z+dz[d]);
+					coo z {i,j};
+					double minp = 1; int mind = -1;
+					for (int d=0; d<4; ++d) if (P.contains(z+dz[d])) {
+						double tp = P.at(z+dz[d]);
+						if (tp < minp) { minp = tp; mind = d; }
 					}
-					P.at(z) = s / (2 + 2*aa);
+					double s (mind<2 ? aa : 1);
+					for (int d=0; d<4; ++d) if ((d!=mind) && (P.contains(z + dz[d]))) {
+						if (d<2) s += aa * exp(P.at(z+dz[d]) - minp);
+						else s += exp(P.at(z+dz[d]) - minp);
+					}
+					double ns = log(s) + minp - laa;
+					er += fabs (P.at(z) - ns);
+					P.at(z) = ns;
 				}
 			}
+			cerr << er << "           \r";
 		}
+		cerr << endl;
 
-		coo z0 (0,n/4);
-
-		// while (P.contains(z)) {
-		//	if (z == coo(n-1,n/2)) break;
-		//	at(coo(1+2*z.x,2*z.y)).d=0; step();
-		//	z += dz[d];
-		// }
-
-		coo z = z0;
+		coo z0 (0,n/4), z (z0);
 		while (z != coo(n-1,n/2)) {
 			vector<double> pp (4,0);
-			for (int d=0; d<4; ++d) if (P.contains(z+dz[d])) pp[d] = P.at(z+dz[d]);
+			double minp = 0;
+			for (int d=0; d<4; ++d) if (P.contains(z+dz[d])) minp = min (minp, P.at(z+dz[d]));
+			for (int d=0; d<4; ++d) if (P.contains(z+dz[d])) pp[d] = exp(P.at(z+dz[d]) - minp);
 			double s=0; for (auto p : pp) s += p; for (auto &p : pp) p /= s;
 			int d = prng.discrete(pp);
 
@@ -114,28 +119,26 @@ class UST : public Bitmap<Point> { public:
 		}
 	}
 
+	void go () {
+		if (H['v']) show();
+
+		put (root, SITE);
+		if (double(H['a'])<1) special(); else lerw(start, false);
+		for (int i=0; i<n; ++i) for (int j=0; j<=n; ++j) lerw(coo(2*i+1,2*j), true);
+
+		if (H['v']) pause();
+		put (root, EMPH); path (start);
+		if (H['v']) pause();
+		dual();
+		if (H['v']) pause();
+		output();
+	}
+
 	int n;
+	coo root, start;
 };
 
 int main (int argc, char ** argv) {
-	H.init ("2-periodic uniform spanning forest", argc, argv, "n=300,a=1");
-	int n=H['n'];
-
-	UST I (n);
-
-	coo root (2*n-1,2*(n/2)), start (1,2*(n/4));
-
-	I.put (root, SITE);
-
-	I.show();
-	I.special();
-
-	// I.lerw(start, false);
-	for (int i=0; i<n; ++i) for (int j=0; j<=n; ++j) I.lerw(coo(2*i+1,2*j), true);
-
-	I.dual();
-
-	I.put (root, EMPH); I.path (start);
-
-	I.pause(); I.output();
+	H.init ("2-periodic uniform spanning forest", argc, argv, "n=300,a=.5,v");
+	USF(H['n']).go();
 }
