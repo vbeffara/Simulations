@@ -25,8 +25,8 @@ class Point { public:
 	int d = -1;
 };
 
-class USF : public Bitmap<Point> { public:
-	USF (int n_, double a_) : Bitmap<Point> (2*n_,2*n_+1), n(n_), a(a_), aa(a*a), root (2*n-1,2*(n/2)), start (1,2*(n/4)) {}
+class SF : public Bitmap<Point> { public:
+	SF (int n_, double a_) : Bitmap<Point> (2*n_,2*n_+1), n(n_), a(a_), aa(a*a), root (2*n-1,2*(n/2)), start (1,2*(n/4)) {}
 
 	void lerw (coo z0, bool killed = false) {
 		coo z = z0;
@@ -139,6 +139,6 @@ class USF : public Bitmap<Point> { public:
 };
 
 int main (int argc, char ** argv) {
-	H.init ("2-periodic uniform spanning forest", argc, argv, "n=300,a=.5,v");
-	USF(H['n'],H['a']).go();
+	H.init ("Spanning forest with 2-periodic weights", argc, argv, "n=300,a=.5,v");
+	SF(H['n'],H['a']).go();
 }
