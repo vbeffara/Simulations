@@ -7,7 +7,7 @@ enum Type { VOID, SITE, EDGE, DUAL, DEDG, EMPH };
 
 class Point { public:
 	Point (int i=0) {}
-	Point (Type _t) : t(_t) {}
+	Point (Type t_, int d_ = 0) : t(t_), d(d_) {}
 	operator Color() {
 		if (t == SITE) return ((d==0)||(d==1)) ? RED : Color(200,200,255);
 		if (t == EDGE) return ((d==0)||(d==1)) ? RED : Color(200,200,255);
@@ -21,30 +21,33 @@ class Point { public:
 		return Indexed(d);
 	}
 
-	int d = -1;
 	Type t = VOID;
+	int d = -1;
 };
 
 class USF : public Bitmap<Point> { public:
-	USF (int n_) : Bitmap<Point> (2*n_,2*n_+1), n(n_), root (2*n-1,2*(n/2)), start (1,2*(n/4)) {
-	}
+	USF (int n_, double a_) : Bitmap<Point> (2*n_,2*n_+1), n(n_), a(a_), aa(a*a), root (2*n-1,2*(n/2)), start (1,2*(n/4)) {}
 
 	void lerw (coo z0, bool killed = false) {
 		coo z = z0;
 		while (at(z).t != SITE) {
 			step();
 			int d = prng.uniform_int(4); at(z).d = d;
-			if (((d==0)||(d==1)) && prng.bernoulli(1-double(H['a'])*double(H['a']))) continue;
+			if (((d==0)||(d==1)) && prng.bernoulli(1-aa)) continue;
 			if (contains(z + dz[d] * 2)) { z += dz[d] * 2; continue; }
 			if (killed && (d==2)) break;
 			if (d==2) z=z0;
 		}
 		z = z0;
-		while (contains(z) && (at(z).t != SITE)) { int d = at(z).d; at(z).t = SITE; put (z+dz[d],EDGE); at(z+dz[d]).d = d; z += dz[d] * 2; }
+		while (contains(z) && (at(z).t != SITE)) {
+			int d = at(z).d; at(z).t = SITE; at(z+dz[d]) = { EDGE, d }; z += dz[d] * 2;
+		}
 	}
 
 	void path (coo z) {
-		while (at(z).t != EMPH) { at(z).t = EMPH; at(z + dz[at(z).d]).t = EMPH; z += dz[at(z).d] * 2; }
+		while (at(z).t != EMPH) {
+			int d = at(z).d; at(z).t = EMPH; at(z+dz[d]).t = EMPH; z += dz[d] * 2;
+		}
 	}
 
 	void dual () {
@@ -55,10 +58,8 @@ class USF : public Bitmap<Point> { public:
 				int s=0, dd=-1;
 				for (int d=0; d<4; ++d) if (at(z + dz[d]).t == VOID) { ++s; dd=d; }
 				if (s==1) {
-					at(z) = DUAL;
-					at(z).d = dd;
-					at(z + dz[dd]) = DEDG;
-					at(z + dz[dd]).d = dd;
+					at(z) = { DUAL, dd };
+					at(z + dz[dd]) = { DEDG, dd };
 					dirty = true;
 				}
 			}
@@ -66,27 +67,28 @@ class USF : public Bitmap<Point> { public:
 	}
 
 	void special () {
-		double aa = double(H['a']); aa=aa*aa;
 		double laa = log(2+2*aa);
+		coo rootp { n-1, n/2 }, startp { 0, n/4 };
 
 		Array<double> P (n,n+1,0);
-		double er = 1;
-		while (er > 1e-12) {
-			er = 0;
+		double per = 1, mer = .1;
+		while (true) {
+			double er = 0;
 			#pragma omp parallel for reduction(+:er) schedule(static)
 			for (int i=0; i<n; ++i) {
+				vector<double> ps(4,0);
 				for (int j=0; j<n+1; ++j) {
-					if ((i==n-1) && (j==n/2)) continue;
 					coo z {i,j};
+					if (z == rootp) continue;
 					double minp = 1; int mind = -1;
 					for (int d=0; d<4; ++d) if (P.contains(z+dz[d])) {
-						double tp = P.at(z+dz[d]);
-						if (tp < minp) { minp = tp; mind = d; }
+						ps[d] = P.at(z+dz[d]);
+						if (ps[d] < minp) { minp = ps[d]; mind = d; }
 					}
 					double s (mind<2 ? aa : 1);
-					for (int d=0; d<4; ++d) if ((d!=mind) && (P.contains(z + dz[d]))) {
-						if (d<2) s += aa * exp(P.at(z+dz[d]) - minp);
-						else s += exp(P.at(z+dz[d]) - minp);
+					for (int d=0; d<4; ++d) if ((d!=mind) && (P.contains(z+dz[d]))) {
+						if (d<2) s += aa * exp(ps[d] - minp);
+						else s += exp(ps[d] - minp);
 					}
 					double ns = log(s) + minp - laa;
 					er += fabs (P.at(z) - ns);
@@ -94,27 +96,24 @@ class USF : public Bitmap<Point> { public:
 				}
 			}
 			cerr << er << "           \r";
+			if ((per == mer) && (er >= per)) break; else { mer = min (mer,er); per = er; }
 		}
-		cerr << endl;
+		cerr << "                                \r";
 
-		coo z0 (0,n/4), z (z0);
+		coo z = startp;
+		vector<double> pp (4,0);
 		while (z != coo(n-1,n/2)) {
-			vector<double> pp (4,0);
-			double minp = 0;
-			for (int d=0; d<4; ++d) if (P.contains(z+dz[d])) minp = min (minp, P.at(z+dz[d]));
-			for (int d=0; d<4; ++d) if (P.contains(z+dz[d])) pp[d] = (d<2 ? aa : 1) * exp(P.at(z+dz[d]) - minp);
+			for (int d=0; d<4; ++d) pp[d] = P.contains(z+dz[d]) ? P.at(z+dz[d]) : 0;
+			double minp = 0; for (int d=0; d<4; ++d) minp = min (minp, pp[d]);
+			for (int d=0; d<4; ++d) if (P.contains(z+dz[d])) pp[d] = (d<2 ? aa : 1) * exp(pp[d] - minp);
 			double s=0; for (auto p : pp) s += p; for (auto &p : pp) p /= s;
 			int d = prng.discrete(pp);
-
-			coo tz (1+2*z.x,2*z.y);
-			at(tz).d = d;
-			z += dz[d];
+			at (coo (1+2*z.x,2*z.y)).d = d; z += dz[d];
 		}
-		z = z0;
+		z = startp;
 		while (z != coo(n-1,n/2)) {
-			coo tz (1+2*z.x,2*z.y);
-			int d = at(tz).d;
-			at(tz).t = SITE; put (tz+dz[d],EDGE); at(tz+dz[d]).d = d;
+			coo tz (1+2*z.x,2*z.y); int d = at(tz).d;
+			at(tz).t = SITE; at(tz+dz[d]) = { EDGE, d };
 			z += dz[d];
 		}
 	}
@@ -135,10 +134,11 @@ class USF : public Bitmap<Point> { public:
 	}
 
 	int n;
+	double a, aa;
 	coo root, start;
 };
 
 int main (int argc, char ** argv) {
 	H.init ("2-periodic uniform spanning forest", argc, argv, "n=300,a=.5,v");
-	USF(H['n']).go();
+	USF(H['n'],H['a']).go();
 }
