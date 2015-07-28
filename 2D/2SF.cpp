@@ -28,6 +28,12 @@ class SF : public Bitmap<Point> { public:
 
 	void stage() { if (H['s']) snapshot(); if (H['v']) pause(); }
 
+	void path (coo z, Type t = EMPH) {
+		while (contains(z) && (at(z).t != t)) {
+			int d = at(z).d; at(z).t = t; at(z+dz[d]) = { t, d }; z += dz[d] * 2;
+		}
+	}
+
 	void lerw (coo z0, bool killed = false) {
 		coo z = z0;
 		while (at(z).t != SITE) {
@@ -36,16 +42,7 @@ class SF : public Bitmap<Point> { public:
 			if (killed && (d==2)) break;
 			if (d==2) z=z0;
 		}
-		z = z0;
-		while (contains(z) && (at(z).t != SITE)) {
-			int d = at(z).d; at(z).t = SITE; at(z+dz[d]) = { EDGE, d }; z += dz[d] * 2;
-		}
-	}
-
-	void path (coo z) {
-		while (contains(z) && (at(z).t != EMPH)) {
-			int d = at(z).d; at(z).t = EMPH; at(z+dz[d]) = { EMPH, d }; z += dz[d] * 2;
-		}
+		path (z0, SITE);
 	}
 
 	void dual () {
@@ -66,30 +63,21 @@ class SF : public Bitmap<Point> { public:
 
 	void special () {
 		coo delta { root - start };
-		double lambda = double(delta.y) / double(delta.x), L = lambda*lambda;
-		double tca = a + 1/a, Delta = 1 + L*L + L*(pow(tca,2)-2);
-		double u = (tca - sqrt(Delta)) / (1 - L);
-		double v = (- tca * L + sqrt(Delta)) / (1 - L);
-		double mu = acosh(u), nu = acosh(v);
-		cerr << u << " " << v << " " << lambda << " " << endl;
+		double lambda = double(delta.y) / double(delta.x),	L = lambda*lambda;
+		double tca = a + 1/a,                             	Delta = 1 + L*L + L*(tca*tca-2);
+		double u = (tca - sqrt(Delta)) / (1-L),           	mu = copysign (acosh(u), delta.x);
+		double v = (- tca * L + sqrt(Delta)) / (1-L),     	nu = copysign (acosh(v), delta.y);
 
-		vector<double> ps { exp(mu), exp(nu), exp(-mu), exp(-nu) };
-		double s=0; for (auto p : ps) s += p; for (auto &p : ps) p /= s;
+		vector<double> cps { exp(mu), exp(nu), exp(-mu), exp(-nu) };
+		double s=0; for (auto p : cps) s += p; for (auto &p : cps) p /= s;
 
 		int nw = 0; coo z = start; while (true) {
-			int d = prng.discrete(ps); at(z).d = d; z += dz[d] * 2; step();
+			int d = prng.discrete(cps); at(z).d = d; z += dz[d] * 2; step();
 			if (z == root) break;
 			if ((z.x <= start.x) || (!contains(z))) { z = start; }
 			if (z.x == root.x) { nw++; if (nw==1) stage(); z = start; }
 		}
-
-		stage();
-
-		z = start; while (z != root) {
-			int d = at(z).d;
-			at(z).t = SITE; at(z+dz[d]) = { EDGE, d };
-			z += dz[d] * 2;
-		}
+		stage(); path(start, SITE);
 	}
 
 	void go () {
