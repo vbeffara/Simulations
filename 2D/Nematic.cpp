@@ -38,15 +38,12 @@ class Nematic : public vb::Bitmap<Site> { public:
 			if (at(z).d == d) { at(z) = 0; (d==1 ? nh : nv) --; }
 		}
 		if (empty) {
-			if (prng.bernoulli(dd)) {
-				z += dz[d-1] * (-prng.uniform_int(ok));
-				add (z,d);
-				fill (z + dz[d-1] * ok, d, w()-ok);
-			} else fill (z + dz[d-1], d, w()-1);
+			if (prng.bernoulli(dd)) { z -= dz[d-1] * prng.uniform_int(ok); add (z,d); fill (z + dz[d-1] * ok, d, w()-ok); }
+			else fill (z + dz[d-1], d, w()-1);
 		} else {
-			while (atp(z).d != 3-d) { z += dz[d-1]; }
-			for (coo zz=z; zz.x + zz.y < z.x + z.y + w(); zz += dz[d-1]) {
-				int l=0; while (atp(zz).d == 0) { ++l; zz += dz[d-1]; } fill (zz - dz[d-1]*l, d, l);
+			while (atp(z).d != 3-d) { z += dz[d-1]; } z += dz[d-1];
+			for (coo zz = z - dz[d-1]*w(); zz != z; zz += dz[d-1]) {
+				int l=0; while (atp(zz).d == 0) { ++l; zz += dz[d-1]; } if (l>0) fill (zz - dz[d-1]*l, d, l);
 			}
 		}
 		step();

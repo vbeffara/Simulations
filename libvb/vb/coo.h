@@ -18,6 +18,7 @@ namespace vb {
 		coo	operator/	(int d)	const	{ return coo (x/d,y/d); }
 
 		void	operator+=	(const coo & z)		{ x+=z.x; y+=z.y; }
+		void	operator-=	(const coo & z)		{ x-=z.x; y-=z.y; }
 	};
 
 	inline int norm	(coo z) { return z.x*z.x + z.y*z.y; }
