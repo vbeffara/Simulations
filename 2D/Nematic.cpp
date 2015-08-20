@@ -84,7 +84,7 @@ class Nematic : public vb::Bitmap<Site> { public:
 		C.watch (b, "beta");         	C.manage (b,-5.0,5.0);
 		C.watch (k, "k");            	C.manage (k,1,100);
 		show(); C.show(); if (H['v']) snapshot_setup("movie",10);
-		for (int t=0; t<5e12; ++t) {
+		for (int t=0 ;; ++t) {
 			if ((k != ok) || (b != ob)) prec();
 			if (H['g']) {
 				coo z = rand();
@@ -92,10 +92,12 @@ class Nematic : public vb::Bitmap<Site> { public:
 				else { if ((at(z).d > 0) && (at(z).x == 0)) del (z,at(z).d,at(z).k); }
 				step();
 			} else {
-				for (int i=0; i<w(); ++i) { re_line(i); re_col(i); }
+				for (int i=0; i<w(); ++i) re_col(i);
+				for (int i=0; i<h(); ++i) re_line(i);
 			}
 			density = double (nh+nv) / (w()*h()) / dd;
 			order = nh+nv>0 ? double (nh-nv) / double (nh+nv) : 0;
+			if ((!(t%100)) && H['l']) std::cout << order << std::endl;
 		}
 	};
 
@@ -105,6 +107,6 @@ class Nematic : public vb::Bitmap<Site> { public:
 };
 
 int main (int argc, char ** argv) {
-	H.init ("Nematic system on the square lattice", argc,argv, "n=500,k=20,b=-2,g,v");
+	H.init ("Nematic system on the square lattice", argc,argv, "n=500,k=20,b=-2,g,v,l");
 	Nematic(H['n'],H['k'],H['b']).go();
 }
