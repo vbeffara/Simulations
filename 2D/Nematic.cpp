@@ -46,7 +46,7 @@ class Nematic : public vb::Bitmap<Site> { public:
 		} else {
 			while (atp(z).d != 3-d) { z += dz[d-1]; }
 			for (coo zz=z; zz.x + zz.y < z.x + z.y + w(); zz += dz[d-1]) {
-				if (atp(zz).d == 0) { int l=0; coo zzz = zz; while (atp(zzz).d == 0) { ++l; zzz += dz[d-1]; } fill (zz, d, l); zz = zzz; }
+				int l=0; while (atp(zz).d == 0) { ++l; zz += dz[d-1]; } fill (zz - dz[d-1]*l, d, l);
 			}
 		}
 		step();
