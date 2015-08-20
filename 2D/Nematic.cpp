@@ -31,41 +31,22 @@ class Nematic : public vb::Bitmap<Site> { public:
 		}
 	}
 
-	void re_line (int y) {
-		bool all_h = true;
-		for (int x=0; x<w(); ++x) {
-			if (at(coo(x,y)).d == 2) all_h = false;
-			if (at(coo(x,y)).d == 1) { atp(coo(x,y)) = 0; nh --; }
+	void redo (coo z, int d) {
+		bool empty = true;
+		for (int x=0; x<w(); z+=dz[d-1], ++x) {
+			if (at(z).d == 3-d) empty = false;
+			if (at(z).d == d) { at(z) = 0; (d==1 ? nh : nv) --; }
 		}
-		if (all_h) {
+		if (empty) {
 			if (prng.bernoulli(dd)) {
-				int x = prng.uniform_int(ok); add (coo(-x,y), 1); fill (coo(ok-x,y), 1, w()-ok);
-			} else fill (coo(1,y), 1, w()-1);
+				z += dz[d-1] * (-prng.uniform_int(ok));
+				add (z,d);
+				fill (z + dz[d-1] * ok, d, w()-ok);
+			} else fill (z + dz[d-1], d, w()-1);
 		} else {
-			int i0=0; while (atp(coo(i0,y)).d != 2) ++i0;
-			int i=i0; while (i < i0+w()) {
-				++i;
-				if (atp(coo(i,y)).d == 0) { int j=i; while (atp(coo(j,y)).d == 0) ++j; fill (coo(i,y), 1, j-i); i=j; }
-			}
-		}
-		step();
-	}
-
-	void re_col (int x) {
-		bool all_v = true;
-		for (int y=0; y<h(); ++y) {
-			if (at(coo(x,y)).d == 1) all_v = false;
-			if (at(coo(x,y)).d == 2) { at(coo(x,y)) = 0; nv --; }
-		}
-		if (all_v) {
-			if (prng.bernoulli(dd)) {
-				int y = prng.uniform_int(ok); add (coo(x,-y), 2); fill (coo(x,ok-y), 2, h()-ok);
-			} else fill (coo(x,1), 2, h()-1);
-		} else {
-			int i0=0; while (atp(coo(x,i0)).d != 1) ++i0;
-			int i=i0; while (i < i0+h()) {
-				++i;
-				if (atp(coo(x,i)).d == 0) { int j=i; while (atp(coo(x,j)).d == 0) ++j; fill (coo(x,i), 2, j-i); i=j; }
+			while (atp(z).d != 3-d) { z += dz[d-1]; }
+			for (coo zz=z; zz.x + zz.y < z.x + z.y + w(); zz += dz[d-1]) {
+				if (atp(zz).d == 0) { int l=0; coo zzz = zz; while (atp(zzz).d == 0) { ++l; zzz += dz[d-1]; } fill (zz, d, l); zz = zzz; }
 			}
 		}
 		step();
@@ -78,8 +59,8 @@ class Nematic : public vb::Bitmap<Site> { public:
 		show(); C.show(); if (H['v']) snapshot_setup("movie",10);
 		for (int t=int(H['t'])-1 ; t!=0 ; --t) {
 			if ((k != ok) || (b != ob)) prec();
-			for (int i=0; i<w(); ++i) re_col(i);
-			for (int i=0; i<h(); ++i) re_line(i);
+			for (int i=0; i<h(); ++i) redo (coo(0,i), 1);
+			for (int i=0; i<w(); ++i) redo (coo(i,0), 2);
 			order = nh+nv>0 ? double (nh-nv) / double (nh+nv) : 0;
 			if ((!(t%100)) && H['l']) std::cout << order << std::endl;
 		}
