@@ -23,9 +23,8 @@ class Nematic : public vb::Bitmap<Site> { public:
 		dd = 1.0 - Z[w()-1] / ZZ;
 	}
 
-	bool fits	(coo z, int d, int k) { for (int i=0; i<k; ++i) { if (atp(z).d > 0) return false; z += dz[d-1]; } return true; }
-	void add 	(coo z, int d, int k) { (d==1 ? nh : nv) += k; for (int i=0; i<k; ++i) { atp(z) = {d,i,k}; z += dz[d-1]; } }
-	void del 	(coo z, int d, int k) { (d==1 ? nh : nv) -= k; for (int i=0; i<k; ++i) { atp(z) = {0,0,0}; z += dz[d-1]; } }
+	void add	(coo z, int d, int k) { (d==1 ? nh : nv) += k; for (int i=0; i<k; ++i) { atp(z) = {d,i,k}; z += dz[d-1]; } }
+	void del	(coo z, int d, int k) { (d==1 ? nh : nv) -= k; for (int i=0; i<k; ++i) { atp(z) = {0,0,0}; z += dz[d-1]; } }
 
 	void fill_h (int i, int j, int y) {
 		if (j-i<ok) return;
@@ -86,15 +85,8 @@ class Nematic : public vb::Bitmap<Site> { public:
 		show(); C.show(); if (H['v']) snapshot_setup("movie",10);
 		for (int t=0 ;; ++t) {
 			if ((k != ok) || (b != ob)) prec();
-			if (H['g']) {
-				coo z = rand();
-				if (prng.bernoulli(p)) { int d = prng.bernoulli(.5) + 1; if (fits (z,d,ok)) add (z,d,ok); }
-				else { if ((at(z).d > 0) && (at(z).x == 0)) del (z,at(z).d,at(z).k); }
-				step();
-			} else {
-				for (int i=0; i<w(); ++i) re_col(i);
-				for (int i=0; i<h(); ++i) re_line(i);
-			}
+			for (int i=0; i<w(); ++i) re_col(i);
+			for (int i=0; i<h(); ++i) re_line(i);
 			density = double (nh+nv) / (w()*h()) / dd;
 			order = nh+nv>0 ? double (nh-nv) / double (nh+nv) : 0;
 			if ((!(t%100)) && H['l']) std::cout << order << std::endl;
@@ -107,6 +99,6 @@ class Nematic : public vb::Bitmap<Site> { public:
 };
 
 int main (int argc, char ** argv) {
-	H.init ("Nematic system on the square lattice", argc,argv, "n=500,k=20,b=-2,g,v,l");
+	H.init ("Nematic system on the square lattice", argc,argv, "n=500,k=20,b=-2,v,l");
 	Nematic(H['n'],H['k'],H['b']).go();
 }
