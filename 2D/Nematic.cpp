@@ -69,6 +69,6 @@ class Nematic : public vb::Bitmap<Site> { public:
 };
 
 int main (int argc, char ** argv) {
-	H.init ("Nematic system on the square lattice", argc,argv, "n=500,k=20,b=-2,v,l,t=0");
+	H.init ("Nematic system on the square lattice", argc,argv, "n=500,k=7,b=2,v,l,t=0");
 	Nematic(H['n'],H['k'],H['b']).go();
 }
