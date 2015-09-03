@@ -13,13 +13,14 @@ class Site { public:
 };
 
 class Nematic : public vb::Bitmap<Site> { public:
-	Nematic (int n_, int k_, double b_) : Bitmap<Site> (n_,n_), k(k_), b(b_), P(n_,0) {};
+	Nematic (int n_, int m_, int k_, double b_) : Bitmap<Site> (n_,m_), k(k_), b(b_), P(std::max(n_,m_),0) {};
 
 	void prec () {
-		ok = std::min(k,w()); ob = b; z = exp(2*ob); std::vector<double> Z(w(),1);
-		for (int i=ok; i<Z.size(); ++i) Z[i] = Z[i-1] + z * Z[i-ok];
-		for (int i=ok; i<P.size(); ++i) P[i] = z * Z[i-ok] / Z[i];
-		dd = ok * z * Z[w()-ok] / (Z[w()-1] + ok * z * Z[w()-ok]);
+		ok = std::min(k,std::min(w(),h())); ob = b; std::vector<double> Z(P.size());
+		double zz = exp(2*ob/double(ok)); for (int i=0; i<ok; ++i) Z[i] = pow(zz,-i);
+		for (int i=ok; i<Z.size(); ++i) Z[i] = Z[i-1] / zz + Z[i-ok];
+		for (int i=ok; i<P.size(); ++i) P[i] = Z[i-ok] / Z[i];
+		dd = ok * Z[Z.size()-ok] / (Z[Z.size()-1] / zz + ok * Z[Z.size()-ok]);
 	}
 
 	void add (coo z, int d) { (d==1 ? nh : nv) += ok; for (int i=0; i<ok; ++i) { atp(z) = d; z += dz[d-1]; } }
@@ -33,16 +34,17 @@ class Nematic : public vb::Bitmap<Site> { public:
 
 	void redo (coo z, int d) {
 		bool empty = true;
-		for (int x=0; x<w(); z+=dz[d-1], ++x) {
+		int hw = (d==1 ? w() : h());
+		for (int x=0; x < hw; z+=dz[d-1], ++x) {
 			if (at(z).d == 3-d) empty = false;
 			if (at(z).d == d) { at(z) = 0; (d==1 ? nh : nv) --; }
 		}
 		if (empty) {
-			if (prng.bernoulli(dd)) { z -= dz[d-1] * prng.uniform_int(ok); add (z,d); fill (z + dz[d-1] * ok, d, w()-ok); }
-			else fill (z + dz[d-1], d, w()-1);
+			if (prng.bernoulli(dd)) { z -= dz[d-1] * prng.uniform_int(ok); add (z,d); fill (z + dz[d-1] * ok, d, hw-ok); }
+			else fill (z + dz[d-1], d, hw-1);
 		} else {
 			while (atp(z).d != 3-d) { z += dz[d-1]; } z += dz[d-1];
-			for (coo zz = z - dz[d-1]*w(); zz != z; zz += dz[d-1]) {
+			for (coo zz = z - dz[d-1]*hw; zz != z; zz += dz[d-1]) {
 				int l=0; while (atp(zz).d == 0) { ++l; zz += dz[d-1]; } if (l>0) fill (zz - dz[d-1]*l, d, l);
 			}
 		}
@@ -64,11 +66,11 @@ class Nematic : public vb::Bitmap<Site> { public:
 	};
 
 	int k, ok=0, nh=0, nv=0;
-	double b, ob=0, z, order=0, dd;
+	double b, ob=0, order=0, dd;
 	std::vector<double> P;
 };
 
 int main (int argc, char ** argv) {
-	H.init ("Nematic system on the square lattice", argc,argv, "n=500,k=7,b=2,v,l,t=0");
-	Nematic(H['n'],H['k'],H['b']).go();
+	H.init ("Nematic system on the square lattice", argc,argv, "n=500,m=0,k=7,b=2,v,l,t=0");
+	Nematic (H['n'], int(H['m']) ? H['m'] : H['n'], H['k'], H['b']).go();
 }
