@@ -4,8 +4,8 @@ def options (ctx) :
 	ctx.load ('compiler_c compiler_cxx')
 
 def configure (ctx) :
-	ctx.env.CXXFLAGS += [ '-std=c++14', '-fext-numeric-literals', '-fopenmp' ]
-	ctx.env.LINKFLAGS += [ '-std=c++14', '-fopenmp' ]
+	ctx.env.CXXFLAGS += [ '-std=c++14', '-fext-numeric-literals', '-fcilkplus' ]
+	ctx.env.LINKFLAGS += [ '-std=c++14', '-lcilkrts' ]
 
 	ctx.load ('compiler_c compiler_cxx boost')
 	ctx.define ('VB_ENDIAN', ctx.check_endianness(), 0)

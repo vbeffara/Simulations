@@ -1,8 +1,10 @@
 #pragma once /// \file
+#include <cilk/cilk.h>
+#include <cilk/cilk_api.h>
+#include <future>
 #include <vb/Picture.h>
 #include <vb/Array.h>
 #include <vb/cpx.h>
-#include <future>
 
 namespace vb {
 	template <typename T> class Bitmap : public Picture, public Array<T> { public:
@@ -58,13 +60,7 @@ namespace vb {
 
     template <typename T> void Bitmap<T>::tessel (coo ul, coo lr, std::function <T(coo)> f) {
         std::function<void(coo,coo,int)> line = [&] (coo s, coo d, int l) {
-            if (l>10) {
-                auto l1 = std::async (std::launch::async, line, s, d, l/2);
-                auto l2 = std::async (std::launch::async, line, s+d*(l/2), d, l-(l/2));
-                l1.get(); l2.get();
-            } else {
-                for (int i=0; i<l; ++i) { at(s) = f(s); s += d; }
-            }
+            cilk_for (int i=0; i<l; ++i) { at(s+d*i) = f(s+d*i); }
         };
 
         std::function<void(coo,coo)> go = [&] (coo ul, coo lr) {
@@ -82,23 +78,18 @@ namespace vb {
             coo dd_ = (lr.x-ul.x > lr.y-ul.y) ? coo {0,1} : coo {1,0};
             line (ul_,dd_,size);
 
-            if (size>10) {
-                auto t1 = std::async (std::launch::async, go, ul, lr_); go (ul_,lr); t1.get();
-            } else {
-                go (ul,lr_); go (ul_,lr);
-            }
+            cilk_spawn go (ul,lr_); go (ul_,lr); cilk_sync;
         };
 
         auto main = std::async (std::launch::async, [&]() {
-            auto l1 = std::async (std::launch::async, line, ul, coo(1,0), lr.x-ul.x);
-            auto l2 = std::async (std::launch::async, line, coo(lr.x,ul.y), coo(0,1), lr.y-ul.y);
-            auto l3 = std::async (std::launch::async, line, lr, coo(-1,0), lr.x-ul.x);
-            auto l4 = std::async (std::launch::async, line, coo(ul.x,lr.y), coo(0,-1), lr.y-ul.y);
-            l1.get(); l2.get(); l3.get(); l4.get();
+            line (ul, coo(1,0), lr.x-ul.x);
+            line (coo(lr.x,ul.y), coo(0,1), lr.y-ul.y);
+            line (lr, coo(-1,0), lr.x-ul.x);
+            line (coo(ul.x,lr.y), coo(0,-1), lr.y-ul.y);
             go (ul, lr);
         } );
 
-        start = now();
         while (main.wait_for(std::chrono::milliseconds(100)) != std::future_status::ready) update(); main.get();
     }
+
 }

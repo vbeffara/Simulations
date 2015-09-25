@@ -20,9 +20,10 @@ public:
 };
 
 int main (int argc, char *argv[]) {
-	H.init ("Sample",argc,argv,"n=500");
+	H.init ("Sample",argc,argv,"n=500,v");
 	int n = H['n'];
 	Sample S (n);
+	if (H['v']) S.show();
 	S.tessel ({0,0}, {n-1,n-1}, [&](coo c){ return S.compute(c); });
 	S.output("sample");
 	return 0;
