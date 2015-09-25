@@ -4,8 +4,11 @@ def options (ctx) :
 	ctx.load ('compiler_c compiler_cxx')
 
 def configure (ctx) :
-	ctx.env.CXXFLAGS += [ '-std=c++14', '-fext-numeric-literals', '-fcilkplus' ]
-	ctx.env.LINKFLAGS += [ '-std=c++14', '-lcilkrts' ]
+	ctx.env.CXXFLAGS += [ '-std=c++14', '-fext-numeric-literals', '-fcilkplus', '-fopenmp' ]
+	ctx.env.LINKFLAGS += [ '-std=c++14', '-lcilkrts', '-fopenmp' ]
+
+	import platform
+	if platform.system() == "Linux": ctx.env.LINKFLAGS += [ '-lpthread' ]
 
 	ctx.load ('compiler_c compiler_cxx boost')
 	ctx.define ('VB_ENDIAN', ctx.check_endianness(), 0)
