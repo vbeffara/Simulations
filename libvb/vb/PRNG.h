@@ -1,13 +1,14 @@
 #pragma once /// \file
 #define BOOST_DISABLE_ASSERTS 1
 #include <boost/random.hpp>
+#include <random>
 #include <sstream>
 #include <vector>
 
 namespace vb {
 	class PRNG : public boost::mt19937 {
 	public:
-		PRNG (unsigned long s=0) { seed (s?s:time(0)); }
+		PRNG (unsigned long s=0) : boost::mt19937 (s ? s : std::random_device()()) {}
 
 		bool  	bernoulli   	(double p=.5)               	{ return (boost::bernoulli_distribution<>  	(p))        	(*this); }
 		int   	uniform_int 	(int mmax)                  	{ return (boost::uniform_int<>             	(0, mmax-1))	(*this); }
