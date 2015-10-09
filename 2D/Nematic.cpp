@@ -23,7 +23,7 @@ class Nematic : public vb::Bitmap<Site> { public:
 		dd = ok * Z[Z.size()-ok] / (Z[Z.size()-1] / zz + ok * Z[Z.size()-ok]);
 	}
 
-	void add (coo z, int d) { (d==1 ? nh : nv) += ok; for (int i=0; i<ok; ++i) { atp(z) = d; z += dz[d-1]; } }
+	void add (coo z, int d) { for (int i=0; i<ok; ++i) { atp(z) = d; z += dz[d-1]; } }
 
 	void fill (coo z, int d, int l) {
 		while (l >= ok) {
@@ -37,7 +37,7 @@ class Nematic : public vb::Bitmap<Site> { public:
 		int hw = (d==1 ? w() : h());
 		for (int x=0; x < hw; z+=dz[d-1], ++x) {
 			if (at(z).d == 3-d) empty = false;
-			if (at(z).d == d) { at(z) = 0; (d==1 ? nh : nv) --; }
+			if (at(z).d == d) at(z) = 0;
 		}
 		if (empty) {
 			if (prng.bernoulli(dd)) { z -= dz[d-1] * prng.uniform_int(ok); add (z,d); fill (z + dz[d-1] * ok, d, hw-ok); }
@@ -60,12 +60,14 @@ class Nematic : public vb::Bitmap<Site> { public:
 			if ((k != ok) || (b != ob)) prec();
 			for (int i=0; i<h(); ++i) redo (coo(0,i), 1);
 			for (int i=0; i<w(); ++i) redo (coo(i,0), 2);
+			int nh = 0; for (auto v : *this) if (v.d == 1) ++nh;
+			int nv = 0; for (auto v : *this) if (v.d == 2) ++nv;
 			order = nh+nv>0 ? double (nh-nv) / double (nh+nv) : 0;
 			if ((!(t%100)) && H['l']) std::cout << order << std::endl;
 		}
 	};
 
-	int k, ok=0, nh=0, nv=0;
+	int k, ok=0;
 	double b, ob=0, order=0, dd;
 	std::vector<double> P;
 };
