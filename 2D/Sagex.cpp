@@ -25,7 +25,7 @@ public:
 
 	void go () {
 		show(); if (H['v']) snapshot_setup("Sagex",1);
-		for (int t=H['t']; t!=1; --t) {
+		while (true) {
 			coo z = this->rand(); if (int(at(z))==0) continue;
 			coo dz = at(z).jump(); if (int(atp(z+dz))==0) { putp(z+dz,int(at(z))); put(z,0); }
 		}
@@ -33,6 +33,6 @@ public:
 };
 
 int main (int argc, char ** argv) {
-	H.init ("Seb's Sagex process", argc,argv, "n=512,l=.22,p=.5,v,z,t=0");
+	H.init ("Seb's Sagex process", argc,argv, "n=512,l=.22,p=.5,v,z");
 	Sagex (H['n']).go();
 }
