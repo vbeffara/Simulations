@@ -4,16 +4,16 @@
 using namespace vb; using namespace std;
 
 class mode { public:
-	mode (double a_, double t_, double l_) : a(a_), t(t_), l(l_), c(cos(t)), s(sin(t)) {}
-	double operator() (cpx z) { return a * cos((real(z)*c+imag(z)*s) / l); }
-	double a,t,l,c,s;
+	mode (double a_, double t_, double l_) : a(a_), c(cos(t_)/l_), s(sin(t_)/l_), r(H['r']) {}
+	double operator() (const cpx & z) { double out = cos(c*real(z) + s*imag(z)); if (r) out += cos(c*real(z) - s*imag(z)); return a * out; }
+	double a,c,s;
+	bool r;
 };
 
 class Wave : public Bitmap<Color> { public:
 	Wave (int n, int k, double l_) : Bitmap<Color> (n,n) {
 		for (int i=0; i<k; ++i) {
 			m.push_back ( { prng.gaussian(), prng.uniform_real(0,2.0*M_PI), l_ } );
-			if (H['r']) m.push_back ( { m.back().a, - m.back().t, m.back().l } );
 		}
 	}
 
@@ -30,6 +30,6 @@ class Wave : public Bitmap<Color> { public:
 };
 
 int main (int argc, char ** argv) {
-	H.init ("Random planar waves", argc, argv, "n=500,k=30,l=5,r");
+	H.init ("Random planar waves", argc, argv, "n=600,k=100,l=5,r");
 	Wave(H['n'],H['k'],H['l']).go();
 }
