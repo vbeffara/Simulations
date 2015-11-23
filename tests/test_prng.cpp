@@ -1,14 +1,18 @@
-#include <vb/Hub.h>
-#include <vb/PRNG.h>
-#include <random>
+#include <chrono>
 #include <cilk/cilk.h>
 #include <cilk/cilk_api.h>
 #include <cilk/reducer_opadd.h>
+#include <vb/Hub.h>
+#include <vb/PRNG.h>
 
-using namespace vb;
-using namespace std;
+using namespace vb; using namespace std;
 
-double time () { return double(clock()) / CLOCKS_PER_SEC; }
+double time () {
+	static std::chrono::system_clock C;
+	static auto basetime = C.now();
+	chrono::duration<double> dur = C.now() - basetime;
+	return dur.count();
+}
 
 int main (int argc, char ** argv) {
 	H.init ("Testing PRNG methods", argc,argv, "n=100000000");
@@ -25,11 +29,11 @@ int main (int argc, char ** argv) {
 	cerr << "boost::gaussian_distribution ...       \ttime = ";
 	s=0; t=time();
 	boost::normal_distribution<> dist(0,1);
-	boost::mt19937 boostengine;
+	boost::mt19937_64 boostengine;
 	for (int i=0; i<n; ++i) { double o = dist(boostengine); s += o*o; }
 	cerr << time()-t << ",  \tsum = " << s << endl;
 
-	cerr << "many boost::gaussian_distributions ...\ttime = ";
+	cerr << "many boost::gaussian_distributions ... \ttime = ";
 	s=0; t=time();
 	for (int i=0; i<n; ++i) { double o = (boost::normal_distribution<> (0,1))(prng); s += o*o; }
 	cerr << time()-t << ",  \tsum = " << s << endl;
@@ -48,7 +52,7 @@ int main (int argc, char ** argv) {
 
 	cerr << "CILK based multithreaded               \ttime = ";
 	auto go = []() { static thread_local PRNG p; auto o = p.gaussian(); return o*o; };
-	cilk::reducer <cilk::op_add<double>> ps (0);
+	cilk::reducer <cilk::op_add<double>> ps (0); t=time();
 	cilk_for (int i=0; i<n; ++i) *ps += go();
 	cerr << time()-t << ",  \tsum = " << ps.get_value() << endl;
 }
