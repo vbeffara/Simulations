@@ -19,18 +19,6 @@ int fib_cilk (int n) {
     return x + y;
 }
 
-int fib_omp (int n) {
-    if (n < 20) return fib(n);
-    int x, y;
-    #pragma omp parallel
-    {
-        #pragma omp task shared(x)
-        x = fib_omp (n-1);
-        y = fib_omp (n-2);
-    }
-    return x + y;
-}
-
 double cum (int n) {
     vector<double> X(n);
     for (int i=0; i<n; ++i) {
@@ -44,17 +32,6 @@ double cum (int n) {
 double cum_cilk (int n) {
     vector<double> X(n);
     cilk_for (int i=0; i<n; ++i) {
-        double x = i;
-        for (int t=0; t<1000; ++t) x = cos(x);
-        X[i] = x;
-    }
-    double s=0; for (auto x:X) s+=x; return s;
-}
-
-double cum_omp (int n) {
-    vector<double> X(n);
-    #pragma omp parallel for
-    for (int i=0; i<n; ++i) {
         double x = i;
         for (int t=0; t<1000; ++t) x = cos(x);
         X[i] = x;
@@ -76,9 +53,7 @@ int main (int argc, char ** argv) {
 
     if (m & 1)  test ("Fib | Single", fib, n);
     if (m & 2)  test ("Fib | CILK  ", fib_cilk, n);
-    if (m & 4)  test ("Fib | OpenMP", fib_omp, n);
 
     if (m & 8)  test ("Map | Single", cum, H['l']);
     if (m & 16) test ("Map | CILK  ", cum_cilk, H['l']);
-    if (m & 32) test ("Map | OpenMP", cum_omp, H['l']);
 }

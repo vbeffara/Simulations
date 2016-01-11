@@ -1,11 +1,8 @@
 cmake_minimum_required (VERSION 3.0)
 project (Simulations)
 
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -fcilkplus")
-set (CMAKE_SHARED_LINKER_FLAGS "-lcilkrts")
-set (CMAKE_EXE_LINKER_FLAGS "-lcilkrts")
+set (CMAKE_CXX_FLAGS "-Wall -Wno-unused-function -O3 -g -std=c++14 -fcilkplus -fdiagnostics-color=always")
 
-include_directories ("${PROJECT_SOURCE_DIR}/libvb" "${PROJECT_BINARY_DIR}" ${EXT_INCLUDE_DIRS})
 link_directories ("/usr/local/lib" "/opt/X11/lib")
 
 include (TestBigEndian)
@@ -19,16 +16,14 @@ find_package (Boost)
 find_package (FLTK)
 find_library (GMP gmp)
 find_library (FPLLL fplll)
-find_library (CILK cilkrts)
 
 pkg_check_modules (EXT REQUIRED cairo fftw3 libpng)
 
-include_directories (${Boost_INCLUDE_DIRS})
-include_directories (${EXT_INCLUDE_DIRS})
+include_directories ("${PROJECT_SOURCE_DIR}/libvb" ${Boost_INCLUDE_DIRS} ${EXT_INCLUDE_DIRS})
 
 file (GLOB vb_sources libvb/*.cpp)
 add_library (vb SHARED ${vb_sources})
-target_link_libraries (vb ${EXT_LIBRARIES} ${GMP} ${FLTK_LIBRARIES} ${FPLLL})
+target_link_libraries (vb ${EXT_LIBRARIES} ${GMP} ${FLTK_LIBRARIES} ${FPLLL} cilkrts)
 
 foreach (dir tests 1D 2D 3D)
 	file (GLOB src ${dir}/*.cpp)
