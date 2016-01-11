@@ -1,11 +1,7 @@
 #pragma once /// @file
-#include <vb/config.h>
 #include <complex>
 #include <iostream>
-
-#ifdef HAVE_GMP
 #include <boost/multiprecision/gmp.hpp>
-#endif
 
 namespace vb {
 	using cpx = std::complex<double>;

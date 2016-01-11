@@ -1,23 +1,22 @@
 #pragma once /// @file
-#include <vb/config.h>
 
 namespace vb {
 	class Color {
 	public:
-#if VB_ENDIAN == little
-		unsigned char b; ///< The blue component.
-		unsigned char g; ///< The green component.
-		unsigned char r; ///< The red component.
-		unsigned char a; ///< The alpha channel (for ARGB32).
-
-		Color (unsigned char R, unsigned char G, unsigned char B, unsigned char A=255)	: b(B), g(G), r(R), a(A) {}
-#else
+#ifdef BIGENDIAN
 		unsigned char a; ///< The alpha channel (for ARGB32).
 		unsigned char r; ///< The red component.
 		unsigned char g; ///< The green component.
 		unsigned char b; ///< The blue component.
 
 		Color (unsigned char R, unsigned char G, unsigned char B, unsigned char A=255)	: a(A), r(R), g(G), b(B)	{}
+#else
+		unsigned char b; ///< The blue component.
+		unsigned char g; ///< The green component.
+		unsigned char r; ///< The red component.
+		unsigned char a; ///< The alpha channel (for ARGB32).
+
+		Color (unsigned char R, unsigned char G, unsigned char B, unsigned char A=255)	: b(B), g(G), r(R), a(A) {}
 #endif
 		Color (unsigned char V)	: Color (V,V,V)  	{}
 		Color ()               	: Color (0,0,0,0)	{}

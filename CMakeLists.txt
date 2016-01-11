@@ -1,0 +1,41 @@
+cmake_minimum_required (VERSION 3.0)
+project (Simulations)
+
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -fcilkplus")
+set (CMAKE_SHARED_LINKER_FLAGS "-lcilkrts")
+set (CMAKE_EXE_LINKER_FLAGS "-lcilkrts")
+
+include_directories ("${PROJECT_SOURCE_DIR}/libvb" "${PROJECT_BINARY_DIR}" ${EXT_INCLUDE_DIRS})
+link_directories ("/usr/local/lib" "/opt/X11/lib")
+
+include (TestBigEndian)
+TEST_BIG_ENDIAN (BIGENDIAN)
+if (${BIGENDIAN})
+	add_definitions (-DBIGENDIAN)
+endif (${BIGENDIAN})
+
+find_package (PkgConfig)
+find_package (Boost)
+find_package (FLTK)
+find_library (GMP gmp)
+find_library (FPLLL fplll)
+find_library (CILK cilkrts)
+
+pkg_check_modules (EXT REQUIRED cairo fftw3 libpng)
+
+include_directories (${Boost_INCLUDE_DIRS})
+include_directories (${EXT_INCLUDE_DIRS})
+
+file (GLOB vb_sources libvb/*.cpp)
+add_library (vb SHARED ${vb_sources})
+target_link_libraries (vb ${EXT_LIBRARIES} ${GMP} ${FLTK_LIBRARIES} ${FPLLL})
+
+foreach (dir tests 1D 2D 3D)
+	file (GLOB src ${dir}/*.cpp)
+	foreach (f ${src})
+		set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${dir})
+		get_filename_component (e ${f} NAME_WE)
+		add_executable (${e} ${f})
+		target_link_libraries (${e} vb)
+	endforeach (f)
+endforeach (dir)

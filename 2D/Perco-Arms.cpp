@@ -1,6 +1,4 @@
 #include <iostream>
-#include <vb/config.h>
-
 #include <boost/config.hpp>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/edmonds_karp_max_flow.hpp>
@@ -85,7 +83,7 @@ int main(int argc, char **argv) {
 
         rev_edges[i] = get (edge_reverse,g,*e);
         cap[rev_edges[i]] = 1;
-        
+
         ++i;
       }
     }
