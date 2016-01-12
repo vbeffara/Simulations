@@ -1,10 +1,10 @@
 #pragma once /// \file
 
 #include <vb/Auto.h>
-#include <FL/Fl_Double_Window.H>
+#include <FL/Fl_Gl_Window.H>
 
 namespace vb {
-	class AutoWindow : public Auto, public Fl_Double_Window {
+	class AutoWindow : public Auto, public Fl_Gl_Window {
 	public:
 		AutoWindow (int wd, int ht);
 

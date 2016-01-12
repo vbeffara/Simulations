@@ -4,6 +4,7 @@
 #include <vb/Picture.h>
 #include <FL/Fl.H>
 #include <FL/fl_draw.H>
+#include <FL/gl.h>
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -27,24 +28,19 @@ namespace vb {
 		AutoWindow::size (wd,ht);
 		cairo_destroy (cr);
 		cairo_surface_destroy (surface);
-		surface = cairo_image_surface_create (CAIRO_FORMAT_RGB24, w(), h());
+		surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, w(), h());
 		cr      = cairo_create (surface);
 		stride  = cairo_image_surface_get_stride (surface) / sizeof(Color);
- }
-
-	void draw_cb (void * in, int x, int y, int w, unsigned char * out) {
-		Picture & img = * (Picture*) in;
-		Color   * src = (Color*) (cairo_image_surface_get_data(img.surface));
-
-		for (int i=0; i<w; ++i) {
-			Color &C = src [x+i + img.stride*y];
-			out[3*i] = C.r; out[3*i + 1] = C.g; out[3*i + 2] = C.b;
-		}
 	}
 
 	void Picture::draw () {
-		paint ();
-		fl_draw_image (draw_cb,this,0,0,w(),h());
+		paint();
+		gl_start();
+		const uchar * b = cairo_image_surface_get_data(surface);
+		glPixelStorei(GL_UNPACK_ROW_LENGTH, stride);
+		glRasterPos2i(0,0);
+		glDrawPixels(w(),h(),GL_BGRA,GL_UNSIGNED_BYTE,(const ulong*)b);
+		gl_finish();
 	}
 
 	void Picture::output_png (const std::string &s) {

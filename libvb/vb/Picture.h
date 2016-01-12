@@ -41,8 +41,5 @@ namespace vb {
 		int snapshot_task;
 
 		virtual void paint () =0;      /// Update the contents of surface from a derived class data.
-
-		/// Shuffle the bytes for FLTK display of a line.
-		friend void draw_cb (void *, int, int, int, unsigned char *);
 	};
 }

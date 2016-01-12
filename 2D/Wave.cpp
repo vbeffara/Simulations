@@ -3,8 +3,8 @@
 
 using namespace vb; using namespace std;
 
-class mode { public:
-	mode (double a_, double t_, double l_) : a(a_), c(cos(t_)/l_), s(sin(t_)/l_), r(H['r']) {}
+class Mode { public:
+	Mode (double a_, double t_, double l_) : a(a_), c(cos(t_)/l_), s(sin(t_)/l_), r(H['r']) {}
 	double operator() (const cpx & z) { double out = cos(c*real(z) + s*imag(z)); if (r) out += cos(c*real(z) - s*imag(z)); return a * out; }
 	double a,c,s;
 	bool r;
@@ -26,7 +26,7 @@ class Wave : public Bitmap<Color> { public:
 		show(); tessel(0,{w()-1,h()-1},aa(f)); pause();
 	};
 
-	vector<mode> m;
+	vector<Mode> m;
 };
 
 int main (int argc, char ** argv) {

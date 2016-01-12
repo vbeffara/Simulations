@@ -1,9 +1,10 @@
+#include <boost/algorithm/string.hpp>
+#include <FL/Fl.H>
+#include <sys/stat.h>
 #include <vb/Hub.h>
 #include <iostream>
 #include <vector>
 #include <getopt.h>
-#include <boost/algorithm/string.hpp>
-#include <sys/stat.h>
 
 namespace vb {
 	Hub::Hub () {}
@@ -36,6 +37,8 @@ namespace vb {
 			for (auto i : *this) cs.push_back (std::string(1,i.first) + "=" + i.second);
 			title += " (" + boost::join (cs,", ") + ")";
 		}
+
+	    Fl::gl_visual (FL_RGB);
 	}
 
 	Hub H;

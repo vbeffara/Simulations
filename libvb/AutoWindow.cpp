@@ -8,13 +8,13 @@
 namespace vb {
 	void close_window (Fl_Widget *) { exit(1); }
 
-	AutoWindow::AutoWindow (int wd, int ht) : Auto(.05), Fl_Double_Window (wd, ht), paused (false) {
+	AutoWindow::AutoWindow (int wd, int ht) : Auto(.05), Fl_Gl_Window (wd, ht), paused (false) {
 		label (H.title.c_str());
 		callback(close_window);
 	}
 
 	void AutoWindow::show () {
-		Fl_Double_Window::show();
+		Fl_Gl_Window::show();
 		update();
 	}
 
@@ -24,7 +24,7 @@ namespace vb {
 			case 'x': exit (1);                  	break;
 			case ' ': paused = !paused; return 1;	break;
 		}
-		return Fl_Double_Window::handle(event);
+		return Fl_Gl_Window::handle(event);
 	}
 
 	void AutoWindow::update () {
