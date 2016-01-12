@@ -35,12 +35,8 @@ namespace vb {
 
 	void Picture::draw () {
 		paint();
-		gl_start();
-		const uchar * b = cairo_image_surface_get_data(surface);
-		glPixelStorei(GL_UNPACK_ROW_LENGTH, stride);
-		glRasterPos2i(0,0);
-		glDrawPixels(w(),h(),GL_BGRA,GL_UNSIGNED_BYTE,(const ulong*)b);
-		gl_finish();
+		glPixelStorei (GL_UNPACK_ROW_LENGTH, stride);
+		glDrawPixels (w(),h(), GL_BGRA,GL_UNSIGNED_BYTE, (const ulong*) cairo_image_surface_get_data(surface));
 	}
 
 	void Picture::output_png (const std::string &s) {
