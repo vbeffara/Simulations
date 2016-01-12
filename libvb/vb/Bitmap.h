@@ -22,18 +22,23 @@ namespace vb {
 		void tessel (coo ul, coo lr, std::function <T(coo)> f);
 
 	private:
-		Color * stage;	///< The raw pixel data of the screen representation.
-		coo z0;       	///< The coordinates of the origin (at(0) is there on screen).
-		T dflt;       	///< The default value.
+		coo z0;	///< The coordinates of the origin (at(0) is there on screen).
+		T dflt;	///< The default value.
 
 	protected:
 		virtual void paint () {
-			for (int x=0; x<w(); ++x) for (int y=0; y<h(); ++y) stage[x+stride*y] = at(coo(x,y));
+			Color * stage = (Color *) (cairo_image_surface_get_data (surface));
+			int ppp = pixel_w()/w();
+			for (int x=0; x<w(); ++x)
+				for (int y=0; y<h(); ++y)
+					for (int dx=0; dx<ppp; ++dx)
+						for (int dy=0; dy<ppp; ++dy)
+							stage[ppp*x+dx+stride*(ppp*y+dy)] = at(coo(x,y));
 		}
 	};
 
 	template<typename T> Bitmap<T>::Bitmap (int wd, int ht, T d) :
-		Picture(wd,ht), Array<T>(wd,ht,d), stage ((Color *) (cairo_image_surface_get_data (surface))), z0(0), dflt(d) {}
+		Picture(wd,ht), Array<T>(wd,ht,d), z0(0), dflt(d) {}
 
 	template<typename T> void Bitmap<T>::fill (coo z, T c, int adj) {
 		T in = at(z); if (in == c) return;

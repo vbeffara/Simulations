@@ -1,5 +1,6 @@
 #include <boost/algorithm/string.hpp>
 #include <FL/Fl.H>
+#include <FL/Fl_Gl_Window.H>
 #include <sys/stat.h>
 #include <vb/Hub.h>
 #include <iostream>
@@ -39,6 +40,7 @@ namespace vb {
 		}
 
 	    Fl::gl_visual (FL_RGB);
+	    Fl::use_high_res_GL (1);
 	}
 
 	Hub H;

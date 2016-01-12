@@ -11,32 +11,23 @@
 
 namespace vb {
 	Picture::Picture (int wd, int ht) :
-		AutoWindow (wd, ht),
-
-		surface (cairo_image_surface_create (CAIRO_FORMAT_RGB24, w(), h())),
-		cr      (cairo_create (surface)),
-		stride  (cairo_image_surface_get_stride (surface) / sizeof(Color)),
-
-		snapshot_prefix(H.title), snapshot_number(0), snapshot_period(0.0), snapshot_task(-1)
-	{ }
+		AutoWindow (wd, ht), snapshot_prefix(H.title), snapshot_number(0), snapshot_period(0.0), snapshot_task(-1)
+		{}
 
 	Picture::~Picture () {
 		if (snapshot_task>=0) remove_task(snapshot_task);
 	}
 
-	void Picture::size (int wd, int ht) {
-		AutoWindow::size (wd,ht);
-		cairo_destroy (cr);
-		cairo_surface_destroy (surface);
-		surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, w(), h());
-		cr      = cairo_create (surface);
-		stride  = cairo_image_surface_get_stride (surface) / sizeof(Color);
-	}
-
 	void Picture::draw () {
+		if (!surface) {
+			surface = cairo_image_surface_create (CAIRO_FORMAT_RGB24, pixel_w(), pixel_h());
+			cr = cairo_create (surface);
+			cairo_scale (cr,pixel_w()/w(),pixel_h()/h());
+			stride = cairo_image_surface_get_stride (surface) / sizeof(Color);
+		}
 		paint();
 		glPixelStorei (GL_UNPACK_ROW_LENGTH, stride);
-		glDrawPixels (w(),h(), GL_BGRA,GL_UNSIGNED_BYTE, (const ulong*) cairo_image_surface_get_data(surface));
+		glDrawPixels (pixel_w(),pixel_h(), GL_BGRA,GL_UNSIGNED_BYTE, (const ulong*) cairo_image_surface_get_data(surface));
 	}
 
 	void Picture::output_png (const std::string &s) {

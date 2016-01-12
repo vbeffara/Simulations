@@ -16,9 +16,6 @@ namespace vb {
 		Picture (int wd, int ht);
 		~Picture ();
 
-		/// Resize the window.
-		void size (int w, int h);
-
 		/// Output the image in the preferred format (PNG by default).
 		virtual void output (const std::string &s = "");
 		void output_png (const std::string &s = "");
