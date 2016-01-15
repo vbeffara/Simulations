@@ -1,6 +1,5 @@
 #pragma once /// \file
 
-#include <cstdlib>
 #include <map>
 #include <string>
 

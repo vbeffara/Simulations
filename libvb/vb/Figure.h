@@ -2,7 +2,6 @@
 #include <vb/Picture.h>
 #include <vb/cpx.h>
 #include <cairo-pdf.h>
-#include <memory>
 
 namespace vb {
 	class Pen {
@@ -88,6 +87,8 @@ namespace vb {
 
 		virtual void output (const std::string &s = "");
 		void output_pdf (const std::string &s = "");
+
+		double margin = 0;
 
 	protected:
 		void paint ();

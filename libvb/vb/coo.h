@@ -1,8 +1,7 @@
 #pragma once /// @file
 
-#include <algorithm>
-#include <cstdlib>
 #include <iostream>
+#include <vb/cpx.h>
 
 namespace vb {
 	class coo { public: int x,y;
@@ -19,6 +18,8 @@ namespace vb {
 
 		void	operator+=	(const coo & z)		{ x+=z.x; y+=z.y; }
 		void	operator-=	(const coo & z)		{ x-=z.x; y-=z.y; }
+
+		operator cpx() const { return cpx(x,y); }
 	};
 
 	inline int norm	(coo z) { return z.x*z.x + z.y*z.y; }

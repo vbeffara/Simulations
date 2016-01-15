@@ -68,25 +68,25 @@ namespace vb {
 	double Figure::left () {
 		double l = 0.0;
 		for (std::shared_ptr <Shape> i : contents) l = std::min (l,i->left());
-		return l;
+		return l-margin;
 	}
 
 	double Figure::right () {
 		double l = 0.0;
 		for (std::shared_ptr <Shape> i : contents) l = std::max (l,i->right());
-		return l;
+		return l+margin;
 	}
 
 	double Figure::top () {
 		double l = 0.0;
 		for (std::shared_ptr <Shape> i : contents) l = std::max (l,i->top());
-		return l;
+		return l+margin;
 	}
 
 	double Figure::bottom () {
 		double l = 0.0;
 		for (std::shared_ptr <Shape> i : contents) l = std::min (l,i->bottom());
-		return l;
+		return l-margin;
 	}
 
 	Figure & Figure::add (Shape *S) {

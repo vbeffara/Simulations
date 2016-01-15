@@ -1,6 +1,5 @@
 #pragma once /// \file
 #include <vb/coo.h>
-#include <vb/cpx.h>
 #include <vector>
 
 namespace vb {

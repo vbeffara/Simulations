@@ -4,7 +4,6 @@
 #include <future>
 #include <vb/Picture.h>
 #include <vb/Array.h>
-#include <vb/cpx.h>
 
 namespace vb {
 	template <typename T> class Bitmap : public Picture, public Array<T> { public:
