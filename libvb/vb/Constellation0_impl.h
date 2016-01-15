@@ -190,7 +190,7 @@ namespace vb {
 		unsigned long maxdeg=0; for (auto z : Z) maxdeg = std::max (maxdeg, z.d);
 
 		auto bd = bounds(); T large = abs(bd.first-bd.second), mindist = large;
-		for (int i=0; i<Z.size(); ++i) for (int j=0; j<Z.size(); ++j) if (i!=j) mindist = std::min (mindist, abs(Z[j].z-Z[i].z));
+		for (unsigned i=0; i<Z.size(); ++i) for (unsigned j=0; j<Z.size(); ++j) if (i!=j) mindist = std::min (mindist, abs(Z[j].z-Z[i].z));
 
 		T rad = mindist/5;
 
@@ -203,7 +203,7 @@ namespace vb {
 			std::vector<unsigned> he;
 
 			cplx u = z.z + rad*exp(cplx(0,.001)); T s = imag((*this)(u));
-			for (int i=0; i<10*z.d; ++i) {
+			for (unsigned i=0; i<10*z.d; ++i) {
 				u = z.z + exp(cplx(0,2*M_PI/(10*z.d))) * (u-z.z);
 				T ns = imag((*this)(u));
 				if (s*ns<0) {
@@ -220,7 +220,7 @@ namespace vb {
 		std::vector<unsigned> he;
 		cplx u = large*exp(cplx(0,.001));
 		T s = imag((*this)(u));
-		for (int i=0; i<10*maxdeg; ++i) {
+		for (unsigned i=0; i<10*maxdeg; ++i) {
 			u = exp(cplx(0,-2*M_PI/(10*maxdeg))) * u;
 			T ns = imag((*this)(u));
 			if (s*ns<0) {
@@ -233,8 +233,8 @@ namespace vb {
 
 		std::vector<std::vector<unsigned>> pairs;
 
-		for (int i=0; i<Z.size(); ++i) {
-			for (int j=0; j<hands[i].size(); ++j) {
+		for (unsigned i=0; i<Z.size(); ++i) {
+			for (unsigned j=0; j<hands[i].size(); ++j) {
 				auto l = hands[i][j];
 				auto r = Z[i].z + exp(cplx(0,-2*M_PI/(10*Z[i].d))) * (l-Z[i].z);
 				auto sl = imag((*this)(l));
@@ -243,7 +243,7 @@ namespace vb {
 					cplx nz = l + exp(cplx(0,M_PI/3)) * (r-l);
 					if (abs(nz)>large) {
 						T d = large; int h = -1; int k=hands.size()-1;
-						for (int kk=0; kk<hands[k].size(); ++kk) {
+						for (unsigned kk=0; kk<hands[k].size(); ++kk) {
 							T nd = abs(nz-hands[k][kk]);
 							if (nd < d) { d = abs(nz-hands[k][kk]); h = kk; }
 						}
@@ -251,9 +251,9 @@ namespace vb {
 						pairs.push_back({halfedges[i][j],halfedges[k][h]});
 						looking = false;
 					}
-					for (int k=0; k<Z.size(); ++k) if (abs(nz-Z[k].z) < rad) {
+					for (unsigned k=0; k<Z.size(); ++k) if (abs(nz-Z[k].z) < rad) {
 						T d = rad; int h = -1;
-						for (int kk=0; kk<hands[k].size(); ++kk) {
+						for (unsigned kk=0; kk<hands[k].size(); ++kk) {
 							T nd = abs(nz-hands[k][kk]);
 							if (nd < d) { d = abs(nz-hands[k][kk]); h = kk; }
 						}

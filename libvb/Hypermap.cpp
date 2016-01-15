@@ -193,7 +193,7 @@ namespace vb {
 
 	double acpa_step (const Hypermap & M, const std::vector<double> in, std::vector<double> & out, std::vector<double> & er) {
 		out = in; double se = 0;
-		for (int i=0; i<out.size(); ++i) {
+		for (unsigned i=0; i<out.size(); ++i) {
 			if (M.V[i].fixed) continue;
 			auto & adj = M.V[i].adj; int n = adj.size(); if (n==2) continue;
 			double s = M.alpha_xyz (out[i],out[adj[0]],out[adj[n-1]]);
@@ -230,7 +230,7 @@ namespace vb {
 			}
 			std::cerr << t << " " << se/n << " " << mv << "            \r";
 			if (mv<mvm) {
-				for (int i=0; i<V.size(); ++i) {
+				for (unsigned i=0; i<V.size(); ++i) {
 					if (old_e[i]!=0) {
 						double nr = (r[i] - (1-l[i])*old_r[i])/l[i];
 						if (nr>0) r[i] = nr;
@@ -238,6 +238,6 @@ namespace vb {
 				}
 			}
 		}
-		for (int i=0; i<V.size(); ++i) V[i].r = r[i];
+		for (unsigned i=0; i<V.size(); ++i) V[i].r = r[i];
 	}
 }
