@@ -3,7 +3,7 @@
  * carré de côté donné.
  */
 
-#include <vb/CL_Parser.h>
+#include <vb/Hub.h>
 #include <vb/PRNG.h>
 #include <vb/Figure.h>
 
@@ -15,11 +15,11 @@ int dy8[8] = {0,1,1,1,0,-1,-1,-1};
 typedef std::pair<cpx,cpx> bicpx;
 
 int main(int argc, char ** argv) {
-  CL_Parser CLP (argc, argv, "a=85,c,v,o=1");
-  int  adj    = CLP('a');
-  bool center = CLP('c');
-  bool video  = CLP('v');
-  bool ortho  = CLP('o');
+  H.init ("Simple random walk", argc, argv, "a=85,c,v,o=1");
+  int  adj    = H['a'];
+  bool center = H['c'];
+  bool video  = H['v'];
+  bool ortho  = H['o'];
 
   Figure f(ortho);
   std::vector < bicpx > t;
