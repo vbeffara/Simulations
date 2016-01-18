@@ -3,6 +3,24 @@
 #include <sstream>
 
 namespace vb {
+	Hypermap::Hypermap (json j) {
+		Cycles s = j["sigma"], a = j["alpha"], p = j["phi"];
+		sigma = s; alpha = a; phi = p;
+		if (!validate()) {
+			std::cerr << "*** Invalid JSON description:\n" << (*this);
+			std::cerr << (alpha*phi).inverse() << std::endl;
+			std::cerr << "*****************************\n";
+		};
+	}
+
+	Hypermap::operator json () {
+		return {
+			{ "sigma", sigma.cycles() },
+			{ "alpha", alpha.cycles() },
+			{ "phi"  , phi  .cycles() }
+		};
+	}
+
 	bool Hypermap::validate () const {
 		if (sigma.size() != alpha.size()) return false;
 		if (sigma.size() != phi.size()) return false;
