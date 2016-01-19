@@ -1,8 +1,5 @@
-
-#include <vb/Hub.h>
-#include <vb/Image.h>
-#include <vb/PRNG.h>
 #include <vb/CoarseImage.h>
+#include <vb/Hub.h>
 
 using namespace vb;
 

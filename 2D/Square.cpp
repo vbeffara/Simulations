@@ -52,7 +52,7 @@ ostream &operator<< (ostream &os, const pt p) { return os << p.x() << " " << p.y
 
 pt nopoint (-1,-1,-1,-1);
 
-typedef pair<pt,pt> ptpair;
+using ptpair = pair<pt,pt>;
 
 class Lamination : public Array<double> { public:
 	Lamination (int n) : Array<double> (n,n,0) {

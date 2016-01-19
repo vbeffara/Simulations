@@ -1,6 +1,5 @@
 #include <vb/Hub.h>
 #include <vb/Image.h>
-#include <vb/PRNG.h>
 
 using namespace vb;
 using namespace std;

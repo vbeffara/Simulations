@@ -25,7 +25,7 @@ namespace vb {
 		unsigned char &	at 	(coo3 c) { return data[index(c)]; }
 		unsigned char &	atp	(coo3 c) { return at(wrap(c)); }
 
-		typedef Cube_iterator iterator; iterator begin (); iterator end ();
+		using iterator = Cube_iterator; iterator begin (); iterator end ();
 
 		using Bitmap <Adder> :: at;
 		void put (coo3 c, unsigned char t) {

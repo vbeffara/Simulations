@@ -5,7 +5,7 @@ namespace vb {
 	template <class T> class Automaton;
 
 	template <class T> class Rule { public:
-		typedef std::vector < std::pair<int,T> > Pattern;
+		using Pattern = std::vector < std::pair<int,T> >;
 
 		Rule (Pattern in, Pattern out) : cond(in), move(out) {}
 

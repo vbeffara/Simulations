@@ -1,7 +1,6 @@
-#include "vb/Bitmap.h"
+#include <vb/Bitmap.h>
+#include <vb/Console.h>
 #include <vb/Hub.h>
-#include "vb/PRNG.h"
-#include "vb/Console.h"
 
 using namespace vb;
 

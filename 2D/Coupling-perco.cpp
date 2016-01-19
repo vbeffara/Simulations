@@ -7,7 +7,6 @@
 
 #include <vb/Hub.h>
 #include <vb/Image.h>
-#include <vb/PRNG.h>
 
 #define RAD1 10
 #define RAD2 20
@@ -21,7 +20,7 @@
 
 using namespace vb;
 
-typedef int testfunction (Image*);
+using testfunction = int (Image*);
 
 int compute_diff (Image *c1, Image *c2, Image *d) {
   int i,j,n;

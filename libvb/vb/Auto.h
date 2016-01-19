@@ -5,8 +5,8 @@
 #include <vector>
 
 namespace vb {
-	typedef std::chrono::duration<double> Duration;
-	typedef std::chrono::time_point<std::chrono::steady_clock,Duration> TimePoint;
+	using Duration = std::chrono::duration<double>;
+	using TimePoint = std::chrono::time_point<std::chrono::steady_clock,Duration>;
 
 	class Task : public std::function<void()> {
 	public:

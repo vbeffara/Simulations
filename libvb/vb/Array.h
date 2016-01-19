@@ -22,7 +22,7 @@ namespace vb {
 		bool	contains	(coo z)  	const	{ return (z.x>=0) && (z.y>=0) && (z.x<ww) && (z.y<hh); }
 		coo 	rand    	(int b=0)	const	{ return coo (b+prng.uniform_int(ww-2*b), b+prng.uniform_int(hh-2*b)); }
 
-		typedef Array_iterator<T> iterator;
+		using iterator = Array_iterator<T>;
 		iterator	begin	()	{ return iterator (*this, coo(0,0)); 	}
 		iterator	end  	()	{ return iterator (*this, coo(0,hh));	}
 

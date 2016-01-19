@@ -1,6 +1,5 @@
-#include <vb/Hub.h>
 #include <vb/Bitmap.h>
-#include <vb/PRNG.h>
+#include <vb/Hub.h>
 #include <vb/ProgressBar.h>
 
 using namespace std;
