@@ -3,7 +3,7 @@
  * TODO switch to coo everywhere
  */
 
-#include <vb/CL_Parser.h>
+#include <vb/Hub.h>
 #include <vb/PRNG.h>
 #include <vb/Point.h>
 

@@ -1,5 +1,5 @@
 
-#include <vb/CL_Parser.h>
+#include <vb/Hub.h>
 #include <vb/Image.h>
 #include <vb/PRNG.h>
 #include <vb/CoarseImage.h>

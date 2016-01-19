@@ -1,4 +1,4 @@
-#include <vb/CL_Parser.h>
+#include <vb/Hub.h>
 #include <vb/PRNG.h>
 #include <vb/Image.h>
 

@@ -3,7 +3,7 @@
  * env[i] = nb of cookies left at site i
  */
 
-#include <vb/CL_Parser.h>
+#include <vb/Hub.h>
 #include <vb/PRNG.h>
 
 using namespace vb;

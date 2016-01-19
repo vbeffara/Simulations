@@ -4,7 +4,7 @@
  *        = 2 to the right of max(range)==env.size()
  */
 
-#include <vb/CL_Parser.h>
+#include <vb/Hub.h>
 #include <vb/PRNG.h>
 
 using namespace vb;

@@ -1,7 +1,7 @@
 
 #include <vb/Minimizer.h>
 #include <vb/Map.h>
-#include <vb/CL_Parser.h>
+#include <vb/Hub.h>
 #include <vb/PRNG.h>
 #include <iostream>
 #include <vector>

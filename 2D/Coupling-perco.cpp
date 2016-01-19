@@ -5,7 +5,7 @@
  * small disk.
  */
 
-#include <vb/CL_Parser.h>
+#include <vb/Hub.h>
 #include <vb/Image.h>
 #include <vb/PRNG.h>
 
