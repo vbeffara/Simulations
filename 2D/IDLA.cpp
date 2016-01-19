@@ -8,7 +8,7 @@ using namespace vb; using namespace std;
 
 class Bounces : public map <string, function<coo(coo)>> { public:
 	Bounces () {
-		emplace ( "none", [](coo z) {                                         	return coo(0,            	0);                                	} );
+		emplace ( "none", [](coo z) { z=z;                                    	return coo(0,            	0);                                	} );
 		emplace ( "line", [](coo z) { double p = H['p'];                      	return coo(- p*z.x,      	- p*z.y);                          	} );
 		emplace ( "idla", [](coo z) {                                         	return coo(- z.x,        	- z.y);                            	} );
 		emplace ( "sign", [](coo z) {                                         	return coo(- sign(z.x),  	- sign(z.y));                      	} );

@@ -13,10 +13,10 @@ int center = 6;
 int infinity = 13;
 
 int main (int argc, char **argv) {
-  CL_Parser CLP (argc, argv, "n=10,p=.9,b");
-  int n = CLP('n');
-  double p = CLP('p');
-  bool batch = CLP('b');
+  H.init ("Corrector", argc, argv, "n=10,p=.9,b");
+  int n = H['n'];
+  double p = H['p'];
+  bool batch = H['b'];
 
   Map m (n*n);
   vector<char> adj(n*n,0);

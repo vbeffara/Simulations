@@ -11,9 +11,9 @@ using namespace vb;
 using namespace std;
 
 int main (int argc, char ** argv) {
-	CL_Parser CLP (argc,argv,"t=20,d");
-	int t=CLP('t');
-	bool d=CLP('d');
+	H.init ("Ladder", argc,argv, "t=20,d");
+	int t=H['t'];
+	bool d=H['d'];
 
 	vector<int> env;
 	unsigned X=0;

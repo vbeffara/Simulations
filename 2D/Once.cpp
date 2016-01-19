@@ -4,9 +4,9 @@
 using namespace vb;
 
 int main(int argc, char ** argv) {
-    CL_Parser CLP (argc,argv,"n=1000,a=2");
-    int n = CLP('n');
-    double a = CLP('a'); a=1/(1+a);
+    H.init ("Once-reinforced random walk", argc,argv, "n=1000,a=2");
+    int n = H['n'];
+    double a = H['a']; a=1/(1+a);
     int L = pow((double)n,.33);
 
     CoarseImage img(n,n,L); img.show();

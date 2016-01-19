@@ -3,7 +3,7 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/edmonds_karp_max_flow.hpp>
 #include <boost/graph/graph_utility.hpp>
-#include <vb/CL_Parser.h>
+#include <vb/Hub.h>
 #include <vb/PRNG.h>
 #include <vb/ProgressBar.h>
 
@@ -32,10 +32,10 @@ void add_one (Graph &g, int i, int j) {
 }
 
 int main(int argc, char **argv) {
-  CL_Parser CLP(argc,argv,"n=100,t=1,p=.5");
-  int n = CLP('n');
-  int n_iter = CLP('t');
-  double p = CLP('p');
+  H.init ("Percolation arm exponents", argc,argv, "n=100,t=1,p=.5");
+  int n = H['n'];
+  int n_iter = H['t'];
+  double p = H['p'];
 
   int stats[5];
   for (int i=0;i<5;++i) stats[i]=0;

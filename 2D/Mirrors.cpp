@@ -40,8 +40,8 @@ public:
 
 class Mirrors : public Bitmap<Mirror> {
 public:
-	Mirrors (CL_Parser &CLP) :	Bitmap<Mirror> (CLP('n'),CLP('n')),
-	                          	p(CLP('p')), q(CLP('q')), f(CLP('f')) {}
+	Mirrors (Hub & H) :	Bitmap<Mirror> (H['n'],H['n']),
+	                   	p(H['p']), q(H['q']), f(H['f']) {}
 	void main ();
 	double p, q, f;
 };
@@ -72,4 +72,4 @@ void Mirrors::main () {
 	}
 }
 
-int main (int argc, char ** argv) { CL_Parser CLP (argc, argv, "n=200,p=.5,q=0,f=0"); Mirrors(CLP).main(); }
+int main (int argc, char ** argv) { H.init ("Mirror model", argc, argv, "n=200,p=.5,q=0,f=0"); Mirrors(H).main(); }

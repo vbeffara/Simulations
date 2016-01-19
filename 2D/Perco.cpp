@@ -5,11 +5,11 @@
 using namespace vb;
 
 int main(int argc, char ** argv) {
-  CL_Parser CLP (argc, argv, "n=500,p=.5,d,s=0");
-  int    n = CLP('n'); n -= (n%4);
-  double p = CLP('p');
-  bool   d = CLP('d');
-  int    s = CLP('s');
+  H.init ("Percolation", argc, argv, "n=500,p=.5,d,s=0");
+  int    n = H['n']; n -= (n%4);
+  double p = H['p'];
+  bool   d = H['d'];
+  int    s = H['s'];
 
   Image img (n,n);
 

@@ -15,10 +15,10 @@ double cost (void) {
 
 class FPP : public CoarseImage {
 public:
-  FPP (int n, CL_Parser &CLP) : CoarseImage (n,n, pow(n,.33)), area(0) {
-    invasion = CLP('i');
-    twostep  = CLP('2');
-    trace    = CLP('t');
+  FPP (int n) : CoarseImage (n,n, pow(n,.33)), area(0) {
+    invasion = H['i'];
+    twostep  = H['2'];
+    trace    = H['t'];
 
     pqueue << Point(coo(n>>1,n>>1),cost());
     if (twostep) pqueue << Point (coo((true_width>>1)+1, true_height>>1), cost());
@@ -65,9 +65,9 @@ public:
 };
 
 int main (int argc, char **argv) {
-  CL_Parser CLP (argc,argv,"n=5000,i,2,t");
+  H.init ("First-passage percolation", argc,argv, "n=5000,i,2,t");
 
-  FPP F (CLP('n'), CLP);
+  FPP F (H['n']);
   F.show();
   F.run();
   F.output();

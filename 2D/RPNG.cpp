@@ -7,11 +7,11 @@
 using namespace vb;
 
 int main (int argc, char **argv) {
-  vb::CL_Parser CLP(argc,argv,"n=500,e=0.01,f,c=0");
-  const int n = CLP('n');
-  const double e = CLP('e');
-  const bool f = CLP('f');
-  const double c = CLP('c');
+  H.init ("Randomized Polynuclear Growth", argc,argv, "n=500,e=0.01,f,c=0");
+  const int    n = H['n'];
+  const double e = H['e'];
+  const bool   f = H['f'];
+  const double c = H['c'];
 
   CoarseImage img (n,n,10);
   img.show();

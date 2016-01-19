@@ -5,8 +5,8 @@
  * for convenience.
  */
 
-#include <vb/CL_Parser.h>
 #include <vb/Figure.h>
+#include <vb/Hub.h>
 #include <vb/PRNG.h>
 
 using namespace vb;
@@ -15,10 +15,10 @@ double omx = sqrt(3.0);
 
 class Perco_Schramm : public Figure {
 public:
-	Perco_Schramm (CL_Parser &CLP) : w(2*int(CLP('n'))), h(int(CLP('l')) ? CLP('l') : w-1), mask(w*h,true) {
+	Perco_Schramm (Hub & H) : w(2*int(H['n'])), h(int(H['l']) ? H['l'] : w-1), mask(w*h,true) {
 		for (int i=0; i < w/2; ++i)     cols.push_back (true);
 		for (int i=0; i < w/2; ++i)     cols.push_back (false);
-		for (int i=0; i < (w-1)*h; ++i) cols.push_back (prng.bernoulli(CLP('p')));
+		for (int i=0; i < (w-1)*h; ++i) cols.push_back (prng.bernoulli(H['p']));
 	}
 
 	void tri_boundary () {
@@ -83,8 +83,8 @@ private:
 };
 
 int main (int argc, char ** argv) {
-	CL_Parser CLP (argc, argv, "n=28,l=55,p=.5,t");
-	Perco_Schramm RS (CLP);
-	if (CLP('t')) RS.tri_boundary(); else RS.rect_boundary();
+	H.init ("Percolation exploration process", argc, argv, "n=28,l=55,p=.5,t");
+	Perco_Schramm RS (H);
+	if (H['t']) RS.tri_boundary(); else RS.rect_boundary();
 	RS.perc(); RS.walk(); RS.show(); RS.pause(); RS.output();
 }

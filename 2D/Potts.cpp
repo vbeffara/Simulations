@@ -1,5 +1,5 @@
 #include "vb/Bitmap.h"
-#include "vb/CL_Parser.h"
+#include <vb/Hub.h>
 #include "vb/PRNG.h"
 #include "vb/Console.h"
 
@@ -16,7 +16,7 @@ public:
 
 class Potts : public Bitmap<Spin> {
 public:
-	Potts (CL_Parser & CLP) : Bitmap<Spin> (int(CLP('n')), int(CLP('n'))), q(CLP('q')), beta(CLP('b')), b(0) {
+	Potts (Hub & H) : Bitmap<Spin> (int(H['n']), int(H['n'])), q(H['q']), beta(H['b']), b(0) {
 		for (int i=0; i<w(); ++i) for (int j=0; j<h(); ++j) put (coo(i,j), prng.uniform_int(q));
 		beta *= log(1+sqrt(double(q)));
 	}
@@ -131,8 +131,8 @@ public:
 };
 
 int main (int argc, char ** argv) {
-	CL_Parser CLP (argc,argv,"n=500,q=3,b=1");
-	Potts P(CLP);
+	H.init ("Potts model", argc,argv, "n=500,q=3,b=1");
+	Potts P(H);
 	for (auto & c : P) c=1;
 	P.bc_mostlyfree(50);
 	P.show();

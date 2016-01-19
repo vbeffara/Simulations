@@ -17,12 +17,12 @@ public:
 
 class PercSEP : public Bitmap<Site> {
 public:
-	PercSEP (CL_Parser & CLP) : Bitmap<Site> (2*int(CLP('n')), CLP('n')),
-			flow(0), d(CLP('d')), tasym(CLP('t')) {
+	PercSEP (Hub & H) : Bitmap<Site> (2*int(H['n']), H['n']),
+			flow(0), d(H['d']), tasym(H['t']) {
 		for (int i=0; i<w(); ++i)
 			for (int j=0; j<h(); ++j)
-				if (prng.bernoulli(CLP('p')))
-					put(coo(i,j), prng.bernoulli(CLP('l')) ? 2 : 1);
+				if (prng.bernoulli(H['p']))
+					put(coo(i,j), prng.bernoulli(H['l']) ? 2 : 1);
 	}
 	void clean() {
 		for (int x=0;x<w();++x) for (int y=0;y<h();++y)
@@ -61,8 +61,8 @@ public:
 };
 
 int main (int argc, char ** argv) {
-	CL_Parser CLP (argc,argv,"n=400,p=.8,l=.3,d=0,t");
-	PercSEP P(CLP); P.show();
+	H.init ("Exclusion on Percolation", argc,argv, "n=400,p=.8,l=.3,d=0,t");
+	PercSEP P(H); P.show();
 
 	for (long t=1 ;; ++t) {
 		if ((t%(P.w()*P.h()))==0) {

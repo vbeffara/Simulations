@@ -18,8 +18,8 @@ class Nematic : public vb::Bitmap<Site> { public:
 	void prec () {
 		ok = std::min(k,std::min(w(),h())); ob = b; std::vector<double> Z(P.size());
 		double zz = exp(2*ob/double(ok)); for (int i=0; i<ok; ++i) Z[i] = pow(zz,-i);
-		for (int i=ok; i<Z.size(); ++i) Z[i] = Z[i-1] / zz + Z[i-ok];
-		for (int i=ok; i<P.size(); ++i) P[i] = Z[i-ok] / Z[i];
+		for (unsigned i=ok; i<Z.size(); ++i) Z[i] = Z[i-1] / zz + Z[i-ok];
+		for (unsigned i=ok; i<P.size(); ++i) P[i] = Z[i-ok] / Z[i];
 		dd = ok * Z[Z.size()-ok] / (Z[Z.size()-1] / zz + ok * Z[Z.size()-ok]);
 	}
 

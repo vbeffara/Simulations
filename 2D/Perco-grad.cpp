@@ -6,12 +6,12 @@
 using namespace vb;
 
 int main (int argc, char ** argv) {
-  CL_Parser clp (argc, argv, "n=500,p=0,q=1,W=0,H=0");
-  int n = clp('n');
-  int w = clp('W');
-  int h = clp('H');
-  double p1 = clp('p');
-  double p2 = clp('q');
+  H.init ("Gradient percolation", argc, argv, "n=500,p=0,q=1,W=0,H=0");
+  int n = H['n'];
+  int w = H['W'];
+  int h = H['H'];
+  double p1 = H['p'];
+  double p2 = H['q'];
 
   if ((w*h==0) && (w+h!=0)) {
     std::cerr << "Please specify both width and height, or neither." << std::endl;

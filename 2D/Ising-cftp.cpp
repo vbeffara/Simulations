@@ -14,7 +14,7 @@ public:
 
 class IsingCFTP : public Bitmap<Site> {
 public:
-	IsingCFTP (CL_Parser & CLP) : Bitmap<Site> (CLP('n'), CLP('n')), b(CLP('b')), d(0), s(CLP('s')),
+	IsingCFTP (Hub & H) : Bitmap<Site> (H['n'], H['n']), b(H['b']), d(0), s(H['s']),
 								  status (w(),h()) {
 		for (int i=0; i<w(); ++i) for (int j=0; j<h(); ++j) put (coo(i,j),1); snap();
 		b *= log(1+sqrt(double(2)));
@@ -65,7 +65,7 @@ public:
 };
 
 int main(int argc, char *argv[]) {
-	CL_Parser CLP (argc,argv,"n=200,b=1,s");
-	IsingCFTP I (CLP); I.bc_dobrushin();
+	H.init ("CFTP for the Ising model", argc,argv, "n=200,b=1,s");
+	IsingCFTP I (H); I.bc_dobrushin();
 	I.show(); I.status.show(); I.run(); I.pause();
 }

@@ -8,7 +8,7 @@
  * inter (int) : inverse de la fréquence d'affichage des enveloppes
  */
 
-#include <vb/CL_Parser.h>
+#include <vb/Hub.h>
 #include <vb/PRNG.h>
 #include <vb/Figure.h>
 #include <vb/Console.h>
@@ -98,12 +98,12 @@ public:
   }
 
   void main (int argc, char ** argv) {
-    CL_Parser CLP (argc, argv, "p=.1,n=1000,i=1,o,r");
-    double pente = CLP('p');
-    int    nb    = CLP('n');
-    int    inter = CLP('i');
-    bool   plot  = CLP('o');
-    bool   renew = CLP('r');
+    H.init ("Rancher process", argc, argv, "p=.1,n=1000,i=1,o,r");
+    double pente = H['p'];
+    int    nb    = H['n'];
+    int    inter = H['i'];
+    bool   plot  = H['o'];
+    bool   renew = H['r'];
 
     int i=0;
 

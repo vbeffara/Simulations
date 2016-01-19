@@ -11,7 +11,7 @@ class Loewner : public std::vector<double> { public:
     }
 
     Color compute (cpx z) const {
-        for (int k=0; k<size(); ++k) {
+        for (unsigned k=0; k<size(); ++k) {
             if (z.real() < Min[k]) return LEFTSIDE;
             if (z.real() > Max[k]) return RIGHTSIDE;
             if (z.imag()<=0) return (z.real() < at(k)) ? LEFTSIDE : RIGHTSIDE;

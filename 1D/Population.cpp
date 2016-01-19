@@ -3,6 +3,7 @@
 #include <vb/ProgressBar.h>
 #include <vb/Figure.h>
 #include <vb/Console.h>
+
 using namespace std; using namespace vb;
 
 double a0 = 10, aex1 = 20, aex2 = 20, sigmab0 = .5, sigmabex1 = .1, sigmabex2 = .1, Ac = .3, sigmac = .1, slope = 0;
@@ -14,7 +15,7 @@ double rescaling	(double x, int size)    	{ return 6.0*(x-1.0)/(size-1.0) - 3.0;
 
 double NewNu (vector<double> & nu, double K, double p, int size) {
 	vector<double> B(size+1,0), De(size+1,0), M(size+1,0); double BB=0, DD=0, MM=0;
-  
+
 	for (int x=1; x<=size; x++) {
 		double s=0; for (int y=1; y<=size; ++y) { s += c(rescaling(x,size),rescaling(y,size))*nu[y]; }
 		B[x]  = nu[x] * (1-p) * b(rescaling(x,size));	BB += B[x];
@@ -22,7 +23,7 @@ double NewNu (vector<double> & nu, double K, double p, int size) {
 		De[x] = nu[x] * s;                           	DD += De[x];
 	}
 
-    double u = prng.uniform_real()*(BB+DD+MM);  
+    double u = prng.uniform_real()*(BB+DD+MM);
     if (u < BB) {        	int z=0; double v = prng.uniform_real()*BB; while (v>0) { z++; v -= B[z]; } nu[z] += 1/K; }
     else if (u < BB+DD) {	int z=0; double v = prng.uniform_real()*DD; while (v>0) { z++; v -= De[z]; } nu[z] -= 1/K; if (nu[z]<.5/K) nu[z]=0; }
     else {               	int z=0; double v = prng.uniform_real()*MM; while (v>0) { z++; v -= M[z]; }
@@ -33,10 +34,10 @@ double NewNu (vector<double> & nu, double K, double p, int size) {
 
 int main (int argc, char ** argv) {
 	// n impair ! the function rescaling maps {1, ..., size} to {-3, ..., 3}; 7+(2^k*)6 is optimal rescaling
-	CL_Parser CLP (argc,argv,"s=4,K=100,p=.05,n=7,i=1000000");
-	prng.seed (int(CLP('s')));
-	double K=CLP('K'), p=CLP('p');
-	int size=CLP('n'), shift=(size+1)/2, iterations = CLP('i');
+	H.init ("Population dynamics", argc,argv, "s=4,K=100,p=.05,n=7,i=1000000");
+	prng.seed (int(H['s']));
+	double K = H['K'], p=H['p'];
+	int size=H['n'], shift=(size+1)/2, iterations = H['i'];
 
 	vector<double> nu (size+1,0); nu[shift] = 3;
 
@@ -61,13 +62,13 @@ int main (int argc, char ** argv) {
 		PB.set(k);
 		t += NewNu (nu,K,p,size);
 		if (!(k%(iterations/1000))) {
-			cout << k << " " << t; for (int i=1; i<=size; ++i) cout << " " << int(.2+nu[i]*K); cout << endl; 
-			G.contents.clear(); 
+			cout << k << " " << t; for (int i=1; i<=size; ++i) cout << " " << int(.2+nu[i]*K); cout << endl;
+			G.contents.clear();
 			for (int i=0; i<size; ++i) { graph[i].push_back (cpx(1000.0*k/iterations,nu[i+1])); G.add (new Path(graph[i],Pen(Indexed(i)))); }
 			if (! G.visible()) G.show(); G.step();
 		}
 		for (int i=0; i<size; ++i) pos[i] = cpx(i,nu[i+1]);
 		F.contents.clear(); F.add (new Path(pos));
-		F.step();	
+		F.step();
 	}
 }

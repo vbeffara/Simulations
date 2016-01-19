@@ -9,12 +9,12 @@
 using namespace vb;
 
 int main (int argc, char ** argv) {
-    CL_Parser CLP (argc, argv, "n=250,p=.5,g,a=1.0,t=0.0,s");
-    int    n = CLP('n'); // Half of board size
-    double p = CLP('p'); // Initial particle density
-    bool   g = CLP('g'); // Dynamic discovery of environment (ghosts)
-    double t = CLP('t'); // Snapshot interval for movies
-    double a = CLP('a'); // Contagion probability
+    H.init ("Aggregation of exclusion walkers", argc, argv, "n=250,p=.5,g,a=1.0,t=0.0,s");
+    int    n = H['n']; // Half of board size
+    double p = H['p']; // Initial particle density
+    bool   g = H['g']; // Dynamic discovery of environment (ghosts)
+    double t = H['t']; // Snapshot interval for movies
+    double a = H['a']; // Contagion probability
 
     Image img (2*n,2*n);
 

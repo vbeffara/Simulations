@@ -56,9 +56,9 @@ public:
 };
 
 int main (int argc, char ** argv) {
-	CL_Parser CLP (argc,argv,"n=50,i,v");
-	int n=CLP('n'), l=n*n*n*n;
-	bool inf=CLP('i'), vid=CLP('v');
+	H.init ("Random walk hull", argc,argv,"n=50,i,v");
+	int  n = H['n'], l = n*n*n*n;
+	bool inf = H['i'], vid = H['v'];
 
 	Snake S(n);
 

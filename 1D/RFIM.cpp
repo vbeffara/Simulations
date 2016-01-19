@@ -6,12 +6,12 @@ using namespace std;
 using namespace vb;
 
 int main (int argc, char ** argv) {
-  CL_Parser CLP (argc, argv, "n=5,s=0");
-  int n = CLP('n');
-  prng.seed ((int) CLP('s'));
+  H.init ("Random field Ising model", argc, argv, "n=5,s=0");
+  int n = H['n'];
+  prng.seed (int(H['s']));
 
   int nconfig = 1; for (int i=0; i<n; ++i) nconfig*=3;
-  vector<int> config (n,0);  
+  vector<int> config (n,0);
   vector<double> field (n);
   vector<double> Z(2*n+1,0.0);
 
