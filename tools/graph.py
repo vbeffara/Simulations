@@ -4,7 +4,6 @@ from glob import glob
 from sys import argv
 
 full = "-f" in argv
-xfull = "-x" in argv
 
 print "digraph {"
 print "  rankdir = LR"
@@ -20,10 +19,20 @@ for f in vbh:
 			if h.startswith("vb/") or full:
 				print '  "%s" -> "%s"' % (f[6:],h)
 
-if xfull:
+if "-x" in argv:
 	vbc = sorted (glob ("[123]*/*.cpp"))
 	for f in vbc:
 		print '"%s"[style="filled",fillcolor="pink"];' % f
+		for l in open(f):
+			if l.startswith("#include"):
+				h = l[10:-2]
+				if h.startswith("vb/") or full:
+					print '  "%s" -> "%s"' % (f,h)
+
+if "-l" in argv:
+	vbc = sorted (glob ("libvb/*.cpp"))
+	for f in vbc:
+		print '"%s"[style="filled",fillcolor="yellow"];' % f
 		for l in open(f):
 			if l.startswith("#include"):
 				h = l[10:-2]
