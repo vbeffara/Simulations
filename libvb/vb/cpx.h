@@ -17,14 +17,6 @@ namespace vb {
 		} else os << x;
 	}
 
-    static std::ostream & operator<< (std::ostream & os, cpx z) {
-		double eps = pow(10.0,-os.precision());
-		if (fabs(imag(z)) <= eps) { foi(os,real(z)); return os; }
-		if (fabs(real(z)) <= eps) { foi(os,imag(z),true,true); os << " I"; return os; }
-		bool neg = false; if (imag(z)<0) { z = conj(z); neg = true; }
-		os << "("; foi(os,real(z)); os << (neg ? " - " : " + "); foi(os,imag(z),true); os << " I)"; return os;
-    }
-
 	using bigint = boost::multiprecision::number<boost::multiprecision::gmp_int,boost::multiprecision::et_off>;
 	using cpxint = std::complex<bigint>;
 	using gmp100 = boost::multiprecision::number<boost::multiprecision::gmp_float<100>,boost::multiprecision::et_off>;
@@ -35,14 +27,14 @@ namespace vb {
 		if ((!no1) || (x != T(1))) { os << x; }
 	}
 
-    static std::ostream & operator<< (std::ostream & os, cpxint z) {
+    inline std::ostream & operator<< (std::ostream & os, cpxint z) {
 		if (imag(z) == 0) { foii(os,real(z)); return os; }
 		if (real(z) == 0) { foii(os,imag(z),true,true); os << " I"; return os; }
 		bool neg = false; if (imag(z)<0) { z = conj(z); neg = true; }
 		os << "("; foii(os,real(z)); os << (neg ? " - " : " + "); foii(os,imag(z),true); os << " I)"; return os;
     }
 
-    static std::ostream & operator<< (std::ostream & os, cpx100 z) {
+    template <typename T> std::ostream & operator<< (std::ostream & os, std::complex<T> z) {
 		double eps = pow(10.0,-os.precision());
 		if (fabs(imag(z)) <= eps) { foi(os,real(z)); return os; }
 		if (fabs(real(z)) <= eps) { foi(os,imag(z),true,true); os << " I"; return os; }

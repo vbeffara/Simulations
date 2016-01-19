@@ -1,5 +1,4 @@
 #include <vb/Constellation_impl.h>
-#include <vb/cpx.h>
 
 namespace vb {
 	template class Constellation<double>;
