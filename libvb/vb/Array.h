@@ -1,6 +1,8 @@
 #pragma once /// \file
-#include <vb/PRNG.h>
+
 #include <vb/coo.h>
+#include <vb/math.h>
+#include <vb/PRNG.h>
 
 namespace vb {
 	template <typename T> class Array_iterator;
@@ -11,8 +13,8 @@ namespace vb {
 		T &      	at	(coo z)      	{ return data[z.x + ww*z.y]; }
 		T const &	at	(coo z) const	{ return data[z.x + ww*z.y]; }
 
-		T &      	atp	(coo z)      	{ int x=(z.x%ww + ww)%ww, y=(z.y%hh + hh)%hh; return at(coo(x,y)); }
-		T const &	atp	(coo z) const	{ int x=(z.x%ww + ww)%ww, y=(z.y%hh + hh)%hh; return at(coo(x,y)); }
+		T &      	atp	(coo z)      	{ int x = pmod (z.x,ww), y = pmod (z.y,hh); return at(coo(x,y)); }
+		T const &	atp	(coo z) const	{ int x = pmod (z.x,ww), y = pmod (z.y,hh); return at(coo(x,y)); }
 
 		void	put 	(coo z, T const & c)	{ at(z) = c; }
 		void	putp	(coo z, T const & c)	{ atp(z) = c; }
