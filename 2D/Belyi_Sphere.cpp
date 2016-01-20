@@ -10,10 +10,9 @@
 
 // S-E+F = 2, 3F=2E, S=2+F/2, F=2d, S=2+d
 
-#include <vb/Pairings.h>
-#include <vb/PRNG.h>
-#include <vb/ProgressBar.h>
 #include <vb/Constellation0.h>
+#include <vb/Pairings.h>
+#include <vb/ProgressBar.h>
 
 using namespace vb; using namespace std;
 

@@ -1,10 +1,6 @@
-
-#include <vb/Minimizer.h>
-#include <vb/Map.h>
 #include <vb/Hub.h>
+#include <vb/Map.h>
 #include <vb/PRNG.h>
-#include <iostream>
-#include <vector>
 
 using namespace vb;
 using namespace std;

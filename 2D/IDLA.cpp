@@ -1,8 +1,6 @@
 #include <vb/CoarseImage.h>
-#include <vb/Image.h>
 #include <vb/Hub.h>
-#include <vb/math.h>
-#include <map>
+#include <vb/Image.h>
 
 using namespace vb; using namespace std;
 

@@ -1,42 +1,53 @@
 #!/usr/bin/python
 
 from glob import glob
-from sys import argv
+from sys import argv,stderr,exit
 
 full = "-f" in argv
+files = {}
 
 print "digraph {"
 print "  rankdir = LR"
 
-vbh = sorted (glob ("libvb/vb/*.h"))
-for f in vbh:
-	print '"%s"[style="filled",fillcolor="lightblue"];' % f[6:]
+for f in glob ("libvb/vb/*.h"):
+	f = f[6:]
+	print '"%s"[style="filled",fillcolor="lightblue"];' % f
+	files[f] = set()
 
-for f in vbh:
-	for l in open(f):
+if "-l" in argv:
+	for f in glob ("libvb/*.cpp"):
+		print '"%s"[style="filled",fillcolor="yellow"];' % f
+		files[f] = set()
+
+if "-x" in argv:
+	for f in glob ("[123]*/*.cpp"):
+		print '"%s"[style="filled",fillcolor="pink"];' % f
+		files[f] = set()
+
+for f in files:
+	ff = f;
+	if ff[:3] == "vb/":
+		ff = "libvb/" + f;
+	for l in open(ff):
 		if l.startswith("#include"):
 			h = l[10:-2]
 			if h.startswith("vb/") or full:
-				print '  "%s" -> "%s"' % (f[6:],h)
-
-if "-x" in argv:
-	vbc = sorted (glob ("[123]*/*.cpp"))
-	for f in vbc:
-		print '"%s"[style="filled",fillcolor="pink"];' % f
-		for l in open(f):
-			if l.startswith("#include"):
-				h = l[10:-2]
-				if h.startswith("vb/") or full:
-					print '  "%s" -> "%s"' % (f,h)
-
-if "-l" in argv:
-	vbc = sorted (glob ("libvb/*.cpp"))
-	for f in vbc:
-		print '"%s"[style="filled",fillcolor="yellow"];' % f
-		for l in open(f):
-			if l.startswith("#include"):
-				h = l[10:-2]
-				if h.startswith("vb/") or full:
-					print '  "%s" -> "%s"' % (f,h)
-
+				print '  "%s" -> "%s"' % (f,h)
+				files[f].add(h)
 print "}"
+
+def descendents (f) :
+	out = files[f].copy();
+	for k in files[f]:
+		if k in files:
+			out |= descendents(k)
+	return out
+
+bad = 0
+for f in files:
+	for k in files[f]:
+		for l in files[f]:
+			if l in files and k in descendents(l):
+				print >> stderr, "Redundant include: %s -> %s (implied by %s)" % (f,k,l)
+				bad = 1
+exit(bad)

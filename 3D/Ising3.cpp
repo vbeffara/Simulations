@@ -1,6 +1,5 @@
 #include <vb/Cube.h>
 #include <vb/Hub.h>
-#include <vb/PRNG.h>
 #include <vb/ProgressBar.h>
 
 using namespace vb; using namespace std;

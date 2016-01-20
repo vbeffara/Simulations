@@ -1,7 +1,5 @@
-
 #include <vb/Hub.h>
 #include <vb/Image.h>
-#include <vb/PRNG.h>
 
 #define MAIN_BIT 1
 #define L1_BIT 2

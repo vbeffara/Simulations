@@ -4,7 +4,6 @@
  */
 
 #include <vb/Hub.h>
-#include <vb/PRNG.h>
 #include <vb/Point.h>
 
 using namespace vb;

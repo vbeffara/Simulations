@@ -10,7 +10,6 @@
 #include <vb/Constellation1.h>
 #include <vb/NumberTheory.h>
 #include <vb/Pairings.h>
-#include <vb/PRNG.h>
 #include <vb/ProgressBar.h>
 
 using namespace vb; using namespace std;

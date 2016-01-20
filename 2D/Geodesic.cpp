@@ -1,7 +1,6 @@
 #include <vb/Hub.h>
 #include <vb/Image.h>
 #include <vb/ProgressBar.h>
-#include <vb/cpx.h>
 #include <fftw3.h>
 #include <limits>
 #include <queue>
