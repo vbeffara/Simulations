@@ -14,6 +14,9 @@ namespace vb {
 		tessel ({0,0}, {pixel_w()-1,pixel_h()-1});
 	}
 
+	void Coloring::scale (double s) { cpx mid = (z1+z2)/2.0; z1 = mid + s * (z1-mid); z2 = mid + s * (z2-mid); }
+	void Coloring::shift (cpx z) { z1 += z; z2 += z; }
+
 	cpx Coloring::c_to_z (coo c) const { return z1 + cpx(c) * eps; }
 
 	Color & Coloring::at (coo z) const { return stage[z.x + stride * z.y]; }

@@ -8,6 +8,9 @@ namespace vb {
 
 		virtual void show();
 
+		void scale (double s);
+		void shift (cpx z);
+
 		double eps;
 		bool aa = false;
 		cpx z1, z2;
