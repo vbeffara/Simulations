@@ -7,22 +7,23 @@
 
 namespace vb {
 	class Coloring : public Picture { public:
-		Coloring (int wd, int ht, std::function <Color(cpx)> ff) : Picture(wd,ht), f(ff) {}
+		Coloring (cpx z1_, cpx z2_, int n, std::function <Color(cpx)> f_) :
+			Picture(n,n*imag(z2_-z1_)/real(z2_-z1_)), z1(z1_), z2(z2_), f(f_) {}
 
 		virtual void show() {
 			Picture::show();
 			stage = (Color *) (cairo_image_surface_get_data (surface));
-			center = {pixel_w()/2,pixel_h()/2}; eps = 2.0/pixel_w();
+			eps = real(z2-z1)/pixel_w();
 			tessel ({0,0}, {pixel_w()-1,pixel_h()-1});
 		}
 
-		coo center;
 		double eps;
 		bool aa = false;
+		cpx z1, z2;
 		std::function <Color(cpx)> f;
 
 	private:
-		cpx c_to_z (coo c) const { return eps * cpx(c - center); }
+		cpx c_to_z (coo c) const { return z1 + cpx(c) * eps; }
 
 		Color * stage = nullptr;
 
