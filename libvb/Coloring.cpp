@@ -62,4 +62,16 @@ namespace vb {
 
         while (main.wait_for(std::chrono::milliseconds(100)) != std::future_status::ready) update(); main.get();
     }
+
+	int Coloring::handle (int event) {
+		if (event == FL_KEYDOWN) switch (Fl::event_key()) {
+			case '-':     	scale (1.25);                    	show(); return 1; break;
+			case '+':     	scale (0.80);                    	show(); return 1; break;
+			case FL_Left: 	shift (cpx(+.1,0) * real(z2-z1));	show(); return 1; break;
+			case FL_Right:	shift (cpx(-.1,0) * real(z2-z1));	show(); return 1; break;
+			case FL_Up:   	shift (cpx(0,-.1) * real(z2-z1));	show(); return 1; break;
+			case FL_Down: 	shift (cpx(0,+.1) * real(z2-z1));	show(); return 1; break;
+		}
+		return Picture::handle(event);
+	}
 }
