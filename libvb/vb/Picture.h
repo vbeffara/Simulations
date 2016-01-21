@@ -26,10 +26,10 @@ namespace vb {
 		virtual int handle (int event);	///< Handle the events, in particular 'q' and 'x'.
 
 	protected:
-		cairo_surface_t * surface;	///< Cairo version of the surface.
-		cairo_t * cr;             	///< A context to draw onto the surface.
-		int stride;               	///< The number of pixels in a line in memory.
-		void draw ();             	///< Draw the contents of the window (called by FLTK).
+		cairo_surface_t * surface = nullptr;	///< Cairo version of the surface.
+		cairo_t * cr;                       	///< A context to draw onto the surface.
+		int stride;                         	///< The number of pixels in a line in memory.
+		void draw ();                       	///< Draw the contents of the window (called by FLTK).
 
 	private:
 		std::string snapshot_prefix;   ///< The filename prefix for PNG snapshots.
@@ -37,6 +37,6 @@ namespace vb {
 		double snapshot_period;        ///< The time interval between automatic snapshots, in seconds.
 		int snapshot_task;
 
-		virtual void paint () =0;      /// Update the contents of surface from a derived class data.
+		virtual void paint () {};      /// Update the contents of surface from a derived class data.
 	};
 }
