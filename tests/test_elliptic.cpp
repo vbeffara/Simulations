@@ -1,3 +1,4 @@
+#include <vb/Coloring.h>
 #include <vb/Constellation1.h>
 #include <vb/Hub.h>
 #include <vb/Hypermap_lib.h>
@@ -22,11 +23,15 @@ int main (int argc, char ** argv) {
 	C.findn();
 
 	if (!H['q']) { cout << endl << C; }
-	if (H['v']) { Image I (800,800); I.show(); C.draw(I,H['a'],H['b']); I.pause(); I.hide(); }
+	if (H['v']) {
+		// Image I (800,800); I.show(); C.draw(I,H['a'],H['b']); I.pause(); I.hide();
+		auto bd = C.bounds();
+		Coloring CC (bd.first,bd.second,800,[&](cpx z){ return HSV ((imag(C(z))>0)?0:.5, .8, .8); });
+		CC.aa = H['a']; CC.scale(1.5); CC.show(); while (CC.visible()) { CC.update(); Fl::wait(); }
+	}
 
 	if (H['q']) {
 		Constellation1<gmp100> Cq (C);
 		Cq.findn(); cout << endl << Cq;
-		if (H['w']) { Image I (600,600); I.show(); Cq.draw(I); I.pause(); I.hide(); }
 	}
 }

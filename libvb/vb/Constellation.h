@@ -30,8 +30,6 @@ namespace vb {
 		virtual	cplx                	reduce    	(const cplx & z)	const	{ return z; }
 		virtual	std::pair<cplx,cplx>	bounds    	()              	const	=0;
 
-		void	draw	(Image & img, bool smooth = true, bool wow = false) const;
-
 		T	cost 	()	const;
 		T	findn	();
 	};

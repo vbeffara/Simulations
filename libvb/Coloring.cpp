@@ -11,6 +11,7 @@ namespace vb {
 		Picture::show();
 		stage = (Color *) (cairo_image_surface_get_data (surface));
 		eps = real(z2-z1)/pixel_w();
+		for (int i=0; i<pixel_w(); ++i) for (int j=0; j<pixel_h(); ++j) at(coo(i,j)) = BLACK;
 		tessel ({0,0}, {pixel_w()-1,pixel_h()-1});
 	}
 
@@ -31,7 +32,7 @@ namespace vb {
 		return Color(r/9,g/9,b/9,a/9);
 	}
 
-    void Coloring::line (coo s, coo d, int l) { for (int i=0; i<l; ++i) { coo c = s+d*i; at(c) = color(c); } }
+    void Coloring::line (coo s, coo d, int l) { cilk_for (int i=0; i<l; ++i) { coo c = s+d*i; at(c) = color(c); } }
 
     void Coloring::go (coo ul, coo lr) {
         Color tmp = at(ul); bool mono = true; coo z = ul;

@@ -19,7 +19,6 @@ namespace vb {
 		T	lazy	(coo z, std::function <T(coo)> f)	{ if (at(z) == dflt) put(z, f(z)); return at(z); }
 
 		void fill (coo z, T c, int adj = 4);
-		void tessel (coo ul, coo lr, std::function <T(coo)> f);
 
 	private:
 		coo z0;	///< The coordinates of the origin (at(0) is there on screen).
@@ -61,39 +60,4 @@ namespace vb {
 			return Color(r/9,g/9,b/9,a/9);
 		};
 	}
-
-    template <typename T> void Bitmap<T>::tessel (coo ul, coo lr, std::function <T(coo)> f) {
-        std::function<void(coo,coo,int)> line = [&] (coo s, coo d, int l) {
-            cilk_for (int i=0; i<l; ++i) { at(s+d*i) = f(s+d*i); }
-        };
-
-        std::function<void(coo,coo)> go = [&] (coo ul, coo lr) {
-            Color tmp = at(ul); bool mono = true; coo z = ul;
-            for (; mono && (z != coo {lr.x,ul.y}); z += {1,0}) mono = mono && (at(z) == tmp);
-            for (; mono && (z != coo {lr.x,lr.y}); z += {0,1}) mono = mono && (at(z) == tmp);
-            for (; mono && (z != coo {ul.x,lr.y}); z += {-1,0}) mono = mono && (at(z) == tmp);
-            for (; mono && (z != coo {ul.x,ul.y}); z += {0,-1}) mono = mono && (at(z) == tmp);
-
-            int size = std::min(lr.x-ul.x,lr.y-ul.y); if (size <= 1) return;
-            if (mono) { for (int i=ul.x+1; i<lr.x; ++i) for (int j=ul.y+1; j<lr.y; ++j) at(coo(i,j)) = tmp; return; }
-
-            coo ul_ = (lr.x-ul.x > lr.y-ul.y) ? coo {(ul.x+lr.x)/2,ul.y} : coo {ul.x,(ul.y+lr.y)/2};
-            coo lr_ = (lr.x-ul.x > lr.y-ul.y) ? coo {(ul.x+lr.x)/2,lr.y} : coo {lr.x,(ul.y+lr.y)/2};
-            coo dd_ = (lr.x-ul.x > lr.y-ul.y) ? coo {0,1} : coo {1,0};
-            line (ul_,dd_,size);
-
-            cilk_spawn go (ul,lr_); go (ul_,lr); cilk_sync;
-        };
-
-        auto main = std::async (std::launch::async, [&]() {
-            line (ul, coo(1,0), lr.x-ul.x);
-            line (coo(lr.x,ul.y), coo(0,1), lr.y-ul.y);
-            line (lr, coo(-1,0), lr.x-ul.x);
-            line (coo(ul.x,lr.y), coo(0,-1), lr.y-ul.y);
-            go (ul, lr);
-        } );
-
-        while (main.wait_for(std::chrono::milliseconds(100)) != std::future_status::ready) update(); main.get();
-    }
-
 }

@@ -7,6 +7,7 @@
 // r: seed for the PRNG, set to 0 for time-based
 // s: number of vertices
 
+#include <vb/Coloring.h>
 #include <vb/Constellation1.h>
 #include <vb/NumberTheory.h>
 #include <vb/Pairings.h>
@@ -25,7 +26,8 @@ int main (int argc, char ** argv) {
 
 	vector<Hypermap> v; unsigned target = 0; if ((d==0) && (g==1) && (!H['f']) && (s<ntri.size())) target = ntri[s];
 
-	Image img (500,500);
+	Coloring img (cpx(-1,-1),cpx(1,1),500,[](cpx){return BLACK;});
+
 	while ((target==0)||(v.size()<target)) {
 		Permutation alpha = Pairings(a).rand();                                        	if (!connected(phi,alpha))	continue;
 		Permutation sigma = (alpha*phi).inverse(); Hypermap M (sigma,alpha,phi);       	if (M.genus() != g)       	continue;
@@ -55,7 +57,12 @@ int main (int argc, char ** argv) {
 				cout << endl;
 			}
 
-			if (H['o']) { img.label(H.title.c_str()); if (!img.visible()) img.show(); C.draw(img); img.output(); }
+			if (H['o']) {
+				img.label(H.title.c_str());
+				auto bd = C.bounds();
+				img.z1 = bd.first; img.z2 = bd.second; img.f = [&](cpx z){ return HSV ((imag(C(z))>0)?0:.5, .8, .8); };
+				img.aa = true; img.scale(1.3); img.show(); img.output();
+			}
 
 			if (H['q']) {
 				Constellation1<gmp100> CC (C); gmp100 c = CC.findn(); int lc = - int(log10(c));

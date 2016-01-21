@@ -34,22 +34,4 @@ namespace vb {
 	    if (std::isnan(double(out))) out = T(1.234567e89);
 	    return out;
 	}
-
-	template <typename T> void Constellation<T>::draw (Image & img, bool smooth, bool wow) const {
-		auto bd = bounds(); cplx center { (bd.first+bd.second) / T(2) }; T scale = T(.7) * abs(bd.first-bd.second);
-
-		int l = img.w(); img.start = img.now(); for (auto & c : img) c = Color(0);
-
-		auto f = [&](cplx z) {
-			z = conj(z)*T(2.0/l) + cplx{-1,1}; z = center + scale*z; z = (*this)(z);
-			double s = .8; if (wow) {
-				cplx w = cplx(4)*z-cplx(2); w *= cplx(1) + sqrt(cplx(1)-cplx(4)/(w*w)); w/=2;
-				s = 1/double(norm(w)); s = .8*(1-sqrt(1-s))*(1-sqrt(1-s));
-			}
-			return HSV ((imag(z)>0)?0:.5, .8, s);
-		};
-
-		img.tessel({0,0},{img.w()-1,img.h()-1}, smooth ? aa<T>(f) : [&](coo c){ return f(cplx(c.x,c.y)); });
-		img.update();
-	};
 }
