@@ -14,6 +14,11 @@ namespace vb {
 
 		int handle (int event);
 
+		#ifdef NO_RETINA
+		int pixel_w () { return w(); }
+		int pixel_h () { return h(); }
+		#endif
+
 	private:
 		bool paused;
 	};

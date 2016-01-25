@@ -40,7 +40,9 @@ namespace vb {
 		}
 
 	    Fl::gl_visual (FL_RGB);
+	    #ifndef NO_RETINA
 	    Fl::use_high_res_GL (1);
+	    #endif
 	}
 
 	Hub H;

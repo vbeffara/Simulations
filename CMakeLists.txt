@@ -19,6 +19,11 @@ find_library (FPLLL fplll)
 
 pkg_check_modules (EXT REQUIRED cairo fftw3 libpng)
 
+execute_process (COMMAND fltk-config --version OUTPUT_VARIABLE FLTK_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
+if (FLTK_VERSION VERSION_LESS "1.3.4")
+	add_definitions (-DNO_RETINA)
+endif (FLTK_VERSION VERSION_LESS "1.3.4")
+
 include_directories ("${PROJECT_SOURCE_DIR}/libvb" ${Boost_INCLUDE_DIRS} ${EXT_INCLUDE_DIRS})
 
 file (GLOB vb_sources libvb/*.cpp)
