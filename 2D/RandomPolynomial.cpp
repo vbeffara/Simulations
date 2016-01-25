@@ -40,7 +40,8 @@ class RPoly { public:
 };
 
 int main (int argc, char ** argv) {
-	H.init ("Random polynomial in 2 variables", argc, argv, "n=10,a,g=gaussian");
+	H.init ("Random polynomial in 2 variables", argc, argv, "n=10,a,g=gaussian,s=0");
+	int s = H['s']; if (s) prng.seed(s);
 	RPoly P (H['n']); Coloring C (cpx(-10,-10),cpx(10,10),800,P); C.aa = H['a'];
-	C.show(); while (C.visible()) { C.update(); Fl::wait(); }
+	C.show(); while (C.visible()) { C.update(); Fl::wait(); } C.output();
 }

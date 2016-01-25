@@ -13,6 +13,21 @@ namespace vb {
 		eps = real(z2-z1)/pixel_w();
 		for (int i=0; i<pixel_w(); ++i) for (int j=0; j<pixel_h(); ++j) at(coo(i,j)) = BLACK;
 		tessel ({0,0}, {pixel_w()-1,pixel_h()-1});
+		update();
+		if (aa) do_aa();
+	}
+
+	void Coloring::do_aa () {
+		std::vector<coo> bad;
+		for (int x=0; x<pixel_w(); ++x) for (int y=0; y<pixel_h(); ++y) {
+			coo c {x,y}; Color cc = at(c); bool u = true;
+			for (int d=0; d<4; ++d) {
+				coo c2 = c + dz[d];
+				if ((c2.x>=0) && (c2.x<pixel_w()) && (c2.y>=0) && (c2.y<pixel_h()) && (at(c2)!=cc)) u = false;
+			}
+			if (!u) bad.push_back(c);
+		}
+		for (unsigned i=0; i<bad.size(); ++i) { auto c = bad[i]; at(c) = aa_color(c); }
 	}
 
 	void Coloring::scale (double s) { cpx mid = (z1+z2)/2.0; z1 = mid + s * (z1-mid); z2 = mid + s * (z2-mid); }
@@ -22,8 +37,7 @@ namespace vb {
 
 	Color & Coloring::at (coo z) const { return stage[z.x + stride * z.y]; }
 
-	Color Coloring::color (coo c) const {
-		if (!aa) return f(c_to_z(c));
+	Color Coloring::aa_color (coo c) const {
 		cpx z = c_to_z(c); int r(0), g(0), b(0), a(0);
 		for (int i=-1; i<=1; ++i) for (int j=-1; j<=1; ++j) {
 			Color c = f (z + eps*cpx(i,j)/3.0);
@@ -32,7 +46,7 @@ namespace vb {
 		return Color(r/9,g/9,b/9,a/9);
 	}
 
-    void Coloring::line (coo s, coo d, int l) { cilk_for (int i=0; i<l; ++i) { coo c = s+d*i; at(c) = color(c); } }
+    void Coloring::line (coo s, coo d, int l) { cilk_for (int i=0; i<l; ++i) { coo c = s+d*i; at(c) = f(c_to_z(c)); } }
 
     void Coloring::go (coo ul, coo lr) {
         Color tmp = at(ul); bool mono = true; coo z = ul;
@@ -68,6 +82,7 @@ namespace vb {
 		if (event == FL_KEYDOWN) switch (Fl::event_key()) {
 			case '-':     	scale (1.25);                    	show(); return 1; break;
 			case '+':     	scale (0.80);                    	show(); return 1; break;
+			case 'x':     	                                 	hide(); return 1; break;
 			case FL_Left: 	shift (cpx(+.1,0) * real(z2-z1));	show(); return 1; break;
 			case FL_Right:	shift (cpx(-.1,0) * real(z2-z1));	show(); return 1; break;
 			case FL_Up:   	shift (cpx(0,-.1) * real(z2-z1));	show(); return 1; break;
