@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.0)
 project (Simulations)
 
-set (CMAKE_CXX_FLAGS "-g -Wall -Wextra -std=c++14 -fcilkplus -fdiagnostics-color=always -O3 -march=native -mtune=native")
+set (CMAKE_CXX_FLAGS "-g -Wall -Wextra -std=c++14 -ffast-math -fcilkplus -fdiagnostics-color=always -O3 -march=native -mtune=native")
 
 link_directories ("/usr/local/lib" "/opt/X11/lib")
 
