@@ -22,11 +22,11 @@ namespace vb {
 		cpx c_to_z (coo c) const;
 
 		Color & at (coo z) const;
-		Color aa_color (coo c) const;
+		Color aa_color (coo c, bool pre = false) const;
 
         void line (coo s, coo d, int l);
-        void go (coo ul, coo lr);
 	    void tessel (coo ul, coo lr);
+        void tessel_go (coo ul, coo lr);
 	    void do_aa ();
 
 		Color * stage = nullptr;
