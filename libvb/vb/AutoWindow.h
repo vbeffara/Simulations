@@ -12,6 +12,8 @@ namespace vb {
 		void update ();
 		void pause() { paused=true; update(); }
 
+		void run (std::function<void()>);
+
 		int handle (int event);
 
 		#ifdef NO_RETINA

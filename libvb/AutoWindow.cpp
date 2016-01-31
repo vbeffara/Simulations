@@ -4,6 +4,7 @@
 #include <vb/AutoWindow.h>
 #include <vb/Hub.h>
 #include <FL/Fl.H>
+#include <future>
 
 namespace vb {
 	void close_window (Fl_Widget *) { exit(1); }
@@ -16,6 +17,12 @@ namespace vb {
 	void AutoWindow::show () {
 		Fl_Gl_Window::show();
 		update();
+	}
+
+	void AutoWindow::run (std::function<void()> f) {
+		auto ff = std::async(std::launch::async,f);
+		while (ff.wait_for(std::chrono::milliseconds(100)) != std::future_status::ready) update();
+		ff.get();
 	}
 
 	int AutoWindow::handle (int event) {
