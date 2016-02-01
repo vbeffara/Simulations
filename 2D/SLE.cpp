@@ -34,10 +34,10 @@ class Loewner : public std::vector<double> { public:
 };
 
 int main (int argc, char ** argv) {
-    H.init ("Schramm-Loewner Evolution", argc,argv, "n=300,k=2.666666666667,r=0,a");
+    H.init ("Schramm-Loewner Evolution", argc,argv, "n=300,k=2.666666666667,r=0");
     int r = H['r']; if (r) prng.seed(r);
 
     Loewner L (H['n'],H['k']); double w = L.Max[0] - L.Min[0];
     Coloring C (cpx(-w,0), cpx(w,4.0*w/3.0), H['n'], [&L](cpx z){return L.compute(z);});
-    C.aa = H['a']; C.show(); C.output();
+    C.show(); C.output();
 }

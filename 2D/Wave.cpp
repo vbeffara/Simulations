@@ -26,7 +26,6 @@ class Wave : public Coloring { public:
 };
 
 int main (int argc, char ** argv) {
-	H.init ("Random planar waves", argc, argv, "n=600,k=100,l=5,r,a");
-	Wave W(H['n'],H['k'],H['l']); W.aa=H['a']; W.show();
-	while (W.visible()) { W.update(); Fl::wait(); }
+	H.init ("Random planar waves", argc, argv, "n=600,k=100,l=5,r");
+	Wave W(H['n'],H['k'],H['l']); W.show(); W.output(); Fl::run();
 }

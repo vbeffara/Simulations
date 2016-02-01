@@ -29,7 +29,7 @@ int main (int argc, char ** argv) {
 	if (H['v']) {
 		C.belyi(); auto bd = C.bounds();
 		Coloring CC (bd.first,bd.second,800,[&](cpx z){ return HSV ((imag(C(z))>0)?0:.5, .8, .8); });
-		CC.aa = H['a']; CC.scale(1.5); CC.show(); if (H['o']) CC.output(); while (CC.visible()) { CC.update(); Fl::wait(); }
+		CC.scale(1.5); CC.show(); if (H['o']) CC.output(); while (CC.visible()) { CC.update(); Fl::wait(); }
 	}
 
 	if (!H['q']) { C.belyi(); cout << endl << C; return 0; }

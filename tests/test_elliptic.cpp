@@ -27,7 +27,7 @@ int main (int argc, char ** argv) {
 		// Image I (800,800); I.show(); C.draw(I,H['a'],H['b']); I.pause(); I.hide();
 		auto bd = C.bounds();
 		Coloring CC (bd.first,bd.second,800,[&](cpx z){ return HSV ((imag(C(z))>0)?0:.5, .8, .8); });
-		CC.aa = H['a']; CC.scale(1.5); CC.show(); while (CC.visible()) { CC.update(); Fl::wait(); }
+		CC.scale(1.5); CC.show(); while (CC.visible()) { CC.update(); Fl::wait(); }
 	}
 
 	if (H['q']) {

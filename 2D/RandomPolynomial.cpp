@@ -45,5 +45,5 @@ int main (int argc, char ** argv) {
 	H.init ("Random polynomial in 2 variables", argc, argv, "n=100,g=gaussian,s=0");
 	int s = H['s']; if (s) prng.seed(s);
 	RPoly P (H['n']); Coloring C (cpx(-10,-10),cpx(10,10),800,P);
-	C.show(); while (C.visible()) { C.update(); Fl::wait(); } C.output();
+	C.show(); C.output(); Fl::run();
 }

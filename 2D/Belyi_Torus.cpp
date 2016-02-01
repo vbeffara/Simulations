@@ -61,7 +61,7 @@ int main (int argc, char ** argv) {
 				img.label(H.title.c_str());
 				auto bd = C.bounds();
 				img.z1 = bd.first; img.z2 = bd.second; img.f = [&](cpx z){ return HSV ((imag(C(z))>0)?0:.5, .8, .8); };
-				img.aa = true; img.scale(1.3); img.show(); img.output();
+				img.scale(1.3); img.show(); img.output();
 			}
 
 			if (H['q']) {

@@ -17,17 +17,18 @@ namespace vb {
 	}
 
 	void Coloring::do_aa () {
-		int pw = pixel_w(), ph = pixel_h();
-		cilk_for (int y=0; y<ph; ++y) {
+		int pw = pixel_w(), ph = pixel_h(); std::vector<coo> cs;
+		for (int y=0; y<ph; ++y) {
 			for (int x=0; x<pw; ++x) {
 				coo c {x,y}; Color cc = at(c); bool u = true;
 				for (int d=0; d<4; ++d) {
 					coo c2 = c + dz[d];
 					if ((c2.x>=0) && (c2.x<pw) && (c2.y>=0) && (c2.y<ph) && (at(c2)!=cc)) u = false;
 				}
-				if (!u) at(c) = aa_color(c,true);
+				if (!u) cs.push_back(c);
 			}
 		}
+		cilk_for (unsigned i=0; i<cs.size(); ++i) at(cs[i]) = aa_color(cs[i],true);
 	}
 
 	void Coloring::scale (double s) { cpx mid = (z1+z2)/2.0; z1 = mid + s * (z1-mid); z2 = mid + s * (z2-mid); }
@@ -38,13 +39,13 @@ namespace vb {
 	Color & Coloring::at (coo z) const { return stage[z.x + stride * z.y]; }
 
 	Color Coloring::aa_color (coo c, bool pre) const {
-		cpx z = c_to_z(c); int r(0), g(0), b(0), a(0);
-		if (pre) { Color C = at(c); r=C.r; g=C.g; b=C.b; a=C.a; }
+		cpx z = c_to_z(c); int r(0), g(0), b(0);
+		if (pre) { Color C = at(c); r=C.r; g=C.g; b=C.b; }
 		for (int i=-1; i<=1; ++i) for (int j=-1; j<=1; ++j) if ((!pre) || (i!=0) || (j!=0)) {
 			Color c = f (z + eps*cpx(i,j)/3.0);
-			r+=c.r; g+=c.g; b+=c.b; a+=c.a;
+			r+=c.r; g+=c.g; b+=c.b;
 		}
-		return Color(r/9,g/9,b/9,a/9);
+		return Color(r/9,g/9,b/9);
 	}
 
     void Coloring::line (coo s, coo d, int l) {
