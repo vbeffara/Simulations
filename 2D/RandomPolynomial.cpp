@@ -14,7 +14,7 @@ template <typename T> T sm3 (int i, int j, int k) {
 }
 
 template <typename T> class RPoly { public:
-	RPoly (int n_) : n(n_), A(n+1) {
+	RPoly (int n_, bool(p_)) : n(n_), p(p_), A(n+1) {
 		map<string,function<double()>> generators;
 		generators.emplace ("gaussian",  [](){ return prng.gaussian(0,1); });
 		generators.emplace ("bernoulli", [](){ return prng.bernoulli(.5) ? 1 : -1; });
@@ -28,6 +28,7 @@ template <typename T> class RPoly { public:
 	}
 
 	T operator() (T x, T y) {
+		if (p) { T r = (x*x+y*y); if (r>=1) return 0; x /= 1-r; y /= 1-r; }
 		T out = A[n][0];
 		for (int i=n-1; i>=0; --i) {
 			T pi = A[i][n-i];
@@ -37,15 +38,19 @@ template <typename T> class RPoly { public:
 		return out;
 	}
 
-	Color operator() (cpx z) { return HSV ((*this)(T(real(z)),T(imag(z)))>0 ? 0 : .5, .8, .8); }
+	Color operator() (cpx z) {
+		T val = (*this)(T(real(z)),T(imag(z))); if (val==T(0)) return NOCOLOR;
+		return HSV (val>0 ? 0 : .5, .8, .8);
+	}
 
 	int n;
+	bool p;
 	vector<vector<T>> A;
 };
 
 int main (int argc, char ** argv) {
-	H.init ("Random polynomial in 2 variables", argc, argv, "n=100,g=gaussian,s=0");
-	int s = H['s']; if (s) prng.seed(s);
-	RPoly<double> P (H['n']); Coloring C (cpx(-10,-10),cpx(10,10),800,P);
+	H.init ("Random polynomial in 2 variables", argc, argv, "n=100,g=gaussian,s=0,p");
+	int s = H['s']; if (s) prng.seed(s); RPoly<double> P (H['n'],H['p']);
+	double l = H['p'] ? 1 : 10; Coloring C (cpx(-l,-l),cpx(l,l),800,P);
 	C.show(); C.output(); Fl::run();
 }
