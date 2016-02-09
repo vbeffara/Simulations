@@ -16,6 +16,7 @@ find_package (Boost)
 find_package (FLTK)
 find_library (GMP gmp)
 find_library (FPLLL fplll)
+find_library (MPFR mpfr)
 
 pkg_check_modules (EXT REQUIRED cairo fftw3 libpng)
 
@@ -28,7 +29,7 @@ include_directories ("${PROJECT_SOURCE_DIR}/libvb" ${Boost_INCLUDE_DIRS} ${EXT_I
 
 file (GLOB vb_sources libvb/*.cpp)
 add_library (vb SHARED ${vb_sources})
-target_link_libraries (vb ${EXT_LIBRARIES} ${GMP} ${FLTK_LIBRARIES} ${FPLLL} cilkrts)
+target_link_libraries (vb ${EXT_LIBRARIES} ${GMP} ${FLTK_LIBRARIES} ${FPLLL} ${MPFR} cilkrts)
 
 foreach (dir tests 1D 2D 3D)
 	file (GLOB src ${dir}/*.cpp)
