@@ -3,147 +3,59 @@
 
 namespace vb {
 	template <typename T> class Minimizer { public:
-		Minimizer (	unsigned int n_,
-		           	T f_ (const Vector<T> &, void *),
-		           	Vector<T> g_ (const Vector<T> &, void *),
-		           	T fg_ (const Vector<T> &, Vector<T> &, void *),
-		           	void *context_ = 0);
-
-		Minimizer (	unsigned int n_,
-		           	T fg_ (const Vector<T> &, Vector<T> &, void *),
-		           	void *context_ = 0);
+		Minimizer (unsigned int n_);
 
 		Minimizer (	unsigned int n_,
 		           	T f_ (const Vector<T> &, void *),
 		           	Vector<T> g_ (const Vector<T> &, void *),
-		           	void *context_ = 0);
+		           	T fg_ (const Vector<T> &, Vector<T> &, void *));
+
+		Minimizer (	unsigned int n_, std::function < T(const Vector<T>&,Vector<T>&) > fg_);
+
+		Minimizer (	unsigned int n_,
+		           	T f_ (const Vector<T> &, void *),
+		           	Vector<T> g_ (const Vector<T> &, void *));
 
 		T compute (const Vector<T> & x = Vector<T>(0));
 
-		/** Line-search as a plug-in for a numerical optimization algorithm.
-		 *
-		 * It implements Wolfe's method. Reference : J.F. Bonnans et al.,
-		 * "Numerical Optimization" (2ed, Springer, 2006), p. 43.
-		 *
-		 * Parameters chosen : m1 = 0.3, m2 = 0.8.
-		 *
-		 * Careful if d is gx (for steepest gradient), because the
-		 * algorith _will_ change the value of gx as it goes so it might
-		 * lead to trouble ... That's why vb::Minimizer::minimize_grad
-		 * calls it as line_search(Vector<T>(gx)).
-		 *
-		 * @todo Improve the choice of the new point using polynomial
-		 * interpolation instead of linear ? Not sure whether it actually
-		 * improves speed of convergence, but needs to be tried.
-		 *
-		 * @param d The direction of the search.
-		 */
-
 		void line_search (const Vector<T> &d);
 
-		/** Function minimization by a steepest-descent algorithm.
-		 *
-		 * It has been called a "numerical absurdity", but it still works
-		 * pretty well compared to BFGS especially in very high dimension
-		 * (when storage of the approximate inverse Hessian is problematic).
-		 *
-		 * @param x0 The point from which to start.
-		 * @return   The value of the function at the end point.
-		 */
-
 		T minimize_grad (const Vector<T> &x0);
-
-		/** A quasi-Newtonian minimization algorithm.
-		 *
-		 * It is the algorithm of Broyden, Fletcher, Goldfarb and Shanno (BFGS
-		 * method).  Reference : J.F. Bonnans et al., "Numerical Optimization"
-		 * (2ed, Springer, 2006), p. 54.
-		 *
-		 * In dimension N it has to maintain an N by N matrix, which limits it
-		 * to a few thousand dimensions.
-		 *
-		 * @todo Change the prototype to accept a true vb::Matrix<T> instead
-		 * of a vector, and create a matrix storage type for diagonal
-		 * matrices.
-		 *
-		 * @param x0 The point from which to start.
-		 * @param W0 The initial estimate for the inverse Hessian (as a * diagonal matrix).
-		 * @return   The value of the function at the end point.
-		 */
-
 		T minimize_bfgs (const Vector<T> &x0, const Vector<T> &W0 = Vector<T>(0));
-
-		/** The Fletcher-Reeves conjugate gradient algorithm.
-		 *
-		 * Reference: J.F. Bonnans et al., "Numerical Optimization" (2ed,
-		 * Springer, 2006), p. 73.
-		 *
-		 * @param x0 The point from which to start.
-		 * @return   The value of the function at the end point.
-		 */
-
 		T minimize_fr (const Vector<T> &x0);
-
-		/** The Pollak-Ribiere conjugate gradient algorithm.
-		 *
-		 * Reference: J.F. Bonnans et al., "Numerical Optimization" (2ed,
-		 * Springer, 2006), p. 73.
-		 *
-		 * @param x0 The point from which to start.
-		 * @return   The value of the function at the end point.
-		 */
-
 		T minimize_pr (const Vector<T> &x0);
-
-		/** The mixed quasi-Newton / conjugate gradient method.
-		 *
-		 * Reference: J.F. Bonnans et al., "Numerical Optimization" (2ed,
-		 * Springer, 2006), p. 74.
-		 *
-		 * If in doubt, choose this one !
-		 *
-		 * @param x0 The point from which to start.
-		 * @return   The value of the function at the end point.
-		 */
-
 		T minimize_qn (const Vector<T> &x0);
 
 		unsigned n;
 
-		T        	(*f) 	(const Vector<T> & x,                	void * context);
-		Vector<T>	(*g) 	(const Vector<T> & x,                	void * context);
-		T        	(*fg)	(const Vector<T> & x, Vector<T> & fg,	void * context);
-		void     	(*cb)	(const Vector<T> & x, T err,         	void * context);
+		std::function < T        	(const Vector<T>&)           	> f 	=0;
+		std::function < Vector<T>	(const Vector<T>&)           	> g 	=0;
+		std::function < T        	(const Vector<T>&,Vector<T>&)	> fg	=0;
+		std::function < void     	(const Vector<T>&,T)         	> cb	=0;
 
-		void *context;
+		Vector<T> x;    	T fx;    	Vector<T> gx;
+		Vector<T> old_x;	T old_fx;	Vector<T> old_gx;
 
-		Vector<T> x;      ///< The current point of interest.
-		T fx;     ///< The value of the function at x.
-		Vector<T> gx;     ///< The gradient of the function at x.
-
-		Vector<T> old_x;  ///< The previous value of x, before the last line_search().
-		T old_fx; ///< The value of the function at old_x.
-		Vector<T> old_gx; ///< The gradient of the function at old_x.
-
-		T er; ///< An indicator of the current error, for logging.
-		int ler;   ///< The base-10 logarithm of er.
+		T er;
+		int ler;
 	};
 
+	template <typename T> Minimizer<T>::Minimizer (unsigned int n_) : n(n_), x(n), gx(n), old_x(n), old_gx(n), er(1.0), ler(0) {}
+
 	template <typename T> Minimizer<T>::Minimizer (unsigned int n_, T f_ (const Vector<T> &, void *), Vector<T> g_ (const Vector<T> &, void *),
-			T fg_ (const Vector<T> &, Vector<T> &, void *), void *context_) :
-	    n(n_), f(f_), g(g_), fg(fg_), cb(NULL), context(context_), x(n), gx(n), old_x(n), old_gx(n), er(1.0), ler(0) {}
+			T fg_ (const Vector<T> &, Vector<T> &, void *)) :
+	    n(n_), f(f_), g(g_), fg(fg_), x(n), gx(n), old_x(n), old_gx(n), er(1.0), ler(0) {}
 
-	template <typename T> Minimizer<T>::Minimizer (unsigned int n_, T fg_ (const Vector<T> &, Vector<T> &, void *), void *context_) :
-		Minimizer (n_,NULL,NULL,fg_,context_) {}
+	template <typename T> Minimizer<T>::Minimizer (unsigned int n_, std::function < T(const Vector<T>&,Vector<T>&) > fg_) :
+		Minimizer (n_) { fg=fg_; }
 
-	template <typename T> Minimizer<T>::Minimizer (unsigned int n_, T f_ (const Vector<T> &, void *), Vector<T> g_ (const Vector<T> &, void *), void *context_) :
-		Minimizer (n_,f_,g_,NULL,context_) {}
+	template <typename T> Minimizer<T>::Minimizer (unsigned int n_, T f_ (const Vector<T> &, void *), Vector<T> g_ (const Vector<T> &, void *)) :
+		Minimizer (n_,f_,g_,NULL) {}
 
 	template <typename T> T Minimizer<T>::compute (const Vector<T> &x_) {
 		if ((!x_.empty()) && (&x != &x_)) x=x_;
 
-		if (fg)	{ fx = fg(x,gx,context); }
-		else   	{ fx = f(x,context); gx = g(x,context); }
+		if (fg)	{ fx = fg(x,gx); } else	{ fx = f(x); gx = g(x); }
 
 		return fx;
 	}
@@ -288,7 +200,7 @@ namespace vb {
 			line_search(d);
 			first=false;
 
-			if (cb) cb(x,fx,context);
+			if (cb) cb(x,fx);
 		}
 
 		return fx;

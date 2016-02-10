@@ -4,7 +4,7 @@
 
 using namespace vb;
 
-void cb (const Vector<double> &, double fx, void *) { std::cerr << fx << "\r"; }
+void cb (const Vector<double> &, double fx) { std::cerr << fx << "\r"; }
 
 int main (int argc, char ** argv) {
 	H.init ("Test: circle packing", argc, argv, "s=4");
@@ -35,7 +35,7 @@ int main (int argc, char ** argv) {
 		x[3*i+2]      = .8*r;
 	}
 
-	Minimizer<double> MM (3*m.n, Map_fg_circle_disk, &m); MM.cb = cb;
+	Minimizer<double> MM (3*m.n, [&m](const Vector<double> &x, Vector<double> &g) { return Map_fg_circle_disk (x,g,&m); }); MM.cb = cb;
 	MM.minimize_qn (x); x = MM.x;
 
 	std::cerr << "Number of vertices:    " << m.n << std::endl;

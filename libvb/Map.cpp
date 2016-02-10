@@ -1,7 +1,5 @@
-/// @file
-/// Implementation of the vb::Map class.
-
 #include <vb/Map.h>
+#include <vb/Minimizer.h>
 
 namespace vb {
   Map::Map (int nn) : Picture (600,600), n(nn), zero(-1), one(-1), infinity(-1) {
@@ -131,7 +129,8 @@ namespace vb {
       x[2*i+1] = v[i]->z.imag();
     }
 
-    Minimizer<double> M (2*n, Map_fg_balance, this);
+    // double Map_fg_balance (const Vector<double> &x, Vector<double> &g, void *context);
+    Minimizer<double> M (2*n, [this](const Vector<double> &x, Vector<double> &g) { return Map_fg_balance (x,g,this); });
     double output = M.minimize_qn (x);
 
     for (int i=0; i<n; ++i) {

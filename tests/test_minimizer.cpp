@@ -1,8 +1,6 @@
-
 #include <vb/Minimizer.h>
 
-using namespace std;
-using namespace vb;
+using namespace std; using namespace vb;
 
 #define DIM 400
 
@@ -12,13 +10,13 @@ double f (const Vector<double> &x, void *) {
   return o;
 }
 
-Vector<double> g (const Vector<double> &x, void *) {
+Vector<double> g (const Vector<double> &x) {
   Vector<double> out(DIM);
   for (unsigned int i=0; i<DIM; ++i) out[i] = sin(x[i]/(i+1))/(i+1);
   return out;
 }
 
-double fg (const Vector<double> &x, Vector<double> &g, void *) {
+double fg (const Vector<double> &x, Vector<double> &g) {
   double o = 0;
   for (unsigned int i=0; i<DIM; ++i) {
     o += (1 - cos(x[i]/(i+1)));
