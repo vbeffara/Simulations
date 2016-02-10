@@ -1,4 +1,4 @@
-#include <vb/Elliptic_impl.h>
+#include <vb/impl/Elliptic.hxx>
 
 namespace vb {
 	template class Elliptic<double>;

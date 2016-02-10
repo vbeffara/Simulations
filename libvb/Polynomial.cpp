@@ -1,4 +1,4 @@
-#include <vb/Polynomial_impl.h>
+#include <vb/impl/Polynomial.hxx>
 
 namespace vb {
 	template class Polynomial<bigint>;
