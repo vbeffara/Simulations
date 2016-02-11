@@ -18,6 +18,10 @@ if "-l" in argv:
 	for f in glob ("libvb/*.cpp"):
 		print '"%s"[style="filled",fillcolor="yellow"];' % f
 		files[f] = set()
+	for f in glob ("libvb/vb/impl/*.hxx"):
+		f = f[6:]
+		print '"%s"[style="filled",fillcolor="yellow"];' % f
+		files[f] = set()
 
 if "-x" in argv:
 	for f in glob ("[123]*/*.cpp"):

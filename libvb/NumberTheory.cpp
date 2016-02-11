@@ -1,4 +1,4 @@
-#include <vb/NumberTheory_impl.h>
+#include <vb/impl/NumberTheory.hxx>
 
 namespace vb {
 	template Polynomial<bigint> guess (gmp100 x, gmp100 eps);
