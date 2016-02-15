@@ -1,4 +1,6 @@
 language: cpp
+sudo: required
+dist: trusty
 
 before_install:
   - sudo apt-get update -qq
