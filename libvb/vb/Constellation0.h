@@ -1,7 +1,5 @@
 #pragma once
-
 #include <vb/Constellation.h>
-#include <vb/Hub.h>
 #include <vb/Hypermap.h>
 #include <boost/optional.hpp>
 

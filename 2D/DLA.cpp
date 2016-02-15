@@ -1,4 +1,3 @@
-#include <vb/Hub.h>
 #include <vb/CoarseImage.h>
 #include <vb/Console.h>
 #include <vb/QuadTree.h>

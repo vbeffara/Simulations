@@ -1,5 +1,4 @@
 #include <vb/Cube.h>
-#include <vb/Hub.h>
 #include <vb/Pov.h>
 
 namespace vb {

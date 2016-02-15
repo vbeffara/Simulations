@@ -1,8 +1,5 @@
 /// @file
-/// Implementation of the vb::Picture class
-#include <vb/Hub.h>
 #include <vb/Picture.h>
-#include <FL/Fl.H>
 #include <FL/fl_draw.H>
 #include <FL/gl.h>
 #include <iostream>

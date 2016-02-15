@@ -1,4 +1,3 @@
-#include <vb/Hub.h>
 #include <vb/Image.h>
 #include <vb/ProgressBar.h>
 #include <fftw3.h>

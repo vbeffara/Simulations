@@ -1,5 +1,4 @@
 #include <vb/Figure.h>
-#include <vb/Hub.h>
 #include <cairo-pdf.h>
 
 namespace vb {

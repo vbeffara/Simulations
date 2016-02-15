@@ -1,5 +1,4 @@
 #include <vb/Coloring.h>
-#include <vb/Hub.h>
 #include <vb/PRNG.h>
 
 using namespace vb; using namespace std;

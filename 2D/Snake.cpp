@@ -1,5 +1,4 @@
 #include <vb/CoarseImage.h>
-#include <vb/Hub.h>
 #include <vb/Path.h>
 
 using namespace vb;

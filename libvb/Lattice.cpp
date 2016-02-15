@@ -134,7 +134,7 @@ namespace vb {
     return Z2;
   }
 
-  Lattice H () {
+  Lattice Hx () {
     Lattice H(2,cpx(.5,sqrt(3)/2));
     H.bond(0,1).bond(0,1,coo(-1,0)).bond(0,1,coo(0,-1));
     H.z[0]=0;

@@ -8,7 +8,6 @@
  * inter (int) : inverse de la fréquence d'affichage des enveloppes
  */
 
-#include <vb/Hub.h>
 #include <vb/PRNG.h>
 #include <vb/Figure.h>
 #include <vb/Console.h>

@@ -3,7 +3,6 @@
  * TODO switch to coo everywhere
  */
 
-#include <vb/Hub.h>
 #include <vb/Point.h>
 
 using namespace vb;

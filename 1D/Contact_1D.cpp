@@ -1,4 +1,3 @@
-#include <vb/Hub.h>
 #include <vb/Automaton.h>
 
 using namespace vb;
