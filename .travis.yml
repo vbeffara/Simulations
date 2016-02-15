@@ -2,10 +2,18 @@ language: cpp
 sudo: required
 dist: trusty
 
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - gcc-5
+      - g++-5
+
 before_install:
   - sudo apt-get update -qq
   - sudo dpkg -l
-  - sudo apt-get install -y -qq gcc-5 cmake libcairo2-dev libfltk1.3-dev libboost-dev libfftw3-dev libfplll-dev libgmp-dev libmpfr-dev libpng++-dev ninja-build
+  - sudo apt-get install -y -qq cmake libcairo2-dev libfltk1.3-dev libboost-dev libfftw3-dev libfplll-dev libgmp-dev libmpfr-dev libpng++-dev ninja-build
 
 script:
   - mkdir build
