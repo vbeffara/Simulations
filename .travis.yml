@@ -1,0 +1,12 @@
+language: cpp
+
+before_install:
+  - sudo apt-get update -qq
+  - sudo dpkg -l
+  - sudo apt-get install -y -qq gcc-5 cmake libcairo2-dev libfltk1.3-dev libboost-dev libfftw3-dev libfplll-dev libgmp-dev libmpfr-dev libpng++-dev ninja-build
+
+script:
+  - mkdir build
+  - cd build
+  - cmake .. -G Ninja
+  - ninja
