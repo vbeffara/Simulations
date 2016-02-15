@@ -9,13 +9,17 @@ addons:
     packages:
       - gcc-5
       - g++-5
-
-before_install:
-  - sudo apt-get update -qq
-  - sudo dpkg -l
-  - sudo apt-get install -y -qq cmake libcairo2-dev libfltk1.3-dev libboost-dev libfftw3-dev libfplll-dev libgmp-dev libmpfr-dev libpng++-dev ninja-build
+      - libboost-dev
+      - libfftw3-dev
+      - libfltk1.3-dev
+      - libfplll-dev
+      - libmpfr-dev
+      - libpng++-dev
+      - ninja-build
 
 script:
+  - export CC=gcc-5
+  - export CXX=g++-5
   - mkdir build
   - cd build
   - cmake .. -G Ninja
