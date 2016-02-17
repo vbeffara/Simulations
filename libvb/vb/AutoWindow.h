@@ -27,9 +27,10 @@ namespace vb {
 
 		int handle (int event) {
 			if (event == FL_KEYDOWN) switch (Fl::event_key()) {
-				case 'q': exit (0);                  	break;
-				case 'x': exit (1);                  	break;
-				case ' ': paused = !paused; return 1;	break;
+				case 'q': exit (0);        	         	break;
+				case 'x': exit (1);        	         	break;
+				case 'h': T::hide();       	return 1;	break;
+				case ' ': paused = !paused;	return 1;	break;
 			}
 			return T::handle(event);
 		}
