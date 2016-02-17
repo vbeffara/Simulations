@@ -35,8 +35,8 @@ namespace vb {
 		}
 
 		#ifdef NO_RETINA
-		int pixel_w () { return w(); }
-		int pixel_h () { return h(); }
+		int pixel_w () { return T::w(); }
+		int pixel_h () { return T::h(); }
 		#endif
 
 	private:
