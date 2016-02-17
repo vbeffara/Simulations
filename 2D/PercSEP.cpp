@@ -1,5 +1,4 @@
-#include "vb/Bitmap.h"
-#include "vb/Hub.h"
+#include <vb/Bitmap.h>
 
 using namespace vb;
 

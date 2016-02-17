@@ -1,4 +1,3 @@
-#include <vb/Hub.h>
 #include <vb/CoarseImage.h>
 
 using namespace vb;

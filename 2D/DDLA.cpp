@@ -1,4 +1,3 @@
-#include <vb/Hub.h>
 #include <vb/Point.h>
 
 using namespace vb; using namespace std;

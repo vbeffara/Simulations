@@ -1,6 +1,5 @@
 #include <vb/Bitmap.h>
 #include <vb/Console.h>
-#include <vb/Hub.h>
 
 using namespace vb;
 

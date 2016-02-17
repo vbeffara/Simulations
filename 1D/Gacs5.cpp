@@ -1,4 +1,3 @@
-#include <vb/Hub.h>
 #include <vb/Image.h>
 
 #define MAIN_BIT 1

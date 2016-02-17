@@ -2,6 +2,7 @@
 #include <vb/AutoWindow.h>
 #include <FL/Fl_Hor_Nice_Slider.H>
 #include <FL/Fl_Output.H>
+#include <FL/Fl_Window.H>
 #include <sstream>
 
 namespace vb {
@@ -47,15 +48,15 @@ namespace vb {
 
 	template <typename T> void apply (Fl_Widget *W) { Manager<T> *M = (Manager<T> *) W; M->t = M->value(); }
 
-	class Console : public AutoWindow {
+	class Console : public AutoWindow <Fl_Window> {
 	public:
 		Console () : AutoWindow (400,0) { label("Console"); }
 
 		void add (Fl_Widget *S) { size (w(),h()+S->h()); AutoWindow::add (S); }
 
-		template <typename T> void watch (T &t,                	const char *n)	{ add (new Watcher<T> (t,n,w(),h())); }
-		template <typename T> void trace (T f (void*), void *d,	const char *n)	{ add (new Tracer<T> (f,d,n,w(),h())); }
+		template <typename T> void watch (T &t,                                	const char *n)	{ add (new Watcher<T> (t,n,w(),h())); }
+		template <typename T> void trace (T f (void*), void *d,                	const char *n)	{ add (new Tracer<T> (f,d,n,w(),h())); }
 		template <typename T> void lambda (std::function <T()> f,const char *n)	{ add (new Lambda<T> (f,n,w(),h())); }
-		template <typename T> void manage (T &t, T t1, T t2)   	              	{ add (new Manager<T> (t,t1,t2,w(),h())); }
+		template <typename T> void manage (T &t, T t1, T t2)                   		{ add (new Manager<T> (t,t1,t2,w(),h())); }
 	};
 }

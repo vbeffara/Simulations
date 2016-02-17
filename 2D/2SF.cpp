@@ -1,5 +1,4 @@
 #include <vb/Bitmap.h>
-#include <vb/Hub.h>
 
 using namespace vb; using namespace std;
 

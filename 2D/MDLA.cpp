@@ -1,4 +1,3 @@
-#include <vb/Hub.h>
 #include <vb/Image.h>
 
 #define EMPTY  Color(0)

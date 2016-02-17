@@ -1,7 +1,6 @@
 #pragma once /// \file
 #include <vb/Picture.h>
 #include <vb/coo.h>
-#include <FL/Fl.H>
 
 namespace vb {
 	class Coloring : public Picture { public:

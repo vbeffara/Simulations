@@ -1,5 +1,4 @@
 #include <vb/Bitmap.h>
-#include <vb/Hub.h>
 #include <vb/ProgressBar.h>
 
 using namespace std;

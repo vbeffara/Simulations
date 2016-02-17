@@ -1,5 +1,4 @@
 #include <vb/Image.h>
-#include <vb/Hub.h>
 #include <vb/ProgressBar.h>
 
 using namespace vb;

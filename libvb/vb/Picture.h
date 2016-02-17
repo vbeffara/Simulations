@@ -1,8 +1,8 @@
 #pragma once /// \file
-
 #include <vb/Color.h>
 #include <vb/AutoWindow.h>
 #include <cairo.h>
+#include <FL/Fl_Gl_Window.H>
 
 namespace vb {
 	/** A nice helper class for simulations.
@@ -11,7 +11,7 @@ namespace vb {
 	 * and so on) as opposed to more FLTK-like windows.
 	 */
 
-	class Picture : public AutoWindow {
+	class Picture : public AutoWindow <Fl_Gl_Window> {
 	public:
 		Picture (int wd, int ht);
 		~Picture ();

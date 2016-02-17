@@ -5,7 +5,6 @@
  * small disk.
  */
 
-#include <vb/Hub.h>
 #include <vb/Image.h>
 
 #define RAD1 10

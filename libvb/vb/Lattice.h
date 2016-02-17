@@ -37,7 +37,7 @@ namespace vb {
 	double cost_cp (Lattice const &L);
 
 	Lattice Z2();  ///< The square lattice.
-	Lattice H();   ///< The hexagonal lattice.
+	Lattice Hx();  ///< The hexagonal lattice.
 	Lattice H2();  ///< The hexagonal lattice, rectangular embedding.
 	Lattice T();   ///< The triangular lattice.
 	Lattice T2();  ///< The triangular lattice, rectangular embedding.
