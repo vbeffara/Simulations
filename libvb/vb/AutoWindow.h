@@ -8,7 +8,7 @@ namespace vb {
 	static void close_window (Fl_Widget *) { exit(1); }
 
 	template <typename T> class AutoWindow : public Auto, public T { public:
-		AutoWindow (int wd, int ht) : Auto(.05), T (wd, ht), paused (false) {
+		AutoWindow (int wd, int ht) : Auto(.1), T (wd, ht), paused (false) {
 			T::label (H.title.c_str());
 			T::callback(close_window);
 		}
