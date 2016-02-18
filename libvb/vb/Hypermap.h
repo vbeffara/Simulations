@@ -1,12 +1,9 @@
 #pragma once /// @file
 #include <vb/Permutation.h>
 #include <vb/cpx.h>
-#include <json.hpp>
 #include <yaml-cpp/yaml.h>
 
 namespace vb {
-	using json = nlohmann::json;
-
 	class Hypermap {
 	public:
 		struct Vertex	{ unsigned i;	cpx z;       	double r=1.0;	unsigned bone;	std::vector<unsigned> adj;	bool fixed = false;	};
@@ -14,10 +11,7 @@ namespace vb {
 
 		Hypermap (Permutation s, Permutation a, Permutation p)	: sigma(s), alpha(a), phi(p), initial(s.size(),3)          	{}
 		Hypermap (Cycles s, Cycles a, Cycles p)               	: Hypermap (Permutation(s), Permutation(a), Permutation(p))	{}
-		Hypermap (json j);
 		Hypermap () {}
-
-		operator json ();
 
 		void from_hypermap	();	//< If the Hypermap part is correct, fill in V and E.
 
