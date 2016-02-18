@@ -2,6 +2,7 @@
 #include <vb/Permutation.h>
 #include <vb/cpx.h>
 #include <json.hpp>
+#include <yaml-cpp/yaml.h>
 
 namespace vb {
 	using json = nlohmann::json;
@@ -63,4 +64,11 @@ namespace vb {
 	};
 
 	std::ostream & operator<< (std::ostream &os, Hypermap &H);
+}
+
+namespace YAML {
+	template<> struct convert <vb::Hypermap> {
+		static Node encode (const vb::Hypermap & h);
+		static bool decode (const Node & node, vb::Hypermap & h);
+	};
 }
