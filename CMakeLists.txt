@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.0)
 project (Simulations)
 
-set (CMAKE_CXX_FLAGS "-g -Wall -Wextra -std=c++14 -fcilkplus -fdiagnostics-color=always -O3 -march=native -mtune=native")
+set (CMAKE_CXX_FLAGS "-g -Wall -Wextra -Wno-deprecated-declarations -std=c++14 -fcilkplus -fdiagnostics-color=always -O3 -march=native -mtune=native")
 
 link_directories ("/usr/local/lib" "/opt/X11/lib")
 
@@ -18,7 +18,7 @@ find_library (GMP gmp)
 find_library (FPLLL fplll)
 find_library (MPFR mpfr)
 
-pkg_check_modules (EXT REQUIRED cairo fftw3 libpng)
+pkg_check_modules (EXT REQUIRED cairo fftw3 libpng yaml-cpp)
 
 execute_process (COMMAND fltk-config --version OUTPUT_VARIABLE FLTK_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
 if (FLTK_VERSION VERSION_LESS "1.3.4")
