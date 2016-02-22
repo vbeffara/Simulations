@@ -7,14 +7,20 @@ using namespace vb;
 
 BOOST_AUTO_TEST_CASE (test_Array) {
 	Array<int> A (23,45,1);
-	BOOST_TEST (A.at(coo(0,0)) == 1);
+	BOOST_TEST (A.contains({6,3}));
+	BOOST_TEST (!A.contains({23,1}));
+	BOOST_TEST (!A.contains({5,45}));
 
-	A.at({1,1}) = 2;
+	A.put({1,1}, 2);
+	BOOST_TEST (A.at({3,4}) == 1);
 	BOOST_TEST (A.at({1,1}) == 2);
+
+	A.putp({5*23+4,7*45+10}, 0);
+	BOOST_TEST (A.atp({23+4,-45+10}) == 0);
 
 	A.at(A.rand()) += 10;
 	int s = 0; for (auto i : A) s += i;
-	BOOST_TEST (s == 23*45 + 11);
+	BOOST_TEST (s == 23*45 + 10);
 }
 
 BOOST_AUTO_TEST_CASE (test_Auto) {}
