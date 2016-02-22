@@ -1,7 +1,6 @@
 #include <vb/Figure.h>
 #include <vb/Spheroidal.h>
 #include <cassert>
-#include <cmath>
 
 namespace vb {
 	Spheroidal::Spheroidal (Hypermap M, Hub H) : Hypermap(M) {

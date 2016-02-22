@@ -1,7 +1,6 @@
 #include <vb/Figure.h>
 #include <vb/Toroidal.h>
 #include <cassert>
-#include <cmath>
 
 namespace vb {
 	Toroidal::Toroidal (Hypermap M, Hub H) : Hypermap(M), m(I) {

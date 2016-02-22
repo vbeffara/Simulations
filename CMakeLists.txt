@@ -1,7 +1,13 @@
 cmake_minimum_required (VERSION 3.0)
 project (Simulations)
 
-set (CMAKE_CXX_FLAGS "-g -Wall -Wextra -std=c++14 -fcilkplus -fdiagnostics-color=always -O3 -march=native -mtune=native")
+set (CMAKE_CXX_FLAGS "-g -Wall -Wextra -std=c++14 -fdiagnostics-color=always -O3 -march=native -mtune=native")
+
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcilkplus")
+else ()
+	add_definitions (-DNO_CILK)
+endif ()
 
 link_directories ("/usr/local/lib" "/opt/X11/lib")
 
@@ -23,7 +29,7 @@ pkg_check_modules (EXT REQUIRED cairo fftw3 libpng)
 execute_process (COMMAND fltk-config --version OUTPUT_VARIABLE FLTK_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
 if (FLTK_VERSION VERSION_LESS "1.3.4")
 	add_definitions (-DNO_RETINA)
-endif (FLTK_VERSION VERSION_LESS "1.3.4")
+endif ()
 
 include_directories ("${PROJECT_SOURCE_DIR}/libvb" ${Boost_INCLUDE_DIRS} ${EXT_INCLUDE_DIRS})
 

@@ -1,6 +1,4 @@
 #pragma once /// \file
-#include <cilk/cilk.h>
-#include <cilk/cilk_api.h>
 #include <vb/Picture.h>
 #include <vb/Array.h>
 
