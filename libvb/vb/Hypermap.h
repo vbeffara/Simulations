@@ -1,6 +1,9 @@
 #pragma once /// @file
 #include <vb/Permutation.h>
 #include <vb/cpx.h>
+#ifdef None
+#undef None
+#endif
 #include <yaml-cpp/yaml.h>
 
 namespace vb {
