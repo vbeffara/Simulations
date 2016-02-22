@@ -12,8 +12,9 @@ BOOST_AUTO_TEST_CASE (test_Array) {
 	A.at({1,1}) = 2;
 	BOOST_TEST (A.at({1,1}) == 2);
 
+	A.at(A.rand()) += 10;
 	int s = 0; for (auto i : A) s += i;
-	BOOST_TEST (s == 23*45 + 1);
+	BOOST_TEST (s == 23*45 + 11);
 }
 
 BOOST_AUTO_TEST_CASE (test_Auto) {}
