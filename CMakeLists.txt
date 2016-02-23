@@ -43,4 +43,4 @@ endforeach (dir)
 
 enable_testing ()
 target_link_libraries (tests ${Boost_LIBRARIES})
-add_test (unit_tests tests/tests -r short)
+add_test (unit_tests tests/tests -r short -l error -x)

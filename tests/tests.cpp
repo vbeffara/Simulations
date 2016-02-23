@@ -3,6 +3,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include <vb/Array.h>
+#include <vb/ProgressBar.h>
 #include <vb/TriMatrix.h>
 
 using namespace vb;
@@ -38,6 +39,14 @@ BOOST_AUTO_TEST_CASE (test_TriMatrix) {
 	BOOST_TEST (M.at({91823749,-2793474}) == 23);
 	BOOST_TEST (M.at({3,4}) == 0);
 	BOOST_TEST (M.at({981327,2371827}) == 0);
+}
+
+// Utility classes
+
+BOOST_AUTO_TEST_CASE (test_ProgressBar) {
+	int t = 1e7;
+	ProgressBar P (t);
+	for (int i=0; i<t; ++i) P.set(i);
 }
 
 // Below is still to be done
@@ -107,8 +116,6 @@ BOOST_AUTO_TEST_CASE (test_Polynomial) {}
 BOOST_AUTO_TEST_CASE (test_Pov) {}
 
 BOOST_AUTO_TEST_CASE (test_PRNG) {}
-
-BOOST_AUTO_TEST_CASE (test_ProgressBar) {}
 
 BOOST_AUTO_TEST_CASE (test_QuadTree) {}
 
