@@ -11,3 +11,7 @@ cmake:
     - cd build
     - cmake .. -G Ninja
     - ninja
+
+unit_tests:
+  stage: test
+  script: "./build/tests/tests -r short -l error -x"
