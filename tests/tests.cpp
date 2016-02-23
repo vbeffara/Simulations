@@ -2,8 +2,11 @@
 #include <boost/test/included/unit_test.hpp>
 
 #include <vb/Array.h>
+#include <vb/TriMatrix.h>
 
 using namespace vb;
+
+// Data structures
 
 BOOST_AUTO_TEST_CASE (test_Array) {
 	Array<int> A (23,45,1);
@@ -22,6 +25,21 @@ BOOST_AUTO_TEST_CASE (test_Array) {
 	int s = 0; for (auto i : A) s += i;
 	BOOST_TEST (s == 23*45 + 10);
 }
+
+BOOST_AUTO_TEST_CASE (test_TriMatrix) {
+	TriMatrix <int> M;
+	M.put({35,42}, 3);
+	M.put({1234,5678}, 5);
+	M.put({91823749,-2793474}, 23);
+
+	BOOST_TEST (M.at({35,42}) == 3);
+	BOOST_TEST (M.at({1234,5678}) == 5);
+	BOOST_TEST (M.at({91823749,-2793474}) == 23);
+	BOOST_TEST (M.at({3,4}) == 0);
+	BOOST_TEST (M.at({981327,2371827}) == 0);
+}
+
+// Below is still to be done
 
 BOOST_AUTO_TEST_CASE (test_Auto) {}
 
@@ -44,8 +62,6 @@ BOOST_AUTO_TEST_CASE (test_Constellation) {}
 BOOST_AUTO_TEST_CASE (test_Constellation0) {}
 
 BOOST_AUTO_TEST_CASE (test_Constellation1) {}
-
-BOOST_AUTO_TEST_CASE (test_Constellation_impl) {}
 
 BOOST_AUTO_TEST_CASE (test_coo) {}
 
@@ -70,8 +86,6 @@ BOOST_AUTO_TEST_CASE (test_Lattice) {}
 BOOST_AUTO_TEST_CASE (test_LinearAlgebra) {}
 
 BOOST_AUTO_TEST_CASE (test_Map) {}
-
-BOOST_AUTO_TEST_CASE (test_math) {}
 
 BOOST_AUTO_TEST_CASE (test_Minimizer) {}
 
@@ -104,5 +118,3 @@ BOOST_AUTO_TEST_CASE (test_Shape) {}
 BOOST_AUTO_TEST_CASE (test_Spheroidal) {}
 
 BOOST_AUTO_TEST_CASE (test_Toroidal) {}
-
-BOOST_AUTO_TEST_CASE (test_TriMatrix) {}

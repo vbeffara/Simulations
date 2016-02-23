@@ -6,7 +6,7 @@ set (CMAKE_CXX_FLAGS "-g -Wall -Wextra -Wno-deprecated-declarations -std=c++14 -
 link_directories ("/usr/local/lib" "/opt/X11/lib")
 
 include (TestBigEndian)
-TEST_BIG_ENDIAN (BIGENDIAN)
+test_big_endian (BIGENDIAN)
 if (${BIGENDIAN})
 	add_definitions (-DBIGENDIAN)
 endif (${BIGENDIAN})
@@ -40,3 +40,6 @@ foreach (dir tests 1D 2D 3D)
 		target_link_libraries (${e} vb)
 	endforeach (f)
 endforeach (dir)
+
+enable_testing ()
+add_test (unit_tests tests/tests -r short)
