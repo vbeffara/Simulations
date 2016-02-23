@@ -44,9 +44,14 @@ BOOST_AUTO_TEST_CASE (test_TriMatrix) {
 // Utility classes
 
 BOOST_AUTO_TEST_CASE (test_ProgressBar) {
-	int t = 1e7;
-	ProgressBar P (t);
-	for (int i=0; i<t; ++i) P.set(i);
+	auto l = Auto::tasks.size();
+	{
+		ProgressBar P (1e7);
+		BOOST_CHECK (Auto::tasks.size() == l+1);
+		BOOST_CHECK (Auto::tasks.back().active);
+		for (int i=0; i<1e7; ++i) P.set(i);
+	}
+	BOOST_CHECK (!Auto::tasks.back().active);
 }
 
 // Below is still to be done
