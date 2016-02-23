@@ -2,7 +2,7 @@ image: ubuntu:15.10
 
 before_script:
   - apt-get update -qq
-  - apt-get install -y -qq gcc-5 cmake libcairo2-dev libfltk1.3-dev libboost-dev libfftw3-dev libfplll-dev libgmp-dev libmpfr-dev libpng++-dev ninja-build libyaml-cpp-dev
+  - apt-get install -y -qq gcc-5 cmake libcairo2-dev libfltk1.3-dev libboost-dev libboost-test-dev libfftw3-dev libfplll-dev libgmp-dev libmpfr-dev libpng++-dev ninja-build libyaml-cpp-dev
 
 cmake:
   stage: build
