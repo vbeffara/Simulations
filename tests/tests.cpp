@@ -12,20 +12,20 @@ using namespace vb;
 
 BOOST_AUTO_TEST_CASE (test_Array) {
 	Array<int> A (23,45,1);
-	BOOST_TEST (A.contains({6,3}));
-	BOOST_TEST (!A.contains({23,1}));
-	BOOST_TEST (!A.contains({5,45}));
+	BOOST_CHECK (A.contains({6,3}));
+	BOOST_CHECK (!A.contains({23,1}));
+	BOOST_CHECK (!A.contains({5,45}));
 
 	A.put({1,1}, 2);
-	BOOST_TEST (A.at({3,4}) == 1);
-	BOOST_TEST (A.at({1,1}) == 2);
+	BOOST_CHECK (A.at({3,4}) == 1);
+	BOOST_CHECK (A.at({1,1}) == 2);
 
 	A.putp({5*23+4,7*45+10}, 0);
-	BOOST_TEST (A.atp({23+4,-45+10}) == 0);
+	BOOST_CHECK (A.atp({23+4,-45+10}) == 0);
 
 	A.at(A.rand()) += 10;
 	int s = 0; for (auto i : A) s += i;
-	BOOST_TEST (s == 23*45 + 10);
+	BOOST_CHECK (s == 23*45 + 10);
 }
 
 BOOST_AUTO_TEST_CASE (test_TriMatrix) {
@@ -34,11 +34,11 @@ BOOST_AUTO_TEST_CASE (test_TriMatrix) {
 	M.put({1234,5678}, 5);
 	M.put({91823749,-2793474}, 23);
 
-	BOOST_TEST (M.at({35,42}) == 3);
-	BOOST_TEST (M.at({1234,5678}) == 5);
-	BOOST_TEST (M.at({91823749,-2793474}) == 23);
-	BOOST_TEST (M.at({3,4}) == 0);
-	BOOST_TEST (M.at({981327,2371827}) == 0);
+	BOOST_CHECK (M.at({35,42}) == 3);
+	BOOST_CHECK (M.at({1234,5678}) == 5);
+	BOOST_CHECK (M.at({91823749,-2793474}) == 23);
+	BOOST_CHECK (M.at({3,4}) == 0);
+	BOOST_CHECK (M.at({981327,2371827}) == 0);
 }
 
 // Utility classes
