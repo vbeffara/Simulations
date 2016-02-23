@@ -13,8 +13,3 @@ cmake:
     - ninja
     - cd ..
     - ./build/tests/tests -r short -l error -x
-
-cache:
-  untracked: true
-  paths:
-    - build/
