@@ -3,6 +3,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include <vb/Array.h>
+#include <vb/Color.h>
 #include <vb/ProgressBar.h>
 #include <vb/TriMatrix.h>
 
@@ -43,6 +44,12 @@ BOOST_AUTO_TEST_CASE (test_TriMatrix) {
 
 // Utility classes
 
+BOOST_AUTO_TEST_CASE (test_Color) {
+	Color c (123);
+	BOOST_CHECK (c == Color(123,123,123));
+	BOOST_CHECK (c != Color(122,123,123));
+}
+
 BOOST_AUTO_TEST_CASE (test_ProgressBar) {
 	auto l = Auto::tasks.size();
 	{
@@ -65,8 +72,6 @@ BOOST_AUTO_TEST_CASE (test_AutoWindow) {}
 BOOST_AUTO_TEST_CASE (test_Bitmap) {}
 
 BOOST_AUTO_TEST_CASE (test_CoarseImage) {}
-
-BOOST_AUTO_TEST_CASE (test_Color) {}
 
 BOOST_AUTO_TEST_CASE (test_Coloring) {}
 
