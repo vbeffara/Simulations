@@ -82,6 +82,7 @@ namespace vb {
 		if (event == FL_KEYDOWN) switch (Fl::event_key()) {
 			case '-':     	scale (1.25);                    	show();	return 1; break;
 			case '+':     	scale (0.80);                    	show();	return 1; break;
+			case '=':     	scale (0.80);                    	show();	return 1; break;
 			case 'a':     	aa = !aa;                        	show();	return 1; break;
 			case FL_Left: 	shift (cpx(+.1,0) * real(z2-z1));	show(); return 1; break;
 			case FL_Right:	shift (cpx(-.1,0) * real(z2-z1));	show(); return 1; break;
