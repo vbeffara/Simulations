@@ -1,7 +1,14 @@
 cmake_minimum_required (VERSION 3.0)
 project (Simulations)
 
-set (CMAKE_CXX_FLAGS "-g -Wall -Wextra -Wno-deprecated-declarations -std=c++14 -fcilkplus -fdiagnostics-color=always -O3 -march=native -mtune=native")
+set (CMAKE_CXX_FLAGS "-g -Wall -Wextra -Wno-deprecated-declarations -std=c++14 -fcilkplus -fdiagnostics-color=always")
+
+if (${COV})
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 --coverage -fprofile-arcs -ftest-coverage -Dcilk_spawn= -Dcilk_sync= -Dcilk_for=for")
+	set (CMAKE_EXE_LINKER_FLAGS "--coverage -fprofile-arcs -ftest-coverage")
+else ()
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=native -mtune=native")
+endif ()
 
 link_directories ("/usr/local/lib" "/opt/X11/lib")
 
@@ -41,6 +48,4 @@ foreach (dir tests 1D 2D 3D)
 	endforeach (f)
 endforeach (dir)
 
-enable_testing ()
 target_link_libraries (tests ${Boost_LIBRARIES})
-add_test (unit_tests tests/tests -r short -l error -x)
