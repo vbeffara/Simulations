@@ -32,6 +32,7 @@ script:
   - cd ..
   - Xvfb :4 &
   - export DISPLAY=:4
+  - lcov -z -d build
   - ./build/tests/tests -r short -l error -x
   - lcov -c -d build -d libvb -o build/cov/cov.info --gcov-tool gcov-5 --no-external -q
-  - coveralls-lcov --repo-token wehYYgnFXUtYuVoHkuAZHLd5mdhtN6tyg build/cov/cov.info
+  - ~/.gem/ruby/2.2.0/bin/coveralls-lcov --repo-token wehYYgnFXUtYuVoHkuAZHLd5mdhtN6tyg build/cov/cov.info
