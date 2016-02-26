@@ -3,24 +3,6 @@
 #include <sstream>
 
 namespace vb {
-	Hypermap::Hypermap (json j) {
-		Cycles s = j["sigma"], a = j["alpha"], p = j["phi"];
-		sigma = s; alpha = a; phi = p;
-		if (!validate()) {
-			std::cerr << "*** Invalid JSON description:\n" << (*this);
-			std::cerr << (alpha*phi).inverse() << std::endl;
-			std::cerr << "*****************************\n";
-		};
-	}
-
-	Hypermap::operator json () {
-		return {
-			{ "sigma", sigma.cycles() },
-			{ "alpha", alpha.cycles() },
-			{ "phi"  , phi  .cycles() }
-		};
-	}
-
 	bool Hypermap::validate () const {
 		if (sigma.size() != alpha.size()) return false;
 		if (sigma.size() != phi.size()) return false;
@@ -258,4 +240,20 @@ namespace vb {
 		}
 		for (unsigned i=0; i<V.size(); ++i) V[i].r = r[i];
 	}
+}
+
+YAML::Node YAML::convert<vb::Hypermap>::encode (const vb::Hypermap & h) {
+    Node node;
+    node["sigma"] = h.sigma.cycles();
+    node["alpha"] = h.alpha.cycles();
+    node["phi"]   = h.phi.cycles();
+    return node;
+}
+
+bool YAML::convert<vb::Hypermap>::decode (const Node & node, vb::Hypermap & h) {
+	auto sigma = node["sigma"].as<vb::Cycles>();
+	auto alpha = node["alpha"].as<vb::Cycles>();
+	auto phi = node["phi"].as<vb::Cycles>();
+	h = vb::Hypermap (sigma, alpha, phi);
+    return true;
 }

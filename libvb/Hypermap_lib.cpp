@@ -3,9 +3,8 @@
 
 namespace vb {
 	HLib::HLib () {
-		json j;
-		std::ifstream("hypermaps.json") >> j;
-		for (auto e = j.begin(); e != j.end(); ++e) emplace (e.key(), e.value());
+		using msh = map<std::string,Hypermap>;
+		msh::operator= (YAML::LoadFile("hypermaps.yaml").as<msh>());
 
 		{ Hypermap M = at("house"); M.dessin(); emplace ("house_d", M); }
 		{ Hypermap M = at("house_d"); M.dessin(); emplace ("house_dd", M); }
