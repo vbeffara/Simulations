@@ -10,6 +10,7 @@ addons:
     packages:
       - gcc-5
       - g++-5
+      - lcov
       - libboost-all-dev
       - libfftw3-dev
       - libfltk1.3-dev
@@ -23,11 +24,14 @@ addons:
 script:
   - export CC=gcc-5
   - export CXX=g++-5
-  - mkdir build
+  - gem install --user-install coveralls-lcov
+  - mkdir -p build/cov
   - cd build
-  - cmake .. -G Ninja
+  - cmake .. -G Ninja -DCOV=1
   - ninja
   - cd ..
   - Xvfb :4 &
   - export DISPLAY=:4
   - ./build/tests/tests -r short -l error -x
+  - lcov -c -d build -d libvb -o build/cov/cov.info --gcov-tool gcov-5 --no-external -q
+  - coveralls-lcov --repo-token wehYYgnFXUtYuVoHkuAZHLd5mdhtN6tyg build/cov/cov.info
