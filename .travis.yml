@@ -1,6 +1,7 @@
 language: cpp
 sudo: required
 dist: trusty
+cache: ccache
 
 addons:
   apt:
@@ -26,3 +27,7 @@ script:
   - cd build
   - cmake .. -G Ninja
   - ninja
+  - cd ..
+  - Xvfb :4 &
+  - export DISPLAY=:4
+  - ./build/tests/tests -r short -l error -x
