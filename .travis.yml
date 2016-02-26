@@ -1,6 +1,7 @@
 language: cpp
-sudo: required
+sudo: false
 dist: trusty
+cache: ccache
 
 addons:
   apt:
