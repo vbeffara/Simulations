@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.0)
 project (Simulations)
 
-set (CMAKE_CXX_FLAGS "-g -Wall -Wextra -Wno-deprecated-declarations -std=c++14 -fcilkplus -fdiagnostics-color=always")
+set (CMAKE_CXX_FLAGS "-g -Wall -Wextra -Wno-deprecated-declarations -Wno-unused-local-typedefs -std=c++14 -fcilkplus -fdiagnostics-color=always")
 
 if (${COV})
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 --coverage -fprofile-arcs -ftest-coverage -Dcilk_spawn= -Dcilk_sync= -Dcilk_for=for")
@@ -25,7 +25,7 @@ find_library (GMP gmp)
 find_library (FPLLL fplll)
 find_library (MPFR mpfr)
 
-pkg_check_modules (EXT REQUIRED cairo fftw3 libpng yaml-cpp)
+pkg_check_modules (EXT REQUIRED cairo fftw3 libpng yaml-cpp cln)
 
 execute_process (COMMAND fltk-config --version OUTPUT_VARIABLE FLTK_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
 if (FLTK_VERSION VERSION_LESS "1.3.4")
