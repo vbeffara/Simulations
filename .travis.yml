@@ -15,6 +15,8 @@ addons:
       - libfplll-dev
       - libmpfr-dev
       - libpng++-dev
+      - libxinerama-dev
+      - libyaml-cpp-dev
       - ninja-build
 
 script:
