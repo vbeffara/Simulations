@@ -9,7 +9,7 @@ addons:
     packages:
       - gcc-5
       - g++-5
-      - libboost-dev
+      - libboost-all-dev
       - libfftw3-dev
       - libfltk1.3-dev
       - libfplll-dev
