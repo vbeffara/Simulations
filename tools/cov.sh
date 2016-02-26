@@ -11,7 +11,7 @@ lcov -c -d build -d libvb -o build/cov/cov.info --gcov-tool gcov-5 --no-external
 
 genhtml -q -o build/cov build/cov/cov.info
 
-open build/cov/index.html
+# open build/cov/index.html
 
 cmake -G Ninja -DCOV=0 build
 ninja -C build

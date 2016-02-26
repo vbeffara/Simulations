@@ -4,10 +4,11 @@
 
 #include <vb/Array.h>
 #include <vb/Color.h>
+#include <vb/Hub.h>
 #include <vb/ProgressBar.h>
 #include <vb/TriMatrix.h>
 
-using namespace vb;
+using namespace vb; using namespace std;
 
 // Data structures
 
@@ -44,6 +45,20 @@ BOOST_AUTO_TEST_CASE (test_TriMatrix) {
 
 // Utility classes
 
+BOOST_AUTO_TEST_CASE (test_coo) {
+	coo z1 {2,3}, z2 {4,-1};
+	BOOST_CHECK (z1+z2 == coo(6,2));
+	BOOST_CHECK (z1-z2 == coo(-2,4));
+	BOOST_CHECK (-z1 == coo(-2,-3));
+	BOOST_CHECK (z1*3 == coo(6,9));
+	BOOST_CHECK (z1/2 == coo(1,1));
+
+	z1 += z2; z2 -= z1;
+	BOOST_CHECK (cpx(z2) == cpx(-2,-3));
+	BOOST_CHECK (norm(z2) == 13);
+	BOOST_CHECK (sup(z2) == 3);
+}
+
 BOOST_AUTO_TEST_CASE (test_Color) {
 	Color c (123);
 	BOOST_CHECK (c == Color(123,123,123));
@@ -59,6 +74,46 @@ BOOST_AUTO_TEST_CASE (test_ProgressBar) {
 		for (int i=0; i<1e7; ++i) P.set(i);
 	}
 	BOOST_CHECK (!Auto::tasks.back().active);
+}
+
+BOOST_AUTO_TEST_CASE (test_Value) {
+	Value v1 ("1"), v2 ("3.4");
+	BOOST_CHECK (bool(v1));
+	BOOST_CHECK (int(v1) == 1);
+	BOOST_CHECK (unsigned(v1) == 1);
+	BOOST_CHECK (long(v1) == 1);
+	BOOST_CHECK (double(v2) == 3.4);
+
+	v1 = "45"; BOOST_CHECK (int(v1) == 45);
+}
+
+// Globals and control structures
+
+BOOST_AUTO_TEST_CASE (test_Hub) {
+	const char * c_argv [] = { "cmd", "-s", "3", "-u" };
+	char * argv[4]; for (int i=0; i<4; ++i) argv[i] = strdup (c_argv[i]);
+
+	Hub H; H.init ("Title", 4, argv, "s=5,t=7,u,v");
+	BOOST_CHECK (int(H['t']) == 7);
+	BOOST_CHECK (int(H['s']) == 3);
+	BOOST_CHECK (H['u']);
+	BOOST_CHECK (!H['v']);
+
+	for (int i=0; i<4; ++i) free(argv[i]);
+}
+
+BOOST_AUTO_TEST_CASE (test_math) {
+	BOOST_CHECK (sign(3) == 1);
+	BOOST_CHECK (sign(-2.0) == -1.0);
+	BOOST_CHECK (sign(0) == 0);
+
+	BOOST_CHECK (fact(3) == 6);
+	BOOST_CHECK (binom(5,2) == 10);
+	BOOST_CHECK (catalan(3) == 5);
+
+	BOOST_CHECK (fabs(sin(pi_<double>())) < 1e-10);
+
+	BOOST_CHECK (fabs(q_(cpx(1.0+1e-5))-q_(cpx(1.0)) - 1e-5*q_t(cpx(1.0))) < 1e-9);
 }
 
 // Below is still to be done
@@ -83,8 +138,6 @@ BOOST_AUTO_TEST_CASE (test_Constellation0) {}
 
 BOOST_AUTO_TEST_CASE (test_Constellation1) {}
 
-BOOST_AUTO_TEST_CASE (test_coo) {}
-
 BOOST_AUTO_TEST_CASE (test_cpx) {}
 
 BOOST_AUTO_TEST_CASE (test_Cube) {}
@@ -92,8 +145,6 @@ BOOST_AUTO_TEST_CASE (test_Cube) {}
 BOOST_AUTO_TEST_CASE (test_Elliptic) {}
 
 BOOST_AUTO_TEST_CASE (test_Figure) {}
-
-BOOST_AUTO_TEST_CASE (test_Hub) {}
 
 BOOST_AUTO_TEST_CASE (test_Hypermap) {}
 
