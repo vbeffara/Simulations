@@ -3,7 +3,6 @@
 #include <FL/Fl_Gl_Window.H>
 #include <sys/stat.h>
 #include <vb/Hub.h>
-#include <cstdlib>
 #include <iostream>
 #include <vector>
 #include <getopt.h>
@@ -40,17 +39,10 @@ namespace vb {
 			title += " (" + boost::join (cs,", ") + ")";
 		}
 
-		bool do_init = true;
-		#ifdef __linux__
-		if (!std::getenv("DISPLAY")) do_init = false;
-		#endif
-
-		if (do_init) {
-		    Fl::gl_visual (FL_RGB);
-		    #ifndef NO_RETINA
-		    Fl::use_high_res_GL (1);
-		    #endif
-		}
+	    Fl::gl_visual (FL_RGB);
+	    #ifndef NO_RETINA
+	    Fl::use_high_res_GL (1);
+	    #endif
 	}
 
 	Hub H;
