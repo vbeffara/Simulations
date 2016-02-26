@@ -1,12 +1,13 @@
-# Simulations and stuff
+[![Build Status](https://travis-ci.org/vbeffara/Simulations.svg?branch=master)](https://travis-ci.org/vbeffara/Simulations)
+[![Coverage Status](https://coveralls.io/repos/github/vbeffara/Simulations/badge.svg?branch=master)](https://coveralls.io/github/vbeffara/Simulations?branch=master)
 
-- **Author:**        [Vincent Beffara](http://perso.ens-lyon.fr/vincent.beffara/) ([mail](mailto:vbeffara@ens-lyon.fr))
-- **Documentation:** <http://perso.ens-lyon.fr/vincent.beffara/simu.html>
+- **Author:**        [Vincent Beffara](http://vbeffara.perso.math.cnrs.fr/) ([mail](mailto:vbeffara@gmail.com))
+- **Documentation:** <http://vbeffara.perso.math.cnrs.fr/simulations.html>
 - **Development:**   <http://github.com/vbeffara/Simulations>
 
-## Introduction
+# Simulations and stuff
 
-The directory `libvb/` contains a small (but steadily growing) library providing very easy display and PNG output for 2D simulations, plus a few convenience classes.  Up-to-date documentation on the library is mostly in my head right now but you can have a look at the web page mentioned above.  It depends on a few outside libraries:
+The directory `libvb/` contains a small (but steadily growing) library providing very easy display and PNG output for 2D simulations, plus a few convenience classes.  Up-to-date documentation on the library is mostly in my head right now but you can have a look at the web page mentioned above, and at the examples.  It depends on a few outside libraries:
 - `Cairo` for internally drawing objects
 - `FLTK`  for graphical display
 - `Boost` for various graph-related algorithms and random number generation
@@ -17,7 +18,7 @@ The aim of this library is to provide an easy way for mathematicians (and maybe 
 
 - Auto-update: the display routines (vb::Image::put() and others) will try to update the screen representation of the image on the screen about 10 times per second. It works best if the computation time is roughly the same for all the points displayed. This is extremely practical. This is wrapped into a class called vb::AutoWindow so that it can be re-used (by vb::Figure for instance).
 
-- vb::Image::tessel(): a quick way to fill an image according to a coloring function (which gives the color as a function of coordinates) by a dyadic decomposition.
+- vb::Coloring: a quick way to fill an image according to a coloring function (which gives the color as a function of coordinates) by a dyadic decomposition.
 
 - A helper class vb::CL_Parser to access a simple but often sufficient subset of getopt. Supports default values for parameters and a personalized help message. I use it myself even for programs without a display.
 
@@ -30,7 +31,3 @@ The aim of this library is to provide an easy way for mathematicians (and maybe 
 - vb::Map: a class to encode planar maps, implementing various algorithms as I need them (circle packing for instance).
 
 - vb::Minimizer: to minimize a function of potentially many variables, using one of a few available algorithms (Fletcher-Reeves, BFGS ... see the documentation for the whole list). 
-
-## Compilation
-
-I am using the very nice [`waf`](http://code.google.com/p/waf/) framework for my simulations, because it has a lot of cool features (such as automatic dependency tracking, and most of all portability). It is very easy to install, if you already have Python, because it is a single file; there is a copy in the root directory, which you can copy somewhere in your `$PATH` for convenience (somewhere where you have write privileges while running it), or use directly by running `./waf`.
