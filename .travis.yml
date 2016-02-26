@@ -26,3 +26,5 @@ script:
   - cd build
   - cmake .. -G Ninja
   - ninja
+  - cd ..
+  - ./build/tests/tests -r short -l error -x
