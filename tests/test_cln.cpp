@@ -43,7 +43,19 @@ int main (int argc, char ** argv) {
 	double s = 0; for (int i=0; i<n; ++i) s = cos(s);
 	cout << setprecision(10) << time()-t << ", \tresult = " << setprecision(100) << s << endl;
 
+	cout << "CLN short:  time = "; t = time();
+	auto cs = cl_F("0.0s0"); for (int i=0; i<n; ++i) cs = cos(cs);
+	cout << setprecision(10) << time()-t << ", \tresult = " << setprecision(100) << cs << endl;
+
+	cout << "CLN single: time = "; t = time();
+	auto c1 = cl_F("0.0f0"); for (int i=0; i<n; ++i) c1 = cos(c1);
+	cout << setprecision(10) << time()-t << ", \tresult = " << setprecision(100) << c1 << endl;
+
 	cout << "CLN double: time = "; t = time();
+	auto c2 = cl_F("0.0d0"); for (int i=0; i<n; ++i) c2 = cos(c2);
+	cout << setprecision(10) << time()-t << ", \tresult = " << setprecision(100) << c2 << endl;
+
+	cout << "CLN float:  time = "; t = time();
 	auto c = cl_float(0.0); for (int i=0; i<n; ++i) c = cos(c);
 	cout << setprecision(10) << time()-t << ", \tresult = " << setprecision(100) << c << endl;
 
