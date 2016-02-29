@@ -12,6 +12,7 @@ addons:
       - g++-5
       - lcov
       - libboost-all-dev
+      - libcln-dev
       - libfftw3-dev
       - libfltk1.3-dev
       - libfplll-dev
@@ -22,6 +23,7 @@ addons:
       - ninja-build
 
 script:
+  - set -e
   - export CC=gcc-5
   - export CXX=g++-5
   - gem install coveralls-lcov
