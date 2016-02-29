@@ -1,11 +1,29 @@
+#include <vb/Elliptic.h>
 #include <vb/Hub.h>
 #include <vb/math.h>
 #include <cln/cln.h>
 #include <chrono>
 
-using namespace vb; using namespace std; using namespace cln;
+using namespace vb; using namespace std; using namespace cln; using cln::complex;
+
+cl_N sum (std::function <cl_N(int)> f) {
+	cl_N out (0), old (1);
+	for (int n=0; out!=old; ++n) {
+		old = out; out += f(n);
+	}
+	return out;
+}
 
 cl_N q_ (const cl_N & tau) { return exp(cln::complex(0,pi()) * tau); }
+
+cl_N pow (const cl_N & a, const cl_N & b) { return exp(b*log(a)); }
+
+cl_N theta1 (const cl_N & q, const cl_N & z) {
+	cl_N q14 = exp(log(q)/4);
+	return sum ([&](int n) {
+		return 2 * q14 * pow(cl_N(-1),n) * pow(q, n*(n+1)) * sin((2*n+1)*z);
+	});
+}
 
 double time () {
 	static std::chrono::system_clock C;
@@ -66,4 +84,20 @@ int main (int argc, char ** argv) {
 	cout << "CLN 100:    time = "; t = time();
 	auto cc = cl_float(0); for (int i=0; i<n; ++i) cc = cos(cc);
 	cout << setprecision(10) << time()-t << ", \tresult = " << setprecision(100) << cc << endl;
+
+	cout << endl;
+
+	cpx100 tau(.125,1.25), q(q_(tau)), z(.25,.75); Elliptic<gmp100> E { q };
+	cout << tau << endl;
+	cout << q << endl;
+	cout << z << endl;
+	cout << E.theta1(z) << endl;
+
+	cout << endl;
+
+	auto tau2 = cln::complex(1,10)/8, q2 = q_(tau2), z2 = cln::complex(1,3)/4;
+	cout << tau2 << endl;
+	cout << q2 << endl;
+	cout << z2 << endl;
+	cout << theta1(q2,z2) << endl;
 }
