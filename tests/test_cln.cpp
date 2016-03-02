@@ -10,29 +10,30 @@ using namespace vb; using namespace std; using namespace cln;
 
 template <typename T, typename U> T reparse (U z) { ostringstream os; os << z; return T (os.str().c_str()); }
 
-boost::optional<cl_UP_R> guess (cl_F x, int nd, int d) {
-	auto mm = expt (cl_float(10,x),nd*2/3); auto t = cl_float (1,x);
-	ZZ_mat<mpz_t> M (d+1,d+2);
+boost::optional<cl_UP_R> guess (cl_F x, int nd) {
+	auto m = expt (cl_float(10,x),nd*2/3);
 
-	for (int i=0; i<=d; ++i) { ostringstream os; os << round1(t*mm); M[i][0].set_str(os.str().c_str()); M[i][i+1] = 1; t *= x; }
+	for (int d=1; d<=nd/5; ++d) {
+		auto t = cl_float (1,x);
+		ZZ_mat<mpz_t> M (d+1,d+2);
 
-	lllReduction(M); vector<Z_NR<mpz_t>> o; shortestVector(M,o);
+		for (int i=0; i<=d; ++i) { ostringstream os; os << round1(t*m); M[i][0].set_str(os.str().c_str()); M[i][i+1] = 1; t *= x; }
 
-	vector<cl_I> V (d+1,0);
-	for (int j=0; j<d+1; ++j) {
-		auto ai = reparse<cl_I> (o[j]);
-		if (ai!=0) for (int i=0; i<=d; ++i) V[i] += ai * reparse<cl_I> (M[j][i+1]);
+		lllReduction(M); vector<Z_NR<mpz_t>> o; shortestVector(M,o);
+
+		vector<cl_I> V (d+1,0);
+		for (int j=0; j<d+1; ++j) {
+			auto ai = reparse<cl_I> (o[j]);
+			if (ai!=0) for (int i=0; i<=d; ++i) V[i] += ai * reparse<cl_I> (M[j][i+1]);
+		}
+
+		auto P = find_univpoly_ring (cl_R_ring, cl_symbol("z")) -> create (d);
+		for (int i=0; i<=d; ++i) set_coeff (P, i, V[i]); finalize (P); if (V[d]<0) P=-P;
+
+		auto PP = deriv (P); cl_F xx=x, ox=x+1; while (xx != ox) { ox = xx; xx -= P(xx)/PP(xx); }
+		if (abs(1-xx/x) < expt(cl_float(10,x),5-nd)) return P;
 	}
 
-	auto P = find_univpoly_ring (cl_R_ring, cl_symbol("z")) -> create (d);
-	for (int i=0; i<=d; ++i) set_coeff (P, i, V[i]); finalize (P); if (V[d]<0) P=-P;
-
-	auto PP = deriv (P); cl_R xx=x, ox=x+1; while (xx != ox) { ox = xx; xx -= P(xx)/PP(xx); }
-	if (abs(1-xx/x) < expt(cl_float(10,x),5-nd)) return P; else return boost::none;
-}
-
-boost::optional<cl_UP_R> guess (cl_F x, int nd) {
-	for (int d=1; d<=nd/5; ++d) if (auto P = guess (x,nd,d)) return P;
 	return boost::none;
 }
 
