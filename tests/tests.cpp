@@ -123,6 +123,7 @@ BOOST_AUTO_TEST_CASE (test_NumberTheory) {
 	cln::cl_F z ("0.9162918442410306144165008200767499077603397502333144975769802641182380808885019256331544308341889255");
 	ostringstream os; os << * (guess (z, 100));
 	BOOST_CHECK (os.str() == "1*z^5 + -3*z^4 + 12*z^3 + -2*z^2 + 1*z + -7");
+	BOOST_CHECK (!guess(cln::pi(z),100));
 }
 
 // Below is still to be done

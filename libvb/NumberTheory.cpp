@@ -12,7 +12,7 @@ namespace vb {
 	boost::optional<cl_UP_R> guess (cl_F x, int nd) {
 		auto m = expt (cl_float(10,x),nd*2/3);
 
-		for (int d=1; d<=nd/5; ++d) {
+		for (int d=1; d<=nd/10; ++d) {
 			auto t = cl_float (1,x);
 			ZZ_mat<mpz_t> M (d+1,d+2);
 
