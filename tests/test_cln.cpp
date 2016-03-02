@@ -2,37 +2,29 @@
 #include <vb/NumberTheory.h>
 #include <vb/Polynomial.h>
 #include <vb/math.h>
+#include <boost/optional.hpp>
 #include <cln/cln.h>
 #include <chrono>
 #include <fplll.h>
 
 using namespace vb; using namespace std; using namespace cln; using cln::complex;
 
-cl_I bigint_to_cl_I (bigint z) { ostringstream os; os << z; cl_I out = os.str().c_str(); return out; }
-bigint cl_I_to_bigint (cl_I z) { ostringstream os; os << z; return bigint(os.str()); }
+cl_I bigint_to_cl_I (bigint z) { ostringstream os; os << z; return cl_I (os.str().c_str()); }
+bigint cl_I_to_bigint (cl_I z) { ostringstream os; os << z; return bigint (os.str()); }
 
-namespace vb {
-	template<> template<> cl_N Polynomial<bigint>::operator() (cl_N z) const {
-		cl_N out = bigint_to_cl_I(back());
-		for (unsigned i=size()-1; i>0; --i) out = out*z + bigint_to_cl_I(at(i-1));
-		return out;
-	}
-}
-
-Polynomial<bigint> guess2 (cl_N x, int leps, unsigned d) {
-	unsigned ndig = leps-12; bigint m = pow(bigint(10),ndig); cl_I mm = the<cl_I> (expt(cl_I(10),ndig));
-	cl_F t = cl_float(1);
+boost::optional<Polynomial<bigint>> guess2 (cl_R x, int leps, unsigned d) {
+	auto mm = expt(cl_I(10),leps-12);
 	ZZ_mat<mpz_t> M(d+1, d+2);
 
+	auto t = cl_float(1);
 	for (unsigned i=0; i<=d; ++i) {
-		cl_I tm = round1(t*mm);
-		bigint tm2 = cl_I_to_bigint(tm);
+		bigint tm2 = cl_I_to_bigint(round1(t*mm));
 		M[i][0].set(tm2.backend().data());
 		M[i][i+1].set(1);
 		t *= x;
 	}
-	lllReduction(M);
-	vector<Z_NR<mpz_t>> o; shortestVector(M,o);
+
+	lllReduction(M); vector<Z_NR<mpz_t>> o; shortestVector(M,o);
 
 	Polynomial<bigint> P(vector<bigint>(d+1));
 
@@ -41,19 +33,22 @@ Polynomial<bigint> guess2 (cl_N x, int leps, unsigned d) {
 		if (ai!=0) for (unsigned i=0; i<=d; ++i) P[i] += ai * bigint(M[j][i+1].getData());
 	}
 
-	Polynomial<bigint> PP = P.derivative();
-	cl_N xx=x, ox=x+1; while (abs(xx-ox) > expt(cl_float(.1),ndig+20)) { ox = xx; xx -= P(xx)/PP(xx); }
+	if (P[d]<0) P = bigint(-1) * P;
 
-	if (abs(x-xx)*expt(cl_float(10),ndig) > 1e-10) P = Polynomial<bigint> {{0}};
+	cl_UP_R P2 = find_univpoly_ring (cl_R_ring, cl_symbol("z")) -> create (d);
+	for (int i=0; i<=degree(P2); ++i) set_coeff (P2, i, bigint_to_cl_I(P[i]));
+	finalize (P2);
+
+	cl_UP_R PP2 = deriv (P2);
+	cl_R xx2=x, ox2=x+1; while (xx2 != ox2) { ox2 = xx2; xx2 -= P2(xx2)/PP2(xx2); }
+
+	if (abs(x-xx2)*expt(cl_float(10),leps-12) > 1e-10) return boost::none;
 	return P;
 }
 
-Polynomial<bigint> guess2 (cl_N x, int leps) {
-	Polynomial<bigint> P;
-	assert (leps>20);
-	for (int d=1; d<=leps/5; ++d) { P = guess2 (x,leps,d); if (P.degree()>0) break; }
-	if (P[P.degree()]<0) P = bigint(-1) * P;
-	return P;
+boost::optional<Polynomial<bigint>> guess2 (cl_R x, int leps) {
+	for (int d=1; d<=leps/5; ++d) if (auto P = guess2 (x,leps,d)) return P;
+	return boost::none;
 }
 
 template <typename T> T sum (std::function <T(int)> f) {
@@ -124,8 +119,7 @@ int main (int argc, char ** argv) {
 	gmp100 lll ("0.9162918442410306144165008200767499077603397502333144975769802641182380808885019256331544308341889255");
 	cout << "GMP 100: " << lll << endl;
 	Polynomial<bigint> P = guess (lll, gmp100(1e-80)); if (P.degree()>0) cout << "  root of " << P << endl;
-	cl_N lll2 ("0.9162918442410306144165008200767499077603397502333144975769802641182380808885019256331544308341889255");
+	cl_R lll2 ("0.9162918442410306144165008200767499077603397502333144975769802641182380808885019256331544308341889255");
 	cout << "CLN 100: " << lll2 << endl;
-	Polynomial<bigint> P2 = guess2 (lll2, 80);
-	if (P.degree()>0) cout << "  root of " << P2 << endl;
+	if (auto P2 = guess2 (lll2, 80)) cout << "  root of " << *P2 << endl;
 }
