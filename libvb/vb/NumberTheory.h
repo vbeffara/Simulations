@@ -10,4 +10,5 @@ namespace vb {
 	template <typename T> Polynomial<cpxint> guess (std::complex<T> x, int leps, unsigned d);
 
 	boost::optional<cln::cl_UP_R> guess (cln::cl_F x, int nd);
+	boost::optional<cln::cl_UP_N> guess_c (cln::cl_N x, int nd);
 }
