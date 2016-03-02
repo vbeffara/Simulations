@@ -2,6 +2,12 @@
 #include <vb/cpx.h>
 
 namespace vb {
+	template <typename T> T sum (std::function <T(int)> f) {
+		T out (0), old (1);
+		for (int n=0; out!=old; ++n) { old = out; out += f(n); }
+		return out;
+	}
+
 	template <typename T>	T	sign   	(T x)     	{ return (T(0) < x) - (x < T(0));                          	}
 	template <typename T>	T	pmod   	(T k, T n)	{ T tmp (k%n); return tmp < T(0) ? tmp+n : tmp;            	}
 	template <typename T>	T	fact   	(T n)     	{ T out(1); for (T i(2); i <= n; ++i) out *= i; return out;	}

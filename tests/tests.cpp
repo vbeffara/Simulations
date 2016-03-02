@@ -5,6 +5,7 @@
 #include <vb/Array.h>
 #include <vb/Color.h>
 #include <vb/Hub.h>
+#include <vb/NumberTheory.h>
 #include <vb/ProgressBar.h>
 #include <vb/TriMatrix.h>
 
@@ -102,6 +103,8 @@ BOOST_AUTO_TEST_CASE (test_Hub) {
 	for (int i=0; i<4; ++i) free(argv[i]);
 }
 
+// Math
+
 BOOST_AUTO_TEST_CASE (test_math) {
 	BOOST_CHECK (sign(3) == 1);
 	BOOST_CHECK (sign(-2.0) == -1.0);
@@ -114,6 +117,12 @@ BOOST_AUTO_TEST_CASE (test_math) {
 	BOOST_CHECK (fabs(sin(pi_<double>())) < 1e-10);
 
 	BOOST_CHECK (fabs(q_(cpx(1.0+1e-5))-q_(cpx(1.0)) - 1e-5*q_t(cpx(1.0))) < 1e-9);
+}
+
+BOOST_AUTO_TEST_CASE (test_NumberTheory) {
+	cln::cl_F z ("0.9162918442410306144165008200767499077603397502333144975769802641182380808885019256331544308341889255");
+	ostringstream os; os << * (guess (z, 100));
+	BOOST_CHECK (os.str() == "1*z^5 + -3*z^4 + 12*z^3 + -2*z^2 + 1*z + -7");
 }
 
 // Below is still to be done
@@ -159,8 +168,6 @@ BOOST_AUTO_TEST_CASE (test_LinearAlgebra) {}
 BOOST_AUTO_TEST_CASE (test_Map) {}
 
 BOOST_AUTO_TEST_CASE (test_Minimizer) {}
-
-BOOST_AUTO_TEST_CASE (test_NumberTheory) {}
 
 BOOST_AUTO_TEST_CASE (test_Pairings) {}
 
