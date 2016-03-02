@@ -1,5 +1,4 @@
 #include <vb/Elliptic.h>
-#include <vb/math.h>
 
 #define bla(f) 	{ cout << #f << " " << EE.f()  	<<	E.f() 	<< "\n\t\t\t" << norm(EE.f()  	- cpx(double(real(E.f())),double(imag(E.f()))))  	<< endl; }
 #define blaz(f)	{ cout << #f << " " << EE.f(zz)	<<	E.f(z)	<< "\n\t\t\t" << norm(EE.f(zz)	- cpx(double(real(E.f(z))),double(imag(E.f(z)))))	<< endl; }

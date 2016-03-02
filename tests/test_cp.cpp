@@ -1,4 +1,3 @@
-#include <vb/Hub.h>
 #include <vb/Map.h>
 #include <vb/Minimizer.h>
 

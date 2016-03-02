@@ -1,53 +1,38 @@
 #include <vb/Hub.h>
 #include <vb/NumberTheory.h>
-#include <vb/Polynomial.h>
 #include <vb/math.h>
 #include <boost/optional.hpp>
 #include <cln/cln.h>
 #include <chrono>
 #include <fplll.h>
 
-using namespace vb; using namespace std; using namespace cln; using cln::complex;
+using namespace vb; using namespace std; using namespace cln;
 
-cl_I bigint_to_cl_I (bigint z) { ostringstream os; os << z; return cl_I (os.str().c_str()); }
-bigint cl_I_to_bigint (cl_I z) { ostringstream os; os << z; return bigint (os.str()); }
+template <typename T, typename U> T reparse (U z) { ostringstream os; os << z; return T (os.str().c_str()); }
 
-boost::optional<Polynomial<bigint>> guess2 (cl_R x, int leps, unsigned d) {
-	auto mm = expt(cl_I(10),leps-12);
-	ZZ_mat<mpz_t> M(d+1, d+2);
+boost::optional<cl_UP_R> guess (cl_F x, int nd, int d) {
+	auto mm = expt (cl_float(10,x),nd*2/3); auto t = cl_float (1,x);
+	ZZ_mat<mpz_t> M (d+1,d+2);
 
-	auto t = cl_float(1);
-	for (unsigned i=0; i<=d; ++i) {
-		bigint tm2 = cl_I_to_bigint(round1(t*mm));
-		M[i][0].set(tm2.backend().data());
-		M[i][i+1].set(1);
-		t *= x;
-	}
+	for (int i=0; i<=d; ++i) { ostringstream os; os << round1(t*mm); M[i][0].set_str(os.str().c_str()); M[i][i+1] = 1; t *= x; }
 
 	lllReduction(M); vector<Z_NR<mpz_t>> o; shortestVector(M,o);
 
-	Polynomial<bigint> P(vector<bigint>(d+1));
-
-	for (unsigned j=0; j<d+1; ++j) {
-		bigint ai (o[j].getData());
-		if (ai!=0) for (unsigned i=0; i<=d; ++i) P[i] += ai * bigint(M[j][i+1].getData());
+	vector<cl_I> V (d+1,0);
+	for (int j=0; j<d+1; ++j) {
+		auto ai = reparse<cl_I> (o[j]);
+		if (ai!=0) for (int i=0; i<=d; ++i) V[i] += ai * reparse<cl_I> (M[j][i+1]);
 	}
 
-	if (P[d]<0) P = bigint(-1) * P;
+	auto P = find_univpoly_ring (cl_R_ring, cl_symbol("z")) -> create (d);
+	for (int i=0; i<=d; ++i) set_coeff (P, i, V[i]); finalize (P); if (V[d]<0) P=-P;
 
-	cl_UP_R P2 = find_univpoly_ring (cl_R_ring, cl_symbol("z")) -> create (d);
-	for (int i=0; i<=degree(P2); ++i) set_coeff (P2, i, bigint_to_cl_I(P[i]));
-	finalize (P2);
-
-	cl_UP_R PP2 = deriv (P2);
-	cl_R xx2=x, ox2=x+1; while (xx2 != ox2) { ox2 = xx2; xx2 -= P2(xx2)/PP2(xx2); }
-
-	if (abs(x-xx2)*expt(cl_float(10),leps-12) > 1e-10) return boost::none;
-	return P;
+	auto PP = deriv (P); cl_R xx=x, ox=x+1; while (xx != ox) { ox = xx; xx -= P(xx)/PP(xx); }
+	if (abs(1-xx/x) < expt(cl_float(10,x),5-nd)) return P; else return boost::none;
 }
 
-boost::optional<Polynomial<bigint>> guess2 (cl_R x, int leps) {
-	for (int d=1; d<=leps/5; ++d) if (auto P = guess2 (x,leps,d)) return P;
+boost::optional<cl_UP_R> guess (cl_F x, int nd) {
+	for (int d=1; d<=nd/5; ++d) if (auto P = guess (x,nd,d)) return P;
 	return boost::none;
 }
 
@@ -119,7 +104,7 @@ int main (int argc, char ** argv) {
 	gmp100 lll ("0.9162918442410306144165008200767499077603397502333144975769802641182380808885019256331544308341889255");
 	cout << "GMP 100: " << lll << endl;
 	Polynomial<bigint> P = guess (lll, gmp100(1e-80)); if (P.degree()>0) cout << "  root of " << P << endl;
-	cl_R lll2 ("0.9162918442410306144165008200767499077603397502333144975769802641182380808885019256331544308341889255");
+	cl_F lll2 ("0.9162918442410306144165008200767499077603397502333144975769802641182380808885019256331544308341889255");
 	cout << "CLN 100: " << lll2 << endl;
-	if (auto P2 = guess2 (lll2, 80)) cout << "  root of " << *P2 << endl;
+	if (auto P2 = guess (lll2, 100)) cout << "  root of " << *P2 << endl;
 }
