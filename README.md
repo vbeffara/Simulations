@@ -7,6 +7,8 @@
 
 # Simulations and stuff
 
+[![Join the chat at https://gitter.im/vbeffara/Simulations](https://badges.gitter.im/vbeffara/Simulations.svg)](https://gitter.im/vbeffara/Simulations?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 The directory `libvb/` contains a small (but steadily growing) library providing very easy display and PNG output for 2D simulations, plus a few convenience classes.  Up-to-date documentation on the library is mostly in my head right now but you can have a look at the web page mentioned above, and at the examples.  It depends on a few outside libraries:
 - `Cairo` for internally drawing objects
 - `FLTK`  for graphical display
