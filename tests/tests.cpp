@@ -117,6 +117,9 @@ BOOST_AUTO_TEST_CASE (test_math) {
 	BOOST_CHECK (fabs(sin(pi_<double>())) < 1e-10);
 
 	BOOST_CHECK (fabs(q_(cpx(1.0+1e-5))-q_(cpx(1.0)) - 1e-5*q_t(cpx(1.0))) < 1e-9);
+
+	double e = sum<double> ([](int n) { auto out = 1.0/fact(n); return std::isinf(out) ? 0 : out; });
+	BOOST_CHECK (fabs(log(e)-1) < 1e-6);
 }
 
 BOOST_AUTO_TEST_CASE (test_NumberTheory) {
