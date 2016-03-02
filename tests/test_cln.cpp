@@ -1,9 +1,60 @@
 #include <vb/Hub.h>
+#include <vb/NumberTheory.h>
+#include <vb/Polynomial.h>
 #include <vb/math.h>
 #include <cln/cln.h>
 #include <chrono>
+#include <fplll.h>
 
 using namespace vb; using namespace std; using namespace cln; using cln::complex;
+
+cl_I bigint_to_cl_I (bigint z) { ostringstream os; os << z; cl_I out = os.str().c_str(); return out; }
+bigint cl_I_to_bigint (cl_I z) { ostringstream os; os << z; return bigint(os.str()); }
+
+namespace vb {
+	template<> template<> cl_N Polynomial<bigint>::operator() (cl_N z) const {
+		cl_N out = bigint_to_cl_I(back());
+		for (unsigned i=size()-1; i>0; --i) out = out*z + bigint_to_cl_I(at(i-1));
+		return out;
+	}
+}
+
+Polynomial<bigint> guess2 (cl_N x, int leps, unsigned d) {
+	unsigned ndig = leps-12; bigint m = pow(bigint(10),ndig); cl_I mm = the<cl_I> (expt(cl_I(10),ndig));
+	cl_F t = cl_float(1);
+	ZZ_mat<mpz_t> M(d+1, d+2);
+
+	for (unsigned i=0; i<=d; ++i) {
+		cl_I tm = round1(t*mm);
+		bigint tm2 = cl_I_to_bigint(tm);
+		M[i][0].set(tm2.backend().data());
+		M[i][i+1].set(1);
+		t *= x;
+	}
+	lllReduction(M);
+	vector<Z_NR<mpz_t>> o; shortestVector(M,o);
+
+	Polynomial<bigint> P(vector<bigint>(d+1));
+
+	for (unsigned j=0; j<d+1; ++j) {
+		bigint ai (o[j].getData());
+		if (ai!=0) for (unsigned i=0; i<=d; ++i) P[i] += ai * bigint(M[j][i+1].getData());
+	}
+
+	Polynomial<bigint> PP = P.derivative();
+	cl_N xx=x, ox=x+1; while (abs(xx-ox) > expt(cl_float(.1),ndig+20)) { ox = xx; xx -= P(xx)/PP(xx); }
+
+	if (abs(x-xx)*expt(cl_float(10),ndig) > 1e-10) P = Polynomial<bigint> {{0}};
+	return P;
+}
+
+Polynomial<bigint> guess2 (cl_N x, int leps) {
+	Polynomial<bigint> P;
+	assert (leps>20);
+	for (int d=1; d<=leps/5; ++d) { P = guess2 (x,leps,d); if (P.degree()>0) break; }
+	if (P[P.degree()]<0) P = bigint(-1) * P;
+	return P;
+}
 
 template <typename T> T sum (std::function <T(int)> f) {
 	T out (0), old (1);
@@ -68,4 +119,13 @@ int main (int argc, char ** argv) {
 	auto tau2 = cln::complex(1,10)/8, q2 = q_(tau2), z2 = cln::complex(1,3)/4;
 	cout << "  GML 100: " << theta1(q,z) << endl;
 	cout << "  CLN 100:  " << theta1(q2,z2) << endl;
+
+	cout << endl;
+	gmp100 lll ("0.9162918442410306144165008200767499077603397502333144975769802641182380808885019256331544308341889255");
+	cout << "GMP 100: " << lll << endl;
+	Polynomial<bigint> P = guess (lll, gmp100(1e-80)); if (P.degree()>0) cout << "  root of " << P << endl;
+	cl_N lll2 ("0.9162918442410306144165008200767499077603397502333144975769802641182380808885019256331544308341889255");
+	cout << "CLN 100: " << lll2 << endl;
+	Polynomial<bigint> P2 = guess2 (lll2, 80);
+	if (P.degree()>0) cout << "  root of " << P2 << endl;
 }
