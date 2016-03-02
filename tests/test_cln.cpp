@@ -71,6 +71,7 @@ int main (int argc, char ** argv) {
 	cl_F lll2 ("0.9162918442410306144165008200767499077603397502333144975769802641182380808885019256331544308341889255");
 	cout << "CLN 100: " << lll2 << endl;
 	if (auto P2 = guess (lll2, 100)) cout << "  root of " << *P2 << endl;
+	if (auto P3 = guess_r (lll2, 100)) cout << "  root of " << *P3 << endl;
 
 	cout << endl;
 	cpx100 zzz (gmp100("0.1722882583776278670500267959231284336682007863854856624427574750255049273322927690638923632"),
@@ -84,4 +85,5 @@ int main (int argc, char ** argv) {
 	cl_N zzzc = cln::complex (zzz1,zzz2);
 	cout << "CLN 100: " << zzzc << endl;
 	if (auto PPP2 = guess_c (zzzc, 100)) cout << "  root of " << *PPP2 << endl;
+	if (auto PPP3 = guess_r (zzzc, 100)) cout << "  root of " << *PPP3 << endl;
 }

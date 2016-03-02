@@ -127,6 +127,8 @@ BOOST_AUTO_TEST_CASE (test_NumberTheory) {
 	cln::cl_F z ("0.9162918442410306144165008200767499077603397502333144975769802641182380808885019256331544308341889255");
 	ostringstream os; os << * (guess (z, 100));
 	BOOST_CHECK (os.str() == "1*z^5 + -3*z^4 + 12*z^3 + -2*z^2 + 1*z + -7");
+	ostringstream osr; osr << * (guess_r (z, 100));
+	BOOST_CHECK (os.str() == osr.str());
 	BOOST_CHECK (!guess(cln::pi(z),100));
 
 	cln::cl_F z1 ("0.1722882583776278670500267959231284336682007863854856624427574750255049273322927690638923632");
