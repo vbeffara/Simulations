@@ -1,13 +1,13 @@
 [![Build Status](https://travis-ci.org/vbeffara/Simulations.svg?branch=master)](https://travis-ci.org/vbeffara/Simulations)
 [![Coverage Status](https://coveralls.io/repos/github/vbeffara/Simulations/badge.svg?branch=master)](https://coveralls.io/github/vbeffara/Simulations?branch=master)
+[![Join the chat at https://gitter.im/vbeffara/Simulations](https://badges.gitter.im/vbeffara/Simulations.svg)](https://gitter.im/vbeffara/Simulations?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 
 - **Author:**        [Vincent Beffara](http://vbeffara.perso.math.cnrs.fr/) ([mail](mailto:vbeffara@gmail.com))
 - **Documentation:** <http://vbeffara.perso.math.cnrs.fr/simulations.html>
 - **Development:**   <http://github.com/vbeffara/Simulations>
 
 # Simulations and stuff
-
-[![Join the chat at https://gitter.im/vbeffara/Simulations](https://badges.gitter.im/vbeffara/Simulations.svg)](https://gitter.im/vbeffara/Simulations?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 The directory `libvb/` contains a small (but steadily growing) library providing very easy display and PNG output for 2D simulations, plus a few convenience classes.  Up-to-date documentation on the library is mostly in my head right now but you can have a look at the web page mentioned above, and at the examples.  It depends on a few outside libraries:
 - `Cairo` for internally drawing objects
