@@ -5,6 +5,7 @@
 #include <vb/Array.h>
 #include <vb/Color.h>
 #include <vb/Hub.h>
+#include <vb/Image.h>
 #include <vb/NumberTheory.h>
 #include <vb/ProgressBar.h>
 #include <vb/TriMatrix.h>
@@ -138,6 +139,19 @@ BOOST_AUTO_TEST_CASE (test_NumberTheory) {
 	BOOST_CHECK (osc.str() == "1*z^4 + 3*z^3 + 4-5i*z^2 + -3*z + 1");
 }
 
+// Displays, windows and such
+
+BOOST_AUTO_TEST_CASE (test_Image) {
+	Image img (256,256);
+	img.show();
+	BOOST_CHECK (img.visible());
+	for (int i=0; i<256; ++i)
+		for (int j=0; j<256; ++j)
+			img.put (coo(i,j), Color(i,j,(8*(i+j))%256));
+	img.hide();
+	BOOST_CHECK (!img.visible());
+}
+
 // Below is still to be done
 
 BOOST_AUTO_TEST_CASE (test_Auto) {}
@@ -171,8 +185,6 @@ BOOST_AUTO_TEST_CASE (test_Figure) {}
 BOOST_AUTO_TEST_CASE (test_Hypermap) {}
 
 BOOST_AUTO_TEST_CASE (test_Hypermap_lib) {}
-
-BOOST_AUTO_TEST_CASE (test_Image) {}
 
 BOOST_AUTO_TEST_CASE (test_Lattice) {}
 
