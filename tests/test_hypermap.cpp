@@ -1,6 +1,5 @@
 #include <vb/Coloring.h>
 #include <vb/Constellation0.h>
-#include <vb/Hub.h>
 #include <vb/Hypermap_lib.h>
 
 using namespace vb; using namespace std;

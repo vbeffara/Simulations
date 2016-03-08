@@ -1,9 +1,7 @@
 #include <vb/Coloring.h>
 #include <vb/Constellation1.h>
-#include <vb/Hub.h>
 #include <vb/Hypermap_lib.h>
 #include <vb/ProgressBar.h>
-#include <vb/math.h>
 
 using namespace vb; using namespace std;
 
