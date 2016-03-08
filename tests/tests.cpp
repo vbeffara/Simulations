@@ -2,9 +2,6 @@
 #define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
 
-#include <vb/Array.h>
-#include <vb/Color.h>
-#include <vb/Hub.h>
 #include <vb/Image.h>
 #include <vb/NumberTheory.h>
 #include <vb/ProgressBar.h>
@@ -106,6 +103,15 @@ BOOST_AUTO_TEST_CASE (test_Hub) {
 
 // Math
 
+BOOST_AUTO_TEST_CASE (test_cpx) {
+	cpx z (1.0,2.3);
+	ostringstream os; os << z;
+	BOOST_CHECK (os.str() == "(1 + 2.3 I)");
+	cpxint zz (1,-3);
+	ostringstream os2; os2 << zz;
+	BOOST_CHECK (os2.str() == "(1 - 3 I)");
+}
+
 BOOST_AUTO_TEST_CASE (test_math) {
 	BOOST_CHECK (sign(3) == 1);
 	BOOST_CHECK (sign(-2.0) == -1.0);
@@ -173,8 +179,6 @@ BOOST_AUTO_TEST_CASE (test_Constellation) {}
 BOOST_AUTO_TEST_CASE (test_Constellation0) {}
 
 BOOST_AUTO_TEST_CASE (test_Constellation1) {}
-
-BOOST_AUTO_TEST_CASE (test_cpx) {}
 
 BOOST_AUTO_TEST_CASE (test_Cube) {}
 
