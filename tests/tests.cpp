@@ -2,6 +2,7 @@
 #define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
 
+#include <vb/Figure.h>
 #include <vb/Image.h>
 #include <vb/NumberTheory.h>
 #include <vb/ProgressBar.h>
@@ -150,12 +151,22 @@ BOOST_AUTO_TEST_CASE (test_NumberTheory) {
 BOOST_AUTO_TEST_CASE (test_Image) {
 	Image img (256,256);
 	img.show();
-	BOOST_CHECK (img.visible());
 	for (int i=0; i<256; ++i)
 		for (int j=0; j<256; ++j)
 			img.put (coo(i,j), Color(i,j,(8*(i+j))%256));
 	img.hide();
-	BOOST_CHECK (!img.visible());
+}
+
+BOOST_AUTO_TEST_CASE (test_Figure) {
+	Figure F;
+	for (int i=0; i<10; ++i)
+		F.add (new Segment(	cpx(prng.uniform_real(-5,5),prng.uniform_real(-5,5)),
+		                   	cpx(prng.uniform_real(-5,5),prng.uniform_real(-5,5)),
+		                   	Indexed(i,.6,.9)));
+
+	for (int i=1; i<=5; ++i) F.add (new Circle (cpx(0,0), i));
+	F.add (new Dot (cpx(0,0)));
+	F.show(); F.hide();
 }
 
 // Below is still to be done
@@ -183,8 +194,6 @@ BOOST_AUTO_TEST_CASE (test_Constellation1) {}
 BOOST_AUTO_TEST_CASE (test_Cube) {}
 
 BOOST_AUTO_TEST_CASE (test_Elliptic) {}
-
-BOOST_AUTO_TEST_CASE (test_Figure) {}
 
 BOOST_AUTO_TEST_CASE (test_Hypermap) {}
 
