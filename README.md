@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/vbeffara/Simulations.svg?branch=master)](https://travis-ci.org/vbeffara/Simulations)
-[![Coverage Status](https://coveralls.io/repos/github/vbeffara/Simulations/badge.svg?branch=master)](https://coveralls.io/github/vbeffara/Simulations?branch=master)
+[![codecov.io](https://codecov.io/github/vbeffara/Simulations/coverage.svg?branch=master)](https://codecov.io/github/vbeffara/Simulations?branch=master)
 [![Join the chat at https://gitter.im/vbeffara/Simulations](https://badges.gitter.im/vbeffara/Simulations.svg)](https://gitter.im/vbeffara/Simulations?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 
