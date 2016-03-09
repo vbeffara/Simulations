@@ -38,5 +38,5 @@ script:
   - lcov -z -d build
   - ./build/tests/tests -r short -l error -x
   - lcov -c -d build -d libvb -o build/cov/cov.info --gcov-tool gcov-5 --no-external -q || true
-  - codecov
+  - codecov --gcov-exec gcov-5
   - coveralls-lcov --repo-token wehYYgnFXUtYuVoHkuAZHLd5mdhtN6tyg build/cov/cov.info
