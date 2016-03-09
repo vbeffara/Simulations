@@ -5,11 +5,12 @@
 #include <vb/Array.h>
 #include <vb/Color.h>
 #include <vb/Hub.h>
+#include <vb/LinearAlgebra.h>
 #include <vb/NumberTheory.h>
 #include <vb/ProgressBar.h>
 #include <vb/TriMatrix.h>
 
-using namespace vb; using namespace std;
+using namespace vb; using namespace std; using namespace cln;
 
 // Data structures
 
@@ -123,19 +124,26 @@ BOOST_AUTO_TEST_CASE (test_math) {
 }
 
 BOOST_AUTO_TEST_CASE (test_NumberTheory) {
-	cln::default_float_format = cln::float_format(100);
-	cln::cl_F z ("0.9162918442410306144165008200767499077603397502333144975769802641182380808885019256331544308341889255");
+	default_float_format = cln::float_format(100);
+	cl_F z ("0.9162918442410306144165008200767499077603397502333144975769802641182380808885019256331544308341889255");
 	ostringstream os; os << * (guess (z, 100));
 	BOOST_CHECK (os.str() == "1*z^5 + -3*z^4 + 12*z^3 + -2*z^2 + 1*z + -7");
 	ostringstream osr; osr << * (guess_r (z, 100));
 	BOOST_CHECK (os.str() == osr.str());
 	BOOST_CHECK (!guess(cln::pi(z),100));
 
-	cln::cl_F z1 ("0.1722882583776278670500267959231284336682007863854856624427574750255049273322927690638923632");
-	cln::cl_F z2 ("0.5302487364574217190358808797265653491226567421626168710631761419479819886565504921987031543");
-	cln::cl_N zc = cln::complex (z1,z2);
+	cl_F z1 ("0.1722882583776278670500267959231284336682007863854856624427574750255049273322927690638923632");
+	cl_F z2 ("0.5302487364574217190358808797265653491226567421626168710631761419479819886565504921987031543");
+	cl_N zc = cln::complex (z1,z2);
 	ostringstream osc; osc << * (guess_c (zc, 100));
 	BOOST_CHECK (osc.str() == "1*z^4 + 3*z^3 + 4-5i*z^2 + -3*z + 1");
+}
+
+BOOST_AUTO_TEST_CASE (test_LinearAlgebra) {
+	Matrix<cl_N> m (3,3); for (int i=0; i<3; ++i) for (int j=0; j<3; ++j) m(i,j) = int(pow(2*i+1,j));
+	Vector<cl_N> v (3); for (int i=0; i<3; ++i) v(i) = int(3*i-2);
+	ostringstream os; printmath (os, solve(m,v));
+	BOOST_CHECK (os.str() == "{ -7/2, 3/2, 0}");
 }
 
 // Below is still to be done
@@ -175,8 +183,6 @@ BOOST_AUTO_TEST_CASE (test_Hypermap_lib) {}
 BOOST_AUTO_TEST_CASE (test_Image) {}
 
 BOOST_AUTO_TEST_CASE (test_Lattice) {}
-
-BOOST_AUTO_TEST_CASE (test_LinearAlgebra) {}
 
 BOOST_AUTO_TEST_CASE (test_Map) {}
 

@@ -63,34 +63,4 @@ int main (int argc, char ** argv) {
 	auto tau2 = cln::complex(1,10)/8, q2 = q_(tau2), z2 = cln::complex(1,3)/4;
 	cout << "  GML 100: " << theta1(q,z) << endl;
 	cout << "  CLN 100:  " << theta1(q2,z2) << endl;
-
-	cout << endl;
-	gmp100 lll ("0.9162918442410306144165008200767499077603397502333144975769802641182380808885019256331544308341889255");
-	cout << "GMP 100: " << lll << endl;
-	Polynomial<bigint> P = guess (lll, gmp100(1e-80)); if (P.degree()>0) cout << "  root of " << P << endl;
-	cl_F lll2 ("0.9162918442410306144165008200767499077603397502333144975769802641182380808885019256331544308341889255");
-	cout << "CLN 100: " << lll2 << endl;
-	if (auto P2 = guess (lll2, 100)) cout << "  root of " << *P2 << endl;
-	if (auto P3 = guess_r (lll2, 100)) cout << "  root of " << *P3 << endl;
-
-	cout << endl;
-	cpx100 zzz (gmp100("0.1722882583776278670500267959231284336682007863854856624427574750255049273322927690638923632"),
-		gmp100("0.5302487364574217190358808797265653491226567421626168710631761419479819886565504921987031543"));
-	cout << "GMP 100: " << zzz << endl;
-	Polynomial<cpxint> PPP = guess (zzz, gmp100(1e-80));
-	if (PPP.degree()>0) cout << "  root of " << PPP << endl;
-
-	cl_F zzz1 ("0.1722882583776278670500267959231284336682007863854856624427574750255049273322927690638923632");
-	cl_F zzz2 ("0.5302487364574217190358808797265653491226567421626168710631761419479819886565504921987031543");
-	cl_N zzzc = cln::complex (zzz1,zzz2);
-	cout << "CLN 100: " << zzzc << endl;
-	if (auto PPP2 = guess_c (zzzc, 100)) cout << "  root of " << *PPP2 << endl;
-	if (auto PPP3 = guess_r (zzzc, 100)) cout << "  root of " << *PPP3 << endl;
-
-	cout << endl;
-	Matrix<cl_N> m (3,3); for (int i=0; i<3; ++i) for (int j=0; j<3; ++j) m(i,j) = int(pow(2*i+1,j));
-	cout << "M = "; printmath (cout,m); cout << endl;
-	Vector<cl_N> v (3);   for (int i=0; i<3; ++i) v(i) = int(3*i-2);
-	cout << "V = "; printmath (cout,v); cout << endl;
-	cout << "M^{-1}.V = "; printmath (cout, solve(m,v)); cout << endl;
 }
