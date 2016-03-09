@@ -3,6 +3,7 @@
 #include <boost/numeric/ublas/triangular.hpp>
 #include <boost/numeric/ublas/lu.hpp>
 #include <boost/numeric/ublas/io.hpp>
+#include <vb/math.h>
 
 namespace vb {
 	namespace ublas = boost::numeric::ublas;

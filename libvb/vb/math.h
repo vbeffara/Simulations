@@ -1,7 +1,10 @@
 #pragma once
 #include <vb/cpx.h>
+#include <cln/cln.h>
 
 namespace vb {
+	static cln::cl_R norm (const cln::cl_N & z) { return realpart(z)*realpart(z) + imagpart(z)*imagpart(z); }
+
 	template <typename T> T sum (std::function <T(int)> f) {
 		T out (0), old (1);
 		for (int n=0; out!=old; ++n) { old = out; out += f(n); }

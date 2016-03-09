@@ -1,6 +1,6 @@
 #include <vb/Hub.h>
+#include <vb/LinearAlgebra.h>
 #include <vb/NumberTheory.h>
-#include <vb/math.h>
 #include <boost/optional.hpp>
 #include <chrono>
 
@@ -86,4 +86,11 @@ int main (int argc, char ** argv) {
 	cout << "CLN 100: " << zzzc << endl;
 	if (auto PPP2 = guess_c (zzzc, 100)) cout << "  root of " << *PPP2 << endl;
 	if (auto PPP3 = guess_r (zzzc, 100)) cout << "  root of " << *PPP3 << endl;
+
+	cout << endl;
+	Matrix<cl_N> m (3,3); for (int i=0; i<3; ++i) for (int j=0; j<3; ++j) m(i,j) = int(pow(2*i+1,j));
+	cout << "M = "; printmath (cout,m); cout << endl;
+	Vector<cl_N> v (3);   for (int i=0; i<3; ++i) v(i) = int(3*i-2);
+	cout << "V = "; printmath (cout,v); cout << endl;
+	cout << "M^{-1}.V = "; printmath (cout, solve(m,v)); cout << endl;
 }
