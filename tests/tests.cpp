@@ -2,9 +2,8 @@
 #define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
 
-#include <vb/Array.h>
-#include <vb/Color.h>
-#include <vb/Hub.h>
+#include <vb/Figure.h>
+#include <vb/Image.h>
 #include <vb/LinearAlgebra.h>
 #include <vb/NumberTheory.h>
 #include <vb/ProgressBar.h>
@@ -106,6 +105,15 @@ BOOST_AUTO_TEST_CASE (test_Hub) {
 
 // Math
 
+BOOST_AUTO_TEST_CASE (test_cpx) {
+	cpx z (1.0,2.3);
+	ostringstream os; os << z;
+	BOOST_CHECK (os.str() == "(1 + 2.3 I)");
+	cpxint zz (1,-3);
+	ostringstream os2; os2 << zz;
+	BOOST_CHECK (os2.str() == "(1 - 3 I)");
+}
+
 BOOST_AUTO_TEST_CASE (test_math) {
 	BOOST_CHECK (sign(3) == 1);
 	BOOST_CHECK (sign(-2.0) == -1.0);
@@ -146,6 +154,29 @@ BOOST_AUTO_TEST_CASE (test_LinearAlgebra) {
 	BOOST_CHECK (os.str() == "{ -7/2, 3/2, 0}");
 }
 
+// Displays, windows and such
+
+BOOST_AUTO_TEST_CASE (test_Image) {
+	Image img (256,256);
+	img.show();
+	for (int i=0; i<256; ++i)
+		for (int j=0; j<256; ++j)
+			img.put (coo(i,j), Color(i,j,(8*(i+j))%256));
+	img.hide();
+}
+
+BOOST_AUTO_TEST_CASE (test_Figure) {
+	Figure F;
+	for (int i=0; i<10; ++i)
+		F.add (new Segment(	cpx(prng.uniform_real(-5,5),prng.uniform_real(-5,5)),
+		                   	cpx(prng.uniform_real(-5,5),prng.uniform_real(-5,5)),
+		                   	Indexed(i,.6,.9)));
+
+	for (int i=1; i<=5; ++i) F.add (new Circle (cpx(0,0), i));
+	F.add (new Dot (cpx(0,0)));
+	F.show(); F.hide();
+}
+
 // Below is still to be done
 
 BOOST_AUTO_TEST_CASE (test_Auto) {}
@@ -168,19 +199,13 @@ BOOST_AUTO_TEST_CASE (test_Constellation0) {}
 
 BOOST_AUTO_TEST_CASE (test_Constellation1) {}
 
-BOOST_AUTO_TEST_CASE (test_cpx) {}
-
 BOOST_AUTO_TEST_CASE (test_Cube) {}
 
 BOOST_AUTO_TEST_CASE (test_Elliptic) {}
 
-BOOST_AUTO_TEST_CASE (test_Figure) {}
-
 BOOST_AUTO_TEST_CASE (test_Hypermap) {}
 
 BOOST_AUTO_TEST_CASE (test_Hypermap_lib) {}
-
-BOOST_AUTO_TEST_CASE (test_Image) {}
 
 BOOST_AUTO_TEST_CASE (test_Lattice) {}
 

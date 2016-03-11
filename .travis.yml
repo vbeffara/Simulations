@@ -26,6 +26,7 @@ script:
   - export CC=gcc-5
   - export CXX=g++-5
   - gem install coveralls-lcov
+  - sudo pip install codecov
   - mkdir -p build/cov
   - cd build
   - cmake .. -G Ninja -DCOV=1
@@ -36,4 +37,5 @@ script:
   - lcov -z -d build
   - ./build/tests/tests -r short -l error -x
   - lcov -c -d build -d libvb -o build/cov/cov.info --gcov-tool gcov-5 --no-external -q || true
+  - codecov --gcov-exec gcov-5
   - coveralls-lcov --repo-token wehYYgnFXUtYuVoHkuAZHLd5mdhtN6tyg build/cov/cov.info
