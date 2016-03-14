@@ -3,8 +3,9 @@
 #include <boost/test/unit_test.hpp>
 
 #include <vb/Coloring.h>
+#include <vb/Constellation1.h>
 #include <vb/Figure.h>
-#include <vb/Image.h>
+#include <vb/Hypermap_lib.h>
 #include <vb/NumberTheory.h>
 #include <vb/ProgressBar.h>
 #include <vb/TriMatrix.h>
@@ -147,6 +148,15 @@ BOOST_AUTO_TEST_CASE (test_NumberTheory) {
 	BOOST_CHECK (osc.str() == "1*z^4 + 3*z^3 + 4-5i*z^2 + -3*z + 1");
 }
 
+BOOST_AUTO_TEST_CASE (test_Constellation1) {
+	auto M = HLib().at("lat_SV");
+	Constellation1<double> C {M,H};
+	Constellation1<gmp100> Cq (C);
+	Cq.findn();
+	ostringstream os; os << guess(Cq.E.j(),gmp100(1e-80));
+	BOOST_CHECK (os.str() == " z^2 + -914416 z + 590816592");
+}
+
 // Displays, windows and such
 
 BOOST_AUTO_TEST_CASE (test_Image) {
@@ -194,8 +204,6 @@ BOOST_AUTO_TEST_CASE (test_Console) {}
 BOOST_AUTO_TEST_CASE (test_Constellation) {}
 
 BOOST_AUTO_TEST_CASE (test_Constellation0) {}
-
-BOOST_AUTO_TEST_CASE (test_Constellation1) {}
 
 BOOST_AUTO_TEST_CASE (test_Cube) {}
 
