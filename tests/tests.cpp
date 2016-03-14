@@ -3,8 +3,10 @@
 #include <boost/test/unit_test.hpp>
 
 #include <vb/Coloring.h>
+#include <vb/Constellation0.h>
+#include <vb/Constellation1.h>
 #include <vb/Figure.h>
-#include <vb/Image.h>
+#include <vb/Hypermap_lib.h>
 #include <vb/NumberTheory.h>
 #include <vb/ProgressBar.h>
 #include <vb/TriMatrix.h>
@@ -147,6 +149,25 @@ BOOST_AUTO_TEST_CASE (test_NumberTheory) {
 	BOOST_CHECK (osc.str() == "1*z^4 + 3*z^3 + 4-5i*z^2 + -3*z + 1");
 }
 
+BOOST_AUTO_TEST_CASE (test_Constellation0) {
+	auto M = HLib().at("m_dodecahedron");
+	Constellation0<double> C {M,H};
+	Constellation0<gmp100> Cq (C);
+	Cq.findn(); Cq.belyi();
+	Polynomial<cpx100> Q; for (auto zd : Cq.f) for (unsigned j=0; j<zd.d; ++j) Q.add_root(zd.z);
+	ostringstream os; os << Q;
+	BOOST_CHECK (os.str() == " z^55 + -55 z^50 + 1205 z^45 + -13090 z^40 + 69585 z^35 + -134761 z^30 + -69585 z^25 + -13090 z^20 + -1205 z^15 + -55 z^10 + -1 z^5");
+}
+
+BOOST_AUTO_TEST_CASE (test_Constellation1) {
+	auto M = HLib().at("lat_SV");
+	Constellation1<double> C {M,H};
+	Constellation1<gmp100> Cq (C);
+	Cq.findn();
+	ostringstream os; os << guess(Cq.E.j(),gmp100(1e-80));
+	BOOST_CHECK (os.str() == " z^2 + -914416 z + 590816592");
+}
+
 // Displays, windows and such
 
 BOOST_AUTO_TEST_CASE (test_Image) {
@@ -192,10 +213,6 @@ BOOST_AUTO_TEST_CASE (test_CoarseImage) {}
 BOOST_AUTO_TEST_CASE (test_Console) {}
 
 BOOST_AUTO_TEST_CASE (test_Constellation) {}
-
-BOOST_AUTO_TEST_CASE (test_Constellation0) {}
-
-BOOST_AUTO_TEST_CASE (test_Constellation1) {}
 
 BOOST_AUTO_TEST_CASE (test_Cube) {}
 
