@@ -166,6 +166,8 @@ BOOST_AUTO_TEST_CASE (test_Figure) {
 
 	for (int i=1; i<=5; ++i) F.add (new Circle (cpx(0,0), i));
 	F.add (new Dot (cpx(0,0)));
+	vector<cpx> zs1 { {0,1}, {1,1}, {1,0}}; F.add (new Polygon (zs1));
+	vector<cpx> zs2 { {0.1,1}, {1.1,1}, {1.1,0}}; F.add (new Path (zs2));
 	F.show(); F.hide();
 }
 
