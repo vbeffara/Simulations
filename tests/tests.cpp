@@ -2,6 +2,7 @@
 #define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
 
+#include <vb/Coloring.h>
 #include <vb/Figure.h>
 #include <vb/Image.h>
 #include <vb/NumberTheory.h>
@@ -157,6 +158,11 @@ BOOST_AUTO_TEST_CASE (test_Image) {
 	img.hide();
 }
 
+BOOST_AUTO_TEST_CASE (test_Coloring) {
+	Coloring C (cpx(0,0), cpx(1,1), 500, [](cpx z){ return Indexed(real(z)*imag(z)*10); });
+	C.scale(1.2); C.shift(cpx(.2,.3)); C.show(); C.hide();
+}
+
 BOOST_AUTO_TEST_CASE (test_Figure) {
 	Figure F;
 	for (int i=0; i<10; ++i)
@@ -182,8 +188,6 @@ BOOST_AUTO_TEST_CASE (test_AutoWindow) {}
 BOOST_AUTO_TEST_CASE (test_Bitmap) {}
 
 BOOST_AUTO_TEST_CASE (test_CoarseImage) {}
-
-BOOST_AUTO_TEST_CASE (test_Coloring) {}
 
 BOOST_AUTO_TEST_CASE (test_Console) {}
 
