@@ -5,6 +5,7 @@
 #include <vb/Coloring.h>
 #include <vb/Constellation0.h>
 #include <vb/Constellation1.h>
+#include <vb/Cube.h>
 #include <vb/Figure.h>
 #include <vb/Hypermap_lib.h>
 #include <vb/NumberTheory.h>
@@ -31,6 +32,14 @@ BOOST_AUTO_TEST_CASE (test_Array) {
 	A.at(A.rand()) += 10;
 	int s = 0; for (auto i : A) s += i;
 	BOOST_CHECK (s == 23*45 + 10);
+}
+
+BOOST_AUTO_TEST_CASE (test_Cube) {
+	Cube C (100,100,100);
+	C.putp(C.rand(),1);
+	int s=0; for (auto v : C) s += v;
+	BOOST_CHECK (s == 1);
+	C.output_pov();
 }
 
 BOOST_AUTO_TEST_CASE (test_TriMatrix) {
@@ -213,8 +222,6 @@ BOOST_AUTO_TEST_CASE (test_CoarseImage) {}
 BOOST_AUTO_TEST_CASE (test_Console) {}
 
 BOOST_AUTO_TEST_CASE (test_Constellation) {}
-
-BOOST_AUTO_TEST_CASE (test_Cube) {}
 
 BOOST_AUTO_TEST_CASE (test_Elliptic) {}
 
