@@ -158,6 +158,13 @@ BOOST_AUTO_TEST_CASE (test_NumberTheory) {
 	BOOST_CHECK (osc.str() == "1*z^4 + 3*z^3 + 4-5i*z^2 + -3*z + 1");
 }
 
+BOOST_AUTO_TEST_CASE (test_Hypermap_lib) {
+	BOOST_CHECK (HLib().at("tripod_l").sigma.size() == 4);
+	BOOST_CHECK (!H_artem(12).is_simple(6));
+	BOOST_CHECK (H_genus0(15).is_triangulation());
+	BOOST_CHECK (H_genus1(18).is_graph());
+}
+
 BOOST_AUTO_TEST_CASE (test_Constellation0) {
 	auto M = HLib().at("m_dodecahedron");
 	Constellation0<double> C {M,H};
@@ -226,8 +233,6 @@ BOOST_AUTO_TEST_CASE (test_Constellation) {}
 BOOST_AUTO_TEST_CASE (test_Elliptic) {}
 
 BOOST_AUTO_TEST_CASE (test_Hypermap) {}
-
-BOOST_AUTO_TEST_CASE (test_Hypermap_lib) {}
 
 BOOST_AUTO_TEST_CASE (test_Lattice) {}
 
