@@ -6,9 +6,9 @@ cache: ccache
 addons:
   apt:
     sources:
-      - ubuntu-toolchain-r-test
       - debian-sid
     packages:
+      - fluid
       - gcc-5
       - g++-5
       - lcov
