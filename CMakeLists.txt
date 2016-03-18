@@ -19,7 +19,7 @@ if (${BIGENDIAN})
 endif (${BIGENDIAN})
 
 find_package (PkgConfig)
-find_package (Boost COMPONENTS unit_test_framework coroutine REQUIRED)
+find_package (Boost COMPONENTS unit_test_framework coroutine context thread system REQUIRED)
 find_package (FLTK)
 find_library (GMP gmp)
 find_library (FPLLL fplll)
