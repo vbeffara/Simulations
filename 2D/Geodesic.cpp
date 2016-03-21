@@ -17,11 +17,12 @@ class Info {
 
 class QG : public Image { public:
 	QG (Hub & H) : Image (1<<int(H['n']), 1<<int(H['n'])), I(w(),h(),Info(0,0,0,0)), g(H['g']), n(H['n']) {
-		if     	(H['w'] == "dyadic") 	fill_dyadic	(H['z']);
-		else if	(H['w'] == "boolean")	fill_boolean (H['z']);
-		else if	(H['w'] == "white")  	fill_white ();
-		else if	(H['w'] == "free")   	fill_free (H['z']);
-		else   	                     	cerr << "Noise type " << H['w'] << " unknown, no noise for you!" << endl;
+		if     	(H['w'] == "dyadic")  	fill_dyadic	(H['z']);
+		else if	(H['w'] == "boolean") 	fill_boolean (H['z']);
+		else if	(H['w'] == "white")   	fill_white ();
+		else if	(H['w'] == "free")    	fill_free (H['z']);
+		else if	(H['w'] == "gaussian")	fill_gaussian (H['z']);
+		else   	                      	cerr << "Noise type " << H['w'] << " unknown, no noise for you!" << endl;
 
 		minf = maxf = I.at(0).f; for (auto & u : I) { minf = min (minf,u.f); maxf = max (maxf,u.f); }
 		cerr << "Renormalized minimal and maximal value of field: " << minf/log(w()) << ", " << maxf/log(w()) << endl;
@@ -77,6 +78,22 @@ class QG : public Image { public:
 		fftw_destroy_plan(p); fftw_free(in); fftw_free(out);
 	}
 
+	void fill_gaussian (double l = 10) {
+		cpx *in = (cpx*) fftw_alloc_complex(ww*hh), *out = (cpx*) fftw_alloc_complex(ww*hh);
+		fftw_plan p = fftw_plan_dft_2d (ww, hh, (fftw_complex*) in, (fftw_complex*) out, FFTW_FORWARD, FFTW_ESTIMATE);
+
+		for (int j=0; j<hh; ++j) for (int i=0; i<ww; ++i) {
+			int ii = min (i,ww-i); int jj = min (j,hh-j);
+			double re = prng.gaussian (0, exp(-(ii*ii+jj*jj)/(l*l)));
+			double im = 0*prng.gaussian (0, exp(-(ii*ii+jj*jj)/(l*l)));
+			in[i+ww*j] = cpx (re,im);
+		}
+
+		fftw_execute(p);
+		for (int j=0; j<hh; ++j) for (int i=0; i<ww; ++i) I.at(coo(i,j)).f = sign(real(out[i+ww*j]));
+		fftw_destroy_plan(p); fftw_free(in); fftw_free(out);
+	}
+
 	void dijkstra () {
 		coo mid (w()/2,h()/2);
 		priority_queue<Info> Q; I.at(mid).d=0; Q.push(I.at(mid));
@@ -123,16 +140,17 @@ class QG : public Image { public:
 };
 
 int main (int argc, char **argv) {
-	H.init ("Random 2D geometry", argc, argv, "w=free,n=9,z=0,g=1,s=0,b,i");
+	H.init ("Random 2D geometry", argc, argv, "w=free,n=9,z=0,g=1,s=0,b,i,q");
 	if (int s = H['s']) prng.seed(s);
 	int n = H['n'], nn = 1<<n;
 
 	QG img (H); if (!H['i']) img.show();
 
-	img.dijkstra();
-	if (H['b']) img.ball ();
-
-	for (int i=0; i<=nn-1; i+=1) { img.trace (coo(0,i)); img.trace (coo(nn-1,i)); img.trace (coo(i,0)); img.trace (coo(i,nn-1)); }
+	if (!H['q']) {
+		img.dijkstra();
+		if (H['b']) img.ball ();
+		for (int i=0; i<=nn-1; i+=1) { img.trace (coo(0,i)); img.trace (coo(nn-1,i)); img.trace (coo(i,0)); img.trace (coo(i,nn-1)); }
+	}
 
 	if (!H['i']) img.pause(); img.output();
 }
