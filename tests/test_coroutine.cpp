@@ -17,7 +17,28 @@ auto genperm (int n) {
     });
 }
 
+bool good (const Permutation & p) { return p[0]==2; }
+
+template <typename T> auto filter (Stream<T> & S, auto && f) {
+	return Stream<T> ([&](Sink<T> & yield) { for (auto x : S) if (f(x)) yield(x); });
+}
+
+template <typename T> auto filter (auto && f) {
+	return [&](Stream<T> & S) { return filter<T> (S,f); };
+}
+
+template <typename U, typename V> auto fmap (Stream<U> & S, auto && f) {
+	return Stream<V> ([&](Sink<V> & yield) { for (auto x : S) yield(f(x)); });
+}
+
+template <typename U, typename V> auto fmap (auto && f) {
+	return [&](Stream<U> & S) { return fmap<U,V> (S,f); };
+}
+
 int main(int argc, char ** argv) {
     H.init ("Testing coroutines", argc, argv, "n=5");
-    for (auto p : genperm(H['n'])) if (p[0]==2) cout << p << endl;
+    Stream<Permutation> S = genperm(H['n']);
+    Stream<Permutation> SS = filter<Permutation> (good) (S);
+    Stream<int> SSS = fmap<Permutation,int> ([](Permutation p) { return p[2]; }) (SS);
+    for (auto p : SSS) cout << p << endl;
 }
