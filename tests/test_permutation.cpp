@@ -1,43 +1,32 @@
 #include <vb/Hypermap.h>
+#include <vb/Stream.h>
 #include <algorithm>
 
-using namespace vb;
-using namespace std;
+using namespace vb; using namespace std;
 
-vector<Permutation> permutations (int n, bool p (Permutation &) = [](Permutation&){return true;}) {
-	Permutation s(n); vector<Permutation> output;
-	do { if (p(s)) output.push_back(s); } while (next_permutation(s.begin(),s.end()));
-	return output;
-}
-
-vector<int> signature (Permutation & s) {
-	vector<int> output;
-	for (auto c : s.cycles()) output.push_back(c.size());
-	sort (output.begin(),output.end());
-	return output;
-}
-
-vector<Hypermap> maps (vector<int> s, vector<int> a, vector<int> p) {
-	Cycles cs; int i=0;
-	for (int l : s) { vector<unsigned> c; for (int j=0; j<l; ++j) c.push_back(i++); cs.push_back (c); }
-	Permutation sigma (cs), alpha (sigma.size());
-	vector<Hypermap> output;
-	do {
-		if (signature(alpha) != a) continue;
-		Permutation phi = (sigma*alpha).inverse(); if (signature(phi) != p) continue;
-		output.push_back (Hypermap(sigma,alpha,phi)); cerr<<".";
-	} while (next_permutation(alpha.begin(),alpha.end()));
-	return output;
+auto maps (vector<unsigned> s, vector<unsigned> a, vector<unsigned> p) {
+	return Stream<Hypermap> ([s,a,p](Sink<Hypermap> & yield) {
+		Cycles cs; int i=0;
+		for (int l : s) { vector<unsigned> c; for (int j=0; j<l; ++j) c.push_back(i++); cs.push_back (c); }
+		Permutation sigma (cs), alpha (sigma.size());
+		vector<Hypermap> hs;
+		do {
+			if (alpha.signature() != a) continue;
+			if (!connected(sigma,alpha)) continue;
+			Permutation phi = (sigma*alpha).inverse(); if (phi.signature() != p) continue;
+			Hypermap h(sigma,alpha,phi);
+			h.normalize(); bool done=0;
+			for (auto & hh : hs) if (h==hh) { done=1; break; }
+			if (!done) { hs.push_back(h); yield(h); }
+		} while (next_permutation(alpha.begin(),alpha.end()));
+	});
 }
 
 int main (int, char **) {
-	auto ms = maps (vector<int> {2,2,3}, vector<int> {2,2,3}, vector<int> {2,2,3});
-	for (auto m : ms) {
+	int n=0;
+	for (auto m : maps (vector<unsigned> {2,2,3,3}, vector<unsigned> {2,2,2,2,2}, vector<unsigned> {3,3,4})) {
 		cout << m;
-		cout << "  sigma:     " << m.sigma;
-		cout << "  alpha:     " << m.alpha;
-		cout << "  phi:       " << m.phi;
-		cout << "  connected: " << connected (m.sigma,m.alpha) << endl;
+		++n;
 	}
-	cout << "Total: " << ms.size() << " hypermap(s)" << endl;
+	cout << "Total: " << n << " hypermap(s)" << endl;
 }
