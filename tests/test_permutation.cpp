@@ -30,10 +30,10 @@ Stream <vector<unsigned>> cycles (int k, int n) {
 	});
 }
 
-Stream <Permutation> by_cycles (vector<unsigned> s) {
+Stream <Permutation> permutations (vector<unsigned> s) {
 	return Stream <Permutation> ([s](Sink <Permutation> & yield) {
 		int n=0; for (auto i : s) n += i; if (n==0) { yield ({{}}); return; }
-		unsigned L=0; for (int i=0; i<s.size(); ++i) if (s[i]>L) {
+		unsigned L=0; for (unsigned i=0; i<s.size(); ++i) if (s[i]>L) {
 			L=s[i]; vector<unsigned> ns = s; ns[i]=0;
 			for (auto c : tuples (L-1,n-1)) {
 				vector<unsigned> cc ({0});
@@ -41,7 +41,7 @@ Stream <Permutation> by_cycles (vector<unsigned> s) {
 				vector<unsigned> missed (n);
 				for (int i=0; i<n; ++i) missed[i]=i; for (auto i : cc) missed[i]=0;
 				for (int i=0, j=0; j<n; ++j) if (missed[j]) missed[i++] = missed[j];
-				for (auto p : by_cycles(ns)) {
+				for (auto p : permutations(ns)) {
 					auto out = p.cycles();
 					for (auto & c : out) for (auto & i : c) i = missed[i];
 					out.push_back (cc); yield (out);
@@ -55,13 +55,6 @@ auto permutations (int n) {
 	return Stream<Permutation> ([n](Sink<Permutation> & yield) {
 		Permutation p (n);
 		do yield(p); while (next_permutation(p.begin(),p.end()));
-	});
-}
-
-auto permutations (vector<unsigned> s) {
-	return Stream<Permutation> ([s](Sink<Permutation> & yield) {
-		int n=0; for (auto i : s) n += i;
-		for (auto p : permutations(n)) if (p.signature() == s) yield(p);
 	});
 }
 
@@ -84,8 +77,8 @@ auto maps (vector<unsigned> s, vector<unsigned> a, vector<unsigned> p) {
 
 int main (int argc, char ** argv) {
 	H.init ("Streams and permutations", argc, argv, "k=2,n=4");
-	for (auto x : by_cycles ({2,2,2})) { cout << x << endl; }
-	// int n=0;
-	// for (auto m : maps ({2,2,3,3}, {2,2,2,2,2}, {3,3,4})) { cout << m; ++n; }
-	// cout << "Total: " << n << " hypermap(s)" << endl;
+	// for (auto x : by_cycles ({2,2,2})) { cout << x << endl; }
+	int n=0;
+	for (auto m : maps ({2,2,3,3}, {2,2,2,2,2}, {3,3,4})) { cout << m; ++n; }
+	cout << "Total: " << n << " hypermap(s)" << endl;
 }
