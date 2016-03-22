@@ -20,7 +20,7 @@ Stream <vector<unsigned>> tuples (unsigned k, unsigned n) {
 
 Stream <vector<unsigned>> cycles (int k, int n) {
 	return Stream <vector<unsigned>> ([k,n](Sink <vector<unsigned>> & yield) {
-		for (int i=0; i<n-1; ++i) {
+		for (int i=0; i<n-k+1; ++i) {
 			for (auto c : tuples (k-1,n-i-1)) {
 				vector<unsigned> out ({unsigned(i)});
 				for (auto j : c) out.push_back (i+j+1);
