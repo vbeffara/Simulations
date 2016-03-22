@@ -1,8 +1,34 @@
+#include <vb/Hub.h>
 #include <vb/Hypermap.h>
 #include <vb/Stream.h>
 #include <algorithm>
 
 using namespace vb; using namespace std;
+
+Stream <vector<unsigned>> tuples (unsigned k, unsigned n) {
+	return Stream <vector<unsigned>> ([k,n](Sink<vector<unsigned>> & yield) {
+		if (k==0) { yield ({}); return; }
+		for (unsigned i=0; i<n; ++i) {
+			for (auto c : tuples (k-1,n-1)) {
+				vector<unsigned> out ({i});
+				for (auto j : c) out.push_back (j<i ? j : j+1);
+				yield (out);
+			}
+		}
+	});
+}
+
+Stream <vector<unsigned>> cycles (int k, int n) {
+	return Stream <vector<unsigned>> ([k,n](Sink <vector<unsigned>> & yield) {
+		for (int i=0; i<n-1; ++i) {
+			for (auto c : tuples (k-1,n-i-1)) {
+				vector<unsigned> out ({unsigned(i)});
+				for (auto j : c) out.push_back (i+j+1);
+				yield (out);
+			}
+		}
+	});
+}
 
 auto permutations (int n) {
 	return Stream<Permutation> ([n](Sink<Permutation> & yield) {
@@ -35,8 +61,10 @@ auto maps (vector<unsigned> s, vector<unsigned> a, vector<unsigned> p) {
 	});
 }
 
-int main (int, char **) {
-	int n=0;
-	for (auto m : maps ({2,2,3,3}, {2,2,2,2,2}, {3,3,4})) { cout << m; ++n; }
-	cout << "Total: " << n << " hypermap(s)" << endl;
+int main (int argc, char ** argv) {
+	H.init ("Streams and permutations", argc, argv, "k=2,n=4");
+	for (auto x : cycles (H['k'],H['n'])) { for (auto i : x) cout << i; cout << endl; }
+	// int n=0;
+	// for (auto m : maps ({2,2,3,3}, {2,2,2,2,2}, {3,3,4})) { cout << m; ++n; }
+	// cout << "Total: " << n << " hypermap(s)" << endl;
 }
