@@ -60,6 +60,8 @@ namespace vb {
 		Permutation	rebasing	()          	const;
 	};
 
+	Stream <Hypermap> hypermaps (std::vector<unsigned> s, std::vector<unsigned> a, std::vector<unsigned> p);
+
 	std::ostream & operator<< (std::ostream &os, Hypermap &H);
 }
 

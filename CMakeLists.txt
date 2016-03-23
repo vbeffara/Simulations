@@ -36,7 +36,7 @@ include_directories ("${PROJECT_SOURCE_DIR}/libvb" ${Boost_INCLUDE_DIRS} ${EXT_I
 
 file (GLOB vb_sources libvb/*.cpp)
 add_library (vb SHARED ${vb_sources})
-target_link_libraries (vb ${EXT_LIBRARIES} ${GMP} ${FLTK_LIBRARIES} ${FPLLL} ${MPFR} cilkrts)
+target_link_libraries (vb ${EXT_LIBRARIES} ${GMP} ${FLTK_LIBRARIES} ${FPLLL} ${MPFR} ${Boost_LIBRARIES} cilkrts)
 
 foreach (dir tests 1D 2D 3D)
 	file (GLOB src ${dir}/*.cpp)
@@ -44,6 +44,6 @@ foreach (dir tests 1D 2D 3D)
 		set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${dir})
 		get_filename_component (e ${f} NAME_WE)
 		add_executable (${e} ${f})
-		target_link_libraries (${e} vb ${Boost_LIBRARIES})
+		target_link_libraries (${e} vb)
 	endforeach (f)
 endforeach (dir)

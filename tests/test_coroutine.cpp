@@ -1,6 +1,5 @@
 #include <vb/Hub.h>
 #include <vb/Permutation.h>
-#include <vb/Stream.h>
 #include <vb/math.h>
 
 using namespace std;

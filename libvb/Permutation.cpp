@@ -83,6 +83,34 @@ namespace vb {
 		return true;
 	}
 
+	Stream <Permutation> permutations (int n) {
+		return Stream<Permutation> ([n](Sink<Permutation> & yield) {
+			Permutation p (n);
+			do yield(p); while (next_permutation(p.begin(),p.end()));
+		});
+	}
+
+	Stream <Permutation> permutations (std::vector<unsigned> s) {
+		return Stream <Permutation> ([s](Sink <Permutation> & yield) {
+			int n=0; for (auto i : s) n += i; if (n==0) { yield ({{}}); return; }
+			unsigned L=0; for (unsigned i=0; i<s.size(); ++i) if (s[i]>L) {
+				L=s[i]; std::vector<unsigned> ns = s; ns[i]=0;
+				for (auto c : tuples (L-1,n-1)) {
+					std::vector<unsigned> cc ({0});
+					for (auto i : c) cc.push_back(i+1);
+					std::vector<unsigned> missed (n);
+					for (int i=0; i<n; ++i) missed[i]=i; for (auto i : cc) missed[i]=0;
+					for (int i=0, j=0; j<n; ++j) if (missed[j]) missed[i++] = missed[j];
+					for (auto p : permutations(ns)) {
+						auto out = p.cycles();
+						for (auto & c : out) for (auto & i : c) i = missed[i];
+						out.push_back (cc); yield (out);
+					}
+				}
+			}
+		});
+	}
+
 	std::ostream & operator<< (std::ostream &os, const Permutation &P) {
 		os << "("; bool f = true;
 		for (auto cc : P.cycles()) {
