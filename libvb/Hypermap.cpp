@@ -240,6 +240,23 @@ namespace vb {
 		}
 		for (unsigned i=0; i<V.size(); ++i) V[i].r = r[i];
 	}
+
+	Stream <Hypermap> hypermaps (std::vector<unsigned> s, std::vector<unsigned> a, std::vector<unsigned> p) {
+		Cycles cs; int i=0;
+		for (int l : s) { std::vector<unsigned> c; for (int j=0; j<l; ++j) c.push_back(i++); cs.push_back (c); }
+		Permutation sigma (cs);
+		return Stream<Hypermap> ([sigma,a,p](Sink<Hypermap> & yield) {
+			std::vector<Hypermap> hs;
+			for (auto alpha : permutations(a)) {
+				if (!connected(sigma,alpha)) continue;
+				Permutation phi = (sigma*alpha).inverse(); if (phi.signature() != p) continue;
+				Hypermap h(sigma,alpha,phi);
+				h.normalize(); bool done=0;
+				for (auto & hh : hs) if (h==hh) { done=1; break; }
+				if (!done) { hs.push_back(h); yield(h); }
+			}
+		});
+	}
 }
 
 YAML::Node YAML::convert<vb::Hypermap>::encode (const vb::Hypermap & h) {

@@ -19,7 +19,7 @@ if (${BIGENDIAN})
 endif (${BIGENDIAN})
 
 find_package (PkgConfig)
-find_package (Boost COMPONENTS unit_test_framework REQUIRED)
+find_package (Boost COMPONENTS unit_test_framework coroutine context thread system REQUIRED)
 find_package (FLTK)
 find_library (GMP gmp)
 find_library (FPLLL fplll)
@@ -36,7 +36,7 @@ include_directories ("${PROJECT_SOURCE_DIR}/libvb" ${Boost_INCLUDE_DIRS} ${EXT_I
 
 file (GLOB vb_sources libvb/*.cpp)
 add_library (vb SHARED ${vb_sources})
-target_link_libraries (vb ${EXT_LIBRARIES} ${GMP} ${FLTK_LIBRARIES} ${FPLLL} ${MPFR} cilkrts)
+target_link_libraries (vb ${EXT_LIBRARIES} ${GMP} ${FLTK_LIBRARIES} ${FPLLL} ${MPFR} ${Boost_LIBRARIES} cilkrts)
 
 foreach (dir tests 1D 2D 3D)
 	file (GLOB src ${dir}/*.cpp)
@@ -47,5 +47,3 @@ foreach (dir tests 1D 2D 3D)
 		target_link_libraries (${e} vb)
 	endforeach (f)
 endforeach (dir)
-
-target_link_libraries (tests ${Boost_LIBRARIES})
