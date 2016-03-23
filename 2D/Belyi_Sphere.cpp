@@ -6,13 +6,15 @@
 
 using namespace vb; using namespace std;
 
-Stream <Hypermap> triangulations (int n) {
-	Permutation phi (n); for (int i=0; i<n; ++i) phi [i] = (i%3==2) ? i-2 : i+1;
-	vector<unsigned> a (n/2,2);
+Stream <Hypermap> triangulations (unsigned n) {
+	Cycles phic; for (unsigned i=0; i<n/3; ++i) phic.push_back ({i,i+n/3,i+2*n/3}); Permutation phi (phic);
+	int np = n/6; vector<unsigned> a (n/2 - np,2);
 
-	return Stream<Hypermap> ([a,phi](Sink<Hypermap> & yield) {
+	return Stream<Hypermap> ([a,phi,n,np](Sink<Hypermap> & yield) {
 		std::vector<Hypermap> hs;
-		for (auto alpha : permutations(a)) {
+		for (auto alph : permutations(a)) {
+			Permutation alpha (n); for (int i=0; i<n-2*np; ++i) alpha[i] = alph[i];
+			for (int i=0; i<np; ++i) { alpha[n-2*np+2*i] = n-2*np+2*i+1; alpha[n-2*np+2*i+1] = n-2*np+2*i; }
 			if (!connected(phi,alpha)) continue;
 			Permutation sigma = (alpha*phi).inverse();
 			Hypermap h(sigma,alpha,phi);
