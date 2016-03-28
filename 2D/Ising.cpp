@@ -25,7 +25,7 @@ class Ising : public Image { public:
 	}
 
 	void run (int nstep) {
-		vector<double> p(10,0); for (int i=0; i<5; ++i) p[i] = exp(-i*beta);
+		vector<double> p(10,0); for (int i=0; i<10; ++i) p[i] = exp(-i*beta);
 		if (!nstep) nstep = 10 + n * 0.01 / fabs(beta-betac);
 
 		for (int i=0; i!=nstep; i++) {
