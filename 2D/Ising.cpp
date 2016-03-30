@@ -32,7 +32,10 @@ class Ising : public Image { public:
 			for (int x=c; x<n-c; x++) {
 				for (int y=c; y<n-c; y++) {
 					if (H['k']) {
-						coo z = rand(), zz = z + dz[prng.uniform_int(4)]; if (atp(z) == atp(zz)) continue;
+						step();
+						coo z = rand(c), dd = dz[prng.uniform_int(4)], zz = z + dd;
+						if (c && !contains (zz+dd)) continue;
+						if (atp(z) == atp(zz)) continue;
 						int s = nnb(z) + nnb(zz) + 2;
 						if ( (s<=0) || (prng.bernoulli(p[s])) ) { Color c = atp(z); putp(z, atp(zz)); putp(zz, c); }
 					} else {
