@@ -19,7 +19,8 @@ namespace vb {
 
 		char at (coo z) const {
 			z += z0; const CoarseCell & d = Bitmap<CoarseCell> :: at (coo(z.x/L,z.y/L));
-			if (d.fill==0) return 0; if (d.fill==LL) return 1;
+			if (d.fill==0) return 0;
+			if (d.fill==LL) return 1;
 			return d.sub[(z.x%L) + L*(z.y%L)];
 		}
 

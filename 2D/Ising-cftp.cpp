@@ -14,8 +14,8 @@ class IsingCFTP : public Bitmap<Site> {
 public:
 	IsingCFTP (Hub & H) : Bitmap<Site> (H['n'], H['n']), b(H['b']), d(0), s(H['s']),
 								  status (w(),h()) {
-		for (int i=0; i<w(); ++i) for (int j=0; j<h(); ++j) put (coo(i,j),1); snap();
-		b *= log(1+sqrt(double(2)));
+		for (int i=0; i<w(); ++i) for (int j=0; j<h(); ++j) put (coo(i,j),1);
+		snap(); b *= log(1+sqrt(double(2)));
 		for (int i=0; i<=4; ++i) p.push_back (exp(b*i) / (exp(b*i) + exp(b*(4-i))));
 	};
 

@@ -20,9 +20,9 @@ class Bounces : public map <string, function<coo(coo)>> { public:
 		emplace ( "dent", [](coo z) {	if (z.x+z.y > 2 * abs(z.x-z.y))	return (z.y>z.x) ? coo(-1,0) : coo(0,-1);
 		                             	else                           	return (abs(z.y)>abs(z.x)) ? coo(0,-sign(z.y)) : coo(-sign(z.x),0);	} );
 
-		emplace ( "octo", [](coo z) {	if (abs(z.x) > 2*abs(z.y))	return coo(-2*sign(z.x),0);
-		                             	if (abs(z.y) > 2*abs(z.x))	return coo(0,-2*sign(z.y));
-		                             	                          	return coo(-sign(z.x),-sign(z.y));	} );
+		emplace ( "octo", [](coo z) {	if (abs(z.x) > 2*abs(z.y))        	return coo(-2*sign(z.x),0);
+		                             	if (abs(z.y) > 2*abs(z.x))        	return coo(0,-2*sign(z.y));
+		                             	return coo(-sign(z.x),-sign(z.y));	} );
 	}
 };
 
