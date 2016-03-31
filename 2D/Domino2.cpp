@@ -3,18 +3,26 @@
 
 using namespace vb; using namespace std;
 
-double a = .5;
-vector<vector<vector<double>>> W {{{ a, a }, { a, 1 }}, {{ 1, a }, { 1, 1 }}};
-vector<vector<double>> hue {{0,.25},{.5,.75}};
+vector<vector<vector<double>>> W;
 
 double weight (coo z, int d) {
+    static int l1 = W.size(), l2 = W[0].size();
     if (d>=2) { z += dz[d]; d -= 2; }
-    return W[z.x%2][z.y%2][d];
+    return W [z.x % l1] [z.y % l2] [d];
 }
 
 Color col (coo z, int d) {
+    static int l1 = W.size(), l2 = W[0].size();
+    static double minw = 1, maxw = -1;
+    if (maxw == -1) {
+        for (int i=0; i<l1; ++i) for (int j=0; j<l2; ++j) for (int k=0; k<2; ++k) {
+            minw = std::min(minw,W[i][j][k]); maxw = std::max(maxw,W[i][j][k]);
+        }
+        if (maxw == minw) maxw = minw + 1;
+    }
     if (d>=2) { z += dz[d]; d -= 2; }
-    return HSV (hue[z.x%2][z.y%2],1,1-.8*weight(z,d));
+    double hh = 0.5 * d + (0.5/l1) * (z.x%l1) + (0.5/l1/l2) * (z.y%l2);
+    return HSV (hh,1,1-.7*(weight(z,d)-minw)/(maxw-minw));
 }
 
 class Half { public:
@@ -46,6 +54,8 @@ class Tiling : public Bitmap<Half> { public:
 };
 
 int main (int argc, char ** argv) {
-    H.init ("Domino tiling (v2)", argc,argv, "n=200,o=aztec");
+    H.init ("Domino tiling (v2)", argc,argv, "n=200,a=.5");
+    W = vector<vector<vector<double>>> (2, vector<vector<double>> (2, vector<double> (2,1)));
+    double a = H['a']; W[0][0][0]=a; W[0][0][1]=a; W[0][1][0]=a; W[1][0][1]=a;
     Tiling D(H['n']); D.show(); D.run(); D.pause();
 }
