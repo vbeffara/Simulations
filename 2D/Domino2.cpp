@@ -3,15 +3,23 @@
 
 using namespace vb; using namespace std;
 
-vector<vector<Color>> C {{ BLUE, GREEN, YELLOW, RED }, { YELLOW, RED, BLUE, GREEN }};
+double a = .5;
+vector<vector<vector<double>>> W {{{ a, a }, { a, 1 }}, {{ 1, a }, { 1, 1 }}};
+vector<vector<double>> hue {{0,.25},{.5,.75}};
+
+double weight (coo z, int d) {
+    if (d>=2) { z += dz[d]; d -= 2; }
+    return W[z.x%2][z.y%2][d];
+}
+
+Color col (coo z, int d) {
+    if (d>=2) { z += dz[d]; d -= 2; }
+    return HSV (hue[z.x%2][z.y%2],1,1-.8*weight(z,d));
+}
 
 class Half { public:
     Half (int _d, coo _z = {0,0}) : d(_d), z(_z) {}
-    operator Color () {
-        if (!active) return BLACK;
-        int parity = (z.x+z.y)%2;
-        return C[parity][d];
-    }
+    operator Color () { return active ? col(z,d) : BLACK; }
     int d;
     coo z;
     bool active = false;
@@ -28,7 +36,9 @@ class Tiling : public Bitmap<Half> { public:
         if (!at(z).active) return;
         int d = atp(z).d; coo zz = z + dz[d] + dz[(d+1)%4];
         if ((!at(zz).active) || (at(zz).d != (d+2)%4)) return;
-        putd (z, (d+1)%4); putd (zz, (d+3)%4);
+        double w1 = weight (z,d) * weight (zz,(d+2)%4);
+        double w2 = weight (z,(d+1)%4) * weight (zz, (d+3)%4);
+        if ((w2>=w1) || prng.bernoulli(w2/w1)) { putd (z, (d+1)%4); putd (zz, (d+3)%4); }
     }
     void run () {
         while (visible()) { flip(rand()); step(); }
@@ -36,6 +46,6 @@ class Tiling : public Bitmap<Half> { public:
 };
 
 int main (int argc, char ** argv) {
-    H.init ("Domino tiling (v2)", argc,argv, "n=100,o=aztec");
+    H.init ("Domino tiling (v2)", argc,argv, "n=200,o=aztec");
     Tiling D(H['n']); D.show(); D.run(); D.pause();
 }
