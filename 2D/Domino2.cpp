@@ -55,7 +55,7 @@ class Tiling : public Bitmap<Half> { public:
 
 int main (int argc, char ** argv) {
     H.init ("Domino tiling (v2)", argc,argv, "n=200,a=.5");
-    W = vector<vector<vector<double>>> (2, vector<vector<double>> (2, vector<double> (2,1)));
-    double a = H['a']; W[0][0][0]=a; W[0][0][1]=a; W[0][1][0]=a; W[1][0][1]=a;
+    W = vector<vector<vector<double>>> (6, vector<vector<double>> (2, vector<double> (2,1)));
+    double a = H['a']; W[0][0][1]=a; W[3][1][1]=a;
     Tiling D(H['n']); D.show(); D.run(); D.pause();
 }
