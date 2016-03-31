@@ -152,5 +152,5 @@ int main (int argc, char **argv) {
 		for (int i=0; i<=nn-1; i+=1) { img.trace (coo(0,i)); img.trace (coo(nn-1,i)); img.trace (coo(i,0)); img.trace (coo(i,nn-1)); }
 	}
 
-	if (!H['i']) img.pause(); img.output();
+	if (!H['i']) { img.pause(); } img.output();
 }

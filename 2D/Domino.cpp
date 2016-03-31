@@ -45,7 +45,9 @@ class Tiling : public Bitmap<Half> { public:
     int flip (coo c) {
         if (at(c).type == 0) return 0;
         unsigned char d = at(c).d; coo oc = c + dz[d] + dz[(d+1)%4];
-        if (!contains(oc)) return 0; if (at(oc).type == 0) return 0; if (at(oc).d != ((d+2)%4)) return 0;
+        if (!contains(oc)) return 0;
+        if (at(oc).type == 0) return 0;
+        if (at(oc).d != ((d+2)%4)) return 0;
         vector<double> rr {r,r*r,1,r};
         if (prng.bernoulli(1-rr[(d+at(c).type)%4])) return 0;
         putd (c,(d+1)%4); putd (oc,(d+3)%4); return 1;

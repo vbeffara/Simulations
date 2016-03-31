@@ -99,7 +99,8 @@ namespace vb {
 					std::vector<unsigned> cc ({0});
 					for (auto i : c) cc.push_back(i+1);
 					std::vector<unsigned> missed (n);
-					for (int i=0; i<n; ++i) missed[i]=i; for (auto i : cc) missed[i]=0;
+					for (int i=0; i<n; ++i) missed[i]=i;
+					for (auto i : cc) missed[i]=0;
 					for (int i=0, j=0; j<n; ++j) if (missed[j]) missed[i++] = missed[j];
 					for (auto p : permutations(ns)) {
 						auto out = p.cycles();
@@ -114,7 +115,8 @@ namespace vb {
 	std::ostream & operator<< (std::ostream &os, const Permutation &P) {
 		os << "("; bool f = true;
 		for (auto cc : P.cycles()) {
-			if (!f) os << " "; os << "("; bool ff = true;
+			if (!f) os << " ";
+			os << "("; bool ff = true;
 			for (unsigned i : cc) { if (!ff) os << " "; os << i; ff = false; }
 			os << ")"; f = false;
 		}
