@@ -43,7 +43,9 @@ namespace vb {
 		std::vector<cpx> moduli; for (cpx p : periods) if (fabs(imag(p)) > .1) moduli.push_back(p);
 		double n2 = abs(moduli[0]); m = moduli[0];
 		for (cpx p : moduli) if (abs(p)<n2) { n2=abs(p); m=p; }
-		if (imag(m)<0) m = -m; while (real(m)<-.499) m+=1; while (real(m)>.501) m-=1;
+		if (imag(m)<0) m = -m;
+		while (real(m)<-.499) m+=1;
+		while (real(m)>.501) m-=1;
 
 		unsigned mdeg=0; cpx mpos=0;
 		for (auto v : V) if (v.adj.size()>mdeg) { mdeg = v.adj.size(); mpos = v.z; }

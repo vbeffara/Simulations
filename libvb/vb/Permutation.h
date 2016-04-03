@@ -1,5 +1,5 @@
 #pragma once /// @file
-#include <vector>
+#include <vb/Stream.h>
 #include <iostream>
 
 namespace vb {
@@ -27,6 +27,9 @@ namespace vb {
 	Permutation Transposition (unsigned n, unsigned i, unsigned j);
 
 	bool connected (const Permutation & s, const Permutation & a);
+
+	Stream <Permutation> permutations (int n);
+	Stream <Permutation> permutations (std::vector<unsigned> s);
 
 	std::ostream & operator<< (std::ostream &os, const Passport &P);
 	std::ostream & operator<< (std::ostream &os, const Permutation &P);

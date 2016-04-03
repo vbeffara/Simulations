@@ -114,6 +114,16 @@ BOOST_AUTO_TEST_CASE (test_Hub) {
 	for (int i=0; i<4; ++i) free(argv[i]);
 }
 
+
+BOOST_AUTO_TEST_CASE (test_Stream) {
+	BOOST_CHECK (size(cycles(3,6)) == 40);
+	BOOST_CHECK (size(permutations(7)) == fact(7));
+	BOOST_CHECK (size(hypermaps ({2,2,2},{2,2,2},{3,3})) == 1);
+
+	int n=0; for (auto c : partitions(6)) n += size (permutations(c));
+	BOOST_CHECK (n == fact(6));
+}
+
 // Math
 
 BOOST_AUTO_TEST_CASE (test_cpx) {

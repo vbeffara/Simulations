@@ -14,8 +14,8 @@ namespace vb {
     }
 
     void ProgressBar::set (int pos) {
-        if (pos<0) pos=0; if (pos>final) pos=final; current = pos;
-        step();
+        if (pos<0) pos=0; else if (pos>final) pos=final;
+        current = pos; step();
     }
 
     void ProgressBar::update () {
