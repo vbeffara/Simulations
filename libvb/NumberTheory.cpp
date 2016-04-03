@@ -32,7 +32,8 @@ namespace vb {
 			}
 
 			auto P = find_univpoly_ring (cl_R_ring, cl_symbol("z")) -> create (d);
-			for (int i=0; i<=d; ++i) set_coeff (P, i, V[i]); finalize (P); if (V[d]<0) P=-P;
+			for (int i=0; i<=d; ++i) set_coeff (P, i, V[i]);
+			finalize (P); if (V[d]<0) P=-P;
 
 			auto PP = deriv (P); cl_F xx=x, ox=x+1; while (abs(xx-ox) > expt(cl_float(10),5-nd)) { ox = xx; xx -= P(xx)/PP(xx); }
 			if (abs(xx-x) < expt(cl_float(10,x),5-nd)) return P;
@@ -70,8 +71,10 @@ namespace vb {
 			}
 
 			auto P = find_univpoly_ring (cl_C_ring, cl_symbol("z")) -> create (d);
-			for (int i=0; i<=d; ++i) set_coeff (P, i, cln::complex(V[2*i],V[2*i+1])); finalize (P);
-			if (realpart(coeff(P,d)) == 0) P = cln::complex(0,1) * P; if (realpart(coeff(P,d))<0) P=-P;
+			for (int i=0; i<=d; ++i) set_coeff (P, i, cln::complex(V[2*i],V[2*i+1]));
+			finalize (P);
+			if (realpart(coeff(P,d)) == 0) P = cln::complex(0,1) * P;
+			if (realpart(coeff(P,d))<0) P=-P;
 
 			auto PP = deriv (P); cl_N xx=x, ox=x+1; while (abs(xx-ox) > expt(cl_float(10),5-nd)) { ox = xx; xx -= P(xx)/PP(xx); }
 			if (abs(xx-x) < expt(cl_float(10),10-nd)) return P;
@@ -105,8 +108,8 @@ namespace vb {
 			}
 
 			auto P = find_univpoly_ring (cl_C_ring, cl_symbol("z")) -> create (d);
-			for (int i=0; i<=d; ++i) set_coeff (P, i, V[i]); finalize (P);
-			if (realpart(coeff(P,d))<0) P=-P;
+			for (int i=0; i<=d; ++i) set_coeff (P, i, V[i]);
+			finalize (P); if (realpart(coeff(P,d))<0) P=-P;
 
 			auto PP = deriv (P); cl_N xx=x, ox=x+1; while (abs(xx-ox) > expt(cl_float(10),5-nd)) { ox = xx; xx -= P(xx)/PP(xx); }
 			if (abs(xx-x) < expt(cl_float(10),10-nd)) return P;

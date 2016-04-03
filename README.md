@@ -3,14 +3,9 @@
 [![codecov.io](https://codecov.io/github/vbeffara/Simulations/coverage.svg?branch=master)](https://codecov.io/github/vbeffara/Simulations?branch=master)
 [![Join the chat at https://gitter.im/vbeffara/Simulations](https://badges.gitter.im/vbeffara/Simulations.svg)](https://gitter.im/vbeffara/Simulations?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-
-- **Author:**        [Vincent Beffara](http://vbeffara.perso.math.cnrs.fr/) ([mail](mailto:vbeffara@gmail.com))
-- **Documentation:** <http://vbeffara.perso.math.cnrs.fr/simulations.html>
-- **Development:**   <http://github.com/vbeffara/Simulations>
-
 # Simulations and stuff
 
-The directory `libvb/` contains a small (but steadily growing) library providing very easy display and PNG output for 2D simulations, plus a few convenience classes.  Up-to-date documentation on the library is mostly in my head right now but you can have a look at the web page mentioned above, and at the examples.  It depends on a few outside libraries:
+The directory `libvb/` contains a small (but steadily growing) library providing very easy display and PNG output for 2D simulations, plus a few convenience classes.  Up-to-date documentation on the library is mostly in my head right now but you can have a look at the web page mentioned above, and at the examples.  It depends on `gcc5` and a few outside libraries:
 - `Cairo` for internally drawing objects
 - `FLTK`  for graphical display
 - `Boost` for various graph-related algorithms and random number generation
@@ -23,7 +18,7 @@ The aim of this library is to provide an easy way for mathematicians (and maybe 
 
 - vb::Coloring: a quick way to fill an image according to a coloring function (which gives the color as a function of coordinates) by a dyadic decomposition.
 
-- A helper class vb::CL_Parser to access a simple but often sufficient subset of getopt. Supports default values for parameters and a personalized help message. I use it myself even for programs without a display.
+- A helper class vb::Hub to access a simple but often sufficient subset of getopt. Supports default values for parameters and a personalized help message. I use it myself even for programs without a display.
 
 - vb::CoarseImage: a simple way to store and display very large images that consist of large black and white zones (typically first-passage percolation clusters).
 

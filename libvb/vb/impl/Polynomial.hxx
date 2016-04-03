@@ -51,7 +51,8 @@ namespace vb {
 			if (abs(P[i]) <= abs(T(eps))) continue;
 			os << (first ? "" : " + ");
 			if ((i==0) || (abs(P[i]-T(1)) > abs(T(eps)))) os << P[i];
-			if (i>0) os << " " << P.v; if (i>1) os << "^" << i;
+			if (i>0) os << " " << P.v;
+			if (i>1) os << "^" << i;
 			first = false;
 		}
 		if (first) os << 0;
@@ -64,7 +65,8 @@ namespace vb {
 			if (P[i] == 0) continue;
 			os << (first ? "" : " + ");
 			if ((i==0) || (P[i] != 1)) os << P[i];
-			if (i>0) os << " " << P.v; if (i>1) os << "^" << i;
+			if (i>0) os << " " << P.v;
+			if (i>1) os << "^" << i;
 			first = false;
 		}
 		if (first) os << 0;
@@ -77,7 +79,8 @@ namespace vb {
 			if (P[i] == cpxint(0)) continue;
 			os << (first ? "" : " + ");
 			if ((i==0) || (P[i] != cpxint(1))) os << P[i];
-			if (i>0) os << " " << P.v; if (i>1) os << "^" << i;
+			if (i>0) os << " " << P.v;
+			if (i>1) os << "^" << i;
 			first = false;
 		}
 		if (first) os << 0;

@@ -2,9 +2,11 @@
 #define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
 
+#include <vb/Coloring.h>
+#include <vb/Constellation0.h>
+#include <vb/Constellation1.h>
 #include <vb/Figure.h>
-#include <vb/Image.h>
-#include <vb/LinearAlgebra.h>
+#include <vb/Hypermap_lib.h>
 #include <vb/NumberTheory.h>
 #include <vb/ProgressBar.h>
 #include <vb/TriMatrix.h>
@@ -103,6 +105,16 @@ BOOST_AUTO_TEST_CASE (test_Hub) {
 	for (int i=0; i<4; ++i) free(argv[i]);
 }
 
+
+BOOST_AUTO_TEST_CASE (test_Stream) {
+	BOOST_CHECK (size(cycles(3,6)) == 40);
+	BOOST_CHECK (size(permutations(7)) == fact(7));
+	BOOST_CHECK (size(hypermaps ({2,2,2},{2,2,2},{3,3})) == 1);
+
+	int n=0; for (auto c : partitions(6)) n += size (permutations(c));
+	BOOST_CHECK (n == fact(6));
+}
+
 // Math
 
 BOOST_AUTO_TEST_CASE (test_cpx) {
@@ -154,6 +166,25 @@ BOOST_AUTO_TEST_CASE (test_LinearAlgebra) {
 	BOOST_CHECK (os.str() == "{ -7/2, 3/2, 0}");
 }
 
+BOOST_AUTO_TEST_CASE (test_Constellation0) {
+	auto M = HLib().at("m_dodecahedron");
+	Constellation0<double> C {M,H};
+	Constellation0<gmp100> Cq (C);
+	Cq.findn(); Cq.belyi();
+	Polynomial<cpx100> Q; for (auto zd : Cq.f) for (unsigned j=0; j<zd.d; ++j) Q.add_root(zd.z);
+	ostringstream os; os << Q;
+	BOOST_CHECK (os.str() == " z^55 + -55 z^50 + 1205 z^45 + -13090 z^40 + 69585 z^35 + -134761 z^30 + -69585 z^25 + -13090 z^20 + -1205 z^15 + -55 z^10 + -1 z^5");
+}
+
+BOOST_AUTO_TEST_CASE (test_Constellation1) {
+	auto M = HLib().at("lat_SV");
+	Constellation1<double> C {M,H};
+	Constellation1<gmp100> Cq (C);
+	Cq.findn();
+	ostringstream os; os << guess(Cq.E.j(),gmp100(1e-80));
+	BOOST_CHECK (os.str() == " z^2 + -914416 z + 590816592");
+}
+
 // Displays, windows and such
 
 BOOST_AUTO_TEST_CASE (test_Image) {
@@ -165,6 +196,11 @@ BOOST_AUTO_TEST_CASE (test_Image) {
 	img.hide();
 }
 
+BOOST_AUTO_TEST_CASE (test_Coloring) {
+	Coloring C (cpx(0,0), cpx(1,1), 500, [](cpx z){ return Indexed(real(z)*imag(z)*10); });
+	C.scale(1.2); C.shift(cpx(.2,.3)); C.show(); C.hide();
+}
+
 BOOST_AUTO_TEST_CASE (test_Figure) {
 	Figure F;
 	for (int i=0; i<10; ++i)
@@ -174,6 +210,8 @@ BOOST_AUTO_TEST_CASE (test_Figure) {
 
 	for (int i=1; i<=5; ++i) F.add (new Circle (cpx(0,0), i));
 	F.add (new Dot (cpx(0,0)));
+	vector<cpx> zs1 { {0,1}, {1,1}, {1,0}}; F.add (new Polygon (zs1));
+	vector<cpx> zs2 { {0.1,1}, {1.1,1}, {1.1,0}}; F.add (new Path (zs2));
 	F.show(); F.hide();
 }
 
@@ -189,15 +227,9 @@ BOOST_AUTO_TEST_CASE (test_Bitmap) {}
 
 BOOST_AUTO_TEST_CASE (test_CoarseImage) {}
 
-BOOST_AUTO_TEST_CASE (test_Coloring) {}
-
 BOOST_AUTO_TEST_CASE (test_Console) {}
 
 BOOST_AUTO_TEST_CASE (test_Constellation) {}
-
-BOOST_AUTO_TEST_CASE (test_Constellation0) {}
-
-BOOST_AUTO_TEST_CASE (test_Constellation1) {}
 
 BOOST_AUTO_TEST_CASE (test_Cube) {}
 

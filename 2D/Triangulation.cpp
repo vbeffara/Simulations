@@ -7,8 +7,8 @@ using namespace vb;
 class Triangulation : public Map { public:
 	Triangulation (int n) : Map(n) {
 		for (int i=1; i<n; ++i)	(*this) << Edge(0,i);
-		for (int i=n-1; i>1; --i) (*this) << Edge(1,i); (*this) << Edge(1,0);
-		(*this) << Edge(2,0) << Edge(2,1) << Edge(2,3);
+		for (int i=n-1; i>1; --i) (*this) << Edge(1,i);
+		(*this) << Edge(1,0) << Edge(2,0) << Edge(2,1) << Edge(2,3);
 		for (int i=3; i<n-1; ++i) (*this) << Edge(i,0) << Edge(i,i-1) << Edge(i,1) << Edge(i,i+1);
 		(*this) << Edge(n-1,0) << Edge(n-1,n-2) << Edge(n-1,1);
 	}
