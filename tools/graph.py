@@ -24,7 +24,7 @@ if "-l" in argv:
 		files[f] = set()
 
 if "-x" in argv:
-	for f in glob ("[123]*/*.cpp"):
+	for f in glob ("[123]*/*.cpp") + glob("tests/*.cpp"):
 		print '"%s"[style="filled",fillcolor="pink"];' % f
 		files[f] = set()
 

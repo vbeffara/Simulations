@@ -15,6 +15,16 @@ namespace vb {
 		if (snapshot_task>=0) remove_task(snapshot_task);
 	}
 
+	void Picture::show() {
+		AutoWindow::show();
+		if (!surface) {
+			surface = cairo_image_surface_create (CAIRO_FORMAT_RGB24, pixel_w(), pixel_h());
+			cr = cairo_create (surface);
+			cairo_scale (cr,pixel_w()/w(),pixel_h()/h());
+			stride = cairo_image_surface_get_stride (surface) / sizeof(Color);
+		}
+	}
+
 	void Picture::draw () {
 		if (!surface) {
 			surface = cairo_image_surface_create (CAIRO_FORMAT_RGB24, pixel_w(), pixel_h());

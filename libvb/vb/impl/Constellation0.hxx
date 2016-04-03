@@ -40,7 +40,9 @@ namespace vb {
 	}
 
 	template <typename T> void Constellation0<T>::linear (cplx u, cplx v) {
-		for (auto & zd : b) zd.z = u*zd.z+v; for (auto & zd : f) zd.z = u*zd.z+v; for (auto & zd : w) zd.z = u*zd.z+v;
+		for (auto & zd : b) zd.z = u*zd.z+v;
+		for (auto & zd : f) zd.z = u*zd.z+v;
+		for (auto & zd : w) zd.z = u*zd.z+v;
 	}
 
 	template <typename T> void Constellation0<T>::make_l_1 () {

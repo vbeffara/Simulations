@@ -10,7 +10,8 @@ namespace vb {
 	std::ostream & Pov_Object::output_pov (std::ostream & os) {
 		os << type << " "; if (braces) os << "{ ";
 		for (unsigned i=0; i<subs.size(); ++i) os << subs[i] << (i<commas ? ", " : " ");
-		if (braces) os << "}"; os << std::endl; return os;
+		if (braces) os << "}";
+		os << std::endl; return os;
 	}
 
 	void Pov_Object::output_pov (const std::string &s) {

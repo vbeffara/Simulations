@@ -1,30 +1,37 @@
 cmake_minimum_required (VERSION 3.0)
 project (Simulations)
 
-set (CMAKE_CXX_FLAGS "-g -Wall -Wextra -std=c++14 -fdiagnostics-color=always -O3 -march=native -mtune=native")
+set (CMAKE_CXX_FLAGS "-g -Wall -Wextra -Wno-deprecated-declarations -Wno-unused-local-typedefs -std=c++14 -fdiagnostics-color=always")
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcilkplus")
 else ()
-	add_definitions (-DNO_CILK)
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Dcilk_spawn= -Dcilk_sync= -Dcilk_for=for")
+endif ()
+
+if (${COV})
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 --coverage -fprofile-arcs -ftest-coverage -Dcilk_spawn= -Dcilk_sync= -Dcilk_for=for")
+	set (CMAKE_EXE_LINKER_FLAGS "--coverage -fprofile-arcs -ftest-coverage")
+else ()
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=native -mtune=native")
 endif ()
 
 link_directories ("/usr/local/lib" "/opt/X11/lib")
 
 include (TestBigEndian)
-TEST_BIG_ENDIAN (BIGENDIAN)
+test_big_endian (BIGENDIAN)
 if (${BIGENDIAN})
 	add_definitions (-DBIGENDIAN)
 endif (${BIGENDIAN})
 
 find_package (PkgConfig)
-find_package (Boost)
+find_package (Boost COMPONENTS unit_test_framework coroutine context thread system REQUIRED)
 find_package (FLTK)
 find_library (GMP gmp)
 find_library (FPLLL fplll)
 find_library (MPFR mpfr)
 
-pkg_check_modules (EXT REQUIRED cairo fftw3 libpng)
+pkg_check_modules (EXT REQUIRED cairo fftw3 libpng yaml-cpp cln)
 
 execute_process (COMMAND fltk-config --version OUTPUT_VARIABLE FLTK_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
 if (FLTK_VERSION VERSION_LESS "1.3.4")
@@ -35,7 +42,7 @@ include_directories ("${PROJECT_SOURCE_DIR}/libvb" ${Boost_INCLUDE_DIRS} ${EXT_I
 
 file (GLOB vb_sources libvb/*.cpp)
 add_library (vb SHARED ${vb_sources})
-target_link_libraries (vb ${EXT_LIBRARIES} ${GMP} ${FLTK_LIBRARIES} ${FPLLL} ${MPFR} cilkrts)
+target_link_libraries (vb ${EXT_LIBRARIES} ${GMP} ${FLTK_LIBRARIES} ${FPLLL} ${MPFR} ${Boost_LIBRARIES} cilkrts)
 
 foreach (dir tests 1D 2D 3D)
 	file (GLOB src ${dir}/*.cpp)

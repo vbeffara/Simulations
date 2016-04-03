@@ -23,6 +23,7 @@ namespace vb {
 		void snapshot_setup (const std::string &prefix, double period = 0.0);
 		void snapshot ();
 
+		virtual void show();
 		virtual int handle (int event);	///< Handle the events, in particular 'q' and 'x'.
 
 	protected:

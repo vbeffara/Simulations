@@ -1,5 +1,4 @@
 #include <vb/Coloring.h>
-#include <vb/Hub.h>
 
 using namespace vb;
 

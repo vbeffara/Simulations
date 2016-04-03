@@ -1,5 +1,6 @@
 #pragma once
 #include <vb/NumberTheory.h>
+#define DPE_USE_LONGDOUBLE
 #include <fplll.h>
 
 namespace vb {

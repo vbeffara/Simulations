@@ -34,14 +34,18 @@ namespace vb {
 
 	template <typename T> void Constellation1<T>::normalize () {
 		cplx sf(0); int sdf(0); for (auto zd : f) { sdf += zd.d; sf += zd.z * T(zd.d); }
-		for (auto & zd : b) zd.z -= sf/T(sdf); for (auto & zd : w) zd.z -= sf/T(sdf); for (auto & zd : f) zd.z -= sf/T(sdf);
+		for (auto & zd : b) zd.z -= sf/T(sdf);
+		for (auto & zd : w) zd.z -= sf/T(sdf);
+		for (auto & zd : f) zd.z -= sf/T(sdf);
 		p[1] = cplx(0); cplx avg (0); unsigned d=0;
 		for (auto zd : w) { d += zd.d; avg += logder(zd.z,0) * T(zd.d); }
 		p[1] = - avg/T(d);
 	}
 
 	template <typename T> void Constellation1<T>::shift (cplx z) {
-		for (auto & zd : b) zd.z += z; for (auto & zd : w) zd.z += z; for (auto & zd : f) zd.z += z;
+		for (auto & zd : b) zd.z += z;
+		for (auto & zd : w) zd.z += z;
+		for (auto & zd : f) zd.z += z;
 		from_points();
 	}
 
@@ -128,8 +132,8 @@ namespace vb {
 		for (auto zd : w) for (unsigned j=0; j<zd.d; ++j) out[k++] = logder(zd.z,j);
 		cplx sz (T(-dx)+cplx(T(-dy)*tau()));
 		for (auto zd : b) sz += T(zd.d) * zd.z;
-		for (auto zd : f) sz -= T(zd.d) * zd.z; out[k++] = sz;
-		out[k++] = b[0].z;
+		for (auto zd : f) sz -= T(zd.d) * zd.z;
+		out[k++] = sz; out[k++] = b[0].z;
 		return out;
 	}
 

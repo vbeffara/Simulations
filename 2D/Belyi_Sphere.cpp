@@ -31,7 +31,7 @@ int main (int argc, char ** argv) {
 		Permutation alpha = Pairings(a).rand();                                    	if (!connected(phi,alpha))	continue;
 		Permutation sigma = (alpha*phi).inverse(); Hypermap M (sigma,alpha,phi);   	if (M.genus() != g)       	continue;
 		bool good=true; for (auto & c : sigma.cycles()) if (c.size()<d) good=false;	if (!good)                	continue;
-		if (D>0) for (auto & c : sigma.cycles()) if (c.size()>D) good=false;       	if (!good)                	continue;
+		if (D>0) { for (auto & c : sigma.cycles()) if (c.size()>D) good=false; }   	if (!good)                	continue;
 		// if (H['o']) for (auto & c : sigma.cycles()) if (c.size()%2) good=false; 	if (!good)                	continue;
 
 		M.normalize();

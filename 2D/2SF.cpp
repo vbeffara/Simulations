@@ -13,7 +13,7 @@ class Point { public:
 		if (t == DUAL) return ((d==2)||(d==3)) ? Color(200,100,0)	: Color(128,255,128);
 		if (t == DEDG) return ((d==2)||(d==3)) ? Color(200,100,0)	: Color(128,255,128);
 
-		if (t==EMPH) return BLACK; if (d<0) return WHITE; return Indexed(d);
+		if (t==EMPH) return BLACK; else if (d<0) return WHITE; else return Indexed(d);
 	}
 
 	Type t = VOID;
@@ -81,10 +81,10 @@ class SF : public Bitmap<Point> { public:
 
 	void go () {
 		put (root, SITE); if (H['v']) show();
-		if (a<1) special(); else lerw(start, false);                                	stage();
-		for (int i=0; i<n; ++i) for (int j=0; j<=n; ++j) lerw(coo(2*i+1,2*j), true);	stage();
-		put (root, EMPH); path (start);                                             	stage();
-		dual();                                                                     	stage();
+		if (a<1) special(); else lerw(start, false);                                    	stage();
+		for (int i=0; i<n; ++i) { for (int j=0; j<=n; ++j) lerw(coo(2*i+1,2*j), true); }	stage();
+		put (root, EMPH); path (start);                                                 	stage();
+		dual();                                                                         	stage();
 		output();
 	}
 
