@@ -2,6 +2,8 @@
 
 #include <vb/Hub.h>
 #include <vb/PRNG.h>
+#include <vb/cpx.h>
+#include <fstream>
 
 using namespace vb; using namespace std;
 
@@ -115,18 +117,32 @@ auto aztecgen (vector<vector<double>> xr) {
     return a1;
 }
 
+auto height (vector<vector<int>> A) {
+    int m = A.size()/2;
+    vector<vector<int>> h (m+1, vector<int> (m+1));
+
+    int z=0; h[0][0]=z;
+    for (int x=0; x<m; ++x) { z += 4*A[2*x][0] + 4*A[2*x+1][0] - 2; h[x+1][0] = z; }
+    for (int y=0; y<m; ++y) {
+        int z = h[0][y] + 4*A[0][2*y] + 4*A[0][2*y+1] - 2; h[0][y+1] = z;
+        for (int x=0; x<m; ++x) { z -= 4*A[2*x][2*y+1] + 4*A[2*x+1][2*y+1] - 2; h[x+1][y+1] = z; }
+    }
+    return h;
+}
+
 int main (int argc, char ** argv) {
-    H.init ("Sunil's domino shuffle ported to C++", argc,argv, "m=8,a=1,b=.7,c=.1");
+    H.init ("Domino shuffle", argc,argv, "m=8,a=1,b=.7,c=.1");
     int m = H['m'];
     auto TP = threeperiodic(m,H['a'],H['b'],H['c']);
     auto A1 = aztecgen(TP);
-    for (int y=0; y<6*m; ++y) {
-        for (int x=0; x<6*m; ++x) {
-            if (A1[y][x]) {
-                if ((x+y) % 2) cout << "\\";
-                else cout << "/";
-            } else cout << ".";
-        }
-        cout << endl;
+
+    ofstream asy (H.dir + H.title + ".asy");
+    for (int y=0; y<6*m; ++y) for (int x=0; x<6*m; ++x) if (A1[y][x]) {
+        double eps = ((x+y)%2) ? .5 : -.5;
+        asy << "draw ((" << x-.5 << "," << y-eps << ")--(" << x+.5 << "," << y+eps << "), gray (" << TP[x][y]/1.1 << "));" << endl;
     }
+
+    ofstream dat (H.dir + H.title + ".dat");
+    auto H1 = height(A1);
+    for (int y=0; y<=3*m; ++y) { for (int x=0; x<=3*m; ++x) dat << H1[x][y] << " "; dat << endl; }
 }
