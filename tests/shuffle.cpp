@@ -7,11 +7,23 @@
 
 using namespace vb; using namespace std;
 
-auto threeperiodic (int m, double a, double b, double c) {
-    vector<vector<double>> A (6*m, vector<double> (6*m));
-    vector<vector<double>> P {{a,b,c},{b,c,a},{c,a,b}};
-    for (int i=0; i<6*m; ++i) for (int j=0; j<6*m; ++j) A[i][j] = P[(i/2)%3][(j/2)%3];
+int pgcd (int a, int b) { while (b) { int c = a%b; a=b; b=c; } return a; }
+
+auto weights (int m, vector<vector<double>> p) {
+    int w = p.size(), h = p[0].size(), wh = w*h/pgcd(w,h);
+    vector<vector<double>> A (2*m*wh, vector<double> (2*m*wh));
+    for (int i=0; i<2*m*wh; ++i) for (int j=0; j<2*m*wh; ++j) A[i][j] = p [(i/2)%w] [(j/2)%h];
     return A;
+}
+
+auto twoperiodic (int m, double a, double b) {
+    vector<vector<double>> P {{a,b},{b,a}};
+    return weights(m,P);
+}
+
+auto threeperiodic (int m, double a, double b, double c) {
+    vector<vector<double>> P {{a,b,c},{b,c,a},{c,a,b}};
+    return weights(m,P);
 }
 
 auto d3p (const vector<vector<double>> & x1) {
@@ -133,16 +145,17 @@ auto height (vector<vector<int>> A) {
 int main (int argc, char ** argv) {
     H.init ("Domino shuffle", argc,argv, "m=8,a=1,b=.7,c=.1");
     int m = H['m'];
-    auto TP = threeperiodic(m,H['a'],H['b'],H['c']);
+    auto TP = twoperiodic(m,H['a'],H['b']);
+    // auto TP = threeperiodic(m,H['a'],H['b'],H['c']);
     auto A1 = aztecgen(TP);
 
     ofstream asy (H.dir + H.title + ".asy");
-    for (int y=0; y<6*m; ++y) for (int x=0; x<6*m; ++x) if (A1[y][x]) {
+    for (int y=0; y<A1.size(); ++y) for (int x=0; x<A1[0].size(); ++x) if (A1[y][x]) {
         double eps = ((x+y)%2) ? .5 : -.5;
         asy << "draw ((" << x-.5 << "," << y-eps << ")--(" << x+.5 << "," << y+eps << "), gray (" << TP[x][y]/1.1 << "));" << endl;
     }
 
     ofstream dat (H.dir + H.title + ".dat");
     auto H1 = height(A1);
-    for (int y=0; y<=3*m; ++y) { for (int x=0; x<=3*m; ++x) dat << H1[x][y] << " "; dat << endl; }
+    for (int y=0; y<H1[0].size(); ++y) { for (int x=0; x<H1.size(); ++x) dat << H1[x][y] << " "; dat << endl; }
 }
