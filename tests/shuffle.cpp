@@ -60,42 +60,41 @@ auto probs (const Array<double> & x1) {
 	return A;
 }
 
-auto delslide (const vector<vector<int>> & x1) {
-	int n = x1.size();
-	vector<vector<int>> a0 (n+2, vector<int> (n+2));
-	for (int i=0; i<n+2; ++i) {
-		for (int j=0; j<n+2; ++j) if ((i==0) || (i==n+1) || (j==0) || (j==n+1)) a0[i][j] = 0; else a0[i][j] = x1[i-1][j-1];
-	}
+auto delslide (const Array<int> & x1) {
+	int n = x1.ww; Array<int> a0 (n+2,n+2);
+	for (int i=0; i<n+2; ++i)
+		for (int j=0; j<n+2; ++j)
+			a0[coo(i,j)] = ((i==0) || (i==n+1) || (j==0) || (j==n+1)) ? 0 : x1[coo(i-1,j-1)];
 	for (int i=0; i<n/2; ++i) {
 		for (int j=0; j<n/2; ++j) {
-			if ((a0[2*i][2*j]==1) && (a0[2*i+1][2*j+1]==1)) { a0[2*i][2*j]=0; a0[2*i+1][2*j+1]=0; }
-			else if ((a0[2*i][2*j+1]==1) && (a0[2*i+1][2*j]==1)) { a0[2*i+1][2*j]=0; a0[2*i][2*j+1]=0; }
+			if ((a0[coo(2*i,2*j)]==1) && (a0[coo(2*i+1,2*j+1)]==1)) { a0[coo(2*i,2*j)]=0; a0[coo(2*i+1,2*j+1)]=0; }
+			else if ((a0[coo(2*i,2*j+1)]==1) && (a0[coo(2*i+1,2*j)]==1)) { a0[coo(2*i+1,2*j)]=0; a0[coo(2*i,2*j+1)]=0; }
 		}
 	}
 	for (int i=0; i<n/2+1; ++i) {
 		for (int j=0; j<n/2+1; ++j) {
-			if (a0[2*i+1][2*j+1]==1) { a0[2*i][2*j]=1; a0[2*i+1][2*j+1]=0; }
-			else if (a0[2*i][2*j]==1) { a0[2*i][2*j]=0; a0[2*i+1][2*j+1]=1; }
-			else if (a0[2*i+1][2*j]==1) { a0[2*i][2*j+1]=1; a0[2*i+1][2*j]=0; }
-			else if (a0[2*i][2*j+1]==1) { a0[2*i+1][2*j]=1; a0[2*i][2*j+1]=0; }
+			if (a0[coo(2*i+1,2*j+1)]==1) { a0[coo(2*i,2*j)]=1; a0[coo(2*i+1,2*j+1)]=0; }
+			else if (a0[coo(2*i,2*j)]==1) { a0[coo(2*i,2*j)]=0; a0[coo(2*i+1,2*j+1)]=1; }
+			else if (a0[coo(2*i+1,2*j)]==1) { a0[coo(2*i,2*j+1)]=1; a0[coo(2*i+1,2*j)]=0; }
+			else if (a0[coo(2*i,2*j+1)]==1) { a0[coo(2*i+1,2*j)]=1; a0[coo(2*i,2*j+1)]=0; }
 		}
 	}
 	return a0;
 }
 
-auto create (vector<vector<int>> & x0, const Array<double> & p) {
-	int n = x0.size();
+auto create (Array<int> & x0, const Array<double> & p) {
+	int n = x0.ww;
 	for (int i=0; i<n/2; ++i) {
 		for (int j=0; j<n/2; ++j) {
-			if ((x0[2*i][2*j]==0) && (x0[2*i+1][2*j]==0) && (x0[2*i][2*j+1]==0) && (x0[2*i+1][2*j+1]==0)) {
+			if ((x0[coo(2*i,2*j)]==0) && (x0[coo(2*i+1,2*j)]==0) && (x0[coo(2*i,2*j+1)]==0) && (x0[coo(2*i+1,2*j+1)]==0)) {
 				bool a1,a2,a3,a4;
-				if (j>0) a1 = (x0[2*i][2*j-1]==0) && (x0[2*i+1][2*j-1]==0); else a1 = true;
-				if (j<n/2-1) a2 = (x0[2*i][2*j+2]==0) && (x0[2*i+1][2*j+2]==0); else a2 = true;
-				if (i>0) a3 = (x0[2*i-1][2*j]==0) && (x0[2*i-1][2*j+1]==0); else a3 = true;
-				if (i<n/2-1) a4 = (x0[2*i+2][2*j]==0) && (x0[2*i+2][2*j+1]==0); else a4 = true;
+				if (j>0) a1 = (x0[coo(2*i,2*j-1)]==0) && (x0[coo(2*i+1,2*j-1)]==0); else a1 = true;
+				if (j<n/2-1) a2 = (x0[coo(2*i,2*j+2)]==0) && (x0[coo(2*i+1,2*j+2)]==0); else a2 = true;
+				if (i>0) a3 = (x0[coo(2*i-1,2*j)]==0) && (x0[coo(2*i-1,2*j+1)]==0); else a3 = true;
+				if (i<n/2-1) a4 = (x0[coo(2*i+2,2*j)]==0) && (x0[coo(2*i+2,2*j+1)]==0); else a4 = true;
 				if (a1 && a2 && a3 && a4) {
-					if (prng.bernoulli(p[coo(i,j)])) { x0[2*i][2*j]=1; x0[2*i+1][2*j+1]=1; }
-					else { x0[2*i+1][2*j]=1; x0[2*i][2*j+1]=1; }
+					if (prng.bernoulli(p[coo(i,j)])) { x0[coo(2*i,2*j)]=1; x0[coo(2*i+1,2*j+1)]=1; }
+					else { x0[coo(2*i+1,2*j)]=1; x0[coo(2*i,2*j+1)]=1; }
 				}
 			}
 		}
@@ -103,23 +102,18 @@ auto create (vector<vector<int>> & x0, const Array<double> & p) {
 }
 
 auto aztecgen (const Array<double> & xr) {
-	auto x0 = probs(xr);
-	int n = x0.size();
-	vector<vector<int>> a1;
-	if (prng.bernoulli(x0[0][coo(0,0)])) a1 = {{1,0},{0,1}}; else a1 = {{0,1},{1,0}};
+	auto x0 = probs(xr); int n = x0.size(); Array<int> a1;
+	if (prng.bernoulli(x0[0][coo(0,0)])) a1 = Array<int> ({{1,0},{0,1}}); else a1 = Array<int> ({{0,1},{1,0}});
 	for (int i=0; i<n-1; ++i) { a1=delslide(a1); create(a1,x0[i+1]); }
 	return a1;
 }
 
-auto height (vector<vector<int>> A) {
-	int m = A.size()/2;
-	vector<vector<int>> h (m+1, vector<int> (m+1));
-
-	int z=0; h[0][0]=z;
-	for (int x=0; x<m; ++x) { z += 4*A[2*x][0] + 4*A[2*x+1][0] - 2; h[x+1][0] = z; }
+auto height (const Array<int> & A) {
+	int m = A.ww/2; Array<int> h (m+1,m+1,0); int z=0;
+	for (int x=0; x<m; ++x) { z += 4*A[coo(2*x,0)] + 4*A[coo(2*x+1,0)] - 2; h[coo(x+1,0)] = z; }
 	for (int y=0; y<m; ++y) {
-		int z = h[0][y] + 4*A[0][2*y] + 4*A[0][2*y+1] - 2; h[0][y+1] = z;
-		for (int x=0; x<m; ++x) { z -= 4*A[2*x][2*y+1] + 4*A[2*x+1][2*y+1] - 2; h[x+1][y+1] = z; }
+		int z = h[coo(0,y)] + 4*A[coo(0,2*y)] + 4*A[coo(0,2*y+1)] - 2; h[coo(0,y+1)] = z;
+		for (int x=0; x<m; ++x) { z -= 4*A[coo(2*x,2*y+1)] + 4*A[coo(2*x+1,2*y+1)] - 2; h[coo(x+1,y+1)] = z; }
 	}
 	return h;
 }
@@ -137,11 +131,11 @@ int main (int argc, char ** argv) {
 	auto A1 = aztecgen(TP);
 
 	string asyname = H.dir + H.title + ".asy"; cerr << "Asymptote file:   " << asyname << endl; ofstream asy (asyname);
-	for (int y=0; y<A1.size(); ++y) for (int x=0; x<A1[0].size(); ++x) if (A1[y][x]) {
-		double eps = ((x+y)%2) ? .5 : -.5;
-		asy << "draw ((" << x-.5 << "," << y-eps << ")--(" << x+.5 << "," << y+eps << "), gray (" << TP[coo(x,y)]/1.1 << "));" << endl;
+	for (auto z : coos(A1)) if (A1[z]) {
+		double eps = ((z.x+z.y)%2) ? .5 : -.5;
+		asy << "draw ((" << z.x-.5 << "," << z.y-eps << ")--(" << z.x+.5 << "," << z.y+eps << "), gray (" << TP[z]/1.1 << "));" << endl;
 	}
 
 	string datname = H.dir + H.title + ".dat"; cerr << "Height data file: " << datname << endl; ofstream dat (datname);
-	for (auto & l : height(A1)) { for (auto h : l) dat << h << " "; dat << endl; }
+	auto H1 = height(A1); for (auto z : coos(H1)) { dat << H1[z] << " "; if (z.x == H1.ww-1) dat << endl; }
 }
