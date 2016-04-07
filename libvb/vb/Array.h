@@ -9,9 +9,16 @@ namespace vb {
 
 	template <typename T> class Array { public:
 		Array (int w, int h, T d) :  ww(w), hh(h), data (w*h,d) {};
+		Array (int w=0, int h=0) :  ww(w), hh(h), data (w*h) {};
+
+		void resize (int w, int h) { ww=w; hh=h; data.resize(ww*hh); }
+		void resize (int w, int h, T t) { ww=w; hh=h; data.resize(ww*hh,t); }
 
 		T &      	at	(coo z)      	{ return data[z.x + ww*z.y]; }
 		T const &	at	(coo z) const	{ return data[z.x + ww*z.y]; }
+
+		T &      	operator[]	(coo z)      	{ return at(z); }
+		T const &	operator[]	(coo z) const	{ return at(z); }
 
 		T &      	atp	(coo z)      	{ int x = pmod (z.x,ww), y = pmod (z.y,hh); return at(coo(x,y)); }
 		T const &	atp	(coo z) const	{ int x = pmod (z.x,ww), y = pmod (z.y,hh); return at(coo(x,y)); }
