@@ -1,8 +1,7 @@
 // Initial code in Python by Sunil Chhita, ported to C++ by VB.
 
+#include <vb/Array.h>
 #include <vb/Hub.h>
-#include <vb/PRNG.h>
-#include <vb/cpx.h>
 #include <fstream>
 
 using namespace vb; using namespace std;
@@ -11,20 +10,20 @@ int pgcd (int a, int b) { while (b) { int c = a%b; a=b; b=c; } return a; }
 
 auto weights (int m, vector<vector<double>> p) {
 	int w = p.size(), h = p[0].size(), wh = w*h/pgcd(w,h);
-	vector<vector<double>> A (2*m*wh, vector<double> (2*m*wh));
-	for (int i=0; i<2*m*wh; ++i) for (int j=0; j<2*m*wh; ++j) A[i][j] = p [(i/2)%w] [(j/2)%h];
+	Array<double> A (2*m*wh,2*m*wh);
+	for (int i=0; i<2*m*wh; ++i) for (int j=0; j<2*m*wh; ++j) A[coo(i,j)] = p [(i/2)%w] [(j/2)%h];
 	return A;
 }
 
 auto twoperiodic    (int m, double a, double b)          	{ return weights (m, {{a,b},{b,a}}); }
 auto threeperiodic  (int m, double a, double b, double c)	{ return weights (m, {{a,b,c},{b,c,a},{c,a,b}}); }
 
-auto d3p (const vector<vector<double>> & x1) {
+auto d3p (const Array<double> & x1) {
 	vector<vector<vector<vector<double>>>> A;
-	int n = x1.size(); A.resize (n/2);
+	int n = x1.ww; A.resize (n/2);
 
 	A[0].resize (n, vector<vector<double>> (n));
-	for (int i=0; i<n; ++i) for (int j=0; j<n; ++j) if (x1[i][j] == 0) A[0][i][j] = {1,1}; else A[0][i][j] = {x1[i][j],0};
+	for (int i=0; i<n; ++i) for (int j=0; j<n; ++j) if (double w = x1[coo(i,j)]) A[0][i][j] = {w,0}; else A[0][i][j] = {1,1};
 
 	for (int k=0; k<n/2-1; ++k) {
 		A[k+1].resize(n-2*k-2, vector<vector<double>> (n-2*k-2));
@@ -49,7 +48,7 @@ auto d3p (const vector<vector<double>> & x1) {
 	return A;
 }
 
-auto probs (const vector<vector<double>> & x1) {
+auto probs (const Array<double> & x1) {
 	auto a0 = d3p (x1);
 	int n = a0.size();
 	vector<vector<vector<double>>> A (n);
@@ -113,7 +112,7 @@ auto create (vector<vector<int>> & x0, const vector<vector<double>> & p) {
 	}
 }
 
-auto aztecgen (vector<vector<double>> xr) {
+auto aztecgen (const Array<double> & xr) {
 	auto x0 = probs(xr);
 	int n = x0.size();
 	vector<vector<int>> a1;
@@ -136,10 +135,10 @@ auto height (vector<vector<int>> A) {
 }
 
 int main (int argc, char ** argv) {
-	H.init ("Domino shuffle", argc,argv, "m=8,a=1,b=.5,c=.3,w=unif");
+	H.init ("Domino shuffle", argc,argv, "m=10,a=1,b=.5,c=.3,w=unif");
 	int m = H['m'];
 
-	vector<vector<double>> TP;
+	Array<double> TP;
 	if (H['w'] == "unif") TP = weights (m, {{1}}); else
 	if (H['w'] == "two") TP = twoperiodic (m,H['a'],H['b']); else
 	if (H['w'] == "three") TP = threeperiodic (m,H['a'],H['b'],H['c']); else {
@@ -147,12 +146,12 @@ int main (int argc, char ** argv) {
 	}
 	auto A1 = aztecgen(TP);
 
-	ofstream asy (H.dir + H.title + ".asy");
+	string asyname = H.dir + H.title + ".asy"; cerr << "Asymptote file:   " << asyname << endl; ofstream asy (asyname);
 	for (int y=0; y<A1.size(); ++y) for (int x=0; x<A1[0].size(); ++x) if (A1[y][x]) {
 		double eps = ((x+y)%2) ? .5 : -.5;
-		asy << "draw ((" << x-.5 << "," << y-eps << ")--(" << x+.5 << "," << y+eps << "), gray (" << TP[x][y]/1.1 << "));" << endl;
+		asy << "draw ((" << x-.5 << "," << y-eps << ")--(" << x+.5 << "," << y+eps << "), gray (" << TP[coo(x,y)]/1.1 << "));" << endl;
 	}
 
-	ofstream dat (H.dir + H.title + ".dat");
+	string datname = H.dir + H.title + ".dat"; cerr << "Height data file: " << datname << endl; ofstream dat (datname);
 	for (auto & l : height(A1)) { for (auto h : l) dat << h << " "; dat << endl; }
 }
