@@ -8,63 +8,53 @@ using namespace vb; using namespace std;
 
 int pgcd (int a, int b) { while (b) { int c = a%b; a=b; b=c; } return a; }
 
-auto weights (int m, vector<vector<double>> p) {
-	int w = p.size(), h = p[0].size(), wh = w*h/pgcd(w,h);
-	Array<double> A (2*m*wh,2*m*wh);
-	for (int i=0; i<2*m*wh; ++i) for (int j=0; j<2*m*wh; ++j) A[coo(i,j)] = p [(i/2)%w] [(j/2)%h];
+auto weights (int m, const Array<double> & p) {
+	int n = 2*m*p.ww*p.hh/pgcd(p.ww,p.hh);
+	Array<double> A (n,n); for (auto z : coos(A)) A[z] = p.atp(z/2);
 	return A;
 }
 
-auto twoperiodic    (int m, double a, double b)          	{ return weights (m, {{a,b},{b,a}}); }
-auto threeperiodic  (int m, double a, double b, double c)	{ return weights (m, {{a,b,c},{b,c,a},{c,a,b}}); }
+auto twoperiodic    (int m, double a, double b)          	{ return weights (m, Array<double> ({{a,b},{b,a}})); }
+auto threeperiodic  (int m, double a, double b, double c)	{ return weights (m, Array<double> ({{a,b,c},{b,c,a},{c,a,b}})); }
 
 auto d3p (const Array<double> & x1) {
-	vector<vector<vector<vector<double>>>> A;
-	int n = x1.ww; A.resize (n/2);
+	int n = x1.ww; vector<Array<pair<double,double>>> A (n/2);
 
-	A[0].resize (n, vector<vector<double>> (n));
-	for (int i=0; i<n; ++i) for (int j=0; j<n; ++j) if (double w = x1[coo(i,j)]) A[0][i][j] = {w,0}; else A[0][i][j] = {1,1};
+	A[0].resize(n,n); for (auto z : coos(x1)) if (double w = x1[z]) A[0][z] = {w,0}; else A[0][z] = {1,1};
 
 	for (int k=0; k<n/2-1; ++k) {
-		A[k+1].resize(n-2*k-2, vector<vector<double>> (n-2*k-2));
-		for (int i=0; i<n-2*k-2; ++i) {
-			for (int j=0; j<n-2*k-2; ++j) {
-				const vector<double> & a1 = A[k][i+2*(i%2)][j+2*(j%2)];
-				double a20, a21;
-				if (A[k][i+2*(i%2)][j+2*(j%2)][1] + A[k][i+1][j+1][1] == A[k][i+2*(i%2)][j+1][1] + A[k][i+1][j+2*(j%2)][1]) {
-					a20 = A[k][i+2*(i%2)][j+2*(j%2)][0] * A[k][i+1][j+1][0] + A[k][i+2*(i%2)][j+1][0] * A[k][i+1][j+2*(j%2)][0];
-					a21 = A[k][i+2*(i%2)][j+2*(j%2)][1] + A[k][i+1][j+1][1];
-				} else if (A[k][i+2*(i%2)][j+2*(j%2)][1] + A[k][i+1][j+1][1] < A[k][i+2*(i%2)][j+1][1] + A[k][i+1][j+2*(j%2)][1]) {
-					a20 = A[k][i+2*(i%2)][j+2*(j%2)][0] * A[k][i+1][j+1][0];
-					a21 = A[k][i+2*(i%2)][j+2*(j%2)][1] + A[k][i+1][j+1][1];
-				} else {
-					a20 = A[k][i+2*(i%2)][j+1][0] * A[k][i+1][j+2*(j%2)][0];
-					a21 = A[k][i+2*(i%2)][j+1][1] + A[k][i+1][j+2*(j%2)][1];
-				}
-				A[k+1][i][j] = { a1[0]/a20, a1[1]-a21 };
+		A[k+1].resize(n-2*k-2,n-2*k-2); for (auto z : coos(A[k+1])) {
+			int i=z.x, j=z.y, ii = i+2*(i%2), jj = j+2*(j%2);
+			double a20, a21;
+			if (A[k][coo(ii,jj)].second + A[k][coo(i+1,j+1)].second == A[k][coo(ii,j+1)].second + A[k][coo(i+1,jj)].second) {
+				a20 = A[k][coo(ii,jj)].first * A[k][coo(i+1,j+1)].first + A[k][coo(ii,j+1)].first * A[k][coo(i+1,jj)].first;
+				a21 = A[k][coo(ii,jj)].second + A[k][coo(i+1,j+1)].second;
+			} else if (A[k][coo(ii,jj)].second + A[k][coo(i+1,j+1)].second < A[k][coo(ii,j+1)].second + A[k][coo(i+1,jj)].second) {
+				a20 = A[k][coo(ii,jj)].first * A[k][coo(i+1,j+1)].first;
+				a21 = A[k][coo(ii,jj)].second + A[k][coo(i+1,j+1)].second;
+			} else {
+				a20 = A[k][coo(ii,j+1)].first * A[k][coo(i+1,jj)].first;
+				a21 = A[k][coo(ii,j+1)].second + A[k][coo(i+1,jj)].second;
 			}
+			auto & a1 = A[k][coo(ii,jj)]; A[k+1][z] = { a1.first/a20, a1.second-a21 };
 		}
 	}
 	return A;
 }
 
 auto probs (const Array<double> & x1) {
-	auto a0 = d3p (x1);
-	int n = a0.size();
-	vector<vector<vector<double>>> A (n);
+	auto a0 = d3p (x1); int n = a0.size(); vector<Array<double>> A (n);
 
 	for (int k=0; k<n; ++k) {
-		A[k].resize (k+1, vector<double> (k+1));
-		for (int i=0; i<k+1; ++i) {
-			for (int j=0; j<k+1; ++j) {
-				if (a0[n-k-1][2*i][2*j][1] + a0[n-k-1][2*i+1][2*j+1][1] > a0[n-k-1][2*i+1][2*j][1] + a0[n-k-1][2*i][2*j+1][1])
-					A[k][i][j] = 0;
-				else if (a0[n-k-1][2*i][2*j][1] + a0[n-k-1][2*i+1][2*j+1][1] < a0[n-k-1][2*i+1][2*j][1] + a0[n-k-1][2*i][2*j+1][1])
-					A[k][i][j] = 1;
-				else
-					A[k][i][j] = (a0[n-k-1][2*i+1][2*j+1][0] * a0[n-k-1][2*i][2*j][0] /
-						(a0[n-k-1][2*i+1][2*j+1][0] * a0[n-k-1][2*i][2*j][0] + a0[n-k-1][2*i+1][2*j][0]*a0[n-k-1][2*i][2*j+1][0]));
-			}
+		A[k].resize (k+1,k+1); for (auto z : coos(A[k])) {
+			int i=z.x, j=z.y;
+			if (a0[n-k-1][coo(2*i,2*j)].second + a0[n-k-1][coo(2*i+1,2*j+1)].second > a0[n-k-1][coo(2*i+1,2*j)].second + a0[n-k-1][coo(2*i,2*j+1)].second)
+				A[k][z] = 0;
+			else if (a0[n-k-1][coo(2*i,2*j)].second + a0[n-k-1][coo(2*i+1,2*j+1)].second < a0[n-k-1][coo(2*i+1,2*j)].second + a0[n-k-1][coo(2*i,2*j+1)].second)
+				A[k][z] = 1;
+			else
+				A[k][z] = (a0[n-k-1][coo(2*i+1,2*j+1)].first * a0[n-k-1][coo(2*i,2*j)].first /
+					(a0[n-k-1][coo(2*i+1,2*j+1)].first * a0[n-k-1][coo(2*i,2*j)].first + a0[n-k-1][coo(2*i+1,2*j)].first*a0[n-k-1][coo(2*i,2*j+1)].first));
 		}
 	}
 	return A;
@@ -93,7 +83,7 @@ auto delslide (const vector<vector<int>> & x1) {
 	return a0;
 }
 
-auto create (vector<vector<int>> & x0, const vector<vector<double>> & p) {
+auto create (vector<vector<int>> & x0, const Array<double> & p) {
 	int n = x0.size();
 	for (int i=0; i<n/2; ++i) {
 		for (int j=0; j<n/2; ++j) {
@@ -104,7 +94,7 @@ auto create (vector<vector<int>> & x0, const vector<vector<double>> & p) {
 				if (i>0) a3 = (x0[2*i-1][2*j]==0) && (x0[2*i-1][2*j+1]==0); else a3 = true;
 				if (i<n/2-1) a4 = (x0[2*i+2][2*j]==0) && (x0[2*i+2][2*j+1]==0); else a4 = true;
 				if (a1 && a2 && a3 && a4) {
-					if (prng.bernoulli(p[i][j])) { x0[2*i][2*j]=1; x0[2*i+1][2*j+1]=1; }
+					if (prng.bernoulli(p[coo(i,j)])) { x0[2*i][2*j]=1; x0[2*i+1][2*j+1]=1; }
 					else { x0[2*i+1][2*j]=1; x0[2*i][2*j+1]=1; }
 				}
 			}
@@ -116,7 +106,7 @@ auto aztecgen (const Array<double> & xr) {
 	auto x0 = probs(xr);
 	int n = x0.size();
 	vector<vector<int>> a1;
-	if (prng.bernoulli(x0[0][0][0])) a1 = {{1,0},{0,1}}; else a1 = {{0,1},{1,0}};
+	if (prng.bernoulli(x0[0][coo(0,0)])) a1 = {{1,0},{0,1}}; else a1 = {{0,1},{1,0}};
 	for (int i=0; i<n-1; ++i) { a1=delslide(a1); create(a1,x0[i+1]); }
 	return a1;
 }
@@ -139,7 +129,7 @@ int main (int argc, char ** argv) {
 	int m = H['m'];
 
 	Array<double> TP;
-	if (H['w'] == "unif") TP = weights (m, {{1}}); else
+	if (H['w'] == "unif") TP = weights (m, Array<double> (1,1,1)); else
 	if (H['w'] == "two") TP = twoperiodic (m,H['a'],H['b']); else
 	if (H['w'] == "three") TP = threeperiodic (m,H['a'],H['b'],H['c']); else {
 		cerr << "No such weight, \"" << string(H['w']) << "\".\n"; exit(1);

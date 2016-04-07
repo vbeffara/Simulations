@@ -1,8 +1,9 @@
 #pragma once /// \file
 
+#include <vb/PRNG.h>
+#include <vb/Stream.h>
 #include <vb/coo.h>
 #include <vb/math.h>
-#include <vb/PRNG.h>
 
 namespace vb {
 	template <typename T> class Array_iterator;
@@ -10,6 +11,9 @@ namespace vb {
 	template <typename T> class Array { public:
 		Array (int w, int h, T d) :  ww(w), hh(h), data (w*h,d) {};
 		Array (int w=0, int h=0) :  ww(w), hh(h), data (w*h) {};
+		Array (const std::vector<std::vector<T>> & l) : ww(l.size()), hh(l[0].size()), data(ww*hh) {
+			for (int i=0; i<ww; ++i) for (int j=0; j<hh; ++j) put(coo(i,j),l[i][j]);
+		}
 
 		void resize (int w, int h) { ww=w; hh=h; data.resize(ww*hh); }
 		void resize (int w, int h, T t) { ww=w; hh=h; data.resize(ww*hh,t); }
@@ -39,11 +43,15 @@ namespace vb {
 		std::vector<T> data;
 	};
 
-	template<typename T> class Array_iterator : public coo { public: Array<T> &b;
+	template <typename T> class Array_iterator : public coo { public: Array<T> &b;
 		Array_iterator 	(Array<T> &bb, coo z) : coo(z), b(bb)	{}
 		bool operator!=	(Array_iterator<T> &o)               	{ return (&b != &o.b) || ((coo)(*this) != (coo)(o));	}
 		bool operator!=	(coo o)                              	{ return ((coo)(*this) != (coo)(o));                	}
 		void operator++	()                                   	{ x++; if (x == b.ww) { x=0; y++; }                 	}
 		T & operator*  	()                                   	{ return b.at(*this);                               	}
 	};
+
+	template <typename T> Stream<coo> coos (const Array<T> & A) { return Stream<coo> ([&A](Sink<coo> & yield) {
+		for (int y=0; y<A.hh; ++y) for (int x=0; x<A.ww; ++x) yield(coo(x,y));
+	});}
 }
