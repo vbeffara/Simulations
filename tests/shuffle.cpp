@@ -6,16 +6,17 @@
 
 using namespace vb; using namespace std;
 
-int pgcd (int a, int b) { while (b) { int c = a%b; a=b; b=c; } return a; }
-
 auto weights (int m, const Array<double> & p) {
-	int n = 2*m*p.ww*p.hh/pgcd(p.ww,p.hh);
-	Array<double> A (n,n); for (auto z : coos(A)) A[z] = p.atp(z/2);
-	return A;
+	int n = m*lcm(p.ww,p.hh);
+	Array<double> A (n,n); for (auto z : coos(A)) A[z] = p.atp(z); return A;
 }
 
-auto twoperiodic    (int m, double a, double b)          	{ return weights (m, Array<double> ({{a,b},{b,a}})); }
-auto threeperiodic  (int m, double a, double b, double c)	{ return weights (m, Array<double> ({{a,b,c},{b,c,a},{c,a,b}})); }
+auto dupe (const Array<double> & a) { Array<double> aa (2*a.ww,2*a.hh); for (auto z : coos(aa)) aa[z] = a[z/2]; return aa; }
+
+auto twoperiodic  	(int m, double a, double b)          	{ return weights (m, dupe (Array<double> ({{a,b},{b,a}}))); }
+auto threeperiodic	(int m, double a, double b, double c)	{ return weights (m, dupe (Array<double> ({{a,b,c},{b,c,a},{c,a,b}}))); }
+
+auto threebytwo(int m, double b) { Array<double> p (6,6,1); p[coo(0,0)]=b; p[coo(4,2)]=b; p[coo(2,4)]=b; return weights (m,p); }
 
 auto d3p (const Array<double> & x1) {
 	int n = x1.ww; vector<Array<pair<double,double>>> A (n/2);
@@ -119,23 +120,27 @@ auto height (const Array<int> & A) {
 }
 
 int main (int argc, char ** argv) {
-	H.init ("Domino shuffle", argc,argv, "m=10,a=1,b=.5,c=.3,w=unif");
+	H.init ("Domino shuffle", argc,argv, "m=50,a=1,b=.5,c=.3,w=unif");
 	int m = H['m'];
 
 	Array<double> TP;
 	if (H['w'] == "unif") TP = weights (m, Array<double> (1,1,1)); else
 	if (H['w'] == "two") TP = twoperiodic (m,H['a'],H['b']); else
-	if (H['w'] == "three") TP = threeperiodic (m,H['a'],H['b'],H['c']); else {
+	if (H['w'] == "three") TP = threeperiodic (m,H['a'],H['b'],H['c']); else
+	if (H['w'] == "kenyon") TP = threebytwo (m,H['b']); else {
 		cerr << "No such weight, \"" << string(H['w']) << "\".\n"; exit(1);
 	}
-	auto A1 = aztecgen(TP);
 
-	string asyname = H.dir + H.title + ".asy"; cerr << "Asymptote file:   " << asyname << endl; ofstream asy (asyname);
+	auto A1 = aztecgen(TP); auto H1 = height(A1);
+
+	string name = H.dir + H.title; ofstream asy (name + ".asy");
 	for (auto z : coos(A1)) if (A1[z]) {
 		double eps = ((z.x+z.y)%2) ? .5 : -.5;
-		asy << "draw ((" << z.x-.5 << "," << z.y-eps << ")--(" << z.x+.5 << "," << z.y+eps << "), gray (" << TP[z]/1.1 << "));" << endl;
+		asy << "draw ((" << z.x-.5 << "," << z.y-eps << ")--(" << z.x+.5 << "," << z.y+eps << "), gray (" << TP[z]/1.3 << "));" << endl;
 	}
 
-	string datname = H.dir + H.title + ".dat"; cerr << "Height data file: " << datname << endl; ofstream dat (datname);
-	auto H1 = height(A1); for (auto z : coos(H1)) { dat << H1[z] << " "; if (z.x == H1.ww-1) dat << endl; }
+	ofstream dat (name + ".dat");
+	for (auto z : coos(H1)) { dat << H1[z] << " "; if (z.x == H1.ww-1) dat << endl; }
+
+	system (("asy -fpdf -o " + H.dir + " \"" + name + ".asy\"").c_str());
 }

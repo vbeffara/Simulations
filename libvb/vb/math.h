@@ -9,6 +9,8 @@ namespace vb {
 	}
 
 	template <typename T>	T	sign   	(T x)     	{ return (T(0) < x) - (x < T(0));                          	}
+	template <typename T>	T	gcd    	(T a, T b)	{ while (b) { int c = a%b; a=b; b=c; } return a;           	}
+	template <typename T>	T	lcm    	(T a, T b)	{ return a*b/gcd(a,b);                                     	}
 	template <typename T>	T	pmod   	(T k, T n)	{ T tmp (k%n); return tmp < T(0) ? tmp+n : tmp;            	}
 	template <typename T>	T	fact   	(T n)     	{ T out(1); for (T i(2); i <= n; ++i) out *= i; return out;	}
 	template <typename T>	T	binom  	(T n, T k)	{ return fact(n)/fact(k)/fact(n-k);                        	}
