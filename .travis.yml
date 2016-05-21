@@ -13,7 +13,7 @@ addons:
       - g++-5
       - lcov
       - libboost-all-dev
-      - libboost-coroutine
+      - libboost-coroutine1.58.0
       - libcln-dev
       - libfftw3-dev
       - libfltk1.3-dev

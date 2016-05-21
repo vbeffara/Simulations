@@ -33,6 +33,7 @@ class Cluster { public:
 	};
 
 	void put (coo z, bool b, bool quick = false) {
+		if (np == w*w*b) return;
 		if (!quick) { if (at(z) == b) return; while (!fits(z)) grow(); }
 		if (w == bs) {
 			if (!tile.size()) tile.resize (w*w,!b);
