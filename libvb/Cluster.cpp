@@ -55,6 +55,24 @@ namespace vb {
 		}
 	}
 
+	void Cluster::paint (Image & I, coo ul, coo br) {
+		if (ul==br) { ul = 0; br = {I.w(),I.h()}; }
+		if (np == 0) { for (int x=ul.x; x<br.x; ++x) for (int y=ul.y; y<br.y; ++y) I.put(coo(x,y),BLACK); }
+		else if (np == w*w) {
+			for (int x=ul.x; x<br.x; ++x) for (int y=ul.y; y<br.y; ++y)
+				I.put (coo(x,y), (x==ul.x)||(x==br.x-1)||(y==ul.y)||(y==br.y-1) ? RED : BLUE); }
+		else if (br == ul + coo(1,1)) { I.put (ul, (255*np) / (w*w)); }
+		else if (sub.size()) {
+			int ww = br.x-ul.x, hh = br.y-ul.y;
+			for (int x=0; x<3; ++x) for (int y=0; y<3; ++y)
+				sub[x+3*y].paint (I,ul+coo(x*ww/3,y*hh/3),ul+coo((x+1)*ww/3,(y+1)*hh/3));
+		} else {
+			int ww = br.x-ul.x, hh = br.y-ul.y;
+			for (int x=0; x<w; ++x) for (int y=0; y<w; ++y)
+				I.put (ul+coo(x*ww/w,y*hh/w), tile[x+w*y] ? WHITE : BLACK);
+		}
+	}
+
 	void Cluster::dump (std::string pre) {
 		validate ();
 		if (np == 0) { if (pre=="") std::cerr << "EMPTY" << std::endl; return; }

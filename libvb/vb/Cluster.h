@@ -1,5 +1,5 @@
 #pragma once
-#include <vb/coo.h>
+#include <vb/Image.h>
 
 namespace vb {
 	class Cluster { public:
@@ -16,6 +16,7 @@ namespace vb {
 		void remove (coo z);
 
 		void validate ();
+		void paint (Image & I, coo ul = 0, coo br = 0);
 		void dump (std::string pre = "");
 
 		coo ul;
