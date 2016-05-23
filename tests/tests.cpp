@@ -2,6 +2,7 @@
 #define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
 
+#include <vb/Cluster.h>
 #include <vb/Coloring.h>
 #include <vb/Constellation0.h>
 #include <vb/Constellation1.h>
@@ -53,6 +54,20 @@ BOOST_AUTO_TEST_CASE (test_TriMatrix) {
 	BOOST_CHECK (M.at({91823749,-2793474}) == 23);
 	BOOST_CHECK (M.at({3,4}) == 0);
 	BOOST_CHECK (M.at({981327,2371827}) == 0);
+}
+
+BOOST_AUTO_TEST_CASE (test_Cluster) {
+	Cluster C;
+	C.insert ({35,42});
+	C.insert ({1234,5678});
+	C.insert ({91823749,-2793474});
+	C.remove ({1234,5678});
+
+	assert (C.at({35,42}));
+	assert (!C.at({1234,5678}));
+	assert (C.at({91823749,-2793474}));
+	assert (!C.at({3,4}));
+	assert (!C.at({981327,2371827}));
 }
 
 // Utility classes
