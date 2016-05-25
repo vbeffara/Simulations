@@ -57,6 +57,7 @@ namespace vb {
 
 	void Cluster::paint (Image & I, coo ul, coo br) {
 		if (ul==br) { ul = 0; br = {I.w(),I.h()}; }
+		if (br.x-ul.x > w) { ul = (ul + br - coo(w,w)) / 2; br = ul + coo(w,w); }
 		if (np == 0) { for (int x=ul.x; x<br.x; ++x) for (int y=ul.y; y<br.y; ++y) I.put(coo(x,y),BLACK); }
 		else if (np == w*w) {
 			for (int x=ul.x; x<br.x; ++x) for (int y=ul.y; y<br.y; ++y)

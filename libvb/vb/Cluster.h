@@ -3,7 +3,7 @@
 
 namespace vb {
 	class Cluster { public:
-		Cluster (coo ul_ = {0,0}, int w_ = bs) : ul(ul_), w(w_), np(0) {};
+		Cluster (coo ul_ = {-bs/2,-bs/2}, int w_ = bs) : ul(ul_), w(w_), np(0) {};
 
 		void ensure_sub ();
 		void grow ();
