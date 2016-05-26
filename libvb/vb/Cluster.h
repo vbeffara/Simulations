@@ -20,7 +20,8 @@ namespace vb {
 		void dump (std::string pre = "");
 
 		coo ul;
-		long w,np;
+		int w;
+		long np;
 		std::vector <bool> tile;
 		std::vector <Cluster> sub;
 		static int bs;
