@@ -85,5 +85,5 @@ namespace vb {
 		}
 	}
 
-	int Cluster::bs = 32;
+	int Cluster::bs = 16;
 }
