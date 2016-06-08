@@ -34,7 +34,7 @@ public:
 	}
 
 	bool f;
-	int n,cursum;
+	long n,cursum;
 	double p;
 	PointQueue pq;
 };

@@ -3,8 +3,8 @@
 using namespace vb; using namespace std;
 
 class Cluster2 : public Cluster { public:
-	int dist_to_box (coo z) { return max (0, min ({z.x-(ul.x+w-1), z.y-(ul.y+w-1), ul.x-z.x, ul.y-z.y})); }
-	int dist_to_out (coo z) { return max (0, min ({z.x-ul.x+1, z.y-ul.y+1, (ul.x+w)-z.x, (ul.y+w)-z.y})); }
+	int dist_to_box (coo z) { return max (0L, min ({z.x-(ul.x+w-1), z.y-(ul.y+w-1), ul.x-z.x, ul.y-z.y})); }
+	int dist_to_out (coo z) { return max (0L, min ({z.x-ul.x+1, z.y-ul.y+1, (ul.x+w)-z.x, (ul.y+w)-z.y})); }
 
 	int inrad_go (coo z) {
 		if (np == w*w) return dist_to_out (z);
@@ -21,7 +21,7 @@ int main (int argc, char ** argv) {
     double a = H['a']; a = 1 / (1+a);
     Image I (729,729); I.show(); I.snapshot_setup("ORRW_cluster",60);
 
-    Cluster2 W; coo z(0,0); W.insert(z); int supsup=0;
+    Cluster2 W; coo z(0,0); W.insert(z); long supsup=0;
 
     for (unsigned long t=0 ; supsup < l; t++) {
 		int ir = W.inrad_go(z), d = 1 + ir/2;

@@ -3,8 +3,8 @@
 #include <vb/cpx.h>
 
 namespace vb {
-	class coo { public: int x,y;
-		coo(int xx = 0, int yy = 0) : x(xx), y(yy) {}
+	class coo { public: long x,y;
+		coo(long xx = 0, long yy = 0) : x(xx), y(yy) {}
 
 		bool	operator==	(const coo & z)	const	{ return (x == z.x) && (y == z.y); }
 		bool	operator!=	(const coo & z)	const	{ return (x != z.x) || (y != z.y); }
@@ -12,8 +12,8 @@ namespace vb {
 		coo 	operator- 	(const coo & z)	const	{ return coo (x-z.x, y-z.y); }
 		coo 	operator- 	()             	const	{ return coo (-x,-y); }
 
-		coo	operator*	(int d)	const	{ return coo (x*d,y*d); }
-		coo	operator/	(int d)	const	{ return coo (x/d,y/d); }
+		coo	operator*	(long d)	const	{ return coo (x*d,y*d); }
+		coo	operator/	(long d)	const	{ return coo (x/d,y/d); }
 
 		void	operator+=	(const coo & z)		{ x+=z.x; y+=z.y; }
 		void	operator-=	(const coo & z)		{ x-=z.x; y-=z.y; }
@@ -21,8 +21,8 @@ namespace vb {
 		operator cpx() const { return cpx(x,y); }
 	};
 
-	inline int norm	(coo z) { return z.x*z.x + z.y*z.y; }
-	inline int sup 	(coo z) { return std::max (abs(z.x), abs(z.y)); }
+	inline long norm	(coo z) { return z.x*z.x + z.y*z.y; }
+	inline long sup 	(coo z) { return std::max (abs(z.x), abs(z.y)); }
 
 	inline std::ostream & operator<< (std::ostream & os, const coo z) { return os << "(" << z.x << "," << z.y << ")"; }
 
@@ -32,8 +32,8 @@ namespace vb {
 		rect (coo u, coo b) : ul(u), br(b) {};
 	};
 
-	class coo3 { public: int x,y,z;
-		coo3 (int xx, int yy, int zz) : x(xx), y(yy), z(zz) {}
+	class coo3 { public: long x,y,z;
+		coo3 (long xx, long yy, long zz) : x(xx), y(yy), z(zz) {}
 
 		bool	operator==	(const coo3 & c)	const	{ return (x==c.x) && (y==c.y) && (z==c.z); }
 		bool	operator!=	(const coo3 & c)	const	{ return (x!=c.x) || (y!=c.y) || (z!=c.z); }
