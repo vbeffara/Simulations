@@ -16,10 +16,12 @@ class Cluster2 : public Cluster { public:
 };
 
 int main (int argc, char ** argv) {
-    H.init ("Once-reinforced random walk, Cluster version", argc,argv, "l=150,a=1");
+    H.init ("Once-reinforced random walk, Cluster version", argc,argv, "l=200,a=10,v,s=0");
     int l = H['l'];
     double a = H['a']; a = 1 / (1+a);
-    Image I (729,729); I.show(); I.snapshot_setup("ORRW_cluster",60);
+    int s = H['s']; if (s) prng.seed(s);
+    Image I (729,729); I.show();
+    if (H['v']) I.snapshot_setup("ORRW_cluster",60);
 
     Cluster2 W; coo z(0,0); W.insert(z); long supsup=0;
 
@@ -31,6 +33,9 @@ int main (int argc, char ** argv) {
 			z = nz; if (!there) W.insert(z);
 			supsup = max (supsup,sup(z));
 		}
-        if (!(t%1000000)) W.paint (I);
+        if (!(t%1000000)) {
+			cerr << "\r" << t << " particles.";
+			W.paint (I);
+		}
     }
 }

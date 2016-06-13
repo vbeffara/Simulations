@@ -11,13 +11,15 @@ namespace vb {
 		bool fits (coo z) const;
 		bool at (coo z) const;
 
-		void put (coo z, bool b, bool quick = false);
+		void put (coo z, bool b);
 		void insert (coo z);
 		void remove (coo z);
 
 		void validate ();
 		void paint (Image & I, coo ul = 0, coo br = 0);
 		void dump (std::string pre = "");
+
+		long sub_index (coo z) const;
 
 		coo ul;
 		long w,np;
