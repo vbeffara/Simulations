@@ -1,5 +1,8 @@
+#ifdef CILK
 #include <cilk/cilk.h>
 #include <cilk/cilk_api.h>
+#endif
+
 #include <vb/Coloring.h>
 
 namespace vb {
