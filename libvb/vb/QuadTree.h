@@ -2,7 +2,7 @@
 #include <vb/Image.h>
 
 namespace vb {
-	struct QuadIndex { coo z; int d; };
+	struct QuadIndex { coo z; long d; };
 
 	class QuadTree {
 	public:

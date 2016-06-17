@@ -13,7 +13,7 @@ addons:
       - g++-5
       - lcov
       - libboost-all-dev
-      - libboost-coroutine
+      - libboost-coroutine1.58.0
       - libcln-dev
       - libfftw3-dev
       - libfltk1.3-dev
@@ -24,18 +24,18 @@ addons:
       - libyaml-cpp-dev
       - ninja-build
 
-script:
-  - set -e
-  - export CC=gcc-5
-  - export CXX=g++-5
+install:
   - gem install coveralls-lcov
   - sudo pip install codecov
-  - sudo apt-get -yq install libboost-coroutine1.58.0
+
+script:
   - mkdir -p build/cov
   - cd build
   - cmake .. -G Ninja -DCOV=1
   - ninja
   - cd ..
+
+after_success:
   - Xvfb :4 &
   - export DISPLAY=:4
   - lcov -z -d build
