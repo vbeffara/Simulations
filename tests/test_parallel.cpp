@@ -1,6 +1,7 @@
 #include <future>
 #include <cilk/cilk.h>
 #include <cilk/cilk_api.h>
+#include <cilk/reducer_opadd.h>
 #include <chrono>
 #include <cmath>
 #include <iostream>
@@ -26,7 +27,7 @@ double cum (int n) {
         for (int t=0; t<1000; ++t) x = cos(x);
         X[i] = x;
     }
-    double s=0; for (auto x:X) s+=x; return s;
+    double s=0; for (auto x:X) s+=x; return s - long(s);
 }
 
 double cum_cilk (int n) {
@@ -36,7 +37,17 @@ double cum_cilk (int n) {
         for (int t=0; t<1000; ++t) x = cos(x);
         X[i] = x;
     }
-    double s=0; for (auto x:X) s+=x; return s;
+    double s=0; for (auto x:X) s+=x; return s - long(s);
+}
+
+double cum_cilk2 (int n) {
+    cilk::reducer_opadd <double> s (0);
+    cilk_for (int i=0; i<n; ++i) {
+        double x = i;
+        for (int t=0; t<1000; ++t) x = cos(x);
+        *s += x;
+    }
+    return s.get_value() - long(s.get_value());
 }
 
 template <typename T> void test (std::string s, T f (int), int n) {
@@ -56,4 +67,5 @@ int main (int argc, char ** argv) {
 
     if (m & 8)  test ("Map | Single", cum, H['l']);
     if (m & 16) test ("Map | CILK  ", cum_cilk, H['l']);
+    if (m & 32) test ("Map | CILK 2", cum_cilk2, H['l']);
 }

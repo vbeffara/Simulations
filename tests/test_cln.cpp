@@ -24,7 +24,7 @@ double time () {
 
 template <typename T> void test (string s, int n) {
 	double t = time(); T z = 0;
-	for (int i=0; i<n; ++i) z = cos(z);
+	for (int i=0; i<n; ++i) z = exp(-z);
 	ostringstream os; os << time()-t;
 	cout << s << " | time = " << os.str() << "\t | result = " << z << endl;
 }
