@@ -25,9 +25,6 @@ addons:
       - ninja-build
 
 script:
-  - set -e
-  - export CC=gcc-5
-  - export CXX=g++-5
   - gem install coveralls-lcov
   - sudo pip install codecov
   - mkdir -p build/cov
