@@ -37,7 +37,7 @@ int main(int argc, char ** argv) {
       if (on_it && (c == Color(tint))) continue;
 
       img.fill (coo(n/2,n/2), tint);
-      img.put (coo(x,y), c);
+      img.at (coo(x,y)) = c;
       img.fill (coo(n/2,n/2), Color(255,0,0));
 
       img.step();
