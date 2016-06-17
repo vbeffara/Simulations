@@ -3,7 +3,7 @@
 #include <iomanip>
 
 namespace vb {
-	template <typename T> Constellation<T>::Constellation () {};
+	template <typename T> Constellation<T>::Constellation () {}
 
 	template <typename T> template <typename U> Constellation<T>::Constellation (const Constellation<U> & C) {
 		for (auto zd : C.b) b.push_back({std::complex<T>(zd.z), zd.d});
@@ -11,7 +11,7 @@ namespace vb {
 		for (auto zd : C.f) f.push_back({std::complex<T>(zd.z), zd.d});
 		for (auto z : C.p)  p.push_back(std::complex<T>(z));
 		dim = b.size() + w.size() + f.size() + p.size();
-	};
+	}
 
 	template <typename T> T Constellation<T>::findn () {
 		Vector<cplx> x = vec();
