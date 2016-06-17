@@ -120,8 +120,9 @@ auto height (const Array<int> & A) {
 }
 
 int main (int argc, char ** argv) {
-	H.init ("Domino shuffle", argc,argv, "m=50,a=1,b=.5,c=.3,w=unif");
+	H.init ("Domino shuffle", argc,argv, "m=50,a=1,b=.5,c=.3,s=0,r=0,w=unif");
 	int m = H['m'];
+	int seed = H['s']; if (seed) prng.seed (seed);
 
 	Array<double> TP;
 	if (H['w'] == "unif") TP = weights (m, Array<double> (1,1,1)); else
@@ -135,9 +136,16 @@ int main (int argc, char ** argv) {
 
 	string name = H.dir + H.title; ofstream asy (name + ".asy");
 	for (auto z : coos(A1)) if (A1[z]) {
-		double eps = ((z.x+z.y)%2) ? .5 : -.5;
-		asy << "draw ((" << z.x-.5 << "," << z.y-eps << ")--(" << z.x+.5 << "," << z.y+eps << "), gray (" << TP[z]/1.3 << "));" << endl;
+		coo edge (1, (z.x+z.y)%2 ? 1 : -1);
+		auto s = [](coo z){
+			coo zz = (z+coo{1,1})/2;
+			coo sh = dz[(zz.y + (((zz.x+1)%4)/2 ? 5 : 3)) % 4];
+			return cpx(z) + 2 * double(H['r']) * cpx(sh);
+		};
+		auto l = [](cpx z){ ostringstream os; os << "(" << real(z) << "," << imag(z) << ")"; return os.str(); };
+		asy << "draw (" << l(s(z*2-edge)) << "--" << l(s(z*2+edge)) << ", gray (" << TP[z]/1.3 << "));" << endl;
 	}
+	int L = A1.ww*2+2; asy << "draw ((-4,-4) -- ("<<L<<",-4) -- ("<<L<<","<<L<<") -- (-4,"<<L<<") -- (-4,-4), gray(1));" << endl;
 
 	ofstream dat (name + ".dat");
 	for (auto z : coos(H1)) { dat << H1[z] << " "; if (z.x == H1.ww-1) dat << endl; }
