@@ -24,14 +24,18 @@ addons:
       - libyaml-cpp-dev
       - ninja-build
 
-script:
+install:
   - gem install coveralls-lcov
   - sudo pip install codecov
+
+script:
   - mkdir -p build/cov
   - cd build
   - cmake .. -G Ninja -DCOV=1
   - ninja
   - cd ..
+
+after_success:
   - Xvfb :4 &
   - export DISPLAY=:4
   - lcov -z -d build
