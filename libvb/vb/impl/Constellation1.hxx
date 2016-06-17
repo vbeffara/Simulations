@@ -20,7 +20,7 @@ namespace vb {
 
 	template <typename T> template <typename U> Constellation1<T>::Constellation1 (const Constellation1<U> & C) : Constellation<T>(C) {
 		from_points();
-	};
+	}
 
 	template <typename T> void Constellation1<T>::from_points () {
 		E = Elliptic<T> { q_(p[0]) };

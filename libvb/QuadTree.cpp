@@ -4,7 +4,7 @@ namespace vb {
 	std::vector <QuadTree *> QuadTree::store;
 
 	QuadTree::QuadTree (coo UL, coo BR, int M) :
-		n(0), ul(UL), br(BR), center((ul+br)/2), iul(br), ibr(ul), m(M) {};
+		n(0), ul(UL), br(BR), center((ul+br)/2), iul(br), ibr(ul), m(M) {}
 
 	QuadTree::~QuadTree () {
 		if (n>m) for (int i=0; i<4; ++i) delete store[ch+i];

@@ -11,7 +11,7 @@ namespace vb {
 		Slot (const char *n, int w, int h) : Fl_Output (0,h,w-100,30,n) { align(FL_ALIGN_RIGHT); }
 		template <typename T> void draw_value (T t) {
 			std::ostringstream os; os << t; value(os.str().c_str()); Fl_Output::draw();
-		};
+		}
 	};
 
 	template <typename T> class Watcher : public Slot {

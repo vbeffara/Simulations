@@ -42,4 +42,4 @@ namespace vb {
 
 	extern const coo dz[8];
 	extern const coo3 dz3[6];
-};
+}

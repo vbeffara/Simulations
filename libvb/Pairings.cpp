@@ -25,7 +25,7 @@ namespace vb {
 			todo_c.push_back(c); todo_p.push_back(all);
 			next();
 		}
-	};
+	}
 
 	void Pairings_Iterator::operator++ () { ++i; next(); }
 
@@ -39,9 +39,9 @@ namespace vb {
 		return fact(n)/fact(n/2)/pow(2,n/2);
 	}
 
-	Pairings_Iterator Pairings::begin () const { return Pairings_Iterator(n,0,true); };
+	Pairings_Iterator Pairings::begin () const { return Pairings_Iterator(n,0,true); }
 
-	Pairings_Iterator Pairings::end () const { return Pairings_Iterator(n,size(),false); };
+	Pairings_Iterator Pairings::end () const { return Pairings_Iterator(n,size(),false); }
 
 	Permutation Pairings::rand () {
 		Permutation out(n);

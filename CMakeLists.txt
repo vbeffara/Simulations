@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.0)
 project (Simulations)
 
-set (CMAKE_CXX_FLAGS "-g -Wall -Wextra -Wno-deprecated-declarations -Wno-unused-local-typedefs -std=c++14 -fdiagnostics-color=always")
+set (CMAKE_CXX_FLAGS "-g -Wall -Wextra -Wno-deprecated-declarations -Wno-unused-local-typedefs -std=c++14 -fdiagnostics-color=always -pedantic")
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcilkplus -DCILK")

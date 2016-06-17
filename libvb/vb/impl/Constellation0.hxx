@@ -23,7 +23,7 @@ namespace vb {
 		}
 	}
 
-	template <typename T> template <typename U> Constellation0<T>::Constellation0 (const Constellation0<U> & C) : Constellation<T>(C) { dim--; };
+	template <typename T> template <typename U> Constellation0<T>::Constellation0 (const Constellation0<U> & C) : Constellation<T>(C) { dim--; }
 
 	template <typename T> auto Constellation0<T>::operator() (cplx z) const -> cplx {
 		cplx out (p[0]);
