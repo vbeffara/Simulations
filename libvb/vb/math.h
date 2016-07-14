@@ -20,4 +20,6 @@ namespace vb {
 
 	template <typename T>	std::complex<T>	q_ 	(const std::complex<T> & tau) { return exp(std::complex<T>(0,pi_<T>())*tau);                              	}
 	template <typename T>	std::complex<T>	q_t	(const std::complex<T> & tau) { return std::complex<T>(0,pi_<T>()) * exp(std::complex<T>(0,pi_<T>())*tau);	}
+
+	double BesselJ (int n, double z);
 }

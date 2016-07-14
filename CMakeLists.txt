@@ -25,7 +25,7 @@ find_library (GMP gmp)
 find_library (FPLLL fplll)
 find_library (MPFR mpfr)
 
-pkg_check_modules (EXT REQUIRED cairo fftw3 libpng yaml-cpp cln)
+pkg_check_modules (EXT REQUIRED cairo fftw3 libpng yaml-cpp cln gsl)
 
 execute_process (COMMAND fltk-config --version OUTPUT_VARIABLE FLTK_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
 if (FLTK_VERSION VERSION_LESS "1.3.4")
