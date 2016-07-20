@@ -9,7 +9,9 @@
 #include <vb/Cube.h>
 #include <vb/Figure.h>
 #include <vb/Hypermap_lib.h>
+#include <vb/Minimizer.h>
 #include <vb/NumberTheory.h>
+#include <vb/Pov.h>
 #include <vb/ProgressBar.h>
 #include <vb/TriMatrix.h>
 
@@ -40,6 +42,7 @@ BOOST_AUTO_TEST_CASE (test_Cube) {
 	C.putp(C.rand(),1);
 	int s=0; for (auto v : C) s += v;
 	BOOST_CHECK (s == 1);
+	BOOST_CHECK (Color(C.at({0,0})).a == 255);
 	C.output_pov();
 }
 
@@ -84,6 +87,9 @@ BOOST_AUTO_TEST_CASE (test_coo) {
 	BOOST_CHECK (cpx(z2) == cpx(-2,-3));
 	BOOST_CHECK (norm(z2) == 13);
 	BOOST_CHECK (sup(z2) == 3);
+
+	ostringstream os; os << z1;
+	BOOST_CHECK (os.str() == "(6,2)");
 }
 
 BOOST_AUTO_TEST_CASE (test_Color) {
@@ -167,6 +173,12 @@ BOOST_AUTO_TEST_CASE (test_math) {
 	BOOST_CHECK (fabs(log(e)-1) < 1e-6);
 }
 
+BOOST_AUTO_TEST_CASE (test_Permutation) {
+	Permutation P1 = Transposition (4,0,1), P2 = Transposition (4,0,2), P = P1 * P2;
+	Passport PP = P.passport();
+	BOOST_CHECK (PP[0].first == 3);
+}
+
 BOOST_AUTO_TEST_CASE (test_NumberTheory) {
 	default_float_format = cln::float_format(100);
 	cl_F z ("0.9162918442410306144165008200767499077603397502333144975769802641182380808885019256331544308341889255");
@@ -216,6 +228,35 @@ BOOST_AUTO_TEST_CASE (test_Constellation1) {
 	BOOST_CHECK (os.str() == " z^2 + -914416 z + 590816592");
 }
 
+BOOST_AUTO_TEST_CASE (test_Minimizer) {
+	// double f (const Vector<double> &x, void *) {
+	//   double o = 0;
+	//   for (unsigned int i=0; i<400; ++i) o += (1 - cos(x[i]/(i+1)));
+	//   return o;
+	// }
+
+	// Vector<double> g (const Vector<double> &x) {
+	//   Vector<double> out(400);
+	//   for (unsigned int i=0; i<400; ++i) out[i] = sin(x[i]/(i+1))/(i+1);
+	//   return out;
+	// }
+
+	auto fg = [](const Vector<double> &x, Vector<double> &g) {
+		double o = 0;
+		for (unsigned int i=0; i<400; ++i) {
+			o += (1 - cos(x[i]/(i+1)));
+			g[i] = sin(x[i]/(i+1))/(i+1);
+		}
+		return o;
+	};
+
+	Vector<double> x0(400); for (unsigned int i=0; i<400; ++i) x0[i] = cos(double(i));
+	Vector<double> W0(400); for (unsigned int i=0; i<400; ++i) W0[i] = (i+1)*(i+1);
+
+	Minimizer<double> M (400,fg);
+	BOOST_CHECK (M.minimize_qn (x0) < 1e-8);
+}
+
 // Displays, windows and such
 
 BOOST_AUTO_TEST_CASE (test_Image) {
@@ -246,6 +287,10 @@ BOOST_AUTO_TEST_CASE (test_Figure) {
 	F.show(); F.hide();
 }
 
+BOOST_AUTO_TEST_CASE (test_Pov) {
+	Pov_Box PB ({0.0,1.0,2.0}, {3.0,4.0,5.0});
+}
+
 // Below is still to be done
 
 BOOST_AUTO_TEST_CASE (test_Auto) {}
@@ -270,21 +315,15 @@ BOOST_AUTO_TEST_CASE (test_Lattice) {}
 
 BOOST_AUTO_TEST_CASE (test_Map) {}
 
-BOOST_AUTO_TEST_CASE (test_Minimizer) {}
-
 BOOST_AUTO_TEST_CASE (test_Pairings) {}
 
 BOOST_AUTO_TEST_CASE (test_Path) {}
-
-BOOST_AUTO_TEST_CASE (test_Permutation) {}
 
 BOOST_AUTO_TEST_CASE (test_Picture) {}
 
 BOOST_AUTO_TEST_CASE (test_Point) {}
 
 BOOST_AUTO_TEST_CASE (test_Polynomial) {}
-
-BOOST_AUTO_TEST_CASE (test_Pov) {}
 
 BOOST_AUTO_TEST_CASE (test_PRNG) {}
 
