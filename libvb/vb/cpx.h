@@ -1,4 +1,5 @@
 #pragma once /// @file
+#include <cmath>
 #include <complex>
 #include <iostream>
 #include <boost/multiprecision/gmp.hpp>
