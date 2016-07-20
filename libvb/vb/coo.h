@@ -22,7 +22,7 @@ namespace vb {
 	};
 
 	inline long norm	(coo z) { return z.x*z.x + z.y*z.y; }
-	inline long sup 	(coo z) { return std::max (abs(z.x), abs(z.y)); }
+	inline long sup 	(coo z) { return std::max (std::abs(z.x), std::abs(z.y)); }
 
 	inline std::ostream & operator<< (std::ostream & os, const coo z) { return os << "(" << z.x << "," << z.y << ")"; }
 
@@ -42,4 +42,4 @@ namespace vb {
 
 	extern const coo dz[8];
 	extern const coo3 dz3[6];
-};
+}

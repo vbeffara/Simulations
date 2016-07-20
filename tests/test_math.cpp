@@ -33,4 +33,7 @@ int main () {
 	cout << endl;
 	blaz(wp); blaz(wp_z); blaz(wp_q);
 	cout << endl;
+
+	cout << setprecision(12);
+	cout << "BesselJ (12,1.0) = " << BesselJ (12,1.0) << endl;
 }

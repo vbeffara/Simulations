@@ -18,6 +18,7 @@ addons:
       - libfftw3-dev
       - libfltk1.3-dev
       - libfplll-dev
+      - libgsl-dev
       - libmpfr-dev
       - libpng++-dev
       - libxinerama-dev

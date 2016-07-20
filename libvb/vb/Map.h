@@ -87,4 +87,4 @@ namespace vb {
 	double Map_fg_circle_base (const Vector<double> &x, Vector<double> &g, void *context);
 	double Map_fg_circle_bd (const Vector<double> &x, Vector<double> &g, void *context);
 	double Map_fg_circle_disk (const Vector<double> &x, Vector<double> &g, void *context);
-};
+}

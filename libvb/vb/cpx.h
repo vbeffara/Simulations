@@ -1,4 +1,5 @@
 #pragma once /// @file
+#include <cmath>
 #include <complex>
 #include <iostream>
 #include <boost/multiprecision/gmp.hpp>
@@ -45,4 +46,4 @@ namespace vb {
     template <typename T> void disp (std::ostream & os, const std::string & label, const T & x) {
 		os << label << x << std::endl;
 	}
-};
+}

@@ -20,14 +20,14 @@ namespace vb {
 		} else {
 			ul.x -= w; ul.y -= w; w *= 3;
 		}
-	};
+	}
 
 	bool Cluster::at (coo z) const {
 		if ((!np) || (!fits(z))) return false;
 		if (np == w*w) return true;
 		if (!sub.empty()) return sub[sub_index(z)].at(z);
 		long x = z.x - ul.x, y = z.y - ul.y, xy = x + w*y; return tile[xy];
-	};
+	}
 
 	void Cluster::put (coo z, bool b) {
 		long plain = w*w*b; if (np == plain) return;
