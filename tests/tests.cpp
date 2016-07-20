@@ -229,17 +229,17 @@ BOOST_AUTO_TEST_CASE (test_Constellation1) {
 }
 
 BOOST_AUTO_TEST_CASE (test_Minimizer) {
-	// double f (const Vector<double> &x, void *) {
-	//   double o = 0;
-	//   for (unsigned int i=0; i<400; ++i) o += (1 - cos(x[i]/(i+1)));
-	//   return o;
-	// }
+	auto f = [](const Vector<double> &x, void *) {
+		double o = 0;
+		for (unsigned int i=0; i<400; ++i) o += (1 - cos(x[i]/(i+1)));
+		return o;
+	};
 
-	// Vector<double> g (const Vector<double> &x) {
-	//   Vector<double> out(400);
-	//   for (unsigned int i=0; i<400; ++i) out[i] = sin(x[i]/(i+1))/(i+1);
-	//   return out;
-	// }
+	auto g = [](const Vector<double> &x) {
+		Vector<double> out(400);
+		for (unsigned int i=0; i<400; ++i) out[i] = sin(x[i]/(i+1))/(i+1);
+		return out;
+	};
 
 	auto fg = [](const Vector<double> &x, Vector<double> &g) {
 		double o = 0;
