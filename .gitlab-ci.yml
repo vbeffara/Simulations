@@ -3,7 +3,7 @@ image: ubuntu:latest
 before_script:
   - apt-get update -qq
   - apt-get install -y -qq libcairo2-dev libfltk1.3-dev libfftw3-dev libfplll-dev libgmp-dev libmpfr-dev libpng++-dev
-  - apt-get install ninja-build libyaml-cpp-dev libcln-dev libgsl-dev
+  - apt-get install -y -qq ninja-build libyaml-cpp-dev libcln-dev libgsl-dev
 
 cmake:
   stage: build
