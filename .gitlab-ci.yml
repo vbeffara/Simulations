@@ -2,7 +2,8 @@ image: kaskada/cmake-gcc5
 
 before_script:
   - apt-get update -qq
-  - apt-get install -y -qq libcairo2-dev libfltk1.3-dev libfftw3-dev libfplll-dev libgmp-dev libmpfr-dev libpng++-dev ninja-build libyaml-cpp-dev
+  - apt-get install -y -qq libcairo2-dev libfltk1.3-dev libfftw3-dev libfplll-dev libgmp-dev libmpfr-dev libpng++-dev
+  - apt-get install ninja-build libyaml-cpp-dev libcln-dev libgsl-dev
 
 cmake:
   stage: build
