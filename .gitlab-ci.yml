@@ -26,4 +26,6 @@ cmake:
     # - lcov -c -d build -d libvb -o build/cov/cov.info --gcov-tool gcov-5 --no-external -q || true
     # - codecov --gcov-exec gcov-5
     # - coveralls-lcov build/cov/cov.info
-    - du -h .ccache
+    - pwd
+    - du -h .ccache || true
+    - du -h ~/.ccache || true
