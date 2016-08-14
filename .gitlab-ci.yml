@@ -19,6 +19,8 @@ cmake:
     - cd ..
     - Xvfb :4 &
     - export DISPLAY=:4
+    - export PATH=/usr/lib/ccache:$PATH
+    - which gcc
     # - lcov -z -d build
     - ./build/tests/tests -r short -l error -x
     # - lcov -c -d build -d libvb -o build/cov/cov.info --gcov-tool gcov-5 --no-external -q || true
