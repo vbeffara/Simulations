@@ -7,7 +7,7 @@ before_script:
 
 cache:
   paths:
-    - ~/.ccache
+    - /root/.ccache
 
 cmake:
   stage: build
