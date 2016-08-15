@@ -7,12 +7,13 @@ before_script:
 
 cache:
   paths:
-    - /root/.ccache
+    - .ccache
 
 cmake:
   stage: build
   script:
     - export PATH=/usr/lib/ccache:$PATH
+    - export CCACHE_BASEDIR=$PWD
     - mkdir -p build
     - cd build
     - cmake .. -G Ninja
@@ -25,4 +26,4 @@ cmake:
     # - lcov -c -d build -d libvb -o build/cov/cov.info --gcov-tool gcov-5 --no-external -q || true
     # - codecov --gcov-exec gcov-5
     # - coveralls-lcov build/cov/cov.info
-    - du -h ~/.ccache
+    - du -h .ccache || true
