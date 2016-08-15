@@ -14,7 +14,6 @@ cmake:
   script:
     - export PATH=/usr/lib/ccache:$PATH
     - export CCACHE_DIR=$PWD/.ccache
-    - echo $CCACHE_DIR
     - du -h .ccache || true
     - mkdir -p build
     - cd build
