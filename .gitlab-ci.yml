@@ -3,7 +3,7 @@ image: ubuntu:latest
 before_script:
   - apt-get update -qq
   - apt-get install -y -qq libcairo2-dev libfltk1.3-dev libfftw3-dev libfplll-dev libgmp-dev libmpfr-dev libpng++-dev xvfb
-  - apt-get install -y -qq cmake gcc g++ libboost-all-dev git ninja-build libyaml-cpp-dev libcln-dev libgsl-dev ccache
+  - apt-get install -y -qq cmake gcc g++ libboost-all-dev git ninja-build libyaml-cpp-dev libcln-dev libgsl-dev ccache lcov
 
 cache:
   key: "simulations"
@@ -15,17 +15,15 @@ cmake:
   script:
     - export PATH=/usr/lib/ccache:$PATH
     - export CCACHE_DIR=$PWD/.ccache
-    - du -h .ccache || true
     - mkdir -p build
     - cd build
-    - cmake .. -G Ninja
+    - cmake .. -G Ninja -DCOV=1
     - ninja
     - cd ..
     - Xvfb :4 &
     - export DISPLAY=:4
-    # - lcov -z -d build
+    - lcov -z -d build
     - ./build/tests/tests -r short -l error -x
-    # - lcov -c -d build -d libvb -o build/cov/cov.info --gcov-tool gcov-5 --no-external -q || true
+    - lcov -c -d build -d libvb -o build/cov/cov.info --no-external -q
     # - codecov --gcov-exec gcov-5
     # - coveralls-lcov build/cov/cov.info
-    - du -h .ccache || true
