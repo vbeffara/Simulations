@@ -3,7 +3,6 @@ image: vbeffara/simulations
 before_script:
   - apt-get install -y -qq libcairo2-dev libfltk1.3-dev libfftw3-dev libfplll-dev libgmp-dev libmpfr-dev libpng++-dev
   - apt-get install -y -qq libyaml-cpp-dev libcln-dev libgsl-dev
-  - gem install coveralls-lcov
 
 cache:
   key: "simulations"
