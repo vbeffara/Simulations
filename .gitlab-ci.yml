@@ -6,6 +6,7 @@ before_script:
   - apt-get install -y -qq cmake gcc g++ libboost-all-dev git ninja-build libyaml-cpp-dev libcln-dev libgsl-dev ccache
 
 cache:
+  key: "simulations"
   paths:
     - .ccache
 
