@@ -15,7 +15,7 @@ cmake:
   script:
     - export PATH=/usr/lib/ccache:$PATH
     - export CCACHE_DIR=$PWD/.ccache
-    - mkdir -p build
+    - mkdir -p build/cov
     - cd build
     - cmake .. -G Ninja -DCOV=1
     - ninja
