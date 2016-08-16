@@ -1,4 +1,4 @@
-[![Build Status](https://gitlab.com/vbeffara/Simulations/badges/gitlab/build.svg)](https://gitlab.com/vbeffara/Simulations/builds)
+[![Build Status](https://gitlab.com/vbeffara/Simulations/badges/master/build.svg)](https://gitlab.com/vbeffara/Simulations/builds)
 [![Coverage Status](https://coveralls.io/repos/github/vbeffara/Simulations/badge.svg?branch=master)](https://coveralls.io/github/vbeffara/Simulations?branch=master)
 [![codecov.io](https://codecov.io/github/vbeffara/Simulations/coverage.svg?branch=master)](https://codecov.io/github/vbeffara/Simulations?branch=master)
 [![Join the chat at https://gitter.im/vbeffara/Simulations](https://badges.gitter.im/vbeffara/Simulations.svg)](https://gitter.im/vbeffara/Simulations?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
