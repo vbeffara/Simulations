@@ -1,12 +1,11 @@
 image: vbeffara/simulations
 
-cache:
-  key: "simulations"
-  paths:
-    - .ccache
-
 cmake:
   stage: build
+  cache:
+    key: "simulations"
+    paths:
+      - .ccache
   script:
     - export PATH=/usr/lib/ccache:$PATH
     - export CCACHE_DIR=$PWD/.ccache
