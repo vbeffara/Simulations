@@ -19,6 +19,10 @@ cmake:
     - cmake .. -G Ninja -DCOV=1
     - ninja
     - cd ..
+
+unittests:
+  stage: test
+  script:
     - Xvfb :4 &
     - export DISPLAY=:4
     - lcov -z -d build
