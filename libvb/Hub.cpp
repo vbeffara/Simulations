@@ -1,4 +1,5 @@
 #include <boost/algorithm/string.hpp>
+#include <cln/cln.h>
 #include <FL/Fl.H>
 #include <FL/Fl_Gl_Window.H>
 #include <sys/stat.h>
@@ -43,6 +44,8 @@ namespace vb {
 	    #ifndef NO_RETINA
 	    Fl::use_high_res_GL (1);
 	    #endif
+
+	    cln::default_float_format = cln::float_format(100);
 	}
 
 	Hub H;

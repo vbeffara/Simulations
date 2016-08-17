@@ -199,8 +199,8 @@ namespace vb {
 		return os;
 	}
 
-	template <> std::ostream & operator<< (std::ostream & os, const Constellation1<gmp100> & C) {
-		using T = gmp100;
+	template <> std::ostream & operator<< (std::ostream & os, const Constellation1<real_t> & C) {
+		using T = real_t;
 		T err (C.cost()); T lerr (-log10(err)); int nd = std::max (5,int(lerr)/2-12); if (err==T(0)) nd=10;
 		os << std::setprecision(nd) << std::fixed;
 		T eps = pow(T(.1),nd-5);

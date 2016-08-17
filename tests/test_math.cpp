@@ -6,8 +6,8 @@
 using namespace vb; using namespace std;
 
 int main () {
-	cpx   	ttau(.125,1.25),	qq(q_(ttau)),	zz(.25,.75);	Elliptic<double> EE { qq };
-	cpx100	tau(.125,1.25), 	q(q_(tau)),  	z(.25,.75); 	Elliptic<gmp100> E { q };
+	cpx      	ttau(.125,1.25),	qq(q_(ttau)),	zz(.25,.75);	Elliptic<double> EE { qq };
+	complex_t	tau(.125,1.25), 	q(q_(tau)),  	z(.25,.75); 	Elliptic<real_t> E { q };
 
 	cout << setprecision(40);
 	cout << "tau = " << ttau << tau << endl;

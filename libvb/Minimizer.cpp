@@ -2,5 +2,5 @@
 
 namespace vb {
 	template class Minimizer<double>;
-	template class Minimizer<gmp100>;
+	template class Minimizer<real_t>;
 }

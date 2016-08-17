@@ -65,8 +65,8 @@ int main (int argc, char ** argv) {
 			}
 
 			if (H['q']) {
-				Constellation1<gmp100> CC (C); gmp100 c = CC.findn(); int lc = - int(log10(c));
-				int nd = std::max(10,lc/2-15); gmp100 eps = pow(gmp100(.1),nd);
+				Constellation1<real_t> CC (C); real_t c = CC.findn(); int lc = - int(log10(c));
+				int nd = std::max(10,lc/2-15); real_t eps = pow(real_t(.1),nd);
 				cout << fixed << setprecision(std::min(nd,80));
 				cout << "     Modulus:         " << CC.tau() << endl;
 				if (nd>30) { Polynomial<cpxint> P = guess(CC.tau(),eps); if (P.degree()>0) cout << "        root of " << P << std::endl; }

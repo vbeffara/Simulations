@@ -40,26 +40,26 @@ int main (int argc, char ** argv) {
 	test <double>      ("Standard double", n);
 	test <long double> ("Long double    ", n);
 	test <cl_N>        ("CLN 100        ", n);
-	test <gmp100>      ("GMP 100        ", n);
+	test <real_t>      ("GMP 100        ", n);
 
 	cout << endl;
 	cout << "sin(1)" << endl;
-	cout << "  gmp100:      " << sin(gmp100(1)) << endl;
+	cout << "  real_t:      " << sin(real_t(1)) << endl;
 	cout << "  CLN(100):    " << sin(cl_float(1)) << endl;
 
 	cout << endl;
 	cout << "cos(\\pi/10)" << endl;
-	cout << "  GMP 100: " << cos(pi_<gmp100>()/10) << endl;
+	cout << "  GMP 100: " << cos(pi_<real_t>()/10) << endl;
 	cout << "  CLN 100: " << cos(pi()/10) << endl;
 
 	cout << endl;
 	cout << "q_(.1) = exp(i \\pi / 10)" << endl;
-	cout << "  GMP 100: " << q_(cpx100(1)/gmp100(10)) << endl;
+	cout << "  GMP 100: " << q_(complex_t(1)/real_t(10)) << endl;
 	cout << "  CLN 100:  " << q_(cl_float(1)/10) << endl;
 
 	cout << endl;
 	cout << "theta1 ((1+10i)/8, (1+3i)/4)" << endl;
-	cpx100 tau(.125,1.25), q(q_(tau)), z(.25,.75);
+	complex_t tau(.125,1.25), q(q_(tau)), z(.25,.75);
 	auto tau2 = cln::complex(1,10)/8, q2 = q_(tau2), z2 = cln::complex(1,3)/4;
 	cout << "  GML 100: " << theta1(q,z) << endl;
 	cout << "  CLN 100:  " << theta1(q2,z2) << endl;

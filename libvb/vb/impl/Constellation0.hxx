@@ -144,8 +144,8 @@ namespace vb {
 		return os;
 	}
 
-	template <> std::ostream & operator<< (std::ostream & os, const Constellation0<gmp100> & C) {
-		using T = gmp100;
+	template <> std::ostream & operator<< (std::ostream & os, const Constellation0<real_t> & C) {
+		using T = real_t;
 		T err (C.cost()); T lerr (-log10(err)); int nd = std::max (5,int(lerr)/2-7); if (err==T(0)) nd=10;
 		os << std::setprecision(nd) << std::fixed;
 		os << "Keeping " << nd << " digits." << std::endl << std::endl;
@@ -173,8 +173,8 @@ namespace vb {
 		os << std::endl;
 		os << u8"λ     := " << C.p[0] << std::endl;
 		Polynomial<cpxint> L = guess (C.p[0],T(pow(T(.1),nd))); if (L.degree()>0) os << u8"Λ[z_] := " << L << std::endl;
-		Polynomial<cpx100> P; for (auto zd : C.b) for (unsigned j=0; j<zd.d; ++j) P.add_root(zd.z); os << "P[z_] := " << P << std::endl;
-		Polynomial<cpx100> Q; for (auto zd : C.f) for (unsigned j=0; j<zd.d; ++j) Q.add_root(zd.z); os << "Q[z_] := " << Q << std::endl;
+		Polynomial<complex_t> P; for (auto zd : C.b) for (unsigned j=0; j<zd.d; ++j) P.add_root(zd.z); os << "P[z_] := " << P << std::endl;
+		Polynomial<complex_t> Q; for (auto zd : C.f) for (unsigned j=0; j<zd.d; ++j) Q.add_root(zd.z); os << "Q[z_] := " << Q << std::endl;
 		return os;
 	}
 

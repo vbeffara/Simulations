@@ -29,7 +29,7 @@ int main (int argc, char ** argv) {
 	}
 
 	if (H['q']) {
-		Constellation1<gmp100> Cq (C);
+		Constellation1<real_t> Cq (C);
 		Cq.findn(); cout << endl << Cq;
 	}
 }

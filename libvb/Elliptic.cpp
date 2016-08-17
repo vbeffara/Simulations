@@ -2,5 +2,5 @@
 
 namespace vb {
 	template class Elliptic<double>;
-	template class Elliptic<gmp100>;
+	template class Elliptic<real_t>;
 }
