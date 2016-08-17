@@ -19,6 +19,9 @@ cmake:
     - cmake .. -G Ninja -DCOV=1
     - ninja
     - cd ..
+  artifacts:
+    paths:
+      - build/
 
 unittests:
   stage: test
