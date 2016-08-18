@@ -146,33 +146,33 @@ namespace vb {
 
 	template <> std::ostream & operator<< (std::ostream & os, const Constellation0<real_t> & C) {
 		using T = real_t;
-		T err (C.cost()); T lerr (-log10(err)); int nd = std::max (5,int(lerr)/2-7); if (err==T(0)) nd=10;
+		T err (C.cost()); T lerr (-log10(err)); int nd = std::max (5,to_int(lerr)/2-7); if (err==T(0)) nd=10;
 		os << std::setprecision(nd) << std::fixed;
 		os << "Keeping " << nd << " digits." << std::endl << std::endl;
 
 		os << "Black vertices / zeros: " << std::endl;
 		for (unsigned i=0; i<C.b.size(); ++i) {
 			os << "| " << C.b[i].d << "\t" << C.b[i].z << std::endl;
-			Polynomial<cpxint> P = guess (C.b[i].z,T(pow(T(.1),nd)));
-			if (P.degree()>0) os << "|\t\troot of " << P << std::endl;
+			auto P = guess_r (C.b[i].z,nd);
+			if (P) os << "|\t\troot of " << *P << std::endl;
 		}
 		os << std::endl;
 		os << "White vertices / ones: " << std::endl;
 		for (unsigned i=0; i<C.w.size(); ++i) {
 			os << "| " << C.w[i].d << "\t" << C.w[i].z << std::endl;
-			Polynomial<cpxint> P = guess (C.w[i].z,T(pow(T(.1),nd)));
-			if (P.degree()>0) os << "|\t\troot of " << P << std::endl;
+			auto P = guess_r (C.w[i].z,nd);
+			if (P) os << "|\t\troot of " << *P << std::endl;
 		}
 		os << std::endl;
 		os << "Red vertices / poles: " << std::endl;
 		for (unsigned i=0; i<C.f.size(); ++i) {
 			os << "| " << C.f[i].d << "\t" << C.f[i].z << std::endl;
-			Polynomial<cpxint> P = guess (C.f[i].z,T(pow(T(.1),nd)));
-			if (P.degree()>0) os << "|\t\troot of " << P << std::endl;
+			auto P = guess_r (C.f[i].z,nd);
+			if (P) os << "|\t\troot of " << *P << std::endl;
 		}
 		os << std::endl;
 		os << u8"λ     := " << C.p[0] << std::endl;
-		Polynomial<cpxint> L = guess (C.p[0],T(pow(T(.1),nd))); if (L.degree()>0) os << u8"Λ[z_] := " << L << std::endl;
+		auto L = guess_r (C.p[0],nd); if (L) os << u8"Λ[z_] := " << *L << std::endl;
 		Polynomial<complex_t> P; for (auto zd : C.b) for (unsigned j=0; j<zd.d; ++j) P.add_root(zd.z); os << "P[z_] := " << P << std::endl;
 		Polynomial<complex_t> Q; for (auto zd : C.f) for (unsigned j=0; j<zd.d; ++j) Q.add_root(zd.z); os << "Q[z_] := " << Q << std::endl;
 		return os;

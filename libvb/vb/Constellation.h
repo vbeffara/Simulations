@@ -4,12 +4,12 @@
 
 namespace vb {
 	template <typename T> struct Star {
-		std::complex<T> z;
+		typename cpx_t<T>::type z;
 		unsigned long d;
 	};
 
 	template <typename T> class Constellation { public:
-		using cplx = std::complex<T>;
+		using cplx = typename cpx_t<T>::type;
 
 		std::vector<Star<T>>	b,w,f;
 		std::vector<cplx>   	p;

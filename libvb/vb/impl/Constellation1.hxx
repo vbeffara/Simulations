@@ -203,39 +203,39 @@ namespace vb {
 		using T = real_t;
 		T err (C.cost()); T lerr (-log10(err)); int nd = std::max (5,to_int(lerr)/2-12); if (err==T(0)) nd=10;
 		os << std::setprecision(nd) << std::fixed;
-		T eps = pow(T(.1),nd-5);
+		int eps = nd-5;
 
 		os << "log(lambda)  = " << C.p[1] << std::endl;
 		os << "tau          = " << C.p[0] << std::endl;
-		{ Polynomial<cpxint> P = guess(C.p[0],eps); if (P.degree()>0) os << "\t\troot of " << P << std::endl; }
+		{ auto P = guess_r(C.p[0],eps); if (P) os << "\t\troot of " << *P << std::endl; }
 		os << "invariant j  = " << C.E.j() << std::endl;
-		{ Polynomial<cpxint> P = guess(C.E.j(),eps); if (P.degree()>0) os << "\t\troot of " << P << std::endl; }
+		{ auto P = guess_r(C.E.j(),eps); if (P) os << "\t\troot of " << *P << std::endl; }
 		os << "invariant g2 = " << C.E.g2() << std::endl;
-		{ Polynomial<cpxint> P = guess(C.E.g2(),eps); if (P.degree()>0) os << "\t\troot of " << P << std::endl; }
+		{ auto P = guess_r(C.E.g2(),eps); if (P) os << "\t\troot of " << *P << std::endl; }
 		os << "invariant g3 = " << C.E.g3() << std::endl;
-		{ Polynomial<cpxint> P = guess(C.E.g3(),eps); if (P.degree()>0) os << "\t\troot of " << P << std::endl; }
+		{ auto P = guess_r(C.E.g3(),eps); if (P) os << "\t\troot of " << *P << std::endl; }
 		os << std::endl;
 		os << "Keeping " << nd << " digits." << std::endl;
 		os << std::endl;
 		os << "Black vertices / zeros: " << std::endl;
 		for (unsigned i=0; i<C.b.size(); ++i) {
 			os << "| " << C.b[i].d << "\t" << C.b[i].z << std::endl;
-			Polynomial<cpxint> P = guess (C.b[i].z,eps);
-			if (P.degree()>0) os << "|\t\troot of " << P << std::endl;
+			auto P = guess_r (C.b[i].z,eps);
+			if (P) os << "|\t\troot of " << *P << std::endl;
 		}
 		os << std::endl;
 		os << "White vertices / ones: " << std::endl;
 		for (unsigned i=0; i<C.w.size(); ++i) {
 			os << "| " << C.w[i].d << "\t" << C.w[i].z << std::endl;
-			Polynomial<cpxint> P = guess (C.w[i].z,eps);
-			if (P.degree()>0) os << "|\t\troot of " << P << std::endl;
+			auto P = guess_r (C.w[i].z,eps);
+			if (P) os << "|\t\troot of " << *P << std::endl;
 		}
 		os << std::endl;
 		os << "Red vertices / poles: " << std::endl;
 		for (unsigned i=0; i<C.f.size(); ++i) {
 			os << "| " << C.f[i].d << "\t" << C.f[i].z << std::endl;
-			Polynomial<cpxint> P = guess (C.f[i].z,eps);
-			if (P.degree()>0) os << "|\t\troot of " << P << std::endl;
+			auto P = guess_r (C.f[i].z,eps);
+			if (P) os << "|\t\troot of " << *P << std::endl;
 		}
 		return os;
 	}

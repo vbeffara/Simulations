@@ -5,7 +5,7 @@
 
 namespace vb {
 	template <typename T> class Constellation0 : public Constellation<T> { public:
-		using cplx = std::complex<T>;
+		using typename Constellation<T>::cplx;
 		using Constellation<T>::b; using Constellation<T>::w; using Constellation<T>::f; using Constellation<T>::p;
 		using Constellation<T>::findn; using Constellation<T>::cost; using Constellation<T>::dim;
 

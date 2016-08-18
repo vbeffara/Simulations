@@ -50,6 +50,7 @@ namespace vb {
 
 	template <typename T> int to_int (const T & z) { return int(z); }
 	template <> int to_int (const cln::cl_I & z) { return cl_I_to_int(z); }
+	template <> int to_int (const cln::cl_R & z) { return cl_I_to_int(floor1(z)); }
 
     template <typename T> void foii (std::ostream & os, T x, bool no1 = false, bool nom1 = false) {
 		if (nom1 && (x == T(-1))) { os << "-"; return; }

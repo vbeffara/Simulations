@@ -1,26 +1,31 @@
-#include <vb/impl/NumberTheory.hxx>
+// #include <vb/impl/NumberTheory.hxx>
+#include <vb/NumberTheory.h>
 #include <vb/util.h>
+#include <cln/cln.h>
+#define DPE_USE_LONGDOUBLE
+#include <fplll.h>
 
 namespace vb {
-	template Polynomial<bigint> guess (real_t x, real_t eps);
-	template Polynomial<bigint> guess (real_t x, int leps, unsigned d);
-	template Polynomial<cpxint> guess (complex_t x, real_t eps);
-	template Polynomial<cpxint> guess (complex_t x, int leps, unsigned d);
+	// template Polynomial<bigint> guess (real_t x, real_t eps);
+	// template Polynomial<bigint> guess (real_t x, int leps, unsigned d);
+	// template Polynomial<cpxint> guess (complex_t x, real_t eps);
+	// template Polynomial<cpxint> guess (complex_t x, int leps, unsigned d);
 
 	using namespace cln;
 
-	boost::optional<cl_UP_R> guess (cl_F x, int nd) {
-		auto m = expt (cl_float(10,x),nd*2/3);
+	boost::optional<cl_UP_R> guess (cl_R x, int nd) {
+		cl_F xf = cl_float(x);
+		auto m = expt (cl_float(10,xf),nd*2/3);
 
 		for (int d=1; d<=nd/10; ++d) {
-			auto t = cl_float (1,x);
+			auto t = cl_float (1,xf);
 			ZZ_mat<mpz_t> M (d+1,d+2);
 
 			for (int i=0; i<=d; ++i) {
 				ostringstream os; os << round1(t*m);
 				M[i][0].set_str(os.str().c_str());
 				M[i][i+1] = 1;
-				t *= x;
+				t *= xf;
 			}
 
 			lllReduction(M); vector<Z_NR<mpz_t>> o; shortestVector(M,o);
@@ -35,8 +40,8 @@ namespace vb {
 			for (int i=0; i<=d; ++i) set_coeff (P, i, V[i]);
 			finalize (P); if (V[d]<0) P=-P;
 
-			auto PP = deriv (P); cl_F xx=x, ox=x+1; while (abs(xx-ox) > expt(cl_float(10),5-nd)) { ox = xx; xx -= P(xx)/PP(xx); }
-			if (abs(xx-x) < expt(cl_float(10,x),5-nd)) return P;
+			auto PP = deriv (P); cl_F xx=xf, ox=xf+1; while (abs(xx-ox) > expt(cl_float(10),5-nd)) { ox = xx; xx -= P(xx)/PP(xx); }
+			if (abs(xx-xf) < expt(cl_float(10,xf),5-nd)) return P;
 		}
 
 		return boost::none;
