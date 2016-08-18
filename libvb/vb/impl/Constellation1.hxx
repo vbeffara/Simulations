@@ -10,11 +10,11 @@ namespace vb {
 		do {
 			M2.split_edges(); Toroidal S (M2,H); S.pack(); S.output_pdf();
 			unsigned N = M.sigma.size();
-			b.clear(); for (auto c : M.sigma.cycles())	b.push_back( { S.V[S.E[c[0]].src].z,    	c.size() } );
-			w.clear(); for (auto c : M.alpha.cycles())	w.push_back( { S.V[S.E[c[0]+N].src].z,  	c.size() } );
-			f.clear(); for (auto c : M.phi.cycles())  	f.push_back( { S.V[S.E[c[0]+3*N].src].z,	c.size() } );
+			b.clear(); for (auto c : M.sigma.cycles())	b.push_back( { to_cpx<T>(S.V[S.E[c[0]].src].z),    	c.size() } );
+			w.clear(); for (auto c : M.alpha.cycles())	w.push_back( { to_cpx<T>(S.V[S.E[c[0]+N].src].z),  	c.size() } );
+			f.clear(); for (auto c : M.phi.cycles())  	f.push_back( { to_cpx<T>(S.V[S.E[c[0]+3*N].src].z),	c.size() } );
 			dim = b.size() + w.size() + f.size() + p.size();
-			p[0] = Star<T>(S.m,0).z; shift(-b[0].z); normalize();
+			p[0] = to_cpx<T>(S.m); shift(-b[0].z); normalize();
 		} while (findn() > T(1e-6));
 	}
 

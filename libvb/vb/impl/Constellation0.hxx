@@ -13,9 +13,9 @@ namespace vb {
 			unsigned N = M.sigma.size(), inf=0, dinf=0;
 			for (auto c : M.phi.cycles()) { unsigned i = S.E[c[0]+3*N].src, d = S.V[i].adj.size(); if (d>dinf) { inf=i; dinf=d; } }
 			S.linear (1,-S.V[inf].z); S.inversion(); S.linear (-1/S.V[inf].r,0); S.mobiusto0 (S.V[S.E[0].src].z);
-			b.clear(); for (auto c : M.sigma.cycles())	{                              	b.push_back( { S.V[S.E[c[0]].src].z,    	c.size() } ); }
-			w.clear(); for (auto c : M.alpha.cycles())	{                              	w.push_back( { S.V[S.E[c[0]+N].src].z,  	c.size() } ); }
-			f.clear(); for (auto c : M.phi.cycles())  	{ if (S.E[c[0]+3*N].src != inf)	f.push_back( { S.V[S.E[c[0]+3*N].src].z,	c.size() } ); }
+			b.clear(); for (auto c : M.sigma.cycles())	{                              	b.push_back( { to_cpx<T>(S.V[S.E[c[0]].src].z),    	c.size() } ); }
+			w.clear(); for (auto c : M.alpha.cycles())	{                              	w.push_back( { to_cpx<T>(S.V[S.E[c[0]+N].src].z),  	c.size() } ); }
+			f.clear(); for (auto c : M.phi.cycles())  	{ if (S.E[c[0]+3*N].src != inf)	f.push_back( { to_cpx<T>(S.V[S.E[c[0]+3*N].src].z),	c.size() } ); }
 			dim = b.size() + w.size() + f.size();
 			make_c_0();
 			if (findn() > T(1e-6)) continue;
