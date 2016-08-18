@@ -57,7 +57,7 @@ namespace vb {
 	}
 
 	template <typename T> void Constellation0<T>::make_p_1 () {
-		T eps = pow(cost(),T(.25)); if (eps > T(.1)) eps = T(.1);
+		T eps = real(pow(cost(),T(.25))); if (eps > T(.1)) eps = T(.1);
 		Polynomial<cplx> P; for (auto zd : b) for (unsigned j=0; j<zd.d; ++j) P.add_root(zd.z);
 		Polynomial<cplx> Q; for (auto zd : f) for (unsigned j=0; j<zd.d; ++j) Q.add_root(zd.z);
 		unsigned i=0; while (norm(P[i])<eps) ++i;
@@ -183,7 +183,7 @@ namespace vb {
 		for (auto z : b) { xmin=std::min(xmin,real(z.z)); xmax=std::max(xmax,real(z.z)); ymin=std::min(ymin,imag(z.z)); ymax=std::max(ymax,imag(z.z)); }
 		for (auto z : f) { xmin=std::min(xmin,real(z.z)); xmax=std::max(xmax,real(z.z)); ymin=std::min(ymin,imag(z.z)); ymax=std::max(ymax,imag(z.z)); }
 		for (auto z : w) { xmin=std::min(xmin,real(z.z)); xmax=std::max(xmax,real(z.z)); ymin=std::min(ymin,imag(z.z)); ymax=std::max(ymax,imag(z.z)); }
-		return { {xmin,ymin}, {xmax,ymax} };
+		return { to_cpx<T> (xmin,ymin), to_cpx<T> (xmax,ymax) };
 	}
 
 	template <typename T> boost::optional<Hypermap> Constellation0<T>::explore () const {
@@ -204,9 +204,9 @@ namespace vb {
 			std::vector<cplx> hs;
 			std::vector<unsigned> he;
 
-			cplx u = z.z + rad*exp(cplx(0,.001)); T s = imag((*this)(u));
+			cplx u = z.z + rad*exp(to_cpx<T>(0,.001)); T s = imag((*this)(u));
 			for (unsigned i=0; i<10*z.d; ++i) {
-				u = z.z + exp(cplx(0,2*M_PI/(10*z.d))) * (u-z.z);
+				u = z.z + exp(to_cpx<T>(0,2*M_PI/(10*z.d))) * (u-z.z);
 				T ns = imag((*this)(u));
 				if (s*ns<0) {
 					hs.push_back(u); s=ns;
@@ -220,10 +220,10 @@ namespace vb {
 
 		std::vector<cplx> hs;
 		std::vector<unsigned> he;
-		cplx u = large*exp(cplx(0,.001));
+		cplx u = large*exp(to_cpx<T>(0,.001));
 		T s = imag((*this)(u));
 		for (unsigned i=0; i<10*maxdeg; ++i) {
-			u = exp(cplx(0,-2*M_PI/(10*maxdeg))) * u;
+			u = exp(to_cpx<T>(0,-2*M_PI/(10*maxdeg))) * u;
 			T ns = imag((*this)(u));
 			if (s*ns<0) {
 				hs.push_back(u); s=ns;
@@ -238,11 +238,11 @@ namespace vb {
 		for (unsigned i=0; i<Z.size(); ++i) {
 			for (unsigned j=0; j<hands[i].size(); ++j) {
 				auto l = hands[i][j];
-				auto r = Z[i].z + exp(cplx(0,-2*M_PI/(10*Z[i].d))) * (l-Z[i].z);
+				auto r = Z[i].z + exp(to_cpx<T>(0,-2*M_PI/(10*Z[i].d))) * (l-Z[i].z);
 				auto sl = imag((*this)(l));
 				bool looking = true;
 				while (looking) {
-					cplx nz = l + exp(cplx(0,M_PI/3)) * (r-l);
+					cplx nz = l + exp(to_cpx<T>(0,M_PI/3)) * (r-l);
 					if (abs(nz)>large) {
 						T d = large; int h = -1; int k=hands.size()-1;
 						for (unsigned kk=0; kk<hands[k].size(); ++kk) {

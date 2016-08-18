@@ -19,7 +19,7 @@ namespace vb {
 		cplx tau () const { return p[0]; }
 
 		int        	dx,dy;
-		Elliptic<T>	E { q_(cplx(0,1)) };
+		Elliptic<T>	E { q_<T>(I_<T>()) };
 
 	private:
 		Vector<cplx>	vec    	()	const;

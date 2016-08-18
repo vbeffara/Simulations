@@ -18,8 +18,15 @@ namespace vb {
 
 	template <typename T>	T	pi_	()	{ static T pi = T(4)*atan(T(1)); return pi;	}
 
-	template <typename T>	std::complex<T>	q_ 	(const std::complex<T> & tau) { return exp(std::complex<T>(0,pi_<T>())*tau);                              	}
-	template <typename T>	std::complex<T>	q_t	(const std::complex<T> & tau) { return std::complex<T>(0,pi_<T>()) * exp(std::complex<T>(0,pi_<T>())*tau);	}
+	template <typename T>	typename cpx_t<T>::type	I_ ()	{ return to_cpx<T> (0,1); }
+
+	template <typename T> typename cpx_t<T>::type q_ (const typename cpx_t<T>::type & tau) {
+		return exp(to_cpx<T>(0,pi_<T>())*tau);
+	}
+
+	template <typename T> typename cpx_t<T>::type q_t (const typename cpx_t<T>::type & tau) {
+		return cpx_t<T>::type(0,pi_<T>()) * exp(cpx_t<T>::type(0,pi_<T>())*tau);
+	}
 
 	double BesselJ (int n, double z);
 }

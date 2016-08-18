@@ -42,6 +42,9 @@ namespace vb {
 	static cln::cl_R imag (const cln::cl_N & z) { return imagpart(z); }
 	using std::imag;
 
+	static int round (const real_t & z) { return cl_I_to_int(round1(z)); }
+	using std::round;
+
 	static bool isnormal (const cln::cl_N &) { return true; }
 	using std::isnormal;
 
@@ -51,6 +54,9 @@ namespace vb {
 	template <typename T> int to_int (const T & z) { return int(z); }
 	template <> int to_int (const cln::cl_I & z) { return cl_I_to_int(z); }
 	template <> int to_int (const cln::cl_R & z) { return cl_I_to_int(floor1(z)); }
+
+	template <typename T> typename cpx_t<T>::type to_cpx (const T & x, const T & y) { return typename cpx_t<T>::type (x,y); }
+	template <> complex_t to_cpx <real_t> (const real_t & x, const real_t & y) { return cln::complex (x,y); }
 
     template <typename T> void foii (std::ostream & os, T x, bool no1 = false, bool nom1 = false) {
 		if (nom1 && (x == T(-1))) { os << "-"; return; }

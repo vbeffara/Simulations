@@ -6,7 +6,11 @@ namespace vb {
 	template <typename T> struct Star {
 		typename cpx_t<T>::type z;
 		unsigned long d;
+
+		Star (cpx zz, unsigned long dd) : z(zz), d(dd) {}
 	};
+
+	template<> Star<real_t>::Star (cpx zz, unsigned long dd) : z(cln::complex(real(zz),imag(zz))), d(dd) {}
 
 	template <typename T> class Constellation { public:
 		using cplx = typename cpx_t<T>::type;

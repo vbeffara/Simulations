@@ -6,7 +6,7 @@
 
 namespace vb {
 	template <typename T> Constellation1<T>::Constellation1 (const Hypermap & M, const Hub & H) {
-		Hypermap M2 (M); M2.dessin(); p = { cplx(0,1), T(0) };
+		Hypermap M2 (M); M2.dessin(); p = { I_<T>(), T(0) };
 		do {
 			M2.split_edges(); Toroidal S (M2,H); S.pack(); S.output_pdf();
 			unsigned N = M.sigma.size();
@@ -14,7 +14,7 @@ namespace vb {
 			w.clear(); for (auto c : M.alpha.cycles())	w.push_back( { S.V[S.E[c[0]+N].src].z,  	c.size() } );
 			f.clear(); for (auto c : M.phi.cycles())  	f.push_back( { S.V[S.E[c[0]+3*N].src].z,	c.size() } );
 			dim = b.size() + w.size() + f.size() + p.size();
-			p[0] = S.m; shift(-b[0].z); normalize();
+			p[0] = Star<T>(S.m,0).z; shift(-b[0].z); normalize();
 		} while (findn() > T(1e-6));
 	}
 
@@ -23,9 +23,9 @@ namespace vb {
 	}
 
 	template <typename T> void Constellation1<T>::from_points () {
-		E = Elliptic<T> { q_(p[0]) };
+		E = Elliptic<T> { q_<T>(p[0]) };
 		cplx szp(0); for (auto zd : b) szp += T(zd.d)*zd.z; for (auto zd : f) szp -= T(zd.d)*zd.z;
-		dy = round(double(T(imag(szp)/imag(p[0])))); dx = round(double(T(real(szp-T(dy)*p[0]))));
+		dy = round(T(imag(szp)/imag(p[0]))); dx = round(T(real(szp-T(dy)*p[0])));
 		for (auto & zd : f) {
 			int ddx = round(double(dx)/zd.d); if (ddx != 0) { zd.z += T(ddx); dx -= int(zd.d)*ddx; }
 			int ddy = round(double(dy)/zd.d); if (ddy != 0) { zd.z += T(ddy)*p[0]; dy -= int(zd.d)*ddy; }
@@ -72,14 +72,14 @@ namespace vb {
 	}
 
 	template <typename T> auto Constellation1<T>::logderp_t (cplx z, int k) const -> cplx {
-		return std::complex<T>(0,pi_<T>()) * E.q * logderp_q(z,k);
+		return to_cpx<T>(0,pi_<T>()) * E.q * logderp_q(z,k);
 	}
 
 	template <typename T> auto Constellation1<T>::logder (cplx z, int k) const -> cplx {
 		cplx out (logderp (z-b[0].z+T(dx)+tau()*T(dy), k) - logderp (z-b[0].z, k));
 		for (auto zd : b) out += logderp (z-zd.z, k) * T(zd.d);
 		for (auto zd : f) out -= logderp (z-zd.z, k) * T(zd.d);
-		if (k==0) { out += p[1]; out -= cplx(0,T(2)*pi_<T>()) * T(round(real(out/cplx(0,T(2)*pi_<T>())))); }
+		if (k==0) { out += p[1]; out -= to_cpx<T>(0,T(2)*pi_<T>()) * round(real(out/to_cpx<T>(0,T(2)*pi_<T>()))); }
 		return out;
 	}
 
@@ -242,6 +242,6 @@ namespace vb {
 
 	template <typename T> auto Constellation1<T>::bounds () const -> std::pair<cplx,cplx> {
 		T xmin = std::min(T(0),real(tau())), xmax = std::max(T(1),real(T(1)+tau())), ymin = T(0), ymax = imag(tau());
-		return { {xmin,ymin}, {xmax,ymax} };
+		return { to_cpx<T> (xmin,ymin), to_cpx<T> (xmax,ymax) };
 	}
 }
