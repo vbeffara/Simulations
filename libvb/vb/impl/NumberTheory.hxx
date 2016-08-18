@@ -17,7 +17,7 @@ namespace vb {
 		T t(1);
 		ZZ_mat<mpz_t> M(d+1, d+2);
 
-		for (unsigned i=0; i<=d; ++i) { M[i][0].set(bigint(t*m).backend().data()); M[i][i+1].set(1); t *= x; }
+		for (unsigned i=0; i<=d; ++i) { M[i][0].set(gmpint(t*m).backend().data()); M[i][i+1].set(1); t *= x; }
 		lllReduction(M);
 		vector<Z_NR<mpz_t>> o; shortestVector(M,o);
 
@@ -35,7 +35,7 @@ namespace vb {
 		return P;
 	}
 
-	template <typename T> Polynomial<cpxint> guess (complex<T> x, T eps) {
+	template <typename T> Polynomial<cpxint> guess (cpx_t<T>::type x, T eps) {
 		int leps (T(-log10(eps))); assert (leps>20);
 		Polynomial<cpxint> P;
 		for (int d=1; d<=leps/5; ++d) { P = guess(x,leps,d); if (P.degree()>0) break; }

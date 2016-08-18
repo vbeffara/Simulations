@@ -3,7 +3,7 @@
 
 namespace vb {
 	template <typename T> class Elliptic { public:
-		using cplx = std::complex<T>;
+		using cplx = typename cpx_t<T>::type;
 
 		Elliptic (const cplx & q_);
 

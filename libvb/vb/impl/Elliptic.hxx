@@ -2,12 +2,12 @@
 #include <vb/Elliptic.h>
 
 namespace vb {
-	template <typename T> auto Elliptic<T>::sum (std::function<std::complex<T>(int)> f) const -> cplx {
+	template <typename T> auto Elliptic<T>::sum (std::function<cplx(int)> f) const -> cplx {
 		cplx out(0), old(1);
 		for (int n=0; out!=old; ++n) {
 			old = out;
 			cplx dd = f(n);
-			if (std::isnormal(double(real(dd)))) out += dd;
+			if (isnormal(real(dd))) out += dd;
 		}
 		return out;
 	}
