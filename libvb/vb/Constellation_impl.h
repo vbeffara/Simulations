@@ -6,10 +6,10 @@ namespace vb {
 	template <typename T> Constellation<T>::Constellation () {}
 
 	template <typename T> template <typename U> Constellation<T>::Constellation (const Constellation<U> & C) {
-		for (auto zd : C.b) b.push_back({std::complex<T>(zd.z), zd.d});
-		for (auto zd : C.w) w.push_back({std::complex<T>(zd.z), zd.d});
-		for (auto zd : C.f) f.push_back({std::complex<T>(zd.z), zd.d});
-		for (auto z : C.p)  p.push_back(std::complex<T>(z));
+		for (auto zd : C.b) b.push_back (Star<T> (zd.z, zd.d));
+		for (auto zd : C.w) w.push_back (Star<T> (zd.z, zd.d));
+		for (auto zd : C.f) f.push_back (Star<T> (zd.z, zd.d));
+		for (auto z : C.p)  p.push_back (Star<T> (z,0).z);
 		dim = b.size() + w.size() + f.size() + p.size();
 	}
 
@@ -31,7 +31,7 @@ namespace vb {
 		for (unsigned i=0; i<b.size(); ++i) for (unsigned j=0; j<b.size(); ++j) if (i!=j) if (abs(reduce(b[i].z-b[j].z)) < bound) out += T(1);
 		for (unsigned i=0; i<w.size(); ++i) for (unsigned j=0; j<w.size(); ++j) if (i!=j) if (abs(reduce(w[i].z-w[j].z)) < bound) out += T(1);
 		for (unsigned i=0; i<f.size(); ++i) for (unsigned j=0; j<f.size(); ++j) if (i!=j) if (abs(reduce(f[i].z-f[j].z)) < bound) out += T(1);
-	    if (std::isnan(double(out))) out = T(1.234567e89);
+	    if (!isnormal(out)) out = T(1.234567e89);
 	    return out;
 	}
 }
