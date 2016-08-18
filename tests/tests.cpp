@@ -151,7 +151,7 @@ BOOST_AUTO_TEST_CASE (test_cpx) {
 	cpx z (1.0,2.3);
 	ostringstream os; os << z;
 	BOOST_CHECK (os.str() == "(1 + 2.3 I)");
-	cpxint zz (1,-3);
+	cpxint zz = cln::complex (1,-3);
 	ostringstream os2; os2 << zz;
 	BOOST_CHECK (os2.str() == "(1 - 3 I)");
 }
@@ -167,7 +167,7 @@ BOOST_AUTO_TEST_CASE (test_math) {
 
 	BOOST_CHECK (fabs(sin(pi_<double>())) < 1e-10);
 
-	BOOST_CHECK (fabs(q_(cpx(1.0+1e-5))-q_(cpx(1.0)) - 1e-5*q_t(cpx(1.0))) < 1e-9);
+	BOOST_CHECK (fabs(q_<double>(cpx(1.0+1e-5))-q_<double>(cpx(1.0)) - 1e-5*q_t<double>(cpx(1.0))) < 1e-9);
 
 	double e = sum<double> ([](int n) { auto out = 1.0/fact(n); return std::isinf(out) ? 0 : out; });
 	BOOST_CHECK (fabs(log(e)-1) < 1e-6);
@@ -224,7 +224,7 @@ BOOST_AUTO_TEST_CASE (test_Constellation1) {
 	Constellation1<double> C {M,H};
 	Constellation1<real_t> Cq (C);
 	Cq.findn();
-	ostringstream os; os << guess(Cq.E.j(),real_t(1e-80));
+	ostringstream os; os << * (guess_r (Cq.E.j(),80));
 	BOOST_CHECK (os.str() == " z^2 + -914416 z + 590816592");
 }
 

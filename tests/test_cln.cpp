@@ -59,7 +59,7 @@ int main (int argc, char ** argv) {
 
 	cout << endl;
 	cout << "theta1 ((1+10i)/8, (1+3i)/4)" << endl;
-	complex_t tau(.125,1.25), q(q_(tau)), z(.25,.75);
+	complex_t tau = to_cpx<real_t> (.125,1.25), q = q_(tau), z = to_cpx<real_t> (.25,.75);
 	auto tau2 = cln::complex(1,10)/8, q2 = q_(tau2), z2 = cln::complex(1,3)/4;
 	cout << "  GML 100: " << theta1(q,z) << endl;
 	cout << "  CLN 100:  " << theta1(q2,z2) << endl;

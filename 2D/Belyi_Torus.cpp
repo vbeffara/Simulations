@@ -65,17 +65,17 @@ int main (int argc, char ** argv) {
 			}
 
 			if (H['q']) {
-				Constellation1<real_t> CC (C); real_t c = CC.findn(); int lc = - int(log10(c));
+				Constellation1<real_t> CC (C); real_t c = CC.findn(); int lc = - to_int(log10(c));
 				int nd = std::max(10,lc/2-15); real_t eps = pow(real_t(.1),nd);
 				cout << fixed << setprecision(std::min(nd,80));
 				cout << "     Modulus:         " << CC.tau() << endl;
-				if (nd>30) { Polynomial<cpxint> P = guess(CC.tau(),eps); if (P.degree()>0) cout << "        root of " << P << std::endl; }
+				if (nd>30) { auto P = guess_r (CC.tau(),nd); if (P) cout << "        root of " << *P << std::endl; }
 				cout << "     Klein invariant: " << CC.E.j() << endl;
-				if (nd>30) { Polynomial<cpxint> P = guess(CC.E.j(),eps); if (P.degree()>0) cout << "        root of " << P << std::endl; }
+				if (nd>30) { auto P = guess_r (CC.E.j(),nd); if (P) cout << "        root of " << *P << std::endl; }
 				cout << "     g2 coefficient:  " << CC.E.g2() << endl;
-				if (nd>30) { Polynomial<cpxint> P = guess(CC.E.g2(),eps); if (P.degree()>0) cout << "        root of " << P << std::endl; }
+				if (nd>30) { auto P = guess_r (CC.E.g2(),nd); if (P) cout << "        root of " << *P << std::endl; }
 				cout << "     g3 coefficient:  " << CC.E.g3() << endl;
-				if (nd>30) { Polynomial<cpxint> P = guess(CC.E.g3(),eps); if (P.degree()>0) cout << "        root of " << P << std::endl; }
+				if (nd>30) { auto P = guess_r (CC.E.g3(),nd); if (P) cout << "        root of " << *P << std::endl; }
 				cout << endl << scientific << setprecision(6);
 			}
 		}

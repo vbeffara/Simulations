@@ -25,7 +25,7 @@ namespace vb {
 	}
 
 	template <typename T> typename cpx_t<T>::type q_t (const typename cpx_t<T>::type & tau) {
-		return cpx_t<T>::type(0,pi_<T>()) * exp(cpx_t<T>::type(0,pi_<T>())*tau);
+		return to_cpx<T>(0,pi_<T>()) * exp(to_cpx<T>(0,pi_<T>())*tau);
 	}
 
 	double BesselJ (int n, double z);
