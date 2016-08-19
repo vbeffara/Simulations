@@ -146,7 +146,7 @@ namespace vb {
 
 	template <> std::ostream & operator<< (std::ostream & os, const Constellation0<real_t> & C) {
 		using T = real_t;
-		T err (C.cost()); T lerr (-log10(err)); int nd = std::max (5,to_int(lerr)/2-7); if (err==T(0)) nd=10;
+		T err (C.cost()); T lerr (-log10(err)); int nd = std::max (5,to_int(lerr)/2-10); if (err==T(0)) nd=10;
 		os << std::setprecision(nd) << std::fixed;
 		os << "Keeping " << nd << " digits." << std::endl << std::endl;
 
@@ -173,8 +173,18 @@ namespace vb {
 		os << std::endl;
 		os << u8"λ     := " << C.p[0] << std::endl;
 		auto L = guess_r (C.p[0],nd); if (L) os << u8"Λ[z_] := " << *L << std::endl;
-		Polynomial<complex_t> P; for (auto zd : C.b) for (unsigned j=0; j<zd.d; ++j) P.add_root(zd.z); os << "P[z_] := " << P << std::endl;
-		Polynomial<complex_t> Q; for (auto zd : C.f) for (unsigned j=0; j<zd.d; ++j) Q.add_root(zd.z); os << "Q[z_] := " << Q << std::endl;
+		Polynomial<complex_t> P; for (auto zd : C.b) for (unsigned j=0; j<zd.d; ++j) P.add_root(zd.z);
+		for (auto & x : P) {
+			auto xx = cln::complex (round1(realpart(x)), round1(imagpart(x)));
+			if (abs(x - xx) < pow(T(.1),nd)) x = xx;
+		}
+		os << "P[z_] := " << P << std::endl;
+		Polynomial<complex_t> Q; for (auto zd : C.f) for (unsigned j=0; j<zd.d; ++j) Q.add_root(zd.z);
+		for (auto & x : Q) {
+			auto xx = cln::complex (round1(realpart(x)), round1(imagpart(x)));
+			if (abs(x - xx) < pow(T(.1),nd)) x = xx;
+		}
+		os << "Q[z_] := " << Q << std::endl;
 		return os;
 	}
 

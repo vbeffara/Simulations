@@ -114,7 +114,7 @@ namespace vb {
 
 			auto P = find_univpoly_ring (cl_C_ring, cl_symbol("z")) -> create (d);
 			for (int i=0; i<=d; ++i) set_coeff (P, i, V[i]);
-			finalize (P); if (realpart(coeff(P,d))<0) P=-P;
+			finalize (P); if (realpart(coeff(P,d))<0) P=-P; if (coeff(P,d)==0) continue;
 
 			auto PP = deriv (P); cl_N xx=x, ox=x+1; while (abs(xx-ox) > expt(cl_float(10),5-nd)) { ox = xx; xx -= P(xx)/PP(xx); }
 			if (abs(xx-x) < expt(cl_float(10),10-nd)) return P;

@@ -33,4 +33,6 @@ namespace vb {
 		T	cost 	()	const;
 		T	findn	();
 	};
+
+	template<> template<> Constellation<real_t>::Constellation (const Constellation<double> & C);
 }

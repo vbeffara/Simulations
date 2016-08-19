@@ -3,6 +3,8 @@
 using namespace vb; using namespace std;
 
 int main () {
+	cln::default_float_format = cln::float_format(100);
+
 	vector<real_t> xs;
 	xs.push_back (sqrt(real_t(2)));
 	xs.push_back (4*atan(real_t(1)));
@@ -18,7 +20,6 @@ int main () {
 	xs.push_back (real_t("0.63827397417446081629048447976042972714028217652392199657870122677085361940416547100605619666"));
 	xs.push_back (real_t("646.57075744998934067917908899466389773483433056006707491873238242675958808933605915556193840685637786"));
 
-	cout << setprecision(100);
 	for (auto x : xs) {
 		cout << "x = " << x << endl;
 		if (auto P = guess_r (x,80)) cout << "  root of " << *P << endl;
@@ -28,5 +29,5 @@ int main () {
 	complex_t z = to_cpx (real_t("0.1722882583776278670500267959231284336682007863854856624427574750255049273322927690638923632"),
 		real_t("0.5302487364574217190358808797265653491226567421626168710631761419479819886565504921987031543"));
 	cout << "x = " << z << endl;
-	if (auto P = guess_r (z,80)) cout << "  root of " << *P << endl;
+	if (auto P = guess_c (z,80)) cout << "  root of " << *P << endl;
 }

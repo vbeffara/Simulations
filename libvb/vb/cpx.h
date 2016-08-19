@@ -48,7 +48,7 @@ namespace vb {
 	static bool isnormal (const cln::cl_N &) { return true; }
 	using std::isnormal;
 
-	static cln::cl_R log10 (const cln::cl_R & z) { return realpart(log(z)); }
+	static cln::cl_R log10 (const cln::cl_R & z) { return realpart(log(z)/log(bigint(10))); }
 	using std::log10;
 
 	template <typename T> int to_int (const T & z) { return int(z); }

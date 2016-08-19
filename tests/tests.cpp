@@ -153,7 +153,7 @@ BOOST_AUTO_TEST_CASE (test_cpx) {
 	BOOST_CHECK (os.str() == "(1 + 2.3 I)");
 	cpxint zz = cln::complex (1,-3);
 	ostringstream os2; os2 << zz;
-	BOOST_CHECK (os2.str() == "(1 - 3 I)");
+	BOOST_CHECK (os2.str() == "1-3i");
 }
 
 BOOST_AUTO_TEST_CASE (test_math) {
@@ -215,6 +215,10 @@ BOOST_AUTO_TEST_CASE (test_Constellation0) {
 	Constellation0<real_t> Cq (C);
 	Cq.findn(); Cq.belyi();
 	Polynomial<complex_t> Q; for (auto zd : Cq.f) for (unsigned j=0; j<zd.d; ++j) Q.add_root(zd.z);
+	for (auto & x : Q) {
+		auto xx = cln::complex (round1(realpart(x)), round1(imagpart(x)));
+		if (abs(x - xx) < 1e-100) x = xx;
+	}
 	ostringstream os; os << Q;
 	BOOST_CHECK (os.str() == " z^55 + -55 z^50 + 1205 z^45 + -13090 z^40 + 69585 z^35 + -134761 z^30 + -69585 z^25 + -13090 z^20 + -1205 z^15 + -55 z^10 + -1 z^5");
 }

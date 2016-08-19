@@ -13,6 +13,20 @@ namespace vb {
 		dim = b.size() + w.size() + f.size() + p.size();
 	}
 
+	static complex_t my_cpx (const cpx & z) {
+		real_t x = cl_float (real(z), cln::default_float_format);
+		real_t y = cl_float (imag(z), cln::default_float_format);
+		return cln::complex (x,y);
+	}
+
+	template<> template<> Constellation<real_t>::Constellation (const Constellation<double> & C) {
+		for (auto zd : C.b) b.push_back ( { my_cpx(zd.z), zd.d } );
+		for (auto zd : C.w) w.push_back ( { my_cpx(zd.z), zd.d } );
+		for (auto zd : C.f) f.push_back ( { my_cpx(zd.z), zd.d } );
+		for (auto z : C.p)  p.push_back (my_cpx(z));
+		dim = b.size() + w.size() + f.size() + p.size();
+	}
+
 	template <typename T> T Constellation<T>::findn () {
 		Vector<cplx> x = vec();
 		T c = cost(), old_c = c + T(1); auto old_x = x;
