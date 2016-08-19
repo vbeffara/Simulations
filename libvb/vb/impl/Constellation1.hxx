@@ -102,10 +102,10 @@ namespace vb {
 	}
 
 	template <typename T> auto Constellation1<T>::reduce (cplx z) const -> cplx {
-		while (imag(z) < - imag(tau())/T(2))                     	z += tau();
-		while (imag(z) > imag(tau())/T(2))                       	z -= tau();
-		while (real(z) < real(tau())*imag(z)/imag(tau()) - T(.5))	z += T(1);
-		while (real(z) > real(tau())*imag(z)/imag(tau()) + T(.5))	z -= T(1);
+		while (imag(z) < - imag(tau())/T(2))                      	z += tau();
+		while (imag(z) > imag(tau())/T(2))                        	z -= tau();
+		while (real(z) < real(tau())*imag(z)/imag(tau()) - T(1)/2)	z += T(1);
+		while (real(z) > real(tau())*imag(z)/imag(tau()) + T(1)/2)	z -= T(1);
 		return z;
 	}
 

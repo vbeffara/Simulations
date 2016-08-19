@@ -6,13 +6,16 @@
 using namespace vb; using namespace std;
 
 int main () {
-	cpx      	ttau(.125,1.25),                 	qq(q_<double>(ttau)),	zz(.25,.75);                 	Elliptic<double> EE { qq };
-	complex_t	tau = to_cpx<real_t> (.125,1.25),	q(q_<real_t>(tau)),  	z = to_cpx<real_t> (.25,.75);	Elliptic<real_t> E { q };
+    cln::default_float_format = cln::float_format(100);
 
-	cout << setprecision(40);
+	cpx      	ttau(.125,1.25),              	qq(q_<double>(ttau)),	zz(.25,.75);               	Elliptic<double> EE { qq };
+	complex_t	tau = to_cpx<real_t> (1,10)/8,	q(q_<real_t>(tau)),  	z = to_cpx<real_t> (1,3)/4;	Elliptic<real_t> E { q };
+
+	// cout << setprecision(40);
 	cout << "tau = " << ttau << tau << endl;
 	cout << "z   = " << zz << z << endl;
 	cout << "q   = " << qq << q << endl;
+	cout << "q14 = " << EE.q14 << E.q14 << endl;
 	cout << "q_t = " << q_t<double> (ttau) << q_t<real_t> (tau) << endl;
 	cout << endl;
 	bla(g2); bla(g3);

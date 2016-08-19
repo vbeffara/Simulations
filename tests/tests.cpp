@@ -229,7 +229,7 @@ BOOST_AUTO_TEST_CASE (test_Constellation1) {
 	Constellation1<real_t> Cq (C);
 	Cq.findn();
 	ostringstream os; os << * (guess_r (Cq.E.j(),80));
-	BOOST_CHECK (os.str() == " z^2 + -914416 z + 590816592");
+	BOOST_CHECK (os.str() == "1*z^2 + -914416*z + 590816592");
 }
 
 BOOST_AUTO_TEST_CASE (test_Minimizer) {
