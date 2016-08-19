@@ -11,7 +11,6 @@ int main () {
 	cpx      	ttau(.125,1.25),              	qq(q_<double>(ttau)),	zz(.25,.75);               	Elliptic<double> EE { qq };
 	complex_t	tau = to_cpx<real_t> (1,10)/8,	q(q_<real_t>(tau)),  	z = to_cpx<real_t> (1,3)/4;	Elliptic<real_t> E { q };
 
-	// cout << setprecision(40);
 	cout << "tau = " << ttau << tau << endl;
 	cout << "z   = " << zz << z << endl;
 	cout << "q   = " << qq << q << endl;
@@ -37,6 +36,5 @@ int main () {
 	blaz(wp); blaz(wp_z); blaz(wp_q);
 	cout << endl;
 
-	cout << setprecision(12);
 	cout << "BesselJ (12,1.0) = " << BesselJ (12,1.0) << endl;
 }

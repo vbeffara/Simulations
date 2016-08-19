@@ -2,6 +2,7 @@
 #include <vb/Color.h>
 #include <vb/cpx.h>
 #include <cairo.h>
+#include <vector>
 
 namespace vb {
 	class Pen { public:

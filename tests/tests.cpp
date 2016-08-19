@@ -150,7 +150,7 @@ BOOST_AUTO_TEST_CASE (test_Stream) {
 BOOST_AUTO_TEST_CASE (test_cpx) {
 	cpx z (1.0,2.3);
 	ostringstream os; os << z;
-	BOOST_CHECK (os.str() == "(1 + 2.3 I)");
+	BOOST_CHECK (os.str() == "(1,2.3)");
 	cpxint zz = cln::complex (1,-3);
 	ostringstream os2; os2 << zz;
 	BOOST_CHECK (os2.str() == "1-3i");

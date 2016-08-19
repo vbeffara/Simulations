@@ -1,7 +1,6 @@
 // #include <vb/impl/NumberTheory.hxx>
 #include <vb/NumberTheory.h>
 #include <vb/util.h>
-#include <cln/cln.h>
 #define DPE_USE_LONGDOUBLE
 #include <fplll.h>
 
