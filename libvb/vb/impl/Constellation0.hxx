@@ -151,23 +151,23 @@ namespace vb {
 		os << "Keeping " << nd << " digits." << std::endl << std::endl;
 
 		os << "Black vertices / zeros: " << std::endl;
-		for (unsigned i=0; i<C.b.size(); ++i) {
-			os << "| " << C.b[i].d << "\t" << C.b[i].z << std::endl;
-			auto P = guess_r (C.b[i].z,nd);
+		for (auto & zd : C.b) {
+			os << "| " << zd.d << "\t" << zd.z << std::endl;
+			auto P = guess_r (zd.z,nd);
 			if (P) os << "|\t\troot of " << *P << std::endl;
 		}
 		os << std::endl;
 		os << "White vertices / ones: " << std::endl;
-		for (unsigned i=0; i<C.w.size(); ++i) {
-			os << "| " << C.w[i].d << "\t" << C.w[i].z << std::endl;
-			auto P = guess_r (C.w[i].z,nd);
+		for (auto & zd : C.w) {
+			os << "| " << zd.d << "\t" << zd.z << std::endl;
+			auto P = guess_r (zd.z,nd);
 			if (P) os << "|\t\troot of " << *P << std::endl;
 		}
 		os << std::endl;
 		os << "Red vertices / poles: " << std::endl;
-		for (unsigned i=0; i<C.f.size(); ++i) {
-			os << "| " << C.f[i].d << "\t" << C.f[i].z << std::endl;
-			auto P = guess_r (C.f[i].z,nd);
+		for (auto & zd : C.f) {
+			os << "| " << zd.d << "\t" << zd.z << std::endl;
+			auto P = guess_r (zd.z,nd);
 			if (P) os << "|\t\troot of " << *P << std::endl;
 		}
 		os << std::endl;
@@ -260,7 +260,7 @@ namespace vb {
 							if (nd < d) { d = abs(nz-hands[k][kk]); h = kk; }
 						}
 						if (h<0) return boost::none;
-						pairs.push_back({halfedges[i][j],halfedges[k][h]});
+						pairs.emplace_back(std::vector<unsigned> {halfedges[i][j],halfedges[k][h]});
 						looking = false;
 					}
 					for (unsigned k=0; k<Z.size(); ++k) if (abs(nz-Z[k].z) < rad) {

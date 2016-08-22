@@ -3,7 +3,7 @@
 #include <iomanip>
 
 namespace vb {
-	template <typename T> Constellation<T>::Constellation () {}
+	template <typename T> Constellation<T>::Constellation () = default;
 
 	template <typename T> template <typename U> Constellation<T>::Constellation (const Constellation<U> & C) {
 		for (auto zd : C.b) b.push_back ( { to_cpx<T>(zd.z), zd.d } );
