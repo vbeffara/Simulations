@@ -1,7 +1,9 @@
 #include <chrono>
+#ifdef CILK
 #include <cilk/cilk.h>
 #include <cilk/cilk_api.h>
 #include <cilk/reducer_opadd.h>
+#endif
 #include <vb/Hub.h>
 #include <vb/PRNG.h>
 
@@ -50,9 +52,11 @@ int main (int argc, char ** argv) {
 	for (int i=0; i<n; ++i) { double o = prng.gaussian(); s += o*o; }
 	cerr << time()-t << ",  \tsum = " << s << endl;
 
+#ifdef CILK
 	cerr << "CILK based multithreaded               \ttime = ";
 	auto go = []() { static thread_local PRNG p; auto o = p.gaussian(); return o*o; };
 	cilk::reducer <cilk::op_add<double>> ps (0); t=time();
 	cilk_for (int i=0; i<n; ++i) *ps += go();
 	cerr << time()-t << ",  \tsum = " << ps.get_value() << endl;
+#endif
 }

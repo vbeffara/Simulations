@@ -165,12 +165,12 @@ BOOST_AUTO_TEST_CASE (test_math) {
 	BOOST_CHECK (binom(5,2) == 10);
 	BOOST_CHECK (catalan(3) == 5);
 
-	BOOST_CHECK (fabs(sin(pi_<double>())) < 1e-10);
+	BOOST_CHECK (abs(sin(pi_<double>())) < 1e-10);
 
-	BOOST_CHECK (fabs(q_<double>(cpx(1.0+1e-5))-q_<double>(cpx(1.0)) - 1e-5*q_t<double>(cpx(1.0))) < 1e-9);
+	BOOST_CHECK (abs(q_<double>(cpx(1.0+1e-5))-q_<double>(cpx(1.0)) - 1e-5*q_t<double>(cpx(1.0))) < 1e-9);
 
 	double e = sum<double> ([](int n) { auto out = 1.0/fact(n); return std::isinf(out) ? 0 : out; });
-	BOOST_CHECK (fabs(log(e)-1) < 1e-6);
+	BOOST_CHECK (abs(log(e)-1) < 1e-6);
 }
 
 BOOST_AUTO_TEST_CASE (test_Permutation) {

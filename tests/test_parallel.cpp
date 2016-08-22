@@ -1,7 +1,9 @@
 #include <future>
+#ifdef CILK
 #include <cilk/cilk.h>
 #include <cilk/cilk_api.h>
 #include <cilk/reducer_opadd.h>
+#endif
 #include <chrono>
 #include <cmath>
 #include <iostream>
@@ -30,6 +32,7 @@ double cum (int n) {
     double s=0; for (auto x:X) s+=x; return s - long(s);
 }
 
+#ifdef CILK
 double cum_cilk (int n) {
     vector<double> X(n);
     cilk_for (int i=0; i<n; ++i) {
@@ -49,6 +52,7 @@ double cum_cilk2 (int n) {
     }
     return s.get_value() - long(s.get_value());
 }
+#endif
 
 template <typename T> void test (std::string s, T f (int), int n) {
     std::chrono::steady_clock C;
@@ -66,6 +70,8 @@ int main (int argc, char ** argv) {
     if (m & 2)  test ("Fib | CILK  ", fib_cilk, n);
 
     if (m & 8)  test ("Map | Single", cum, H['l']);
+#ifdef CILK
     if (m & 16) test ("Map | CILK  ", cum_cilk, H['l']);
     if (m & 32) test ("Map | CILK 2", cum_cilk2, H['l']);
+#endif
 }
