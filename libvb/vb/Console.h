@@ -17,14 +17,14 @@ namespace vb {
 	template <typename T> class Watcher : public Slot {
 	public:
 		Watcher (T &tt, const char *nn, int w, int h) : Slot (nn,w,h), t(tt) {}
-		void draw () { draw_value(t); }
+		void draw () override { draw_value(t); }
 		T &t;
 	};
 
 	template <typename T> class Tracer : public Slot {
 	public:
 		Tracer (T ff (void*), void *dd, const char *nn, int w, int h) : Slot (nn,w,h), f(ff), d(dd) {}
-		void draw () { draw_value(f(d)); }
+		void draw () override { draw_value(f(d)); }
 		T (*f) (void*);
 		void *d;
 	};
@@ -32,7 +32,7 @@ namespace vb {
 	template <typename T> class Lambda : public Slot {
 	public:
 		Lambda (std::function <T()> ff, const char *nn, int w, int h) : Slot (nn,w,h), f(ff) {}
-		void draw () { draw_value(f()); }
+		void draw () override { draw_value(f()); }
 		std::function <T()> f;
 	};
 

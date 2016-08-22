@@ -132,7 +132,7 @@ BOOST_AUTO_TEST_CASE (test_Hub) {
 	BOOST_CHECK (H['u']);
 	BOOST_CHECK (!H['v']);
 
-	for (int i=0; i<4; ++i) free(argv[i]);
+	for (auto & a : argv) free(a);
 }
 
 
