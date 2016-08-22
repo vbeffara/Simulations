@@ -5,7 +5,7 @@ namespace vb {
 	template <typename T> class Elliptic { public:
 		using cplx = typename cpx_t<T>::type;
 
-		Elliptic (const cplx & q_);
+		Elliptic (cplx q_);
 
 		cplx eta1  	() const;
 		cplx eta1_q	() const;

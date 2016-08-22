@@ -76,7 +76,7 @@ namespace vb {
 		double bottom ();
 
 	protected:
-		virtual void paint ();
+		void paint () override;
 	};
 
 	std::ostream &operator<< (std::ostream &os, const Map &m);

@@ -19,7 +19,7 @@ namespace vb {
 		Constellation                      	();
 		template <typename U> Constellation	(const Constellation<U> & C);
 
-		virtual ~ Constellation () {}
+		virtual ~ Constellation () = default;
 
 		virtual	Vector<cplx>	vec     	()                       	const	=0;
 		virtual	void        	readvec 	(const Vector<cplx> & xy)	     	=0;

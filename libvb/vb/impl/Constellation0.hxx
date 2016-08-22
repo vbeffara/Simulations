@@ -271,7 +271,7 @@ namespace vb {
 						}
 						if (h<0) return boost::none;
 						if (halfedges[i][j] < halfedges[k][h])
-							pairs.push_back({halfedges[i][j],halfedges[k][h]});
+							pairs.emplace_back(std::vector<unsigned> {halfedges[i][j],halfedges[k][h]});
 						looking = false;
 					}
 					if (sl*imag((*this)(nz))>0) l=nz; else r=nz;

@@ -12,9 +12,9 @@ namespace vb {
 		Constellation1                      	(const Hypermap & M, const Hub & H);
 		template <typename U> Constellation1	(const Constellation1<U> & C);
 
-		cplx	operator()	(cplx z)	const;
+		cplx	operator()	(cplx z)	const override;
 
-		std::pair<cplx,cplx>	bounds	()	const;
+		std::pair<cplx,cplx>	bounds	()	const override;
 
 		cplx tau () const { return p[0]; }
 
@@ -22,14 +22,14 @@ namespace vb {
 		Elliptic<T>	E { q_<T>(I_<T>()) };
 
 	private:
-		Vector<cplx>	vec    	()	const;
-		void        	readvec	(const Vector<cplx> & xy);
+		Vector<cplx>	vec    	()	const override;
+		void        	readvec	(const Vector<cplx> & xy) override;
 
-		Vector<cplx>	vcost   	()	const;
-		Matrix<cplx>	jacvcost	()	const;
+		Vector<cplx>	vcost   	()	const override;
+		Matrix<cplx>	jacvcost	()	const override;
 		Matrix<cplx>	jacnum  	();
 
-		cplx	reduce   	(cplx z)	const;
+		cplx	reduce   	(cplx z)	const override;
 		cplx	logderp  	(cplx z, int k) const;
 		cplx	logderp_z	(cplx z, int k) const;
 		cplx	logderp_q	(cplx z, int k) const;

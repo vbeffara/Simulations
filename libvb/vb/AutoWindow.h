@@ -13,9 +13,9 @@ namespace vb {
 			T::callback(close_window);
 		}
 
-		void update () { if (T::visible()) { T::redraw(); Fl::check(); while (paused) Fl::wait(); } }
+		void update () override { if (T::visible()) { T::redraw(); Fl::check(); while (paused) Fl::wait(); } }
 
-		void show () { T::show(); update(); }
+		void show () override { T::show(); update(); }
 
 		void pause() { paused=true; update(); }
 
@@ -25,7 +25,7 @@ namespace vb {
 			ff.get();
 		}
 
-		int handle (int event) {
+		int handle (int event) override {
 			if (event == FL_KEYDOWN) switch (Fl::event_key()) {
 				case 'q': exit (0);        	         	break;
 				case 'x': exit (1);        	         	break;

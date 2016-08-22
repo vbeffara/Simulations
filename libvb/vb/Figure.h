@@ -11,13 +11,13 @@ namespace vb {
 
 		std::vector <std::shared_ptr<Shape>> contents;
 
-		virtual void output (const std::string &s = "");
+		void output (const std::string &s = "") override;
 		void output_pdf (const std::string &s = "");
 
 		double margin = 0;
 
 	protected:
-		void paint ();
+		void paint () override;
 		void paint (cairo_t * cr, bool fill = true, bool crop = false);
 
 		bool ortho;

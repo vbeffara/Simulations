@@ -14,7 +14,7 @@ namespace vb {
 	class Picture : public AutoWindow <Fl_Gl_Window> {
 	public:
 		Picture (int wd, int ht);
-		~Picture ();
+		~Picture () override;
 
 		/// Output the image in the preferred format (PNG by default).
 		virtual void output (const std::string &s = "");
@@ -23,8 +23,8 @@ namespace vb {
 		void snapshot_setup (const std::string &prefix, double period = 0.0);
 		void snapshot ();
 
-		virtual void show() override;
-		virtual int handle (int event) override;	///< Handle the events, in particular 'q' and 'x'.
+		void show() override;
+		int handle (int event) override;	///< Handle the events, in particular 'q' and 'x'.
 
 	protected:
 		cairo_surface_t * surface = nullptr;	///< Cairo version of the surface.

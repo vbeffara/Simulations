@@ -12,7 +12,7 @@ namespace vb {
 		return out;
 	}
 
-	template <typename T> Elliptic<T>::Elliptic (const cplx & q_) : q(q_), q14(pow(q,T(1)/4)), eta1_(eta1()), eta1_q_(eta1_q()), e1_(e1()) {}
+	template <typename T> Elliptic<T>::Elliptic (cplx q_) : q(std::move(q_)), q14(pow(q,T(1)/4)), eta1_(eta1()), eta1_q_(eta1_q()), e1_(e1()) {}
 
 	template <typename T> auto Elliptic<T>::theta1 (const cplx & z) const -> cplx {
 		return sum ([&](int n) { return T(2 * pow(T(-1),n)) * q14 * pow(q, n*(n+1)) * sin(T(2*n+1)*z); });
