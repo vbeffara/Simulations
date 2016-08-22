@@ -5,7 +5,6 @@ set (CMAKE_CXX_FLAGS "-g -Wall -Wextra -Wno-deprecated-declarations -Wno-unused-
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcilkplus -DCILK")
-	target_link_libraries (cilkrts)
 else ()
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Dcilk_spawn= -Dcilk_sync= -Dcilk_for=for -Wno-mismatched-tags")
 endif ()
@@ -44,6 +43,9 @@ include_directories ("${PROJECT_SOURCE_DIR}/libvb" ${Boost_INCLUDE_DIRS} ${EXT_I
 file (GLOB vb_sources libvb/*.cpp)
 add_library (vb SHARED ${vb_sources})
 target_link_libraries (vb ${EXT_LIBRARIES} ${GMP} ${FLTK_LIBRARIES} ${FPLLL} ${MPFR} ${Boost_LIBRARIES})
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+	target_link_libraries (vb cilkrts)
+endif ()
 
 foreach (dir tests 1D 2D 3D)
 	file (GLOB src ${dir}/*.cpp)
