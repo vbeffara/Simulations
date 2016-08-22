@@ -14,7 +14,7 @@ namespace vb {
 	void Hub::init (std::string t, int argc, char ** argv, std::string c) {
 		title = t; help = "Syntax : " + c;
 
-		std::vector<std::string> fs;	boost::split (fs, argv[0], boost::is_any_of("/\\"));
+		std::vector<std::string> fs;	boost::split (fs, argv[0], boost::is_any_of(R"(/\)"));
 		prog = fs.back(); dir = "output/" + prog + "/";
 		mode_t mode = S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH;
 		mkdir("output", mode); mkdir(dir.c_str(), mode); mkdir((dir + "snapshots").c_str(), mode);

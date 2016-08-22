@@ -8,7 +8,7 @@ namespace vb {
 	void Cluster::ensure_sub () {
 		if (!sub.empty()) return;
 		long ww = w/3;
-		for (long y=0; y<3; ++y) for (long x=0; x<3; ++x) sub.push_back (Cluster (ul + coo(x*ww,y*ww), ww));
+		for (long y=0; y<3; ++y) for (long x=0; x<3; ++x) sub.emplace_back (ul + coo(x*ww,y*ww), ww);
 		if (np == w*w) for (auto & c : sub) c.np = ww*ww;
 	}
 

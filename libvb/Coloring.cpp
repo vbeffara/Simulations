@@ -7,7 +7,7 @@
 
 namespace vb {
 	Coloring::Coloring (cpx z1_, cpx z2_, int n, std::function <Color(cpx)> f_) :
-			Picture(n,n*imag(z2_-z1_)/real(z2_-z1_)), z1(z1_), z2(z2_), f(f_) {}
+			Picture(n,n*imag(z2_-z1_)/real(z2_-z1_)), z1(z1_), z2(z2_), f(std::move(f_)) {}
 
 	void Coloring::show () {
 		Picture::show();
@@ -31,7 +31,7 @@ namespace vb {
 				if (!u) cs.push_back(c);
 			}
 		}
-		cilk_for (unsigned i=0; i<cs.size(); ++i) at(cs[i]) = aa_color(cs[i],true);
+		cilk_for (auto c : cs) at(c) = aa_color(c,true);
 	}
 
 	void Coloring::scale (double s) { cpx mid = (z1+z2)/2.0; z1 = mid + s * (z1-mid); z2 = mid + s * (z2-mid); }

@@ -2,8 +2,8 @@
 
 namespace vb {
   Lattice & Lattice::bond (int k1, int k2, coo dz) {
-    adj[k1].push_back (Lattice_place(dz,k2));
-    adj[k2].push_back (Lattice_place(-dz,k1));
+    adj[k1].emplace_back (dz,k2);
+    adj[k2].emplace_back (-dz,k1);
     return *this;
   }
 

@@ -49,9 +49,10 @@ namespace vb {
 
 		for (unsigned a=0; a<N; ++a) {
 			unsigned b=alpha[a], c=phi[a], f=sigma[a], x=phi[b];
-			if (a<b) sigma_c.push_back ({a+N,x+3*N,b+2*N,b+N,c+3*N,a+2*N});
-			alpha_c.push_back ({a,a+N}); alpha_c.push_back ({a+2*N,a+3*N});
-			phi_c.push_back ({a,a+2*N,f+N});
+			if (a<b) sigma_c.emplace_back (Permutation({a+N,x+3*N,b+2*N,b+N,c+3*N,a+2*N}));
+			alpha_c.emplace_back (Permutation({a,a+N}));
+			alpha_c.emplace_back (Permutation({a+2*N,a+3*N}));
+			phi_c.emplace_back (Permutation({a,a+2*N,f+N}));
 		}
 		for (auto F : phi.cycles()) {
 			std::vector<unsigned> FF = F;
@@ -166,8 +167,11 @@ namespace vb {
 	void Hypermap::dessin () {
 		Cycles new_a, new_f; unsigned n=sigma.size(); initial.resize(6*n); Permutation alpha1 = alpha.inverse();
 		for (unsigned i=0; i<n; ++i) {
-			new_a.push_back({i,i+n}); new_a.push_back({i+2*n,i+3*n}); new_a.push_back({i+4*n,i+5*n});
-			new_f.push_back({i,i+2*n,i+4*n}); new_f.push_back({alpha1[i]+n,phi[i]+5*n,i+3*n});
+			new_a.emplace_back(Permutation({i,i+n}));
+			new_a.emplace_back(Permutation({i+2*n,i+3*n}));
+			new_a.emplace_back(Permutation({i+4*n,i+5*n}));
+			new_f.emplace_back(Permutation({i,i+2*n,i+4*n}));
+			new_f.emplace_back(Permutation({alpha1[i]+n,phi[i]+5*n,i+3*n}));
 			initial[i]=3; initial[i+n]=5; initial[i+2*n]=4; initial[i+3*n]=8; initial[i+4*n]=8; initial[i+5*n]=2;
 		}
 		alpha = new_a; phi = new_f; sigma = (alpha*phi).inverse();
@@ -251,8 +255,8 @@ namespace vb {
 				if (!connected(sigma,alpha)) continue;
 				Permutation phi = (sigma*alpha).inverse(); if (phi.signature() != p) continue;
 				Hypermap h(sigma,alpha,phi);
-				h.normalize(); bool done=0;
-				for (auto & hh : hs) if (h==hh) { done=1; break; }
+				h.normalize(); bool done=false;
+				for (auto & hh : hs) if (h==hh) { done=true; break; }
 				if (!done) { hs.push_back(h); yield(h); }
 			}
 		});

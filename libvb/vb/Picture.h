@@ -23,14 +23,14 @@ namespace vb {
 		void snapshot_setup (const std::string &prefix, double period = 0.0);
 		void snapshot ();
 
-		virtual void show();
-		virtual int handle (int event);	///< Handle the events, in particular 'q' and 'x'.
+		virtual void show() override;
+		virtual int handle (int event) override;	///< Handle the events, in particular 'q' and 'x'.
 
 	protected:
 		cairo_surface_t * surface = nullptr;	///< Cairo version of the surface.
 		cairo_t * cr;                       	///< A context to draw onto the surface.
 		int stride;                         	///< The number of pixels in a line in memory.
-		void draw ();                       	///< Draw the contents of the window (called by FLTK).
+		void draw () override;              	///< Draw the contents of the window (called by FLTK).
 
 	private:
 		std::string snapshot_prefix;   ///< The filename prefix for PNG snapshots.
