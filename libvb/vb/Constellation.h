@@ -26,9 +26,9 @@ namespace vb {
 		virtual	Vector<cplx>	vcost   	()                       	const	=0;
 		virtual	Matrix<cplx>	jacvcost	()                       	const	=0;
 
-		virtual	cplx                	operator()	(cplx z)        	const	=0;
-		virtual	cplx                	reduce    	(const cplx & z)	const	{ return z; }
-		virtual	std::pair<cplx,cplx>	bounds    	()              	const	=0;
+		virtual	cplx                	operator()	(cplx z)	const	=0;
+		virtual	cplx                	reduce    	(cplx z)	const	{ return z; }
+		virtual	std::pair<cplx,cplx>	bounds    	()      	const	=0;
 
 		T	cost 	()	const;
 		T	findn	();

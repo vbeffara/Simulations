@@ -10,7 +10,7 @@ namespace vb {
 		TriMatrix (T e = 0) : size(0), sub_size(0), sub_shift(0), empty(e) { }
 
 		T at (coo z) const {
-			int target = std::max (abs(z.x), abs(z.y)); if (target >= size) return empty;
+			int target = std::max (std::abs(z.x), std::abs(z.y)); if (target >= size) return empty;
 			if (size==BSIZE) return tile [(2*BSIZE+1)*BSIZE + z.x + 2*BSIZE*z.y];
 			int index = 4;
 			if (z.x >= sub_size) { index += 1; z.x -= sub_shift; } else if (z.x <= - sub_size) { index -= 1; z.x += sub_shift; }
@@ -20,7 +20,7 @@ namespace vb {
 
 		void put (coo z, T t) {
 			if (size==0) { tile.resize (2*BSIZE*2*BSIZE, empty); size = BSIZE; }
-			int target = std::max (abs(z.x), abs(z.y)); while (size <= target) triple();
+			int target = std::max (std::abs(z.x), std::abs(z.y)); while (size <= target) triple();
 			if (size==BSIZE) tile [(2*BSIZE+1)*BSIZE + z.x + 2*BSIZE*z.y] = t; else {
 				int index = 4;
 				if (z.x >= sub_size) { index += 1; z.x -= sub_shift; } else if (z.x <= - sub_size) { index -= 1; z.x += sub_shift; }
