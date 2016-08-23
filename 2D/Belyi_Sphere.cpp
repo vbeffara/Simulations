@@ -13,7 +13,7 @@ Stream <Hypermap> triangulations (unsigned n) {
 	return Stream<Hypermap> ([a,phi,n,np](Sink<Hypermap> & yield) {
 		std::vector<Hypermap> hs;
 		for (auto alph : permutations(a)) {
-			Permutation alpha (n); for (int i=0; i<n-2*np; ++i) alpha[i] = alph[i];
+			Permutation alpha (n); for (unsigned i=0; i<n-2*np; ++i) alpha[i] = alph[i];
 			for (int i=0; i<np; ++i) { alpha[n-2*np+2*i] = n-2*np+2*i+1; alpha[n-2*np+2*i+1] = n-2*np+2*i; }
 			if (!connected(phi,alpha)) continue;
 			Permutation sigma = (alpha*phi).inverse();
