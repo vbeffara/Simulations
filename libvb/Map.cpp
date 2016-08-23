@@ -65,32 +65,32 @@ namespace vb {
 
   adj_list::iterator Map::find_edge (const Edge &e) const {
     if (e.first >= n) return v[0]->adj.end();
-    for (adj_list::iterator i = v[e.first]->adj.begin(); i != v[e.first]->adj.end(); ++i)
+    for (auto i = v[e.first]->adj.begin(); i != v[e.first]->adj.end(); ++i)
       if (*i == e.second) return i;
     return v[0]->adj.end();
   }
 
   Edge Map::turn_left (const Edge &e) const {
-    adj_list::iterator ee = find_edge (Edge(e.second,e.first));
+    auto ee = find_edge (Edge(e.second,e.first));
     if (ee == v[e.second]->adj.begin()) ee = v[e.second]->adj.end();
     --ee;
     return Edge(e.second,*ee);
   }
 
   Edge Map::turn_right (const Edge &e) const {
-    adj_list::iterator ee = find_edge (Edge(e.second,e.first));
+    auto ee = find_edge (Edge(e.second,e.first));
     ++ee;
     if (ee == v[e.second]->adj.end()) ee = v[e.second]->adj.begin();
     return Edge(e.second,*ee);
   }
 
   void Map::add_before (const Edge &e, int vv) {
-    adj_list::iterator ee = find_edge(e);
+    auto ee = find_edge(e);
     v[e.first]->adj.insert (ee,vv);
   }
 
   void Map::add_after (const Edge &e, int vv) {
-    adj_list::iterator ee = find_edge(e);
+    auto ee = find_edge(e);
     ++ee;
     v[e.first]->adj.insert (ee,vv);
   }
@@ -145,7 +145,7 @@ namespace vb {
     bool dirty=true;
 
     while (dirty) {
-      dirty = 0;
+      dirty = false;
       for (int i=0; i<n; ++i) {
         if (bd[i]) continue;
         if (v[i]->adj.size() == 0) continue;
@@ -167,7 +167,7 @@ namespace vb {
     std::vector<adj_list> new_vertices;
 
     for (int v1=0; v1<n; ++v1) {
-      for (adj_list::iterator v2 = v[v1]->adj.begin(); v2 != v[v1]->adj.end(); ++v2) {
+      for (auto v2 = v[v1]->adj.begin(); v2 != v[v1]->adj.end(); ++v2) {
         int v3 = tmp[v1 + n*(*v2)];
         if (v3 >= 0) {                    // If the reverse is already filled
           (*v2) = v3;                     // Then point to it
@@ -196,7 +196,7 @@ namespace vb {
   }
 
   void Map::hex_to_triangle (const std::vector<int> &f) {
-    std::vector<int>::const_iterator i = f.begin();
+    auto i = f.begin();
     int x = *i; ++i;
     int b = *i; ++i;
     int y = *i; ++i;
@@ -398,7 +398,6 @@ namespace vb {
           nr = v[i]->r + (v[i]->r-old_rad[i])/sqrtlambda;
           if (nr>0) v[i]->r = nr;
         }
-        old_lambda = 0.0;
       }
     }
 

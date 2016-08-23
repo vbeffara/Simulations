@@ -12,8 +12,8 @@ namespace vb {
 		struct Vertex	{ unsigned i;	cpx z;       	double r=1.0;	unsigned bone;	std::vector<unsigned> adj;	bool fixed = false;	};
 		struct Edge  	{ unsigned i;	unsigned src;	double a=NAN;	              	                          	                   	};
 
-		Hypermap (Permutation s, Permutation a, Permutation p)	: sigma(s), alpha(a), phi(p), initial(s.size(),3)          	{}
-		Hypermap (Cycles s, Cycles a, Cycles p)               	: Hypermap (Permutation(s), Permutation(a), Permutation(p))	{}
+		Hypermap (Permutation s, Permutation a, Permutation p)	: sigma(std::move(s)), alpha(std::move(a)), phi(std::move(p)), initial(sigma.size(),3)	{}
+		Hypermap (Cycles s, Cycles a, Cycles p)               	: Hypermap (Permutation(s), Permutation(a), Permutation(p))                           	{}
 		Hypermap () {}
 
 		void from_hypermap	();	//< If the Hypermap part is correct, fill in V and E.
@@ -60,7 +60,7 @@ namespace vb {
 		Permutation	rebasing	()          	const;
 	};
 
-	Stream <Hypermap> hypermaps (std::vector<unsigned> s, std::vector<unsigned> a, std::vector<unsigned> p);
+	Stream <Hypermap> hypermaps (const std::vector<unsigned> & s, const std::vector<unsigned> & a, const std::vector<unsigned> & p);
 
 	std::ostream & operator<< (std::ostream &os, Hypermap &H);
 }

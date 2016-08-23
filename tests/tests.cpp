@@ -9,11 +9,13 @@
 #include <vb/Cube.h>
 #include <vb/Figure.h>
 #include <vb/Hypermap_lib.h>
+#include <vb/Minimizer.h>
 #include <vb/NumberTheory.h>
+#include <vb/Pov.h>
 #include <vb/ProgressBar.h>
 #include <vb/TriMatrix.h>
 
-using namespace vb; using namespace std;
+using namespace vb; using namespace std; using namespace cln;
 
 // Data structures
 
@@ -40,6 +42,7 @@ BOOST_AUTO_TEST_CASE (test_Cube) {
 	C.putp(C.rand(),1);
 	int s=0; for (auto v : C) s += v;
 	BOOST_CHECK (s == 1);
+	BOOST_CHECK (Color(C.at({0,0})).a == 255);
 	C.output_pov();
 }
 
@@ -84,6 +87,9 @@ BOOST_AUTO_TEST_CASE (test_coo) {
 	BOOST_CHECK (cpx(z2) == cpx(-2,-3));
 	BOOST_CHECK (norm(z2) == 13);
 	BOOST_CHECK (sup(z2) == 3);
+
+	ostringstream os; os << z1;
+	BOOST_CHECK (os.str() == "(6,2)");
 }
 
 BOOST_AUTO_TEST_CASE (test_Color) {
@@ -126,7 +132,7 @@ BOOST_AUTO_TEST_CASE (test_Hub) {
 	BOOST_CHECK (H['u']);
 	BOOST_CHECK (!H['v']);
 
-	for (int i=0; i<4; ++i) free(argv[i]);
+	for (auto & a : argv) free(a);
 }
 
 
@@ -144,10 +150,10 @@ BOOST_AUTO_TEST_CASE (test_Stream) {
 BOOST_AUTO_TEST_CASE (test_cpx) {
 	cpx z (1.0,2.3);
 	ostringstream os; os << z;
-	BOOST_CHECK (os.str() == "(1 + 2.3 I)");
-	cpxint zz (1,-3);
+	BOOST_CHECK (os.str() == "(1,2.3)");
+	cpxint zz = cln::complex (1,-3);
 	ostringstream os2; os2 << zz;
-	BOOST_CHECK (os2.str() == "(1 - 3 I)");
+	BOOST_CHECK (os2.str() == "1-3i");
 }
 
 BOOST_AUTO_TEST_CASE (test_math) {
@@ -159,28 +165,41 @@ BOOST_AUTO_TEST_CASE (test_math) {
 	BOOST_CHECK (binom(5,2) == 10);
 	BOOST_CHECK (catalan(3) == 5);
 
-	BOOST_CHECK (fabs(sin(pi_<double>())) < 1e-10);
+	BOOST_CHECK (abs(sin(pi_<double>())) < 1e-10);
 
-	BOOST_CHECK (fabs(q_(cpx(1.0+1e-5))-q_(cpx(1.0)) - 1e-5*q_t(cpx(1.0))) < 1e-9);
+	BOOST_CHECK (abs(q_<double>(cpx(1.0+1e-5))-q_<double>(cpx(1.0)) - 1e-5*q_t<double>(cpx(1.0))) < 1e-9);
 
 	double e = sum<double> ([](int n) { auto out = 1.0/fact(n); return std::isinf(out) ? 0 : out; });
-	BOOST_CHECK (fabs(log(e)-1) < 1e-6);
+	BOOST_CHECK (abs(log(e)-1) < 1e-6);
+}
+
+BOOST_AUTO_TEST_CASE (test_Permutation) {
+	Permutation P1 = Transposition (4,0,1), P2 = Transposition (4,0,2), P = P1 * P2;
+	Passport PP = P.passport();
+	BOOST_CHECK (PP[0].first == 3);
 }
 
 BOOST_AUTO_TEST_CASE (test_NumberTheory) {
-	cln::default_float_format = cln::float_format(100);
-	cln::cl_F z ("0.9162918442410306144165008200767499077603397502333144975769802641182380808885019256331544308341889255");
+	default_float_format = cln::float_format(100);
+	cl_F z ("0.9162918442410306144165008200767499077603397502333144975769802641182380808885019256331544308341889255");
 	ostringstream os; os << * (guess (z, 100));
 	BOOST_CHECK (os.str() == "1*z^5 + -3*z^4 + 12*z^3 + -2*z^2 + 1*z + -7");
 	ostringstream osr; osr << * (guess_r (z, 100));
 	BOOST_CHECK (os.str() == osr.str());
 	BOOST_CHECK (!guess(cln::pi(z),100));
 
-	cln::cl_F z1 ("0.1722882583776278670500267959231284336682007863854856624427574750255049273322927690638923632");
-	cln::cl_F z2 ("0.5302487364574217190358808797265653491226567421626168710631761419479819886565504921987031543");
-	cln::cl_N zc = cln::complex (z1,z2);
+	cl_F z1 ("0.1722882583776278670500267959231284336682007863854856624427574750255049273322927690638923632");
+	cl_F z2 ("0.5302487364574217190358808797265653491226567421626168710631761419479819886565504921987031543");
+	cl_N zc = cln::complex (z1,z2);
 	ostringstream osc; osc << * (guess_c (zc, 100));
 	BOOST_CHECK (osc.str() == "1*z^4 + 3*z^3 + 4-5i*z^2 + -3*z + 1");
+}
+
+BOOST_AUTO_TEST_CASE (test_LinearAlgebra) {
+	Matrix<cl_N> m (3,3); for (int i=0; i<3; ++i) for (int j=0; j<3; ++j) m(i,j) = int(pow(2*i+1,j));
+	Vector<cl_N> v (3); for (int i=0; i<3; ++i) v(i) = int(3*i-2);
+	ostringstream os; printmath (os, solve(m,v));
+	BOOST_CHECK (os.str() == "{ -7/2, 3/2, 0}");
 }
 
 BOOST_AUTO_TEST_CASE (test_Hypermap_lib) {
@@ -193,9 +212,13 @@ BOOST_AUTO_TEST_CASE (test_Hypermap_lib) {
 BOOST_AUTO_TEST_CASE (test_Constellation0) {
 	auto M = HLib().at("m_dodecahedron");
 	Constellation0<double> C {M,H};
-	Constellation0<gmp100> Cq (C);
+	Constellation0<real_t> Cq (C);
 	Cq.findn(); Cq.belyi();
-	Polynomial<cpx100> Q; for (auto zd : Cq.f) for (unsigned j=0; j<zd.d; ++j) Q.add_root(zd.z);
+	Polynomial<complex_t> Q; for (auto zd : Cq.f) for (unsigned j=0; j<zd.d; ++j) Q.add_root(zd.z);
+	for (auto & x : Q) {
+		auto xx = cln::complex (round1(realpart(x)), round1(imagpart(x)));
+		if (abs(x - xx) < 1e-100) x = xx;
+	}
 	ostringstream os; os << Q;
 	BOOST_CHECK (os.str() == " z^55 + -55 z^50 + 1205 z^45 + -13090 z^40 + 69585 z^35 + -134761 z^30 + -69585 z^25 + -13090 z^20 + -1205 z^15 + -55 z^10 + -1 z^5");
 }
@@ -203,10 +226,40 @@ BOOST_AUTO_TEST_CASE (test_Constellation0) {
 BOOST_AUTO_TEST_CASE (test_Constellation1) {
 	auto M = HLib().at("lat_SV");
 	Constellation1<double> C {M,H};
-	Constellation1<gmp100> Cq (C);
+	Constellation1<real_t> Cq (C);
 	Cq.findn();
-	ostringstream os; os << guess(Cq.E.j(),gmp100(1e-80));
-	BOOST_CHECK (os.str() == " z^2 + -914416 z + 590816592");
+	ostringstream os; os << * (guess_r (Cq.E.j(),80));
+	BOOST_CHECK (os.str() == "1*z^2 + -914416*z + 590816592");
+}
+
+BOOST_AUTO_TEST_CASE (test_Minimizer) {
+	auto f = [](const Vector<double> &x, void *) {
+		double o = 0;
+		for (unsigned int i=0; i<400; ++i) o += (1 - cos(x[i]/(i+1)));
+		return o;
+	};
+
+	auto g = [](const Vector<double> &x) {
+		Vector<double> out(400);
+		for (unsigned int i=0; i<400; ++i) out[i] = sin(x[i]/(i+1))/(i+1);
+		return out;
+	};
+
+	auto fg = [](const Vector<double> &x, Vector<double> &g) {
+		double o = 0;
+		for (unsigned int i=0; i<400; ++i) {
+			o += (1 - cos(x[i]/(i+1)));
+			g[i] = sin(x[i]/(i+1))/(i+1);
+		}
+		return o;
+	};
+
+	Vector<double> x0(400); for (unsigned int i=0; i<400; ++i) x0[i] = cos(double(i));
+	Vector<double> W0(400); for (unsigned int i=0; i<400; ++i) W0[i] = (i+1)*(i+1);
+
+	Minimizer<double> M (400,fg);
+	BOOST_CHECK (M.minimize_qn (x0) < 1e-8);
+	(void)f; (void)g;
 }
 
 // Displays, windows and such
@@ -239,6 +292,10 @@ BOOST_AUTO_TEST_CASE (test_Figure) {
 	F.show(); F.hide();
 }
 
+BOOST_AUTO_TEST_CASE (test_Pov) {
+	Pov_Box PB ({0.0,1.0,2.0}, {3.0,4.0,5.0});
+}
+
 // Below is still to be done
 
 BOOST_AUTO_TEST_CASE (test_Auto) {}
@@ -261,25 +318,17 @@ BOOST_AUTO_TEST_CASE (test_Hypermap) {}
 
 BOOST_AUTO_TEST_CASE (test_Lattice) {}
 
-BOOST_AUTO_TEST_CASE (test_LinearAlgebra) {}
-
 BOOST_AUTO_TEST_CASE (test_Map) {}
-
-BOOST_AUTO_TEST_CASE (test_Minimizer) {}
 
 BOOST_AUTO_TEST_CASE (test_Pairings) {}
 
 BOOST_AUTO_TEST_CASE (test_Path) {}
-
-BOOST_AUTO_TEST_CASE (test_Permutation) {}
 
 BOOST_AUTO_TEST_CASE (test_Picture) {}
 
 BOOST_AUTO_TEST_CASE (test_Point) {}
 
 BOOST_AUTO_TEST_CASE (test_Polynomial) {}
-
-BOOST_AUTO_TEST_CASE (test_Pov) {}
 
 BOOST_AUTO_TEST_CASE (test_PRNG) {}
 

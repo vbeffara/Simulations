@@ -6,7 +6,7 @@ namespace vb {
 	class Coloring : public Picture { public:
 		Coloring (cpx z1_, cpx z2_, int n, std::function <Color(cpx)> f_);
 
-		virtual void show();
+		void show() override;
 		void show2();
 
 		void scale (double s);
@@ -30,6 +30,6 @@ namespace vb {
 
 		Color * stage = nullptr;
 
-		int handle (int event);
+		int handle (int event) override;
 	};
 }

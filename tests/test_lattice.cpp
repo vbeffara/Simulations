@@ -33,7 +33,7 @@ int main (int, char **) {
 	fd.push_back(L(coo(2,1)));
 	fd.push_back(L(coo(2,2)));
 	fd.push_back(L(coo(1,2)));
-	F.add (new Polygon(fd, Pen(0,0,200,1)));
+	F.add (new Polygon(fd, Pen(0,0,200,true)));
 
 	for (int i=0; i<3; ++i)
 		for (int j=0; j<3; ++j)

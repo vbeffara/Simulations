@@ -5,7 +5,7 @@
 #include <sstream>
 
 namespace vb {
-	Pov_Object::Pov_Object (std::string s, bool b) : type(s), braces(b), commas(0) {}
+	Pov_Object::Pov_Object (std::string s, bool b) : type(std::move(s)), braces(b), commas(0) {}
 
 	std::ostream & Pov_Object::output_pov (std::ostream & os) {
 		os << type << " "; if (braces) os << "{ ";
@@ -23,11 +23,11 @@ namespace vb {
 	Pov_Object & Pov_Object::operator<< (double x)	{ return (*this) << new Pov_Coefficient (x); }
 
 	Pov_Scene::Pov_Scene () : Pov_Object ("") {
-		(*this) << new Pov_Object ("#version 3.7;")
-				<< new Pov_Object ("#include \"colors.inc\"")
-				<< new Pov_Object ("#include \"rad_def.inc\"")
-				<< new Pov_Object ("global_settings { radiosity { Rad_Settings(Radiosity_Normal,off,off) } }")
-				<< new Pov_Object ("background { color White }");
+		(*this) << new Pov_Object (R"("#version 3.7;")")
+				<< new Pov_Object (R"("#include \"colors.inc\"")")
+				<< new Pov_Object (R"("#include \"rad_def.inc\"")")
+				<< new Pov_Object (R"("global_settings { radiosity { Rad_Settings(Radiosity_Normal,off,off) } }")")
+				<< new Pov_Object (R"("background { color White }")");
 	}
 
 	Pov_Union::Pov_Union (std::string) : Pov_Object ("union", true) {}

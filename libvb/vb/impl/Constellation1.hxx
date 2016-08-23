@@ -6,26 +6,26 @@
 
 namespace vb {
 	template <typename T> Constellation1<T>::Constellation1 (const Hypermap & M, const Hub & H) {
-		Hypermap M2 (M); M2.dessin(); p = { cplx(0,1), T(0) };
+		Hypermap M2 (M); M2.dessin(); p = { I_<T>(), T(0) };
 		do {
 			M2.split_edges(); Toroidal S (M2,H); S.pack(); S.output_pdf();
 			unsigned N = M.sigma.size();
-			b.clear(); for (auto c : M.sigma.cycles())	b.push_back( { S.V[S.E[c[0]].src].z,    	c.size() } );
-			w.clear(); for (auto c : M.alpha.cycles())	w.push_back( { S.V[S.E[c[0]+N].src].z,  	c.size() } );
-			f.clear(); for (auto c : M.phi.cycles())  	f.push_back( { S.V[S.E[c[0]+3*N].src].z,	c.size() } );
+			b.clear(); for (auto c : M.sigma.cycles())	b.push_back( { to_cpx<T>(S.V[S.E[c[0]].src].z),    	c.size() } );
+			w.clear(); for (auto c : M.alpha.cycles())	w.push_back( { to_cpx<T>(S.V[S.E[c[0]+N].src].z),  	c.size() } );
+			f.clear(); for (auto c : M.phi.cycles())  	f.push_back( { to_cpx<T>(S.V[S.E[c[0]+3*N].src].z),	c.size() } );
 			dim = b.size() + w.size() + f.size() + p.size();
-			p[0] = S.m; shift(-b[0].z); normalize();
+			p[0] = to_cpx<T>(S.m); shift(-b[0].z); normalize();
 		} while (findn() > T(1e-6));
 	}
 
 	template <typename T> template <typename U> Constellation1<T>::Constellation1 (const Constellation1<U> & C) : Constellation<T>(C) {
 		from_points();
-	};
+	}
 
 	template <typename T> void Constellation1<T>::from_points () {
-		E = Elliptic<T> { q_(p[0]) };
+		E = Elliptic<T> { q_<T>(p[0]) };
 		cplx szp(0); for (auto zd : b) szp += T(zd.d)*zd.z; for (auto zd : f) szp -= T(zd.d)*zd.z;
-		dy = round(double(T(imag(szp)/imag(p[0])))); dx = round(double(T(real(szp-T(dy)*p[0]))));
+		dy = round(T(imag(szp)/imag(p[0]))); dx = round(T(real(szp-T(dy)*p[0])));
 		for (auto & zd : f) {
 			int ddx = round(double(dx)/zd.d); if (ddx != 0) { zd.z += T(ddx); dx -= int(zd.d)*ddx; }
 			int ddy = round(double(dy)/zd.d); if (ddy != 0) { zd.z += T(ddy)*p[0]; dy -= int(zd.d)*ddy; }
@@ -72,14 +72,14 @@ namespace vb {
 	}
 
 	template <typename T> auto Constellation1<T>::logderp_t (cplx z, int k) const -> cplx {
-		return std::complex<T>(0,pi_<T>()) * E.q * logderp_q(z,k);
+		return to_cpx<T>(0,pi_<T>()) * E.q * logderp_q(z,k);
 	}
 
 	template <typename T> auto Constellation1<T>::logder (cplx z, int k) const -> cplx {
 		cplx out (logderp (z-b[0].z+T(dx)+tau()*T(dy), k) - logderp (z-b[0].z, k));
 		for (auto zd : b) out += logderp (z-zd.z, k) * T(zd.d);
 		for (auto zd : f) out -= logderp (z-zd.z, k) * T(zd.d);
-		if (k==0) { out += p[1]; out -= cplx(0,T(2)*pi_<T>()) * T(round(real(out/cplx(0,T(2)*pi_<T>())))); }
+		if (k==0) { out += p[1]; out -= to_cpx<T>(0,T(2)*pi_<T>()) * round(real(out/to_cpx<T>(0,T(2)*pi_<T>()))); }
 		return out;
 	}
 
@@ -102,10 +102,10 @@ namespace vb {
 	}
 
 	template <typename T> auto Constellation1<T>::reduce (cplx z) const -> cplx {
-		while (imag(z) < - imag(tau())/T(2))                     	z += tau();
-		while (imag(z) > imag(tau())/T(2))                       	z -= tau();
-		while (real(z) < real(tau())*imag(z)/imag(tau()) - T(.5))	z += T(1);
-		while (real(z) > real(tau())*imag(z)/imag(tau()) + T(.5))	z -= T(1);
+		while (imag(z) < - imag(tau())/T(2))                      	z += tau();
+		while (imag(z) > imag(tau())/T(2))                        	z -= tau();
+		while (real(z) < real(tau())*imag(z)/imag(tau()) - T(1)/2)	z += T(1);
+		while (real(z) > real(tau())*imag(z)/imag(tau()) + T(1)/2)	z -= T(1);
 		return z;
 	}
 
@@ -120,10 +120,10 @@ namespace vb {
 
 	template <typename T> auto Constellation1<T>::vec () const -> Vector<cplx> {
 		Vector<cplx> bw (dim); unsigned i=0;
-		for (auto zd : b) { bw[i++] = zd.z; }
-		for (auto zd : w) { bw[i++] = zd.z; }
-		for (auto zd : f) { bw[i++] = zd.z; }
-		for (auto z  : p) { bw[i++] = z; }
+		for (const auto & zd : b) { bw[i++] = zd.z; }
+		for (const auto & zd : w) { bw[i++] = zd.z; }
+		for (const auto & zd : f) { bw[i++] = zd.z; }
+		for (const auto & z  : p) { bw[i++] = z; }
 		return bw;
 	}
 
@@ -199,49 +199,49 @@ namespace vb {
 		return os;
 	}
 
-	template <> std::ostream & operator<< (std::ostream & os, const Constellation1<gmp100> & C) {
-		using T = gmp100;
-		T err (C.cost()); T lerr (-log10(err)); int nd = std::max (5,int(lerr)/2-12); if (err==T(0)) nd=10;
+	template <> std::ostream & operator<< (std::ostream & os, const Constellation1<real_t> & C) {
+		using T = real_t;
+		T err (C.cost()); T lerr (-log10(err)); int nd = std::max (5,to_int(lerr)/2-12); if (err==T(0)) nd=10;
 		os << std::setprecision(nd) << std::fixed;
-		T eps = pow(T(.1),nd-5);
+		int eps = nd-5;
 
 		os << "log(lambda)  = " << C.p[1] << std::endl;
 		os << "tau          = " << C.p[0] << std::endl;
-		{ Polynomial<cpxint> P = guess(C.p[0],eps); if (P.degree()>0) os << "\t\troot of " << P << std::endl; }
+		{ auto P = guess_r(C.p[0],eps); if (P) os << "\t\troot of " << *P << std::endl; }
 		os << "invariant j  = " << C.E.j() << std::endl;
-		{ Polynomial<cpxint> P = guess(C.E.j(),eps); if (P.degree()>0) os << "\t\troot of " << P << std::endl; }
+		{ auto P = guess_r(C.E.j(),eps); if (P) os << "\t\troot of " << *P << std::endl; }
 		os << "invariant g2 = " << C.E.g2() << std::endl;
-		{ Polynomial<cpxint> P = guess(C.E.g2(),eps); if (P.degree()>0) os << "\t\troot of " << P << std::endl; }
+		{ auto P = guess_r(C.E.g2(),eps); if (P) os << "\t\troot of " << *P << std::endl; }
 		os << "invariant g3 = " << C.E.g3() << std::endl;
-		{ Polynomial<cpxint> P = guess(C.E.g3(),eps); if (P.degree()>0) os << "\t\troot of " << P << std::endl; }
+		{ auto P = guess_r(C.E.g3(),eps); if (P) os << "\t\troot of " << *P << std::endl; }
 		os << std::endl;
 		os << "Keeping " << nd << " digits." << std::endl;
 		os << std::endl;
 		os << "Black vertices / zeros: " << std::endl;
-		for (unsigned i=0; i<C.b.size(); ++i) {
-			os << "| " << C.b[i].d << "\t" << C.b[i].z << std::endl;
-			Polynomial<cpxint> P = guess (C.b[i].z,eps);
-			if (P.degree()>0) os << "|\t\troot of " << P << std::endl;
+		for (auto & zd : C.b) {
+			os << "| " << zd.d << "\t" << zd.z << std::endl;
+			auto P = guess_r (zd.z,eps);
+			if (P) os << "|\t\troot of " << *P << std::endl;
 		}
 		os << std::endl;
 		os << "White vertices / ones: " << std::endl;
-		for (unsigned i=0; i<C.w.size(); ++i) {
-			os << "| " << C.w[i].d << "\t" << C.w[i].z << std::endl;
-			Polynomial<cpxint> P = guess (C.w[i].z,eps);
-			if (P.degree()>0) os << "|\t\troot of " << P << std::endl;
+		for (auto & zd : C.w) {
+			os << "| " << zd.d << "\t" << zd.z << std::endl;
+			auto P = guess_r (zd.z,eps);
+			if (P) os << "|\t\troot of " << *P << std::endl;
 		}
 		os << std::endl;
 		os << "Red vertices / poles: " << std::endl;
-		for (unsigned i=0; i<C.f.size(); ++i) {
-			os << "| " << C.f[i].d << "\t" << C.f[i].z << std::endl;
-			Polynomial<cpxint> P = guess (C.f[i].z,eps);
-			if (P.degree()>0) os << "|\t\troot of " << P << std::endl;
+		for (auto & zd : C.f) {
+			os << "| " << zd.d << "\t" << zd.z << std::endl;
+			auto P = guess_r (zd.z,eps);
+			if (P) os << "|\t\troot of " << *P << std::endl;
 		}
 		return os;
 	}
 
 	template <typename T> auto Constellation1<T>::bounds () const -> std::pair<cplx,cplx> {
 		T xmin = std::min(T(0),real(tau())), xmax = std::max(T(1),real(T(1)+tau())), ymin = T(0), ymax = imag(tau());
-		return { {xmin,ymin}, {xmax,ymax} };
+		return { to_cpx<T> (xmin,ymin), to_cpx<T> (xmax,ymax) };
 	}
 }

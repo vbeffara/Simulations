@@ -1,10 +1,9 @@
 #include <vb/Figure.h>
 #include <vb/Toroidal.h>
 #include <cassert>
-#include <cmath>
 
 namespace vb {
-	Toroidal::Toroidal (Hypermap M, Hub H) : Hypermap(M), m(I) {
+	Toroidal::Toroidal (Hypermap M, Hub H) : Hypermap(std::move(M)), m(I) {
 		assert (genus()==1);
 		from_hypermap();
 		mode = H['m']; title = H.title;
@@ -81,9 +80,9 @@ namespace vb {
 					if ( ((mode&1)&&(v.bone)) || ((mode&2)&&(!v.bone)) ) F.add (new Circle (z,v.r,Pen(0,.3)));
 					for (int e : sc[v.i]) {
 						if ( ((mode&4)&&(initial[e]&1)) || ((mode&8)&&(v.bone&1)) || ((mode&16)&&(!(v.bone&1))) ) {
-							eee.push_back(z);
-							eee.push_back(z+std::polar(v.r,E[e].a));
-							eee.push_back(NAN);
+							eee.emplace_back(z);
+							eee.emplace_back(z+std::polar(v.r,E[e].a));
+							eee.emplace_back(NAN);
 						}
 					}
 				}
@@ -97,14 +96,14 @@ namespace vb {
 				for (auto v : V) {
 					cpx z = v.z + cpx(a) + cpx(b)*m;
 					if ((imag(z)<-.6)||(imag(z)>1.7*std::max(1.0,imag(m)))||(real(z)<-.8)||(real(z)>2.6)) continue;
-					if ((mode&32)&&(v.bone&2)) F.add (new Circle (z,.015,Pen(0,.5,0,1)));
-					if ((mode&64)&&(v.bone&4)) F.add (new Circle (z,.01,Pen(0,2,WHITE,1)));
-					if ((mode&128)&&(v.bone&8)) F.add (new Circle (z,.01,Pen(0,2,RED,1)));
+					if ((mode&32)&&(v.bone&2)) F.add (new Circle (z,.015,Pen(0,.5,0,true)));
+					if ((mode&64)&&(v.bone&4)) F.add (new Circle (z,.01,Pen(0,2,WHITE,true)));
+					if ((mode&128)&&(v.bone&8)) F.add (new Circle (z,.01,Pen(0,2,RED,true)));
 					if ((mode&256)&&(v.bone&8)) {
 						std::vector<cpx> ast; for (int i=0; i<3; ++i) {
-							ast.push_back (z+std::polar(.013,i*M_PI/3));
-							ast.push_back (z+std::polar(.013,(i+3)*M_PI/3));
-							ast.push_back (NAN);
+							ast.emplace_back (z+std::polar(.013,i*M_PI/3));
+							ast.emplace_back (z+std::polar(.013,(i+3)*M_PI/3));
+							ast.emplace_back (NAN);
 						}
 						F.add (new Path (ast,Pen(0,1)));
 					}
@@ -112,7 +111,7 @@ namespace vb {
 			}
 		}
 
-		F.add (new Polygon ({0,1,cpx(1)+m,m}, Pen(0,0,Color(0,0,0,50),1)));
+		F.add (new Polygon ({0,1,cpx(1)+m,m}, Pen(0,0,Color(0,0,0,50), true)));
 		F.output_pdf();
 	}
 }

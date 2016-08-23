@@ -10,7 +10,7 @@ namespace vb {
 	class Pov_Object {
 	public:
 		Pov_Object (std::string s, bool b = false);
-		virtual ~Pov_Object () {};
+		virtual ~Pov_Object () = default;
 		virtual std::ostream & output_pov (std::ostream & os);
 		void output_pov (const std::string &s);
 
@@ -25,12 +25,12 @@ namespace vb {
 
 	class Pov_Coordinate : public Pov_Object { public: tri t;
 		Pov_Coordinate (tri a) : Pov_Object ("coordinate"), t(a) {}
-		std::ostream & output_pov (std::ostream & os) { return os << t; }
+		std::ostream & output_pov (std::ostream & os) override { return os << t; }
 	};
 
 	class Pov_Coefficient : public Pov_Object { public: double v;
 		Pov_Coefficient (double x) : Pov_Object ("coefficient"), v(x) {}
-		std::ostream & output_pov (std::ostream & os) { return os << v; }
+		std::ostream & output_pov (std::ostream & os) override { return os << v; }
 	};
 
 	class Pov_Scene       	: public Pov_Object { public: Pov_Scene       	();                      	                    	};

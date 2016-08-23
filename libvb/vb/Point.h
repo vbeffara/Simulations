@@ -23,7 +23,7 @@ namespace vb {
 		PointQueue	&operator<< (const Point &p)	{ push(p); return *this; }
 	};
 
-	Point::Point (PointQueue &pq) { pq >> *this; };
+	Point::Point (PointQueue &pq) { pq >> *this; }
 
 	Image      	&operator<< (Image &img,      	const Point &p) { img.put (p,p.c); return img; }
 	CoarseImage	&operator<< (CoarseImage &img,	const Point &p) { img.put (p,p.c); return img; }

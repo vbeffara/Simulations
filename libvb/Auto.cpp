@@ -1,7 +1,7 @@
 #include <vb/Auto.h>
 
 namespace vb {
-	Task::Task (TimePoint t, Duration d, std::function<void()> f) : std::function<void()> (f), next(t), period(d), active(true) {}
+	Task::Task (TimePoint t, Duration d, std::function<void()> f) : std::function<void()> (std::move(f)), next(t), period(d), active(true) {}
 
 	Auto::Auto (double t) : start(now()), next(1), slice(10), n_call(0), task {add_task(t, [this]{this->update();})} {}
 

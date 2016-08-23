@@ -53,6 +53,6 @@ namespace vb {
 
 	void Polygon::draw (cairo_t * cr) {
 		cairo_move_to (cr, z.back().real(), z.back().imag());
-		for (unsigned int i=0; i<z.size(); ++i) cairo_line_to (cr, z[i].real(), z[i].imag());
+		for (auto & zz : z) cairo_line_to (cr, zz.real(), zz.imag());
 	}
 }

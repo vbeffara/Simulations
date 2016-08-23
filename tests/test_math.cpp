@@ -1,19 +1,21 @@
 #include <vb/Elliptic.h>
 
-#define bla(f) 	{ cout << #f << " " << EE.f()  	<<	E.f() 	<< "\n\t\t\t" << norm(EE.f()  	- cpx(double(real(E.f())),double(imag(E.f()))))  	<< endl; }
-#define blaz(f)	{ cout << #f << " " << EE.f(zz)	<<	E.f(z)	<< "\n\t\t\t" << norm(EE.f(zz)	- cpx(double(real(E.f(z))),double(imag(E.f(z)))))	<< endl; }
+#define bla(f) 	{ cout << #f << " " << EE.f()  	<<	E.f() 	<< "\n\t\t\t" << norm(EE.f()  	- cpx(double_approx(real(E.f())),double_approx(imag(E.f()))))  	<< endl; }
+#define blaz(f)	{ cout << #f << " " << EE.f(zz)	<<	E.f(z)	<< "\n\t\t\t" << norm(EE.f(zz)	- cpx(double_approx(real(E.f(z))),double_approx(imag(E.f(z)))))	<< endl; }
 
 using namespace vb; using namespace std;
 
 int main () {
-	cpx   	ttau(.125,1.25),	qq(q_(ttau)),	zz(.25,.75);	Elliptic<double> EE { qq };
-	cpx100	tau(.125,1.25), 	q(q_(tau)),  	z(.25,.75); 	Elliptic<gmp100> E { q };
+    cln::default_float_format = cln::float_format(100);
 
-	cout << setprecision(40);
+	cpx      	ttau(.125,1.25),              	qq(q_<double>(ttau)),	zz(.25,.75);               	Elliptic<double> EE { qq };
+	complex_t	tau = to_cpx<real_t> (1,10)/8,	q(q_<real_t>(tau)),  	z = to_cpx<real_t> (1,3)/4;	Elliptic<real_t> E { q };
+
 	cout << "tau = " << ttau << tau << endl;
 	cout << "z   = " << zz << z << endl;
 	cout << "q   = " << qq << q << endl;
-	cout << "q_t = " << q_t(ttau) << q_t(tau) << endl;
+	cout << "q14 = " << EE.q14 << E.q14 << endl;
+	cout << "q_t = " << q_t<double> (ttau) << q_t<real_t> (tau) << endl;
 	cout << endl;
 	bla(g2); bla(g3);
 	cout << endl;
@@ -33,4 +35,6 @@ int main () {
 	cout << endl;
 	blaz(wp); blaz(wp_z); blaz(wp_q);
 	cout << endl;
+
+	cout << "BesselJ (12,1.0) = " << BesselJ (12,1.0) << endl;
 }

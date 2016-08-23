@@ -20,3 +20,4 @@ out*
 bla*
 /tools/graph
 /Notepad.org
+compile_commands.json

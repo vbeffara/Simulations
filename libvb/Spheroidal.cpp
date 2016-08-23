@@ -1,10 +1,9 @@
 #include <vb/Figure.h>
 #include <vb/Spheroidal.h>
 #include <cassert>
-#include <cmath>
 
 namespace vb {
-	Spheroidal::Spheroidal (Hypermap M, Hub H) : Hypermap(M) {
+	Spheroidal::Spheroidal (Hypermap M, Hub H) : Hypermap(std::move(M)) {
 		assert (genus()==0);
 		from_hypermap();
 		mode = H['m']; title = H.title;
@@ -89,9 +88,9 @@ namespace vb {
 			if ( ((mode&1)&&(v.bone)) || ((mode&2)&&(!v.bone)) ) F.add (new Circle (z,fabs(v.r),Pen(0,.3)));
 			for (int e : sc[v.i]) {
 				if ( ((mode&4)&&(initial[e]&1)) || ((mode&8)&&(v.bone&1)) || ((mode&16)&&(!(v.bone&1))) ) {
-					eee.push_back(z);
-					eee.push_back(z+std::polar(v.r,E[e].a));
-					eee.push_back(NAN);
+					eee.emplace_back(z);
+					eee.emplace_back(z+std::polar(v.r,E[e].a));
+					eee.emplace_back(NAN);
 				}
 			}
 		}
@@ -101,14 +100,14 @@ namespace vb {
 		for (auto v : V) {
 			if (v.r<0) continue;
 			cpx z = v.z;
-			if ((mode&32)&&(v.bone&2)) F.add (new Circle (z,.01,Pen(0,2,BLACK,1)));
-			if ((mode&64)&&(v.bone&4)) F.add (new Circle (z,.01,Pen(0,2,WHITE,1)));
-			if ((mode&128)&&(v.bone&8)) F.add (new Circle (z,.01,Pen(0,2,RED,1)));
+			if ((mode&32)&&(v.bone&2)) F.add (new Circle (z,.01,Pen(0,2,BLACK,true)));
+			if ((mode&64)&&(v.bone&4)) F.add (new Circle (z,.01,Pen(0,2,WHITE,true)));
+			if ((mode&128)&&(v.bone&8)) F.add (new Circle (z,.01,Pen(0,2,RED,true)));
 			if ((mode&256)&&(v.bone&8)) {
 				std::vector<cpx> ast; for (int i=0; i<3; ++i) {
-					ast.push_back (z+std::polar(.013,i*M_PI/3));
-					ast.push_back (z+std::polar(.013,(i+3)*M_PI/3));
-					ast.push_back (NAN);
+					ast.emplace_back (z+std::polar(.013,i*M_PI/3));
+					ast.emplace_back (z+std::polar(.013,(i+3)*M_PI/3));
+					ast.emplace_back (NAN);
 				}
 				F.add (new Path (ast,Pen(0,1)));
 			}

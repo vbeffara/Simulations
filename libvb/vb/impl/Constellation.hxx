@@ -3,15 +3,29 @@
 #include <iomanip>
 
 namespace vb {
-	template <typename T> Constellation<T>::Constellation () {};
+	template <typename T> Constellation<T>::Constellation () = default;
 
 	template <typename T> template <typename U> Constellation<T>::Constellation (const Constellation<U> & C) {
-		for (auto zd : C.b) b.push_back({std::complex<T>(zd.z), zd.d});
-		for (auto zd : C.w) w.push_back({std::complex<T>(zd.z), zd.d});
-		for (auto zd : C.f) f.push_back({std::complex<T>(zd.z), zd.d});
-		for (auto z : C.p)  p.push_back(std::complex<T>(z));
+		for (auto zd : C.b) b.push_back ( { to_cpx<T>(zd.z), zd.d } );
+		for (auto zd : C.w) w.push_back ( { to_cpx<T>(zd.z), zd.d } );
+		for (auto zd : C.f) f.push_back ( { to_cpx<T>(zd.z), zd.d } );
+		for (auto z : C.p)  p.push_back (to_cpx<T>(z));
 		dim = b.size() + w.size() + f.size() + p.size();
-	};
+	}
+
+	static complex_t my_cpx (const cpx & z) {
+		real_t x = cl_float (real(z), cln::default_float_format);
+		real_t y = cl_float (imag(z), cln::default_float_format);
+		return cln::complex (x,y);
+	}
+
+	template<> template<> Constellation<real_t>::Constellation (const Constellation<double> & C) {
+		for (auto zd : C.b) b.push_back ( { my_cpx(zd.z), zd.d } );
+		for (auto zd : C.w) w.push_back ( { my_cpx(zd.z), zd.d } );
+		for (auto zd : C.f) f.push_back ( { my_cpx(zd.z), zd.d } );
+		for (auto z : C.p)  p.push_back (my_cpx(z));
+		dim = b.size() + w.size() + f.size() + p.size();
+	}
 
 	template <typename T> T Constellation<T>::findn () {
 		Vector<cplx> x = vec();
@@ -26,12 +40,12 @@ namespace vb {
 	}
 
 	template <typename T> T Constellation<T>::cost () const {
-	    T out(0); for (auto z : vcost()) out += norm(z);
+	    T out(0); for (const auto & z : vcost()) out += norm(z);
 		T bound = sqrt(sqrt(out));
 		for (unsigned i=0; i<b.size(); ++i) for (unsigned j=0; j<b.size(); ++j) if (i!=j) if (abs(reduce(b[i].z-b[j].z)) < bound) out += T(1);
 		for (unsigned i=0; i<w.size(); ++i) for (unsigned j=0; j<w.size(); ++j) if (i!=j) if (abs(reduce(w[i].z-w[j].z)) < bound) out += T(1);
 		for (unsigned i=0; i<f.size(); ++i) for (unsigned j=0; j<f.size(); ++j) if (i!=j) if (abs(reduce(f[i].z-f[j].z)) < bound) out += T(1);
-	    if (std::isnan(double(out))) out = T(1.234567e89);
+	    if (!isnormal(out)) out = T(123456789);
 	    return out;
 	}
 }

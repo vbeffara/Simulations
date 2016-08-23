@@ -33,6 +33,6 @@ int main (int argc, char ** argv) {
 
 	if (!H['q']) { C.belyi(); cout << endl << C; return 0; }
 
-	Constellation0<gmp100>	Cq (C); Cq.findn(); Cq.belyi();
+	Constellation0<real_t>	Cq (C); Cq.findn(); Cq.belyi();
 	cout << endl << Cq;
 }

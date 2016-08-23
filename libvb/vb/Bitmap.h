@@ -1,6 +1,4 @@
 #pragma once /// \file
-#include <cilk/cilk.h>
-#include <cilk/cilk_api.h>
 #include <vb/Picture.h>
 #include <vb/Array.h>
 
@@ -24,7 +22,7 @@ namespace vb {
 		T dflt;	///< The default value.
 
 	protected:
-		virtual void paint () {
+		void paint () override {
 			Color * stage = (Color *) (cairo_image_surface_get_data (surface));
 			int ppp = pixel_w()/w();
 			for (int x=0; x<w(); ++x)

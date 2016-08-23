@@ -2,10 +2,10 @@
 
 namespace vb {
 	template class Constellation1<double>;
-	template class Constellation1<gmp100>;
+	template class Constellation1<real_t>;
 
-	template Constellation1<gmp100>::Constellation1 (const Constellation1<double> &);
+	template Constellation1<real_t>::Constellation1 (const Constellation1<double> &);
 
 	template std::ostream & operator<< (std::ostream & os, const Constellation1<double> & C);
-	template std::ostream & operator<< (std::ostream & os, const Constellation1<gmp100> & C);
+	template std::ostream & operator<< (std::ostream & os, const Constellation1<real_t> & C);
 }

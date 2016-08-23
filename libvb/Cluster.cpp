@@ -8,7 +8,7 @@ namespace vb {
 	void Cluster::ensure_sub () {
 		if (!sub.empty()) return;
 		long ww = w/3;
-		for (long y=0; y<3; ++y) for (long x=0; x<3; ++x) sub.push_back (Cluster (ul + coo(x*ww,y*ww), ww));
+		for (long y=0; y<3; ++y) for (long x=0; x<3; ++x) sub.emplace_back (ul + coo(x*ww,y*ww), ww);
 		if (np == w*w) for (auto & c : sub) c.np = ww*ww;
 	}
 
@@ -20,14 +20,14 @@ namespace vb {
 		} else {
 			ul.x -= w; ul.y -= w; w *= 3;
 		}
-	};
+	}
 
 	bool Cluster::at (coo z) const {
 		if ((!np) || (!fits(z))) return false;
 		if (np == w*w) return true;
 		if (!sub.empty()) return sub[sub_index(z)].at(z);
 		long x = z.x - ul.x, y = z.y - ul.y, xy = x + w*y; return tile[xy];
-	};
+	}
 
 	void Cluster::put (coo z, bool b) {
 		long plain = w*w*b; if (np == plain) return;
@@ -72,7 +72,7 @@ namespace vb {
 		}
 	}
 
-	void Cluster::dump (std::string pre) {
+	void Cluster::dump (const std::string & pre) {
 		validate ();
 		if (np == 0) { if (pre=="") std::cerr << "EMPTY" << std::endl; return; }
 		if (np == w*w) { std::cerr << pre << "FULL in " << ul << "[" << w << "]" << std::endl; return; }

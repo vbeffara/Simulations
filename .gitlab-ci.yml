@@ -1,15 +1,29 @@
-image: kaskada/cmake-gcc5
-
-before_script:
-  - apt-get update -qq
-  - apt-get install -y -qq libcairo2-dev libfltk1.3-dev libfftw3-dev libfplll-dev libgmp-dev libmpfr-dev libpng++-dev ninja-build libyaml-cpp-dev
+image: vbeffara/simulations
 
 cmake:
   stage: build
+  cache:
+    key: "simulations"
+    paths:
+      - .ccache
   script:
-    - mkdir -p build
+    - export PATH=/usr/lib/ccache:$PATH
+    - export CCACHE_DIR=$PWD/.ccache
+    - mkdir -p build/cov
     - cd build
-    - cmake .. -G Ninja
+    - cmake .. -G Ninja -DCOV=1
     - ninja
-    - cd ..
+  artifacts:
+    paths:
+      - build/
+
+unittests:
+  stage: test
+  script:
+    - Xvfb :4 &
+    - export DISPLAY=:4
+    - lcov -z -d build
     - ./build/tests/tests -r short -l error -x
+    - lcov -c -d build -d libvb -o build/cov/cov.info --no-external -q
+    - codecov -t $CODECOV_TOKEN
+    - coveralls-lcov -t $COVERALLS_TOKEN build/cov/cov.info

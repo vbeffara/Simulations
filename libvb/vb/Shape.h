@@ -2,6 +2,7 @@
 #include <vb/Color.h>
 #include <vb/cpx.h>
 #include <cairo.h>
+#include <vector>
 
 namespace vb {
 	class Pen { public:
@@ -11,9 +12,12 @@ namespace vb {
 
 	class Shape { public:
 		Shape (Pen p_) : p(p_) { }
-		virtual ~Shape() {}
+		virtual ~Shape() = default;
 
-		virtual double left () =0; virtual double right () =0; virtual double top () =0; virtual double bottom () =0;
+		virtual double left () =0;
+		virtual double right () =0;
+		virtual double top () =0;
+		virtual double bottom () =0;
 		virtual void draw (cairo_t * cr) =0;
 
 		Pen p;
@@ -22,11 +26,11 @@ namespace vb {
 	class Segment : public Shape { public:
 		Segment (cpx zz1, cpx zz2, Pen p = Pen()) : Shape(p), z1(zz1), z2(zz2) {}
 
-		double left ()   { return std::min(z1.real(),z2.real()); }
-		double right ()  { return std::max(z1.real(),z2.real()); }
-		double top ()    { return std::max(z1.imag(),z2.imag()); }
-		double bottom () { return std::min(z1.imag(),z2.imag()); }
-		void draw (cairo_t * cr);
+		double left ()   override { return std::min(z1.real(),z2.real()); }
+		double right ()  override { return std::max(z1.real(),z2.real()); }
+		double top ()    override { return std::max(z1.imag(),z2.imag()); }
+		double bottom () override { return std::min(z1.imag(),z2.imag()); }
+		void draw (cairo_t * cr) override;
 
 		cpx z1,z2;
 	};
@@ -34,11 +38,11 @@ namespace vb {
 	class Dot : public Shape { public:
 		Dot (cpx zz, Pen p = Pen()) : Shape(p), z(zz) {}
 
-		double left ()   { return z.real(); }
-		double right ()  { return z.real(); }
-		double top ()    { return z.imag(); }
-		double bottom () { return z.imag(); }
-		void draw (cairo_t * cr);
+		double left ()   override { return z.real(); }
+		double right ()  override { return z.real(); }
+		double top ()    override { return z.imag(); }
+		double bottom () override { return z.imag(); }
+		void draw (cairo_t * cr) override;
 
 		cpx z;
 	};
@@ -46,26 +50,29 @@ namespace vb {
 	class Circle : public Shape { public:
 		Circle (cpx z_, double r_, Pen p = Pen()) : Shape(p), z(z_), r(r_) {}
 
-		double left ()   { return z.real() - r; }
-		double right ()  { return z.real() + r; }
-		double top ()    { return z.imag() + r; }
-		double bottom () { return z.imag() - r; }
-		void draw (cairo_t * cr);
+		double left ()   override { return z.real() - r; }
+		double right ()  override { return z.real() + r; }
+		double top ()    override { return z.imag() + r; }
+		double bottom () override { return z.imag() - r; }
+		void draw (cairo_t * cr) override;
 
 		cpx z; double r;
 	};
 
 	class Path : public Shape { public:
-		Path (std::vector<cpx> z_, Pen p = Pen()) : Shape(p), z(z_) {}
+		Path (std::vector<cpx> z_, Pen p = Pen()) : Shape(p), z(std::move(z_)) {}
 
-		double left (); double right (); double top (); double bottom ();
-		void draw (cairo_t * cr);
+		double left () override;
+		double right () override;
+		double top () override;
+		double bottom () override;
+		void draw (cairo_t * cr) override;
 
 		std::vector<cpx> z;
 	};
 
 	class Polygon : public Path { public:
 		Polygon (std::vector<cpx> z, Pen p = Pen()) : Path(z,p) {}
-		void draw (cairo_t * cr);
+		void draw (cairo_t * cr) override;
 	};
 }

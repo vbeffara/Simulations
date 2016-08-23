@@ -26,19 +26,19 @@ namespace vb {
 	unsigned	Hypermap::genus () const { return 1-euler()/2; }
 
 	bool Hypermap::is_graph () const {
-		for (auto v : alpha.cycles()) if (v.size() != 2) return false;
+		for (const auto & v : alpha.cycles()) if (v.size() != 2) return false;
 		return true;
 	}
 
 	bool Hypermap::is_triangulation () const {
 		if (!(is_graph())) return false;
-		for (auto f : phi.cycles()) if (f.size() != 3) return false;
+		for (const auto & f : phi.cycles()) if (f.size() != 3) return false;
 		return true;
 	}
 
 	bool Hypermap::is_simple (unsigned d) const {
-		for (auto s : sigma.cycles())	if (s.size()<=d) return false;
-		for (auto f : phi.cycles())  	if (f.size()<=d) return false;
+		for (const auto & s : sigma.cycles())	if (s.size()<=d) return false;
+		for (const auto & f : phi.cycles())  	if (f.size()<=d) return false;
 		return true;
 	}
 
@@ -49,11 +49,12 @@ namespace vb {
 
 		for (unsigned a=0; a<N; ++a) {
 			unsigned b=alpha[a], c=phi[a], f=sigma[a], x=phi[b];
-			if (a<b) sigma_c.push_back ({a+N,x+3*N,b+2*N,b+N,c+3*N,a+2*N});
-			alpha_c.push_back ({a,a+N}); alpha_c.push_back ({a+2*N,a+3*N});
-			phi_c.push_back ({a,a+2*N,f+N});
+			if (a<b) sigma_c.emplace_back (Permutation({a+N,x+3*N,b+2*N,b+N,c+3*N,a+2*N}));
+			alpha_c.emplace_back (Permutation({a,a+N}));
+			alpha_c.emplace_back (Permutation({a+2*N,a+3*N}));
+			phi_c.emplace_back (Permutation({a,a+2*N,f+N}));
 		}
-		for (auto F : phi.cycles()) {
+		for (const auto & F : phi.cycles()) {
 			std::vector<unsigned> FF = F;
 			for (unsigned &i : FF) i += 3*N;
 			phi_c.push_back (FF);
@@ -166,8 +167,11 @@ namespace vb {
 	void Hypermap::dessin () {
 		Cycles new_a, new_f; unsigned n=sigma.size(); initial.resize(6*n); Permutation alpha1 = alpha.inverse();
 		for (unsigned i=0; i<n; ++i) {
-			new_a.push_back({i,i+n}); new_a.push_back({i+2*n,i+3*n}); new_a.push_back({i+4*n,i+5*n});
-			new_f.push_back({i,i+2*n,i+4*n}); new_f.push_back({alpha1[i]+n,phi[i]+5*n,i+3*n});
+			new_a.emplace_back(Permutation({i,i+n}));
+			new_a.emplace_back(Permutation({i+2*n,i+3*n}));
+			new_a.emplace_back(Permutation({i+4*n,i+5*n}));
+			new_f.emplace_back(Permutation({i,i+2*n,i+4*n}));
+			new_f.emplace_back(Permutation({alpha1[i]+n,phi[i]+5*n,i+3*n}));
 			initial[i]=3; initial[i+n]=5; initial[i+2*n]=4; initial[i+3*n]=8; initial[i+4*n]=8; initial[i+5*n]=2;
 		}
 		alpha = new_a; phi = new_f; sigma = (alpha*phi).inverse();
@@ -191,7 +195,7 @@ namespace vb {
 		return p[n];
 	}
 
-	double acpa_step (const Hypermap & M, const std::vector<double> in, std::vector<double> & out, std::vector<double> & er) {
+	double acpa_step (const Hypermap & M, const std::vector<double> & in, std::vector<double> & out, std::vector<double> & er) {
 		out = in; double se = 0;
 		for (unsigned i=0; i<out.size(); ++i) {
 			if (M.V[i].fixed) continue;
@@ -241,18 +245,18 @@ namespace vb {
 		for (unsigned i=0; i<V.size(); ++i) V[i].r = r[i];
 	}
 
-	Stream <Hypermap> hypermaps (std::vector<unsigned> s, std::vector<unsigned> a, std::vector<unsigned> p) {
+	Stream <Hypermap> hypermaps (const std::vector<unsigned> & s, const std::vector<unsigned> & a, const std::vector<unsigned> & p) {
 		Cycles cs; int i=0;
 		for (int l : s) { std::vector<unsigned> c; for (int j=0; j<l; ++j) c.push_back(i++); cs.push_back (c); }
 		Permutation sigma (cs);
 		return Stream<Hypermap> ([sigma,a,p](Sink<Hypermap> & yield) {
 			std::vector<Hypermap> hs;
-			for (auto alpha : permutations(a)) {
+			for (const auto & alpha : permutations(a)) {
 				if (!connected(sigma,alpha)) continue;
 				Permutation phi = (sigma*alpha).inverse(); if (phi.signature() != p) continue;
 				Hypermap h(sigma,alpha,phi);
-				h.normalize(); bool done=0;
-				for (auto & hh : hs) if (h==hh) { done=1; break; }
+				h.normalize(); bool done=false;
+				for (auto & hh : hs) if (h==hh) { done=true; break; }
 				if (!done) { hs.push_back(h); yield(h); }
 			}
 		});

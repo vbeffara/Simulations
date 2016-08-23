@@ -13,9 +13,9 @@ namespace vb {
 			unsigned N = M.sigma.size(), inf=0, dinf=0;
 			for (auto c : M.phi.cycles()) { unsigned i = S.E[c[0]+3*N].src, d = S.V[i].adj.size(); if (d>dinf) { inf=i; dinf=d; } }
 			S.linear (1,-S.V[inf].z); S.inversion(); S.linear (-1/S.V[inf].r,0); S.mobiusto0 (S.V[S.E[0].src].z);
-			b.clear(); for (auto c : M.sigma.cycles())	{                              	b.push_back( { S.V[S.E[c[0]].src].z,    	c.size() } ); }
-			w.clear(); for (auto c : M.alpha.cycles())	{                              	w.push_back( { S.V[S.E[c[0]+N].src].z,  	c.size() } ); }
-			f.clear(); for (auto c : M.phi.cycles())  	{ if (S.E[c[0]+3*N].src != inf)	f.push_back( { S.V[S.E[c[0]+3*N].src].z,	c.size() } ); }
+			b.clear(); for (auto c : M.sigma.cycles())	{                              	b.push_back( { to_cpx<T>(S.V[S.E[c[0]].src].z),    	c.size() } ); }
+			w.clear(); for (auto c : M.alpha.cycles())	{                              	w.push_back( { to_cpx<T>(S.V[S.E[c[0]+N].src].z),  	c.size() } ); }
+			f.clear(); for (auto c : M.phi.cycles())  	{ if (S.E[c[0]+3*N].src != inf)	f.push_back( { to_cpx<T>(S.V[S.E[c[0]+3*N].src].z),	c.size() } ); }
 			dim = b.size() + w.size() + f.size();
 			make_c_0();
 			if (findn() > T(1e-6)) continue;
@@ -23,7 +23,7 @@ namespace vb {
 		}
 	}
 
-	template <typename T> template <typename U> Constellation0<T>::Constellation0 (const Constellation0<U> & C) : Constellation<T>(C) { dim--; };
+	template <typename T> template <typename U> Constellation0<T>::Constellation0 (const Constellation0<U> & C) : Constellation<T>(C) { dim--; }
 
 	template <typename T> auto Constellation0<T>::operator() (cplx z) const -> cplx {
 		cplx out (p[0]);
@@ -57,7 +57,7 @@ namespace vb {
 	}
 
 	template <typename T> void Constellation0<T>::make_p_1 () {
-		T eps = pow(cost(),T(.25)); if (eps > T(.1)) eps = T(.1);
+		T eps = real(pow(cost(),T(.25))); if (eps > T(.1)) eps = T(.1);
 		Polynomial<cplx> P; for (auto zd : b) for (unsigned j=0; j<zd.d; ++j) P.add_root(zd.z);
 		Polynomial<cplx> Q; for (auto zd : f) for (unsigned j=0; j<zd.d; ++j) Q.add_root(zd.z);
 		unsigned i=0; while (norm(P[i])<eps) ++i;
@@ -144,37 +144,47 @@ namespace vb {
 		return os;
 	}
 
-	template <> std::ostream & operator<< (std::ostream & os, const Constellation0<gmp100> & C) {
-		using T = gmp100;
-		T err (C.cost()); T lerr (-log10(err)); int nd = std::max (5,int(lerr)/2-7); if (err==T(0)) nd=10;
+	template <> std::ostream & operator<< (std::ostream & os, const Constellation0<real_t> & C) {
+		using T = real_t;
+		T err (C.cost()); T lerr (-log10(err)); int nd = std::max (5,to_int(lerr)/2-10); if (err==T(0)) nd=10;
 		os << std::setprecision(nd) << std::fixed;
 		os << "Keeping " << nd << " digits." << std::endl << std::endl;
 
 		os << "Black vertices / zeros: " << std::endl;
-		for (unsigned i=0; i<C.b.size(); ++i) {
-			os << "| " << C.b[i].d << "\t" << C.b[i].z << std::endl;
-			Polynomial<cpxint> P = guess (C.b[i].z,T(pow(T(.1),nd)));
-			if (P.degree()>0) os << "|\t\troot of " << P << std::endl;
+		for (auto & zd : C.b) {
+			os << "| " << zd.d << "\t" << zd.z << std::endl;
+			auto P = guess_r (zd.z,nd);
+			if (P) os << "|\t\troot of " << *P << std::endl;
 		}
 		os << std::endl;
 		os << "White vertices / ones: " << std::endl;
-		for (unsigned i=0; i<C.w.size(); ++i) {
-			os << "| " << C.w[i].d << "\t" << C.w[i].z << std::endl;
-			Polynomial<cpxint> P = guess (C.w[i].z,T(pow(T(.1),nd)));
-			if (P.degree()>0) os << "|\t\troot of " << P << std::endl;
+		for (auto & zd : C.w) {
+			os << "| " << zd.d << "\t" << zd.z << std::endl;
+			auto P = guess_r (zd.z,nd);
+			if (P) os << "|\t\troot of " << *P << std::endl;
 		}
 		os << std::endl;
 		os << "Red vertices / poles: " << std::endl;
-		for (unsigned i=0; i<C.f.size(); ++i) {
-			os << "| " << C.f[i].d << "\t" << C.f[i].z << std::endl;
-			Polynomial<cpxint> P = guess (C.f[i].z,T(pow(T(.1),nd)));
-			if (P.degree()>0) os << "|\t\troot of " << P << std::endl;
+		for (auto & zd : C.f) {
+			os << "| " << zd.d << "\t" << zd.z << std::endl;
+			auto P = guess_r (zd.z,nd);
+			if (P) os << "|\t\troot of " << *P << std::endl;
 		}
 		os << std::endl;
 		os << u8"λ     := " << C.p[0] << std::endl;
-		Polynomial<cpxint> L = guess (C.p[0],T(pow(T(.1),nd))); if (L.degree()>0) os << u8"Λ[z_] := " << L << std::endl;
-		Polynomial<cpx100> P; for (auto zd : C.b) for (unsigned j=0; j<zd.d; ++j) P.add_root(zd.z); os << "P[z_] := " << P << std::endl;
-		Polynomial<cpx100> Q; for (auto zd : C.f) for (unsigned j=0; j<zd.d; ++j) Q.add_root(zd.z); os << "Q[z_] := " << Q << std::endl;
+		auto L = guess_r (C.p[0],nd); if (L) os << u8"Λ[z_] := " << *L << std::endl;
+		Polynomial<complex_t> P; for (auto zd : C.b) for (unsigned j=0; j<zd.d; ++j) P.add_root(zd.z);
+		for (auto & x : P) {
+			auto xx = cln::complex (round1(realpart(x)), round1(imagpart(x)));
+			if (abs(x - xx) < pow(T(.1),nd)) x = xx;
+		}
+		os << "P[z_] := " << P << std::endl;
+		Polynomial<complex_t> Q; for (auto zd : C.f) for (unsigned j=0; j<zd.d; ++j) Q.add_root(zd.z);
+		for (auto & x : Q) {
+			auto xx = cln::complex (round1(realpart(x)), round1(imagpart(x)));
+			if (abs(x - xx) < pow(T(.1),nd)) x = xx;
+		}
+		os << "Q[z_] := " << Q << std::endl;
 		return os;
 	}
 
@@ -183,11 +193,14 @@ namespace vb {
 		for (auto z : b) { xmin=std::min(xmin,real(z.z)); xmax=std::max(xmax,real(z.z)); ymin=std::min(ymin,imag(z.z)); ymax=std::max(ymax,imag(z.z)); }
 		for (auto z : f) { xmin=std::min(xmin,real(z.z)); xmax=std::max(xmax,real(z.z)); ymin=std::min(ymin,imag(z.z)); ymax=std::max(ymax,imag(z.z)); }
 		for (auto z : w) { xmin=std::min(xmin,real(z.z)); xmax=std::max(xmax,real(z.z)); ymin=std::min(ymin,imag(z.z)); ymax=std::max(ymax,imag(z.z)); }
-		return { {xmin,ymin}, {xmax,ymax} };
+		return { to_cpx<T> (xmin,ymin), to_cpx<T> (xmax,ymax) };
 	}
 
 	template <typename T> boost::optional<Hypermap> Constellation0<T>::explore () const {
-		std::vector<Star<T>> Z; for (auto z : b) Z.push_back(z); for (auto z : f) Z.push_back(z); for (auto z : w) Z.push_back(z);
+		std::vector<Star<T>> Z;
+		for (const auto & z : b) Z.push_back(z);
+		for (const auto & z : f) Z.push_back(z);
+		for (const auto & z : w) Z.push_back(z);
 
 		unsigned long maxdeg=0; for (auto z : Z) maxdeg = std::max (maxdeg, z.d);
 
@@ -204,9 +217,9 @@ namespace vb {
 			std::vector<cplx> hs;
 			std::vector<unsigned> he;
 
-			cplx u = z.z + rad*exp(cplx(0,.001)); T s = imag((*this)(u));
+			cplx u = z.z + rad*exp(to_cpx<T>(0,.001)); T s = imag((*this)(u));
 			for (unsigned i=0; i<10*z.d; ++i) {
-				u = z.z + exp(cplx(0,2*M_PI/(10*z.d))) * (u-z.z);
+				u = z.z + exp(to_cpx<T>(0,2*M_PI/(10*z.d))) * (u-z.z);
 				T ns = imag((*this)(u));
 				if (s*ns<0) {
 					hs.push_back(u); s=ns;
@@ -220,10 +233,10 @@ namespace vb {
 
 		std::vector<cplx> hs;
 		std::vector<unsigned> he;
-		cplx u = large*exp(cplx(0,.001));
+		cplx u = large*exp(to_cpx<T>(0,.001));
 		T s = imag((*this)(u));
 		for (unsigned i=0; i<10*maxdeg; ++i) {
-			u = exp(cplx(0,-2*M_PI/(10*maxdeg))) * u;
+			u = exp(to_cpx<T>(0,-2*M_PI/(10*maxdeg))) * u;
 			T ns = imag((*this)(u));
 			if (s*ns<0) {
 				hs.push_back(u); s=ns;
@@ -238,11 +251,11 @@ namespace vb {
 		for (unsigned i=0; i<Z.size(); ++i) {
 			for (unsigned j=0; j<hands[i].size(); ++j) {
 				auto l = hands[i][j];
-				auto r = Z[i].z + exp(cplx(0,-2*M_PI/(10*Z[i].d))) * (l-Z[i].z);
+				auto r = Z[i].z + exp(to_cpx<T>(0,-2*M_PI/(10*Z[i].d))) * (l-Z[i].z);
 				auto sl = imag((*this)(l));
 				bool looking = true;
 				while (looking) {
-					cplx nz = l + exp(cplx(0,M_PI/3)) * (r-l);
+					cplx nz = l + exp(to_cpx<T>(0,M_PI/3)) * (r-l);
 					if (abs(nz)>large) {
 						T d = large; int h = -1; int k=hands.size()-1;
 						for (unsigned kk=0; kk<hands[k].size(); ++kk) {
@@ -250,7 +263,7 @@ namespace vb {
 							if (nd < d) { d = abs(nz-hands[k][kk]); h = kk; }
 						}
 						if (h<0) return boost::none;
-						pairs.push_back({halfedges[i][j],halfedges[k][h]});
+						pairs.emplace_back(std::vector<unsigned> {halfedges[i][j],halfedges[k][h]});
 						looking = false;
 					}
 					for (unsigned k=0; k<Z.size(); ++k) if (abs(nz-Z[k].z) < rad) {
@@ -261,7 +274,7 @@ namespace vb {
 						}
 						if (h<0) return boost::none;
 						if (halfedges[i][j] < halfedges[k][h])
-							pairs.push_back({halfedges[i][j],halfedges[k][h]});
+							pairs.emplace_back(std::vector<unsigned> {halfedges[i][j],halfedges[k][h]});
 						looking = false;
 					}
 					if (sl*imag((*this)(nz))>0) l=nz; else r=nz;

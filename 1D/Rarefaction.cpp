@@ -2,11 +2,11 @@
  * Rarefaction - TASEP Rarefaction fan
  */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 #include <unistd.h>
-#include <string.h>
-#include <time.h>
 
 #include <vb/PRNG.h>
 
@@ -18,7 +18,7 @@ int main (int argc, char **argv) {
   char ch;
 
   n = 20;
-  
+
   while ((ch = getopt(argc,argv,"hn:")) != -1) {
     switch (ch) {
     case 'n':
