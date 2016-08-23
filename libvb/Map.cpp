@@ -398,7 +398,6 @@ namespace vb {
           nr = v[i]->r + (v[i]->r-old_rad[i])/sqrtlambda;
           if (nr>0) v[i]->r = nr;
         }
-        old_lambda = 0.0;
       }
     }
 

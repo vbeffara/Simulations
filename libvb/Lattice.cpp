@@ -76,12 +76,11 @@ namespace vb {
   void Lattice::optimize (double f (Lattice const &), double eps) {
     double cost = f(*this);
     double old_cost = cost + eps + 1;
-    double tmp_cost = cost;
     while (old_cost - cost > eps) {
       old_cost = cost;
       double delta = sqrt(cost)/10;
 
-      tau += cpx(delta,0); tmp_cost = f(*this);
+      tau += cpx(delta,0); double tmp_cost = f(*this);
       if (tmp_cost < cost) cost = tmp_cost;
       else {
         tau -= cpx(2*delta,0); tmp_cost = f(*this);
