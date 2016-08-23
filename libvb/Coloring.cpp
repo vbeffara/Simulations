@@ -31,7 +31,7 @@ namespace vb {
 				if (!u) cs.push_back(c);
 			}
 		}
-		cilk_for (auto c : cs) at(c) = aa_color(c,true);
+		cilk_for (unsigned i=0; i<cs.size(); ++i) at(cs[i]) = aa_color(cs[i],true);
 	}
 
 	void Coloring::scale (double s) { cpx mid = (z1+z2)/2.0; z1 = mid + s * (z1-mid); z2 = mid + s * (z2-mid); }
