@@ -197,7 +197,10 @@ namespace vb {
 	}
 
 	template <typename T> boost::optional<Hypermap> Constellation0<T>::explore () const {
-		std::vector<Star<T>> Z; for (auto z : b) Z.push_back(z); for (auto z : f) Z.push_back(z); for (auto z : w) Z.push_back(z);
+		std::vector<Star<T>> Z;
+		for (const auto & z : b) Z.push_back(z);
+		for (const auto & z : f) Z.push_back(z);
+		for (const auto & z : w) Z.push_back(z);
 
 		unsigned long maxdeg=0; for (auto z : Z) maxdeg = std::max (maxdeg, z.d);
 

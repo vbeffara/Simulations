@@ -6,14 +6,14 @@
 namespace vb {
 	class Value : public std::string {
 	public:
-		Value (const std::string s = "") : std::string (s) {}
-		Value operator= (std::string s) { std::string::operator=(s); return *this; }
+		Value (const std::string & s = "") : std::string (s) {}
+		Value operator= (const std::string & s) { std::string::operator=(s); return *this; }
 
-		operator bool()  	const { return atoi(c_str()); }
-		operator int()   	const { return atoi(c_str()); }
+		operator bool()    	const { return atoi(c_str()); }
+		operator int()     	const { return atoi(c_str()); }
 		operator unsigned()	const { return atoi(c_str()); }
-		operator long()  	const { return atoi(c_str()); }
-		operator double()	const { return atof(c_str()); }
+		operator long()    	const { return atoi(c_str()); }
+		operator double()  	const { return atof(c_str()); }
 	};
 
 	class Hub : public std::map <char,Value> {

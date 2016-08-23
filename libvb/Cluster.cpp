@@ -72,7 +72,7 @@ namespace vb {
 		}
 	}
 
-	void Cluster::dump (std::string pre) {
+	void Cluster::dump (const std::string & pre) {
 		validate ();
 		if (np == 0) { if (pre=="") std::cerr << "EMPTY" << std::endl; return; }
 		if (np == w*w) { std::cerr << pre << "FULL in " << ul << "[" << w << "]" << std::endl; return; }

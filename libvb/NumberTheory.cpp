@@ -12,7 +12,7 @@ namespace vb {
 
 	using namespace cln;
 
-	boost::optional<cl_UP_R> guess (cl_R x, int nd) {
+	boost::optional<cl_UP_R> guess (const cl_R & x, int nd) {
 		cl_F xf = cl_float(x);
 		auto m = expt (cl_float(10,xf),nd*2/3);
 
@@ -46,7 +46,7 @@ namespace vb {
 		return boost::none;
 	}
 
-	boost::optional<cl_UP_N> guess_c (cl_N x, int nd) {
+	boost::optional<cl_UP_N> guess_c (const cl_N & x, int nd) {
 		auto m = expt (cl_float(10),nd*2/3);
 
 		for (int d=1; d<=nd/10; ++d) {
@@ -87,7 +87,7 @@ namespace vb {
 		return boost::none;
 	}
 
-	boost::optional<cl_UP_N> guess_r (cl_N x, int nd) {
+	boost::optional<cl_UP_N> guess_r (const cl_N & x, int nd) {
 		auto m = expt (cl_float(10),nd*2/3);
 
 		for (int d=1; d<=nd/10; ++d) {

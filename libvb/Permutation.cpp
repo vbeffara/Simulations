@@ -3,7 +3,7 @@
 
 namespace vb {
 	Permutation::Permutation (Cycles & c) {
-		unsigned sz=0; for (auto v : c) sz += v.size();
+		unsigned sz=0; for (const auto & v : c) sz += v.size();
 		resize(sz);
 		for (auto v : c) {
 			for (unsigned i=0; i<v.size()-1; ++i) at(v[i])=v[i+1];
@@ -25,7 +25,7 @@ namespace vb {
 
 	std::vector<unsigned> Permutation::signature () const {
 		vector<unsigned> output;
-		for (auto c : cycles()) output.push_back(c.size());
+		for (const auto & c : cycles()) output.push_back(c.size());
 		sort (output.begin(),output.end());
 		return output;
 	}
@@ -102,7 +102,7 @@ namespace vb {
 					for (int i=0; i<n; ++i) missed[i]=i;
 					for (auto i : cc) missed[i]=0;
 					for (int i=0, j=0; j<n; ++j) if (missed[j]) missed[i++] = missed[j];
-					for (auto p : permutations(ns)) {
+					for (auto & p : permutations(ns)) {
 						auto out = p.cycles();
 						for (auto & c : out) for (auto & i : c) i = missed[i];
 						out.push_back (cc); yield (out);

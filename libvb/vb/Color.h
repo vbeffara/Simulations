@@ -9,7 +9,7 @@ namespace vb {
 		unsigned char g; ///< The green component.
 		unsigned char b; ///< The blue component.
 
-		Color (unsigned char R, unsigned char G, unsigned char B, unsigned char A=255)	: a(A), r(R), g(G), b(B)	{}
+		Color (unsigned char R, unsigned char G, unsigned char B, unsigned char A=255) 	: a(A), r(R), g(G), b(B)	{}
 #else
 		unsigned char b; ///< The blue component.
 		unsigned char g; ///< The green component.

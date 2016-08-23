@@ -6,8 +6,8 @@
 #define NSTEPS 10000
 #define STEPSIZE 10000
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 #include <vb/PRNG.h>
 
@@ -26,6 +26,6 @@ int main() {
     }
     printf ("%lf\n",h);
   }
-  
+
   return 0;
 }

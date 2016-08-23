@@ -12,7 +12,7 @@ namespace vb {
 	Hub::Hub () {}
 
 	void Hub::init (std::string t, int argc, char ** argv, std::string c) {
-		title = t; help = "Syntax : " + c;
+		title = std::move(t); help = "Syntax : " + c;
 
 		std::vector<std::string> fs;	boost::split (fs, argv[0], boost::is_any_of(R"(/\)"));
 		prog = fs.back(); dir = "output/" + prog + "/";
