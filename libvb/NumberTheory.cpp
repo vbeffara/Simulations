@@ -1,6 +1,6 @@
 // #include <vb/impl/NumberTheory.hxx>
 #include <vb/NumberTheory.h>
-#include <vb/util.h>
+#include <boost/lexical_cast.hpp>
 #define DPE_USE_LONGDOUBLE
 #include <fplll.h>
 
@@ -31,8 +31,8 @@ namespace vb {
 
 			vector<cl_I> V (d+1,0);
 			for (int j=0; j<d+1; ++j) {
-				auto ai = reparse<cl_I> (o[j]);
-				if (ai!=0) for (int i=0; i<=d; ++i) V[i] += ai * reparse<cl_I> (M[j][i+1]);
+				auto ai = boost::lexical_cast<cl_I> (o[j]);
+				if (ai!=0) for (int i=0; i<=d; ++i) V[i] += ai * boost::lexical_cast<cl_I> (M[j][i+1]);
 			}
 
 			auto P = find_univpoly_ring (cl_R_ring, cl_symbol("z")) -> create (d);
@@ -70,8 +70,8 @@ namespace vb {
 
 			vector<cl_I> V (2*(d+1),0);
 			for (int j=0; j<2*(d+1); ++j) {
-				auto ai = reparse<cl_I> (o[j]);
-				if (ai!=0) for (int i=0; i<2*(d+1); ++i) V[i] += ai * reparse<cl_I> (M[j][i+2]);
+				auto ai = boost::lexical_cast<cl_I> (o[j]);
+				if (ai!=0) for (int i=0; i<2*(d+1); ++i) V[i] += ai * boost::lexical_cast<cl_I> (M[j][i+2]);
 			}
 
 			auto P = find_univpoly_ring (cl_C_ring, cl_symbol("z")) -> create (d);
@@ -107,8 +107,8 @@ namespace vb {
 
 			vector<cl_I> V (2*(d+1),0);
 			for (int j=0; j<d+1; ++j) {
-				auto ai = reparse<cl_I> (o[j]);
-				if (ai!=0) for (int i=0; i<d+1; ++i) V[i] += ai * reparse<cl_I> (M[j][i+2]);
+				auto ai = boost::lexical_cast<cl_I> (o[j]);
+				if (ai!=0) for (int i=0; i<d+1; ++i) V[i] += ai * boost::lexical_cast<cl_I> (M[j][i+2]);
 			}
 
 			auto P = find_univpoly_ring (cl_C_ring, cl_symbol("z")) -> create (d);

@@ -1,5 +1,6 @@
 #include <vb/Hub.h>
 #include <vb/cpx.h>
+#include <boost/lexical_cast.hpp>
 #include <chrono>
 
 using namespace vb; using namespace std; using namespace cln;
@@ -11,18 +12,10 @@ double time () {
 	return dur.count();
 }
 
-template <typename T> void test (string s, int n) {
-	double t = time(); T z (0);
+template <typename T> void test (string s, int n, const char * in = "0") {
+	double t = time(); T z = boost::lexical_cast<T> (in);
 	for (int i=0; i<n; ++i) z = exp(-z);
-	ostringstream os; os << time()-t;
-	cout << s << " | time = " << os.str() << "\t | result = " << z << endl;
-}
-
-template <typename T> void test_ (string s, int n, const char * in) {
-	double t = time(); cl_F z = in;
-	for (int i=0; i<n; ++i) z = exp(-z);
-	ostringstream os; os << time()-t;
-	cout << s << " | time = " << os.str() << "\t | result = " << z << endl;
+	cout << s << " | time = " << time()-t << "\t | result = " << z << endl;
 }
 
 int main (int argc, char ** argv) {
@@ -32,9 +25,9 @@ int main (int argc, char ** argv) {
 	test <float>       ("Standard float              ", n);
 	test <double>      ("Standard double             ", n);
 	test <long double> ("Long double                 ", n);
-	test_<cl_SF>       ("CLN short float             ", n, "0s0");
-	test_<cl_FF>       ("CLN single float            ", n, "0f0");
-	test_<cl_DF>       ("CLN double float            ", n, "0d0");
+	test <cl_F>        ("CLN short float             ", n, "0s0");
+	test <cl_F>        ("CLN single float            ", n, "0f0");
+	test <cl_F>        ("CLN double float            ", n, "0d0");
 	test <real_t>      ("CLN long float (100 digits) ", n);
 	default_float_format = float_format(200);
 	test <real_t>      ("CLN long float (200 digits) ", n);

@@ -1,5 +1,6 @@
 #pragma once /// \file
 #define BOOST_DISABLE_ASSERTS 1
+#include <boost/lexical_cast.hpp>
 #include <boost/random.hpp>
 #include <random>
 #include <sstream>
@@ -24,8 +25,8 @@ namespace vb {
 		   	return i;
 		}
 
-		std::string	state ()                    	{ std::ostringstream os;    	os << (*this); return os.str();	}
-		void       	state (const std::string &s)	{ std::istringstream is (s);	is >> (*this);                 	}
+		std::string	state ()                    	{ return boost::lexical_cast<std::string> (*this); }
+		void       	state (const std::string &s)	{ std::istringstream is (s); is >> (*this); }
 	};
 
 	extern PRNG prng;
