@@ -27,8 +27,6 @@ namespace vb {
 		int     	euler           	() const;
 		unsigned	genus           	() const;
 
-		std::string name () const; // For triangulations, assumed to be normalized
-
 		void flip (unsigned e);
 
 		void	acpa	();

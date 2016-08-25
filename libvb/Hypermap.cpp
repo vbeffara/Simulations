@@ -95,13 +95,6 @@ namespace vb {
 
 	void Hypermap::normalize () { relabel(rebasing()); }
 
-	std::string Hypermap::name () const {
-		assert(is_triangulation());
-		std::ostringstream os;
-		for (auto v : phi.cycles()) { os << char('a' + v[1] - v[0] - 1) << char('a' + v[2] - v[0] - 1); }
-		return os.str();
-	}
-
 	void Hypermap::mirror () { alpha = sigma*phi; sigma = sigma.inverse(); phi = phi.inverse(); }
 
 	void Hypermap::dual () { sigma = sigma.inverse(); alpha = alpha.inverse(); phi = phi.inverse(); swap(sigma,phi); }
