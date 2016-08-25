@@ -76,17 +76,4 @@ namespace vb {
 		lu_substitute(AA, pm, x);
 		return x;
 	}
-
-	template <typename T> void printmath (std::ostream & os, const Vector<T> & v) {
-		os << "{"; bool first=true;
-		for (unsigned i=0; i<v.size(); ++i) { os << (first ? " " : ", ") << v(i); first = false; }
-		os << "}";
-	}
-
-	template <typename T> void printmath (std::ostream & os, const Matrix<T> & A) {
-		bool ffirst=true; for (unsigned i=0; i<A.size1(); ++i) {
-			os << (ffirst ? "{{" : " },\n{"); ffirst = false;
-			bool first=true; for (unsigned j=0; j<A.size2(); ++j) { os << (first ? " " : ", ") << A(i,j); first = false; }
-		} os << " }}";
-	}
 }

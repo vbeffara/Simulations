@@ -18,9 +18,6 @@ namespace vb {
 	template <typename T> bool inv (const Matrix<T> & input, Matrix<T> & inverse);
 
 	template <typename T> Vector<T> solve (const Matrix<T> & A, const Vector<T> & y);
-
-	template <typename T> void printmath (std::ostream & os, const Vector<T> & v);
-	template <typename T> void printmath (std::ostream & os, const Matrix<T> & A);
 }
 
 #include <vb/impl/LinearAlgebra.hxx>
