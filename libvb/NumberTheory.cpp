@@ -1,8 +1,12 @@
 // #include <vb/impl/NumberTheory.hxx>
 #include <vb/NumberTheory.h>
 #include <boost/lexical_cast.hpp>
-#define DPE_USE_LONGDOUBLE
 #include <fplll.h>
+
+#ifdef FPLLL4
+#define lll_reduction lllReduction
+#define shortest_vector shortestVector
+#endif
 
 namespace vb {
 	// template Polynomial<bigint> guess (real_t x, real_t eps);
@@ -27,7 +31,7 @@ namespace vb {
 				t *= xf;
 			}
 
-			lllReduction(M); vector<Z_NR<mpz_t>> o; shortestVector(M,o);
+			lll_reduction(M); vector<Z_NR<mpz_t>> o; shortest_vector(M,o);
 
 			vector<cl_I> V (d+1,0);
 			for (int j=0; j<d+1; ++j) {
@@ -66,7 +70,7 @@ namespace vb {
 				t *= x;
 			}
 
-			lllReduction(M); vector<Z_NR<mpz_t>> o; shortestVector(M,o);
+			lll_reduction(M); vector<Z_NR<mpz_t>> o; shortest_vector(M,o);
 
 			vector<cl_I> V (2*(d+1),0);
 			for (int j=0; j<2*(d+1); ++j) {
@@ -103,7 +107,7 @@ namespace vb {
 				t *= x;
 			}
 
-			lllReduction(M); vector<Z_NR<mpz_t>> o; shortestVector(M,o);
+			lll_reduction(M); vector<Z_NR<mpz_t>> o; shortest_vector(M,o);
 
 			vector<cl_I> V (2*(d+1),0);
 			for (int j=0; j<d+1; ++j) {
