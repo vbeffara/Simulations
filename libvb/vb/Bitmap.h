@@ -1,4 +1,5 @@
 #pragma once /// \file
+#include <gsl/gsl>
 #include <vb/Picture.h>
 #include <vb/Array.h>
 
@@ -23,8 +24,9 @@ namespace vb {
 
 	protected:
 		void paint () override {
-			Color * stage = (Color *) (cairo_image_surface_get_data (surface));
 			int ppp = pixel_w()/w();
+			gsl::span <Color> stage ((Color *) cairo_image_surface_get_data (surface), ppp*w() + stride*(ppp*h()-1));
+
 			for (int x=0; x<w(); ++x)
 				for (int y=0; y<h(); ++y)
 					for (int dx=0; dx<ppp; ++dx)

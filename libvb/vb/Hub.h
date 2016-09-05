@@ -7,7 +7,7 @@ namespace vb {
 	class Value : public std::string {
 	public:
 		Value (const std::string & s = "") : std::string (s) {}
-		Value operator= (const std::string & s) { std::string::operator=(s); return *this; }
+		Value & operator= (const std::string & s) { std::string::operator=(s); return *this; }
 
 		operator bool()    	const { return atoi(c_str()); }
 		operator int()     	const { return atoi(c_str()); }

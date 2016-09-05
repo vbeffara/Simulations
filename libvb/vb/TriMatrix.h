@@ -1,6 +1,6 @@
-#pragma once /// \file
+#pragma once
+
 #include <vb/coo.h>
-#include <vector>
 
 namespace vb {
 	#define BSIZE 128

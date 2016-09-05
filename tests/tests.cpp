@@ -68,11 +68,11 @@ BOOST_AUTO_TEST_CASE (test_Cluster) {
 	C.insert ({91823749,-2793474});
 	C.remove ({1234,5678});
 
-	assert (C.at({35,42}));
-	assert (!C.at({1234,5678}));
-	assert (C.at({91823749,-2793474}));
-	assert (!C.at({3,4}));
-	assert (!C.at({981327,2371827}));
+	BOOST_CHECK (C.at({35,42}));
+	BOOST_CHECK (!C.at({1234,5678}));
+	BOOST_CHECK (C.at({91823749,-2793474}));
+	BOOST_CHECK (!C.at({3,4}));
+	BOOST_CHECK (!C.at({981327,2371827}));
 }
 
 // Utility classes
@@ -123,10 +123,9 @@ BOOST_AUTO_TEST_CASE (test_Value) {
 // Globals and control structures
 
 BOOST_AUTO_TEST_CASE (test_Hub) {
-	const char * c_argv [] = { "cmd", "-s", "3", "-u" };
-	char * argv[4]; for (int i=0; i<4; ++i) argv[i] = strdup (c_argv[i]);
+	char * argv [] = { strdup ("cmd"), strdup ("-s"), strdup ("3"), strdup ("-u") };
 
-	Hub H; H.init ("Title", 4, argv, "s=5,t=7,u,v");
+	Hub H; H.init ("Title", 4, static_cast<char**> (argv), "s=5,t=7,u,v");
 	BOOST_CHECK (int(H['t']) == 7);
 	BOOST_CHECK (int(H['s']) == 3);
 	BOOST_CHECK (H['u']);
@@ -141,7 +140,7 @@ BOOST_AUTO_TEST_CASE (test_Stream) {
 	BOOST_CHECK (size(permutations(7)) == fact(7));
 	BOOST_CHECK (size(hypermaps ({2,2,2},{2,2,2},{3,3})) == 1);
 
-	int n=0; for (auto c : partitions(6)) n += size (permutations(c));
+	int n=0; for (const auto & c : partitions(6)) n += size (permutations(c));
 	BOOST_CHECK (n == fact(6));
 }
 

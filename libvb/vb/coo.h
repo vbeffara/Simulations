@@ -1,6 +1,7 @@
 #pragma once /// @file
 
 #include <vb/cpx.h>
+#include <vector>
 
 namespace vb {
 	class coo { public: long x,y;
@@ -40,6 +41,6 @@ namespace vb {
 		coo3	operator+ 	(const coo3 & c)	const	{ return coo3 (x+c.x, y+c.y, z+c.z); }
 	};
 
-	extern const coo dz[8];
-	extern const coo3 dz3[6];
+	extern const std::vector<coo> dz;
+	extern const std::vector<coo3> dz3;
 }
