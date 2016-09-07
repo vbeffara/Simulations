@@ -24,12 +24,12 @@ if (${BIGENDIAN})
 	add_definitions (-DBIGENDIAN)
 endif (${BIGENDIAN})
 
+check_include_file_cxx (png++/png.hpp PNGPP "-include string")
+find_library (GMP gmp)
+find_library (MPFR mpfr)
 find_package (PkgConfig)
 find_package (Boost COMPONENTS unit_test_framework coroutine context thread system REQUIRED)
 find_package (FLTK)
-find_library (GMP gmp)
-find_library (MPFR mpfr)
-
 pkg_check_modules (EXT REQUIRED cairo fftw3 libpng yaml-cpp cln gsl)
 pkg_check_modules (FPLLL fplll)
 
