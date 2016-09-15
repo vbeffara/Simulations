@@ -24,7 +24,9 @@ if (${BIGENDIAN})
 	add_definitions (-DBIGENDIAN)
 endif (${BIGENDIAN})
 
+include(CheckIncludeFileCXX)
 check_include_file_cxx (png++/png.hpp PNGPP "-include string")
+
 find_library (GMP gmp)
 find_library (MPFR mpfr)
 find_package (PkgConfig)
