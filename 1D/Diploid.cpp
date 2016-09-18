@@ -20,7 +20,7 @@ class Diploid { public:
 				{0,c2,c1,c1,c0,c1},
 				{0,c3,c2,c2,c1,c0}};
 
-		nu = { int(K*double(H['x'])), int(K*double(H['y'])), int(K*double(H['z'])), 0, 1, 0 };
+		nu = { int(K*double(H['x'])), int(K*double(H['y'])), int(K*double(H['z'])), 0, int(K*double(H['Z'])), 0 };
 	}
 
 	void compute_B () {
@@ -78,7 +78,7 @@ class Diploid { public:
 };
 
 int main (int argc, char ** argv) {
-	H.init ("Diploid model", argc, argv, "s=0,i=60000,K=200,f=2,d=.5,D=.5,c=1,e=.003,x=.1,y=.3,z=1.5,t=1");
+	H.init ("Diploid model", argc, argv, "s=0,i=10000000,K=10000,f=6,d=.7,D=.1,c=1,e=.02,x=.0001,y=.01,z=5.3,Z=.0001,t=1000");
 
 	if (int seed = H['s']) prng.seed(seed);
 
@@ -87,9 +87,8 @@ int main (int argc, char ** argv) {
 	double t = 0; int iterations = H['i'], period = H['t'];
 	for (int k=0; k<iterations; ++k) {
 		t += D.NewNu();
-		if (!(k%period)) { cout << t; for (const auto & x : D.nu) cout << " " << x; cout << endl; }
+		if (period && !(k%period)) { cout << t; for (const auto & x : D.nu) cout << " " << x; cout << endl; }
 	}
 
-	cerr << endl << R"(plot 'out' using 1:2 w l lt rgb "blue" title "naa", 'out' using 1:3 w l lt rgb "green" title "naA", 'out' using 1:4 w l lt rgb "red" title "nAA", 'out' using 1:5 w l lt rgb "purple" title "naB", 'out' using 1:6 w l lt rgb "orange" title "nAB", 'out' using 1:7 w l lt rgb "black" title "nBB")" << endl << endl;
 	cerr << t; for (const auto & x : D.nu) cerr << " " << x; cerr << endl;
 }
