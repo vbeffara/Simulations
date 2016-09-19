@@ -1,4 +1,6 @@
 #pragma once /// \file
+#include <spdlog/spdlog.h>
+#include <spdlog/fmt/ostr.h>
 #include <cstdlib>
 #include <map>
 #include <string>
@@ -24,6 +26,8 @@ namespace vb {
 
 		std::string title="undefined", prog="undefined", dir="output/", help="undefined";
 		std::map <char,bool> has_arg;
+
+		std::shared_ptr <spdlog::logger> L;
 	};
 
 	extern Hub H;

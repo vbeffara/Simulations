@@ -9,7 +9,16 @@
 #include <getopt.h>
 
 namespace vb {
-	Hub::Hub () {}
+	Hub::Hub () {
+	    Fl::gl_visual (FL_RGB);
+	    #ifndef NO_RETINA
+	    Fl::use_high_res_GL (1);
+	    #endif
+
+	    cln::default_float_format = cln::float_format(100);
+
+	    L = spdlog::stdout_logger_mt ("console", true);
+	}
 
 	void Hub::init (std::string t, int argc, char ** argv, std::string c) {
 		title = std::move(t); help = "Syntax : " + c;
@@ -39,13 +48,6 @@ namespace vb {
 			for (auto i : *this) cs.push_back (std::string(1,i.first) + "=" + i.second);
 			title += " (" + boost::join (cs,", ") + ")";
 		}
-
-	    Fl::gl_visual (FL_RGB);
-	    #ifndef NO_RETINA
-	    Fl::use_high_res_GL (1);
-	    #endif
-
-	    cln::default_float_format = cln::float_format(100);
 	}
 
 	Hub H;
