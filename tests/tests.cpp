@@ -204,6 +204,7 @@ BOOST_AUTO_TEST_CASE (test_Hypermap_lib) {
 }
 
 BOOST_AUTO_TEST_CASE (test_Constellation0) {
+	spdlog::set_level(spdlog::level::trace);
 	auto M = HLib().at("m_dodecahedron");
 	Constellation0<double> C {M,H};
 	Constellation0<real_t> Cq (C);

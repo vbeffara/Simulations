@@ -2,14 +2,13 @@
 #include <vb/Constellation0.h>
 #include <vb/NumberTheory.h>
 #include <vb/Spheroidal.h>
-#include <iomanip>
 
 namespace vb {
 	template <typename T> Constellation0<T>::Constellation0 (const Hypermap & M, const Hub & H) {
 		Hypermap M2 (M); M2.dessin(); p = { T(1) };
 		Hypermap M3 (M2); M3.normalize();
 		while (true) {
-			M2.split_edges(); Spheroidal S (M2,H); S.pack(); std::cerr << std::endl;
+			M2.split_edges(); Spheroidal S (M2,H); S.pack();
 			unsigned N = M.sigma.size(), inf=0, dinf=0;
 			for (auto c : M.phi.cycles()) { unsigned i = S.E[c[0]+3*N].src, d = S.V[i].adj.size(); if (d>dinf) { inf=i; dinf=d; } }
 			S.linear (1,-S.V[inf].z); S.inversion(); S.linear (-1/S.V[inf].r,0); S.mobiusto0 (S.V[S.E[0].src].z);

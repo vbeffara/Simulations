@@ -38,7 +38,7 @@ namespace vb {
 
 		char ch;
 		while ((ch = getopt(argc,argv,getopt_arg.c_str())) != -1) {
-			if (ch == 'h')       	{ std::cerr << help << std::endl; exit(0); }
+			if (ch == 'h')       	{ L->info (help); exit(0); }
 			else if (has_arg[ch])	{ (*this)[ch] = optarg; }
 			else                 	{ (*this)[ch] = "1"; }
 		}
