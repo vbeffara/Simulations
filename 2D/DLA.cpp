@@ -12,7 +12,7 @@ class DLA : public CoarseImage { public:
 		W.watch (QT.n, "Nb of particles"); W.watch (r, "Cluster radius");
 		prec.push_back (vector<double>()); prec.push_back (vector<double>());
 		for (int d=2; d<int(H['p']); ++d) {
-			cerr << ".";
+			H.L->info ("Precomputing harmonic measure: d={}", d);
 			int l=2*d-1;
 			vector<vector<double>> M (l,vector<double>(l,0)); M[l/2][l/2]=1;
 			bool dirty=1; while (dirty) { dirty=false;
@@ -25,12 +25,12 @@ class DLA : public CoarseImage { public:
 			double s1=0; for (int i=0; i<l; ++i) s1 += D1[i]; for (int i=0; i<l; ++i) D1[i] /= s1;
 			prec.push_back (D1);
 		}
-		cerr << endl;
+		start = now();
 	};
 
 	void show    	()           	{ W.show(); CoarseImage::show(); img.show(); }
 	char at      	(coo z) const	{ return contains(z) && CoarseImage::at(z); }
-	void put     	(coo z)      	{ CoarseImage::put(z,1); QT.insert(z); r = std::max (r,sup(z)); if (!(QT.n%1000)) { update(); W.update(); img.update(); } }
+	void put     	(coo z)      	{ CoarseImage::put(z,1); QT.insert(z); r = std::max (r,sup(z)); }
 	bool neighbor	(coo z) const	{ for (int i=0; i<4; ++i) if (at(z+dz[i])) return true; return false; }
 
 	coo jump (unsigned d) const {
@@ -73,5 +73,5 @@ class DLA : public CoarseImage { public:
 int main (int argc, char ** argv) {
 	H.init ("Lattice DLA",argc,argv,"n=2000,p=30,c=50,l=30,f");
 	DLA dla (H); dla.show(); dla.runDLA(); dla.output(); if (H['f']) dla.output_fine("dla.png");
-	cerr << "Final cluster: " << dla.QT.n << " particles, diameter = " << dla.r << endl;
+	H.L->info ("Final cluster: {} particles, diameter = {}", dla.QT.n, dla.r);
 }

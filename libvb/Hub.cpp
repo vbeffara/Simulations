@@ -48,6 +48,8 @@ namespace vb {
 			for (auto i : *this) cs.push_back (std::string(1,i.first) + "=" + i.second);
 			title += " (" + boost::join (cs,", ") + ")";
 		}
+
+	    L = spdlog::stdout_logger_mt (prog, true);
 	}
 
 	Hub H;

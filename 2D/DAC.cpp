@@ -21,7 +21,7 @@ int main(int argc, char ** argv)
   // cluster[i+n*j] is the label of the component of (i,j), between 0
   // and n*n (not successive or anything, but unique).
 
-  std::cerr << "Computing connected components ...";
+  H.L->info ("Computing connected components ...");
 
   unsigned long *cluster = new unsigned long [n*n];
   for (int i=0; i<n*n; ++i)
@@ -52,7 +52,7 @@ int main(int argc, char ** argv)
     }
   }
 
-  std::cerr << " Done." << std::endl;
+  H.L->info (" ... Done.");
 
   // Color each cluster with probability q and output the result :
 
