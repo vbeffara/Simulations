@@ -1,4 +1,5 @@
 #pragma once /// \file
+#undef False
 #include <spdlog/spdlog.h>
 #include <spdlog/fmt/ostr.h>
 #include <cstdlib>
