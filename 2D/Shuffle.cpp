@@ -129,7 +129,7 @@ int main (int argc, char ** argv) {
 	if (H['w'] == "two") TP = twoperiodic (m,H['a'],H['b']); else
 	if (H['w'] == "three") TP = threeperiodic (m,H['a'],H['b'],H['c']); else
 	if (H['w'] == "kenyon") TP = threebytwo (m,H['b']); else {
-		cerr << "No such weight, \"" << string(H['w']) << "\".\n"; exit(1);
+		H.L->error ("No such weight, \"{}\".", string(H['w'])); exit(1);
 	}
 
 	auto A1 = aztecgen(TP); auto H1 = height(A1);

@@ -22,7 +22,7 @@ int main (int, char **) {
 	L.relax(1e-14);
 	L.tau = L.tau_rw();
 	L.optimize (cost_cp);
-	cerr << setprecision(15) << L.tau << endl;
+	H.L->info ("Modulus: tau = {}", L.tau);
 
 	Pen p (Color(255,0,0),1,Color(255,255,0));
 
