@@ -3,10 +3,10 @@
 
 using namespace vb;
 
-void cb (const Vector<double> &, double fx) { std::cerr << fx << "\r"; }
+void cb (const Vector<double> &, double fx) { H.L->trace ("Current : {}", fx); }
 
 int main (int argc, char ** argv) {
-	H.init ("Test: circle packing", argc, argv, "s=4");
+	H.init ("Test: circle packing", argc, argv, "s=4,v");
 
 	Map m (13);
 	m	<< Edge(0,1) << Edge(0,3) << Edge(0,5)
@@ -34,12 +34,13 @@ int main (int argc, char ** argv) {
 		x[3*i+2]      = .8*r;
 	}
 
-	Minimizer<double> MM (3*m.n, [&m](const Vector<double> &x, Vector<double> &g) { return Map_fg_circle_disk (x,g,&m); }); MM.cb = cb;
+	Minimizer<double> MM (3*m.n, [&m](const Vector<double> &x, Vector<double> &g) { return Map_fg_circle_disk (x,g,&m); });
+	if (H['v']) { MM.cb = cb; spdlog::set_level(spdlog::level::trace); }
 	MM.minimize_qn (x); x = MM.x;
 
-	std::cerr << "Number of vertices:    " << m.n << std::endl;
-	std::cerr << "Final value of f:      " << MM.fx << std::endl;
-	std::cerr << "Final square gradient: " << inner_prod(MM.gx,MM.gx) << std::endl;
+	H.L->info ("Number of vertices:    {}", m.n);
+	H.L->info ("Final value of f:      {}", MM.fx);
+	H.L->info ("Final square gradient: {}", inner_prod(MM.gx,MM.gx));
 
 	for (int i=0; i<m.n; ++i) {
 		m.v[i]->z = cpx (x[3*i], x[3*i+1]);

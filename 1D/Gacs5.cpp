@@ -100,7 +100,6 @@ int main (int argc, char **argv) {
       nb += a.main[x]&1;
     }
     //    img.update();
-    //std::cerr << nb << std::endl;
     for (int j=0; j<100; ++j) {
       a.randomize(e);
       a.emit();

@@ -9,7 +9,16 @@
 #include <getopt.h>
 
 namespace vb {
-	Hub::Hub () {}
+	Hub::Hub () {
+	    Fl::gl_visual (FL_RGB);
+	    #ifndef NO_RETINA
+	    Fl::use_high_res_GL (1);
+	    #endif
+
+	    cln::default_float_format = cln::float_format(100);
+
+	    L = spdlog::stdout_logger_mt ("console", true);
+	}
 
 	void Hub::init (std::string t, int argc, char ** argv, std::string c) {
 		title = std::move(t); help = "Syntax : " + c;
@@ -29,7 +38,7 @@ namespace vb {
 
 		char ch;
 		while ((ch = getopt(argc,argv,getopt_arg.c_str())) != -1) {
-			if (ch == 'h')       	{ std::cerr << help << std::endl; exit(0); }
+			if (ch == 'h')       	{ L->info (help); exit(0); }
 			else if (has_arg[ch])	{ (*this)[ch] = optarg; }
 			else                 	{ (*this)[ch] = "1"; }
 		}
@@ -40,12 +49,7 @@ namespace vb {
 			title += " (" + boost::join (cs,", ") + ")";
 		}
 
-	    Fl::gl_visual (FL_RGB);
-	    #ifndef NO_RETINA
-	    Fl::use_high_res_GL (1);
-	    #endif
-
-	    cln::default_float_format = cln::float_format(100);
+	    L = spdlog::stdout_logger_mt (prog, true);
 	}
 
 	Hub H;

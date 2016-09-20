@@ -1,3 +1,4 @@
+#include <vb/Hub.h>
 #include <vb/Hypermap.h>
 #include <cassert>
 #include <sstream>
@@ -225,7 +226,7 @@ namespace vb {
 				double v = (ll[i]-l[i]*l[i])/(ll[i]);
 				if (v>mv) mv=v;
 			}
-			std::cerr << t << " " << se/n << " " << mv << "            \r";
+			H.L->trace ("In acpa(), t={}, error={}, mv={}", t, se/n, mv);
 			if (mv<mvm) {
 				for (unsigned i=0; i<V.size(); ++i) {
 					if (old_e[i]!=0) {

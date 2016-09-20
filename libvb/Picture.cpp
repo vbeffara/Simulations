@@ -49,8 +49,7 @@ namespace vb {
 		std::ostringstream fn_s;
 		fn_s << "snapshots/" << snapshot_prefix << "_" << std::setw(4) << std::setfill('0') << snapshot_number++;
 		std::string fn = fn_s.str();
-
-		std::cerr << "Taking a snapshot as " << fn << ".png" << std::endl;
+		H.L->info ("Taking a snapshot as {}.png", fn);
 		output_png (fn);
 	}
 

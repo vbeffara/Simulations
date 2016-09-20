@@ -72,17 +72,6 @@ namespace vb {
 		}
 	}
 
-	void Cluster::dump (const std::string & pre) {
-		validate ();
-		if (np == 0) { if (pre=="") std::cerr << "EMPTY" << std::endl; return; }
-		if (np == w*w) { std::cerr << pre << "FULL in " << ul << "[" << w << "]" << std::endl; return; }
-
-		std::cerr << pre << np << " in " << ul << "[" << w << "]" << std::endl;
-		if ((np > 0) && (np < w*w)) {
-			for (auto & c : sub) c.dump (pre + "    ");
-		}
-	}
-
 	long Cluster::sub_index (coo z) const { long ww = w/3, i = (z.x-ul.x)/ww, j = (z.y-ul.y)/ww; return i+3*j; }
 
 	long Cluster::bs = 16;

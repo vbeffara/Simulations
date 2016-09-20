@@ -125,7 +125,7 @@ BOOST_AUTO_TEST_CASE (test_Value) {
 BOOST_AUTO_TEST_CASE (test_Hub) {
 	char * argv [] = { strdup ("cmd"), strdup ("-s"), strdup ("3"), strdup ("-u") };
 
-	Hub H; H.init ("Title", 4, static_cast<char**> (argv), "s=5,t=7,u,v");
+	H.init ("Title", 4, static_cast<char**> (argv), "s=5,t=7,u,v");
 	BOOST_CHECK (int(H['t']) == 7);
 	BOOST_CHECK (int(H['s']) == 3);
 	BOOST_CHECK (H['u']);
@@ -204,6 +204,7 @@ BOOST_AUTO_TEST_CASE (test_Hypermap_lib) {
 }
 
 BOOST_AUTO_TEST_CASE (test_Constellation0) {
+	spdlog::set_level(spdlog::level::trace);
 	auto M = HLib().at("m_dodecahedron");
 	Constellation0<double> C {M,H};
 	Constellation0<real_t> Cq (C);

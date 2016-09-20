@@ -58,12 +58,6 @@ namespace vb {
 
 		void mobius (cpx w, const double &theta);
 
-		double optimize (double func(const Map&), double delta_func(const Map&,int,cpx,double));
-
-		double circlepack (int _zero, int _one, const std::vector<int> &_bord);
-
-		double ACPA ();
-
 		void rad_to_pos (int _zero, int _one);
 
 		void rotate (const double &theta);

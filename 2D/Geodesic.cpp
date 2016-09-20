@@ -22,10 +22,10 @@ class QG : public Image { public:
 		else if	(H['w'] == "white")   	fill_white ();
 		else if	(H['w'] == "free")    	fill_free (H['z']);
 		else if	(H['w'] == "gaussian")	fill_gaussian (H['z']);
-		else   	                      	cerr << "Noise type " << H['w'] << " unknown, no noise for you!" << endl;
+		else { H.L->error ("Noise type {} unknown, no noise for you!", string(H['w'])); exit (1); }
 
 		minf = maxf = I.at(0).f; for (auto & u : I) { minf = min (minf,u.f); maxf = max (maxf,u.f); }
-		cerr << "Renormalized minimal and maximal value of field: " << minf/log(w()) << ", " << maxf/log(w()) << endl;
+		H.L->info ("Renormalized field: min = {}, max = {}", minf/log(w()), maxf/log(w()));
 
 		for (int j=0; j<h(); ++j)
 			for (int i=0; i<w(); ++i) {

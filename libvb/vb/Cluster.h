@@ -17,7 +17,6 @@ namespace vb {
 
 		void validate ();
 		void paint (Image & I, coo ul = 0, coo br = 0);
-		void dump (const std::string & pre = "");
 
 		long sub_index (coo z) const;
 

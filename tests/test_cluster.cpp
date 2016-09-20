@@ -33,7 +33,7 @@ int main (int argc, char ** argv) {
 			z = nz; if (!there) W.insert(z);
 			long ns = sup(z); if ((ns >= sup_ + 10) || (t >= t_ + 1000000)) {
 				sup_ = max (sup_, ns); t_ = t; W.paint (I);
-				cerr << "\rtime = " << double(t) << " radius = " << sup_ << " particles = " << W.np << "      ";
+				H.L->info ("time = {:<15} radius = {:>5} {:>9} particles", double(t),sup_,W.np);
 				if (l && (sup_ >= l)) break;
 			}
 		}
