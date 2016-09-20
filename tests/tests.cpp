@@ -101,10 +101,10 @@ BOOST_AUTO_TEST_CASE (test_Color) {
 BOOST_AUTO_TEST_CASE (test_ProgressBar) {
 	auto l = Auto::tasks.size();
 	{
-		ProgressBar P (1e7);
+		ProgressBar P (1e8);
 		BOOST_CHECK (Auto::tasks.size() == l+1);
 		BOOST_CHECK (Auto::tasks.back().active);
-		for (int i=0; i<1e7; ++i) P.set(i);
+		for (int i=0; i<1e8; ++i) P.set(i);
 	}
 	BOOST_CHECK (!Auto::tasks.back().active);
 }

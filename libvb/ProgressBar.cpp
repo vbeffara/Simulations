@@ -19,10 +19,14 @@ namespace vb {
     }
 
     void ProgressBar::update () {
+        static const std::string symbols[] = { u8" ", u8"▏", u8"▎", u8"▍", u8"▌", u8"▋", u8"▊", u8"▉", u8"█" };
+
         std::cerr << "\r[";
         int nchar = (current*50.0)/final;
-        for (int i=0; i<nchar; ++i)  std::cerr << "=";
-        for (int i=nchar; i<50; ++i) std::cerr << " ";
+        int prop = 8*((current*50.0)/final - nchar);
+        for (int i=0; i<nchar; ++i)  std::cerr << symbols[8];
+        if (nchar<50) std::cerr << symbols[prop];
+        for (int i=nchar+1; i<50; ++i) std::cerr << " ";
         std::cerr << "]";
 
         if (current>0) {
