@@ -14,7 +14,7 @@ namespace vb {
 
 	class Map : public Picture { public:
 		int n;
-		std::vector<Vertex*> v;
+		std::vector<std::unique_ptr<Vertex>> v;
 		std::vector<bool> bd;
 
 		int zero;

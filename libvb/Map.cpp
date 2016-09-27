@@ -4,7 +4,7 @@
 namespace vb {
   Map::Map (int nn) : Picture (600,600), n(nn), zero(-1), one(-1), infinity(-1) {
     for (int i=0; i<n; ++i) {
-      v.push_back(new Vertex(0.0));
+      v.push_back(std::make_unique<Vertex>(0.0));
       bd.push_back(false);
     }
   }
@@ -185,7 +185,7 @@ namespace vb {
     }
 
     for (adj_list i : new_vertices) {
-      v.push_back(new Vertex(0.0));
+      v.push_back(std::make_unique<Vertex>(0.0));
       v.back()->adj = i;
       v.back()->z = (v[i.front()]->z + v[i.back()]->z)/double(2.0);
       bd.push_back(false);
