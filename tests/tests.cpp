@@ -274,14 +274,14 @@ BOOST_AUTO_TEST_CASE (test_Coloring) {
 BOOST_AUTO_TEST_CASE (test_Figure) {
 	Figure F;
 	for (int i=0; i<10; ++i)
-		F.add (new Segment(	cpx(prng.uniform_real(-5,5),prng.uniform_real(-5,5)),
-		                   	cpx(prng.uniform_real(-5,5),prng.uniform_real(-5,5)),
-		                   	Indexed(i,.6,.9)));
+		F.add (std::make_unique <Segment> (	cpx(prng.uniform_real(-5,5),prng.uniform_real(-5,5)),
+		                                   	cpx(prng.uniform_real(-5,5),prng.uniform_real(-5,5)),
+		                                   	Indexed(i,.6,.9)));
 
-	for (int i=1; i<=5; ++i) F.add (new Circle (cpx(0,0), i));
-	F.add (new Dot (cpx(0,0)));
-	vector<cpx> zs1 { {0,1}, {1,1}, {1,0}}; F.add (new Polygon (zs1));
-	vector<cpx> zs2 { {0.1,1}, {1.1,1}, {1.1,0}}; F.add (new Path (zs2));
+	for (int i=1; i<=5; ++i) F.add (std::make_unique <Circle> (cpx(0,0), i));
+	F.add (std::make_unique <Dot> (cpx(0,0)));
+	vector<cpx> zs1 { {0,1}, {1,1}, {1,0}}; F.add (std::make_unique <Polygon> (zs1));
+	vector<cpx> zs2 { {0.1,1}, {1.1,1}, {1.1,0}}; F.add (std::make_unique <Path> (zs2));
 	F.show(); F.hide();
 }
 

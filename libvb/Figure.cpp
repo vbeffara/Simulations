@@ -28,8 +28,8 @@ namespace vb {
 		return l-margin;
 	}
 
-	Figure & Figure::add (Shape *S) {
-		contents.push_back(std::unique_ptr<Shape>(S));
+	Figure & Figure::add (std::unique_ptr <Shape> && S) {
+		contents.push_back(std::move(S));
 		return (*this);
 	}
 

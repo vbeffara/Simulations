@@ -43,22 +43,22 @@ public:
 			coo.push_back(xy + cpx(omx,1));  coo.push_back(xy + cpx(0,2));
 			coo.push_back(xy + cpx(-omx,1)); coo.push_back(xy + cpx(-omx,-1));
 			coo.push_back(xy + cpx(0,-2));   coo.push_back(xy + cpx(omx,-1));
-			add (new Polygon(coo, Pen(0, 1, cols[i] ? CYAN : YELLOW, 1)));
+			add (std::make_unique <Polygon> (coo, Pen(0, 1, cols[i] ? CYAN : YELLOW, 1)));
 		}
 	}
 
 	void walk () {
 		int base = w/2-1, dir = 0;
-		Path *p = new Path (std::vector<cpx>(0), Pen(BLUE,4));
+		auto p = std::make_unique <Path> (std::vector<cpx>(0), Pen(BLUE,4));
 		p->z.push_back (thepos(base) + cpx(omx,-1));
-		add(p);
 		while (((base+1)%w >= 0) && (base/w < h-1)) {
-			seg (p,base,dir,1);
+			seg (p.get(),base,dir,1);
 			int thenext = follow (base, (dir+1)%6);
 			if (cols[thenext])	{ base = thenext;	dir = (dir+5)%6; }
 			else              	{                	dir = (dir+1)%6; }
-			seg (p,base,dir,5);
+			seg (p.get(),base,dir,5);
 		}
+		add(move(p));
 	}
 
 private:

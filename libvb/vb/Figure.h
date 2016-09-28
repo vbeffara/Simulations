@@ -7,7 +7,7 @@ namespace vb {
 		Figure (bool ortho = true);
 
 		double left (); double right (); double top (); double bottom ();
-		Figure &add (Shape *S);
+		Figure & add (std::unique_ptr<Shape> && S);
 
 		std::vector <std::unique_ptr<Shape>> contents;
 

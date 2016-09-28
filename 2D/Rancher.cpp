@@ -93,7 +93,7 @@ public:
       } else V.push_back (*i);
     }
 
-    F.add (new Path(V,P));
+    F.add (std::make_unique <Path> (V,P));
   }
 
   void main (int argc, char ** argv) {
@@ -143,7 +143,7 @@ public:
 
     if (plot) {
       vector<cpx> path; for (unsigned i=2; i<traj.size(); ++i) path.push_back (traj[i]);
-      F.add (new Path(path));
+      F.add (std::make_unique <Path> (path));
       F.show(); F.pause();
       F.output_pdf("Rancher");
     }

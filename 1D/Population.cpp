@@ -49,7 +49,7 @@ int main (int argc, char ** argv) {
 	W.show();
 
 	Figure F (false);
-	F.add (new Path(pos));
+	F.add (std::make_unique <Path> (pos));
 	F.show();
 
 	Figure G (false);
@@ -63,11 +63,14 @@ int main (int argc, char ** argv) {
 		if (!(k%(iterations/1000))) {
 			cout << k << " " << t; for (int i=1; i<=size; ++i) cout << " " << int(.2+nu[i]*K); cout << endl;
 			G.contents.clear();
-			for (int i=0; i<size; ++i) { graph[i].emplace_back (1000.0*k/iterations,nu[i+1]); G.add (new Path(graph[i],Pen(Indexed(i)))); }
+			for (int i=0; i<size; ++i) {
+				graph[i].emplace_back (1000.0*k/iterations,nu[i+1]);
+				G.add (std::make_unique <Path> (graph[i],Pen(Indexed(i))));
+			}
 			if (! G.visible()) { G.show(); } G.step();
 		}
 		for (int i=0; i<size; ++i) pos[i] = cpx(i,nu[i+1]);
-		F.contents.clear(); F.add (new Path(pos));
+		F.contents.clear(); F.add (std::make_unique <Path> (pos));
 		F.step();
 	}
 }
