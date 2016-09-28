@@ -10,12 +10,12 @@ class DLA : public CoarseImage { public:
 		img (512,512) {
 		z0 = coo(n/2,n/2);
 		W.watch (QT.n, "Nb of particles"); W.watch (r, "Cluster radius");
-		prec.push_back (vector<double>()); prec.push_back (vector<double>());
+		prec.emplace_back (vector<double>()); prec.emplace_back (vector<double>());
 		for (int d=2; d<int(H['p']); ++d) {
 			H.L->info ("Precomputing harmonic measure: d={}", d);
 			int l=2*d-1;
 			vector<vector<double>> M (l,vector<double>(l,0)); M[l/2][l/2]=1;
-			bool dirty=1; while (dirty) { dirty=false;
+			bool dirty=true; while (dirty) { dirty=false;
 				for (int i=1; i<l-1; ++i) for (int j=1; j<l-1; ++j) if ((i!=d-1)||(j!=d-1)) {
 					double t = (M[i][j+1] + M[i][j-1] + M[i+1][j] + M[i-1][j])/4;
 					if (t != M[i][j]) { M[i][j]=t; dirty=true;}
@@ -28,10 +28,10 @@ class DLA : public CoarseImage { public:
 		start = now();
 	};
 
-	void show    	()           	{ W.show(); CoarseImage::show(); img.show(); }
-	char at      	(coo z) const	{ return contains(z) && CoarseImage::at(z); }
-	void put     	(coo z)      	{ CoarseImage::put(z,1); QT.insert(z); r = std::max (r,sup(z)); }
-	bool neighbor	(coo z) const	{ for (int i=0; i<4; ++i) if (at(z+dz[i])) return true; return false; }
+	void show    	()      override	{ W.show(); CoarseImage::show(); img.show(); }
+	char at      	(coo z) const   	{ return contains(z) && CoarseImage::at(z); }
+	void put     	(coo z)         	{ CoarseImage::put(z,1); QT.insert(z); r = std::max (r,sup(z)); }
+	bool neighbor	(coo z) const   	{ for (int i=0; i<4; ++i) if (at(z+dz[i])) return true; return false; }
 
 	coo jump (unsigned d) const {
 		if (d<=2) return dz[prng.uniform_int(4)];
@@ -61,7 +61,7 @@ class DLA : public CoarseImage { public:
 		}
 	}
 
-	void paint () { QT.paint (img,0,512); CoarseImage::paint(); }
+	void paint () override { QT.paint (img,0,512); CoarseImage::paint(); }
 
 	int n; unsigned c; long r;
 	Console W;

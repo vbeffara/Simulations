@@ -22,7 +22,7 @@ int main (int argc, char ** argv) {
 	unsigned s=H['s'], g=H['g'], a=6*(s+2*g-2), r=H['r'], d=H['d'], D=H['D'];
 	assert (a>0); if (g!=1) assert(!H['o']); if (r>0) prng.seed(r);
 
-	Cycles phi_c; for (unsigned i=0; i<a/3; ++i) phi_c.push_back ({3*i,3*i+1,3*i+2}); Permutation phi(phi_c);
+	Cycles phi_c; for (unsigned i=0; i<a/3; ++i) phi_c.emplace_back (std::vector<unsigned> {3*i,3*i+1,3*i+2}); Permutation phi(phi_c);
 
 	vector<Hypermap> v; unsigned target = 0; if ((d==0) && (g==1) && (!H['f']) && (s<ntri.size())) target = ntri[s];
 

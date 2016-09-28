@@ -13,8 +13,6 @@
 
 #define N (2*RAD3)
 
-#include <stdlib.h>
-#include <math.h>
 #include <cstdio>
 
 using namespace vb;
@@ -100,11 +98,11 @@ int nbarms (Image *c, int r1, int r2, int sides) {
    */
 
   int n,k,i;
-  static char *table = NULL;
-  static int *expl = NULL;
+  static char *table = nullptr;
+  static int *expl = nullptr;
 
-  if (table == NULL) table = new char[2*N*N+1];
-  if (expl == NULL) expl = new int[N*N];
+  if (table == nullptr) table = new char[2*N*N+1];
+  if (expl == nullptr) expl = new int[N*N];
 
   compute_cpts (c,expl,r1,r2);
 

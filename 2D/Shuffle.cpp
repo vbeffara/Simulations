@@ -129,7 +129,7 @@ int main (int argc, char ** argv) {
 	if (H['w'] == "two") TP = twoperiodic (m,H['a'],H['b']); else
 	if (H['w'] == "three") TP = threeperiodic (m,H['a'],H['b'],H['c']); else
 	if (H['w'] == "kenyon") TP = threebytwo (m,H['b']); else {
-		H.L->error ("No such weight, \"{}\".", string(H['w'])); exit(1);
+		H.L->error (R"(No such weight, "{}".)", string(H['w'])); exit(1);
 	}
 
 	auto A1 = aztecgen(TP); auto H1 = height(A1);
@@ -150,5 +150,5 @@ int main (int argc, char ** argv) {
 	ofstream dat (name + ".dat");
 	for (auto z : coos(H1)) { dat << H1[z] << " "; if (z.x == H1.ww-1) dat << endl; }
 
-	system (("asy -fpdf -o " + H.dir + " \"" + name + ".asy\"").c_str());
+	system (("asy -fpdf -o " + H.dir + R"( ")" + name + R"(.asy")").c_str());
 }

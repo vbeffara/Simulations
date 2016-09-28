@@ -7,7 +7,7 @@
 using namespace vb; using namespace std;
 
 Stream <Hypermap> triangulations (unsigned n) {
-	Cycles phic; for (unsigned i=0; i<n/3; ++i) phic.push_back ({i,i+n/3,i+2*n/3}); Permutation phi (phic);
+	Cycles phic; for (unsigned i=0; i<n/3; ++i) phic.emplace_back (std::vector<unsigned> {i,i+n/3,i+2*n/3}); Permutation phi (phic);
 	int np = n/6; vector<unsigned> a (n/2 - np,2);
 
 	return Stream<Hypermap> ([a,phi,n,np](Sink<Hypermap> & yield) {
@@ -18,8 +18,8 @@ Stream <Hypermap> triangulations (unsigned n) {
 			if (!connected(phi,alpha)) continue;
 			Permutation sigma = (alpha*phi).inverse();
 			Hypermap h(sigma,alpha,phi);
-			h.normalize(); bool done=0;
-			for (auto & hh : hs) if (h==hh) { done=1; break; }
+			h.normalize(); bool done=false;
+			for (auto & hh : hs) if (h==hh) { done=true; break; }
 			if (!done) { hs.push_back(h); yield(h); }
 		}
 	});

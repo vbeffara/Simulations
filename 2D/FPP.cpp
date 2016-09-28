@@ -7,9 +7,7 @@
 
 using namespace vb;
 
-double cost (void) {
-  return prng.exponential();
-}
+double cost () { return prng.exponential(); }
 
 class FPP : public CoarseImage {
 public:
@@ -30,7 +28,7 @@ public:
   }
 
   void run () {
-    while (1) {
+    while (true) {
       if (trace) std::cout << area << " " << pqueue.size() << std::endl;
 
       Point pt(pqueue);

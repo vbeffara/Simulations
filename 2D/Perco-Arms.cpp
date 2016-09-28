@@ -33,8 +33,7 @@ int main(int argc, char **argv) {
 	int n_iter = H['t'];
 	double p = H['p'];
 
-	int stats[5];
-	for (int i=0;i<5;++i) stats[i]=0;
+	int stats[5]; for (auto & s : stats) s=0;
 
 	// Create the graph once and for all
 
@@ -67,8 +66,8 @@ int main(int argc, char **argv) {
 		cap[get(edge_reverse,g,*e)]=0;
 	}
 
-	edge_descriptor *all_edges = new edge_descriptor[2*(n+1)*n];
-	edge_descriptor *rev_edges = new edge_descriptor[2*(n+1)*n];
+	auto all_edges = new edge_descriptor[2*(n+1)*n];
+	auto rev_edges = new edge_descriptor[2*(n+1)*n];
 
 	{
 		int i=0;

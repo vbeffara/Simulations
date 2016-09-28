@@ -13,7 +13,7 @@ class Wave : public Coloring { public:
 
 	Wave (int n, int k, double l_) : Coloring (cpx(-n,-n), cpx(n,n), n, [&](cpx z){return c(z);}) {
 		for (int i=0; i<k; ++i) {
-			m.push_back ( { prng.gaussian(), prng.uniform_real(0,2.0*M_PI), l_ } );
+			m.emplace_back (prng.gaussian(), prng.uniform_real(0,2.0*M_PI), l_);
 		}
 	}
 

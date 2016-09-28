@@ -59,7 +59,7 @@ class Lamination : public Array<double> { public:
 		for (auto & v : *this) v = tan(prng.uniform_real(0,M_PI));
 	}
 
-	pt geodesique (pt p, ostream *os = 0) const {
+	pt geodesique (pt p, ostream *os = nullptr) const {
 		set<pt> S;
 		while (true) {
 			if (!contains(coo(p.xi(),p.yi()))) break;
@@ -81,7 +81,7 @@ class Lamination : public Array<double> { public:
 		return p_min;
 	}
 
-	pair<pt,pt> leaf (pt p, ostream *os = 0) const {
+	pair<pt,pt> leaf (pt p, ostream *os = nullptr) const {
 		pt p1 = geodesique (p,os); p.reverse(); pt p2 = geodesique (p,os);
 		if (p1<p2) return {p1,p2}; else return {p2,p1};
 	}
@@ -93,13 +93,13 @@ class Lamination : public Array<double> { public:
 		for (int i=0; i<ww; ++i) {
 			for (int j=0; j<hh; ++j) {
 				for (double x=0.01; x<1; x+=.01) {
-					pair<pt,pt> pp = leaf (pt(i,j,x,0),0);
+					pair<pt,pt> pp = leaf (pt(i,j,x,0),nullptr);
 
 					if ((pp.first != nopoint) && (pp.second != nopoint)) {
 						if (S.count(pp) == 0) { S.insert (pp); P.insert (pt(i,j,x,0)); }
 					}
 
-					pp = leaf (pt(i,j,0,x),0);
+					pp = leaf (pt(i,j,0,x),nullptr);
 
 					if ((pp.first != nopoint) && (pp.second != nopoint)) {
 						if (S.count(pp) == 0) { S.insert (pp); P.insert (pt(i,j,0,x)); }
@@ -125,7 +125,7 @@ int main (int argc, char ** argv) {
 	if (H['c']) {
 		set<pt> P = o.connections();
 		set<pt> E;
-		for (pt i : P) { auto pp = o.leaf(i,0); E.insert (pp.first); E.insert (pp.second); }
+		for (pt i : P) { auto pp = o.leaf(i,nullptr); E.insert (pp.first); E.insert (pp.second); }
 		for (pt i : E) { o.geodesique (i,&cerr); }
 	}
 }

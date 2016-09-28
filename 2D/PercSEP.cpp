@@ -24,19 +24,19 @@ public:
 	void clean() {
 		for (int x=0;x<w();++x) for (int y=0;y<h();++y)
 			if (at(coo(x,y)) > 0) at(coo(x,y)) = at(coo(x,y)) + 100;
-		bool dirty = 1; while (dirty) {
-			dirty = 0;
+		bool dirty = true; while (dirty) {
+			dirty = false;
 			for (int x=0; x<w(); ++x)
 				for (int y=0; y<h(); ++y) {
 					if (at(coo(x,y)) == 102) {
 						if (atp(coo(x+1,y)) == 1 || atp(coo(x+1,y)) == 2 || atp(coo(x,y+1)) == 1 ||
 							atp(coo(x,y+1)) == 2 || atp(coo(x,y-1)) == 1 || atp(coo(x,y-1)) == 2)
-								{ atp(coo(x,y))=2; dirty=1; }
+								{ atp(coo(x,y))=2; dirty=true; }
 					} else if (at(coo(x,y)) == 101) {
 						if (atp(coo(x+1,y)) == 1 || atp(coo(x+1,y)) == 2 || atp(coo(x+1,y)) == 101 ||
 							atp(coo(x,y+1)) == 1 || atp(coo(x,y+1)) == 2 ||
 							atp(coo(x,y-1)) == 1 || atp(coo(x,y-1)) == 2)
-								{ atp(coo(x,y))=1; dirty=1; }
+								{ atp(coo(x,y))=1; dirty=true; }
 					}
 				}
 		}

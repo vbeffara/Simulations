@@ -40,7 +40,7 @@ public:
 class Snake : public Bitmap<Stat> {
 public:
 	Snake (int n_) : Bitmap<Stat> (6*n_,6*n_), n(n_) {
-		p.push_back(coo(3*n,3*n));
+		p.emplace_back(3*n,3*n);
 		put (p.back(),1); show();
 	};
 	void grow (int d) {

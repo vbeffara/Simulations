@@ -9,8 +9,8 @@ public:
 		pq << Point(1,prng.exponential()/p) << Point(J,prng.exponential()/(1-p));
 	};
 
-	bool ok (coo z) {	if ( (z.x >= n) || (z.y >= n) || (z.x+z.y > cursum) ) return 1;
-	                 	if (at(z)) return 0; else return ok (z+dz[prng.bernoulli(p)]); }
+	bool ok (coo z) {	if ( (z.x >= n) || (z.y >= n) || (z.x+z.y > cursum) ) return true;
+	                 	if (at(z)) return false; else return ok (z+dz[prng.bernoulli(p)]); }
 
 	void fill (coo z) {	if ( (z.x > 0) && (z.y < n-1) && at(z-1+J) && !at(z-1) ) { put(z-1,1); fill (z-1); }
 	                   	if ( (z.y > 0) && (z.x < n-1) && at(z+1-J) && !at(z-J) ) { put(z-J,1); fill (z-J); } }

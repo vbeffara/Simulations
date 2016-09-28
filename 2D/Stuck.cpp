@@ -29,7 +29,7 @@ class Stuck : public Bitmap<Stat> { public:
 		C.lambda<double> ([this](){ return - log(double(nsup())) / log(alpha-1.0/7); }, "Prediction");
 	}
 
-	void show () { C.show(); Bitmap<Stat>::show(); }
+	void show () override { C.show(); Bitmap<Stat>::show(); }
 
 	void center () {
 		coo c (0,0);
@@ -63,7 +63,7 @@ class Stuck : public Bitmap<Stat> { public:
 		}
 	}
 
-	void update () {
+	void update () override {
 		if (H['c']) center();
 		int m=Stat::max;
 		for (int v : *this) if (v > 0) m = min (m,v);

@@ -21,7 +21,7 @@ class Snake : public CoarseImage { public:
 		return ((lx>0) && (lx<true_width-1) && (ly>0) && (ly<true_height-1));
 	}
 
-	void output (const std::string &s = "") {
+	void output (const std::string &s = "") override {
 		OldPath P (z.size()-1);
 		for (unsigned i=0; i<z.size()-1; ++i) {
 			coo dz = z[i+1]-z[i];

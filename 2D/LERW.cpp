@@ -9,7 +9,7 @@ public:
         coo z(w()/2,h()/2); while (contains(z)) { int d = prng()&3; put(z,d); z += dz[d]; }
     }
 
-    void output (const std::string &s = "") {
+    void output (const std::string &s = "") override {
         OldPath P (0);
         coo z (w()/2,h()/2); while (contains(z)) { int d = at(z); P.push_back(d); z += dz[d]; }
         P.output(s);
