@@ -16,10 +16,14 @@ namespace vb {
 
 		Pov_Object & operator<< (tri a);
 		Pov_Object & operator<< (double x);
-		Pov_Object & operator<< (Pov_Object *o)	{ subs.push_back(std::shared_ptr<Pov_Object>(o)); return *this; }
+		Pov_Object & operator<< (Pov_Object *o)	{ subs.push_back(std::unique_ptr<Pov_Object>(o)); return *this; }
+
+		template <typename T> Pov_Object & operator<< (std::unique_ptr<T> && p) {
+			subs.push_back (std::move(p)); return *this;
+		}
 
 		std::string type; bool braces; unsigned commas;
-		std::vector < std::shared_ptr<Pov_Object> > subs;
+		std::vector <std::unique_ptr<Pov_Object>> subs;
 	};
 	inline std::ostream & operator<< (std::ostream & os, Pov_Object * o) { return o->output_pov(os); }
 

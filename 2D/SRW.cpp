@@ -8,12 +8,9 @@ int main(int argc, char ** argv) {
 	H.init ("Simple random walk", argc, argv, "a=15,o=1");
 	int adj = H['a'];
 
-	Figure f(H['o']); f.margin = 1;
-	f.add (new Circle (0,.5)); f.add (new Path ({0}));
-	f.show(); // f.pause();
-
-	vector<cpx> & path = static_pointer_cast <Path> (f.contents[1]) -> z;
-	cpx & z = static_pointer_cast <Circle> (f.contents[0]) -> z;
+	auto C = new Circle(0,.5); cpx & z = C->z;
+	auto P = new Path ({0}); vector<cpx> & path = P->z;
+	Figure f(H['o']); f.add (C); f.add (P); f.margin = 1; f.show();
 
 	for (int a=1; a<200; ++a) {
 		for (int b=0; b<a; ++b) {

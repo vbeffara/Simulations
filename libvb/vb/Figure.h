@@ -9,7 +9,7 @@ namespace vb {
 		double left (); double right (); double top (); double bottom ();
 		Figure &add (Shape *S);
 
-		std::vector <std::shared_ptr<Shape>> contents;
+		std::vector <std::unique_ptr<Shape>> contents;
 
 		void output (const std::string &s = "") override;
 		void output_pdf (const std::string &s = "");

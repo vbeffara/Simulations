@@ -29,7 +29,7 @@ namespace vb {
 	}
 
 	Figure & Figure::add (Shape *S) {
-		contents.push_back(std::shared_ptr<Shape>(S));
+		contents.push_back(std::unique_ptr<Shape>(S));
 		return (*this);
 	}
 

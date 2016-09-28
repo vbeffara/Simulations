@@ -9,7 +9,7 @@ namespace vb {
 
 	std::ostream & Pov_Object::output_pov (std::ostream & os) {
 		os << type << " "; if (braces) os << "{ ";
-		for (unsigned i=0; i<subs.size(); ++i) os << subs[i] << (i<commas ? ", " : " ");
+		for (unsigned i=0; i<subs.size(); ++i) os << subs[i].get() << (i<commas ? ", " : " ");
 		if (braces) os << "}";
 		os << std::endl; return os;
 	}
