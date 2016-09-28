@@ -19,28 +19,28 @@ namespace vb {
 		std::ofstream f (os.c_str()); output_pov(f);
 	}
 
-	Pov_Object & Pov_Object::operator<< (tri a)   	{ return (*this) << new Pov_Coordinate (a); }
-	Pov_Object & Pov_Object::operator<< (double x)	{ return (*this) << new Pov_Coefficient (x); }
+	Pov_Object & Pov_Object::operator<< (tri a)   	{ return (*this) << std::make_unique <Pov_Coordinate> (a); }
+	Pov_Object & Pov_Object::operator<< (double x)	{ return (*this) << std::make_unique <Pov_Coefficient> (x); }
 
 	Pov_Scene::Pov_Scene () : Pov_Object ("") {
-		(*this) << new Pov_Object (R"("#version 3.7;")")
-				<< new Pov_Object (R"("#include \"colors.inc\"")")
-				<< new Pov_Object (R"("#include \"rad_def.inc\"")")
-				<< new Pov_Object (R"("global_settings { radiosity { Rad_Settings(Radiosity_Normal,off,off) } }")")
-				<< new Pov_Object (R"("background { color White }")");
+		(*this) << std::make_unique <Pov_Object> (R"("#version 3.7;")")
+				<< std::make_unique <Pov_Object> (R"("#include \"colors.inc\"")")
+				<< std::make_unique <Pov_Object> (R"("#include \"rad_def.inc\"")")
+				<< std::make_unique <Pov_Object> (R"("global_settings { radiosity { Rad_Settings(Radiosity_Normal,off,off) } }")")
+				<< std::make_unique <Pov_Object> (R"("background { color White }")");
 	}
 
 	Pov_Union::Pov_Union (std::string) : Pov_Object ("union", true) {}
 
-	Pov_Texture::Pov_Texture (std::string t) : Pov_Object("texture", true) { (*this) << new Pov_Object(t); }
+	Pov_Texture::Pov_Texture (std::string t) : Pov_Object("texture", true) { (*this) << std::make_unique <Pov_Object> (t); }
 
 	Pov_Camera::Pov_Camera (tri a, tri b, double d) : Pov_Object("camera", true) {
 		std::ostringstream os; os << "location " << a << " look_at " << b << " angle " << d;
-		(*this) << new Pov_Object(os.str());
+		(*this) << std::make_unique <Pov_Object> (os.str());
 	}
 
 	Pov_Light_Source::Pov_Light_Source (tri a) : Pov_Object("light_source", true) {
-		(*this) << a << new Pov_Object ("color White*2", false);
+		(*this) << a << std::make_unique <Pov_Object> ("color White*2", false);
 	}
 
 	Pov_Sphere::Pov_Sphere (tri a, double r, std::string) : Pov_Object("sphere", true) { (*this) << a << r; commas=1; }
@@ -52,15 +52,26 @@ namespace vb {
 	Pov_Plane::Pov_Plane (tri a, double d, std::string) : Pov_Object("plane", true) { (*this) << a << d; commas=1; }
 
 	Pov_Frame::Pov_Frame (tri a, tri b, std::string t) : Pov_Union() { (*this)
-		<< new Pov_Sphere (tri(a.x,a.y,a.z), .1) << new Pov_Sphere (tri(a.x,a.y,b.z), .1) << new Pov_Sphere (tri(a.x,b.y,a.z), .1)
-		<< new Pov_Sphere (tri(a.x,b.y,b.z), .1) << new Pov_Sphere (tri(b.x,a.y,a.z), .1) << new Pov_Sphere (tri(b.x,a.y,b.z), .1)
-		<< new Pov_Sphere (tri(b.x,b.y,a.z), .1) << new Pov_Sphere (tri(b.x,b.y,b.z), .1)
-		<< new Pov_Cylinder (tri(a.x,a.y,a.z), tri(a.x,a.y,b.z), .1) << new Pov_Cylinder (tri(a.x,a.y,a.z), tri(a.x,b.y,a.z), .1)
-		<< new Pov_Cylinder (tri(a.x,a.y,a.z), tri(b.x,a.y,a.z), .1) << new Pov_Cylinder (tri(a.x,b.y,b.z), tri(a.x,a.y,b.z), .1)
-		<< new Pov_Cylinder (tri(a.x,b.y,b.z), tri(a.x,b.y,a.z), .1) << new Pov_Cylinder (tri(a.x,b.y,b.z), tri(b.x,b.y,b.z), .1)
-		<< new Pov_Cylinder (tri(b.x,a.y,b.z), tri(a.x,a.y,b.z), .1) << new Pov_Cylinder (tri(b.x,a.y,b.z), tri(b.x,b.y,b.z), .1)
-		<< new Pov_Cylinder (tri(b.x,a.y,b.z), tri(b.x,a.y,a.z), .1) << new Pov_Cylinder (tri(b.x,b.y,a.z), tri(a.x,b.y,a.z), .1)
-		<< new Pov_Cylinder (tri(b.x,b.y,a.z), tri(b.x,a.y,a.z), .1) << new Pov_Cylinder (tri(b.x,b.y,a.z), tri(b.x,b.y,b.z), .1)
-		<< new Pov_Texture (t);
+		<< std::make_unique <Pov_Sphere> (tri(a.x,a.y,a.z), .1)
+		<< std::make_unique <Pov_Sphere> (tri(a.x,a.y,b.z), .1)
+		<< std::make_unique <Pov_Sphere> (tri(a.x,b.y,a.z), .1)
+		<< std::make_unique <Pov_Sphere> (tri(a.x,b.y,b.z), .1)
+		<< std::make_unique <Pov_Sphere> (tri(b.x,a.y,a.z), .1)
+		<< std::make_unique <Pov_Sphere> (tri(b.x,a.y,b.z), .1)
+		<< std::make_unique <Pov_Sphere> (tri(b.x,b.y,a.z), .1)
+		<< std::make_unique <Pov_Sphere> (tri(b.x,b.y,b.z), .1)
+		<< std::make_unique <Pov_Cylinder> (tri(a.x,a.y,a.z), tri(a.x,a.y,b.z), .1)
+		<< std::make_unique <Pov_Cylinder> (tri(a.x,a.y,a.z), tri(a.x,b.y,a.z), .1)
+		<< std::make_unique <Pov_Cylinder> (tri(a.x,a.y,a.z), tri(b.x,a.y,a.z), .1)
+		<< std::make_unique <Pov_Cylinder> (tri(a.x,b.y,b.z), tri(a.x,a.y,b.z), .1)
+		<< std::make_unique <Pov_Cylinder> (tri(a.x,b.y,b.z), tri(a.x,b.y,a.z), .1)
+		<< std::make_unique <Pov_Cylinder> (tri(a.x,b.y,b.z), tri(b.x,b.y,b.z), .1)
+		<< std::make_unique <Pov_Cylinder> (tri(b.x,a.y,b.z), tri(a.x,a.y,b.z), .1)
+		<< std::make_unique <Pov_Cylinder> (tri(b.x,a.y,b.z), tri(b.x,b.y,b.z), .1)
+		<< std::make_unique <Pov_Cylinder> (tri(b.x,a.y,b.z), tri(b.x,a.y,a.z), .1)
+		<< std::make_unique <Pov_Cylinder> (tri(b.x,b.y,a.z), tri(a.x,b.y,a.z), .1)
+		<< std::make_unique <Pov_Cylinder> (tri(b.x,b.y,a.z), tri(b.x,a.y,a.z), .1)
+		<< std::make_unique <Pov_Cylinder> (tri(b.x,b.y,a.z), tri(b.x,b.y,b.z), .1)
+		<< std::make_unique <Pov_Texture> (t);
 	}
 }

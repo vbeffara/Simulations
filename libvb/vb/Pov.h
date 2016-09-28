@@ -16,7 +16,6 @@ namespace vb {
 
 		Pov_Object & operator<< (tri a);
 		Pov_Object & operator<< (double x);
-		Pov_Object & operator<< (Pov_Object *o)	{ subs.push_back(std::unique_ptr<Pov_Object>(o)); return *this; }
 
 		template <typename T> Pov_Object & operator<< (std::unique_ptr<T> && p) {
 			subs.push_back (std::move(p)); return *this;
