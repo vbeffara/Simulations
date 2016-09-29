@@ -25,8 +25,7 @@ namespace vb {
 			ZZ_mat<mpz_t> M (d+1,d+2);
 
 			for (int i=0; i<=d; ++i) {
-				ostringstream os; os << round1(t*m);
-				M[i][0].set_str(os.str().c_str());
+				M[i][0].set_str(boost::lexical_cast<string> (round1(t*m)).c_str());
 				M[i][i+1] = 1;
 				t *= xf;
 			}
@@ -58,13 +57,13 @@ namespace vb {
 			ZZ_mat<mpz_t> M (2*(d+1),2*(d+2));
 
 			for (int i=0; i<=d; ++i) {
-				ostringstream re; re << round1(realpart(t)*m);
-				ostringstream im; im << round1(imagpart(t)*m);
-				ostringstream mim; mim << round1(-imagpart(t)*m);
-				M[2*i][0].set_str(re.str().c_str());
-				M[2*i][1].set_str(im.str().c_str());
-				M[2*i+1][0].set_str(mim.str().c_str());
-				M[2*i+1][1].set_str(re.str().c_str());
+				auto re = boost::lexical_cast<std::string> (round1(realpart(t)*m));
+				auto im = boost::lexical_cast<std::string> (round1(imagpart(t)*m));
+				auto mim = boost::lexical_cast<std::string> (round1(-imagpart(t)*m));
+				M[2*i][0].set_str(re.c_str());
+				M[2*i][1].set_str(im.c_str());
+				M[2*i+1][0].set_str(mim.c_str());
+				M[2*i+1][1].set_str(re.c_str());
 				M[2*i][2*i+2] = 1;
 				M[2*i+1][2*i+3] = 1;
 				t *= x;
@@ -99,10 +98,10 @@ namespace vb {
 			ZZ_mat<mpz_t> M (d+1,d+3);
 
 			for (int i=0; i<=d; ++i) {
-				ostringstream re; re << round1(realpart(t)*m);
-				ostringstream im; im << round1(imagpart(t)*m);
-				M[i][0].set_str(re.str().c_str());
-				M[i][1].set_str(im.str().c_str());
+				auto re = boost::lexical_cast<std::string> (round1(realpart(t)*m));
+				auto im = boost::lexical_cast<std::string> (round1(imagpart(t)*m));
+				M[i][0].set_str(re.c_str());
+				M[i][1].set_str(im.c_str());
 				M[i][i+2] = 1;
 				t *= x;
 			}

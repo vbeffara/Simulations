@@ -2,7 +2,6 @@
 #include <vb/Hub.h>
 #include <vb/Pov.h>
 #include <fstream>
-#include <sstream>
 
 namespace vb {
 	Pov_Object::Pov_Object (std::string s, bool b) : type(std::move(s)), braces(b), commas(0) {}
@@ -35,8 +34,8 @@ namespace vb {
 	Pov_Texture::Pov_Texture (std::string t) : Pov_Object("texture", true) { (*this) << std::make_unique <Pov_Object> (t); }
 
 	Pov_Camera::Pov_Camera (tri a, tri b, double d) : Pov_Object("camera", true) {
-		std::ostringstream os; os << "location " << a << " look_at " << b << " angle " << d;
-		(*this) << std::make_unique <Pov_Object> (os.str());
+		std::string s = fmt::format ("location {} look_at {} angle {}", a, b, d);
+		(*this) << std::make_unique <Pov_Object> (s);
 	}
 
 	Pov_Light_Source::Pov_Light_Source (tri a) : Pov_Object("light_source", true) {

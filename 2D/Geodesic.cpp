@@ -31,6 +31,7 @@ class QG : public Image { public:
 			for (int i=0; i<w(); ++i) {
 				coo z(i,j);
 				put (z, 255 * (I.at(z).f-minf)/(maxf-minf));
+				if (H['c']) put(z, HSV (at(z)>128 ? 0 : .5, .8, .8));
 				I.at(z) = Info (z, z, numeric_limits<double>::infinity(), exp(g*I.at(z).f));
 		}
 	};
@@ -140,7 +141,7 @@ class QG : public Image { public:
 };
 
 int main (int argc, char **argv) {
-	H.init ("Random 2D geometry", argc, argv, "w=free,n=9,z=0,g=1,s=0,b,i,q");
+	H.init ("Random 2D geometry", argc, argv, "w=free,n=9,z=0,g=1,s=0,b,i,q,c");
 	if (int s = H['s']) prng.seed(s);
 	int n = H['n'], nn = 1<<n;
 

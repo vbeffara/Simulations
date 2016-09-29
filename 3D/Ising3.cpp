@@ -46,10 +46,7 @@ int main (int argc, char ** argv) {
     Ising3 C (H['n'], H['k'], H['b']); BCs()[H['c']] (C); C.show();
 	int T = H['t']; if (T==0) T = 2*int(H['n']);
     { ProgressBar P (T); int s = H['s']; for (int t=0; t<T; ++t) {
-		if (s && (t % (T/s)) == 0) {
-			std::ostringstream os; os << "snapshot_" << std::setw(4) << std::setfill('0') << t/(T/s);
-			C.output_pov (os.str());
-		}
+		if (s && (t % (T/s)) == 0) C.output_pov (fmt::format ("snapshots/snapshot_{:04d}",t/(T/s)));
 		C.swipe(); P.set(t);
 	} }
 	if (H['m']) C.mirrors=false;

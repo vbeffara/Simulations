@@ -46,7 +46,7 @@ int main (int argc, char ** argv) {
 			cout << "     Order number:    " << v.size() << endl;
 			cout << "     Passport:        " << M.sigma.passport() << endl;
 
-			ostringstream os; os << "Toroidal enumeration (s=" << s << ", pass " << M.sigma.passport() << ", i=" << v.size() << ")"; H.title = os.str();
+			H.title = fmt::format ("Toroidal enumeration (s={}, pass {}, i={})", s, M.sigma.passport(), v.size());
 			Constellation1<double> C {M,H}; double er = C.cost();
 			if (!H['q']) {
 				cout << "     Final error:     " << er << endl;

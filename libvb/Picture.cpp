@@ -4,7 +4,6 @@
 #include <FL/gl.h>
 #include <iostream>
 #include <iomanip>
-#include <sstream>
 
 namespace vb {
 	Picture::Picture (int wd, int ht) :
@@ -46,9 +45,7 @@ namespace vb {
 	void Picture::output (const std::string &s) { output_png (s); }
 
 	void Picture::snapshot () {
-		std::ostringstream fn_s;
-		fn_s << "snapshots/" << snapshot_prefix << "_" << std::setw(4) << std::setfill('0') << snapshot_number++;
-		std::string fn = fn_s.str();
+		std::string fn = fmt::format ("snapshots/{}_{:04d}", snapshot_prefix, snapshot_number++);
 		H.L->info ("Taking a snapshot as {}.png", fn);
 		output_png (fn);
 	}

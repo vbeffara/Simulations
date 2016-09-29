@@ -142,7 +142,7 @@ int main (int argc, char ** argv) {
 			coo sh = dz[(zz.y + (((zz.x+1)%4)/2 ? 5 : 3)) % 4];
 			return cpx(z) + 2 * double(H['r']) * cpx(sh);
 		};
-		auto l = [](cpx z){ ostringstream os; os << "(" << real(z) << "," << imag(z) << ")"; return os.str(); };
+		auto l = [](cpx z){ return fmt::format ("({},{})", real(z), imag(z)); };
 		asy << "draw (" << l(s(z*2-edge)) << "--" << l(s(z*2+edge)) << ", gray (" << TP[z]/1.3 << "));" << endl;
 	}
 	int L = A1.ww*2+2; asy << "draw ((-4,-4) -- ("<<L<<",-4) -- ("<<L<<","<<L<<") -- (-4,"<<L<<") -- (-4,-4), gray(1));" << endl;

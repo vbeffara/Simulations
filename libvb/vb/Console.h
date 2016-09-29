@@ -1,16 +1,16 @@
 #pragma once /// \file
 #include <vb/AutoWindow.h>
+#include <boost/lexical_cast.hpp>
 #include <FL/Fl_Hor_Nice_Slider.H>
 #include <FL/Fl_Output.H>
 #include <FL/Fl_Window.H>
-#include <sstream>
 
 namespace vb {
 	class Slot : public Fl_Output {
 	public:
 		Slot (const char *n, int w, int h) : Fl_Output (0,h,w-100,30,n) { align(FL_ALIGN_RIGHT); }
 		template <typename T> void draw_value (T t) {
-			std::ostringstream os; os << t; value(os.str().c_str()); Fl_Output::draw();
+			value(boost::lexical_cast<std::string> (t).c_str()); Fl_Output::draw();
 		}
 	};
 
