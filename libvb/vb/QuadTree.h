@@ -7,7 +7,6 @@ namespace vb {
 	class QuadTree {
 	public:
 		QuadTree (coo UL, coo BR, int M);
-		~QuadTree ();
 
 		void insert (coo z);
 
@@ -18,7 +17,7 @@ namespace vb {
 		int n;
 
 	private:
-		static std::vector <QuadTree *> store;
+		static std::vector <std::unique_ptr<QuadTree>> store;
 
 		int index (coo z) const;
 		int idist (coo z) const;

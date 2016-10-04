@@ -71,7 +71,8 @@ class DLA : public CoarseImage { public:
 };
 
 int main (int argc, char ** argv) {
-	H.init ("Lattice DLA",argc,argv,"n=2000,p=30,c=50,l=30,f");
+	H.init ("Lattice DLA",argc,argv,"n=2000,p=30,c=50,l=30,f,s=0");
+	if (auto s = int(H['s'])) prng.seed(s);
 	DLA dla (H); dla.show(); dla.runDLA(); dla.output(); if (H['f']) dla.output_fine("dla.png");
 	H.L->info ("Final cluster: {} particles, diameter = {}", dla.QT.n, dla.r);
 }

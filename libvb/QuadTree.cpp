@@ -1,14 +1,10 @@
 #include <vb/QuadTree.h>
 
 namespace vb {
-	std::vector <QuadTree *> QuadTree::store;
+	std::vector <std::unique_ptr<QuadTree>> QuadTree::store;
 
 	QuadTree::QuadTree (coo UL, coo BR, int M) :
 		n(0), ul(UL), br(BR), center((ul+br)/2), iul(br), ibr(ul), m(M) {}
-
-	QuadTree::~QuadTree () {
-		if (n>m) for (int i=0; i<4; ++i) delete store[ch+i];
-	}
 
 	int QuadTree::index (coo z) const {
 		if (z.y<center.y)	{ if (z.x<center.x) return 0; else return 1; }
@@ -25,10 +21,10 @@ namespace vb {
 
 	void QuadTree::split () {
 		ch = store.size();
-		store.push_back (new QuadTree (ul,                	center,            	m));
-		store.push_back (new QuadTree (coo(center.x,ul.y),	coo(br.x,center.y),	m));
-		store.push_back (new QuadTree (coo(ul.x,center.y),	coo(center.x,br.y),	m));
-		store.push_back (new QuadTree (center,            	br,                	m));
+		store.push_back (std::make_unique <QuadTree> (ul,                	center,            	m));
+		store.push_back (std::make_unique <QuadTree> (coo(center.x,ul.y),	coo(br.x,center.y),	m));
+		store.push_back (std::make_unique <QuadTree> (coo(ul.x,center.y),	coo(center.x,br.y),	m));
+		store.push_back (std::make_unique <QuadTree> (center,            	br,                	m));
 		for (auto & z : pts) store[ch+index(z)] -> insert (z);
 		std::vector<coo>().swap(pts);
 	}
@@ -43,7 +39,7 @@ namespace vb {
 		} else {
 			int i0 = index(z); if (store[ch+i0] -> n) store[ch+i0] -> nn (z,qi);
 			for (int i=0; i<4; ++i) if (i != i0) {
-				QuadTree *q = store[ch+i];
+				QuadTree *q = store[ch+i].get();
 				if ((q -> n) && (q -> odist(z) < qi.d)) q -> nn (z,qi);
 			}
 		}
