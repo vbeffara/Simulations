@@ -1,92 +1,45 @@
 #include <vb/Image.h>
 
-using namespace vb;
+using namespace vb; using namespace std;
 
-int n,nn;
-Image *img;
-int *x,*y;
+coo rot (coo z, coo p) { return p + coo { p.y-z.y, z.x-p.x }; }
 
-inline int COO(int i, int j)
-{
-  int k;
+class Pivot : public Image { public:
+	Pivot (int nn_) : Image (4*nn_,4*nn_), nn(nn_), n(nn*nn), z(n) { show(); }
 
-  if (i<-nn) i=-nn;
-  if (i>=nn) i=nn-1;
-  if (j<-nn) j=-nn;
-  if (j>=nn) j=nn-1;
+	int piv () {
+		for (auto & c : *this) c = BLACK;
+		for (int k=0; k<n/4; k++) putp (z[k],WHITE);
+		for (int k=n/4; k<3*n/4; k++) {
+			bool piv = true;
+			for (int l=k; l<n; l++) { if ((atp(z[l])==WHITE) || (atp(rot(z[l],z[k]))==WHITE)) { piv = false; break; } }
+			if (piv) return k;
+			putp (z[k],WHITE);
+		}
+		return 0;
+	}
 
-  k=2*nn*(j+nn)+(i+nn);
-  return k;
-}
+	void run () {
+		int p=0; while (!p) {
+			z[0] = { 2*nn, 2*nn }; for (int k=1; k<n; k++) z[k] = z[k-1] + dz[prng.uniform_int(4)];
+			p = piv();
+		}
 
-inline int RCOO(int i, int j, int ii, int jj)
-{
-  int k,l;
+		H.L->info ("Pivot found at time {} and location {}.", p, z[p]);
 
-  k = ii-(j-jj);
-  l = jj+(i-ii);
-  return COO(k,l);
-}
+		for (auto & c : *this) c = BLACK;
+		for (int k=0; k<n; k++) putp(z[k]-z[p]+coo(2*nn,2*nn),WHITE);
+		for (int k=p+1; k<n; k++) {
+			coo zz = rot(z[k]-z[p],0) + coo(2*nn,2*nn);
+			if (atp(zz) != WHITE) putp(zz,RED);
+		}
+	}
 
-int main(int argc, char ** argv)
-{
-  int i,j,k,l,cont,piv,p;
+	int nn,n;
+	vector<coo> z;
+};
 
-  // Initialisations
-
-  if (argc != 2) {
-    fprintf(stderr, "Syntaxe : Pivot <sqrt(n)>\n");
-    exit(1);
-  }
-  sscanf (argv[1],"%d",&nn); nn=(nn>>3)<<3; n=nn*nn;
-
-  img = new Image (2*nn,2*nn);
-
-  x = new int[n];
-  y = new int[n];
-
-  // Brownien
-
-  cont=1;
-  while(cont) {
-    x[0]=0; y[0]=0; i=0; j=0;
-    for(k=1;k<n;k++) {
-      if (prng()&16) {
-        i += (prng()&64?1:-1);
-      } else {
-        j += (prng()&4?1:-1);
-      }
-      x[k]=i; y[k]=j;
-    }
-
-    // Recherche d'un pivot
-
-    for (k=0; k<4*n; k++)  img->put (coo(k,0),0);
-    for (k=0; k<n>>2; k++) img->put (coo(COO(x[k],y[k]),0),0);
-    p=0;
-    for (k=n>>2; (k<(n>>2)+(n>>1)) && cont; k++) {
-      piv=1;
-      for (l=k; (l<n) && piv; l++) {
-        if ((*img).at(coo(COO(x[l],y[l]),0)) || (*img).at(coo(RCOO(x[l],y[l],x[k],y[k]),0)))
-          piv=0;
-      }
-      if (piv) {
-        img->put (coo(COO(x[k],y[k]),0),2);
-        p=k; cont=0;
-      } else if ((*img).at(coo(COO(x[k],y[k]),0))==Color(0)) img->put(coo(COO(x[k],y[k]),0),1);
-    }
-    if (cont) fprintf(stderr, ".");
-  }
-
-  fprintf(stderr, "\nPivot found at time %d (%d,%d).\n", p, x[p], y[p]);
-
-  for (k=0; k<4*n; k++) img->put(coo(k,0),0);
-  for (k=0; k<n; k++)   img->put(coo(COO(x[k]-x[p],y[k]-y[p]),0),3);
-  for (k=p+1; k<n; k++) {
-    if ((*img).at(coo(RCOO(x[k]-x[p],y[k]-y[p],0,0),0)) != Color(3)) {
-      img->put(coo(RCOO(x[k]-x[p],y[k]-y[p],0,0),0),1);
-    }
-  }
-
-  return 0;
+int main(int argc, char ** argv) {
+	H.init ("Pivot",argc,argv,"n=200");
+	Pivot img (H['n']); img.run(); img.pause();
 }
