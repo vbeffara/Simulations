@@ -88,7 +88,8 @@ class Configuration : public Image { public:
 
 class Coupling : public Image { public:
 	Coupling (int r) : Image(2*r,2*r), r1(r/4), r2(r/2), r3(r), c1(2*r), c2(2*r) {
-		c1.pick(r1,r2,r3); copy (c1.begin(),c1.end(),c2.begin());
+		c1.pick(r1,r2,r3);
+		for (int i=0; i<w(); ++i) for (int j=0; j<h(); ++j) c2[coo(i,j)] = c1[coo(i,j)];
 		c1.show(); c2.show(); show(); compute_diff(); update();
 	}
 
