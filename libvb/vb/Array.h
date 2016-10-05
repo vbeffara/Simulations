@@ -43,7 +43,7 @@ namespace vb {
 		std::vector<T> data;
 	};
 
-	template <typename T> class Array_iterator : public coo { public: Array<T> &b;
+	template <typename T> class Array_iterator : public coo, std::iterator<std::forward_iterator_tag,T> { public: Array<T> &b;
 		Array_iterator 	(Array<T> &bb, coo z) : coo(z), b(bb)	{}
 		bool operator!=	(Array_iterator<T> &o)               	{ return (&b != &o.b) || coo::operator!= (o);	}
 		bool operator!=	(coo o)                              	{ return coo::operator!= (o);                	}

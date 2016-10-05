@@ -10,7 +10,7 @@ class Configuration : public Image { public:
 		for (int x=0; x<w(); x++) {
 			for (int y=0; y<h(); y++) {
 				coo z(x,y);
-				expl[z] = (at(z) == Color(1) ? 1 : -1) * (++t);
+				expl[z] = (at(z) == WHITE ? 1 : -1) * (++t);
 			}
 		}
 
@@ -68,7 +68,7 @@ class Configuration : public Image { public:
 		int n=0;
 		while (true) {
 			cerr << ++n << " \r";
-			for (int x=0; x<w(); x++) for (int y=0; y<h(); y++) put (coo(x,y), prng.bernoulli(.5));
+			for (int x=0; x<w(); x++) for (int y=0; y<h(); y++) put (coo(x,y), prng.bernoulli(.5) ? WHITE : BLACK);
 
 			for (int x=-r1+1; x<r1-1; x++) {
 				for (int y=-r1+1; y<r1-1; y++) {
@@ -89,7 +89,7 @@ class Configuration : public Image { public:
 class Coupling : public Image { public:
 	Coupling (int r) : Image(2*r,2*r), r1(r/4), r2(r/2), r3(r), c1(2*r), c2(2*r) {
 		c1.pick(r1,r2,r3); copy (c1.begin(),c1.end(),c2.begin());
-		show(); compute_diff(); update();
+		c1.show(); c2.show(); show(); compute_diff(); update();
 	}
 
 	int compute_diff () {
@@ -97,7 +97,7 @@ class Coupling : public Image { public:
 		for (int i=0; i<c1.w(); i++) {
 			for (int j=0; j<c1.h(); j++) {
 				coo z(i,j);
-				if (c1.at(z)==c2.at(z)) { put(z,0); }
+				if (c1.at(z)==c2.at(z)) { put(z,BLACK); }
 				else if (c1.at(z)>c2.at(z)) { put(z,GREEN); n++; }
 				else { put(z,RED); n++; }
 			}
@@ -113,7 +113,7 @@ class Coupling : public Image { public:
 				if ((x<w()/2-r1) || (x>=w()/2+r1) || (y<h()/2-r1) || (y>=h()/2+r1)) break;
 			}
 
-			auto v = prng.uniform_int(2);
+			auto v = prng.bernoulli(.5) ? WHITE : BLACK;
 			{ auto old = c1.at(z); c1.put(z,v); if (!c1.test1(r1,r2,r3)) c1.put(z,old); }
 			{ auto old = c2.at(z); c2.put(z,v); if (!c2.test2(r1,r2,r3)) c2.put(z,old); }
 
