@@ -66,21 +66,19 @@ int main(int argc, char **argv) {
 		cap[get(edge_reverse,g,*e)]=0;
 	}
 
-	auto all_edges = new edge_descriptor[2*(n+1)*n];
-	auto rev_edges = new edge_descriptor[2*(n+1)*n];
+	vector <edge_descriptor> all_edges (2*(n+1)*n);
+	vector <edge_descriptor> rev_edges (2*(n+1)*n);
 
-	{
-		int i=0;
-		for (tie(e,e_final)=edges(g); e!=e_final; ++e) {
-			if (cap[*e]==0) {
-				all_edges[i] = *e;
-				cap[all_edges[i]] = 1;
+	int i=0;
+	for (tie(e,e_final)=edges(g); e!=e_final; ++e) {
+		if (cap[*e]==0) {
+			all_edges[i] = *e;
+			cap[all_edges[i]] = 1;
 
-				rev_edges[i] = get (edge_reverse,g,*e);
-				cap[rev_edges[i]] = 1;
+			rev_edges[i] = get (edge_reverse,g,*e);
+			cap[rev_edges[i]] = 1;
 
-				++i;
-			}
+			++i;
 		}
 	}
 
@@ -103,9 +101,8 @@ int main(int argc, char **argv) {
 
 	cout << n << " | " << n_iter;
 	for (int i=1; i<=4; ++i) {
-		int bla=0;
-		for (int j=i; j<=4; ++j) bla += stats[j];
-		cout << " | " << bla << " " << (double)bla / (double)n_iter;
+		double bla=0; for (int j=i; j<=4; ++j) bla += stats[j];
+		cout << " | " << bla << " " << bla/n_iter;
 	}
 	cout << endl;
 }
