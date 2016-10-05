@@ -43,15 +43,15 @@ void compute_cpts (Image &c, Array<int> &cpts, int r1) {
 
 	/*  scan; on garde le plus grand |.| indice de chaque cluster */
 
-	bool dirty = true; while (dirty==1) {
-		dirty = 0;
+	bool dirty = true; while (dirty) {
+		dirty = false;
 		for (int x=0; x<N; x++) {
 			for (int y=0; y<N; y++) {
 				coo z (x,y);
 				for (int i=0; i<6; ++i) {
 					coo zz = z+dz[i]; if (!cpts.contains(zz)) continue;
-					if ((cpts[z]>0) && (cpts[zz]>cpts[z])) { cpts[z] = cpts[zz]; dirty=1; }
-					if ((cpts[z]<0) && (cpts[zz]<cpts[z])) { cpts[z] = cpts[zz]; dirty=1; }
+					if ((cpts[z]>0) && (cpts[zz]>cpts[z])) { cpts[z] = cpts[zz]; dirty=true; }
+					if ((cpts[z]<0) && (cpts[zz]<cpts[z])) { cpts[z] = cpts[zz]; dirty=true; }
 				}
 			}
 		}
