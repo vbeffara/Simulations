@@ -7,237 +7,146 @@
 
 #include <vb/Image.h>
 
-#define RAD1 10
-#define RAD2 20
-#define RAD3 40
+using namespace vb; using namespace std;
 
-#define N (2*RAD3)
+const int RAD1 = 5, RAD2 = 10, RAD3 = 20, N = 2*RAD3;
 
-#include <cstdio>
-
-using namespace vb;
-
-using testfunction = int (Image*);
-
-int compute_diff (Image *c1, Image *c2, Image *d) {
-  int i,j,n;
-
-  n=0;
-  for (i=0;i<N;i++) {
-    for (j=0;j<N;j++) {
-      if ((*c1).at(coo(i,j))==(*c2).at(coo(i,j))) {
-	d->put(coo(i,j),0);
-      } else if ((*c1).at(coo(i,j))>(*c2).at(coo(i,j))) {
-	d->put(coo(i,j),2);
-	n++;
-      } else {
-	d->put(coo(i,j),3);
-	n++;
-      }
-    }
-  }
-  return n;
+int compute_diff (Image &c1, Image &c2, Image &d) {
+	int n=0;
+	for (int i=0; i<N; i++) {
+		for (int j=0; j<N; j++) {
+			if (c1.at(coo(i,j))==c2.at(coo(i,j))) { d.put(coo(i,j),0); }
+			else if (c1.at(coo(i,j))>c2.at(coo(i,j))) { d.put(coo(i,j),GREEN); n++; }
+			else { d.put(coo(i,j),RED); n++; }
+		}
+	}
+	return n;
 }
 
-void compute_cpts (Image *c, int *cpts, int r1, int) {
-  /*
-   * Determine the connected  components in the annulus of  radii r1<r2 around
-   * the center of the square, and put that in *cpts.
-   */
+void compute_cpts (Image &c, Array<int> &cpts, int r1) {
+	/*
+	 * Determine the connected  components in the annulus of  radii r1<r2 around
+	 * the center of the square, and put that in cpts.
+	 */
 
-  int x,y,t,dirty;
+	int t=0;
+	for (int x=0; x<N; x++) {
+		for (int y=0; y<N; y++) {
+			if (c.at(coo(x,y)) == Color(1)) { cpts[x+N*y] = (++t); }
+			else { cpts[x+N*y] = - (++t); }
+		}
+	}
 
-  /*  initialisation */
+	/*  hole in the middle ie for r<r1 */
 
-  t=0;
-  for (x=0;x<N;x++) {
-    for (y=0;y<N;y++) {
-      if ((*c).at(coo(x,y)) == Color(1)) {
-	cpts[x+N*y]=(++t);
-      } else {
-	cpts[x+N*y]=-(++t);
-      }
-    }
-  }
+	for (int x=-r1+1; x<r1-1; x++) for (int y=-r1+1; y<r1-1; y++) cpts[coo(x+N/2,y+N/2)]=0;
 
-  /*  hole in the middle ie for r<r1 */
+	/*  scan; on garde le plus grand |.| indice de chaque cluster */
 
-  for (x=-r1+1;x<r1-1;x++)
-    for (y=-r1+1;y<r1-1;y++)
-      cpts[(N>>1)+x+N*((N>>1)+y)]=0;
-
-  /*  scan; on garde le plus grand |.| indice de chaque cluster */
-
-  dirty=1;
-  while (dirty==1) {
-    dirty = 0;
-    for (x=0;x<N;x++) {
-      for (y=0;y<N;y++) {
-	if ( (cpts[x+N*y]>0) && (x>0) && (cpts[x-1+N*y]>cpts[x+N*y]) ) { cpts[x+N*y]=cpts[x-1+N*y]; dirty=1; }
-	if ( (cpts[x+N*y]>0) && (x<N-1) && (cpts[x+1+N*y]>cpts[x+N*y]) ) { cpts[x+N*y]=cpts[x+1+N*y]; dirty=1; }
-	if ( (cpts[x+N*y]>0) && (y>0) && (cpts[x+N*y-N]>cpts[x+N*y]) ) { cpts[x+N*y]=cpts[x+N*y-N]; dirty=1; }
-	if ( (cpts[x+N*y]>0) && (y<N-1) && (cpts[x+N*y+N]>cpts[x+N*y]) ) { cpts[x+N*y]=cpts[x+N*y+N]; dirty=1; }
-	if ( (cpts[x+N*y]>0) && (x>0) && (y>0) && (cpts[x-1+N*y-N]>cpts[x+N*y]) ) { cpts[x+N*y]=cpts[x-1+N*y-N]; dirty=1; }
-	if ( (cpts[x+N*y]>0) && (x<N-1) && (y<N-1) && (cpts[x+1+N*y+N]>cpts[x+N*y]) ) { cpts[x+N*y]=cpts[x+1+N*y+N]; dirty=1; }
-
-	if ( (cpts[x+N*y]<0) && (x>0) && (cpts[x-1+N*y]<cpts[x+N*y]) ) { cpts[x+N*y]=cpts[x-1+N*y]; dirty=1; }
-	if ( (cpts[x+N*y]<0) && (x<N-1) && (cpts[x+1+N*y]<cpts[x+N*y]) ) { cpts[x+N*y]=cpts[x+1+N*y]; dirty=1; }
-	if ( (cpts[x+N*y]<0) && (y>0) && (cpts[x+N*y-N]<cpts[x+N*y]) ) { cpts[x+N*y]=cpts[x+N*y-N]; dirty=1; }
-	if ( (cpts[x+N*y]<0) && (y<N-1) && (cpts[x+N*y+N]<cpts[x+N*y]) ) { cpts[x+N*y]=cpts[x+N*y+N]; dirty=1; }
-	if ( (cpts[x+N*y]<0) && (x>0) && (y>0) && (cpts[x-1+N*y-N]<cpts[x+N*y]) ) { cpts[x+N*y]=cpts[x-1+N*y-N]; dirty=1; }
-	if ( (cpts[x+N*y]<0) && (x<N-1) && (y<N-1) && (cpts[x+1+N*y+N]<cpts[x+N*y]) ) { cpts[x+N*y]=cpts[x+1+N*y+N]; dirty=1; }
-      }
-    }
-  }
+	bool dirty = true; while (dirty==1) {
+		dirty = 0;
+		for (int x=0; x<N; x++) {
+			for (int y=0; y<N; y++) {
+				coo z (x,y);
+				for (int i=0; i<6; ++i) {
+					coo zz = z+dz[i]; if (!cpts.contains(zz)) continue;
+					if ((cpts[z]>0) && (cpts[zz]>cpts[z])) { cpts[z] = cpts[zz]; dirty=1; }
+					if ((cpts[z]<0) && (cpts[zz]<cpts[z])) { cpts[z] = cpts[zz]; dirty=1; }
+				}
+			}
+		}
+	}
 }
 
-int nbarms (Image *c, int r1, int r2, int sides) {
-  /*
-   * Compute the number of connected  components spanning from r1 to r2 inside
-   * the annulus  (should be 0, 1  or even).
-   */
+int nbarms (Image &c, int r1, int r2, int sides) {
+	/*
+	 * Compute the number of connected  components spanning from r1 to r2 inside
+	 * the annulus  (should be 0, 1  or even).
+	 */
 
-  int n,k,i;
-  static char *table = nullptr;
-  static int *expl = nullptr;
+	static Array<int> expl (N,N); compute_cpts (c,expl,r1);
 
-  if (table == nullptr) table = new char[2*N*N+1];
-  if (expl == nullptr) expl = new int[N*N];
+	static vector<char> table (2*N*N+1); for (int i=0; i<2*N*N+1; i++) table[i]=0;
 
-  compute_cpts (c,expl,r1,r2);
+	for (int i=-r2; i<r2; i++) {
+		if (sides&1) table[N*N+expl[(N>>1)+i+N*((N>>1)-r2)]]=1;
+		if (sides&2) table[N*N+expl[(N>>1)+i+N*((N>>1)+r2-1)]]=1;
+		if (sides&4) table[N*N+expl[(N>>1)-r2+N*((N>>1)+i)]]=1;
+		if (sides&8) table[N*N+expl[(N>>1)+r2-1+N*((N>>1)+i)]]=1;
+	}
 
-  for (i=0;i<2*N*N+1;i++) table[i]=0;
+	int n=0; int k;
+	for (int i=-r1; i<r1; i++) {
+		k = expl[(N>>1)+i + N*((N>>1)-r1)]; if (table[N*N+k]==1) { table[N*N+k]=0; n++; }
+		k = expl[(N>>1)+i + N*((N>>1)+r1-1)]; if (table[N*N+k]==1) { table[N*N+k]=0; n++; }
+		k = expl[(N>>1)-r1 + N*((N>>1)+i)]; if (table[N*N+k]==1) { table[N*N+k]=0; n++; }
+		k = expl[(N>>1)+r1-1 + N*((N>>1)+i)]; if (table[N*N+k]==1) { table[N*N+k]=0; n++; }
+	}
 
-  for (i=-r2;i<r2;i++) {
-    if (sides&1) table[N*N+expl[(N>>1)+i+N*((N>>1)-r2)]]=1;
-    if (sides&2) table[N*N+expl[(N>>1)+i+N*((N>>1)+r2-1)]]=1;
-    if (sides&4) table[N*N+expl[(N>>1)-r2+N*((N>>1)+i)]]=1;
-    if (sides&8) table[N*N+expl[(N>>1)+r2-1+N*((N>>1)+i)]]=1;
-  }
-
-  n=0;
-  for (i=-r1;i<r1;i++) {
-    k = expl[(N>>1)+i + N*((N>>1)-r1)];
-    if (table[N*N+k]==1) {
-      table[N*N+k]=0;
-      n++;
-    }
-    k = expl[(N>>1)+i + N*((N>>1)+r1-1)];
-    if (table[N*N+k]==1) {
-      table[N*N+k]=0;
-      n++;
-    }
-    k = expl[(N>>1)-r1 + N*((N>>1)+i)];
-    if (table[N*N+k]==1) {
-      table[N*N+k]=0;
-      n++;
-    }
-    k = expl[(N>>1)+r1-1 + N*((N>>1)+i)];
-    if (table[N*N+k]==1) {
-      table[N*N+k]=0;
-      n++;
-    }
-  }
-
-  return n;
+	return n;
 }
 
-int test1 (Image *c) {
-  /*
-   * 4 bras entre RAD1 et RAD3.
-   * 4 entre RAD1 et RAD2 et entre RAD2 et RAD3 i.e. jamais 6.
-   */
+bool test1 (Image &c) {
+	/*
+	 * 4 bras entre RAD1 et RAD3.
+	 * 4 entre RAD1 et RAD2 et entre RAD2 et RAD3 i.e. jamais 6.
+	 */
 
-  if (nbarms(c,RAD1,RAD3,15)!=4) return 0;
-  if (nbarms(c,RAD2,RAD3,15)!=4) return 0;
-  if (nbarms(c,RAD1,RAD2,15)!=4) return 0;
-  return 1;
+	if (nbarms(c,RAD1,RAD3,15)!=4) return false;
+	if (nbarms(c,RAD2,RAD3,15)!=4) return false;
+	if (nbarms(c,RAD1,RAD2,15)!=4) return false;
+	return true;
 }
 
-int test2 (Image *c) {
-  /*
-   * test 1 plus exactement un bras sur le cote 1 entre RAD2 et RAD3.
-   */
+bool test2 (Image &c) {
+	/*
+	 * test 1 plus exactement un bras sur le cote 1 entre RAD2 et RAD3.
+	 */
 
-  if ( (test1(c)==1) && (nbarms(c,RAD1,RAD3,6)==2) ) return 1;
-  return 0;
+	return (test1(c)==1) && (nbarms(c,RAD1,RAD3,6)==2);
 }
 
-void monte_carlo (Image *c1, Image *c2, Image *diff, int duration) {
-  int t,x,y,good,err;
-  char old,z;
+void monte_carlo (Image &c1, Image &c2, Image &diff, int duration) {
+	int x,y;
+	for (int t=0; t<duration; t++) {
+		while (true) {
+			x = prng()%N; y = prng()%N;
+			if ((x<(N>>1)-RAD1) || (x>=(N>>1)+RAD1) || (y<(N>>1)-RAD1) || (y>=(N>>1)+RAD1)) break;
+		}
 
-  /*  le point a essayer */
+		auto z = prng.uniform_int(2);
+		{ auto old = c1.at(coo(x,y)); c1.put(coo(x,y),z); if (!test1(c1)) c1.put(coo(x,y),old); }
+		{ auto old = c2.at(coo(x,y)); c2.put(coo(x,y),z); if (!test2(c2)) c2.put(coo(x,y),old); }
 
-  for (t=0;t<duration;t++) {
-    good=0;
-    while (good==0) {
-      x = prng()%N;
-      y = prng()%N;
-      z = prng()%2;
-      if ((x<(N>>1)-RAD1) || (x>=(N>>1)+RAD1) || (y<(N>>1)-RAD1) || (y>=(N>>1)+RAD1)) good=1;
-    }
-
-    /*  config 1 : juste cond. a 4 bras entre r1 et r3=(N>>1)=N/2 */
-
-    old = (*c1).at(coo(x,y));
-    c1 -> put(coo(x,y),z);
-    if (test1(c1)==0) c1 -> put(coo(x,y),old);
-
-    /*  config 1 : juste cond. a 4 bras entre r1 et r3=(N>>1)=N/2 */
-
-    old = (*c2).at(coo(x,y));
-    c2 -> put(coo(x,y),z);
-    if (test2(c2)==0) c2 -> put(coo(x,y),old);
-
-    /*  affichage de la difference */
-
-    err = compute_diff (c1,c2,diff);
-    fprintf (stderr, "%d\n", err);
-    diff->update();
-  }
+		cerr << compute_diff (c1,c2,diff) << " \r"; diff.update();
+	}
 }
 
-void pick (Image *c, testfunction test) {
-  int good,x,y,n;
+void pick (Image &c, function<bool(Image&)> test) {
+	int n=0;
+	while (true) {
+		cerr << ++n << " \r";
+		for (int x=0; x<N; x++) for (int y=0; y<N; y++) c.put (coo(x,y), prng.bernoulli(.5));
 
-  good=0;
-  n=0;
+		for (int x=-RAD1+1; x<RAD1-1; x++) {
+			for (int y=-RAD1+1; y<RAD1-1; y++) {
+				c.put(coo((N>>1)+x,(N>>1)+y),0);
+				c.put(coo((N>>1)+x,(N>>1)+y),0);
+			}
+		}
 
-  while (good==0) {
-    fprintf (stderr,"%d \r",++n);
-    for (x=0;x<N;x++)
-      for (y=0;y<N;y++)
-	c->put(coo(x,y),(prng.bernoulli(.5)));
-
-    for (x=-RAD1+1;x<RAD1-1;x++) {
-      for (y=-RAD1+1;y<RAD1-1;y++) {
-	c->put(coo((N>>1)+x,(N>>1)+y),0);
-	c->put(coo((N>>1)+x,(N>>1)+y),0);
-      }
-    }
-
-    good = test (c);
-  }
-  fprintf (stderr,"\n");
+		if (test(c)) break;
+	}
+	cerr << endl;
 }
 
 int main (int, char **) {
-  int i;
-  Image *img,*img1,*img2;
+	Image img1 (N,N); img1.label ("The first configuration");
+	Image img2 (N,N); img2.label ("The second configuration");
+	Image img  (N,N); img.label  ("The difference");
 
-  img1 = new Image (N,N); img1->label("The first configuration");
-  img2 = new Image (N,N); img2->label("The second configuration");
-  img = new Image(N,N); img->label("The difference");
+	pick (img1,test1); for (int i=0; i<N*N; i++) img2.put (coo(i,0), img1.at(coo(i,0)));
 
-  pick (img1,test1);
-  for (i=0;i<N*N;i++) img2 -> put (coo(i,0), (*img1).at(coo(i,0)));
-
-  img->show();
-  compute_diff(img1,img2,img);
-  img->update();
-
-  monte_carlo (img1,img2,img,N*N*N);
-
-  return 0;
+	img.show(); compute_diff(img1,img2,img); img.update();
+	monte_carlo (img1,img2,img,N*N*N);
 }
