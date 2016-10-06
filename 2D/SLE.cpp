@@ -6,7 +6,7 @@ using namespace vb; using namespace std;
 const Color INSIDE(0), LEFTSIDE(HSV(0,.8,.8)), RIGHTSIDE(HSV(.5,.8,.8));
 
 class Loewner : public std::vector<double> { public:
-    Loewner (int n, double k) {
+    Loewner (long n, double k) {
         dt = 1.0/(n*n);
         reserve (n*n); push_back(0);
         for (int i=1; i<n*n; i++) push_back (back() + sqrt(k*dt) * prng.gaussian());
@@ -14,8 +14,8 @@ class Loewner : public std::vector<double> { public:
     }
 
     void bound() {
-        Max=*this; Min=*this;
-        for (int i=size()-2; i>=0; i--) { Min[i] = min (at(i), Min[i+1]); Max[i] = max (at(i), Max[i+1]); }
+        Max.operator= (*this); Min.operator= (*this);
+        for (long i=size()-2; i>=0; i--) { Min[i] = min (at(i), Min[i+1]); Max[i] = max (at(i), Max[i+1]); }
     }
 
     Color compute (cpx z) const {

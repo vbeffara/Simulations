@@ -16,6 +16,11 @@ namespace vb {
 		Picture (int wd, int ht);
 		~Picture () override;
 
+		Picture (const Picture &) = delete;
+		Picture (Picture &&) = delete;
+		Picture & operator= (const Picture &) = delete;
+		Picture & operator= (Picture &&) = delete;
+
 		/// Output the image in the preferred format (PNG by default).
 		virtual void output (const std::string &s = "");
 		void output_png (const std::string &s = "");

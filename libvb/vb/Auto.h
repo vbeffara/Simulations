@@ -20,6 +20,12 @@ namespace vb {
 	public:
 		Auto (double t);
 		virtual ~Auto ();
+
+		Auto (const Auto &) = delete;
+		Auto (Auto &&) = delete;
+		Auto & operator= (const Auto &) = delete;
+		Auto & operator= (Auto &&) = delete;
+
 		virtual void update() =0;
 
 		void step () { ++n_call; --next; if (next==0) run(); }
