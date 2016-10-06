@@ -14,14 +14,6 @@ using namespace vb; using namespace std;
 
 int fib (int n) { return n<2 ? n : fib(n-1) + fib(n-2); }
 
-int fib_cilk (int n) {
-    if (n < 20) return fib(n);
-    int x = cilk_spawn fib_cilk (n-1);
-    int y = fib_cilk (n-2);
-    cilk_sync;
-    return x + y;
-}
-
 double cum (int n) {
     vector<double> X(n);
     for (int i=0; i<n; ++i) {
@@ -33,6 +25,14 @@ double cum (int n) {
 }
 
 #ifdef CILK
+int fib_cilk (int n) {
+    if (n < 20) return fib(n);
+    int x = cilk_spawn fib_cilk (n-1);
+    int y = fib_cilk (n-2);
+    cilk_sync;
+    return x + y;
+}
+
 double cum_cilk (int n) {
     vector<double> X(n);
     cilk_for (int i=0; i<n; ++i) {
@@ -54,7 +54,7 @@ double cum_cilk2 (int n) {
 }
 #endif
 
-template <typename T> void test (std::string s, T f (int), int n) {
+template <typename T> void test (const string & s, T f (int), int n) {
     std::chrono::steady_clock C;
     auto i = C.now();
     auto result = f(n);
@@ -67,7 +67,9 @@ int main (int argc, char ** argv) {
     int n = H['n'], m = H['m'];
 
     if (m & 1)  test ("Fib | Single", fib, n);
+#ifdef CILK
     if (m & 2)  test ("Fib | CILK  ", fib_cilk, n);
+#endif
 
     if (m & 8)  test ("Map | Single", cum, H['l']);
 #ifdef CILK

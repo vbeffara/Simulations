@@ -15,7 +15,7 @@ int main (int argc, char ** argv) {
 		bool bad = true; while (bad) {
 			for (int i=0; i<f; ++i) M.flip(prng.uniform_int(M.sigma.size()));
 			bad = false; f = 1;
-			for (auto s : M.sigma.cycles()) {
+			for (const auto & s : M.sigma.cycles()) {
 				if (s.size()<d) bad = true;
 				if ((D>0) && (s.size()>D)) bad = true;
 			}
