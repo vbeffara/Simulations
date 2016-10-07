@@ -7,7 +7,7 @@ namespace vb {
 		while (todo_c.size()>0) {
 			std::vector<unsigned> c = todo_c.back(); todo_c.pop_back();
 			std::vector<unsigned> p = todo_p.back(); todo_p.pop_back();
-			if (p.size() == 0) { for (unsigned i=0; i<n/2; ++i) { current[c[2*i]]=c[2*i+1]; current[c[2*i+1]]=c[2*i]; } return; }
+			if (p.size() == 0) { for (unsigned long i=0; i<n/2; ++i) { current[c[2*i]]=c[2*i+1]; current[c[2*i+1]]=c[2*i]; } return; }
 			unsigned i=p[0];
 			for (unsigned k=1; k<p.size(); ++k) {
 				unsigned o = p[k];

@@ -4,7 +4,7 @@
 
 namespace vb {
 	using Edge = std::pair<int,int>;
-	using adj_list = std::vector<int>;
+	using adj_list = std::vector<long>;
 
 	class Vertex : public Circle { public:
 		adj_list adj;

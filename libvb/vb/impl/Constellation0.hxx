@@ -209,12 +209,12 @@ namespace vb {
 		T rad = mindist/5;
 
 		std::vector<std::vector<cplx>> hands;
-		std::vector<std::vector<unsigned>> halfedges;
+		std::vector<std::vector<unsigned long>> halfedges;
 		unsigned index = 0;
 
 		for (Star<T> z : Z) {
 			std::vector<cplx> hs;
-			std::vector<unsigned> he;
+			std::vector<unsigned long> he;
 
 			cplx u = z.z + rad*exp(to_cpx<T>(0,.001)); T s = imag((*this)(u));
 			for (unsigned i=0; i<10*z.d; ++i) {
@@ -231,7 +231,7 @@ namespace vb {
 		}
 
 		std::vector<cplx> hs;
-		std::vector<unsigned> he;
+		std::vector<unsigned long> he;
 		cplx u = large*exp(to_cpx<T>(0,.001));
 		T s = imag((*this)(u));
 		for (unsigned i=0; i<10*maxdeg; ++i) {
@@ -245,7 +245,7 @@ namespace vb {
 		hands.push_back(hs);
 		halfedges.push_back(he);
 
-		std::vector<std::vector<unsigned>> pairs;
+		std::vector<std::vector<unsigned long>> pairs;
 
 		for (unsigned i=0; i<Z.size(); ++i) {
 			for (unsigned j=0; j<hands[i].size(); ++j) {
@@ -262,7 +262,7 @@ namespace vb {
 							if (nd < d) { d = abs(nz-hands[k][kk]); h = kk; }
 						}
 						if (h<0) return boost::none;
-						pairs.emplace_back(std::vector<unsigned> {halfedges[i][j],halfedges[k][h]});
+						pairs.emplace_back(std::vector<unsigned long> {halfedges[i][j],halfedges[k][h]});
 						looking = false;
 					}
 					for (unsigned k=0; k<Z.size(); ++k) if (abs(nz-Z[k].z) < rad) {
@@ -273,7 +273,7 @@ namespace vb {
 						}
 						if (h<0) return boost::none;
 						if (halfedges[i][j] < halfedges[k][h])
-							pairs.emplace_back(std::vector<unsigned> {halfedges[i][j],halfedges[k][h]});
+							pairs.emplace_back(std::vector<unsigned long> {halfedges[i][j],halfedges[k][h]});
 						looking = false;
 					}
 					if (sl*imag((*this)(nz))>0) l=nz; else r=nz;

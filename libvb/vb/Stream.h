@@ -18,7 +18,7 @@ namespace vb {
 		return Stream<V> ([&](Sink<V> & yield) { for (auto x : S) yield(f(x)); });
 	}
 
-	Stream <std::vector<unsigned>> partitions (unsigned n, unsigned m = 1);	// Partitions of n with piece size at least m
-	Stream <std::vector<unsigned>> tuples (unsigned k, unsigned n);        	// Ordered, distinct k-tuples in [0,n-1]
-	Stream <std::vector<unsigned>> cycles (int k, int n);                  	// k-tuples up to cyclic permutation
+	Stream <std::vector<unsigned long>> partitions (unsigned long n, unsigned long m = 1);	// Partitions of n with piece size at least m
+	Stream <std::vector<unsigned long>> tuples (unsigned long k, unsigned long n);        	// Ordered, distinct k-tuples in [0,n-1]
+	Stream <std::vector<unsigned long>> cycles (unsigned long k, unsigned long n);        	// k-tuples up to cyclic permutation
 }

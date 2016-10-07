@@ -26,7 +26,7 @@ namespace vb {
 		void split ();
 
 		coo ul,br,center,iul,ibr;
-		int m, ch;
+		long m, ch;
 		std::vector <coo> pts;
 	};
 }

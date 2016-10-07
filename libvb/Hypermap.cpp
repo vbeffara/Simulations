@@ -10,7 +10,7 @@ namespace vb {
 
 	void Hypermap::from_hypermap () {
 		Cycles sc = sigma.cycles();
-		int nb = sc.size(); V.resize(nb); E.resize(6*nb);
+		long nb = sc.size(); V.resize(nb); E.resize(6*nb);
 		for (unsigned i=0; i<E.size(); ++i) E[i].i=i;
 		for (unsigned i=0; i<V.size(); ++i) V[i].i=i;
 		for (auto & v : V) {
@@ -54,8 +54,8 @@ namespace vb {
 			phi_c.emplace_back (Permutation({a,a+2*N,f+N}));
 		}
 		for (const auto & F : phi.cycles()) {
-			std::vector<unsigned> FF = F;
-			for (unsigned &i : FF) i += 3*N;
+			std::vector<unsigned long> FF = F;
+			for (auto & i : FF) i += 3*N;
 			phi_c.push_back (FF);
 		}
 
@@ -78,7 +78,7 @@ namespace vb {
 	}
 
 	Permutation Hypermap::rebasing (unsigned i) const {
-		unsigned n=alpha.size(), m=0; std::vector<unsigned> s1(n,n), s2(n,n);
+		unsigned n=alpha.size(), m=0; std::vector<unsigned long> s1(n,n), s2(n,n);
 		auto go = [&] (unsigned i) { while (s1[i]==n) { s1[i]=m; s2[m]=i; ++m; i=alpha[i]; } };
 		go(i); for (int x : s2) go(phi[x]); return s1;
 	}
@@ -157,7 +157,7 @@ namespace vb {
 	}
 
 	void Hypermap::dessin () {
-		Cycles new_a, new_f; unsigned n=sigma.size(); initial.resize(6*n); Permutation alpha1 = alpha.inverse();
+		Cycles new_a, new_f; auto n=sigma.size(); initial.resize(6*n); Permutation alpha1 = alpha.inverse();
 		for (unsigned i=0; i<n; ++i) {
 			new_a.emplace_back(Permutation({i,i+n}));
 			new_a.emplace_back(Permutation({i+2*n,i+3*n}));
@@ -193,7 +193,7 @@ namespace vb {
 			if (M.V[i].fixed) continue;
 			auto & adj = M.V[i].adj; int n = adj.size(); if (n==2) continue;
 			double s = M.alpha_xyz (out[i],out[adj[0]],out[adj[n-1]]);
-			for (int j=0; j<n-1; ++j) s += M.alpha_xyz (out[i],out[adj[j]],out[adj[j+1]]);
+			for (long j=0; j<n-1; ++j) s += M.alpha_xyz (out[i],out[adj[j]],out[adj[j+1]]);
 			er[i] = s-2*M_PI; se += fabs(er[i]);
 			double c = cos(s/n); double nr = M.ccn(n) * (1-c + sqrt(2*(1-c))) / (1+c); out[i] *= 1.1*nr - .1;
 		}
@@ -237,9 +237,9 @@ namespace vb {
 		for (unsigned i=0; i<V.size(); ++i) V[i].r = r[i];
 	}
 
-	Stream <Hypermap> hypermaps (const std::vector<unsigned> & s, const std::vector<unsigned> & a, const std::vector<unsigned> & p) {
+	Stream <Hypermap> hypermaps (const std::vector<unsigned long> & s, const std::vector<unsigned long> & a, const std::vector<unsigned long> & p) {
 		Cycles cs; int i=0;
-		for (int l : s) { std::vector<unsigned> c; for (int j=0; j<l; ++j) c.push_back(i++); cs.push_back (c); }
+		for (int l : s) { std::vector<unsigned long> c; for (int j=0; j<l; ++j) c.push_back(i++); cs.push_back (c); }
 		Permutation sigma (cs);
 		return Stream<Hypermap> ([sigma,a,p](Sink<Hypermap> & yield) {
 			std::vector<Hypermap> hs;

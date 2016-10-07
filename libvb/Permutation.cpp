@@ -6,32 +6,32 @@ namespace vb {
 		unsigned sz=0; for (const auto & v : c) sz += v.size();
 		resize(sz);
 		for (auto v : c) {
-			for (unsigned i=0; i<v.size()-1; ++i) at(v[i])=v[i+1];
+			for (unsigned long i=0; i<v.size()-1; ++i) at(v[i])=v[i+1];
 			at(v.back()) = v[0];
 		}
 	}
 
 	Cycles Permutation::cycles () const {
 		Cycles c;
-		std::vector<unsigned> done (size(), 0);
+		std::vector<unsigned long> done (size(), 0);
 		for (unsigned i=0; i<size(); ++i) {
 			if (done[i]) continue;
-			std::vector<unsigned> v (1,i); done[i]=1;
+			std::vector<unsigned long> v (1,i); done[i]=1;
 			for (unsigned j=at(i); done[j]==0; j=at(j)) { v.push_back(j); done[j]=1; }
 			c.push_back(v);
 		}
 		return c;
 	}
 
-	std::vector<unsigned> Permutation::signature () const {
-		vector<unsigned> output;
+	std::vector<unsigned long> Permutation::signature () const {
+		vector<unsigned long> output;
 		for (const auto & c : cycles()) output.push_back(c.size());
 		sort (output.begin(),output.end());
 		return output;
 	}
 
 	Passport Permutation::passport () const {
-		std::vector<unsigned> s = signature();
+		std::vector<unsigned long> s = signature();
 		Passport out;
 		unsigned l=0, c=0;
 		for (int i=s.size()-1; i>=0; --i) {
@@ -68,7 +68,7 @@ namespace vb {
 		return out;
 	}
 
-	Permutation Transposition (unsigned n, unsigned i, unsigned j) {
+	Permutation Transposition (unsigned long n, unsigned long i, unsigned long j) {
 		Permutation p(n); p[i]=j; p[j]=i; return p;
 	}
 
@@ -83,22 +83,22 @@ namespace vb {
 		return true;
 	}
 
-	Stream <Permutation> permutations (int n) {
+	Stream <Permutation> permutations (unsigned long n) {
 		return Stream<Permutation> ([n](Sink<Permutation> & yield) {
 			Permutation p (n);
 			do yield(p); while (next_permutation(p.begin(),p.end()));
 		});
 	}
 
-	Stream <Permutation> permutations (std::vector<unsigned> s) {
+	Stream <Permutation> permutations (std::vector<unsigned long> s) {
 		return Stream <Permutation> ([s](Sink <Permutation> & yield) {
 			int n=0; for (auto i : s) n += i; if (n==0) { yield ({{}}); return; }
 			unsigned L=0; for (unsigned i=0; i<s.size(); ++i) if (s[i]>L) {
-				L=s[i]; std::vector<unsigned> ns = s; ns[i]=0;
+				L=s[i]; std::vector<unsigned long> ns = s; ns[i]=0;
 				for (auto c : tuples (L-1,n-1)) {
-					std::vector<unsigned> cc ({0});
+					std::vector<unsigned long> cc ({0});
 					for (auto i : c) cc.push_back(i+1);
-					std::vector<unsigned> missed (n);
+					std::vector<unsigned long> missed (n);
 					for (int i=0; i<n; ++i) missed[i]=i;
 					for (auto i : cc) missed[i]=0;
 					for (int i=0, j=0; j<n; ++j) if (missed[j]) missed[i++] = missed[j];
