@@ -9,7 +9,7 @@ class Ising3 : public Cube { public: int b; bool k; double beta; vector<double> 
 		for (int k=0; k<=12; ++k) kaw.push_back(1/(1+exp(2*beta*(k-6))));
 	};
 
-	int nbsum (coo3 c) { int S=0; for (int i=0; i<6; ++i) S += atp(c+dz3[i]) ? 1 : 0; return S; }
+	long nbsum (coo3 c) { int S=0; for (int i=0; i<6; ++i) S += atp(c+dz3[i]) ? 1 : 0; return S; }
 
 	void spin (coo3 c) {
 		if (k) {

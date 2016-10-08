@@ -35,7 +35,7 @@ namespace vb {
 
 		bool contains (coo z) const { z += z0; return (z.x>=0) && (z.y>=0) && (z.x<true_width) && (z.y<true_height); }
 
-		void output_fine (std::string fn) {
+		void output_fine (const std::string & fn) {
 		    using row = png::packed_pixel_row <png::gray_pixel_1>;
 
 		    png::image_info m_info (png::make_image_info<png::gray_pixel_1>());

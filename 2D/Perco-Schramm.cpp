@@ -21,8 +21,8 @@ public:
 	}
 
 	void tri_boundary () {
-		for (int j=0; j<h; ++j) {
-			for (int i=0; i<w; ++i)
+		for (long j=0; j<h; ++j) {
+			for (long i=0; i<w; ++i)
 				mask[i+w*j] = (i <= (w+j)/2) && (i >= (w-j)/2-1) && (j<h);
 			cols[(w-j)/2 + w*j - 1] = true;
 			cols[(w+j)/2 + w*j] = false;
@@ -30,7 +30,7 @@ public:
 	}
 
 	void rect_boundary () {
-		for (int j=0; j<h-1; ++j) {
+		for (long j=0; j<h-1; ++j) {
 			cols[w*j] = true;
 			cols[w*j+h] = false;
 		}

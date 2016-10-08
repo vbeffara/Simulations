@@ -23,7 +23,7 @@ auto d3p (const Array<double> & x1) {
 
 	A[0].resize(n,n); for (auto z : coos(x1)) if (double w = x1[z]) A[0][z] = {w,0}; else A[0][z] = {1,1};
 
-	for (int k=0; k<n/2-1; ++k) {
+	for (long k=0; k<n/2-1; ++k) {
 		A[k+1].resize(n-2*k-2,n-2*k-2); for (auto z : coos(A[k+1])) {
 			int i=z.x, j=z.y, ii = i+2*(i%2), jj = j+2*(j%2);
 			double a20, a21;
@@ -46,7 +46,7 @@ auto d3p (const Array<double> & x1) {
 auto probs (const Array<double> & x1) {
 	auto a0 = d3p (x1); int n = a0.size(); vector<Array<double>> A (n);
 
-	for (int k=0; k<n; ++k) {
+	for (long k=0; k<n; ++k) {
 		A[k].resize (k+1,k+1); for (auto z : coos(A[k])) {
 			int i=z.x, j=z.y;
 			if (a0[n-k-1][coo(2*i,2*j)].second + a0[n-k-1][coo(2*i+1,2*j+1)].second > a0[n-k-1][coo(2*i+1,2*j)].second + a0[n-k-1][coo(2*i,2*j+1)].second)
@@ -105,7 +105,7 @@ auto create (Array<int> & x0, const Array<double> & p) {
 auto aztecgen (const Array<double> & xr) {
 	auto x0 = probs(xr); int n = x0.size(); Array<int> a1;
 	if (prng.bernoulli(x0[0][coo(0,0)])) a1 = Array<int> ({{1,0},{0,1}}); else a1 = Array<int> ({{0,1},{1,0}});
-	for (int i=0; i<n-1; ++i) { a1=delslide(a1); create(a1,x0[i+1]); }
+	for (long i=0; i<n-1; ++i) { a1=delslide(a1); create(a1,x0[i+1]); }
 	return a1;
 }
 

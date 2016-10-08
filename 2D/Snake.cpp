@@ -23,7 +23,7 @@ class Snake : public CoarseImage { public:
 
 	void output (const std::string &s = "") override {
 		OldPath P (z.size()-1);
-		for (unsigned i=0; i<z.size()-1; ++i) {
+		for (unsigned long i=0; i<z.size()-1; ++i) {
 			coo dz = z[i+1]-z[i];
 			int dx = dz.x, dy = dz.y;
 			if (dx>0) P[i]=0;

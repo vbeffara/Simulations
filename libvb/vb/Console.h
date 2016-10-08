@@ -31,7 +31,7 @@ namespace vb {
 
 	template <typename T> class Lambda : public Slot {
 	public:
-		Lambda (std::function <T()> ff, const char *nn, int w, int h) : Slot (nn,w,h), f(ff) {}
+		Lambda (std::function <T()> ff, const char *nn, int w, int h) : Slot (nn,w,h), f(std::move(ff)) {}
 		void draw () override { draw_value(f()); }
 		std::function <T()> f;
 	};

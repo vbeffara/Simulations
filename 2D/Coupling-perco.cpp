@@ -35,10 +35,10 @@ class Configuration : public Image { public:
 
 	int nbarms (int r1, int r2, int sides) {
 		compute_cpts (r1);
-		int N = w();
+		long N = w();
 
 		for (auto & t : table) t=0;
-		for (int i=-r2; i<r2; i++) {
+		for (long i=-r2; i<r2; i++) {
 			if (sides&1) table[N*N+expl[(N>>1)+i+N*((N>>1)-r2)]]=1;
 			if (sides&2) table[N*N+expl[(N>>1)+i+N*((N>>1)+r2-1)]]=1;
 			if (sides&4) table[N*N+expl[(N>>1)-r2+N*((N>>1)+i)]]=1;
@@ -46,7 +46,7 @@ class Configuration : public Image { public:
 		}
 
 		int n=0; int k;
-		for (int i=-r1; i<r1; i++) {
+		for (long i=-r1; i<r1; i++) {
 			k = expl[(N>>1)+i + N*((N>>1)-r1)]; if (table[N*N+k]==1) { table[N*N+k]=0; n++; }
 			k = expl[(N>>1)+i + N*((N>>1)+r1-1)]; if (table[N*N+k]==1) { table[N*N+k]=0; n++; }
 			k = expl[(N>>1)-r1 + N*((N>>1)+i)]; if (table[N*N+k]==1) { table[N*N+k]=0; n++; }

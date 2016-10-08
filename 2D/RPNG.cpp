@@ -20,7 +20,7 @@ int main (int argc, char **argv) {
 
 	bool running = true;
 	while (running) {
-		int x = 1 + prng()%(n-2);
+		long x = 1 + prng()%(n-2);
 		int h = height[x];
 		int d = prng()&(1<<14);
 

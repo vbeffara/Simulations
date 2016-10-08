@@ -133,7 +133,7 @@ public:
 			W.step();
 
 			if (renew && (env_size(this)==3)) {
-				unsigned r = i-last_renewal;
+				unsigned long r = i-last_renewal;
 				if (r+1>renewals.size())
 					renewals.resize(r+1);
 				renewals[r] ++;

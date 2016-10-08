@@ -27,14 +27,14 @@ int main (int argc, char **argv) {
     }
   }
 
-  for (int i=0; i<n; ++i) {
+  for (long i=0; i<n; ++i) {
     adj[i] |= 5;
     adj[n*i] |= 10;
     adj[n-1+n*i] |= 10;
     adj[(n-1)*n+i] |= 5;
   }
 
-  for (int i=0; i<n; ++i) {
+  for (long i=0; i<n; ++i) {
     adj[i] &= 7;
     adj[n*i] &= 11;
     adj[n-1+n*i] &= 14;

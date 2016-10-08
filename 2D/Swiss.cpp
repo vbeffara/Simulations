@@ -19,7 +19,7 @@ class Site {
 public:
     unsigned char s;
     Site (unsigned char _s) : s(_s) { };
-    void operator= (unsigned char _s) { s=_s; }
+    Site & operator= (unsigned char _s) { s=_s; return *this; }
     operator int () { return s; }
     operator Color () { return colors[s]; }
 };

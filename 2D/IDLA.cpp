@@ -9,7 +9,7 @@ class Bounces : public map <string, function<coo(coo)>> { public:
 		emplace ( "line", [](coo z) { double p = H['p'];                      	return coo(- p*z.x,      	- p*z.y);                          	} );
 		emplace ( "idla", [](coo z) {                                         	return coo(- z.x,        	- z.y);                            	} );
 		emplace ( "sign", [](coo z) {                                         	return coo(- sign(z.x),  	- sign(z.y));                      	} );
-		emplace ( "sig2", [](coo z) { int a = H['a'], k = sign(z.x*z.y);      	return coo(- sign(z.x),  	- sign(z.y)) * (1 + (a-1)*(1+k)/2);	} );
+		emplace ( "sig2", [](coo z) { long a = H['a'], k = sign(z.x*z.y);     	return coo(- sign(z.x),  	- sign(z.y)) * (1 + (a-1)*(1+k)/2);	} );
 		emplace ( "soft", [](coo z) { int k = z.x > 2 * abs(z.y) ? H['a'] : 1;	return coo(- sign(z.x),  	- sign(z.y)) * k;                  	} );
 		emplace ( "sqrt", [](coo z) { double l = 1+sqrt(norm(z));             	return coo(- z.x/sqrt(l),	- z.y/sqrt(l));                    	} );
 

@@ -17,8 +17,8 @@ int main (int argc, char ** argv) {
 	bool dirty = true;
 	while (dirty) {
 		dirty = false;
-		for (int x=0;x<n;++x) {
-			for (int y=0;y<n;++y) {
+		for (long x=0;x<n;++x) {
+			for (long y=0;y<n;++y) {
 				if ((x>0) && (connect[(x-1)+n*y] & 1) && (cluster[x+n*y] > cluster[(x-1)+n*y])) {
 					dirty = true; cluster[x+n*y] = cluster[(x-1)+n*y];
 				}
@@ -41,8 +41,8 @@ int main (int argc, char ** argv) {
 
 	Image img (n,n);
 
-	for (int x=0; x<n; ++x)
-		for (int y=0; y<n; ++y)
+	for (long x=0; x<n; ++x)
+		for (long y=0; y<n; ++y)
 			img.put(coo(x,y),color[cluster[x+n*y]]);
 	img.show(); img.pause();
 }

@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 
   H.init ("Discrete-time contact process on Z^2",argc,argv,"p=.4,n=400");
   double p = H['p'];
-  int n = H['n'];
+  long n = H['n'];
 
   Image img (n,n);
 

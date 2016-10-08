@@ -55,7 +55,7 @@ public:
 
 int main (int argc, char ** argv) {
 	H.init ("Random walk hull", argc,argv,"n=50,i,v");
-	int  n = H['n'], l = n*n*n*n;
+	long n = H['n'], l = n*n*n*n;
 	bool inf = H['i'], vid = H['v'];
 
 	Snake S(n);

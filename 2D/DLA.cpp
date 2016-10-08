@@ -16,7 +16,7 @@ class DLA : public CoarseImage { public:
 			int l=2*d-1;
 			vector<vector<double>> M (l,vector<double>(l,0)); M[l/2][l/2]=1;
 			bool dirty=true; while (dirty) { dirty=false;
-				for (int i=1; i<l-1; ++i) for (int j=1; j<l-1; ++j) if ((i!=d-1)||(j!=d-1)) {
+				for (long i=1; i<l-1; ++i) for (long j=1; j<l-1; ++j) if ((i!=d-1)||(j!=d-1)) {
 					double t = (M[i][j+1] + M[i][j-1] + M[i+1][j] + M[i-1][j])/4;
 					if (t != M[i][j]) { M[i][j]=t; dirty=true;}
 				}
