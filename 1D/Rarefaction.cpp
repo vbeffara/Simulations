@@ -10,7 +10,7 @@
 
 #include <vb/PRNG.h>
 
-int n;
+long n;
 
 int main (int argc, char **argv) {
   int *field;

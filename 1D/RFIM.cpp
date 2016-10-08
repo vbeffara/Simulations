@@ -30,7 +30,7 @@ int main (int argc, char ** argv) {
     Z[n+n1-n2] += exp (n*ff - 3*(n0*n1+n1*n2+n2*n0));
 
     ++config[0];
-    for (int i=0; (config[i]==3) && (i<n-1); ++i) { config[i]=0; ++config[i+1]; }
+    for (long i=0; (config[i]==3) && (i<n-1); ++i) { config[i]=0; ++config[i+1]; }
   }
 
   for (int i=0; i<2*n+1; ++i) cout << i-n << " " << - log (Z[i]) << endl;
