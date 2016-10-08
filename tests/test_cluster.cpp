@@ -9,7 +9,7 @@ class Cluster2 : public Cluster { public:
 	int inrad_go (coo z) {
 		if (np == w*w) return dist_to_out (z);
 		if (w == bs) return 1;
-		int ww=w/3, i = (z.x-ul.x)/ww, j = (z.y-ul.y)/ww;
+		long ww=w/3, i = (z.x-ul.x)/ww, j = (z.y-ul.y)/ww;
 		return ((Cluster2*)(&sub[i+3*j])) -> inrad_go(z);
 	}
 	int inrad (coo z) { if ((dist_to_box(z) > 0) || (!at(z))) return 0; else return inrad_go (z); }

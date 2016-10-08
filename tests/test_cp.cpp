@@ -28,7 +28,7 @@ int main (int argc, char ** argv) {
 
 	Vector<double> x(3*m.n); double r = 1.0/sqrt(m.n);
 
-	for (int i=0; i<m.n; ++i) {
+	for (long i=0; i<m.n; ++i) {
 		x[3*i]        = m.v[i]->z.real() / (1-r);
 		x[3*i+1]      = m.v[i]->z.imag() / (1-r);
 		x[3*i+2]      = .8*r;
@@ -42,7 +42,7 @@ int main (int argc, char ** argv) {
 	H.L->info ("Final value of f:      {}", MM.fx);
 	H.L->info ("Final square gradient: {}", inner_prod(MM.gx,MM.gx));
 
-	for (int i=0; i<m.n; ++i) {
+	for (long i=0; i<m.n; ++i) {
 		m.v[i]->z = cpx (x[3*i], x[3*i+1]);
 		m.v[i]->r = x[3*i+2];
 	}
