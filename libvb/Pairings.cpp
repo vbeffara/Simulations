@@ -45,7 +45,7 @@ namespace vb {
 
 	Permutation Pairings::rand () {
 		Permutation out(n);
-		for (unsigned i=0; i<n; ++i) {
+		for (unsigned long i=0; i<n; ++i) {
 			if (out[i]<i) continue;
 			while (true) { out[i] = i+1+prng.uniform_int(n-i-1); if (out[out[i]]==out[i]) break; }
 			out[out[i]] = i;

@@ -1,4 +1,6 @@
 #pragma once
+#define BOOST_COROUTINE_NO_DEPRECATION_WARNING
+#define BOOST_COROUTINES_NO_DEPRECATION_WARNING
 #include <boost/coroutine/all.hpp>
 #include <vector>
 

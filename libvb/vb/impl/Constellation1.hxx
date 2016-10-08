@@ -54,21 +54,21 @@ namespace vb {
 		if (k==1) return E.zeta(z);
 		if (k==2) return E.wp(z);
 		if (k==3) return E.wp_z(z);
-		assert (!"Derivatives of higher order not implemented!"); return cplx(std::nan("Not implemented"));
+		throw std::invalid_argument ("Derivatives of higher order not implemented!");
 	}
 
 	template <typename T> auto Constellation1<T>::logderp_z (cplx z, int k) const -> cplx {
 		if (k==0) return E.zeta(z);
 		if (k==1) return - E.wp(z);
 		if (k==2) return E.wp_z(z);
-		assert (!"Derivatives of higher order not implemented!"); return cplx(std::nan("Not implemented"));
+		throw std::invalid_argument ("Derivatives of higher order not implemented!");
 	}
 
 	template <typename T> auto Constellation1<T>::logderp_q (cplx z, int k) const -> cplx {
 		if (k==0) return E.sigma_q(z) / E.sigma(z);
 		if (k==1) return E.zeta_q(z);
 		if (k==2) return E.wp_q(z);
-		assert (!"Derivatives of higher order not implemented!"); return cplx(std::nan("Not implemented"));
+		throw std::invalid_argument ("Derivatives of higher order not implemented!");
 	}
 
 	template <typename T> auto Constellation1<T>::logderp_t (cplx z, int k) const -> cplx {

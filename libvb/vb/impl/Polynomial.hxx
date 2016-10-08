@@ -6,7 +6,7 @@ namespace vb {
 
 	template <typename T> Polynomial<T> Polynomial<T>::derivative () const {
 		std::vector<T> out (degree());
-		for (unsigned i=0; i<degree(); ++i) out[i] = T(i+1) * at(i+1);
+		for (unsigned long i=0; i<degree(); ++i) out[i] = T(i+1) * at(i+1);
 		if (out.empty()) out.push_back(T(0));
 		return out;
 	}

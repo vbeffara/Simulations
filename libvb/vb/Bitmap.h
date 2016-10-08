@@ -24,7 +24,7 @@ namespace vb {
 
 	protected:
 		void paint () override {
-			int ppp = pixel_w()/w();
+			long ppp = pixel_w()/w();
 			gsl::span <Color> stage ((Color *) cairo_image_surface_get_data (surface), ppp*w() + stride*(ppp*h()-1));
 
 			for (int x=0; x<w(); ++x)
