@@ -29,7 +29,7 @@ namespace vb {
 
 	Stream <std::vector<unsigned long>> cycles (unsigned long k, unsigned long n) {
 		return Stream <std::vector<unsigned long>> ([k,n](Sink <std::vector<unsigned long>> & yield) {
-			for (long i=0; i<n-k+1; ++i) {
+			for (unsigned long i=0; i<n-k+1; ++i) {
 				for (auto c : tuples (k-1,n-i-1)) {
 					std::vector<unsigned long> out (1,i);
 					for (auto j : c) out.push_back (i+j+1);
