@@ -59,10 +59,12 @@ int fib_omp (int n) {
     if (n < 20) return fib(n);
     int x, y;
     #pragma omp parallel
+    #pragma omp single nowait
     {
-        #pragma omp task shared(x)
-        x = fib_omp (n-1);
-        y = fib_omp (n-2);
+        #pragma omp task
+        { x = fib_omp (n-1); }
+        #pragma omp task
+        { y = fib_omp (n-2); }
     }
     return x + y;
 }
