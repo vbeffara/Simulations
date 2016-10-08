@@ -54,6 +54,31 @@ double cum_cilk2 (int n) {
 }
 #endif
 
+#ifdef OPENMP
+int fib_omp (int n) {
+    if (n < 20) return fib(n);
+    int x, y;
+    #pragma omp parallel
+    {
+        #pragma omp task shared(x)
+        x = fib_omp (n-1);
+        y = fib_omp (n-2);
+    }
+    return x + y;
+}
+
+double cum_omp (int n) {
+    vector<double> X(n);
+    #pragma omp parallel for
+    for (int i=0; i<n; ++i) {
+        double x = i;
+        for (int t=0; t<1000; ++t) x = cos(x);
+        X[i] = x;
+    }
+    double s=0; for (auto x:X) s+=x; return s - long(s);
+}
+#endif
+
 template <typename T> void test (const string & s, T f (int), int n) {
     std::chrono::steady_clock C;
     auto i = C.now();
@@ -63,17 +88,23 @@ template <typename T> void test (const string & s, T f (int), int n) {
 }
 
 int main (int argc, char ** argv) {
-    H.init ("Test of various parallel frameworks",argc,argv,"n=45,l=500000,m=63");
+    H.init ("Test of various parallel frameworks",argc,argv,"n=45,l=500000,m=127");
     int n = H['n'], m = H['m'];
 
     if (m & 1)  test ("Fib | Single", fib, n);
 #ifdef CILK
     if (m & 2)  test ("Fib | CILK  ", fib_cilk, n);
 #endif
+#ifdef OPENMP
+    if (m & 4)  test ("Fib | OpenMP", fib_omp, n);
+#endif
 
     if (m & 8)  test ("Map | Single", cum, H['l']);
 #ifdef CILK
     if (m & 16) test ("Map | CILK  ", cum_cilk, H['l']);
     if (m & 32) test ("Map | CILK 2", cum_cilk2, H['l']);
+#endif
+#ifdef OPENMP
+    if (m & 64) test ("Map | OpenMP", cum_omp, H['l']);
 #endif
 }

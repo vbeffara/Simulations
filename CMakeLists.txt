@@ -3,6 +3,11 @@ project (Simulations)
 
 set (CMAKE_CXX_FLAGS "-g -Wall -Wextra -Wno-deprecated-declarations -Wno-unused-local-typedefs -Wno-unused-function -std=c++14 -fdiagnostics-color=always -pedantic")
 
+include (FindOpenMP)
+if (${OPENMP_FOUND})
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS} -DOPENMP")
+endif ()
+
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcilkplus -DCILK")
 else ()
