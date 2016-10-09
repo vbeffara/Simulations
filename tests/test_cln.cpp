@@ -1,21 +1,15 @@
-#include <vb/Hub.h>
 #include <vb/cpx.h>
+#include <vb/util.h>
 #include <boost/lexical_cast.hpp>
-#include <chrono>
 
 using namespace vb; using namespace std; using namespace cln;
 
-double time () {
-	static std::chrono::system_clock C;
-	static auto basetime = C.now();
-	chrono::duration<double> dur = C.now() - basetime;
-	return dur.count();
-}
-
 template <typename T> void test (const string &s, int n, const string &in = "0") {
-	double t = time(); T z = boost::lexical_cast<T> (in);
-	for (int i=0; i<n; ++i) z = exp(-z);
-	H.L->info ("{} | time = {:<8} | result = {}", s, time()-t, z);
+	timing (s, [&](){
+		auto z = boost::lexical_cast<T> (in);
+		for (int i=0; i<n; ++i) z = exp(-z);
+		return z;
+	});
 }
 
 int main (int argc, char ** argv) {
