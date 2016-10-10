@@ -61,15 +61,13 @@ double cum_cilk2 (int n) {
 
 #ifdef OPENMP
 int fib_omp (int n) {
-    if (n < 25) return fib(n);
+    if (n < 30) return fib(n);
     int x, y;
-    #pragma omp parallel
-    #pragma omp single nowait
+    #pragma omp parallel sections
     {
-        #pragma omp task
-        { x = fib_omp (n-1); }
-        #pragma omp task
-        { y = fib_omp (n-2); }
+        x = fib_omp (n-1);
+        #pragma omp section
+        y = fib_omp (n-2);
     }
     return x + y;
 }
