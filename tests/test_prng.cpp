@@ -41,7 +41,7 @@ int main (int argc, char ** argv) {
 		auto go = []() { static thread_local PRNG p; auto o = p.gaussian(); return o*o; };
 		cilk::reducer <cilk::op_add<double>> ps (0);
 		cilk_for (int i=0; i<n; ++i) *ps += go();
-		return *ps/n;
+		return ps.get_value()/n;
 	});
 #endif
 
