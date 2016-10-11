@@ -5,7 +5,7 @@ using namespace vb; using namespace std;
 
 class Wave : public Coloring { public:
 	class Mode { public:
-		Mode (double a_, double t, double l, double p_) : a(a_), c(l*cos(t)), s(l*sin(t)), p(t) {}
+		Mode (double a_, double t, double l, double p_) : a(a_), c(l*cos(t)), s(l*sin(t)), p(p_) {}
 		double operator() (const cpx & z) { return a * cos(c*real(z) + s*imag(z) + p); }
 		double a,c,s,p;
 	};
