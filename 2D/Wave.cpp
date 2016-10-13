@@ -3,6 +3,16 @@
 
 using namespace vb; using namespace std;
 
+double f (double x) { return exp(-1/x); }
+double g (double x) { return f(1-x)/(f(x)+f(1-x)); }
+
+double bump (double x, double e) {
+	if (x<0) x=-x;
+	if (x<=1-e) return 1;
+	if (x>=1+e) return 0;
+	return g((1+(x-1)/e)/2);
+}
+
 class Wave : public Coloring { public:
 	class Mode { public:
 		Mode (double a_, double t, double l, double p_) : a(a_), c(l*cos(t)), s(l*sin(t)), p(p_) {}
@@ -10,10 +20,11 @@ class Wave : public Coloring { public:
 		double a,c,s,p;
 	};
 
-	Wave (int n, int k, double l_, double e_, double u_) : Coloring (cpx(-n,-n), cpx(n,n), n, [&](cpx z){return c(z);}) {
+	Wave (int n, int k, double l_, double w_, double e_) : Coloring (cpx(-n,-n), cpx(n,n), n, [&](cpx z){return c(z);}) {
 		for (int i=0; i<k; ++i) {
-			double ll = (1 + e_ * prng.gaussian() + u_ * (2*prng.uniform_real()-1)) * l_;
-			m.emplace_back (prng.gaussian(), prng.uniform_real(0,2.0*M_PI), ll, prng.uniform_real(0,2.0*M_PI));
+			double delta = (2*prng.uniform_real()-1)*(1+e_);
+			double amplitude = bump (delta,e_) * prng.gaussian();
+			m.emplace_back (amplitude, prng.uniform_real(0,2.0*M_PI), l_ * (1+w_*delta), prng.uniform_real(0,2.0*M_PI));
 		}
 	}
 
@@ -25,6 +36,7 @@ class Wave : public Coloring { public:
 };
 
 int main (int argc, char ** argv) {
-	H.init ("Random planar waves", argc, argv, "n=600,k=1000,l=.1,e=0,u=0");
-	Wave W(H['n'],H['k'],H['l'],H['e'],H['u']); W.show(); W.output(); Fl::run();
+	H.init ("Random planar waves", argc, argv, "n=600,k=1000,l=.2,w=0,e=0,s=0");
+	if (int s=H['s']) prng.seed(s);
+	Wave W(H['n'],H['k'],H['l'],H['w'],H['e']); W.show(); W.output(); Fl::run();
 }
