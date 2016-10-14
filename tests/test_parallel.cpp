@@ -4,28 +4,25 @@
 #include <cilk/cilk_api.h>
 #include <cilk/reducer_opadd.h>
 #endif
+#include <numeric>
 
 using namespace vb; using namespace std;
 
 int fib (int n) { return n<2 ? n : fib(n-1) + fib(n-2); }
 
+double cost (double x) { for (int i=0; i<1000; ++i) x = cos(x); return x; }
+
 double cum (int n) {
-    vector<double> X(n);
-    for (int i=0; i<n; ++i) {
-        double x = i;
-        for (int t=0; t<1000; ++t) x = cos(x);
-        X[i] = x;
-    }
+    vector<double> X(n); for (int i=0; i<n; ++i) X[i] = cost(i);
     double s=0; for (auto x:X) s+=x; return s - long(s);
 }
 
-double cum2 (int n) {
-    double s=0;
-    for (int i=0; i<n; ++i) {
-        double x = i;
-        for (int t=0; t<1000; ++t) x = cos(x);
-        s += x;
-    }
+double cum2 (int n) { double s=0; for (int i=0; i<n; ++i) s += cost(i); return s - long(s); }
+
+double cum3 (int n) {
+    vector<double> X(n); for (int i=0; i<n; ++i) X[i]=i;
+    std::transform (X.begin(), X.end(), X.begin(), cost);
+    double s = std::accumulate (X.begin(), X.end(), 0.0);
     return s - long(s);
 }
 
@@ -40,21 +37,13 @@ int fib_cilk (int n) {
 
 double cum_cilk (int n) {
     vector<double> X(n);
-    cilk_for (int i=0; i<n; ++i) {
-        double x = i;
-        for (int t=0; t<1000; ++t) x = cos(x);
-        X[i] = x;
-    }
+    cilk_for (int i=0; i<n; ++i) X[i] = cost(i);
     double s=0; for (auto x:X) s+=x; return s - long(s);
 }
 
 double cum_cilk2 (int n) {
     cilk::reducer_opadd <double> s (0);
-    cilk_for (int i=0; i<n; ++i) {
-        double x = i;
-        for (int t=0; t<1000; ++t) x = cos(x);
-        *s += x;
-    }
+    cilk_for (int i=0; i<n; ++i) *s += cost(i);
     return s.get_value() - long(s.get_value());
 }
 #endif
@@ -75,22 +64,14 @@ int fib_omp (int n) {
 double cum_omp (int n) {
     vector<double> X(n);
     #pragma omp parallel for
-    for (int i=0; i<n; ++i) {
-        double x = i;
-        for (int t=0; t<1000; ++t) x = cos(x);
-        X[i] = x;
-    }
+    for (int i=0; i<n; ++i) X[i] = cost(i);
     double s=0; for (auto x:X) s+=x; return s - long(s);
 }
 
 double cum_omp2 (int n) {
     double s=0;
     #pragma omp parallel for reduction(+:s)
-    for (int i=0; i<n; ++i) {
-        double x = i;
-        for (int t=0; t<1000; ++t) x = cos(x);
-        s += x;
-    }
+    for (int i=0; i<n; ++i) s += cost(i);
     return s - long(s);
 }
 #endif
@@ -98,22 +79,23 @@ double cum_omp2 (int n) {
 int main (int argc, char ** argv) {
     H.init ("Test of various parallel frameworks",argc,argv,"n=42,l=100000");
 
-    timing ("Fibonacci  | Single", [&]() { return fib(H['n']); });
+    timing ("Fibonacci  | Single (recursive)", [&]() { return fib(H['n']); });
 #ifdef CILK
     timing ("Fibonacci  | CILK", [&]() { return fib_cilk(H['n']); });
 #endif
 #ifdef OPENMP
-    timing ("Fibonacci  | OpenMP", [&]() { return fib_omp(H['n']); });
+    timing ("Fibonacci  | OpenMP (parallel sections)", [&]() { return fib_omp(H['n']); });
 #endif
 
-    timing ("Map+reduce | Single", [&]() { return cum(H['l']); });
-    timing ("Map+reduce | Single 2", [&]() { return cum2(H['l']); });
+    timing ("Map+reduce | Single 1 (fill then sum)", [&]() { return cum(H['l']); });
+    timing ("Map+reduce | Single 2 (direct sum)", [&]() { return cum2(H['l']); });
+    timing ("Map+reduce | Single 3 (STL algorithms)", [&]() { return cum3(H['l']); });
 #ifdef CILK
     timing ("Map+reduce | CILK", [&]() { return cum_cilk(H['l']); });
     timing ("Map+reduce | CILK 2", [&]() { return cum_cilk2(H['l']); });
 #endif
 #ifdef OPENMP
-    timing ("Map+reduce | OpenMP  ", [&]() { return cum_omp(H['l']); });
-    timing ("Map+reduce | OpenMP 2", [&]() { return cum_omp2(H['l']); });
+    timing ("Map+reduce | OpenMP 1 (fill then sum)", [&]() { return cum_omp(H['l']); });
+    timing ("Map+reduce | OpenMP 2 (direct reduction)", [&]() { return cum_omp2(H['l']); });
 #endif
 }
