@@ -12,7 +12,7 @@ using namespace vb; using namespace std;
 
 int fib (int n) { return n<2 ? n : fib(n-1) + fib(n-2); }
 
-double cost (double x) { for (int i=0; i<1000; ++i) x = cos(x); return x; }
+double cost (double x) { for (int i=0; i<10; ++i) x = cos(x); return x; }
 
 double cum (int n) {
     vector<double> X(n); for (int i=0; i<n; ++i) X[i] = cost(i);
@@ -94,7 +94,7 @@ double cum_omp2 (int n) {
 #endif
 
 int main (int argc, char ** argv) {
-    H.init ("Test of various parallel frameworks",argc,argv,"n=42,l=100000");
+    H.init ("Test of various parallel frameworks",argc,argv,"n=42,l=10000000");
 
     timing ("Fibonacci  | Single (recursive)", [&]() { return fib(H['n']); });
 #ifdef CILK
