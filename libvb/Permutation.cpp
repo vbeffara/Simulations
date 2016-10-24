@@ -86,7 +86,7 @@ namespace vb {
 	Stream <Permutation> permutations (unsigned long n) {
 		return Stream<Permutation> ([n](Sink<Permutation> & yield) {
 			Permutation p (n);
-			do yield(p); while (next_permutation(p.begin(),p.end()));
+			do yield(Permutation(p)); while (next_permutation(p.begin(),p.end()));
 		});
 	}
 

@@ -2,6 +2,7 @@
 #include <vb/Constellation0.h>
 #include <vb/NumberTheory.h>
 #include <vb/Spheroidal.h>
+#include <iomanip>
 
 namespace vb {
 	template <typename T> Constellation0<T>::Constellation0 (const Hypermap & M, const Hub & H) {

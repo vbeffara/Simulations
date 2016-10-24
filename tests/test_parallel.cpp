@@ -6,7 +6,6 @@
 #include <cilk/reducer_opadd.h>
 #endif
 #include <numeric>
-#include <boost/coroutine2/all.hpp>
 
 using namespace vb; using namespace std;
 

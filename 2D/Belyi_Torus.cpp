@@ -12,6 +12,7 @@
 #include <vb/NumberTheory.h>
 #include <vb/Pairings.h>
 #include <vb/ProgressBar.h>
+#include <iomanip>
 
 using namespace vb; using namespace std;
 
