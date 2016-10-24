@@ -34,14 +34,6 @@ double cum4 (int n) {
     double s=0; for (auto x : costs) s+=x; return s - long(s);
 }
 
-double cum5 (int n) {
-    using coro_t = boost::coroutines2::coroutine<double>;
-    coro_t::pull_type costs ([n](coro_t::push_type & yield){
-        for (int i=0; i<n; ++i) yield(cost(i));
-    });
-    double s=0; for (auto x : costs) s+=x; return s - long(s);
-}
-
 #ifdef CILK
 int fib_cilk (int n) {
     if (n < 20) return fib(n);
@@ -107,7 +99,6 @@ int main (int argc, char ** argv) {
     timing ("Map+reduce | Single 2 (direct sum)", [&]() { return cum2(H['l']); });
     timing ("Map+reduce | Single 3 (STL algorithms)", [&]() { return cum3(H['l']); });
     timing ("Map+reduce | Single 4 (Boost coroutine)", [&]() { return cum4(H['l']); });
-    timing ("Map+reduce | Single 5 (Boost coroutine2)", [&]() { return cum4(H['l']); });
 #ifdef CILK
     timing ("Map+reduce | CILK", [&]() { return cum_cilk(H['l']); });
     timing ("Map+reduce | CILK 2", [&]() { return cum_cilk2(H['l']); });
