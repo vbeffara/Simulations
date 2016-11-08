@@ -1,5 +1,4 @@
 #pragma once
-
 #include <vb/Permutation.h>
 
 namespace vb {

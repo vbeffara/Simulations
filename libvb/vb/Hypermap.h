@@ -1,5 +1,5 @@
 #pragma once /// @file
-#include <vb/Permutation.h>
+#include <vb/Stream.h>
 #include <vb/cpx.h>
 #ifdef None
 #undef None
