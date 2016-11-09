@@ -1,6 +1,8 @@
 #include <vb/Stream.h>
 
 namespace vb {
+	Stream <int> ints () { return Stream <int> ([](Sink<int> & yield) { for (int i=0;;++i) yield(i); }); }
+
 	Stream <std::vector<unsigned long>> partitions (unsigned long n, unsigned long m) {
 		return Stream <std::vector<unsigned long>> ([n,m](Sink <std::vector<unsigned long>> & yield) {
 			for (unsigned long i=m; i<n; ++i) {

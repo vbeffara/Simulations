@@ -28,9 +28,7 @@ double cum3 (int n) {
 }
 
 double cum4 (int n) {
-    auto costs = Stream<double> ([n](Sink<double> & yield){
-        for (int i=0; i<n; ++i) yield(cost(i));
-    });
+    auto costs = take (n, fmap (cost, ints()));
     double s=0; for (auto x : costs) s+=x; return s - long(s);
 }
 
