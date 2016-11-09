@@ -1,4 +1,5 @@
 #pragma once
+#include <fix/apply.hpp>
 #include <boost/coroutine2/all.hpp>
 
 namespace vb {
