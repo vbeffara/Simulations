@@ -1,5 +1,5 @@
 #include <vb/Hub.h>
-#include <vb/Stream.h>
+#include <vb/Stream_lib.h>
 #include <vb/math.h>
 
 using namespace std;

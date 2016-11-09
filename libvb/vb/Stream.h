@@ -1,5 +1,4 @@
 #pragma once
-#include <vb/Permutation.h>
 #include <boost/coroutine2/all.hpp>
 
 namespace vb {
@@ -34,11 +33,4 @@ namespace vb {
 	template <typename F, typename T> auto fmap (F && f, Stream <T> & S) { return fmap (f, std::move(S)); }
 
 	Stream <int> ints ();
-
-	Stream <std::vector<unsigned long>> partitions (unsigned long n, unsigned long m = 1);	// Partitions of n with piece size at least m
-	Stream <std::vector<unsigned long>> tuples (unsigned long k, unsigned long n);        	// Ordered, distinct k-tuples in [0,n-1]
-	Stream <std::vector<unsigned long>> cycles (unsigned long k, unsigned long n);        	// k-tuples up to cyclic permutation
-
-	Stream <Permutation> permutations (unsigned long n);
-	Stream <Permutation> permutations (std::vector<unsigned long> s);
 }
