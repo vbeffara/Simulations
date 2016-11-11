@@ -1,34 +1,29 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 from glob import glob
 from sys import argv,stderr,exit
+import networkx as nx
+
+G = nx.DiGraph()
 
 full = "-f" in argv
-files = {}
-
-print "digraph {"
-print "  rankdir = LR"
 
 for f in glob ("libvb/vb/*.h"):
 	f = f[6:]
-	print '"%s"[style="filled",fillcolor="lightblue"];' % f
-	files[f] = set()
+	G.add_node(f, fillcolor="lightblue")
 
 if "-l" in argv:
 	for f in glob ("libvb/*.cpp"):
-		print '"%s"[style="filled",fillcolor="yellow"];' % f
-		files[f] = set()
+		G.add_node(f, fillcolor="yellow")
 	for f in glob ("libvb/vb/impl/*.hxx"):
 		f = f[6:]
-		print '"%s"[style="filled",fillcolor="yellow"];' % f
-		files[f] = set()
+		G.add_node(f, fillcolor="yellow")
 
 if "-x" in argv:
 	for f in glob ("[123]*/*.cpp") + glob("tests/*.cpp"):
-		print '"%s"[style="filled",fillcolor="pink"];' % f
-		files[f] = set()
+		G.add_node(f, fillcolor="pink")
 
-for f in files:
+for f in G.nodes():
 	ff = f;
 	if ff[:3] == "vb/":
 		ff = "libvb/" + f;
@@ -36,22 +31,23 @@ for f in files:
 		if l.startswith("#include"):
 			h = l[10:-2]
 			if h.startswith("vb/") or full:
-				print '  "%s" -> "%s"' % (f,h)
-				files[f].add(h)
+				if not h in G.nodes():
+					G.add_node(h)
+				G.add_edge(f,h)
+
+print "digraph {"
+print "  rankdir = LR"
+for x in G.nodes():
+	print '  "%s" [style="filled", fillcolor="%s"]' % (x, G.node[x].get('fillcolor',"white"))
+	for f in G.neighbors(x):
+		print '    "%s" -> "%s"' % (x,f)
 print "}"
 
-def descendents (f) :
-	out = files[f].copy();
-	for k in files[f]:
-		if k in files:
-			out |= descendents(k)
-	return out
-
 bad = 0
-for f in files:
-	for k in files[f]:
-		for l in files[f]:
-			if l in files and k in descendents(l):
+for f in G.nodes():
+	for k in set(G.neighbors(f)):
+		for l in set(G.neighbors(f)):
+			if l in G.nodes() and k in nx.descendants(G,l):
 				print >> stderr, "Redundant include: %s -> %s (implied by %s)" % (f,k,l)
 				bad = 1
 exit(bad)
