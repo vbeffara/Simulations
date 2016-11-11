@@ -1,6 +1,7 @@
 #include <vb/Hub.h>
-#include <vb/Hypermap.h>
+#include <vb/Stream_lib.h>
 #include <algorithm>
+#include <iomanip>
 
 using namespace vb; using namespace std;
 

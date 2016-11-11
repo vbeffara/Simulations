@@ -1,3 +1,4 @@
+#include <vb/Stream.h>
 #include <vb/util.h>
 #ifdef CILK
 #include <cilk/cilk.h>
@@ -10,7 +11,7 @@ using namespace vb; using namespace std;
 
 int fib (int n) { return n<2 ? n : fib(n-1) + fib(n-2); }
 
-double cost (double x) { for (int i=0; i<1000; ++i) x = cos(x); return x; }
+double cost (double x) { for (int i=0; i<10; ++i) x = cos(x); return x; }
 
 double cum (int n) {
     vector<double> X(n); for (int i=0; i<n; ++i) X[i] = cost(i);
@@ -24,6 +25,11 @@ double cum3 (int n) {
     std::transform (X.begin(), X.end(), X.begin(), cost);
     double s = std::accumulate (X.begin(), X.end(), 0.0);
     return s - long(s);
+}
+
+double cum4 (int n) {
+    auto costs = take (n, fmap (cost, ints()));
+    double s=0; for (auto x : costs) s+=x; return s - long(s);
 }
 
 #ifdef CILK
@@ -77,7 +83,7 @@ double cum_omp2 (int n) {
 #endif
 
 int main (int argc, char ** argv) {
-    H.init ("Test of various parallel frameworks",argc,argv,"n=42,l=100000");
+    H.init ("Test of various parallel frameworks",argc,argv,"n=42,l=10000000");
 
     timing ("Fibonacci  | Single (recursive)", [&]() { return fib(H['n']); });
 #ifdef CILK
@@ -90,6 +96,7 @@ int main (int argc, char ** argv) {
     timing ("Map+reduce | Single 1 (fill then sum)", [&]() { return cum(H['l']); });
     timing ("Map+reduce | Single 2 (direct sum)", [&]() { return cum2(H['l']); });
     timing ("Map+reduce | Single 3 (STL algorithms)", [&]() { return cum3(H['l']); });
+    timing ("Map+reduce | Single 4 (Boost coroutine)", [&]() { return cum4(H['l']); });
 #ifdef CILK
     timing ("Map+reduce | CILK", [&]() { return cum_cilk(H['l']); });
     timing ("Map+reduce | CILK 2", [&]() { return cum_cilk2(H['l']); });

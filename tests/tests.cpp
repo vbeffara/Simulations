@@ -13,6 +13,7 @@
 #include <vb/NumberTheory.h>
 #include <vb/Pov.h>
 #include <vb/ProgressBar.h>
+#include <vb/Stream_lib.h>
 #include <vb/TriMatrix.h>
 
 using namespace vb; using namespace std; using namespace cln;

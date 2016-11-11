@@ -3,6 +3,7 @@
 #include <vb/Constellation0.h>
 #include <vb/Pairings.h>
 #include <vb/ProgressBar.h>
+#include <vb/Stream_lib.h>
 
 using namespace vb; using namespace std;
 

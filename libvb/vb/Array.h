@@ -1,7 +1,5 @@
 #pragma once /// \file
-
 #include <vb/PRNG.h>
-#include <vb/Stream.h>
 #include <vb/coo.h>
 #include <vb/math.h>
 
@@ -50,8 +48,4 @@ namespace vb {
 		void operator++	()                                   	{ x++; if (x == b.ww) { x=0; y++; }          	}
 		T & operator*  	()                                   	{ return b.at(*((coo*)this));                	}
 	};
-
-	template <typename T> Stream<coo> coos (const Array<T> & A) { return Stream<coo> ([&A](Sink<coo> & yield) {
-		for (long y=0; y<A.hh; ++y) for (long x=0; x<A.ww; ++x) yield(coo(x,y));
-	});}
 }
