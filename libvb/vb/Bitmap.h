@@ -1,7 +1,7 @@
 #pragma once /// \file
-#include <gsl/gsl>
 #include <vb/Picture.h>
 #include <vb/Array.h>
+#include <gsl/gsl>
 
 namespace vb {
 	template <typename T> class Bitmap : public Picture, public Array<T> { public:

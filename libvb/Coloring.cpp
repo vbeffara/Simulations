@@ -7,11 +7,11 @@
 
 namespace vb {
 	Coloring::Coloring (cpx z1_, cpx z2_, int n, std::function <Color(cpx)> f_) :
-			Picture(n,n*imag(z2_-z1_)/real(z2_-z1_)), z1(z1_), z2(z2_), f(std::move(f_)) {}
+			Picture(n,n*imag(z2_-z1_)/real(z2_-z1_)), eps(real(z1_-z2_)/n), z1(z1_), z2(z2_), f(std::move(f_)) {}
 
 	void Coloring::show () {
 		Picture::show();
-		stage = (Color *) (cairo_image_surface_get_data (surface));
+		stage = reinterpret_cast <Color *> (cairo_image_surface_get_data (surface));
 		eps = real(z2-z1)/pixel_w();
 		for (int i=0; i<pixel_w(); ++i) for (int j=0; j<pixel_h(); ++j) at(coo(i,j)) = BLACK;
 		run ([&](){ tessel ({0,0}, {pixel_w()-1,pixel_h()-1}); });

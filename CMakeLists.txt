@@ -2,6 +2,7 @@ cmake_minimum_required (VERSION 3.0)
 project (Simulations)
 
 set (CMAKE_CXX_FLAGS "-g -Wall -Wextra -Wno-unused-local-typedefs -Wno-unused-function -std=c++1z -fdiagnostics-color=always -pedantic")
+set (CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 include (FindOpenMP)
 if (${OPENMP_FOUND})

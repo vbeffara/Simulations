@@ -1,8 +1,6 @@
 #pragma once /// @file
 #include <cmath>
 #include <complex>
-#include <functional>
-#include <iostream>
 #include <cln/cln.h>
 
 namespace vb {
@@ -48,8 +46,4 @@ namespace vb {
 	template <typename T> typename cpx_t<T>::type to_cpx (const T & x, const T & y) { return typename cpx_t<T>::type (x,y); }
 	template <typename T> typename cpx_t<T>::type to_cpx (const cpx & z) { return to_cpx<T> (real(z),imag(z)); }
 	template <> complex_t to_cpx <real_t> (const real_t & x, const real_t & y);
-
-    template <typename T> void disp (std::ostream & os, const std::string & label, const T & x) {
-		os << label << x << std::endl;
-	}
 }
