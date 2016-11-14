@@ -2,6 +2,7 @@
 #include <cln/cln.h>
 #include <FL/Fl.H>
 #include <FL/Fl_Gl_Window.H>
+#include <gsl/gsl>
 #include <sys/stat.h>
 #include <vb/Hub.h>
 #include <iostream>
@@ -23,7 +24,8 @@ namespace vb {
 	void Hub::init (std::string t, int argc, char ** argv, std::string c) {
 		title = std::move(t); help = "Syntax : " + c;
 
-		std::vector<std::string> fs;	boost::split (fs, argv[0], boost::is_any_of(R"(/\)"));
+		auto argv_ = gsl::span <char*> (argv,argc);
+		std::vector<std::string> fs;	boost::split (fs, argv_[0], boost::is_any_of(R"(/\)"));
 		prog = fs.back(); dir = "output/" + prog + "/";
 		mode_t mode = S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH;
 		mkdir("output", mode); mkdir(dir.c_str(), mode); mkdir((dir + "snapshots").c_str(), mode);

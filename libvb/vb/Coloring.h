@@ -1,6 +1,7 @@
 #pragma once /// \file
 #include <vb/Picture.h>
 #include <vb/coo.h>
+#include <gsl/gsl>
 
 namespace vb {
 	class Coloring : public Picture { public:
@@ -28,7 +29,7 @@ namespace vb {
         void tessel_go (coo ul, coo lr);
 	    void do_aa ();
 
-		Color * stage = nullptr;
+		gsl::span <Color> stage;
 
 		int handle (int event) override;
 	};

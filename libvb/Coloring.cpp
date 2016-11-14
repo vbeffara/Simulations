@@ -11,7 +11,7 @@ namespace vb {
 
 	void Coloring::show () {
 		Picture::show();
-		stage = reinterpret_cast <Color *> (cairo_image_surface_get_data (surface));
+		stage = gsl::span <Color> (reinterpret_cast <Color *> (cairo_image_surface_get_data (surface)), stride*pixel_h());
 		eps = real(z2-z1)/pixel_w();
 		for (int i=0; i<pixel_w(); ++i) for (int j=0; j<pixel_h(); ++j) at(coo(i,j)) = BLACK;
 		run ([&](){ tessel ({0,0}, {pixel_w()-1,pixel_h()-1}); });
