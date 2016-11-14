@@ -17,7 +17,7 @@ namespace vb {
 		T minimize_pr (const Vector<T> &x0);
 		T minimize_qn (const Vector<T> &x0);
 
-		unsigned n;
+		unsigned n=0;
 
 		std::function < T        	(const Vector<T>&)           	> f;
 		std::function < Vector<T>	(const Vector<T>&)           	> g;
@@ -28,6 +28,6 @@ namespace vb {
 		Vector<T> old_x;	T old_fx;	Vector<T> old_gx;
 
 		T er;
-		int ler;
+		int ler=0;
 	};
 }

@@ -10,7 +10,14 @@ namespace vb {
 	class Pov_Object {
 	public:
 		Pov_Object (std::string s, bool b = false);
+		Pov_Object (const Pov_Object &) = default;
+		Pov_Object (Pov_Object &&) = default;
+
 		virtual ~Pov_Object () = default;
+
+		Pov_Object & operator= (const Pov_Object &) = default;
+		Pov_Object & operator= (Pov_Object &&) = default;
+
 		virtual std::ostream & output_pov (std::ostream & os);
 		void output_pov (const std::string &s);
 

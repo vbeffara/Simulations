@@ -1,9 +1,7 @@
-/// @file
-/// Implementation of the vb::Path class.
-
 #include <vb/Path.h>
 #include <vb/TriMatrix.h>
 #include <vb/Figure.h>
+#include <gsl/gsl>
 
 namespace vb {
     OldPath::OldPath (int l, bool rel) : std::vector<char> (l), relative(rel) {}
@@ -25,7 +23,7 @@ namespace vb {
 
     void OldPath::output_pdf (const std::string &s) const {
         int l=0; cpx z(0); std::vector<cpx> p(1);
-        for (char i : *this) { l = (relative ? l+i : i) % 4; z += dzc[l]; p.push_back(z); }
+        for (char i : *this) { l = (relative ? l+i : i) % 4; z += gsl::at(dzc,l); p.push_back(z); }
         Figure F; F.add (std::make_unique <Path> (p, Pen(0,.2))); F.output_pdf(s);
     }
 }

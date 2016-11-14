@@ -33,8 +33,8 @@ namespace vb {
 
 	protected:
 		cairo_surface_t * surface = nullptr;	///< Cairo version of the surface.
-		cairo_t * cr;                       	///< A context to draw onto the surface.
-		int stride;                         	///< The number of pixels in a line in memory.
+		cairo_t * cr = nullptr;             	///< A context to draw onto the surface.
+		int stride = 0;                     	///< The number of pixels in a line in memory.
 		void draw () override;              	///< Draw the contents of the window (called by FLTK).
 
 	private:

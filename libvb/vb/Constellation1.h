@@ -18,7 +18,7 @@ namespace vb {
 
 		cplx tau () const { return p[0]; }
 
-		int        	dx,dy;
+		int        	dx=0, dy=0;
 		Elliptic<T>	E { q_<T>(I_<T>()) };
 
 	private:

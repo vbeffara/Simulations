@@ -21,6 +21,6 @@ namespace vb {
 		void paint (cairo_t * cr, bool fill = true, bool crop = false);
 
 		bool ortho;
-		double basewidth;
+		double basewidth = NAN;
 	};
 }

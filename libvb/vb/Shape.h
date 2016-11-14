@@ -12,7 +12,12 @@ namespace vb {
 
 	class Shape { public:
 		Shape (Pen p_) : p(p_) { }
+
+		Shape (const Shape &) = default;
+		Shape (Shape &&) = default;
 		virtual ~Shape() = default;
+		Shape & operator= (const Shape &) = default;
+		Shape & operator= (Shape &&) = default;
 
 		virtual double left () =0;
 		virtual double right () =0;

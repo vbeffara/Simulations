@@ -20,7 +20,7 @@ namespace vb {
 		int zero;
 		int one;
 		int infinity;
-		double scale;
+		double scale=1;
 
 		Map (int nn);
 
@@ -69,6 +69,11 @@ namespace vb {
 		double top ();
 		double bottom ();
 
+		double fg_balance (const Vector<double> &x, Vector<double> &g);
+		double fg_circle_base (const Vector<double> &x, Vector<double> &g);
+		double fg_circle_bd (const Vector<double> &x, Vector<double> &g);
+		double fg_circle_disk (const Vector<double> &x, Vector<double> &g);
+
 	protected:
 		void paint () override;
 	};
@@ -76,9 +81,4 @@ namespace vb {
 	std::ostream &operator<< (std::ostream &os, const Map &m);
 
 	Map &operator<< (Map &m, const Edge &e);
-
-	double Map_fg_balance (const Vector<double> &x, Vector<double> &g, void *context);
-	double Map_fg_circle_base (const Vector<double> &x, Vector<double> &g, void *context);
-	double Map_fg_circle_bd (const Vector<double> &x, Vector<double> &g, void *context);
-	double Map_fg_circle_disk (const Vector<double> &x, Vector<double> &g, void *context);
 }

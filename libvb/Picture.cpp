@@ -33,7 +33,8 @@ namespace vb {
 		}
 		paint();
 		glPixelStorei (GL_UNPACK_ROW_LENGTH, stride);
-		glDrawPixels (pixel_w(),pixel_h(), GL_BGRA,GL_UNSIGNED_BYTE, (const ulong*) cairo_image_surface_get_data(surface));
+		glDrawPixels (pixel_w(),pixel_h(), GL_BGRA,GL_UNSIGNED_BYTE,
+			reinterpret_cast <const ulong*> (cairo_image_surface_get_data(surface)));
 	}
 
 	void Picture::output_png (const std::string &s) {

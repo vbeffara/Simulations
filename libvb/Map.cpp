@@ -129,8 +129,7 @@ namespace vb {
 			x[2*i+1] = v[i]->z.imag();
 		}
 
-		// double Map_fg_balance (const Vector<double> &x, Vector<double> &g, void *context);
-		Minimizer<double> M (2*n, [this](const Vector<double> &x, Vector<double> &g) { return Map_fg_balance (x,g,this); });
+		Minimizer<double> M (2*n, [this](const Vector<double> &x, Vector<double> &g) { return fg_balance (x,g); });
 		double output = M.minimize_qn (x);
 
 		for (long i=0; i<n; ++i) {
@@ -368,18 +367,17 @@ namespace vb {
 		return m;
 	}
 
-	double Map_fg_balance (const Vector<double> &x, Vector<double> &g, void *context) {
-		Map *m = (Map *) context;
+	double Map::fg_balance (const Vector<double> &x, Vector<double> &g) {
 		double c = 0.0;
 
-		for (long i=0; i < m->n; ++i) {
+		for (long i=0; i < n; ++i) {
 			g[2*i] = 0;
 			g[2*i+1] = 0;
 
-			for (long j : m->v[i]->adj) {
+			for (long j : v[i]->adj) {
 				c += (x[2*j] - x[2*i]) * (x[2*j] - x[2*i]);
 				c += (x[2*j+1] - x[2*i+1]) * (x[2*j+1] - x[2*i+1]);
-				if (!(m->bd[i])) {
+				if (!(bd[i])) {
 					g[2*i]    -= x[2*j] - x[2*i];
 					g[2*i+1]    -= x[2*j+1] - x[2*i+1];
 				}
@@ -389,14 +387,13 @@ namespace vb {
 		return c;
 	}
 
-	double Map_fg_circle_base (const Vector<double> &x, Vector<double> &g, void *context) {
-		Map *m = (Map *) context;
+	double Map::fg_circle_base (const Vector<double> &x, Vector<double> &g) {
 		double c = 0.0;
 
 		fill (g.begin(), g.end(), 0.0);
 
-		for (long i=0; i < m->n; ++i) {
-			for (long j : m->v[i]->adj) {
+		for (long i=0; i < n; ++i) {
+			for (long j : v[i]->adj) {
 				double dx = x[3*j]-x[3*i];
 				double dy = x[3*j+1]-x[3*i+1];
 				double l = sqrt(dx*dx + dy*dy);
@@ -415,27 +412,25 @@ namespace vb {
 		return c;
 	}
 
-	double Map_fg_circle_bd (const Vector<double> &x, Vector<double> &g, void *context) {
-		Map *m = (Map *) context;
-		double c = Map_fg_circle_base (x,g,context);
+	double Map::fg_circle_bd (const Vector<double> &x, Vector<double> &g) {
+		double c = fg_circle_base (x,g);
 
-		for (long i=0; i < m->n; ++i)
-			if (m->bd[i])
+		for (long i=0; i < n; ++i)
+			if (bd[i])
 				g[3*i+2] = 0.0;
 
 		return c;
 	}
 
-	double Map_fg_circle_disk (const Vector<double> &x, Vector<double> &g, void *context) {
-		Map *m = (Map *) context;
-		double c = Map_fg_circle_base (x,g,context);
+	double Map::fg_circle_disk (const Vector<double> &x, Vector<double> &g) {
+		double c = fg_circle_base (x,g);
 
-		for (long i=0; i < m->n; ++i) {
+		for (long i=0; i < n; ++i) {
 			double l2 = x[3*i]*x[3*i] + x[3*i+1]*x[3*i+1];
 			double l = sqrt(l2);
 			double r = x[3*i+2];
 
-			if ((m->bd[i]) || (l+r>1.0)) {
+			if ((bd[i]) || (l+r>1.0)) {
 				double lr1 = l+r-1.0;
 				double lr1r = lr1/l;
 

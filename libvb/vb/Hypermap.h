@@ -9,12 +9,12 @@
 namespace vb {
 	class Hypermap {
 	public:
-		struct Vertex	{ unsigned i;	cpx z;       	double r=1.0;	unsigned bone;	std::vector<unsigned> adj;	bool fixed = false;	};
-		struct Edge  	{ unsigned i;	unsigned src;	double a=NAN;	              	                          	                   	};
+		struct Vertex	{ unsigned i=0;	cpx z;         	double r=1.0;	unsigned bone=0;	std::vector<unsigned> adj;	bool fixed = false;	};
+		struct Edge  	{ unsigned i=0;	unsigned src=0;	double a=NAN;	                	                          	                   	};
 
 		Hypermap (Permutation s, Permutation a, Permutation p)	: sigma(std::move(s)), alpha(std::move(a)), phi(std::move(p)), initial(sigma.size(),3)	{}
 		Hypermap (Cycles s, Cycles a, Cycles p)               	: Hypermap (Permutation(s), Permutation(a), Permutation(p))                           	{}
-		Hypermap () {}
+		Hypermap () = default;
 
 		void from_hypermap	();	//< If the Hypermap part is correct, fill in V and E.
 

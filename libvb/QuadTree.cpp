@@ -4,7 +4,7 @@ namespace vb {
 	std::vector <std::unique_ptr<QuadTree>> QuadTree::store;
 
 	QuadTree::QuadTree (coo UL, coo BR, int M) :
-		n(0), ul(UL), br(BR), center((ul+br)/2), iul(br), ibr(ul), m(M) {}
+		n(0), ul(UL), br(BR), center((ul+br)/2), iul(br), ibr(ul), m(M), ch(0) {}
 
 	int QuadTree::index (coo z) const {
 		if (z.y<center.y)	{ if (z.x<center.x) return 0; else return 1; }

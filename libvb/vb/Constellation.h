@@ -16,7 +16,12 @@ namespace vb {
 
 		unsigned dim {0};
 
-		Constellation                      	();
+		Constellation ();
+		Constellation (const Constellation &) = default;
+		Constellation (Constellation &&) = default;
+		Constellation & operator= (const Constellation &) = default;
+		Constellation & operator= (Constellation &&) = default;
+
 		template <typename U> Constellation	(const Constellation<U> & C);
 
 		virtual ~ Constellation () = default;

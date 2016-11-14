@@ -1,7 +1,5 @@
-/// @file
-/// Implementation of the vb::ProgressBar class
-
 #include <vb/ProgressBar.h>
+#include <gsl/gsl>
 #include <iostream>
 #include <iomanip>
 #include <cmath>
@@ -25,7 +23,7 @@ namespace vb {
         int nchar = (current*50.0)/final;
         int prop = 8*((current*50.0)/final - nchar);
         for (int i=0; i<nchar; ++i)  std::cerr << symbols[8];
-        if (nchar<50) std::cerr << symbols[prop];
+        if (nchar<50) std::cerr << gsl::at (symbols,prop);
         for (int i=nchar+1; i<50; ++i) std::cerr << " ";
         std::cerr << "]";
 
