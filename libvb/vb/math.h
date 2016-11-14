@@ -1,5 +1,6 @@
 #pragma once
 #include <vb/cpx.h>
+#include <functional>
 
 namespace vb {
 	template <typename T> T sum (std::function <T(int)> f) {
