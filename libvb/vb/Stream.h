@@ -12,8 +12,8 @@ namespace vb {
 
 	template <typename T> auto take (int n, Stream <T> && S) {
 		return Stream <T> ([n, S{std::move(S)}] (Sink <T> & yield) mutable {
-			if (n<=0) return; int nn=n;
-			for (auto x : S) { yield(x); --nn; if (nn==0) break; }
+			if (n<=0) return;
+			for (auto x : S) { yield(x); --n; if (n==0) break; }
 		});
 	}
 
