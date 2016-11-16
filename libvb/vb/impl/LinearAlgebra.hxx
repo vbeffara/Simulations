@@ -6,10 +6,7 @@
 #include <boost/numeric/ublas/io.hpp>
 
 namespace boost { namespace numeric { namespace ublas {
-
-	template <> struct boost::numeric::ublas::type_traits <vb::complex_t>
-    // : complex_traits<std::complex<double> >
-    {
+	template <> struct type_traits <vb::complex_t> {
 		// using self_type = type_traits<vb::complex_t>;
         // using value_type = vb::complex_t;
         // using precision_type = value_type;
@@ -22,7 +19,6 @@ namespace boost { namespace numeric { namespace ublas {
 				type_traits<real_type>::type_abs (imagpart(t)));
         }
     };
-
 }}}
 
 namespace vb {
