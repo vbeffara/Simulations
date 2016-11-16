@@ -9,10 +9,6 @@ namespace vb {
 	template <typename T> using Vector = ublas::vector<T>;
 	template <typename T> using Matrix = ublas::matrix<T>;
 
-	template <typename T> unsigned my_index_norm_inf (const Vector<T> & v);
-
-	template <typename T, class PM> unsigned my_lu_factorize (Matrix<T> & m, PM &pm);
-
 	template <typename T> T det (const Matrix<T> & input);
 
 	template <typename T> bool inv (const Matrix<T> & input, Matrix<T> & inverse);
