@@ -149,5 +149,5 @@ int main (int argc, char ** argv) {
 	ofstream dat (name + ".dat");
 	for (auto z : coos(H1)) { dat << H1[z] << " "; if (z.x == H1.ww-1) dat << endl; }
 
-	system (("asy -fpdf -o " + H.dir + R"( ")" + name + R"(.asy")").c_str());
+	(void) system (("asy -fpdf -o " + H.dir + R"( ")" + name + R"(.asy")").c_str());
 }
