@@ -8,7 +8,7 @@ class TASEP : public vector<int> {
 	public:
 		TASEP () : vector<int>(int(H['n']),0), p(size(),1) {
 			for (int & e : *this) { e = 2*prng.bernoulli(H['r']); if (prng.bernoulli(H['d']) && (e==2)) e = 1; }
-			for (double & q : p) q = prng.uniform_real(H['e'],1.0000001);
+			for (double & q : p) q = prng.uniform_real(H['e'],1.0);
 		}
 		void step () {
 			int i = prng.uniform_int(size()); if (prng.bernoulli(1-p[i])) return;
