@@ -1,9 +1,7 @@
-#pragma once /// \file
+#pragma once
 #define BOOST_DISABLE_ASSERTS 1
-#include <boost/lexical_cast.hpp>
 #include <boost/random.hpp>
 #include <random>
-#include <sstream>
 #include <vector>
 
 namespace vb {
@@ -19,14 +17,10 @@ namespace vb {
 		double	exponential 	(double lambda=1)           	{ return (boost::exponential_distribution<>	(lambda))   	(*this); }
 		double	gaussian    	(double m=0, double sigma=1)	{ return (boost::normal_distribution<>     	(m,sigma))  	(*this); }
 
-		int	discrete (const std::vector<double> & p) {
-		   	double U = uniform_real(); int i=0;
-		   	while (U>p[i]) { U -= p[i]; ++i; }
-		   	return i;
-		}
+		int	discrete (const std::vector<double> & p);
 
-		std::string	state ()                    	{ return boost::lexical_cast<std::string> (*this); }
-		void       	state (const std::string &s)	{ std::istringstream is (s); is >> (*this); }
+		std::string	state ();
+		void       	state (const std::string &s);
 	};
 
 	extern PRNG prng;

@@ -6,7 +6,6 @@
 #include <vb/coo.h>
 
 namespace vb {
-	PRNG prng;
 	std::vector<Task> Auto::tasks;
 
 	const std::vector<coo> dz = { coo(1,0), coo(0,1), coo(-1,0), coo(0,-1), coo(1,1), coo(-1,-1), coo(-1,1), coo(1,-1) };

@@ -1,5 +1,6 @@
 #define BOOST_TEST_MODULE libvb unit tests
 #define BOOST_TEST_DYN_LINK
+#include <boost/lexical_cast.hpp>
 #include <boost/test/unit_test.hpp>
 
 #include <vb/Cluster.h>
