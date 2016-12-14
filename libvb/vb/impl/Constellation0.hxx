@@ -139,8 +139,8 @@ namespace vb {
 		for (unsigned i=0; i<C.f.size(); ++i) os << "| " << C.f[i].d << "\t" << C.f[i].z << std::endl;
 		os << std::endl;
 		os << u8"λ     := " << C.p[0] << std::endl;
-		Polynomial<std::complex<T>> P; for (auto zd : C.b) for (unsigned j=0; j<zd.d; ++j) P.add_root(zd.z); os << "P[z_] := " << P << std::endl;
-		Polynomial<std::complex<T>> Q; for (auto zd : C.f) for (unsigned j=0; j<zd.d; ++j) Q.add_root(zd.z); os << "Q[z_] := " << Q << std::endl;
+		Polynomial <typename cpx_t<T>::type> P; for (auto zd : C.b) for (unsigned j=0; j<zd.d; ++j) P.add_root(zd.z); os << "P[z_] := " << P << std::endl;
+		Polynomial <typename cpx_t<T>::type> Q; for (auto zd : C.f) for (unsigned j=0; j<zd.d; ++j) Q.add_root(zd.z); os << "Q[z_] := " << Q << std::endl;
 		return os;
 	}
 

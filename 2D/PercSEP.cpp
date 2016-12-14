@@ -46,8 +46,8 @@ public:
 		}
 	}
 	void move() {
-		coo z (prng.uniform_int(w()), prng.uniform_int(h()));   	if (at(z) < 2) return;
-		coo s = prng.bernoulli(d) ? 1 : dz[prng.uniform_int(4)];	if (atp(z+s) != 1) return;
+		coo z (prng.uniform_int(w()), prng.uniform_int(h()));          	if (at(z) < 2) return;
+		coo s = prng.bernoulli(d) ? coo(1,0) : dz[prng.uniform_int(4)];	if (atp(z+s) != 1) return;
 		if (tasym && (s==-1)) return;
 		std::swap (at(z), atp(z+s));
 		step(); flow += s;

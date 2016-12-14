@@ -5,7 +5,7 @@
 namespace vb {
 	template <typename T> class Polynomial : public std::vector<T> {
 	public:
-		Polynomial (const std::vector<T> V = {{T(1)}}) : std::vector<T> (V) {};
+		Polynomial (const std::vector<T> V = {T(1)}) : std::vector<T> (V) {};
 
 		using std::vector<T>::at; using std::vector<T>::size; using std::vector<T>::back; using std::vector<T>::push_back;
 
