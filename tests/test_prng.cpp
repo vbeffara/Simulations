@@ -5,6 +5,7 @@
 #endif
 #include <vb/PRNG.h>
 #include <vb/util.h>
+#include <pcg_random.hpp>
 
 using namespace vb; using namespace std;
 
@@ -28,6 +29,26 @@ int main (int argc, char ** argv) {
 
 	timing ("C++11 style", [n](){
 		std::normal_distribution<> dist2(0,1); std::mt19937_64 engine;
+		double s=0; for (int i=0; i<n; ++i) { double o = dist2(engine); s += o*o; } return s/n;
+	});
+
+	timing ("PCG32 through C++11", [n](){
+		std::normal_distribution<> dist2(0,1); pcg32 engine;
+		double s=0; for (int i=0; i<n; ++i) { double o = dist2(engine); s += o*o; } return s/n;
+	});
+
+	timing ("PCG32 through Boost", [n](){
+		boost::normal_distribution<> dist2(0,1); pcg32 engine;
+		double s=0; for (int i=0; i<n; ++i) { double o = dist2(engine); s += o*o; } return s/n;
+	});
+
+	timing ("PCG64 through C++11", [n](){
+		std::normal_distribution<> dist2(0,1); pcg64 engine;
+		double s=0; for (int i=0; i<n; ++i) { double o = dist2(engine); s += o*o; } return s/n;
+	});
+
+	timing ("PCG64 through Boost", [n](){
+		boost::normal_distribution<> dist2(0,1); pcg64 engine;
 		double s=0; for (int i=0; i<n; ++i) { double o = dist2(engine); s += o*o; } return s/n;
 	});
 
