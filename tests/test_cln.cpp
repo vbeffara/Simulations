@@ -5,7 +5,7 @@
 using namespace vb; using namespace std; using namespace cln;
 
 template <typename T> void test (const string &s, int n, const string &in = "0") {
-	timing (s, [&](){
+	timing (s, [&]{
 		auto z = boost::lexical_cast<T> (in);
 		for (int i=0; i<n; ++i) z = exp(-z);
 		return z;

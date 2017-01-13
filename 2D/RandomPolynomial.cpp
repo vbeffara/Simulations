@@ -15,8 +15,8 @@ template <typename T> T sm3 (int i, int j, int k) {
 template <typename T> class RPoly { public:
 	RPoly (int n_, bool(p_)) : n(n_), p(p_), A(n+1) {
 		map<string,function<double()>> generators;
-		generators.emplace ("gaussian",  [](){ return prng.gaussian(0,1); });
-		generators.emplace ("bernoulli", [](){ return prng.bernoulli(.5) ? 1 : -1; });
+		generators.emplace ("gaussian",  []{ return prng.gaussian(0,1); });
+		generators.emplace ("bernoulli", []{ return prng.bernoulli(.5) ? 1 : -1; });
 
 		for (int i=0; i<=n; ++i)
 			for (int j=0; j<=n-i; ++j) {
