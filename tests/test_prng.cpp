@@ -7,8 +7,6 @@
 #include <vb/util.h>
 #include <pcg_random.hpp>
 
-#include <optional>
-
 using namespace vb; using namespace std;
 
 int main (int argc, char ** argv) {
