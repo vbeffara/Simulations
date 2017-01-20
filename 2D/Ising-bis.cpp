@@ -44,11 +44,20 @@ class Ising : public Bitmap<Spin> { public:
 		F.output_pdf(s);
 	}
 
+	void explore () {
+		coo z0 = {w()/2, (con==6) ? h()/3 : h()/2};
+		vector<coo> list {z0}; auto s = at(list.back()).s;
+		while (list.size()) {
+			auto z = list.back(); list.pop_back(); if (atp(z).s == 3) continue;
+			putp(z,3); for (int d=0; d<con; ++d) if (atp(z+dz[d]).s==s) list.push_back(z+dz[d]);
+		}
+	}
+
 	int con;
 	vector<double> p;
 };
 
 int main (int argc, char ** argv) {
 	H.init ("2D Ising model", argc, argv, "n=500,b=.7,c=4");
-	Ising I (H['n'],H['b'],H['c']); I.show(); I.run(); I.output_pdf();
+	Ising I (H['n'],H['b'],H['c']); I.show(); I.run(); I.explore(); I.output_pdf();
 }
