@@ -77,7 +77,7 @@ namespace vb {
 	};
 
 	class Polygon : public Path { public:
-		Polygon (std::vector<cpx> z, Pen p = Pen()) : Path(z,p) {}
+		Polygon (std::vector<cpx> z, Pen p = Pen()) : Path(std::move(z),p) {}
 		void draw (cairo_t * cr) override;
 	};
 }

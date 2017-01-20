@@ -39,7 +39,7 @@ namespace vb {
 	}
 
 	template <typename T> template <typename U> U Polynomial<T>::operator() (U z) const {
-		U out = U(back());
+		auto out = U(back());
 		for (unsigned i=size()-1; i>0; --i) out = out*z+U(at(i-1));
 		return out;
 	}

@@ -7,7 +7,7 @@ namespace vb {
 
 	template <typename T> class TriMatrix {
 	public:
-		TriMatrix (T e = 0) : size(0), sub_size(0), sub_shift(0), empty(e) { }
+		TriMatrix (T e = 0) : empty(e) { }
 
 		T at (coo z) const {
 			int target = std::max (std::abs(z.x), std::abs(z.y)); if (target >= size) return empty;
@@ -39,7 +39,7 @@ namespace vb {
 			sub_size = size; size = 3*size-1; sub_shift = size - sub_size;
 		}
 
-		int size, sub_size, sub_shift;
+		int size=0, sub_size=0, sub_shift=0;
 		T empty;
 		std::vector <T> tile;
 		std::vector <TriMatrix<T>> sub;

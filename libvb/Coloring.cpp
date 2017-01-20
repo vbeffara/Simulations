@@ -31,12 +31,14 @@ namespace vb {
 				if (!u) cs.push_back(c);
 			}
 		}
-		#ifdef CILK
+#if defined(CILK)
 		cilk_for (unsigned i=0; i<cs.size(); ++i) at(cs[i]) = aa_color(cs[i],true);
-		#else
+#elif defined(OPENMP)
 		#pragma omp parallel for schedule(dynamic)
 		for (unsigned i=0; i<cs.size(); ++i) at(cs[i]) = aa_color(cs[i],true);
-		#endif
+#else
+		for (auto c : cs) at(c) = aa_color(c,true);
+#endif
 	}
 
 	void Coloring::scale (double s) { cpx mid = (z1+z2)/2.0; z1 = mid + s * (z1-mid); z2 = mid + s * (z2-mid); }

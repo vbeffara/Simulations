@@ -43,14 +43,14 @@ namespace vb {
 		std::ostream & output_pov (std::ostream & os) override { return os << v; }
 	};
 
-	class Pov_Scene       	: public Pov_Object { public: Pov_Scene       	();                      	                    	};
-	class Pov_Texture     	: public Pov_Object { public: Pov_Texture     	(std::string t);         	                    	};
-	class Pov_Camera      	: public Pov_Object { public: Pov_Camera      	(tri a, tri b, double d);	                    	};
-	class Pov_Light_Source	: public Pov_Object { public: Pov_Light_Source	(tri a);                 	                    	};
-	class Pov_Union       	: public Pov_Object { public: Pov_Union       	(                        	std::string t = "");	};
-	class Pov_Sphere      	: public Pov_Object { public: Pov_Sphere      	(tri a, double r,        	std::string t = "");	};
-	class Pov_Cylinder    	: public Pov_Object { public: Pov_Cylinder    	(tri a, tri b, double r, 	std::string t = "");	};
-	class Pov_Box         	: public Pov_Object { public: Pov_Box         	(tri a, tri b,           	std::string t = "");	};
-	class Pov_Plane       	: public Pov_Object { public: Pov_Plane       	(tri a, double d,        	std::string t = "");	};
-	class Pov_Frame       	: public Pov_Union  { public: Pov_Frame       	(tri a, tri b,           	std::string t = "");	};
+	class Pov_Scene       	: public Pov_Object { public: Pov_Scene       	();                      	                            	};
+	class Pov_Texture     	: public Pov_Object { public: Pov_Texture     	(std::string t);         	                            	};
+	class Pov_Camera      	: public Pov_Object { public: Pov_Camera      	(tri a, tri b, double d);	                            	};
+	class Pov_Light_Source	: public Pov_Object { public: Pov_Light_Source	(tri a);                 	                            	};
+	class Pov_Union       	: public Pov_Object { public: Pov_Union       	(                        	const std::string & t = "");	};
+	class Pov_Sphere      	: public Pov_Object { public: Pov_Sphere      	(tri a, double r,        	const std::string & t = "");	};
+	class Pov_Cylinder    	: public Pov_Object { public: Pov_Cylinder    	(tri a, tri b, double r, 	const std::string & t = "");	};
+	class Pov_Box         	: public Pov_Object { public: Pov_Box         	(tri a, tri b,           	const std::string & t = "");	};
+	class Pov_Plane       	: public Pov_Object { public: Pov_Plane       	(tri a, double d,        	const std::string & t = "");	};
+	class Pov_Frame       	: public Pov_Union  { public: Pov_Frame       	(tri a, tri b,           	std::string t = "");        	};
 }

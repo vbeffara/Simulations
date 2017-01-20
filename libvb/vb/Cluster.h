@@ -3,7 +3,7 @@
 
 namespace vb {
 	class Cluster { public:
-		Cluster (coo ul_ = coo (-bs/2,-bs/2), long w_ = bs) : ul(ul_), w(w_), np(0) {};
+		Cluster (coo ul_ = coo (-bs/2,-bs/2), long w_ = bs) : ul(ul_), w(w_) {};
 
 		void ensure_sub ();
 		void grow ();
@@ -21,7 +21,7 @@ namespace vb {
 		long sub_index (coo z) const;
 
 		coo ul;
-		long w,np;
+		long w, np=0;
 		std::vector <bool> tile;
 		std::vector <Cluster> sub;
 		static long bs;

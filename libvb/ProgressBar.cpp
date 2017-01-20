@@ -5,7 +5,7 @@
 #include <cmath>
 
 namespace vb {
-    ProgressBar::ProgressBar (int length, double pow) : Auto(.05), final(length), current(0), power(pow) {}
+    ProgressBar::ProgressBar (int length, double pow) : Auto(.05), final(length), power(pow) {}
 
     ProgressBar::~ProgressBar () {
         set(final); update(); std::cerr << "\n";

@@ -19,7 +19,7 @@ namespace vb {
         void update() override;
 
     private:
-        int final, current;
+        int final, current=0;
         double power;
     };
 }

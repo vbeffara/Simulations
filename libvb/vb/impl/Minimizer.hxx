@@ -3,7 +3,7 @@
 
 namespace vb {
 	template <typename T> Minimizer<T>::Minimizer (unsigned int n_) :
-		n(n_), x(n), gx(n), old_x(n), old_gx(n), er(1.0), ler(0) {}
+		n(n_), x(n), gx(n), old_x(n), old_gx(n), er(1.0) {}
 
 	template <typename T> Minimizer<T>::Minimizer (unsigned int n_,
 		std::function < T (const Vector<T>&,Vector<T>&) > fg_) :
