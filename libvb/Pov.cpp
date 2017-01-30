@@ -29,7 +29,7 @@ namespace vb {
 				<< std::make_unique <Pov_Object> (R"("background { color White }")");
 	}
 
-	Pov_Union::Pov_Union (const std::string &) : Pov_Object ("union", true) {}
+	Pov_Union::Pov_Union () : Pov_Object ("union", true) {}
 
 	Pov_Texture::Pov_Texture (std::string t) : Pov_Object("texture", true) { (*this) << std::make_unique <Pov_Object> (t); }
 
@@ -42,13 +42,13 @@ namespace vb {
 		(*this) << a << std::make_unique <Pov_Object> ("color White*2", false);
 	}
 
-	Pov_Sphere::Pov_Sphere (tri a, double r, const std::string &) : Pov_Object("sphere", true) { (*this) << a << r; commas=1; }
+	Pov_Sphere::Pov_Sphere (tri a, double r) : Pov_Object("sphere", true) { (*this) << a << r; commas=1; }
 
-	Pov_Cylinder::Pov_Cylinder (tri a, tri b, double r, const std::string &) : Pov_Object("cylinder", true) { (*this) << a << b << r; commas=2; }
+	Pov_Cylinder::Pov_Cylinder (tri a, tri b, double r) : Pov_Object("cylinder", true) { (*this) << a << b << r; commas=2; }
 
-	Pov_Box::Pov_Box (tri a, tri b, const std::string &) : Pov_Object("box", true) { (*this) << a << b; commas=1; }
+	Pov_Box::Pov_Box (tri a, tri b) : Pov_Object("box", true) { (*this) << a << b; commas=1; }
 
-	Pov_Plane::Pov_Plane (tri a, double d, const std::string &) : Pov_Object("plane", true) { (*this) << a << d; commas=1; }
+	Pov_Plane::Pov_Plane (tri a, double d) : Pov_Object("plane", true) { (*this) << a << d; commas=1; }
 
 	Pov_Frame::Pov_Frame (tri a, tri b, std::string t) : Pov_Union() { (*this)
 		<< std::make_unique <Pov_Sphere> (tri(a.x,a.y,a.z), .1)
