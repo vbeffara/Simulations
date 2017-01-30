@@ -33,9 +33,6 @@ double angle (const point &O, const point &A, const point &B) {
 	return output;
 }
 
-int env_size (void*);
-double env_width (void*);
-
 class Rancher {
 public:
 	vector<point> traj;
@@ -96,6 +93,14 @@ public:
 		F.add (std::make_unique <Path> (V,P));
 	}
 
+	double env_width () {
+		auto i = env.begin(); ++i;
+		point p1 = *i;
+		i = env.end(); --i; --i;
+		point p2 = *i;
+		return sqrt (norm (cpx(p1) - cpx(p2)));
+	}
+
 	void main (int argc, char ** argv) {
 		H.init ("Rancher process", argc, argv, "p=.1,n=1000,i=1,o,r");
 		double pente = H['p'];
@@ -108,8 +113,8 @@ public:
 
 		Console W;
 		W.watch (i,"Path length");
-		W.trace (env_size,this,"Envelope size");
-		W.trace (env_width,this,"Envelope width");
+		W.lambda<int> ([this]{ return env.size(); }, "Envelope size");
+		W.lambda<double> ([this]{ return env_width(); }, "Envelope width");
 		W.show();
 
 		traj.emplace_back (cpx(-1, -pente), false);
@@ -132,7 +137,7 @@ public:
 			if (plot && !((i+1)%inter)) dessine_enveloppe();
 			W.step();
 
-			if (renew && (env_size(this)==3)) {
+			if (renew && (env.size()==3)) {
 				unsigned long r = i-last_renewal;
 				if (r+1>renewals.size())
 					renewals.resize(r+1);
@@ -160,21 +165,6 @@ public:
 		}
 	}
 };
-
-int env_size (void *R) {
-	Rancher & RR = * (Rancher*) R;
-	return RR.env.size();
-}
-
-double env_width (void *R) {
-	Rancher & RR = * (Rancher*) R;
-	list<point> L = RR.env;
-	auto i = L.begin(); ++i;
-	point p1 = *i;
-	i = L.end(); --i; --i;
-	point p2 = *i;
-	return sqrt (norm (cpx(p1) - cpx(p2)));
-}
 
 int main (int argc, char **argv) {
 	Rancher().main(argc,argv);
