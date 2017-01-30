@@ -21,7 +21,8 @@ double cum (int n) {
 double cum2 (int n) { double s=0; for (int i=0; i<n; ++i) s += cost(i); return s - long(s); }
 
 double cum3 (int n) {
-    vector<double> X(n); for (int i=0; i<n; ++i) X[i]=i;
+    vector<double> X(n);
+    std::iota (X.begin(), X.end(), 0);
     std::transform (X.begin(), X.end(), X.begin(), cost);
     double s = std::accumulate (X.begin(), X.end(), 0.0);
     return s - long(s);
@@ -85,24 +86,24 @@ double cum_omp2 (int n) {
 int main (int argc, char ** argv) {
     H.init ("Test of various parallel frameworks",argc,argv,"n=42,l=10000000");
 
-    timing ("Fibonacci  | Single (recursive)", [&]() { return fib(H['n']); });
+    timing ("Fibonacci  | Single (recursive)", []{ return fib(H['n']); });
 #ifdef CILK
-    timing ("Fibonacci  | CILK", [&]() { return fib_cilk(H['n']); });
+    timing ("Fibonacci  | CILK", []{ return fib_cilk(H['n']); });
 #endif
 #ifdef OPENMP
-    timing ("Fibonacci  | OpenMP (parallel sections)", [&]() { return fib_omp(H['n']); });
+    timing ("Fibonacci  | OpenMP (parallel sections)", []{ return fib_omp(H['n']); });
 #endif
 
-    timing ("Map+reduce | Single 1 (fill then sum)", [&]() { return cum(H['l']); });
-    timing ("Map+reduce | Single 2 (direct sum)", [&]() { return cum2(H['l']); });
-    timing ("Map+reduce | Single 3 (STL algorithms)", [&]() { return cum3(H['l']); });
-    timing ("Map+reduce | Single 4 (Boost coroutine)", [&]() { return cum4(H['l']); });
+    timing ("Map+reduce | Single 1 (fill then sum)", []{ return cum(H['l']); });
+    timing ("Map+reduce | Single 2 (direct sum)", []{ return cum2(H['l']); });
+    timing ("Map+reduce | Single 3 (STL algorithms)", []{ return cum3(H['l']); });
+    timing ("Map+reduce | Single 4 (Boost coroutine)", []{ return cum4(H['l']); });
 #ifdef CILK
-    timing ("Map+reduce | CILK", [&]() { return cum_cilk(H['l']); });
-    timing ("Map+reduce | CILK 2", [&]() { return cum_cilk2(H['l']); });
+    timing ("Map+reduce | CILK", []{ return cum_cilk(H['l']); });
+    timing ("Map+reduce | CILK 2", []{ return cum_cilk2(H['l']); });
 #endif
 #ifdef OPENMP
-    timing ("Map+reduce | OpenMP 1 (fill then sum)", [&]() { return cum_omp(H['l']); });
-    timing ("Map+reduce | OpenMP 2 (direct reduction)", [&]() { return cum_omp2(H['l']); });
+    timing ("Map+reduce | OpenMP 1 (fill then sum)", []{ return cum_omp(H['l']); });
+    timing ("Map+reduce | OpenMP 2 (direct reduction)", []{ return cum_omp2(H['l']); });
 #endif
 }

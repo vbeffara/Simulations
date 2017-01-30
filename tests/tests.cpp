@@ -168,7 +168,7 @@ BOOST_AUTO_TEST_CASE (test_math) {
 
 	BOOST_CHECK (abs(q_<double>(cpx(1.0+1e-5))-q_<double>(cpx(1.0)) - 1e-5*q_t<double>(cpx(1.0))) < 1e-9);
 
-	double e = sum<double> ([](int n) { auto out = 1.0/fact(n); return std::isinf(out) ? 0 : out; });
+	auto e = sum<double> ([](int n) { auto out = 1.0/fact(n); return std::isinf(out) ? 0 : out; });
 	BOOST_CHECK (abs(log(e)-1) < 1e-6);
 }
 

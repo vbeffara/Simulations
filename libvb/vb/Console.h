@@ -46,7 +46,7 @@ namespace vb {
 		T &t;
 	};
 
-	template <typename T> void apply (Fl_Widget *W) { Manager<T> *M = (Manager<T> *) W; M->t = M->value(); }
+	template <typename T> void apply (Fl_Widget *W) { auto M = static_cast <Manager<T>*> (W); M->t = M->value(); }
 
 	class Console : public AutoWindow <Fl_Window> {
 	public:
