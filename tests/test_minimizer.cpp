@@ -1,12 +1,11 @@
 #include <vb/Hub.h>
 #include <vb/Minimizer.h>
 
+using namespace std; using namespace vb;
+
 #ifdef CMAES
 #include <cmaes.h>
 using namespace libcmaes;
-#endif
-
-using namespace std; using namespace vb;
 
 FitFunc f = [](const double *x, const int N) {
   double o = 0;
@@ -29,3 +28,9 @@ int main (int argc, char ** argv) {
 	auto C = cmasols.get_best_seen_candidate();
 	H.L->info ("Final value : {}", C.get_fvalue());
 }
+
+#else
+
+int main () { cerr << "Nothing to see here, move along.\n"; }
+
+#endif
