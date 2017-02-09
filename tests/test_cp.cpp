@@ -40,7 +40,7 @@ int main (int argc, char ** argv) {
 
 	H.L->info ("Number of vertices:    {}", m.n);
 	H.L->info ("Final value of f:      {}", MM.fx);
-	H.L->info ("Final square gradient: {}", inner_prod(MM.gx,MM.gx));
+	H.L->info ("Final square gradient: {}", MM.gx.squaredNorm());
 
 	for (long i=0; i<m.n; ++i) {
 		m.v[i]->z = cpx (x[3*i], x[3*i+1]);

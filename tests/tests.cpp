@@ -195,7 +195,8 @@ BOOST_AUTO_TEST_CASE (test_NumberTheory) {
 BOOST_AUTO_TEST_CASE (test_LinearAlgebra) {
 	Matrix<cl_N> m (3,3); for (int i=0; i<3; ++i) for (int j=0; j<3; ++j) m(i,j) = int(pow(2*i+1,j));
 	Vector<cl_N> v (3); for (int i=0; i<3; ++i) v(i) = int(3*i-2);
-	BOOST_CHECK (str(solve(m,v)) == "[3](-7/2,3/2,0)");
+	Vector<cl_N> x (3); x << -3.5,1.5,0;
+	BOOST_CHECK ((solve(m,v)-x).squaredNorm() < 1e-50);
 }
 
 BOOST_AUTO_TEST_CASE (test_Hypermap_lib) {

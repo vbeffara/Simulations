@@ -57,6 +57,7 @@ namespace vb {
 	}
 
 	template <typename T> void Constellation0<T>::make_p_1 () {
+		using std::real;
 		T eps = real(pow(cost(),T(.25))); if (eps > T(.1)) eps = T(.1);
 		Polynomial<cplx> P; for (auto zd : b) for (unsigned j=0; j<zd.d; ++j) P.add_root(zd.z);
 		Polynomial<cplx> Q; for (auto zd : f) for (unsigned j=0; j<zd.d; ++j) Q.add_root(zd.z);
@@ -120,7 +121,7 @@ namespace vb {
 			                                      	else           	out(i,j++) = T(- T(id*f[jj].d)) / pow(w[ii].z-f[jj].z,cplx(id+1));
 			++i;
 		}
-		j=0; for (unsigned jj=0; jj<b.size(); ++jj) out(i,j++) = T(b[jj].d); while (j<out.size2()) out(i,j++) = T(0); ++i;
+		j=0; for (unsigned jj=0; jj<b.size(); ++jj) out(i,j++) = T(b[jj].d); while (j<dim) out(i,j++) = T(0); ++i;
 		return out;
 	}
 

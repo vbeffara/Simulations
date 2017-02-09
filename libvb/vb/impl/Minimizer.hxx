@@ -14,7 +14,7 @@ namespace vb {
 		Minimizer (n_) { f=f_; g=g_; }
 
 	template <typename T> T Minimizer<T>::compute (const Vector<T> &x_) {
-		if ((!x_.empty()) && (&x != &x_)) x=x_;
+		x=x_;
 		if (fg)	{ fx = fg(x,gx); } else	{ fx = f(x); gx = g(x); }
 		return fx;
 	}
@@ -22,7 +22,7 @@ namespace vb {
 	template <typename T> void Minimizer<T>::line_search (const Vector<T> &d) {
 		old_x.swap(x); old_fx=fx; old_gx.swap(gx);
 
-		T qq_0 = T(.8) * inner_prod (old_gx,d);
+		T qq_0 = T(.8) * old_gx.dot(d);
 		T dir = (qq_0>T(0) ? T(-1) : T(1));
 		T t_l = T(0), t_r = T(0), t = dir;
 		T y;
@@ -33,7 +33,7 @@ namespace vb {
 			x = old_x + t*d; compute();
 			y = old_fx + T(.3) * t * qq_0;
 
-			if ((fx<=y) && (dir*inner_prod (gx,d) >= dir*qq_0)) break;
+			if ((fx<=y) && (dir*gx.dot(d) >= dir*qq_0)) break;
 			if (fx>y) { t_r=t; refining = true; } else t_l = t;
 			if (refining) t = (t_r+t_l)/T(2); else t *= T(2);
 			if (t-t_l+T(1) == T(1)) break;
@@ -60,21 +60,21 @@ namespace vb {
 		T dgdx,u;
 
 		Vector<T> diag = W0;
-		if (diag.size() == 0) diag = Vector<T> (x0.size(), T(1.0));
+		if (diag.size() == 0) diag = Vector<T>::Constant (x0.size(),1,T(1.0));
 		Matrix<T> W(x0.size(),x0.size());
 		for (unsigned int i=0; i<x0.size(); ++i) W(i,i) = diag[i];
 
 		while (fx < old_fx) {
-			line_search(prod(W,gx));
+			line_search(W*gx);
 
 			dx = x - old_x;
 			dg = gx - old_gx;
-			Wdg = prod(W,dg);
-			dgdx = inner_prod(dg,dx);
+			Wdg = W*dg;
+			dgdx = dg.dot(dx);
 			dx /= dgdx;
-			u = dgdx + inner_prod(dg,Wdg);
+			u = dgdx + dg.dot(Wdg);
 
-			W += outer_prod (u*dx-Wdg,dx) - outer_prod (dx,Wdg);
+			W += (u*dx-Wdg) * dx.transpose() - dx * Wdg.transpose();
 		}
 
 		return fx;
@@ -93,7 +93,7 @@ namespace vb {
 		while (fx < old_fx) {
 			old_d = d; d = -gx;
 			if (!first) {
-				T c = inner_prod(gx,gx) / inner_prod(old_gx,old_gx);
+				T c = gx.squaredNorm() / old_gx.squaredNorm();
 				d += c * old_d;
 			}
 			line_search(d);
@@ -120,11 +120,11 @@ namespace vb {
 			d = -gx;
 
 			if (!first) {
-				T c1 = inner_prod(old_gx,old_gx);
+				T c1 = old_gx.squaredNorm();
 
 				old_gx -= gx;
 
-				old_d *= inner_prod(old_gx,gx) / c1;
+				old_d *= old_gx.dot(gx) / c1;
 				d -= old_d;
 			}
 
@@ -153,7 +153,7 @@ namespace vb {
 
 			if (!first) {
 				y = gx - old_gx;
-				d += old_d * inner_prod(y,gx) / inner_prod(y,old_d);
+				d += old_d * y.dot(gx) / y.dot(old_d);
 			}
 
 			line_search(d);

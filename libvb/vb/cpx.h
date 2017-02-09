@@ -3,6 +3,14 @@
 #include <complex>
 #include <cln/cln.h>
 
+namespace cln {
+	inline cl_R norm (const cl_N & z) { return realpart(z)*realpart(z) + imagpart(z)*imagpart(z); }
+	inline cl_R abs2 (const cl_N & z) { return norm(z); }
+	inline cl_N conj (const cl_N & z) { return conjugate(z); }
+	inline cl_R real (const cl_N & z) { return realpart(z); }
+	inline cl_R imag (const cl_N & z) { return imagpart(z); }
+}
+
 namespace vb {
 	using cpx = std::complex<double>;
 
@@ -18,17 +26,10 @@ namespace vb {
 	template <> class cpx_t <real_t> { public: using type = complex_t; };
 	template <> class cpx_t <bigint> { public: using type = cpxint; };
 
-	static cln::cl_R norm (const cln::cl_N & z) { return realpart(z)*realpart(z) + imagpart(z)*imagpart(z); }
 
 	static cln::cl_R pow (const cln::cl_R & z, int k) { return expt(z,k); }
 	static cln::cl_N pow (const cln::cl_N & z, const cln::cl_N & k) { return expt(z,k); }
 	using std::pow;
-
-	static cln::cl_R real (const cln::cl_N & z) { return realpart(z); }
-	using std::real;
-
-	static cln::cl_R imag (const cln::cl_N & z) { return imagpart(z); }
-	using std::imag;
 
 	static int round (const real_t & z) { return cl_I_to_int(round1(z)); }
 	using std::round;

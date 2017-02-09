@@ -138,7 +138,7 @@ namespace vb {
 	}
 
 	template <typename T> auto Constellation1<T>::jacvcost () const -> Matrix<cplx> { // m_ij = \partial_j(f_i)
-		Matrix<cplx> out(dim,dim,cplx(0));
+		Matrix<cplx> out = Matrix<cplx>::Zero(dim,dim);
 		unsigned i=0,j=0; for (unsigned ii=0; ii<w.size(); ++ii) for (unsigned id=0; id<w[ii].d; ++id) { j=0; // f_i is logder(w[ii],id)
 			out(i,j) = - logderp_z (w[ii].z-b[0].z+T(dx)+tau()*T(dy), id);
 			for (unsigned jj=0; jj<b.size(); ++jj)	out(i,j++) -= T(b[jj].d - (jj==0?1:0)) * logderp_z (w[ii].z-b[jj].z,id);

@@ -390,7 +390,7 @@ namespace vb {
 	double Map::fg_circle_base (const Vector<double> &x, Vector<double> &g) {
 		double c = 0.0;
 
-		fill (g.begin(), g.end(), 0.0);
+		g = Vector<double>::Zero (g.rows(),1);
 
 		for (long i=0; i < n; ++i) {
 			for (long j : v[i]->adj) {

@@ -40,7 +40,7 @@ namespace vb {
 	}
 
 	template <typename T> T Constellation<T>::cost () const {
-	    T out(0); for (const auto & z : vcost()) out += norm(z);
+	    T out = vcost().squaredNorm();
 		T bound = sqrt(sqrt(out));
 		for (unsigned i=0; i<b.size(); ++i) for (unsigned j=0; j<b.size(); ++j) if (i!=j) if (abs(reduce(b[i].z-b[j].z)) < bound) out += T(1);
 		for (unsigned i=0; i<w.size(); ++i) for (unsigned j=0; j<w.size(); ++j) if (i!=j) if (abs(reduce(w[i].z-w[j].z)) < bound) out += T(1);

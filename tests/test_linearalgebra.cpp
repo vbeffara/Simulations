@@ -1,52 +1,8 @@
 #include <vb/Hub.h>
 #include <vb/LinearAlgebra.h>
-#include <Eigen/Dense>
+#include <iomanip>
 
 using namespace vb; using namespace cln; using namespace std;
-
-namespace cln {
-	// inline cl_R abs2 (const cl_R & z) { return norm(z); }
-	inline cl_R abs2 (const cl_N & z) { return norm(z); }
-	inline cl_N conj (const cl_N & z) { return conjugate(z); }
-	inline cl_R real (const cl_N & z) { return realpart(z); }
-	inline cl_R imag (const cl_N & z) { return imagpart(z); }
-}
-
-namespace Eigen {
-	template<> struct NumTraits <cl_R> : GenericNumTraits<cl_R> {
-		using Real = cl_R;
-		using NonInteger = cl_R;
-		using Literal = cl_R;
-		using Nested = cl_R;
-
-		static inline Real epsilon() { return 0; }
-		static inline int dummy_precision() { return 0; }
-		static inline int digits10() { return 0; }
-
-		enum {
-			IsInteger = 0,
-			IsSigned = 1,
-			IsComplex = 0,
-		};
-	};
-
-	template<> struct NumTraits <cl_N> : GenericNumTraits <cl_N> {
-		using Real = cl_R;
-		using NonInteger = cl_N;
-		using Literal = cl_N;
-		using Nested = cl_N;
-
-		static inline Real epsilon() { return 0; }
-		static inline int dummy_precision() { return 0; }
-		static inline int digits10() { return 0; }
-
-		enum {
-			IsInteger = 0,
-			IsSigned = 1,
-			IsComplex = 1,
-		};
-	};
-}
 
 template <typename T> void uBlas (string s) {
 	Matrix<T> m (3,3); for (int i=0; i<3; ++i) for (int j=0; j<3; ++j) m(i,j) = int(pow(2*i+1,j));
@@ -69,6 +25,7 @@ template <typename T> void Eigen3 (string s) {
 }
 
 int main () {
+	cerr << setprecision(30);
 	uBlas <double>  ("double");
 	uBlas <cl_R>    ("CLR   ");
 	uBlas <cl_N>    ("CLN   ");

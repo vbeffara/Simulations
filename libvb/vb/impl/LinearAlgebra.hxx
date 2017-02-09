@@ -1,9 +1,4 @@
 #pragma once
-#include <vb/math.h>
-#include <boost/numeric/ublas/vector_proxy.hpp>
-#include <boost/numeric/ublas/triangular.hpp>
-#include <boost/numeric/ublas/lu.hpp>
-#include <boost/numeric/ublas/io.hpp>
 
 namespace boost { namespace numeric { namespace ublas {
 	template <> struct type_traits <vb::complex_t> {
@@ -21,11 +16,44 @@ namespace boost { namespace numeric { namespace ublas {
     };
 }}}
 
+namespace Eigen {
+	template<> struct NumTraits <cln::cl_R> : GenericNumTraits<cln::cl_R> {
+		using Real = cln::cl_R;
+		using NonInteger = cln::cl_R;
+		using Literal = cln::cl_R;
+		using Nested = cln::cl_R;
+
+		static inline Real epsilon() { return 0; }
+		static inline int dummy_precision() { return 0; }
+		static inline int digits10() { return 0; }
+
+		enum {
+			IsInteger = 0,
+			IsSigned = 1,
+			IsComplex = 0,
+		};
+	};
+
+	template<> struct NumTraits <cln::cl_N> : GenericNumTraits <cln::cl_N> {
+		using Real = cln::cl_R;
+		using NonInteger = cln::cl_N;
+		using Literal = cln::cl_N;
+		using Nested = cln::cl_N;
+
+		static inline Real epsilon() { return 0; }
+		static inline int dummy_precision() { return 0; }
+		static inline int digits10() { return 0; }
+
+		enum {
+			IsInteger = 0,
+			IsSigned = 1,
+			IsComplex = 1,
+		};
+	};
+}
+
 namespace vb {
 	namespace ublas = boost::numeric::ublas;
-
-	template <typename T> using Vector = ublas::vector<T>;
-	template <typename T> using Matrix = ublas::matrix<T>;
 
 	template <typename T> T det (const Matrix<T> & input) {
 		Matrix<T> A(input);
@@ -51,10 +79,6 @@ namespace vb {
 	}
 
 	template <typename T> Vector<T> solve (const Matrix<T> & A, const Vector<T> & y) {
-		Matrix<T> AA(A); Vector<T> x(y);
-		ublas::permutation_matrix<size_t> pm(A.size1());
-		lu_factorize(AA, pm);
-		lu_substitute(AA, pm, x);
-		return x;
+		return A.colPivHouseholderQr().solve(y);
 	}
 }
