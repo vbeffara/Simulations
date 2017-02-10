@@ -254,7 +254,7 @@ BOOST_AUTO_TEST_CASE (test_Minimizer) {
 	Vector<double> W0(400); for (unsigned int i=0; i<400; ++i) W0[i] = (i+1)*(i+1);
 
 	Minimizer<double> M (400,fg);
-	BOOST_CHECK (M.minimize_qn (x0) < 1e-8);
+	BOOST_CHECK (M.minimize_qn (x0) < 1e-7);
 	(void)f; (void)g;
 }
 
