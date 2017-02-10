@@ -4,11 +4,11 @@
 #include <Eigen/Dense>
 
 namespace Eigen {
-	template<> struct NumTraits <real_t> : GenericNumTraits<real_t> {
-		using Real = real_t;
-		using NonInteger = real_t;
-		using Literal = real_t;
-		using Nested = real_t;
+	template<> struct NumTraits <vb::real_t> : GenericNumTraits<vb::real_t> {
+		using Real = vb::real_t;
+		using NonInteger = vb::real_t;
+		using Literal = vb::real_t;
+		using Nested = vb::real_t;
 
 		static inline Real epsilon() { return 0; }
 		static inline int dummy_precision() { return 0; }
@@ -21,11 +21,11 @@ namespace Eigen {
 		};
 	};
 
-	template<> struct NumTraits <complex_t> : GenericNumTraits <complex_t> {
-		using Real = real_t;
-		using NonInteger = complex_t;
-		using Literal = complex_t;
-		using Nested = complex_t;
+	template<> struct NumTraits <vb::complex_t> : GenericNumTraits <vb::complex_t> {
+		using Real = vb::real_t;
+		using NonInteger = vb::complex_t;
+		using Literal = vb::complex_t;
+		using Nested = vb::complex_t;
 
 		static inline Real epsilon() { return 0; }
 		static inline int dummy_precision() { return 0; }
