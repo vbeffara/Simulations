@@ -14,7 +14,7 @@ namespace vb {
 		Minimizer (n_) { f=f_; g=g_; }
 
 	template <typename T> T Minimizer<T>::compute (const Vector<T> &x_) {
-		x=x_;
+		if (x_.size()) x=x_;
 		if (fg)	{ fx = fg(x,gx); } else	{ fx = f(x); gx = g(x); }
 		return fx;
 	}
