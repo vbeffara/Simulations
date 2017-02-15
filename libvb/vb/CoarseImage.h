@@ -17,15 +17,15 @@ namespace vb {
 			Bitmap<CoarseCell> (1+(wd-1)/l,1+(ht-1)/l,l),
 			true_width(wd), true_height(ht), L(l), LL(l*l), z0(0) {}
 
-		char at (coo z) const {
-			z += z0; const CoarseCell & d = Bitmap<CoarseCell> :: at (coo(z.x/L,z.y/L));
+		char at (const coo &zz) const {
+			auto z = zz+z0; const CoarseCell & d = Bitmap<CoarseCell> :: at (coo(z.x/L,z.y/L));
 			if (d.fill==0) return 0;
 			if (d.fill==LL) return 1;
 			return d.sub[(z.x%L) + L*(z.y%L)];
 		}
 
-		void put (coo z, int c) {
-			step(); z += z0; CoarseCell & d = Bitmap<CoarseCell> :: at (coo(z.x/L,z.y/L));
+		void put (const coo &zz, int c) {
+			step(); auto z = zz+z0; CoarseCell & d = Bitmap<CoarseCell> :: at (coo(z.x/L,z.y/L));
 			if (d.fill == c*LL)	return;
 			if (d.fill == (1-c)*LL) d.sub.resize (LL,1-c);
 			int sub_xy = (z.x%L) + L * (z.y%L);

@@ -14,7 +14,7 @@ public:
 		if (twostep) pq.push ({{(true_width>>1)+1, true_height>>1}, cost()});
 	};
 
-	void spread (double t, coo z) {
+	void spread (double t, const coo &z) {
 		for (int d=0; d<4; ++d) if (auto zz=z+dz[d]; !at(zz)) pq.push ({zz,t+cost()});
 	}
 
