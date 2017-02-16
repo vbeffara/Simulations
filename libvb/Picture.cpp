@@ -2,7 +2,6 @@
 #include <vb/Picture.h>
 #include <FL/fl_draw.H>
 #include <FL/gl.h>
-#include <iostream>
 #include <iomanip>
 
 namespace vb {

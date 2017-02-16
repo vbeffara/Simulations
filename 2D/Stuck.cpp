@@ -58,7 +58,7 @@ class Stuck : public Bitmap<Stat> { public:
 			putp(z+d,atp(z+d)+1); z += d+d;
 		}
 		if (H['o']) for (int x=0; x<w(); x+=2) {
-			for (int y=1; y<h(); y+=2) cout << x << " " << y << " " << at(coo(x,y)) << endl;
+			for (int y=1; y<h(); y+=2) cout << x << " " << y << " " << at(coo(x,y)).s << endl;
 			cout << endl;
 		}
 	}
