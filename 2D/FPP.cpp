@@ -15,7 +15,7 @@ public:
 	};
 
 	void spread (double t, const coo &z) {
-		for (int d=0; d<4; ++d) if (auto zz=z+dz[d]; !at(zz)) pq.push ({zz,t+cost()});
+		for (int d=0; d<4; ++d) { auto zz=z+dz[d]; if (!at(zz)) pq.push ({zz,t+cost()}); }
 	}
 
 	void run () {
@@ -28,12 +28,12 @@ public:
 
 				double curtime = invasion ? 0.0 : pt.t;
 
-				int deg=1; if (twostep) for (int d=0; d<4; ++d) deg += at(pt+dz[d]);
+				int deg=1; if (twostep) for (int d=0; d<4; ++d) deg += at(z+dz[d]);
 
-				for (int i=0; i<deg; ++i) spread (curtime,pt);
-				if (twostep) for (int d=0; d<4; ++d) if (auto zz=pt+dz[d]; at(zz)) spread (curtime,zz);
+				for (int i=0; i<deg; ++i) spread (curtime,z);
+				if (twostep) for (int d=0; d<4; ++d) { auto zz=z+dz[d]; if (at(zz)) spread (curtime,zz); }
 
-				if ( (pt.x==1) || (pt.y==1) || (pt.x==true_width-2) || (pt.y==true_height-2) ) break;
+				if ( (z.x==1) || (z.y==1) || (z.x==true_width-2) || (z.y==true_height-2) ) break;
 			}
 		}
 	}
