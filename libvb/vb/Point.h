@@ -4,7 +4,8 @@
 
 namespace vb {
 	struct Point : public coo {
-		bool operator< (const Point &pt) const { return t > pt.t; };
+		Point (coo z, double t) : coo(z), t(t) {}
+		bool operator< (const Point &pt) const { return t > pt.t; }
 		double t=0;
 	};
 

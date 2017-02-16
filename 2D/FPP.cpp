@@ -22,8 +22,9 @@ public:
 		while (true) {
 			if (trace) std::cout << area << " " << pq.size() << std::endl;
 
-			if (auto pt=pq.get(); !at(pt)) {
-				put(pt,1); ++area;
+			auto pt = pq.get(); const coo &z = pt;
+			if (!at(z)) {
+				put(z,1); ++area;
 
 				double curtime = invasion ? 0.0 : pt.t;
 
