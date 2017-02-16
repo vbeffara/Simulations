@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.0)
 project (Simulations)
 
-set (CMAKE_CXX_FLAGS "-g -Wall -Wextra -Wno-unused-local-typedefs -Wno-unused-function -std=c++1z -fdiagnostics-color=always -pedantic -DBOOST_NO_AUTO_PTR")
+set (CMAKE_CXX_FLAGS "-Wall -Wextra -Wno-unused-local-typedefs -Wno-unused-function -std=c++1z -fdiagnostics-color=always -pedantic -DBOOST_NO_AUTO_PTR")
 set (CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 include (FindOpenMP)
@@ -20,6 +20,12 @@ if (${COV})
 	set (CMAKE_EXE_LINKER_FLAGS "--coverage -fprofile-arcs -ftest-coverage")
 else ()
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=native -mtune=native")
+endif ()
+
+if (${DEBUG})
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+else ()
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNDEBUG")
 endif ()
 
 link_directories ("/usr/local/lib" "/opt/X11/lib")

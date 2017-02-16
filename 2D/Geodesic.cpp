@@ -59,8 +59,8 @@ class QG : public Image { public:
 	void fill_white () { for (auto & u : I) u.f = prng.gaussian() * sqrt((double)n); }
 
 	void fill_free (int n0 = 0) {
-		cpx *in = (cpx*) fftw_alloc_complex(ww*hh), *out = (cpx*) fftw_alloc_complex(ww*hh);
-		fftw_plan p = fftw_plan_dft_2d (ww, hh, (fftw_complex*) in, (fftw_complex*) out, FFTW_FORWARD, FFTW_ESTIMATE);
+		auto in = fftw_alloc_complex(ww*hh), out = fftw_alloc_complex(ww*hh);
+		fftw_plan p = fftw_plan_dft_2d (ww, hh, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
 
 		vector<double> sinarrayi(ww), sinarrayj(hh);
 		for (int i=0; i<ww; ++i) sinarrayi[i] = sin(M_PI * i/ww);
@@ -69,29 +69,30 @@ class QG : public Image { public:
 		for (int j=0; j<hh; ++j) for (int i=0; i<ww; ++i) {
 			if ((i==0)&&(j==0)) continue;
 			double norm = sqrt (ww*hh*(sinarrayi[i]*sinarrayi[i] + sinarrayj[j]*sinarrayj[j]));
-			in[i+ww*j] = cpx (prng.gaussian(),prng.gaussian()) * sqrt(M_PI/2) / norm;
-			if (norm > sqrt(ww*hh) * (1-n0/100.0)) in[i+ww*j]=0;
+			auto fij = cpx (prng.gaussian(),prng.gaussian()) * sqrt(M_PI/2) / norm;
+			in[i+ww*j][0] = real(fij); in[i+ww*j][1] = imag(fij);
+			if (norm > sqrt(ww*hh) * (1-n0/100.0)) { in[i+ww*j][0]=0; in[i+ww*j][1]=0; }
 		}
-		in[0] = cpx (0,0);
+		in[0][0] = 0; in[0][1] = 0;
 
 		fftw_execute(p);
-		for (int j=0; j<hh; ++j) for (int i=0; i<ww; ++i) I.at(coo(i,j)).f = real(out[i+ww*j]);
+		for (int j=0; j<hh; ++j) for (int i=0; i<ww; ++i) I.at(coo(i,j)).f = out[i+ww*j][0];
 		fftw_destroy_plan(p); fftw_free(in); fftw_free(out);
 	}
 
 	void fill_gaussian (double l = 10) {
-		cpx *in = (cpx*) fftw_alloc_complex(ww*hh), *out = (cpx*) fftw_alloc_complex(ww*hh);
-		fftw_plan p = fftw_plan_dft_2d (ww, hh, (fftw_complex*) in, (fftw_complex*) out, FFTW_FORWARD, FFTW_ESTIMATE);
+		auto in = fftw_alloc_complex(ww*hh), out = fftw_alloc_complex(ww*hh);
+		fftw_plan p = fftw_plan_dft_2d (ww, hh, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
 
 		for (long j=0; j<hh; ++j) for (long i=0; i<ww; ++i) {
 			long ii = min (i,ww-i); long jj = min (j,hh-j);
 			double re = prng.gaussian (0, exp(-(ii*ii+jj*jj)/(l*l)));
 			double im = 0*prng.gaussian (0, exp(-(ii*ii+jj*jj)/(l*l)));
-			in[i+ww*j] = cpx (re,im);
+			in[i+ww*j][0] = re; in[i+ww*j][1] = im;
 		}
 
 		fftw_execute(p);
-		for (int j=0; j<hh; ++j) for (int i=0; i<ww; ++i) I.at(coo(i,j)).f = sign(real(out[i+ww*j]));
+		for (int j=0; j<hh; ++j) for (int i=0; i<ww; ++i) I.at(coo(i,j)).f = sign(out[i+ww*j][0]);
 		fftw_destroy_plan(p); fftw_free(in); fftw_free(out);
 	}
 
