@@ -67,7 +67,7 @@ class Nematic : public vb::Bitmap<Site> { public:
 	};
 
 	int k, ok=0;
-	double b, ob=0, order=0, dd;
+	double b, ob=0, order=0, dd=0;
 	std::vector<double> P;
 };
 

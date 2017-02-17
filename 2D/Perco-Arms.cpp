@@ -33,7 +33,7 @@ int main(int argc, char **argv) {
 	int n_iter = H['t'];
 	double p = H['p'];
 
-	int stats[5]; for (auto & s : stats) s=0;
+	vector<int> stats(5,0);
 
 	// Create the graph once and for all
 

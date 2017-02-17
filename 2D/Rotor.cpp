@@ -3,7 +3,7 @@
 
 using namespace vb;
 
-const Color C[4] = { RED, GREEN, BLUE, YELLOW };
+const std::vector<Color> C = { RED, GREEN, BLUE, YELLOW };
 
 int main (int argc, char ** argv) {
 	H.init ("Rotor-Router Model", argc, argv, "n=500");

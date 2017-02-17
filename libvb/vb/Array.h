@@ -43,9 +43,9 @@ namespace vb {
 
 	template <typename T> class Array_iterator : public coo, std::iterator<std::forward_iterator_tag,T> { public: Array<T> &b;
 		Array_iterator 	(Array<T> &bb, coo z) : coo(z), b(bb)	{}
-		bool operator!=	(Array_iterator<T> &o)               	{ return (&b != &o.b) || coo::operator!= (o);	}
-		bool operator!=	(coo o)                              	{ return coo::operator!= (o);                	}
-		void operator++	()                                   	{ x++; if (x == b.ww) { x=0; y++; }          	}
-		T & operator*  	()                                   	{ return b.at(*((coo*)this));                	}
+		bool operator!=	(const Array_iterator<T> &o)         	{ const coo &c = *this, &oo=o; return (&b != &o.b) || c != oo;	}
+		bool operator!=	(coo o)                              	{ const coo &c = *this; return c != (o);                      	}
+		void operator++	()                                   	{ x++; if (x == b.ww) { x=0; y++; }                           	}
+		T & operator*  	()                                   	{ return b.at(*((coo*)this));                                 	}
 	};
 }

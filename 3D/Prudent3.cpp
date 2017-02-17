@@ -6,7 +6,7 @@
 using namespace vb; using namespace std;
 
 class Walker { public:
-	Walker () : length(0), pos(3,0), Max(3,INT_MIN), Min(3,INT_MAX) {
+	Walker () : pos(3,0), Max(3,INT_MIN), Min(3,INT_MAX) {
 		for (int i=0; i<3; ++i) { Max[i].put(0,0); Min[i].put(0,0); }
 	}
 
@@ -26,7 +26,7 @@ class Walker { public:
 
 	int norm1 () const { return abs(pos[0]) + abs(pos[1]) + abs(pos[2]); }
 
-	int length;
+	int length = 0;
 	vector<int> pos;
 	vector<TriMatrix<int>> Max, Min;
 };

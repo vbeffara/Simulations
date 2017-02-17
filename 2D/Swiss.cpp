@@ -1,7 +1,6 @@
 #include <vb/Bitmap.h>
 
-using namespace vb;
-using namespace std;
+using namespace vb; using namespace std;
 
 #define EAST  0
 #define NORTH 1
@@ -13,7 +12,7 @@ using namespace std;
 #define C_WEST  Color(0,0,255)
 #define C_SOUTH Color(255,255,0)
 
-Color colors[4] = { C_EAST, C_NORTH, C_WEST, C_SOUTH };
+const vector<Color> colors = { C_EAST, C_NORTH, C_WEST, C_SOUTH };
 
 class Site {
 public:
@@ -44,7 +43,7 @@ public:
 
     void run () {
         for (coo z (w()/2,h()/2);;) {
-            int nb[4] { 0,0,0,0 };
+            vector<int> nb (4,0);
             nb[atp(z+1)] += 1; nb[atp(z-1)] += 1; nb[atp(z+J)] += 1; nb[atp(z-J)] += 1;
             int max = 0; for (int i : nb) if (i>max) max=i;
 
@@ -59,5 +58,5 @@ public:
 
 int main (int argc, char ** argv) {
     H.init ("The Swiss Journalist",argc,argv,"n=600,c=0,p=.8,q=.35");
-    World w(H); w.show(); w.pause(); w.run();
+    World w(H); w.show(); w.run();
 }

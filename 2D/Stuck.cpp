@@ -36,9 +36,10 @@ class Stuck : public Bitmap<Stat> { public:
 		for (int x=0; x<w(); ++x) for (int y=0; y<h(); ++y) if (at(coo(x,y))==Stat::max) c = {x-w()/2,y-h()/2};
 		c.x -= c.x % 2; c.y -= c.y % 2;
 		if (c != coo(0,0)) {
-			static Array<Stat> tmp (*this);
+			static Array<Stat> & me = *this;
+			static Array<Stat> tmp = me;
 			for (int x=0; x<w(); ++x) for (int y=0; y<h(); ++y) { coo z(x,y); tmp.at(z) = atp(z+c); }
-			Array<Stat>::operator= (tmp);
+			me = tmp;
 			z-=c;
 		}
 	}

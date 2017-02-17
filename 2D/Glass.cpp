@@ -22,7 +22,7 @@ void init_ok_connect4 (vector<char> & ok) {
 	 * that the lattice  and dual lattice look different  - the checkboard
 	 * configuration is fixed ...). */
 
-	int tmp1[8],tmp2[8];
+	vector<int> tmp1(8), tmp2(8);
 
 	for (int i=0; i<256; i++) {
 		for (int j=0; j<8; j++) {

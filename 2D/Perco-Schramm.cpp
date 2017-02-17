@@ -8,7 +8,7 @@
 #include <vb/Figure.h>
 #include <vb/PRNG.h>
 
-using namespace vb;
+using namespace vb; using namespace std;
 
 double omx = sqrt(3.0);
 
@@ -39,17 +39,17 @@ public:
 	void perc () {
 		for (int i=0; i<w*h; ++i) if (mask[i]) {
 			cpx xy = thepos(i);
-			std::vector<cpx> coo;
+			vector<cpx> coo;
 			coo.push_back(xy + cpx(omx,1));  coo.push_back(xy + cpx(0,2));
 			coo.push_back(xy + cpx(-omx,1)); coo.push_back(xy + cpx(-omx,-1));
 			coo.push_back(xy + cpx(0,-2));   coo.push_back(xy + cpx(omx,-1));
-			add (std::make_unique <Polygon> (coo, Pen(0, 1, cols[i] ? CYAN : YELLOW, true)));
+			add (make_unique <Polygon> (coo, Pen(0, 1, cols[i] ? CYAN : YELLOW, true)));
 		}
 	}
 
 	void walk () {
 		int base = w/2-1, dir = 0;
-		auto p = std::make_unique <Path> (std::vector<cpx>(0), Pen(BLUE,4));
+		auto p = make_unique <Path> (vector<cpx>(0), Pen(BLUE,4));
 		p->z.push_back (thepos(base) + cpx(omx,-1));
 		while (((base+1)%w >= 0) && (base/w < h-1)) {
 			seg (p.get(),base,dir,1);
@@ -63,13 +63,13 @@ public:
 
 private:
 	int w, h;
-	std::vector<bool> cols, mask;
+	vector<bool> cols, mask;
 
 	cpx thepos (int i) { return cpx(omx*(((i/w)%2)+2*(i%w)) , 3*(i/w)); }
 
 	int follow (int base, int dir) {
-		static int fola[6] = { 1, w, w-1, -1, -w-1, -w };
-		static int folb[6] = { 1, w+1, w, -1, -w, -w+1 };
+		static const vector<int> fola = { 1, w, w-1, -1, -w-1, -w };
+		static const vector<int> folb = { 1, w+1, w, -1, -w, -w+1 };
 		return ((base/w)%2 ? folb : fola) [dir] + base;
 	}
 

@@ -1,7 +1,6 @@
 #include <vb/Image.h>
 
-using namespace vb;
-using namespace std;
+using namespace vb; using namespace std;
 
 #define STATE_NONE    0
 #define STATE_PRESENT 128
@@ -19,10 +18,10 @@ using namespace std;
 #define MIRROR_FLIP_NE_VISITED	Color(0,0,128)
 #define MIRROR_FLIP_NW_VISITED	Color(0,128,0)
 
-Color colors[8] = {	MIRROR_NW, MIRROR_NE, MIRROR_FLIP_NW, MIRROR_FLIP_NE,
-                   	MIRROR_NW_VISITED, MIRROR_NE_VISITED, MIRROR_FLIP_NW_VISITED, MIRROR_FLIP_NE_VISITED };
+const vector<Color> colors = {	MIRROR_NW, MIRROR_NE, MIRROR_FLIP_NW, MIRROR_FLIP_NE,
+                              	MIRROR_NW_VISITED, MIRROR_NE_VISITED, MIRROR_FLIP_NW_VISITED, MIRROR_FLIP_NE_VISITED };
 
-int flip_ne[4] = {1,0,3,2}, flip_nw[4] = {3,2,1,0};
+const vector<int> flip_ne = {1,0,3,2}, flip_nw = {3,2,1,0};
 
 class Mirror {
 public:

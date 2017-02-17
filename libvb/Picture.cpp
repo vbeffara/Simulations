@@ -31,9 +31,9 @@ namespace vb {
 			stride = cairo_image_surface_get_stride (surface) / sizeof(Color);
 		}
 		paint();
+		auto sd = static_cast<const ulong*> (static_cast<void*> (cairo_image_surface_get_data(surface)));
 		glPixelStorei (GL_UNPACK_ROW_LENGTH, stride);
-		glDrawPixels (pixel_w(),pixel_h(), GL_BGRA,GL_UNSIGNED_BYTE,
-			reinterpret_cast <const ulong*> (cairo_image_surface_get_data(surface)));
+		glDrawPixels (pixel_w(),pixel_h(), GL_BGRA,GL_UNSIGNED_BYTE, sd);
 	}
 
 	void Picture::output_png (const std::string &s) {

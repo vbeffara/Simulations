@@ -1,9 +1,9 @@
 #include <vb/Bitmap.h>
 #include <vb/Console.h>
 
-using namespace vb;
+using namespace vb; using namespace std;
 
-const Color C[6] = { RED, BLUE, YELLOW, GREEN, MAGENTA, CYAN };
+const vector<Color> C = { RED, BLUE, YELLOW, GREEN, MAGENTA, CYAN };
 
 class Spin {
 public:

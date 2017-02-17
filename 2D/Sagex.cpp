@@ -5,7 +5,7 @@ using namespace vb; using namespace std;
 
 class Site { public:
 	Site          	(int i) :	state(i)	{};
-	operator Color	()       	const   	{ static const Color C[] { BLACK, RED, GREEN }; return C[state]; }
+	operator Color	()       	const   	{ static const vector<Color> C = { BLACK, RED, GREEN }; return C[state]; }
 	int state;
 };
 

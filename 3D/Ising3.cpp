@@ -25,7 +25,10 @@ class Ising3 : public Cube { public: int b; bool k; double beta; vector<double> 
 
 class BCs : public map <string, function<void(Ising3&)>> { public:
 	BCs () {
-		emplace ("bernoulli", [](Ising3 &I) { I.b=0; for (auto c = I.begin(); c != I.end(); ++c) if (prng.bernoulli(H['p'])) I.put(c,255); } );
+		emplace ("bernoulli", [](Ising3 &I) {
+			I.b=0; for (auto c = I.begin(); c != I.end(); ++c)
+				if (prng.bernoulli(H['p'])) { const coo3 &cc = c; I.put(cc,255); }
+		} );
 		emplace ("dobrushin", [](Ising3 &I) { I.b=1; for (auto c = I.begin(); c != I.end(); ++c) if (c.y<I.sy/2) I.put(c,255); } );
 		emplace ("step", [](Ising3 &I) { I.b=1; for (auto c = I.begin(); c != I.end(); ++c) if ((c.y<I.sy/2) || ((c.y==I.sy/2)&&(c.z>I.sz/2))) I.put(c,255); } );
 		emplace ("111",  [](Ising3 &I) { I.b=1; for (auto c = I.begin(); c != I.end(); ++c) if (c.x+c.y+(I.sz-c.z) < (I.sx+I.sy+I.sz)/2) I.put(c,255); } );

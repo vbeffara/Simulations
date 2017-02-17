@@ -1,8 +1,8 @@
 #include <vb/Bitmap.h>
 
-using namespace vb;
+using namespace vb; using namespace std;
 
-const Color C[4] = { BLACK, Color(90), GREEN, Color(128,0,0) };
+const vector<Color> C = { BLACK, Color(90), GREEN, Color(128,0,0) };
 
 class Site {
 	int state; // 0 closed, 1 empty, 2 occupied, 3 blocked
@@ -49,7 +49,7 @@ public:
 		coo z (prng.uniform_int(w()), prng.uniform_int(h()));          	if (at(z) < 2) return;
 		coo s = prng.bernoulli(d) ? coo(1,0) : dz[prng.uniform_int(4)];	if (atp(z+s) != 1) return;
 		if (tasym && (s==-1)) return;
-		std::swap (at(z), atp(z+s));
+		swap (at(z), atp(z+s));
 		step(); flow += s;
 	}
 	coo flow;
@@ -66,7 +66,7 @@ int main (int argc, char ** argv) {
 			if (P.tasym) P.clean();
 			int na=0; for (int x=0;x<P.w();++x) for (int y=0;y<P.h();++y) if (P.at(coo(x,y))==2) ++na;
 			if (na==0) exit(0);
-			std::cout << t/(P.w()*P.h()) << " " << na << " " << P.flow.x << " " << double(P.flow.x)/na << std::endl;
+			cout << t/(P.w()*P.h()) << " " << na << " " << P.flow.x << " " << double(P.flow.x)/na << endl;
 			P.flow = 0;
 		}
 		P.move();
