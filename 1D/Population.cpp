@@ -44,8 +44,8 @@ int main (int argc, char ** argv) {
 	for (long i=0; i<size; ++i) pos[i] = cpx(i,nu[i+1]);
 
 	Console W;
-	W.watch (slope, "Slope"); W.manage (slope,-100.0,100.0);
-	W.watch (Ac, "Ac"); W.manage (Ac,.2,.4);
+	W.manage (slope,-100.0,100.0,"slope");
+	W.manage (Ac,.2,.4,"Ac");
 	W.show();
 
 	Figure F (false);

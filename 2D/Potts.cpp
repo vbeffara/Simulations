@@ -136,8 +136,7 @@ int main (int argc, char ** argv) {
 	P.show();
 
 	Console W;
-	W.watch(P.beta,"beta");
-	W.manage(P.beta,0.0,4.0);
+	W.manage(P.beta,0.0,4.0,"beta");
 	W.show();
 
 	while (true) P.up ();

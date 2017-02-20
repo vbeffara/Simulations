@@ -55,7 +55,7 @@ void three_by_two (double a) {
 int main (int argc, char ** argv) {
 	H.init ("Domino tiling (v2)", argc,argv, "n=100,a=.5");
 	two_by_two(H['a']); hues = W;
-	Console C; C.manage (contrast,0.0,1.0);
-	for (auto & x : hues) for (auto & y : x) for (auto & z : y) { z = prng.uniform_real(); C.manage (z,0.0,1.0); }
+	Console C; C.manage (contrast,0.0,1.0,"contrast");
+	for (auto & x : hues) for (auto & y : x) for (auto & z : y) { z = prng.uniform_real(); C.manage (z,0.0,1.0,nullptr); }
 	Tiling D(H['n']); C.show(); D.show(); D.run(); D.pause();
 }

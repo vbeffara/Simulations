@@ -51,9 +51,10 @@ class Nematic : public vb::Bitmap<Site> { public:
 	}
 
 	void go () {
-		Console C;          	C.watch (order, "order");
-		C.watch (b, "beta");	C.manage (b,-5.0,10.0);
-		C.watch (k, "k");   	C.manage (k,1,100);
+		Console C;
+		C.watch (order, "order");
+		C.manage (b,-5.0,10.0,"beta");
+		C.manage (k,1,100,"k");
 		show(); C.show(); if (H['v']) snapshot_setup("movie",10);
 		for (int t=int(H['t'])-1 ; t!=0 ; --t) {
 			if ((k != ok) || (b != ob)) prec();

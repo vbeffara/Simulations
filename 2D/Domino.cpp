@@ -59,7 +59,7 @@ class Tiling : public Bitmap<Half> { public:
 int main (int argc, char ** argv) {
     H.init ("Domino tiling",argc,argv,"n=200,o=aztec|hill|hole|flat,b=0,f=0,r=1,d"); Tiling T(H);
     if (H['d']) halfcolors = dicolors;
-    Console C; C.watch(T.r,"r"); C.manage(T.r,0.0,1.0); C.show();
+    Console C; C.manage(T.r,0.0,1.0,"r"); C.show();
     T.show(); T.pause();
     unsigned f = T.w()*T.h()*double(H['f']);
     for (unsigned long long t=1 ;; ++t) { T.flip(T.rand()); if (t==f) T.freeze (coo(T.w()/2,T.h()/2)); }

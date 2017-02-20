@@ -18,7 +18,6 @@ public:
 	}
 
 	void compute () {
-		H.L->info ("A = {}, lambda = {}", A, lambda);
 		a=abs(B-A); b=abs(C-B); c=abs(A-C);
 		alpha=(B-A)/a; beta=(C-B)/b; gamma=(A-C)/c;
 		pa=arg((C-A)/(B-A))/M_PI, pb=arg((A-B)/(C-B))/M_PI, pc=arg((B-C)/(A-C))/M_PI;
@@ -62,15 +61,17 @@ int main (int argc, char ** argv) {
 		}
 	} else {
 		Console C;
-		C.input (.5,0,1,[&TG](double x) {
+		C.input<double> (.5,0,1,[&TG](double x) {
 			TG.lambda = exp(2.0*M_PI*I*x); TG.compute(); TG.plot(); TG.F.update();
 		});
-		C.input (real(TG.A),-1,2,[&TG](double x) {
+		C.watch(TG.lambda,"lambda");
+		C.input<double> (real(TG.A),-1,2,[&TG](double x) {
 			TG.A = {x,imag(TG.A)}; TG.compute(); TG.plot(); TG.F.update();
 		});
-		C.input (imag(TG.A),0,2,[&TG](double x) {
+		C.input<double> (imag(TG.A),0,2,[&TG](double x) {
 			TG.A = {real(TG.A),x}; TG.compute(); TG.plot(); TG.F.update();
 		});
+		C.watch (TG.A,"point A");
 		C.show();
 		C.pause();
 	}
