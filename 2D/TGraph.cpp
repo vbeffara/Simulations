@@ -55,8 +55,8 @@ public:
 		C.show(); C.pause();
 	}
 
-	cpx A,B=0,C=1, alpha,beta,gamma, lambda;
-	double a,b,c, pa,pb,pc;
+	cpx A,B=0,C=1, alpha=1,beta=1,gamma=1, lambda;
+	double a=1,b=1,c=1, pa=1,pb=1,pc=1;
 	Figure F;
 };
 

@@ -38,7 +38,7 @@ namespace vb {
 			add (new Input<T> (t,t1,t2,move(f),w(),h(),this));
 		}
 
-		template <typename T> void manage (T &t, T t1, T t2, const char *n, std::function<void()> cb) {
+		template <typename T> void manage (T &t, T t1, T t2, const char *n, const std::function<void()> &cb) {
 			input<T> (t,t1,t2,[cb,&t](T tt){ t=tt; cb(); });
 			if (n) watch (t,n);
 		}
@@ -46,7 +46,7 @@ namespace vb {
 		template <typename T> void manage (T &t, T t1, T t2, const char *n) { manage (t,t1,t2,n,[]{}); }
 	};
 
-	template <> void Console::manage (cpx &t, cpx t1, cpx t2, const char *n, std::function<void()> cb) {
+	template <> void Console::manage (cpx &t, cpx t1, cpx t2, const char *n, const std::function<void()> &cb) {
 		input<double> (real(t),real(t1),real(t2),[cb,&t](double tt){ t = {tt,imag(t)}; cb(); });
 		input<double> (imag(t),imag(t1),imag(t2),[cb,&t](double tt){ t = {real(t),tt}; cb(); });
 		if (n) watch (t,n);
