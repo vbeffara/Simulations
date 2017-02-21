@@ -44,6 +44,23 @@ public:
 		}
 	}
 
+	void loop () { for (int i=0 ;; ++i) { lambda = exp(2.0*M_PI*I*cpx(i,0)/100.0); compute(); plot(); F.update(); } }
+
+	void interact () {
+		Console C;
+
+		double theta=arg(lambda)/(2.0*M_PI);
+		C.manage<double> (theta,0,1,"arg(λ) / 2π",[this,&theta]{
+			lambda = exp(2.0*M_PI*I*theta); compute(); plot(); F.update();
+		});
+		C.watch(lambda,"λ");
+
+		C.manage<cpx> (A,{-1,0},{2,2},"point A",[this]{ compute(); plot(); F.update(); });
+
+		C.show();
+		C.pause();
+	}
+
 	cpx A,B=0,C=1, alpha,beta,gamma, lambda;
 	double a,b,c, pa,pb,pc;
 	Figure F;
@@ -53,26 +70,5 @@ int main (int argc, char ** argv) {
 	H.init ("T-graph for the triangular lattice", argc, argv, "n=20,l");
 	int n=H['n'];
 	TGraph TG (n, cpx{.4,.6}, cpx{1,0});
-
-	if (H['l']) {
-		for (int i=0 ;; ++i) {
-			TG.lambda = exp(2.0*M_PI*I*cpx(i,0)/100.0); TG.compute(); TG.plot(); TG.F.update();
-			if (i==0) TG.F.output();
-		}
-	} else {
-		Console C;
-		C.input<double> (.5,0,1,[&TG](double x) {
-			TG.lambda = exp(2.0*M_PI*I*x); TG.compute(); TG.plot(); TG.F.update();
-		});
-		C.watch(TG.lambda,"lambda");
-		C.input<double> (real(TG.A),-1,2,[&TG](double x) {
-			TG.A = {x,imag(TG.A)}; TG.compute(); TG.plot(); TG.F.update();
-		});
-		C.input<double> (imag(TG.A),0,2,[&TG](double x) {
-			TG.A = {real(TG.A),x}; TG.compute(); TG.plot(); TG.F.update();
-		});
-		C.watch (TG.A,"point A");
-		C.show();
-		C.pause();
-	}
+	if (H['l']) TG.loop(); else TG.interact();
 }
