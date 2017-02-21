@@ -48,17 +48,11 @@ public:
 
 	void interact () {
 		Console C;
-
 		double theta=arg(lambda)/(2.0*M_PI);
-		C.manage<double> (theta,0,1,"arg(λ) / 2π",[this,&theta]{
-			lambda = exp(2.0*M_PI*I*theta); compute(); plot(); F.update();
-		});
+		C.manage<double> (theta,0,1,"arg(λ) / 2π",[this,&theta]{ lambda = exp(2.0*M_PI*I*theta); compute(); plot(); F.update(); });
 		C.watch(lambda,"λ");
-
 		C.manage<cpx> (A,{-1,0},{2,2},"point A",[this]{ compute(); plot(); F.update(); });
-
-		C.show();
-		C.pause();
+		C.show(); C.pause();
 	}
 
 	cpx A,B=0,C=1, alpha,beta,gamma, lambda;
