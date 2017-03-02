@@ -125,15 +125,14 @@ BOOST_AUTO_TEST_CASE (test_Value) {
 // Globals and control structures
 
 BOOST_AUTO_TEST_CASE (test_Hub) {
-	char * argv [] = { strdup ("cmd"), strdup ("-s"), strdup ("3"), strdup ("-u") };
+	vector<string> argv_ { "cmd", "-s", "3", "-u" };
+	char * argv [] = { &argv_[0][0], &argv_[1][0], &argv_[2][0], &argv_[3][0] };
 
 	H.init ("Title", 4, static_cast<char**> (argv), "s=5,t=7,u,v");
 	BOOST_TEST (int(H['t']) == 7);
 	BOOST_TEST (int(H['s']) == 3);
 	BOOST_TEST (H['u']);
 	BOOST_TEST (!H['v']);
-
-	for (auto & a : argv) free(a);
 }
 
 
