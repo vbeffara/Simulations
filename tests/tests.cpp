@@ -126,9 +126,9 @@ BOOST_AUTO_TEST_CASE (test_Value) {
 
 BOOST_AUTO_TEST_CASE (test_Hub) {
 	vector<string> argv_ { "cmd", "-s", "3", "-u" };
-	char * argv [] = { &argv_[0][0], &argv_[1][0], &argv_[2][0], &argv_[3][0] };
+	vector<char*> argv; for (auto & s : argv_) argv.push_back(&s[0]);
 
-	H.init ("Title", 4, static_cast<char**> (argv), "s=5,t=7,u,v");
+	H.init ("Title", 4, argv.data(), "s=5,t=7,u,v");
 	BOOST_TEST (int(H['t']) == 7);
 	BOOST_TEST (int(H['s']) == 3);
 	BOOST_TEST (H['u']);
