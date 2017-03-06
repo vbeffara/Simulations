@@ -1,19 +1,17 @@
 #include <vb/Bitmap.h>
-#include <vb/Console.h>
 
 using namespace vb; using namespace std;
 
 const vector<Color> C = { RED, BLUE, YELLOW, GREEN, MAGENTA, CYAN };
 
-class Spin {
-public:
-	int s;
+struct Spin {
 	Spin (int i) : s(i) {};
 	operator Color() const { if ((s>=0)&&(s<6)) return C[s]; else if (s<0) return WHITE; else return Indexed(s); }
+	int s;
 };
 
 class Potts : public Bitmap<Spin> { public:
-	Potts (Hub & H) : Bitmap<Spin> (int(H['n']), int(H['n'])), q(H['q']), beta(H['b']), b(0) {
+	Potts (int n, int q, double beta) : Bitmap<Spin> (n,n), q(q), beta(beta) {
 		bcs["perio"] = []{};
 		bcs["free"] = [this]{
 			b=1; for (auto & c : *this) c=-1;
@@ -58,7 +56,7 @@ class Potts : public Bitmap<Spin> { public:
 			for (int i=0; i<w(); ++i) for (int j=0; j<h()/2; ++j)   put(coo(i,j),0);
 			for (int i=0; i<w(); ++i) for (int j=h()/2; j<h(); ++j) put(coo(i,j),1);
 		};
-		bcs["loren"] = [this]{
+		bcs["loren"] = [this,q]{
 			b=1;
 			for (int i=0; i<w(); ++i) for (int j=0; j<h(); ++j)
 				if ((i==0)||(j==0)||(i==w()-1)||(j==h()-1))
@@ -77,7 +75,7 @@ class Potts : public Bitmap<Spin> { public:
 			for (int i=w()/4; i<3*w()/4; ++i)	put(coo(i,h()-1),4);
 			for (int i=3*w()/4; i<w(); ++i)  	put(coo(i,h()-1),3);
 		};
-		bcs["123"] = [this]{
+		bcs["123"] = [this,q]{
 			b=1; int c=0;
 			for (int i=0; i<w()-1; ++i) { put(coo(i,0),c);          	c = (c+1)%q; }
 			for (int i=0; i<h()-1; ++i) { put(coo(w()-1,i),c);      	c = (c+1)%q; }
@@ -92,7 +90,7 @@ class Potts : public Bitmap<Spin> { public:
 			b=1;
 			for (int i=0; i<w(); ++i) for (int j=0; j<h(); ++j) put(coo(i,j), (j>h()/2) ? ((i+j)%3) : 3);
 		};
-		bcs["mostlyfree"] = [this]{
+		bcs["mostlyfree"] = [this,q]{
 			b=1;
 			for (int i=0; i<w(); ++i) for (int j=0; j<h(); ++j) put(coo(i,j),q);
 		};
@@ -102,30 +100,23 @@ class Potts : public Bitmap<Spin> { public:
 		bcs[H['c']](); show();
 	}
 
-	double H (Spin i, Spin j) { return i.s==j.s ? 0 : 1; }
-	double H (coo z,  Spin i) { return H(i,atp(z+dz[0])) + H(i,atp(z+dz[1])) + H(i,atp(z+dz[2])) + H(i,atp(z+dz[3])); }
+	int HH (const Spin & i, const Spin & j) const { return i.s==j.s ? 0 : 1; }
+	int HH (const coo & z,  const Spin & i) const { return HH(i,atp(z+dz[0])) + HH(i,atp(z+dz[1])) + HH(i,atp(z+dz[2])) + HH(i,atp(z+dz[3])); }
 
+	void up () { up(rand()); }
 	void up (coo z) {
 		int i = prng.uniform_int(q);
-		double dH = H(z,i) - H(z,atp(z));
+		double dH = HH(z,i) - HH(z,atp(z));
 		if ((dH<=0) || prng.bernoulli(exp(-beta*dH))) put(z,i);
 	}
 
-	void up () { up (coo(b+prng.uniform_int(w()-2*b),b+prng.uniform_int(h()-2*b))); }
-
-	int q;
+	int q, b=0;
 	double beta;
-	int b;
 	map<string,function<void()>> bcs;
 };
 
 int main (int argc, char ** argv) {
 	H.init ("Potts model", argc,argv, "n=500,q=3,b=1,c=free");
-	Potts P(H);
-
-	// Console W;
-	// W.manage(P.beta,0.0,4.0,"beta");
-	// W.show();
-
+	Potts P(H['n'], H['q'], H['b']);
 	while (true) P.up();
 }
