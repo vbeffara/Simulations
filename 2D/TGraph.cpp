@@ -18,16 +18,13 @@ public:
 	void compute () {
 		a=abs(B-A); b=abs(C-B); c=abs(A-C);
 		alpha=(B-A)/a; beta=(C-B)/b; gamma=(A-C)/c;
-		pa=arg((C-A)/(B-A))/M_PI, pb=arg((A-B)/(C-B))/M_PI, pc=arg((B-C)/(A-C))/M_PI;
+		pa=arg((C-A)/(B-A))/M_PI; pb=arg((A-B)/(C-B))/M_PI; pc=arg((B-C)/(A-C))/M_PI;
 		lambda=exp(2.0*M_PI*I*theta);
 
 		for (int i=0; i<ww; ++i) {
 			for (int j=0; j<hh; ++j) {
-				if (j>0) {
-					at(coo(i,j)).z = at(coo(i,j-1)).z + c * phiwb (i+1,j-2,i,j-1);
-				} else if (i>0) {
-					at(coo(i,j)).z = at(coo(i-1,j)).z - a * phiwb (i,j-1,i,j-1);
-				}
+				if (j>0) at(coo(i,j)).z = at(coo(i,j-1)).z + c * phiwb (i+1,j-2,i,j-1);
+				else if (i>0) at(coo(i,j)).z = at(coo(i-1,j)).z - a * phiwb (i,j-1,i,j-1);
 			}
 		}
 	}
