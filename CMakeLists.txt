@@ -77,7 +77,7 @@ if (${CMAES_FOUND})
 	target_link_libraries (vb ${CMAES_LIBRARIES})
 endif ()
 
-foreach (dir tests 1D 2D 3D)
+foreach (dir playground tests 1D 2D 3D)
 	file (GLOB src ${dir}/*.cpp)
 	foreach (f ${src})
 		set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${dir})
