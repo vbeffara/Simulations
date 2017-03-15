@@ -1,5 +1,5 @@
 #include <vb/Hub.h>
-#include <utility>
+#include <string>
 #include <vector>
 
 #if __has_include(<variant>)
@@ -17,34 +17,43 @@
 using namespace vb; using namespace std;
 
 class Cat { public:
-	void meow (int n) const { H.L->info ("Cat | Meowing {} times", n); }
-	void walk (int n) const { H.L->info ("Cat | Walking {} meters", n); }
+	void walk (int n, const string &p = "") const { H.L->info ("{}Cat named {} | Walking {} meters", p, name, n); }
+	string name;
 };
 
 class Dog { public:
-	void bark (int n) const { H.L->info ("Dog | Barking {} times", n); }
-	void walk (int n) const { H.L->info ("Dog | Walking {} meters", n); }
+	void walk (int n, const string &p = "") const { H.L->info ("{}Dog | Walking {} meters", p, n); }
 };
 
-using Animal_ = variant <Cat,Dog>;
+class Animal;
+class Family : public vector<Animal> { public:
+	using vector<Animal>::vector;
+	void walk (int n, const string &p = "") const;
+};
 
+using Animal_ = variant <Cat,Dog,Family>;
 class Animal : public Animal_ { public:
 	using Animal_::Animal_;
 
 	struct printer {
-		printer (int n) : n(n) {}
-		void operator() (const Cat &c) const { c.meow(n); }
-		void operator() (const Dog &c) const { c.bark(n); }
-		int n;
+		printer (int n, string p) : n(n), p(move(p)) {}
+		void operator() (const Cat &c)    const { H.L->info ("{}Cat named {} | Meowing {} times", p, c.name, n); }
+		void operator() (const Dog &)     const { H.L->info ("{}Dog | Barking {} times", p, n); }
+		void operator() (const Family &f) const { H.L->info ("{}Family talking together:", p); for (auto & i : f) i.print(n, p + "  "); }
+		int n; string p;
 	};
-	void print (int n) { visit (printer(n), *this); }
 
-	void walk (int n) { visit ([n](const auto &t){ t.walk(n); }, *this); }
+	void print (int n, string prefix = "") const { visit (printer(n,move(prefix)),                 *this); }
+	void walk  (int n, string prefix = "") const { visit ([=](const auto &t){ t.walk(n,prefix); }, *this); }
 };
+
+void Family::walk (int n, const string &p) const {
+	H.L->info ("{}Family walking {} meters together:", p, n);
+	for (auto & i : *this) i.walk (n, p + "  ");
+}
 
 int main (int argc, char ** argv) {
 	H.init ("Variants", argc, argv, "");
-	std::vector<Animal> zoo = { Dog{}, Cat{}, Dog{}, Dog{} };
-	for (auto & a : zoo) a.print(5);
-	for (auto & a : zoo) a.walk(10);
+	Animal z = Family { Dog{}, Cat{"Sylvester"}, Dog{}, Dog{}, Family {Dog{}, Family {Dog{}}, Cat{"Garfield"}} };
+	z.print(5); z.walk(10);
 }
