@@ -18,6 +18,8 @@
 using namespace vb; using namespace std;
 
 class Expression;
+ostream & operator<< (ostream & os, const Expression & e);
+
 struct Number { int value; };
 struct Symbol { string name; };
 struct Plus : public vector<Expression> { using vector<Expression>::vector; };
@@ -32,16 +34,29 @@ class Expression : public Expression_ { public:
 		void operator() (const Number &n) const { os << n.value; }
 		void operator() (const Symbol &s) const { os << s.name; }
 		void operator() (const Plus &p) const {
-			os << "("; bool first=true;
-			for (const auto &x : p) { if (!first) os << '+'; x.print(os); first=false; }
-			os << ")";
+			string sep = "";
+			os << "("; for (const auto &x : p) os << exchange(sep,"+") << x; os << ")";
 		}
 	};
-	void print (ostream & os) const { visit (printer(os), *this); }
+
+	template <typename U> U convert () const { return visit ([](const auto &e){ return U{e}; }, *this); }
+
+	struct flattener {
+		template <typename T> Expression operator() (const T &e) const { return e; }
+		Expression operator() (const Plus &p) const {
+			Plus sum;
+			for (const auto &e : p) for (const auto &ee : e.flatten().convert<Plus>()) sum.push_back(ee);
+			return sum;
+		}
+	};
+	Expression flatten() const { return visit (flattener(), *this); }
 };
+
+ostream & operator<< (ostream & os, const Expression & e) { visit(Expression::printer(os),e); return os; }
 
 int main (int argc, char ** argv) {
 	H.init ("Variants", argc, argv, "");
-	Expression e = Plus { Number{1}, Symbol{"x"}, Plus { Number{2}, Symbol{"y"} } };
-	e.print(cout); cout << "\n";
+	Expression e = Plus { Number{1}, Symbol{"x"}, Plus { Number{2}, Symbol{"y"}, Plus { Symbol{"z"} } } };
+	cout << e << "\n";
+	cout << e.flatten() << "\n";
 }
