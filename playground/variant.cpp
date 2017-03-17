@@ -74,9 +74,14 @@ Expression normalize (const Expression &e) { return visit (normalizer(), e); }
 
 ostream & operator<< (ostream & os, const Expression & e) { visit(printer(os),e); return os; }
 
+Expression operator+ (const Expression &e1, const Expression &e2) {
+	if (auto p = get_if<Plus>(&e1)) { Plus out = *p; out.push_back(e2); return out; }
+	else return Plus {e1,e2};
+}
+
 int main (int argc, char ** argv) {
 	H.init ("Variants", argc, argv, "");
-	Expression e = Plus { Plus { Number{1} }, Symbol{"x"}, Plus { Number{2}, Symbol{"y"}, Plus { Symbol{"z"} } } };
+	Expression e = Number{1} + Symbol{"x"} + (Number{2} + (Symbol{"y"} + Symbol{"z"}));
 	H.L->info ("Initial expression | {}", e);
 	H.L->info (" -> Flattened      | {}", e=flatten(e));
 	H.L->info (" -> Normalized     | {}", e=normalize(e));
