@@ -11,14 +11,19 @@
 	#define FWD(...) ::std::forward<decltype(__VA_ARGS__)>(__VA_ARGS__)
 	#include <boost/variant.hpp>
 	namespace std {
-	    template <typename... Ts> using variant = ::boost::variant<Ts...>;
-	    template <typename... Ts> decltype(auto) visit(Ts&&... xs) { return ::boost::apply_visitor(FWD(xs)...); }
+		template <typename... Ts> using variant = ::boost::variant<Ts...>;
+		template <typename... Ts> decltype(auto) visit(Ts&&... xs) { return ::boost::apply_visitor(FWD(xs)...); }
+		template <typename T, typename... Ts>       T* get_if (      variant<Ts...> *pv) { return ::boost::get<T>(pv); }
+		template <typename T, typename... Ts> const T* get_if (const variant<Ts...> *pv) { return ::boost::get<T>(pv); }
 	}
 #endif
 
 using namespace vb; using namespace std;
 
-template <typename U, typename V> U convert (const V &v) { return visit ([](const auto &e){ return U{e}; }, v); }
+template <typename U, typename V> U convert (const V &v) {
+	if (auto p = get_if<U> (&v)) return *p;
+	return visit ([](const auto &e){ return U{e}; }, v);
+}
 
 class Expression;
 struct Number { int value; };
