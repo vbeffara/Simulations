@@ -1,5 +1,6 @@
 #include <vb/Hub.h>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -29,6 +30,12 @@ class Expression : public Expression_ { public:
 	using Expression_::Expression_;
 };
 
+ostream & operator<< (ostream & os, const Expression & e);
+bool operator< (const Expression &e1, const Expression &e2) {
+	ostringstream os1, os2; os1 << e1; os2 << e2;
+	return os1.str() < os2.str();
+}
+
 struct flattener {
 	template <typename T> Expression operator() (const T &e) const { return e; }
 	Expression operator() (const Plus &p) const {
@@ -36,6 +43,19 @@ struct flattener {
 		for (const auto &e : p) for (const auto &ee : convert<Plus>(visit(*this,e))) sum.push_back(ee);
 		return sum;
 	}
+};
+
+struct normalizer {
+	template <typename T> Expression operator() (const T &e) const { return e; }
+	Expression operator() (const Plus &p) const {
+		Plus out; Number acc{0};
+		for (const auto &e : p)
+			if (auto n = get_if<Number>(&e)) acc.value += n->value;
+			else out.push_back(visit(*this,e));
+		sort (out.begin(), out.end());
+		if (acc.value) out.push_back(acc);
+		return out;
+	};
 };
 
 struct printer {
@@ -50,12 +70,14 @@ struct printer {
 };
 
 Expression flatten (const Expression &e) { return visit (flattener(), e); }
+Expression normalize (const Expression &e) { return visit (normalizer(), e); }
 
 ostream & operator<< (ostream & os, const Expression & e) { visit(printer(os),e); return os; }
 
 int main (int argc, char ** argv) {
 	H.init ("Variants", argc, argv, "");
-	Expression e = Plus { Number{1}, Symbol{"x"}, Plus { Number{2}, Symbol{"y"}, Plus { Symbol{"z"} } } };
-	cout << e << "\n";
-	cout << flatten(e) << "\n";
+	Expression e = Plus { Plus { Number{1} }, Symbol{"x"}, Plus { Number{2}, Symbol{"y"}, Plus { Symbol{"z"} } } };
+	H.L->info ("Initial expression | {}", e);
+	H.L->info (" -> Flattened      | {}", e=flatten(e));
+	H.L->info (" -> Normalized     | {}", e=normalize(e));
 }
