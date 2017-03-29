@@ -25,15 +25,13 @@ template <typename U, typename V> U convert (const V &v) {
 	return visit ([](const auto &e){ return U{e}; }, v);
 }
 
-class Expression;
+struct Expression;
 struct Number { int value; };
 struct Symbol { string name; };
 struct Plus : public vector<Expression> { using vector<Expression>::vector; };
 
 using Expression_ = variant <Number,Symbol,Plus>;
-class Expression : public Expression_ { public:
-	using Expression_::Expression_;
-};
+struct Expression : public Expression_ { using Expression_::Expression_; };
 
 ostream & operator<< (ostream & os, const Expression & e);
 bool operator< (const Expression &e1, const Expression &e2) {
@@ -63,21 +61,16 @@ struct normalizer {
 	};
 };
 
-struct printer {
-	printer (ostream & os) : os(os) {}
-	ostream & os;
-	void operator() (const Number &n) const { os << n.value; }
-	void operator() (const Symbol &s) const { os << s.name; }
-	void operator() (const Plus &p) const {
-		string sep = "";
-		os << "("; for (const auto &x : p) { os << exchange(sep,"+"); visit(*this,x); } os << ")";
-	}
-};
+ostream & operator<< (ostream &os, const Number &n) { return os << n.value; }
+ostream & operator<< (ostream &os, const Symbol &s) { return os << s.name; }
+ostream & operator<< (ostream &os, const Plus &p){
+	string sep = "";
+	os << "("; for (const auto &x : p) { os << exchange(sep,"+"); os << x; } os << ")"; return os;
+}
+ostream & operator<< (ostream & os, const Expression & e) { visit ([&](const auto &x) { os << x; }, e); return os; }
 
 Expression flatten (const Expression &e) { return visit (flattener(), e); }
 Expression normalize (const Expression &e) { return visit (normalizer(), e); }
-
-ostream & operator<< (ostream & os, const Expression & e) { visit(printer(os),e); return os; }
 
 Expression operator+ (const Expression &e1, const Expression &e2) {
 	if (auto p = get_if<Plus>(&e1)) { Plus out = *p; out.push_back(e2); return out; }
