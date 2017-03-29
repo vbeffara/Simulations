@@ -39,13 +39,13 @@ class BCs : public map <string, function<void(Ising3&)>> { public:
 		    for (int x=I.sx/10; x<9*I.sx/10; ++x) for (int y=I.sy/10; y<9*I.sy/10; ++y) for (int z=I.sz/10; z<9*I.sz/10; ++z) I.put(coo3(x,y,z), 255);
 		} );
 		emplace ("slope", [](Ising3 &I) { I.b=1;
-			for (auto c = I.begin(); c != I.end(); ++c) if ((c.y-I.sy/2) < double(H['p'])*(c.z-I.sz/2)) I.put(c,255);
+			for (auto c = I.begin(); c != I.end(); ++c) if ((c.y-I.sy/2) - double(H['p'])*(c.z-I.sz/2) + double(H['q'])*(c.x-I.sx/2) < 0) I.put(c,255);
 		} );
 	}
 };
 
 int main (int argc, char ** argv) {
-	H.init ("3D Ising model", argc,argv, "n=50,b=1,t=0,p=.5,k,c=bernoulli,s=0,m,i");
+	H.init ("3D Ising model", argc,argv, "n=50,b=1,t=0,p=.5,q=0,k,c=bernoulli,s=0,m,i");
     Ising3 C (H['n'], H['k'], H['b']); BCs()[H['c']] (C); C.show();
 	int T = H['t']; if (T==0) T = 2*int(H['n']);
     { ProgressBar P (T); int s = H['s']; for (int t=0; t<T; ++t) {
