@@ -22,11 +22,11 @@ namespace vb {
 	Pov_Object & Pov_Object::operator<< (double x)	{ return (*this) << std::make_unique <Pov_Coefficient> (x); }
 
 	Pov_Scene::Pov_Scene () : Pov_Object ("") {
-		(*this) << std::make_unique <Pov_Object> (R"("#version 3.7;")")
-				<< std::make_unique <Pov_Object> (R"("#include \"colors.inc\"")")
-				<< std::make_unique <Pov_Object> (R"("#include \"rad_def.inc\"")")
-				<< std::make_unique <Pov_Object> (R"("global_settings { radiosity { Rad_Settings(Radiosity_Normal,off,off) } }")")
-				<< std::make_unique <Pov_Object> (R"("background { color White }")");
+		(*this) << std::make_unique <Pov_Object> (R"(#version 3.7;)")
+				<< std::make_unique <Pov_Object> (R"(#include "colors.inc")")
+				<< std::make_unique <Pov_Object> (R"(#include "rad_def.inc")")
+				<< std::make_unique <Pov_Object> (R"(global_settings { radiosity { Rad_Settings(Radiosity_Normal,off,off) } })")
+				<< std::make_unique <Pov_Object> (R"(background { color White })");
 	}
 
 	Pov_Union::Pov_Union () : Pov_Object ("union", true) {}
