@@ -38,6 +38,10 @@ bool operator< (const Expression &e1, const Expression &e2) {
 	ostringstream os1, os2; os1 << e1; os2 << e2;
 	return os1.str() < os2.str();
 }
+bool operator== (const Expression &e1, const Expression &e2) {
+	ostringstream os1, os2; os1 << e1; os2 << e2;
+	return os1.str() == os2.str();
+}
 
 struct flattener {
 	template <typename T> Expression operator() (const T &e) const { return e; }
@@ -61,6 +65,18 @@ struct normalizer {
 	};
 };
 
+struct replacer {
+	replacer (Expression from, Expression to) : from(move(from)), to(move(to)) {}
+	Expression from, to;
+	Expression operator() (const Number &n) { return n; }
+	Expression operator() (const Symbol &s) { if (from==s) return to; else return s; }
+	Expression operator() (const Plus &p) {
+		if (from==p) return to;
+		Plus out; for (const auto &e : p) out.push_back(visit(*this,e));
+		return out;
+	}
+};
+
 ostream & operator<< (ostream &os, const Number &n) { return os << n.value; }
 ostream & operator<< (ostream &os, const Symbol &s) { return os << s.name; }
 ostream & operator<< (ostream &os, const Plus &p){
@@ -71,6 +87,7 @@ ostream & operator<< (ostream & os, const Expression & e) { visit ([&](const aut
 
 Expression flatten (const Expression &e) { return visit (flattener(), e); }
 Expression normalize (const Expression &e) { return visit (normalizer(), e); }
+Expression replace (const Expression &from, const Expression &to, const Expression &e) { return visit (replacer(from,to), e); }
 
 Expression operator+ (const Expression &e1, const Expression &e2) {
 	if (auto p = get_if<Plus>(&e1)) { Plus out = *p; out.push_back(e2); return out; }
@@ -81,6 +98,7 @@ int main (int argc, char ** argv) {
 	H.init ("Variants", argc, argv, "");
 	Expression e = Number{1} + Symbol{"x"} + (Number{2} + (Symbol{"y"} + Symbol{"z"}));
 	H.L->info ("Initial expression | {}", e);
+	H.L->info (" -> Replaced       | {}", e=replace(Symbol{"y"} + Symbol{"z"}, Symbol{"t"} + Number{4}, e));
 	H.L->info (" -> Flattened      | {}", e=flatten(e));
 	H.L->info (" -> Normalized     | {}", e=normalize(e));
 }
