@@ -33,11 +33,11 @@ struct Plus : public vector<Expression> { using vector<Expression>::vector; };
 using Expression_ = variant <Number,Symbol,Plus>;
 struct Expression : public Expression_ { using Expression_::Expression_; };
 
-ostream & operator<< (ostream & os, const Expression & e);
-bool operator< (const Expression &e1, const Expression &e2) {
-	ostringstream os1, os2; os1 << e1; os2 << e2;
-	return os1.str() < os2.str();
-}
+bool operator< (const Expression &e1, const Expression &e2);
+bool operator< (const Number &e1, const Number &e2) { return e1.value < e2.value; }
+bool operator< (const Symbol &e1, const Symbol &e2) { return e1.name < e2.name; }
+bool operator< (const Plus &e1, const Plus &e2) { const vector<Expression> v1 {e1}, v2 {e2}; return v1<v2; }
+bool operator< (const Expression &e1, const Expression &e2) { const Expression_ & ee1 {e1}, & ee2 {e2}; return ee1 < ee2; }
 
 bool operator== (const Expression &e1, const Expression &e2);
 bool operator== (const Number &e1, const Number &e2) { return e1.value == e2.value; }
@@ -61,8 +61,8 @@ struct normalizer {
 		for (const auto &e : p)
 			if (auto n = get_if<Number>(&e)) acc.value += n->value;
 			else out.push_back(visit(*this,e));
-		sort (out.begin(), out.end());
 		if (acc.value) out.push_back(acc);
+		sort (out.begin(), out.end());
 		return out;
 	};
 };
@@ -79,13 +79,14 @@ struct replacer {
 	}
 };
 
+ostream & operator<< (ostream &os, const Expression & e);
 ostream & operator<< (ostream &os, const Number &n) { return os << n.value; }
 ostream & operator<< (ostream &os, const Symbol &s) { return os << s.name; }
 ostream & operator<< (ostream &os, const Plus &p){
 	string sep = "";
 	os << "("; for (const auto &x : p) { os << exchange(sep,"+"); os << x; } os << ")"; return os;
 }
-ostream & operator<< (ostream & os, const Expression & e) { visit ([&](const auto &x) { os << x; }, e); return os; }
+ostream & operator<< (ostream &os, const Expression & e) { visit ([&](const auto &x) { os << x; }, e); return os; }
 
 Expression flatten (const Expression &e) { return visit (flattener(), e); }
 Expression normalize (const Expression &e) { return visit (normalizer(), e); }
