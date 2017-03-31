@@ -36,13 +36,13 @@ struct Expression : public Expression_ { using Expression_::Expression_; };
 bool operator< (const Expression &e1, const Expression &e2);
 bool operator< (const Number &e1, const Number &e2) { return e1.value < e2.value; }
 bool operator< (const Symbol &e1, const Symbol &e2) { return e1.name < e2.name; }
-bool operator< (const Plus &e1, const Plus &e2) { const vector<Expression> v1 {e1}, v2 {e2}; return v1<v2; }
+bool operator< (const Plus &e1, const Plus &e2) { const vector<Expression> & v1 {e1}, & v2 {e2}; return v1<v2; }
 bool operator< (const Expression &e1, const Expression &e2) { const Expression_ & ee1 {e1}, & ee2 {e2}; return ee1 < ee2; }
 
 bool operator== (const Expression &e1, const Expression &e2);
 bool operator== (const Number &e1, const Number &e2) { return e1.value == e2.value; }
 bool operator== (const Symbol &e1, const Symbol &e2) { return e1.name == e2.name; }
-bool operator== (const Plus &e1, const Plus &e2) { const vector<Expression> v1 {e1}, v2 {e2}; return v1==v2; }
+bool operator== (const Plus &e1, const Plus &e2) { const vector<Expression> & v1 {e1}, & v2 {e2}; return v1==v2; }
 bool operator== (const Expression &e1, const Expression &e2) { const Expression_ & ee1 {e1}, & ee2 {e2}; return ee1 == ee2; }
 
 struct flattener {
