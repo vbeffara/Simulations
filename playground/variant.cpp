@@ -1,4 +1,5 @@
 #include <vb/Hub.h>
+#include <vb/cpx.h>
 #include <iostream>
 #include <vector>
 
@@ -25,17 +26,15 @@ template <typename... Ts> ostream & operator<< (ostream &os, const variant<Ts...
 }
 
 struct Expression;
-struct Number { int value; };
+struct Number : public real_t { using real_t::real_t; };
 struct Symbol { string name; };
 struct Plus : public vector<Expression> { using vector<Expression>::vector; };
 
 using Expression_ = variant <Number,Symbol,Plus>;
 struct Expression : public Expression_ { using Expression_::Expression_; };
 
-bool operator< (const Number &e1, const Number &e2) { return e1.value < e2.value; }
 bool operator< (const Symbol &e1, const Symbol &e2) { return e1.name < e2.name; }
 
-bool operator== (const Number &e1, const Number &e2) { return e1.value == e2.value; }
 bool operator== (const Symbol &e1, const Symbol &e2) { return e1.name == e2.name; }
 
 struct flattener {
@@ -52,9 +51,9 @@ struct normalizer {
 	Expression operator() (const Plus &p) const {
 		Plus out; Number acc{0};
 		for (const auto &e : p)
-			if (auto n = get_if<Number>(&e)) acc.value += n->value;
+			if (auto n = get_if<Number>(&e)) acc += *n;
 			else out.push_back(visit(*this,e));
-		if (acc.value) out.push_back(acc);
+		if (acc != 0) out.push_back(acc);
 		sort (out.begin(), out.end());
 		return out;
 	};
@@ -72,7 +71,6 @@ struct recurser {
 	}
 };
 
-ostream & operator<< (ostream &os, const Number &n) { return os << n.value; }
 ostream & operator<< (ostream &os, const Symbol &s) { return os << s.name; }
 ostream & operator<< (ostream &os, const Plus &p){
 	string sep = "";
