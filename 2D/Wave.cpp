@@ -28,7 +28,7 @@ class Wave : public Coloring { public:
 		}
 	}
 
-	double v (cpx z) { double out = 0; for (auto mm : m) out += mm(z); return out; }
+	double v (cpx z) { double out = double(H['t'])*real(z); for (auto mm : m) out += mm(z); return out; }
 
 	Color c (cpx z) { return Indexed (v(z) > 0 ? 1 : 2); }
 
@@ -36,7 +36,7 @@ class Wave : public Coloring { public:
 };
 
 int main (int argc, char ** argv) {
-	H.init ("Random planar waves", argc, argv, "n=600,k=1000,l=.2,w=0,e=0,s=0");
+	H.init ("Random planar waves", argc, argv, "n=600,k=1000,l=.2,w=0,e=0,s=0,t=0");
 	if (int s=H['s']) prng.seed(s);
 	Wave W(H['n'],H['k'],H['l'],H['w'],H['e']); W.show(); W.output(); Fl::run();
 }

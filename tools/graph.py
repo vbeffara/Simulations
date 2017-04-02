@@ -20,7 +20,7 @@ if "-l" in argv:
 		G.add_node(f, fillcolor="yellow")
 
 if "-x" in argv:
-	for f in glob ("[123]*/*.cpp") + glob("tests/*.cpp"):
+	for f in glob ("[123]*/*.cpp") + glob("tests/*.cpp") + glob("playground/*.cpp"):
 		G.add_node(f, fillcolor="pink")
 
 for f in G.nodes():

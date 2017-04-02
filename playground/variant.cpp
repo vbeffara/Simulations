@@ -1,7 +1,5 @@
 #include <vb/Hub.h>
 #include <iostream>
-#include <sstream>
-#include <string>
 #include <vector>
 
 #if __has_include(<variant>)
@@ -20,10 +18,7 @@
 
 using namespace vb; using namespace std;
 
-template <typename U, typename V> U convert (const V &v) {
-	if (auto p = get_if<U> (&v)) return *p;
-	return visit ([](const auto &e){ return U{e}; }, v);
-}
+template <typename U, typename V> U convert (const V &v) { if (auto p = get_if<U> (&v)) return *p; else return U{v}; }
 
 struct Expression;
 struct Number { int value; };
@@ -67,15 +62,15 @@ struct normalizer {
 	};
 };
 
-struct replacer {
-	replacer (Expression from, Expression to) : from(move(from)), to(move(to)) {}
-	Expression from, to;
-	Expression operator() (const Number &n) { return n; }
-	Expression operator() (const Symbol &s) { if (from==s) return to; else return s; }
+struct recurser {
+	template <typename V> recurser (const V &v) : v(v) {}
+	const function<Expression(const Expression)> v;
+	Expression operator() (const Number &n) { return v(n); }
+	Expression operator() (const Symbol &s) { return v(s); }
 	Expression operator() (const Plus &p) {
-		if (from==p) return to;
-		Plus out; for (const auto &e : p) out.push_back(visit(*this,e));
-		return out;
+		Plus out;
+		for (const auto &e : p) out.push_back(visit(*this,e));
+		return v(out);
 	}
 };
 
@@ -90,7 +85,9 @@ ostream & operator<< (ostream &os, const Expression & e) { visit ([&](const auto
 
 Expression flatten (const Expression &e) { return visit (flattener(), e); }
 Expression normalize (const Expression &e) { return visit (normalizer(), e); }
-Expression replace (const Expression &from, const Expression &to, const Expression &e) { return visit (replacer(from,to), e); }
+Expression replace (const Expression &from, const Expression &to, const Expression &e) {
+	return visit (recurser([&](const Expression &ee){ return ee==from ? to : ee; }), e);
+}
 
 Expression operator+ (const Expression &e1, const Expression &e2) {
 	if (auto p = get_if<Plus>(&e1)) { Plus out = *p; out.push_back(e2); return out; }
