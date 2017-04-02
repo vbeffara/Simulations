@@ -1,6 +1,5 @@
-#include <vb/Hub.h>
 #include <vb/cpx.h>
-#include <iostream>
+#include <vb/util.h>
 #include <vector>
 
 #if __has_include(<variant>)
@@ -27,15 +26,11 @@ template <typename... Ts> ostream & operator<< (ostream &os, const variant<Ts...
 
 struct Expression;
 struct Number : public real_t { using real_t::real_t; };
-struct Symbol { string name; };
+struct Symbol : public string { using string::string; };
 struct Plus : public vector<Expression> { using vector<Expression>::vector; };
 
 using Expression_ = variant <Number,Symbol,Plus>;
 struct Expression : public Expression_ { using Expression_::Expression_; };
-
-bool operator< (const Symbol &e1, const Symbol &e2) { return e1.name < e2.name; }
-
-bool operator== (const Symbol &e1, const Symbol &e2) { return e1.name == e2.name; }
 
 struct flattener {
 	template <typename T> Expression operator() (const T &e) const { return e; }
@@ -71,11 +66,7 @@ struct recurser {
 	}
 };
 
-ostream & operator<< (ostream &os, const Symbol &s) { return os << s.name; }
-ostream & operator<< (ostream &os, const Plus &p){
-	string sep = "";
-	os << "("; for (const auto &x : p) os << exchange(sep,"+") << x; os << ")"; return os;
-}
+ostream & operator<< (ostream &os, const Plus &p) { return vprint (os,p,"+"); }
 
 Expression flatten (const Expression &e) { return visit (flattener(), e); }
 Expression normalize (const Expression &e) { return visit (normalizer(), e); }
@@ -91,9 +82,9 @@ Expression operator+ (const Expression &e1, const Expression &e2) {
 
 int main (int argc, char ** argv) {
 	H.init ("Variants", argc, argv, "");
-	Expression e = Number{1} + Symbol{"x"} + (Number{2} + (Symbol{"y"} + Symbol{"z"}));
+	Expression e = Number{1} + Symbol{"x"} + (Number{2} + (Expression(Symbol{"y"}) + Symbol{"z"}));
 	H.L->info ("Initial expression | {}", e);
-	H.L->info (" -> Replaced       | {}", e=replace(Symbol{"y"} + Symbol{"z"}, Symbol{"t"} + Number{4}, e));
+	H.L->info (" -> Replaced       | {}", e=replace(Expression(Symbol{"y"}) + Symbol{"z"}, Symbol{"t"} + Number{4}, e));
 	H.L->info (" -> Flattened      | {}", e=flatten(e));
 	H.L->info (" -> Normalized     | {}", e=normalize(e));
 }
