@@ -32,6 +32,9 @@ struct Plus : public vector<Expression> { using vector<Expression>::vector; };
 using Expression_ = variant <Number,Symbol,Plus>;
 struct Expression : public Expression_ { using Expression_::Expression_; };
 
+Expression operator"" _e (const char *s, unsigned long) { return Symbol(s); }
+Expression operator"" _e (unsigned long long x) { return Number(x); }
+
 struct flattener {
 	template <typename T> Expression operator() (const T &e) const { return e; }
 	Expression operator() (const Plus &p) const {
@@ -82,9 +85,9 @@ Expression operator+ (const Expression &e1, const Expression &e2) {
 
 int main (int argc, char ** argv) {
 	H.init ("Variants", argc, argv, "");
-	Expression e = Number{1} + Symbol{"x"} + (Number{2} + (Expression(Symbol{"y"}) + Symbol{"z"}));
+	Expression e = 1 + "x"_e + (2 + ("y"_e + "z"_e));
 	H.L->info ("Initial expression | {}", e);
-	H.L->info (" -> Replaced       | {}", e=replace(Expression(Symbol{"y"}) + Symbol{"z"}, Symbol{"t"} + Number{4}, e));
+	H.L->info (" -> Replaced       | {}", e=replace("y"_e + "z"_e, "t"_e + 4, e));
 	H.L->info (" -> Flattened      | {}", e=flatten(e));
 	H.L->info (" -> Normalized     | {}", e=normalize(e));
 }
