@@ -3,7 +3,10 @@
 #include <vector>
 
 #if __has_include(<variant>)
-#include <variant>
+	#include <variant>
+	template <typename... Ts> std::ostream & operator<< (std::ostream &os, const std::variant<Ts...> & e) {
+		visit ([&](const auto &x) { os << x; }, e); return os;
+	}
 #else
 	#pragma message("Inserting boost::variant into std")
 	#define FWD(...) ::std::forward<decltype(__VA_ARGS__)>(__VA_ARGS__)
@@ -20,10 +23,6 @@ using namespace vb; using namespace std;
 
 template <typename U, typename V> U convert (const V &v) { if (auto p = get_if<U> (&v)) return *p; else return U{v}; }
 
-template <typename... Ts> ostream & operator<< (ostream &os, const variant<Ts...> & e) {
-	visit ([&](const auto &x) { os << x; }, e); return os;
-}
-
 struct Expression;
 struct Number : public real_t { using real_t::real_t; };
 struct Symbol : public string { using string::string; };
@@ -31,6 +30,14 @@ struct Plus : public vector<Expression> { using vector<Expression>::vector; };
 
 using Expression_ = variant <Number,Symbol,Plus>;
 struct Expression : public Expression_ { using Expression_::Expression_; };
+
+bool operator== (const Expression &e1, const Expression &e2) {
+	return static_cast <const Expression_> (e1) == static_cast <const Expression_> (e2);
+}
+
+bool operator< (const Expression &e1, const Expression &e2) {
+	return static_cast <const Expression_> (e1) < static_cast <const Expression_> (e2);
+}
 
 Expression operator"" _e (const char *s, unsigned long) { return Symbol(s); }
 Expression operator"" _e (unsigned long long x) { return Number(x); }
@@ -58,11 +65,11 @@ struct normalizer {
 };
 
 struct recurser {
-	template <typename V> recurser (V v) : v(move(v)) {}
+	template <typename V> recurser (V v) : v(std::move(v)) {}
 	const function<Expression(const Expression)> v;
-	Expression operator() (const Number &n) { return v(n); }
-	Expression operator() (const Symbol &s) { return v(s); }
-	Expression operator() (const Plus &p) {
+	Expression operator() (const Number &n) const { return v(n); }
+	Expression operator() (const Symbol &s) const { return v(s); }
+	Expression operator() (const Plus &p) const {
 		Plus out;
 		for (const auto &e : p) out.push_back(visit(*this,e));
 		return v(out);
@@ -73,7 +80,7 @@ ostream & operator<< (ostream &os, const Plus &p) { return vprint (os,p,"+"); }
 
 Expression flatten (const Expression &e) { return visit (flattener(), e); }
 Expression normalize (const Expression &e) { return visit (normalizer(), e); }
-Expression recurse (function<Expression(const Expression)> f, const Expression &e) { return visit(recurser(move(f)),e); }
+Expression recurse (function<Expression(const Expression)> f, const Expression &e) { return visit(recurser(std::move(f)),e); }
 Expression replace (const Expression &from, const Expression &to, const Expression &e) {
 	return recurse ([&](const Expression &ee){ return ee==from ? to : ee; }, e);
 }
