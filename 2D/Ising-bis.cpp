@@ -38,7 +38,8 @@ class Ising : public Bitmap<Spin> { public:
 		}
 		for (int i=0; i<w(); ++i) for (int j=0; j<h(); ++j) {
 			Color c = at(coo(i,j)); if (c==Spin(0)) continue;
-			vector<cpx> p; for (auto zz : pattern) p.push_back (cpx(i) + cpx(j)*shift + zz);
+			vector<cpx> p; p.reserve(pattern.size());
+			for (auto zz : pattern) p.push_back (cpx(i) + cpx(j)*shift + zz);
 			F.add (make_unique<Polygon> (p,Pen(0,1,c,true)));
 		}
 		F.output_pdf(s);

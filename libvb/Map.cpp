@@ -159,7 +159,7 @@ namespace vb {
 	}
 
 	std::vector<int> Map::split_edges () {
-		std::vector<int> tmp;
+		std::vector<int> tmp; tmp.reserve(n*n);
 		for (int i=0; i<n*n; ++i) tmp.push_back(-1);
 
 		std::vector<int> output;

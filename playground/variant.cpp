@@ -32,11 +32,11 @@ using Expression_ = variant <Number,Symbol,Plus>;
 struct Expression : public Expression_ { using Expression_::Expression_; };
 
 bool operator== (const Expression &e1, const Expression &e2) {
-	return static_cast <const Expression_> (e1) == static_cast <const Expression_> (e2);
+	return static_cast <const Expression_ &> (e1) == static_cast <const Expression_ &> (e2);
 }
 
 bool operator< (const Expression &e1, const Expression &e2) {
-	return static_cast <const Expression_> (e1) < static_cast <const Expression_> (e2);
+	return static_cast <const Expression_ &> (e1) < static_cast <const Expression_ &> (e2);
 }
 
 Expression operator"" _e (const char *s, unsigned long) { return Symbol(s); }

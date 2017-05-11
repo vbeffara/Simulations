@@ -70,7 +70,10 @@ namespace vb {
 
 	Stream <Hypermap> hypermaps (const std::vector<unsigned long> & s, const std::vector<unsigned long> & a, const std::vector<unsigned long> & p) {
 		Cycles cs; int i=0;
-		for (int l : s) { std::vector<unsigned long> c; for (int j=0; j<l; ++j) c.push_back(i++); cs.push_back (c); }
+		for (int l : s) {
+			std::vector<unsigned long> c; c.reserve(l);
+			for (int j=0; j<l; ++j) c.push_back(i++); cs.push_back (c);
+		}
 		Permutation sigma (cs);
 		return Stream<Hypermap> ([sigma,a,p](Sink<Hypermap> & yield) {
 			std::vector<Hypermap> hs;
