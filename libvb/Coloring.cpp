@@ -33,10 +33,10 @@ namespace vb {
 			}
 		}
 #if defined(CILK)
-		cilk_for (unsigned i=0; i<cs.size(); ++i) at(cs[i]) = aa_color(cs[i],true);
+		cilk_for (unsigned i=0; i<cs.size(); ++i) at(cs[i]) = aa_color(cs[i],true); // NOLINT
 #elif defined(OPENMP)
 		#pragma omp parallel for schedule(dynamic)
-		for (unsigned i=0; i<cs.size(); ++i) at(cs[i]) = aa_color(cs[i],true);
+		for (unsigned i=0; i<cs.size(); ++i) at(cs[i]) = aa_color(cs[i],true); // NOLINT
 #else
 		for (auto c : cs) at(c) = aa_color(c,true);
 #endif
