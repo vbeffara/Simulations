@@ -6,14 +6,14 @@
 using namespace vb; using namespace std;
 
 struct state {
+    static double a,b;
     double v,x;
-    void step () { x = 2*x + .394875; while (x>=1) x -= 1; }
+    void step () { x = a*x+b; while (x>=1) x -= 1; }
 };
+double state::a, state::b;
 
 class Model : public vector<state> { public:
-    Model (int n) : vector<state> (n,{0,0}) {
-        for (unsigned k=0; k<size(); ++k) at(k).x = prng.uniform_real();
-    }
+    Model (int n) : vector<state> (n,{0,0}) { for (auto & s : *this) s.x = prng.uniform_real(); }
 
     void rotate (int k, double a) {
         double c=cos(a), s=sin(a), &x=at(k).v, &y=at((k+1)%size()).v;
@@ -29,20 +29,23 @@ class Model : public vector<state> { public:
 };
 
 int main (int argc, char ** argv) {
-    H.init ("Deterministic Fourier law", argc, argv, "n=500,m=1000,t=100");
-    int n=H['n']; vector<double> profile(n,0), boltzmann;
-    {
-        ProgressBar PB (H['m']);
-        for (int i=0; i<int(H['m']); ++i) {
+    H.init ("Deterministic Fourier law", argc, argv, "a=2,b=.2394879347,n=500,m=1000,t=100");
+    int nn=H['n'], mm=H['m'], tt=H['t']; state::a=H['a']; state::b=H['b'];
+    vector<double> profile(nn,0), boltzmann(mm,0), var(tt,0);
+
+    ProgressBar PB (mm);
+    for (int i=0; i<mm; ++i) {
+        Model M(nn); M[nn/2].v = 1;
+        for (int t=0; t<tt; ++t) {
             PB.set(i);
-            Model M(n); M[n/2].v = 1;
-            for (int t=0; t<int(H['t']); ++t) M.swipe();
-            for (int k=0; k<n; ++k) profile[k] += M[k].v*M[k].v;
-            boltzmann.push_back(M[n/2].v);
+            M.swipe();
+            double v=0; for (int k=0; k<nn; ++k) v += (k-nn/2)*(k-nn/2)*M[k].v*M[k].v; var[t]+=v;
         }
+        for (int k=0; k<nn; ++k) profile[k] += M[k].v*M[k].v; boltzmann[i] = M[nn/2].v;
     }
 
     { ofstream of("out.profile"); for (auto u : profile) of << u << endl; }
+    { ofstream of("out.variance"); for (auto u : var) of << u << endl; }
     {
         int nclass = sqrt(double(H['m']));
         double bmin=0, bmax=0; for (auto b : boltzmann) { bmin=min(bmin,b); bmax=max(bmax,b); }
