@@ -20,9 +20,10 @@ class Bounces : public map <string, function<coo(coo)>> { public:
 		emplace ( "dent", [](coo z) {	if (z.x+z.y > 2 * abs(z.x-z.y))	return (z.y>z.x) ? coo(-1,0) : coo(0,-1);
 		                             	else                           	return (abs(z.y)>abs(z.x)) ? coo(0,-sign(z.y)) : coo(-sign(z.x),0);	} );
 
-		emplace ( "octo", [](coo z) {	if (abs(z.x) > 2*abs(z.y))        	return coo(-2*sign(z.x),0);
-		                             	if (abs(z.y) > 2*abs(z.x))        	return coo(0,-2*sign(z.y));
-		                             	return coo(-sign(z.x),-sign(z.y));	} );
+		emplace ( "octo", [](coo z) {	double a = H['a'], b = H['b'];
+										if (abs(z.x) > 2*abs(z.y))        	return coo(-a*sign(z.x),0);
+		                             	if (abs(z.y) > 2*abs(z.x))        	return coo(0,-a*sign(z.y));
+		                             	return coo(-b*sign(z.x),-b*sign(z.y));	} );
 	}
 };
 
@@ -54,7 +55,7 @@ class Bouncy : public CoarseImage { public:
 };
 
 int main (int argc, char ** argv) {
-	H.init ("Internal DLA", argc,argv, "n=1000,j=idla,p=.1,a=2,b=.5,g,u=0,i");
+	H.init ("Internal DLA", argc,argv, "n=1000,j=idla,p=.1,a=2,b=1,g,u=0,i");
 	Bouncy B (H['n'],H['j']);
 	B.run(); if (H['g']) B.tree->output(); else B.output();
 }
