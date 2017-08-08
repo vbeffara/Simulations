@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from glob import glob
 from sys import argv,stderr,exit
@@ -35,13 +35,13 @@ for f in G.nodes():
 					G.add_node(h)
 				G.add_edge(f,h)
 
-print "digraph {"
-print "  rankdir = LR"
+print ("digraph {")
+print ("  rankdir = LR")
 for x in G.nodes():
-	print '  "%s" [style="filled", fillcolor="%s"]' % (x, G.node[x].get('fillcolor',"white"))
+	print ('  "%s" [style="filled", fillcolor="%s"]' % (x, G.node[x].get('fillcolor',"white")))
 	for f in G.neighbors(x):
-		print '    "%s" -> "%s"' % (x,f)
-print "}"
+		print ('    "%s" -> "%s"' % (x,f))
+print ("}")
 
 bad = 0
 for f in G.nodes():
