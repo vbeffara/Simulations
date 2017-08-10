@@ -62,7 +62,7 @@ class Potts : public Bitmap<Spin> { public:
 				if ((i==0)||(j==0)||(i==w()-1)||(j==h()-1))
 					put (coo(i,j),(q*(i+j)/w())%q);
 		};
-		bcs["loren2"] = [this]{ assert (q>=6);
+		bcs["loren2"] = [this,q]{ assert (q>=6);
 			b=1;
 			for (int i=0; i<w()/4; ++i)      	put(coo(i,0),0);
 			for (int i=w()/4; i<3*w()/4; ++i)	put(coo(i,0),1);

@@ -1,17 +1,51 @@
 #include <vb/Coloring.h>
 #include <vb/PRNG.h>
-#include <boost/math/special_functions/spherical_harmonic.hpp>
 
 using namespace std; using namespace vb;
 
+#include <boost/math/special_functions/factorials.hpp>
+
 class Field : public Coloring { public:
+    double legendre_next (int l,             double x, double Pl, double Plm1) { return ((2*l+1)*x*Pl - l*Plm1) / (l+1); }
+    double legendre_next (int l, unsigned m, double x, double Pl, double Plm1) { return ((2*l+1)*x*Pl - (l+m)*Plm1) / (l+1-m); }
+
+    double legendre_p (int l, double x) { // l>=0, -1<=x<=1
+        if (l==0) return 1;
+        double p0=1, p1=x;
+        for (int n=1; n<l; ++n) { std::swap(p0, p1); p1 = legendre_next(n, x, p0, p1); }
+        return p1;
+    }
+
+    double legendre_p (int l, int m, double x) { // l>=0, 0<=m<=l, -1<=x<=1
+        if (m==0) return legendre_p (l, x);
+
+        double sin_theta_power = pow(1 - x*x, m/2.0);
+        double p0 = df[m] * sin_theta_power;
+
+        if (m&1) p0 *= -1;
+        if (m == l) return p0;
+
+        double p1 = x * (2*m+1) * p0;
+
+        for (int n=m+1; n<l; ++n) { std::swap(p0, p1); p1 = legendre_next(n, m, x, p0, p1); }
+        return p1;
+    }
+
+    cpx spherical_harmonic (int n, int m, double theta, double phi) { // 0<=m<=n, 0<=theta<=pi, 0<=phi<=2pi
+        return cpx { cos(m*phi), sin(m*phi) } * p[m] * legendre_p (n, m, cos(theta));
+    }
+
     Field (int n) : Coloring ({-1.0,-1.0},{1.0,1.0},800,[this](cpx z){return c(z);}), n(n){
-        for (int i=0; i<=n; ++i) a.push_back ({prng.gaussian(),prng.gaussian()});
+        for (int i=0; i<=n; ++i)  a.push_back ({prng.gaussian(),prng.gaussian()});
+        for (int m=0; m<=n; ++m)  p.push_back (sqrt(boost::math::tgamma_delta_ratio (double(n-m+1), double(2*m)) * (2*n+1) / (4*M_PI)));
+        for (int m=0; m<=n; ++m) df.push_back (m==0 ? 1 : boost::math::double_factorial<double>(2*m-1));
     };
 
     cpx v (double theta, double phi) {
         cpx harm = 0;
-        for (int i=0; i<=n; ++i) harm += a[i] * boost::math::spherical_harmonic (n,i,theta,phi);
+        for (int m=0; m<=n; ++m) {
+            harm += a[m] * spherical_harmonic (n,m,theta,phi);
+        }
         return harm;
     }
 
@@ -27,6 +61,7 @@ class Field : public Coloring { public:
 
     int n;
     vector<cpx> a;
+    vector<double> p, df;
 };
 
 int main (int argc, char ** argv) {

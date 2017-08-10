@@ -48,6 +48,6 @@ for f in G.nodes():
 	for k in set(G.neighbors(f)):
 		for l in set(G.neighbors(f)):
 			if l in G.nodes() and k in nx.descendants(G,l):
-				print >> stderr, "Redundant include: %s -> %s (implied by %s)" % (f,k,l)
+				print ("Redundant include: %s -> %s (implied by %s)" % (f,k,l), file=stderr)
 				bad = 1
 exit(bad)
