@@ -30,15 +30,15 @@ class Field : public Coloring { public:
     }
 
     Field (int n) : Coloring ({-1.0,-1.0},{1.0,1.0},800,[this](cpx z){return c(z);}), n(n){
-        for (int i=0; i<=n; ++i)  a.push_back ({prng.gaussian(),prng.gaussian()});
-        for (int m=0; m<=n; ++m)  p.push_back (sqrt(boost::math::tgamma_delta_ratio (double(n-m+1), double(2*m)) * (2*n+1) / (4*M_PI)));
+        for (int m=0; m<=n; ++m)  a.emplace_back (prng.gaussian(),prng.gaussian());
+        for (int m=0; m<=n; ++m)  p.push_back (sqrt(boost::math::tgamma_delta_ratio(double(n-m+1),double(2*m)) * (2*n+1) / (4*M_PI)));
         for (int m=0; m<=n; ++m) df.push_back (m==0 ? 1 : boost::math::double_factorial<double>(2*m-1));
     };
 
     double v (double theta, double phi) {
         double harm = 0;
         for (int m=0; m<=n; ++m) harm += real(a[m] * spherical_harmonic (n,m,theta,phi));
-        return real(harm);
+        return harm;
     }
 
     Color c (cpx z) {
