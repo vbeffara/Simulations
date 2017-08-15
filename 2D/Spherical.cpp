@@ -15,10 +15,10 @@ template <typename T> T check (T x, T y) {
 class Field : public Coloring { public:
     Field (int n) : Coloring ({-1.0,-1.0},{1.0,1.0},800,[this](cpx z){return c(z);}), n(n){
         for (int m=0; m<=n; ++m) {
-            a.emplace_back (prng.gaussian(),prng.gaussian());
-            double dfpm = sqrt((2*n+1) / (4*M_PI));
-            for (int i=1; i<=m; ++i) dfpm *= double(2*i-1) / sqrt(double(2*i-1+n-m)*double(2*i+n-m));
-            dfp.push_back (dfpm);
+            cpx am {prng.gaussian(),prng.gaussian()};
+            am *= sqrt((2*n+1) / (4*M_PI));
+            for (int i=1; i<=m; ++i) am *= double(2*i-1) / sqrt(double(2*i-1+n-m)*double(2*i+n-m));
+            a.push_back(am);
         }
     };
 
@@ -42,7 +42,7 @@ class Field : public Coloring { public:
     }
 
     cpx spherical_harmonic (int n, int m, double theta, double phi) { // 0<=m<=n, 0<=theta<=pi, 0<=phi<=2pi
-        return cpx { cos(m*phi), sin(m*phi) } * dfp[m] * legendre_p (n, m, cos(theta));
+        return cpx { cos(m*phi), sin(m*phi) } * legendre_p (n, m, cos(theta));
     }
 
     double v (double theta, double phi) {
@@ -63,7 +63,6 @@ class Field : public Coloring { public:
 
     int n;
     vector<cpx> a;
-    vector<double> dfp;
 };
 
 int main (int argc, char ** argv) {
