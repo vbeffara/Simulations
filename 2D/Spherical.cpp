@@ -47,7 +47,7 @@ class Field : public Coloring { public:
 
     double v (double theta, double phi) {
         double harm = 0;
-        for (int m=0; m<=n; ++m) harm += real(a[m] * spherical_harmonic (n,m,theta,phi));
+        for (int m=0; m<=n; ++m) harm += (real(a[m])*cos(m*phi) - imag(a[m])*sin(m*phi)) * legendre_p (n, m, cos(theta));
         return harm;
     }
 
