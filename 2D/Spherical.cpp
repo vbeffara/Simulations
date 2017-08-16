@@ -57,6 +57,7 @@ class Field : public Coloring { public:
     }
 
     void show () override {
+        detail=2.0/n;
         Coloring::show();
         for (int i=0; i<pixel_w(); ++i) for (int j=0; j<pixel_h(); ++j) {
             cpx z = c_to_z(coo(i,j)); Color & c = at(coo(i,j));

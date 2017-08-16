@@ -13,7 +13,7 @@ namespace vb {
 		Picture::show();
 		auto sd = static_cast<Color*> (static_cast<void*> (cairo_image_surface_get_data (surface)));
 		stage = gsl::span <Color> (sd, stride*pixel_h());
-		eps = real(z2-z1)/pixel_w();
+		eps = real(z2-z1)/pixel_w(); pixel_detail = detail/eps;
 		for (int i=0; i<pixel_w(); ++i) for (int j=0; j<pixel_h(); ++j) at(coo(i,j)) = BLACK;
 		run ([&]{ tessel ({0,0}, {pixel_w()-1,pixel_h()-1}); });
 		if (aa) run ([&](){do_aa();});
@@ -79,7 +79,7 @@ namespace vb {
     void Coloring::tessel_go (coo ul, coo lr) {
         int size = std::min(lr.x-ul.x,lr.y-ul.y); if (size <= 1) return;
 
-        Color tmp = at(ul); bool mono = true; coo z = ul;
+        coo z = ul; Color tmp = at(ul); bool mono = true; if (pixel_detail && (size>pixel_detail)) mono = false;
         for (; mono && (z != coo {lr.x,ul.y}); z += {1,0}) mono = mono && (at(z) == tmp);
         for (; mono && (z != coo {lr.x,lr.y}); z += {0,1}) mono = mono && (at(z) == tmp);
         for (; mono && (z != coo {ul.x,lr.y}); z += {-1,0}) mono = mono && (at(z) == tmp);

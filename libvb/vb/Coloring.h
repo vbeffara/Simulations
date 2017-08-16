@@ -21,6 +21,7 @@ namespace vb {
 	protected:
 		Color & at (coo z) const;
 		cpx c_to_z (coo c) const;
+		double detail=0;
 
 	private:
 		Color aa_color (coo c, bool pre = false) const;
@@ -33,5 +34,6 @@ namespace vb {
 		gsl::span <Color> stage;
 
 		int handle (int event) override;
+		int pixel_detail=0;
 	};
 }
