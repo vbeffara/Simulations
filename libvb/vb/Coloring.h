@@ -18,10 +18,11 @@ namespace vb {
 		cpx z1, z2;
 		std::function <Color(cpx)> f;
 
-	private:
+	protected:
+		Color & at (coo z) const;
 		cpx c_to_z (coo c) const;
 
-		Color & at (coo z) const;
+	private:
 		Color aa_color (coo c, bool pre = false) const;
 
         void line (coo s, coo d, int l);

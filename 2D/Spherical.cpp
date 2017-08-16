@@ -52,13 +52,22 @@ class Field : public Coloring { public:
     }
 
     Color c (cpx z) {
-        double x1=real(z), x2=imag(z), z2=x1*x1+x2*x2; if (z2>1) return WHITE;
-        double x3=sqrt(1-z2), theta=asin(sqrt(z2)), phi=atan2(x1,x2);
-        Color out = Indexed (v(theta,phi)>0 ? 1 : 2);
+        double x1=real(z), x2=imag(z), z2=x1*x1+x2*x2; if (z2>1) return NOCOLOR;
+        return Indexed (v(asin(sqrt(z2)),atan2(x1,x2))>0 ? 1 : 2);
+    }
 
-        double y1=.3, y2=.2, y3=sqrt(1-y1*y1-y2*y2);
-        double xy = x1*y1 + x2*y2 + x3*y3; double f = xy>0 ? xy : 0; f = .1 + .9*f*f;
-        out.r *= f; out.g *= f; out.b *= f; return out;
+    void show () override {
+        Coloring::show();
+        for (int i=0; i<pixel_w(); ++i) for (int j=0; j<pixel_h(); ++j) {
+            cpx z = c_to_z(coo(i,j)); Color & c = at(coo(i,j));
+            double f=1, x1=real(z), x2=imag(z), z2=x1*x1+x2*x2;
+            if (z2<=1) {
+                double x3=sqrt(1-z2), y1=.3, y2=.2, y3=sqrt(1-y1*y1-y2*y2);
+                double xy = x1*y1 + x2*y2 + x3*y3; f = xy>0 ? xy : 0; f = .1 + .9*f*f;
+            }
+            f = f*c.a/255; c.r = f*c.r + 255-c.a; c.g = f*c.g + 255-c.a; c.b = f*c.b + 255-c.a; c.a=255; step();
+        }
+        update();
     }
 
     int n;
@@ -66,6 +75,7 @@ class Field : public Coloring { public:
 };
 
 int main (int argc, char ** argv) {
-    H.init ("Random wave on the sphere", argc, argv, "n=50,p");
-    Field F (H['n']); F.show(); F.output(); if (H['p']) F.pause();
+    H.init ("Random wave on the sphere", argc, argv, "n=50,p,s=0");
+    int s = H['s']; if (s) prng.seed(s);
+    Field F (H['n']); F.show(); if (H['p']) F.pause(); else F.output();
 }
