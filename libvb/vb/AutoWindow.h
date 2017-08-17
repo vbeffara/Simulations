@@ -1,6 +1,5 @@
 #pragma once /// \file
 #include <vb/Auto.h>
-#include <vb/Hub.h>
 #include <FL/Fl.H>
 #include <future>
 

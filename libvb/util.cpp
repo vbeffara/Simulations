@@ -1,5 +1,4 @@
 #include <vb/util.h>
-#include <chrono>
 
 namespace vb {
 	double time () {

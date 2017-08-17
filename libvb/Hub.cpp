@@ -14,7 +14,7 @@
 #define GIT_SHA1_lit XTR(GIT_SHA1)
 
 namespace vb {
-	Hub::Hub () {
+	Hub::Hub () : start(std::chrono::steady_clock::now()) {
 	    Fl::gl_visual (FL_RGB);
 	    #ifndef NO_RETINA
 	    Fl::use_high_res_GL (1);
@@ -23,6 +23,12 @@ namespace vb {
 	    cln::default_float_format = cln::float_format(100);
 
 	    L = spdlog::stdout_logger_mt ("console", true);
+	}
+
+	Hub::~Hub () {
+		auto end = std::chrono::steady_clock::now();
+		Duration d = end - start;
+		L->info ("Time spent   : {} second(s)", d.count());
 	}
 
 	void Hub::init (std::string t, int argc, char ** argv, std::string c) {

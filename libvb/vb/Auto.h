@@ -1,13 +1,9 @@
 #pragma once /// \file
-
-#include <chrono>
+#include <vb/Hub.h>
 #include <functional>
 #include <vector>
 
 namespace vb {
-	using Duration = std::chrono::duration<double>;
-	using TimePoint = std::chrono::time_point<std::chrono::steady_clock,Duration>;
-
 	class Task : public std::function<void()> {
 	public:
 		Task (TimePoint t, Duration d, std::function<void()> f);

@@ -1,4 +1,3 @@
-#include <vb/Hub.h>
 #include <vb/PRNG.h>
 #include <vb/Path.h>
 #include <vb/ProgressBar.h>

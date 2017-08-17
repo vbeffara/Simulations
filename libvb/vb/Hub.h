@@ -7,6 +7,9 @@
 #include <string>
 
 namespace vb {
+	using Duration = std::chrono::duration<double>;
+	using TimePoint = std::chrono::time_point<std::chrono::steady_clock,Duration>;
+
 	class Value : public std::string {
 	public:
 		Value (std::string s = "") : std::string (std::move(s)) {}
@@ -22,6 +25,7 @@ namespace vb {
 	class Hub : public std::map <char,Value> {
 	public:
 		Hub ();
+		~Hub ();
 
 		void init (std::string t, int argc, char ** argv, std::string c = "");
 
@@ -29,6 +33,8 @@ namespace vb {
 		std::map <char,bool> has_arg;
 
 		std::shared_ptr <spdlog::logger> L;
+
+		TimePoint start;
 	};
 
 	extern Hub H;
