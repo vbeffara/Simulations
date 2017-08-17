@@ -77,6 +77,9 @@ if (${CMAES_FOUND})
 	target_link_libraries (vb ${CMAES_LIBRARIES})
 endif ()
 
+execute_process(COMMAND "git" describe --always --abbrev=40 WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" OUTPUT_VARIABLE GIT_SHA1 OUTPUT_STRIP_TRAILING_WHITESPACE)
+add_definitions("-DGIT_SHA1=${GIT_SHA1}")
+
 set (DIRS tests 1D 2D 3D)
 if (${PLAYGROUND})
 	set (DIRS ${DIRS} playground)

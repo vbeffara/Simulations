@@ -9,6 +9,10 @@
 #include <vector>
 #include <getopt.h>
 
+#define STR(s) #s
+#define XTR(s) STR(s)
+#define GIT_SHA1_lit XTR(GIT_SHA1)
+
 namespace vb {
 	Hub::Hub () {
 	    Fl::gl_visual (FL_RGB);
@@ -22,7 +26,7 @@ namespace vb {
 	}
 
 	void Hub::init (std::string t, int argc, char ** argv, std::string c) {
-		title = std::move(t); help = "Syntax : " + c;
+		title = std::move(t); help = "Syntax : " + c; version = GIT_SHA1_lit;
 
 		auto argv_ = gsl::span <char*> (argv,argc);
 		std::vector<std::string> fs;	boost::split (fs, argv_[0], boost::is_any_of(R"(/\)"));
@@ -52,6 +56,8 @@ namespace vb {
 		}
 
 	    L = spdlog::stdout_logger_mt (prog, true);
+
+		L->info ("Program : {}, git version {}", prog, version);
 	}
 
 	Hub H;
