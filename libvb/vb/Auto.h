@@ -12,7 +12,7 @@ namespace vb {
 		bool active;
 	};
 
-	class Auto : public std::chrono::steady_clock {
+	class Auto : public boost::chrono::process_real_cpu_clock {
 	public:
 		Auto (double t);
 		virtual ~Auto ();

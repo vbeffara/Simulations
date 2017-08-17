@@ -1,5 +1,6 @@
 #pragma once /// \file
 #undef False
+#include <boost/chrono.hpp>
 #include <spdlog/spdlog.h>
 #include <spdlog/fmt/ostr.h>
 #include <cstdlib>
@@ -7,8 +8,8 @@
 #include <string>
 
 namespace vb {
-	using Duration = std::chrono::duration<double>;
-	using TimePoint = std::chrono::time_point<std::chrono::steady_clock,Duration>;
+	using Duration = boost::chrono::duration<double>;
+	using TimePoint = boost::chrono::time_point<boost::chrono::process_real_cpu_clock,Duration>;
 
 	class Value : public std::string {
 	public:
@@ -34,7 +35,10 @@ namespace vb {
 
 		std::shared_ptr <spdlog::logger> L;
 
-		TimePoint start;
+		boost::chrono::time_point<boost::chrono::process_real_cpu_clock,Duration> start;
+		boost::chrono::time_point<boost::chrono::process_user_cpu_clock,Duration> start_u;
+		boost::chrono::time_point<boost::chrono::process_system_cpu_clock,Duration> start_s;
+		bool initialized = false;
 	};
 
 	extern Hub H;

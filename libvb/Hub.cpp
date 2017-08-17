@@ -14,7 +14,7 @@
 #define GIT_SHA1_lit XTR(GIT_SHA1)
 
 namespace vb {
-	Hub::Hub () : start(std::chrono::steady_clock::now()) {
+	Hub::Hub () {
 	    Fl::gl_visual (FL_RGB);
 	    #ifndef NO_RETINA
 	    Fl::use_high_res_GL (1);
@@ -26,9 +26,11 @@ namespace vb {
 	}
 
 	Hub::~Hub () {
-		auto end = std::chrono::steady_clock::now();
-		Duration d = end - start;
-		L->info ("Time spent   : {} second(s)", d.count());
+		if (!initialized) return;
+		auto end = boost::chrono::process_real_cpu_clock::now(); Duration d = end - start;
+		auto end_u = boost::chrono::process_user_cpu_clock::now(); Duration d_u = end_u - start_u;
+		auto end_s = boost::chrono::process_system_cpu_clock::now(); Duration d_s = end_s - start_s;
+		L->info ("Time spent   : {} real, {} user, {} system", d.count(), d_u.count(), d_s.count());
 	}
 
 	void Hub::init (std::string t, int argc, char ** argv, std::string c) {
@@ -67,6 +69,11 @@ namespace vb {
 		L->info ("Command line : {}", cmd);
 		L->info ("Code version : {}", version);
 		L->info ("Image title  : {}", title);
+
+		start = boost::chrono::process_real_cpu_clock::now();
+		start_u = boost::chrono::process_user_cpu_clock::now();
+		start_s = boost::chrono::process_system_cpu_clock::now();
+		initialized = true;
 	}
 
 	Hub H;
