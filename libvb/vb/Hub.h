@@ -25,7 +25,7 @@ namespace vb {
 
 		void init (std::string t, int argc, char ** argv, std::string c = "");
 
-		std::string title="undefined", prog="undefined", version="undefined", dir="output/", help="undefined";
+		std::string title="undefined", cmd="undefined", prog="undefined", version="undefined", dir="output/", help="undefined";
 		std::map <char,bool> has_arg;
 
 		std::shared_ptr <spdlog::logger> L;

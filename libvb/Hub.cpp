@@ -57,7 +57,9 @@ namespace vb {
 
 	    L = spdlog::stdout_logger_mt (prog, true);
 
-		L->info ("Program : {}, git version {}", prog, version);
+		cmd = argv_[0]; for (int i=1; i<argc; ++i) { cmd += " "; cmd += argv_[i]; }
+		L->info ("Command line : {}", cmd);
+		L->info ("Code version : {}", version);
 	}
 
 	Hub H;
