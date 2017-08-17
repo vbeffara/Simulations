@@ -26,6 +26,7 @@ class Wave : public Coloring { public:
 			double amplitude = bump (delta,e_) * prng.gaussian();
 			m.emplace_back (amplitude, prng.uniform_real(0,2.0*M_PI), l_ * (1+w_*delta), prng.uniform_real(0,2.0*M_PI));
 		}
+		detail = 2.0/l_;
 	}
 
 	double v (cpx z) { double out = double(H['t'])*real(z); for (auto mm : m) out += mm(z); return out; }
