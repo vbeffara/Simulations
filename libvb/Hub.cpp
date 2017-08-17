@@ -60,6 +60,7 @@ namespace vb {
 		cmd = argv_[0]; for (int i=1; i<argc; ++i) { cmd += " "; cmd += argv_[i]; }
 		L->info ("Command line : {}", cmd);
 		L->info ("Code version : {}", version);
+		L->info ("Image title  : {}", title);
 	}
 
 	Hub H;
