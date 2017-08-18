@@ -17,4 +17,13 @@ namespace vb {
 		for (const auto &x : v) os << exchange(sep,op) << x;
 		return os << out;
 	}
+
+	template <typename T> T check (T x, T y) {
+	    static double merr = -1.0;
+	    double err = abs(x-y); if (err>merr) {
+	        merr = err;
+	        H.L->info ("max error: {}", merr);
+	    }
+	    return x;
+	}
 }

@@ -1,17 +1,7 @@
 #include <vb/Coloring.h>
 #include <vb/PRNG.h>
-#include <vb/math.h>
 
 using namespace std; using namespace vb;
-
-template <typename T> T check (T x, T y) {
-    static double merr = -1.0;
-    double err = abs(x-y); if (err>merr) {
-        merr = err;
-        H.L->info ("max error: {}", merr);
-    }
-    return x;
-}
 
 class Sphere : public Coloring { public:
     Sphere (function <Color(cpx)> f) : Coloring ({-1.0,-1.0},{1.0,1.0},800,f) {}
@@ -97,9 +87,9 @@ class Bargman : public Sphere { public:
     }
 
     double v (double x, double y, double z) {
-        double out=0;
-        for (int i=0; i<=n; ++i) for (int j=0; j<=n-i; ++j) out += a[i][j] * pow(x,i) * pow(y,j) * pow(z,n-i-j);
-        return out;
+        double out=0, xz=1;
+        for (int i=0; i<=n; ++i, xz*=x/z) { double yz=1; for (int j=0; j<=n-i; ++j, yz*=y/z) out += a[i][j] * xz * yz; }
+        return out * pow(z,n);
     }
 
     vector<vector<double>> a;
