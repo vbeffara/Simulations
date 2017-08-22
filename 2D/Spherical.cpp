@@ -91,15 +91,15 @@ class Bargman : public Sphere { public:
         if ((abs(z)>abs(x)) && (abs(z)>abs(y))) {
             double xz=1;
             for (int i=0; i<=n; ++i, xz*=x/z) { double yz=1; for (int j=0; j<=n-i; ++j, yz*=y/z) out += a[i][j] * xz * yz; }
-            out *= pow(z,n);
+            if ((n%2)&&(z<0)) out = -out;
         } else if (abs(y)>abs(x)) {
             double xy=1;
             for (int i=0; i<=n; ++i, xy*=x/y) { double zy=1; for (int k=0; k<=n-i; ++k, zy*=z/y) out += a[i][n-i-k] * xy * zy; }
-            out *= pow(y,n);
+            if ((n%2)&&(y<0)) out = -out;
         } else {
             double zx=1;
             for (int k=0; k<=n; ++k, zx*=z/x) { double yx=1; for (int j=0; j<=n-k; ++j, yx*=y/x) out += a[n-j-k][j] * zx * yx; }
-            out *= pow(x,n);
+            if ((n%2)&&(x<0)) out = -out;
         }
         return out;
     }
