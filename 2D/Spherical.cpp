@@ -112,5 +112,6 @@ int main (int argc, char ** argv) {
     H.init ("Random wave on the sphere", argc, argv, "n=50,p,s=0,t=wave");
     int s = H['s']; if (s) prng.seed(s);
     if (H['t'] == "wave") { Wave F (H['n']); F.show(); if (H['p']) F.pause(); else F.output(); } else
-    if (H['t'] == "barg") { Bargman F (H['n']); F.show(); if (H['p']) F.pause(); else F.output(); }
+    if (H['t'] == "barg") { Bargman F (H['n']); F.show(); if (H['p']) F.pause(); else F.output(); } else
+    { H.L->error ("Type should be 'wave' or 'barg', exiting..."); exit(1); }
 }
