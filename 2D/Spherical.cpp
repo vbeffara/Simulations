@@ -87,9 +87,21 @@ class Bargman : public Sphere { public:
     }
 
     double v (double x, double y, double z) {
-        double out=0, xz=1;
-        for (int i=0; i<=n; ++i, xz*=x/z) { double yz=1; for (int j=0; j<=n-i; ++j, yz*=y/z) out += a[i][j] * xz * yz; }
-        return out * pow(z,n);
+        double out=0;
+        if ((abs(z)>abs(x)) && (abs(z)>abs(y))) {
+            double xz=1;
+            for (int i=0; i<=n; ++i, xz*=x/z) { double yz=1; for (int j=0; j<=n-i; ++j, yz*=y/z) out += a[i][j] * xz * yz; }
+            out *= pow(z,n);
+        } else if (abs(y)>abs(x)) {
+            double xy=1;
+            for (int i=0; i<=n; ++i, xy*=x/y) { double zy=1; for (int k=0; k<=n-i; ++k, zy*=z/y) out += a[i][n-i-k] * xy * zy; }
+            out *= pow(y,n);
+        } else {
+            double zx=1;
+            for (int k=0; k<=n; ++k, zx*=z/x) { double yx=1; for (int j=0; j<=n-k; ++j, yx*=y/x) out += a[n-j-k][j] * zx * yx; }
+            out *= pow(x,n);
+        }
+        return out;
     }
 
     vector<vector<double>> a;
