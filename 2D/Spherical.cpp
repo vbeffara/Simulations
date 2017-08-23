@@ -1,5 +1,6 @@
 #include <vb/Coloring.h>
 #include <vb/PRNG.h>
+#include <vb/util.h>
 
 using namespace std; using namespace vb;
 
@@ -77,28 +78,37 @@ class Wave : public Sphere { public:
 
 class Bargman : public Sphere { public:
     Bargman (int n) : Sphere ([this](double x, double y, double z){ return Indexed (v(x,y,z)>0 ? 1 : 2); }), a(n+1), n(n) {
-        for (int i=0; i<=n; ++i) for (int j=0; j<=n-i; ++j) {
-            double aa = prng.gaussian() * sqrt((n+1)*(n+2)); int kk=1;
-            for (int k=1; k<=i; ++k, ++kk) aa *= sqrt(double(kk)/double(k));
-            for (int k=1; k<=j; ++k, ++kk) aa *= sqrt(double(kk)/double(k));
-            for (int k=1; k<=n-i-j; ++k, ++kk) aa *= sqrt(double(kk)/double(k));
-            a[i].push_back (aa);
-        }
+        for (int i=0; i<=n; ++i) for (int j=0; j<=n-i; ++j) a[i].push_back(prng.gaussian());
     }
 
     double v (double x, double y, double z) {
         double out=0;
         if ((abs(z)>abs(x)) && (abs(z)>abs(y))) {
-            double xz=1;
-            for (int i=0; i<=n; ++i, xz*=x/z) { double yz=1; for (int j=0; j<=n-i; ++j, yz*=y/z) out += a[i][j] * xz * yz; }
+            double t=1; for (int i=0; i<=n; ++i) {
+                double tt = t; for (int j=0; j<=n-i; ++j) {
+                    out += a[i][j] * tt;
+                    tt *= (y/z) * sqrt(n-i-j) / sqrt(j+1);
+                }
+                t *= (x/z) * sqrt(n-i) / sqrt(i+1);
+            }
             if ((n%2)&&(z<0)) out = -out;
         } else if (abs(y)>abs(x)) {
-            double xy=1;
-            for (int i=0; i<=n; ++i, xy*=x/y) { double zy=1; for (int k=0; k<=n-i; ++k, zy*=z/y) out += a[i][n-i-k] * xy * zy; }
+            double t=1; for (int i=0; i<=n; ++i) {
+                double tt = t; for (int k=0; k<=n-i; ++k) {
+                    out += a[i][n-i-k] * tt;
+                    tt *= (z/y) * sqrt(n-i-k) / sqrt(k+1);
+                }
+                t *= (x/y) * sqrt(n-i) / sqrt(i+1);
+            }
             if ((n%2)&&(y<0)) out = -out;
         } else {
-            double zx=1;
-            for (int k=0; k<=n; ++k, zx*=z/x) { double yx=1; for (int j=0; j<=n-k; ++j, yx*=y/x) out += a[n-j-k][j] * zx * yx; }
+            double t=1; for (int k=0; k<=n; ++k) {
+                double tt = t; for (int j=0; j<=n-k; ++j) {
+                    out += a[n-j-k][j] * tt;
+                    tt *= (y/x) * sqrt(n-k-j) / sqrt(j+1);
+                }
+                t *= (z/x) * sqrt(n-k) / sqrt(k+1);
+            }
             if ((n%2)&&(x<0)) out = -out;
         }
         return out;
