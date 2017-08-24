@@ -5,14 +5,14 @@
 using namespace std; using namespace vb;
 
 class Sphere : public Coloring { public:
-    Sphere (function <Color(cpx)> f) : Coloring ({-1.0,-1.0},{1.0,1.0},800,f) {}
+    Sphere (int w, function <Color(cpx)> f) : Coloring ({-1.0,-1.0},{1.0,1.0},w,f) {}
 
-    Sphere (function <Color(double,double,double)> f) : Sphere ([f](cpx z){
+    Sphere (int w, function <Color(double,double,double)> f) : Sphere (w, [f](cpx z){
         double x1=real(z), x2=imag(z), n = x1*x1 + x2*x2; if (n>1) return NOCOLOR;
         double x3=sqrt(1-n); return f(x1,x2,x3);
     }) {}
 
-    Sphere (function <Color(double,double)> f) : Sphere ([f](cpx z){
+    Sphere (int w, function <Color(double,double)> f) : Sphere (w, [f](cpx z){
         double x1=real(z), x2=imag(z), n = x1*x1 + x2*x2; if (n>1) return NOCOLOR;
         double theta=asin(sqrt(n)), phi=atan2(x1,x2); return f(theta,phi);
     }) {}
@@ -56,7 +56,7 @@ cpx spherical_harmonic (int n, int m, double theta, double phi) { // 0<=m<=n, 0<
 }
 
 class Wave : public Sphere { public:
-    Wave (int n) : Sphere ([this](double theta, double phi){ return Indexed (v(theta,phi)>0 ? 1 : 2); }), n(n) {
+    Wave (int n, int w) : Sphere (w,[this](double theta, double phi){ return Indexed (v(theta,phi)>0 ? 1 : 2); }), n(n) {
         detail=2.0/n;
         for (int m=0; m<=n; ++m) {
             cpx am {prng.gaussian(),prng.gaussian()};
@@ -77,51 +77,38 @@ class Wave : public Sphere { public:
 };
 
 class Bargman : public Sphere { public:
-    Bargman (int n) : Sphere ([this](double x, double y, double z){ return Indexed (v(x,y,z)>0 ? 1 : 2); }), a(n+1), n(n) {
+    Bargman (int n, int w) : Sphere (w,[this](double x, double y, double z){ return Indexed (v(x,y,z)>0 ? 1 : 2); }), a(n+1), b(n+1), c(n+1), n(n) {
         for (int i=0; i<=n; ++i) for (int j=0; j<=n-i; ++j) a[i].push_back(prng.gaussian());
+        for (int i=0; i<=n; ++i) for (int j=0; j<=n-i; ++j) b[i].push_back(a[i][n-i-j]);
+        for (int i=0; i<=n; ++i) for (int j=0; j<=n-i; ++j) c[i].push_back(a[n-i-j][j]);
     }
 
-    double v (double x, double y, double z) {
-        double out=0;
-        if ((abs(z)>abs(x)) && (abs(z)>abs(y))) {
-            double t=1; for (int i=0; i<=n; ++i) {
-                double tt = t; for (int j=0; j<=n-i; ++j) {
-                    out += a[i][j] * tt;
-                    tt *= (y/z) * sqrt(n-i-j) / sqrt(j+1);
-                }
-                t *= (x/z) * sqrt(n-i) / sqrt(i+1);
+    double vv (vector<vector<double>> &a, double x, double y, double z) {
+        double out=0, t=1; for (int i=0; i<=n; ++i) {
+            double tt = t; for (int j=0; j<=n-i; ++j) {
+                out += a[i][j] * tt;
+                tt *= (y/z) * sqrt(n-i-j) / sqrt(j+1);
             }
-            if ((n%2)&&(z<0)) out = -out;
-        } else if (abs(y)>abs(x)) {
-            double t=1; for (int i=0; i<=n; ++i) {
-                double tt = t; for (int k=0; k<=n-i; ++k) {
-                    out += a[i][n-i-k] * tt;
-                    tt *= (z/y) * sqrt(n-i-k) / sqrt(k+1);
-                }
-                t *= (x/y) * sqrt(n-i) / sqrt(i+1);
-            }
-            if ((n%2)&&(y<0)) out = -out;
-        } else {
-            double t=1; for (int k=0; k<=n; ++k) {
-                double tt = t; for (int j=0; j<=n-k; ++j) {
-                    out += a[n-j-k][j] * tt;
-                    tt *= (y/x) * sqrt(n-k-j) / sqrt(j+1);
-                }
-                t *= (z/x) * sqrt(n-k) / sqrt(k+1);
-            }
-            if ((n%2)&&(x<0)) out = -out;
+            t *= (x/z) * sqrt(n-i) / sqrt(i+1);
         }
+        if ((n%2)&&(z<0)) out = -out;
         return out;
     }
 
-    vector<vector<double>> a;
+    double v (double x, double y, double z) {
+        if ((abs(z)>abs(x)) && (abs(z)>abs(y))) return vv(a,x,y,z);
+        else if (abs(y)>abs(x)) return vv(b,x,z,y);
+        else return vv(c,z,y,x);
+    }
+
+    vector<vector<double>> a,b,c;
     int n;
 };
 
 int main (int argc, char ** argv) {
-    H.init ("Random wave on the sphere", argc, argv, "n=50,p,s=0,t=wave");
+    H.init ("Random wave on the sphere", argc, argv, "n=50,p,s=0,t=wave,w=800");
     int s = H['s']; if (s) prng.seed(s);
-    if (H['t'] == "wave") { Wave F (H['n']); F.show(); if (H['p']) F.pause(); else F.output(); } else
-    if (H['t'] == "barg") { Bargman F (H['n']); F.show(); if (H['p']) F.pause(); else F.output(); } else
+    if (H['t'] == "wave") { Wave F (H['n'],H['w']); F.show(); if (H['p']) F.pause(); else F.output(); } else
+    if (H['t'] == "barg") { Bargman F (H['n'],H['w']); F.show(); if (H['p']) F.pause(); else F.output(); } else
     { H.L->error ("Type should be 'wave' or 'barg', exiting..."); exit(1); }
 }
