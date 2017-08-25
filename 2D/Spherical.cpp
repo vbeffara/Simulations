@@ -81,15 +81,27 @@ class Bargman : public Sphere { public:
         for (int i=0; i<=n; ++i) for (int j=0; j<=n-i; ++j) a[i].push_back(prng.gaussian());
         for (int i=0; i<=n; ++i) for (int j=0; j<=n-i; ++j) b[i].push_back(a[i][n-i-j]);
         for (int i=0; i<=n; ++i) for (int j=0; j<=n-i; ++j) c[i].push_back(a[n-i-j][j]);
+        for (int i=0; i<=n; ++i) for (int j=0; j<=n-i; ++j) eps = max (eps, abs(a[i][j])); eps *= 1e-10;
     }
 
     double vv (vector<vector<double>> &a, double x, double y, double z) {
-        double out=0, t=1; for (int i=0; i<=n; ++i) {
+        int i0 = n * (x*x) / (z*z+x*x); i0 -= i0%2;
+        int j0 = n * (y*y) / (z*z+y*y); j0 -= j0%2;
+        double out=0, t=1;
+        for (int i=i0; i<=n; ++i) {
             double tt = t; for (int j=0; j<=n-i; ++j) {
                 out += a[i][j] * tt;
                 tt *= (y/z) * sqrt(n-i-j) / sqrt(j+1);
             }
-            t *= (x/z) * sqrt(n-i) / sqrt(i+1);
+            t *= (x/z) * sqrt(n-i) / sqrt(i+1); if (abs(t) < eps) break;
+        }
+        t=1;
+        for (int i=i0-1; i>=0; --i) {
+            t /= (x/z) * sqrt(n-i) / sqrt(i+1); if (abs(t) < eps) break;
+            double tt = t; for (int j=0; j<=n-i; ++j) {
+                out += a[i][j] * tt;
+                tt *= (y/z) * sqrt(n-i-j) / sqrt(j+1);
+            }
         }
         if ((n%2)&&(z<0)) out = -out;
         return out;
@@ -102,6 +114,7 @@ class Bargman : public Sphere { public:
     }
 
     vector<vector<double>> a,b,c;
+    double eps=0;
     int n;
 };
 
