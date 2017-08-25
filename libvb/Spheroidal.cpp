@@ -3,7 +3,7 @@
 #include <cassert>
 
 namespace vb {
-	Spheroidal::Spheroidal (Hypermap M, Hub H) : Hypermap(std::move(M)) {
+	Spheroidal::Spheroidal (Hypermap M, Hub & H) : Hypermap(std::move(M)) {
 		assert (genus()==0);
 		from_hypermap();
 		mode = H['m']; title = H.title;

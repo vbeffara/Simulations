@@ -5,7 +5,7 @@
 #include <iomanip>
 
 namespace vb {
-	template <typename T> Constellation0<T>::Constellation0 (const Hypermap & M, const Hub & H) {
+	template <typename T> Constellation0<T>::Constellation0 (const Hypermap & M, Hub & H) {
 		Hypermap M2 (M); M2.dessin(); p = { T(1) };
 		Hypermap M3 (M2); M3.normalize();
 		while (true) {

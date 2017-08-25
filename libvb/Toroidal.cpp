@@ -3,7 +3,7 @@
 #include <cassert>
 
 namespace vb {
-	Toroidal::Toroidal (Hypermap M, Hub H) : Hypermap(std::move(M)), m(I) {
+	Toroidal::Toroidal (Hypermap M, Hub & H) : Hypermap(std::move(M)), m(I) {
 		assert (genus()==1);
 		from_hypermap();
 		mode = H['m']; title = H.title;

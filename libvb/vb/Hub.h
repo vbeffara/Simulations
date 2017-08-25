@@ -26,7 +26,13 @@ namespace vb {
 	class Hub : public std::map <char,Value> {
 	public:
 		Hub ();
+		Hub (const Hub &) =delete;
+		Hub (Hub &&) =delete;
+
 		~Hub ();
+
+		Hub & operator= (const Hub &) =delete;
+		Hub & operator= (Hub &&) =delete;
 
 		void init (std::string t, int argc, char ** argv, std::string c = "");
 

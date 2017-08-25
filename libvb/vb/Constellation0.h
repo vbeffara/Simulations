@@ -9,7 +9,7 @@ namespace vb {
 		using Constellation<T>::b; using Constellation<T>::w; using Constellation<T>::f; using Constellation<T>::p;
 		using Constellation<T>::findn; using Constellation<T>::cost; using Constellation<T>::dim;
 
-		Constellation0                      	(const Hypermap & M, const Hub & H);
+		Constellation0                      	(const Hypermap & M, Hub & H);
 		template <typename U> Constellation0	(const Constellation0<U> & C);
 
 		cplx	operator()	(cplx z)	const override;

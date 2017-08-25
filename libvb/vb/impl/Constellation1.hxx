@@ -5,7 +5,7 @@
 #include <iomanip>
 
 namespace vb {
-	template <typename T> Constellation1<T>::Constellation1 (const Hypermap & M, const Hub & H) {
+	template <typename T> Constellation1<T>::Constellation1 (const Hypermap & M, Hub & H) {
 		Hypermap M2 (M); M2.dessin(); p = { I_<T>(), T(0) };
 		do {
 			M2.split_edges(); Toroidal S (M2,H); S.pack(); S.output_pdf();

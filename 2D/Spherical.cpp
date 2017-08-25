@@ -5,14 +5,14 @@
 using namespace std; using namespace vb;
 
 class Sphere : public Coloring { public:
-    Sphere (int w, function <Color(cpx)> f) : Coloring ({-1.0,-1.0},{1.0,1.0},w,f) {}
+    Sphere (int w, function <Color(cpx)> f) : Coloring ({-1.0,-1.0},{1.0,1.0},w,std::move(f)) {}
 
-    Sphere (int w, function <Color(double,double,double)> f) : Sphere (w, [f](cpx z){
+    Sphere (int w, const function <Color(double,double,double)> &f) : Sphere (w, [f](cpx z){
         double x1=real(z), x2=imag(z), n = x1*x1 + x2*x2; if (n>1) return NOCOLOR;
         double x3=sqrt(1-n); return f(x1,x2,x3);
     }) {}
 
-    Sphere (int w, function <Color(double,double)> f) : Sphere (w, [f](cpx z){
+    Sphere (int w, const function <Color(double,double)> &f) : Sphere (w, [f](cpx z){
         double x1=real(z), x2=imag(z), n = x1*x1 + x2*x2; if (n>1) return NOCOLOR;
         double theta=asin(sqrt(n)), phi=atan2(x1,x2); return f(theta,phi);
     }) {}

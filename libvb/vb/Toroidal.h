@@ -25,7 +25,7 @@
 namespace vb {
 	class Toroidal : public Hypermap {
 	public:
-		Toroidal (Hypermap M, Hub H);
+		Toroidal (Hypermap M, Hub & H);
 
 		void pack      	();	//< Run acpa() and then compute an embedding into a torus.
 		void output_pdf	();	//< Make a PDF of a few periods of the covering.
