@@ -81,7 +81,7 @@ class Bargman : public Sphere { public:
         for (int i=0; i<=n; ++i) for (int j=0; j<=n-i; ++j) a[i].push_back(prng.gaussian());
         for (int i=0; i<=n; ++i) for (int j=0; j<=n-i; ++j) b[i].push_back(a[i][n-i-j]);
         for (int i=0; i<=n; ++i) for (int j=0; j<=n-i; ++j) c[i].push_back(a[n-i-j][j]);
-        for (int i=0; i<=n; ++i) for (int j=0; j<=n-i; ++j) eps = max (eps, abs(a[i][j])); eps *= 1e-5;
+        for (int i=0; i<=n; ++i) for (int j=0; j<=n-i; ++j) eps = max (eps, abs(a[i][j])); eps *= double(H['e']);
     }
 
     double vv (vector<vector<double>> &a, double x, double y, double z) {
@@ -131,7 +131,7 @@ class Bargman : public Sphere { public:
 };
 
 int main (int argc, char ** argv) {
-    H.init ("Random wave on the sphere", argc, argv, "n=50,p,s=0,t=wave,w=800");
+    H.init ("Random wave on the sphere", argc, argv, "n=50,p,s=0,t=wave,w=800,e=.000001");
     int s = H['s']; if (s) prng.seed(s);
     if (H['t'] == "wave") { Wave F (H['n'],H['w']); F.show(); if (H['p']) F.pause(); else F.output(); } else
     if (H['t'] == "barg") { Bargman F (H['n'],H['w']); F.show(); if (H['p']) F.pause(); else F.output(); } else
