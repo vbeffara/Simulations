@@ -19,15 +19,16 @@ namespace vb {
 		void pause() { paused=true; update(); }
 
 		void run (std::function<void()> f) {
+			hold = true;
 			auto ff = std::async(std::launch::async,f);
 			while (ff.wait_for(std::chrono::milliseconds(100)) != std::future_status::ready) update();
 			ff.get();
+			hold = false; if (die) exit(0);
 		}
 
 		int handle (int event) override {
 			if (event == FL_KEYDOWN) switch (Fl::event_key()) {
-				case 'q': exit (0);        	         	break;
-				case 'x': exit (1);        	         	break;
+				case 'q': die = true;       return 1;   break;
 				case 'h': T::hide();       	return 1;	break;
 				case ' ': paused = !paused;	return 1;	break;
 			}

@@ -38,5 +38,8 @@ namespace vb {
 		int next, slice;
 		long long n_call;
 		int task;
+
+	protected:
+		bool die=false, hold=false;
 	};
 }

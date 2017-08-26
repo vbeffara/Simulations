@@ -15,6 +15,7 @@ namespace vb {
 	void Auto::remove_task (int i) { tasks[i].active = false; }
 
 	void Auto::run () {
+		if (die && (!hold)) exit(0);
 		for (Task & t : tasks) if (t.active && (now() >= t.next)) { t(); t.next = now() + t.period; }
 		double time = Duration(now()-start).count();
 		if (time>1) slice = std::min (n_call / (time*100), slice + slice/100.0);
