@@ -80,6 +80,7 @@ namespace vb {
 		~generator() { if (m_coroutine) { m_coroutine.destroy(); } }
 
 		generator& operator= (generator other) noexcept { swap(other); return *this; }
+		generator& operator= (generator && other) noexcept { swap(other); return *this; }
 
 		iterator begin() {
 			if (m_coroutine) {
