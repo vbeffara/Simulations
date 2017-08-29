@@ -49,6 +49,7 @@ class Bargman : public Sphere { public:
         for (int i=0; i<=n; ++i) for (int j=0; j<=n-i; ++j) b[i].push_back(a[i][n-i-j]);
         for (int i=0; i<=n; ++i) for (int j=0; j<=n-i; ++j) c[i].push_back(a[n-i-j][j]);
         for (int i=0; i<=n; ++i) for (int j=0; j<=n-i; ++j) eps = max (eps, abs(a[i][j])); eps *= double(H['e']);
+        for (int i=0; i<=n; ++i) sq.push_back(sqrt(i));
     }
 
     double vv (vector<vector<double>> &a, double x, double y, double z) {
@@ -58,26 +59,26 @@ class Bargman : public Sphere { public:
             double tt = t;
             for (int j=j0; j<=n-i; ++j) {
                 out += a[i][j] * tt;
-                tt *= (y/z) * sqrt(n-i-j) / sqrt(j+1); if (abs(tt) < eps) break;
+                tt *= (y/z) * sq[n-i-j] / sq[j+1]; if (abs(tt) < eps) break;
             }
             tt = t;
             for (int j=j0-1; j>=0; --j) {
-                tt /= (y/z) * sqrt(n-i-j) / sqrt(j+1); if (abs(tt) < eps) break;
+                tt /= (y/z) * sq[n-i-j] / sq[j+1]; if (abs(tt) < eps) break;
                 out += a[i][j] * tt;
             }
-            t *= (x/z) * sqrt(n-i-j0) / sqrt(i+1); if (abs(t) < eps) break;
+            t *= (x/z) * sq[n-i-j0] / sq[i+1]; if (abs(t) < eps) break;
         }
         t=1;
         for (int i=i0-1; i>=0; --i) {
-            t /= (x/z) * sqrt(n-i-j0) / sqrt(i+1); if (abs(t) < eps) break;
+            t /= (x/z) * sq[n-i-j0] / sq[i+1]; if (abs(t) < eps) break;
             double tt = t;
             for (int j=j0; j<=n-i; ++j) {
                 out += a[i][j] * tt;
-                tt *= (y/z) * sqrt(n-i-j) / sqrt(j+1); if (abs(tt) < eps) break;
+                tt *= (y/z) * sq[n-i-j] / sq[j+1]; if (abs(tt) < eps) break;
             }
             tt = t;
             for (int j=j0-1; j>=0; --j) {
-                tt /= (y/z) * sqrt(n-i-j) / sqrt(j+1); if (abs(tt) < eps) break;
+                tt /= (y/z) * sq[n-i-j] / sq[j+1]; if (abs(tt) < eps) break;
                 out += a[i][j] * tt;
             }
         }
@@ -92,6 +93,7 @@ class Bargman : public Sphere { public:
     }
 
     vector<vector<double>> a,b,c;
+    vector<double> sq;
     double eps=0;
     int n;
 };
