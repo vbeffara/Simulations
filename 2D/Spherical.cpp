@@ -44,12 +44,12 @@ class Wave : public Sphere { public:
 };
 
 class Bargman : public Sphere { public:
-    Bargman (int n, int w) : Sphere (w,[this](double x, double y, double z){ return f_to_c(v(x,y,z)); }), a(n+1), b(n+1), c(n+1), n(n) {
+    Bargman (int n, int w) : Sphere (w,[this](double x, double y, double z){ return f_to_c(v(x,y,z)); }), a(n+1), b(n+1), c(n+1), sqsq(n+1), n(n) {
         for (int i=0; i<=n; ++i) for (int j=0; j<=n-i; ++j) a[i].push_back(prng.gaussian());
         for (int i=0; i<=n; ++i) for (int j=0; j<=n-i; ++j) b[i].push_back(a[i][n-i-j]);
         for (int i=0; i<=n; ++i) for (int j=0; j<=n-i; ++j) c[i].push_back(a[n-i-j][j]);
         for (int i=0; i<=n; ++i) for (int j=0; j<=n-i; ++j) eps = max (eps, abs(a[i][j])); eps *= double(H['e']);
-        for (int i=0; i<=n; ++i) sq.push_back(sqrt(i));
+        for (int i=0; i<=n; ++i) for (int j=0; j<=n; ++j) sqsq[i].push_back(sqrt(i)/sqrt(j));
     }
 
     double vv (vector<vector<double>> &a, double x, double y, double z) {
@@ -59,26 +59,26 @@ class Bargman : public Sphere { public:
             double tt = t;
             for (int j=j0; j<=n-i; ++j) {
                 out += a[i][j] * tt;
-                tt *= (y/z) * sq[n-i-j] / sq[j+1]; if (abs(tt) < eps) break;
+                tt *= (y/z) * sqsq[n-i-j][j+1]; if (abs(tt) < eps) break;
             }
             tt = t;
             for (int j=j0-1; j>=0; --j) {
-                tt /= (y/z) * sq[n-i-j] / sq[j+1]; if (abs(tt) < eps) break;
+                tt /= (y/z) * sqsq[n-i-j][j+1]; if (abs(tt) < eps) break;
                 out += a[i][j] * tt;
             }
-            t *= (x/z) * sq[n-i-j0] / sq[i+1]; if (abs(t) < eps) break;
+            t *= (x/z) * sqsq[n-i-j0][i+1]; if (abs(t) < eps) break;
         }
         t=1;
         for (int i=i0-1; i>=0; --i) {
-            t /= (x/z) * sq[n-i-j0] / sq[i+1]; if (abs(t) < eps) break;
+            t /= (x/z) * sqsq[n-i-j0][i+1]; if (abs(t) < eps) break;
             double tt = t;
             for (int j=j0; j<=n-i; ++j) {
                 out += a[i][j] * tt;
-                tt *= (y/z) * sq[n-i-j] / sq[j+1]; if (abs(tt) < eps) break;
+                tt *= (y/z) * sqsq[n-i-j][j+1]; if (abs(tt) < eps) break;
             }
             tt = t;
             for (int j=j0-1; j>=0; --j) {
-                tt /= (y/z) * sq[n-i-j] / sq[j+1]; if (abs(tt) < eps) break;
+                tt /= (y/z) * sqsq[n-i-j][j+1]; if (abs(tt) < eps) break;
                 out += a[i][j] * tt;
             }
         }
@@ -92,14 +92,13 @@ class Bargman : public Sphere { public:
         else return vv(c,z,y,x);
     }
 
-    vector<vector<double>> a,b,c;
-    vector<double> sq;
+    vector<vector<double>> a,b,c,sqsq;
     double eps=0;
     int n;
 };
 
 int main (int argc, char ** argv) {
-    H.init ("Random wave on the sphere", argc, argv, "n=50,p,s=0,t=wave,w=800,e=.000001");
+    H.init ("Random wave on the sphere", argc, argv, "n=50,p,s=0,t=wave,w=800,e=.001");
     int s = H['s']; if (s) prng.seed(s);
     if (H['t'] == "wave") { Wave F (H['n'],H['w']); F.show(); if (H['p']) F.pause(); else F.output(); } else
     if (H['t'] == "barg") { Bargman F (H['n'],H['w']); F.show(); if (H['p']) F.pause(); else F.output(); } else
