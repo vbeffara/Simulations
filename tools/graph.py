@@ -27,7 +27,7 @@ for f in G.nodes():
 	ff = f;
 	if ff[:3] == "vb/":
 		ff = "libvb/" + f;
-	for l in open(ff):
+	for l in open(ff, encoding="utf-8"):
 		if l.startswith("#include"):
 			h = l[10:-2]
 			if h.startswith("vb/") or full:
