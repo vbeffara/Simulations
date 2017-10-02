@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 
   H.init ("Discrete-time contact process on the hexagonal lattice",argc,argv,"p=.5,n=400");
   double p = H['p'];
-  long n = H['n'];
+  int64_t n = H['n'];
 
   Image img (n,n);
 

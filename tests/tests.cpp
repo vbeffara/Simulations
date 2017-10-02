@@ -115,8 +115,7 @@ BOOST_AUTO_TEST_CASE (test_Value) {
 	Value v1 ("1"), v2 ("3.4");
 	BOOST_TEST (bool(v1));
 	BOOST_TEST (int(v1) == 1);
-	BOOST_TEST (unsigned(v1) == 1);
-	BOOST_TEST (long(v1) == 1);
+	BOOST_TEST (int64_t(v1) == 1);
 	BOOST_TEST (double(v2) == 3.4);
 
 	v1 = "45"; BOOST_TEST (int(v1) == 45);

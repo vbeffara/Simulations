@@ -51,7 +51,7 @@ namespace vb {
 		double alpha_xyz	(double x, double y, double z)	const;
 		double ccn      	(int n)                       	const;
 
-		unsigned mode = 228; std::string title;
+		int mode = 228; std::string title;
 
 	private:
 		Permutation	rebasing	(unsigned i)	const;

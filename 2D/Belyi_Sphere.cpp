@@ -28,7 +28,7 @@ Stream <Hypermap> triangulations (unsigned n) {
 
 int main (int argc, char ** argv) {
 	H.init ("Spheroidal enumeration", argc, argv, "s=3,m=228,d=2,g=0,v,o,b");
-	unsigned s=H['s'], g=0, a=6*(s-2), d=H['d'];
+	int s=H['s'], g=0, a=6*(s-2), d=H['d'];
 	assert (a>0);
 
 	int nb=0;

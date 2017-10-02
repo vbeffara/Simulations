@@ -1,10 +1,10 @@
 #pragma once /// \file
 #undef False
 #include <boost/chrono.hpp>
-#include <spdlog/spdlog.h>
-#include <spdlog/fmt/ostr.h>
 #include <cstdlib>
 #include <map>
+#include <spdlog/fmt/ostr.h>
+#include <spdlog/spdlog.h>
 #include <string>
 
 namespace vb {
@@ -18,8 +18,7 @@ namespace vb {
 
 		operator bool()    	const { return atoi(c_str()); }
 		operator int()     	const { return atoi(c_str()); }
-		operator unsigned()	const { return atoi(c_str()); }
-		operator long()    	const { return atoi(c_str()); }
+		operator int64_t() 	const { return atoi(c_str()); }
 		operator double()  	const { return atof(c_str()); }
 	};
 
@@ -48,4 +47,4 @@ namespace vb {
 	};
 
 	extern Hub H;
-}
+} // namespace vb

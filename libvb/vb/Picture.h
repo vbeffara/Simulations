@@ -1,8 +1,8 @@
 #pragma once /// \file
-#include <vb/Color.h>
-#include <vb/AutoWindow.h>
-#include <cairo.h>
 #include <FL/Fl_Gl_Window.H>
+#include <cairo.h>
+#include <vb/AutoWindow.h>
+#include <vb/Color.h>
 
 namespace vb {
 	/** A nice helper class for simulations.
@@ -22,7 +22,8 @@ namespace vb {
 		Picture & operator= (Picture &&) = delete;
 
 		/// Output the image in the preferred format (PNG by default).
-		virtual void output (const std::string &s = "");
+		virtual void output (const std::string &s);
+		virtual void output ();
 		void output_png (const std::string &s = "");
 
 		void snapshot_setup (const std::string &prefix, double period = 0.0);

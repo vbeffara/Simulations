@@ -1,8 +1,8 @@
 /// @file
-#include <vb/Picture.h>
 #include <FL/fl_draw.H>
 #include <FL/gl.h>
 #include <iomanip>
+#include <vb/Picture.h>
 
 namespace vb {
 	Picture::Picture (int wd, int ht) :
@@ -43,6 +43,8 @@ namespace vb {
 	}
 
 	void Picture::output (const std::string &s) { output_png (s); }
+
+	void Picture::output () { output_png (""); }
 
 	void Picture::snapshot () {
 		std::string fn = fmt::format ("snapshots/{}_{:04d}", snapshot_prefix, snapshot_number++);

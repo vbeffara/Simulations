@@ -11,7 +11,7 @@ int main (int argc, char ** argv) {
 	int u = H['u']; if (u) M = H_genus0(u);
 	int f = H['f']; if (f) {
 		if (int(H['s'])) prng.seed(int(H['s']));
-		unsigned d = H['d'], D = H['D'];
+		int d = H['d'], D = H['D'];
 		bool bad = true; while (bad) {
 			for (int i=0; i<f; ++i) M.flip(prng.uniform_int(M.sigma.size()));
 			bad = false; f = 1;
