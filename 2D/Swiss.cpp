@@ -44,7 +44,7 @@ public:
     void run () {
         for (coo z (w()/2,h()/2);;) {
             vector<int> nb (4,0);
-            nb[atp(z+1)] += 1; nb[atp(z-1)] += 1; nb[atp(z+J)] += 1; nb[atp(z-J)] += 1;
+            nb[atp(z+coo{1,0})] += 1; nb[atp(z-coo{1,0})] += 1; nb[atp(z+coo{0,1})] += 1; nb[atp(z-coo{0,1})] += 1;
             int max = 0; for (int i : nb) if (i>max) max=i;
 
             int d = prng.uniform_int(4);

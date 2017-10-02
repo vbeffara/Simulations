@@ -8,6 +8,7 @@ double minw, maxw, contrast = .2;
 
 class Domino { public:
 	Domino (coo z_ = {0,0}, int d_ = 0, bool active_ = false) : z(z_), d(d_), active(active_) { if (d>=2) { z += dz[d]; d -= 2; } }
+	Domino (int) : Domino() {}
 
 	double weight () const { return W [z.x % W.size()] [z.y % W[0].size()] [d]; }
 

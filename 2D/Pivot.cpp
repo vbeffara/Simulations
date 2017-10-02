@@ -30,7 +30,7 @@ class Pivot : public Image { public:
 		for (auto & c : *this) c = BLACK;
 		for (int k=0; k<n; k++) putp(z[k]-z[p]+coo(2*nn,2*nn),WHITE);
 		for (int k=p+1; k<n; k++) {
-			coo zz = rot(z[k]-z[p],0) + coo(2*nn,2*nn);
+			coo zz = rot(z[k]-z[p],{0,0}) + coo(2*nn,2*nn);
 			if (atp(zz) != WHITE) putp(zz,RED);
 		}
 	}

@@ -9,7 +9,7 @@ namespace vb {
     bool OldPath::self_avoiding () {
         TriMatrix<char> T;
         int l=0;
-        coo z(0);
+        coo z {0,0};
 
         T.put(z,1);
         for (char i : *this) {

@@ -45,4 +45,4 @@ namespace vb {
 
 		virtual void paint () {};      /// Update the contents of surface from a derived class data.
 	};
-}
+} // namespace vb

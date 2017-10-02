@@ -6,7 +6,7 @@ using namespace vb; using namespace std;
 
 class Walker { public:
 	Walker () : pos(3,0), Max(3,INT_MIN), Min(3,INT_MAX) {
-		for (int i=0; i<3; ++i) { Max[i].put(0,0); Min[i].put(0,0); }
+		for (int i=0; i<3; ++i) { Max[i].put({0,0},0); Min[i].put({0,0},0); }
 	}
 
 	int step (int dir, int add) {

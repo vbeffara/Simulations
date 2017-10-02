@@ -36,7 +36,7 @@ namespace vb {
 	};
 
 	template<typename T> Bitmap<T>::Bitmap (int wd, int ht, T d) :
-		Picture(wd,ht), Array<T>(wd,ht,d), z0(0), dflt(d) {}
+		Picture(wd,ht), Array<T>(wd,ht,d), z0(0,0), dflt(d) {}
 
 	template<typename T> void Bitmap<T>::fill (coo z, T c, int adj) {
 		T in = at(z); if (in == c) return;

@@ -10,7 +10,7 @@ class Site { public:
 };
 
 class Particle : public Site { public:
-	Particle      	(coo xy = 0, int s = 0, bool z = false, double t = 0) :	Site(s), location(xy), type(z), next(t)	{};
+	Particle      	(coo xy = {0,0}, int s = 0, bool z = false, double t = 0) :	Site(s), location(xy), type(z), next(t)	{};
 	bool operator<	(const Particle &o)                                    	const                                  	{ return next > o.next; }
 
 	coo jump () const {

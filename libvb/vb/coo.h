@@ -5,7 +5,8 @@
 
 namespace vb {
 	class coo { public: int64_t x,y;
-		coo(int64_t xx = 0, int64_t yy = 0) : x(xx), y(yy) {}
+		coo (int64_t xx, int64_t yy) : x(xx), y(yy) {}
+		coo () : coo (0,0) {}
 
 		bool	operator==	(const coo & z)	const	{ return (x == z.x) && (y == z.y); }
 		bool	operator!=	(const coo & z)	const	{ return (x != z.x) || (y != z.y); }
@@ -19,15 +20,13 @@ namespace vb {
 		void	operator+=	(const coo & z)		{ x+=z.x; y+=z.y; }
 		void	operator-=	(const coo & z)		{ x-=z.x; y-=z.y; }
 
-		operator cpx() const { return cpx(x,y); }
+		explicit operator cpx() const { return cpx(x,y); }
 	};
 
 	inline int64_t norm	(coo z) { return z.x*z.x + z.y*z.y; }
 	inline int64_t sup 	(coo z) { return std::max (std::abs(z.x), std::abs(z.y)); }
 
 	inline std::ostream & operator<< (std::ostream & os, const coo z) { return os << "(" << z.x << "," << z.y << ")"; }
-
-	const coo J (0,1);
 
 	class rect { public: coo ul,br;
 		rect (coo u, coo b) : ul(u), br(b) {};

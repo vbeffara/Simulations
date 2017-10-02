@@ -47,11 +47,11 @@ class DLA : public CoarseImage { public:
 	}
 
 	void runDLA () {
-		put(0);
+		put({0,0});
 		while (r<n/2-1) {
 			double t = prng.uniform_real(0,2*M_PI);
 			coo z ((2*r+20)*cos(t), (2*r+20)*sin(t));
-			QuadIndex qi { 0, sup(z) };
+			QuadIndex qi { {0,0}, sup(z) };
 			while (!neighbor(z)) {
 				qi.d = sup (z-qi.z); QT.nn (z,qi);
 				z += jump(qi.d);
@@ -61,7 +61,7 @@ class DLA : public CoarseImage { public:
 		}
 	}
 
-	void paint () override { QT.paint (img,0,512); CoarseImage::paint(); }
+	void paint () override { QT.paint (img,{0,0},512); CoarseImage::paint(); }
 
 	int n; unsigned c; int64_t r;
 	Console W;

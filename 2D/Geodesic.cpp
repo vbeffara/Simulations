@@ -16,7 +16,7 @@ class Info {
 	};
 
 class QG : public Image { public:
-	QG (Hub & H) : Image (1<<int(H['n']), 1<<int(H['n'])), I(w(),h(),Info(0,0,0,0)), g(H['g']), n(H['n']) {
+	QG (Hub & H) : Image (1<<int(H['n']), 1<<int(H['n'])), I(w(),h(),Info({0,0},{0,0},0,0)), g(H['g']), n(H['n']) {
 		if     	(H['w'] == "dyadic")  	fill_dyadic	(H['z']);
 		else if	(H['w'] == "boolean") 	fill_boolean (H['z']);
 		else if	(H['w'] == "white")   	fill_white ();
@@ -24,7 +24,7 @@ class QG : public Image { public:
 		else if	(H['w'] == "gaussian")	fill_gaussian (H['z']);
 		else { H.L->error ("Noise type {} unknown, no noise for you!", string(H['w'])); exit (1); }
 
-		minf = maxf = I.at(0).f; for (auto & u : I) { minf = min (minf,u.f); maxf = max (maxf,u.f); }
+		minf = maxf = I.at({0,0}).f; for (auto & u : I) { minf = min (minf,u.f); maxf = max (maxf,u.f); }
 		H.L->info ("Renormalized field: min = {}, max = {}", minf/log(w()), maxf/log(w()));
 
 		for (int j=0; j<h(); ++j)
@@ -116,7 +116,7 @@ class QG : public Image { public:
 	}
 
 	double radius () {
-		double r = I.at(0).d; for (int i=0; i<w(); ++i) {
+		double r = I.at({0,0}).d; for (int i=0; i<w(); ++i) {
 			r = min (r, I.at(coo(i,0)).d    );
 			r = min (r, I.at(coo(0,i)).d    );
 			r = min (r, I.at(coo(i,h()-1)).d);

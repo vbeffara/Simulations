@@ -15,7 +15,7 @@ public:
 class PercSEP : public Bitmap<Site> {
 public:
 	PercSEP (Hub & H) : Bitmap<Site> (2*int(H['n']), H['n']),
-			flow(0), d(H['d']), tasym(H['t']) {
+			flow(0,0), d(H['d']), tasym(H['t']) {
 		for (int i=0; i<w(); ++i)
 			for (int j=0; j<h(); ++j)
 				if (prng.bernoulli(H['p']))
@@ -48,7 +48,7 @@ public:
 	void move() {
 		coo z (prng.uniform_int(w()), prng.uniform_int(h()));          	if (at(z) < 2) return;
 		coo s = prng.bernoulli(d) ? coo(1,0) : dz[prng.uniform_int(4)];	if (atp(z+s) != 1) return;
-		if (tasym && (s==-1)) return;
+		if (tasym && (s == coo{-1,0})) return;
 		swap (at(z), atp(z+s));
 		step(); flow += s;
 	}
@@ -67,7 +67,7 @@ int main (int argc, char ** argv) {
 			int na=0; for (int x=0;x<P.w();++x) for (int y=0;y<P.h();++y) if (P.at(coo(x,y))==2) ++na;
 			if (na==0) exit(0);
 			cout << t/(P.w()*P.h()) << " " << na << " " << P.flow.x << " " << double(P.flow.x)/na << endl;
-			P.flow = 0;
+			P.flow = {0,0};
 		}
 		P.move();
 	}

@@ -81,7 +81,7 @@ class Glass : public Image { public:
 
 		init[H['c']](ok);
 
-		fill (0,0); for (int i=0; i<n; i++) put(coo(i,n/2),255); show();
+		fill ({0,0},0); for (int i=0; i<n; i++) put(coo(i,n/2),255); show();
 	};
 
 	void run () {

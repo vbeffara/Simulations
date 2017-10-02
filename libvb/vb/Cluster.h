@@ -16,7 +16,7 @@ namespace vb {
 		void remove (coo z);
 
 		void validate ();
-		void paint (Image & I, coo ul = 0, coo br = 0);
+		void paint (Image & I, coo ul = {0,0}, coo br = {0,0});
 
 		long sub_index (coo z) const;
 

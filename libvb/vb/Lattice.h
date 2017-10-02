@@ -5,7 +5,7 @@
 namespace vb {
 	class Lattice_place {
 	public:
-		Lattice_place             	(coo _z=0, int _k=0) : z(_z), k(_k)	{};
+		Lattice_place             	(coo _z={0,0}, int _k=0) : z(_z), k(_k)	{};
 		Lattice_place & operator+=	(const Lattice_place &m)           	{ z+=m.z; k=m.k; return *this; };
 		Lattice_place   operator+ 	(const Lattice_place &m) const     	{ Lattice_place tmp (z,k); tmp += m; return tmp; };
 
