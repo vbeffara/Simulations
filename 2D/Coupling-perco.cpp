@@ -99,7 +99,7 @@ class Coupling : public Image { public:
 			for (int j=0; j<c1.h(); j++) {
 				coo z(i,j);
 				if (c1.at(z)==c2.at(z)) { put(z,BLACK); }
-				else if (c1.at(z)>c2.at(z)) { put(z,GREEN); n++; }
+				else if (int(c1.at(z))>int(c2.at(z))) { put(z,GREEN); n++; }
 				else { put(z,RED); n++; }
 			}
 		}

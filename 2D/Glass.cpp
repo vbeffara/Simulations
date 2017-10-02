@@ -103,10 +103,10 @@ class Glass : public Image { public:
 			if (ok[nb]) {
 				if (prng.bernoulli(p)) {
 					if (at(coo(x,y)) == Color(0)) {
-						int tmp = at(coo(x+1,y));
-						tmp    |= at(coo(x-1,y));
-						tmp    |= at(coo(x,y+1));
-						tmp    |= at(coo(x,y-1));
+						int tmp = int(at(coo(x+1,y)));
+						tmp    |= int(at(coo(x-1,y)));
+						tmp    |= int(at(coo(x,y+1)));
+						tmp    |= int(at(coo(x,y-1)));
 						if (tmp==0) tmp=85;
 						put(coo(x,y),tmp);
 					}

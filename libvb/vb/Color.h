@@ -25,7 +25,7 @@ namespace vb {
 		bool operator== (const Color &o) const { return (r==o.r) && (g==o.g) && (b==o.b) && (a==o.a); }
 		bool operator!= (const Color &o) const { return (r!=o.r) || (g!=o.g) || (b!=o.b) || (a!=o.a); }
 
-		operator int () { return (r+g+b)/3; }
+		explicit operator int () { return (r+g+b)/3; }
 	};
 
 	const Color	NOCOLOR(0,0,0,0), BLACK(0,0,0), WHITE(255,255,255), RED(255,0,0), GREEN(0,255,0), BLUE(0,0,255),
@@ -47,4 +47,4 @@ namespace vb {
 	inline std::ostream & operator<< (std::ostream & o, const Color & c) {
 		return o << "RGBA(" << c.r << "," << c.g << "," << c.b << "," << c.a << ")";
 	}
-}
+} // namespace vb

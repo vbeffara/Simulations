@@ -13,7 +13,7 @@ namespace vb {
 
 	class Value : public std::string {
 	public:
-		Value (std::string s = "") : std::string (std::move(s)) {}
+		explicit Value (std::string s = "") : std::string (std::move(s)) {}
 		Value & operator= (const std::string & s) { std::string::operator=(s); return *this; }
 
 		operator bool()    	const { return atoi(c_str()); }

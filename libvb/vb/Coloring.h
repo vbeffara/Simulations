@@ -1,7 +1,7 @@
 #pragma once /// \file
+#include <gsl/gsl>
 #include <vb/Picture.h>
 #include <vb/coo.h>
-#include <gsl/gsl>
 
 namespace vb {
 	class Coloring : public Picture { public:
@@ -36,4 +36,4 @@ namespace vb {
 		int handle (int event) override;
 		int pixel_detail=0;
 	};
-}
+} // namespace vb
