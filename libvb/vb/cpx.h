@@ -1,7 +1,8 @@
 #pragma once /// @file
+
+#include <cln/cln.h>
 #include <cmath>
 #include <complex>
-#include <cln/cln.h>
 
 namespace cln {
 	inline cl_R norm (const cl_N & z) { return realpart(z)*realpart(z) + imagpart(z)*imagpart(z); }
@@ -9,7 +10,7 @@ namespace cln {
 	inline cl_N conj (const cl_N & z) { return conjugate(z); }
 	inline cl_R real (const cl_N & z) { return realpart(z); }
 	inline cl_R imag (const cl_N & z) { return imagpart(z); }
-}
+} // namespace cln
 
 namespace vb {
 	using cpx = std::complex<double>;
@@ -47,4 +48,4 @@ namespace vb {
 	template <typename T> typename cpx_t<T>::type to_cpx (const T & x, const T & y) { return typename cpx_t<T>::type (x,y); }
 	template <typename T> typename cpx_t<T>::type to_cpx (const cpx & z) { return to_cpx<T> (real(z),imag(z)); }
 	template <> complex_t to_cpx <real_t> (const real_t & x, const real_t & y);
-}
+} // namespace vb

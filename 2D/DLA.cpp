@@ -63,7 +63,7 @@ class DLA : public CoarseImage { public:
 
 	void paint () override { QT.paint (img,0,512); CoarseImage::paint(); }
 
-	int n; unsigned c; long r;
+	int n; unsigned c; int64_t r;
 	Console W;
 	QuadTree QT;
 	vector<vector<double>> prec;

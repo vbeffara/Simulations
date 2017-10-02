@@ -84,8 +84,8 @@ class QG : public Image { public:
 		auto in = fftw_alloc_complex(ww*hh), out = fftw_alloc_complex(ww*hh);
 		fftw_plan p = fftw_plan_dft_2d (ww, hh, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
 
-		for (long j=0; j<hh; ++j) for (long i=0; i<ww; ++i) {
-			long ii = min (i,ww-i); long jj = min (j,hh-j);
+		for (int64_t j=0; j<hh; ++j) for (int64_t i=0; i<ww; ++i) {
+			int64_t ii = min (i,ww-i); int64_t jj = min (j,hh-j);
 			double re = prng.gaussian (0, exp(-(ii*ii+jj*jj)/(l*l)));
 			double im = 0*prng.gaussian (0, exp(-(ii*ii+jj*jj)/(l*l)));
 			in[i+ww*j][0] = re; in[i+ww*j][1] = im;

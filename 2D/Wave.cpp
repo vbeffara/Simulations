@@ -1,7 +1,7 @@
 #include <vb/Coloring.h>
 #include <vb/PRNG.h>
 
-using namespace vb; using namespace std;
+using vb::cpx; using vb::H; using vb::prng;
 
 double f (double x) { return exp(-1/x); }
 double g (double x) { return f(1-x)/(f(x)+f(1-x)); }
@@ -13,7 +13,7 @@ double bump (double x, double e) {
 	return g((1+(x-1)/e)/2);
 }
 
-class Wave : public Coloring { public:
+class Wave : public vb::Coloring { public:
 	class Mode { public:
 		Mode (double a_, double t, double l, double p_) : a(a_), c(l*cos(t)), s(l*sin(t)), p(p_) {}
 		double operator() (const cpx & z) { return a * cos(c*real(z) + s*imag(z) + p); }
@@ -31,9 +31,9 @@ class Wave : public Coloring { public:
 
 	double v (cpx z) { double out = double(H['t'])*real(z); for (auto mm : m) out += mm(z); return out; }
 
-	Color c (cpx z) { return Indexed (v(z) > 0 ? 1 : 2); }
+	vb::Color c (cpx z) { return vb::Indexed (v(z) > 0 ? 1 : 2); }
 
-	vector<Mode> m;
+	std::vector<Mode> m;
 };
 
 int main (int argc, char ** argv) {

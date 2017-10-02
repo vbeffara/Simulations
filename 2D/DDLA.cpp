@@ -42,7 +42,7 @@ public:
 	}
 
 	bool f;
-	long n,cursum;
+	int64_t n,cursum;
 	double p;
 	PointQueue pq;
 };

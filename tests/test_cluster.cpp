@@ -3,8 +3,8 @@
 using namespace vb; using namespace std;
 
 class Cluster2 : public Cluster { public:
-	int dist_to_box (coo z) { return max (0L, min ({z.x-(ul.x+w-1), z.y-(ul.y+w-1), ul.x-z.x, ul.y-z.y})); }
-	int dist_to_out (coo z) { return max (0L, min ({z.x-ul.x+1, z.y-ul.y+1, (ul.x+w)-z.x, (ul.y+w)-z.y})); }
+	int dist_to_box (coo z) { return max (0LL, min ({z.x-(ul.x+w-1), z.y-(ul.y+w-1), ul.x-z.x, ul.y-z.y})); }
+	int dist_to_out (coo z) { return max (0LL, min ({z.x-ul.x+1, z.y-ul.y+1, (ul.x+w)-z.x, (ul.y+w)-z.y})); }
 
 	int inrad_go (coo z) {
 		if (np == w*w) return dist_to_out (z);
