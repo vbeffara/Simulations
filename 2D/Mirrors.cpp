@@ -29,8 +29,8 @@ public:
 	unsigned char s;
 	operator unsigned char () { return s; }
 	operator Color () {
-		if (s==0) return 0;
-		if (s==STATE_VISITED) return 128;
+		if (s==0) return BLACK;
+		if (s==STATE_VISITED) return Color(128);
 		return colors[s%8];
 	}
 };

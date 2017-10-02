@@ -60,7 +60,7 @@ namespace vb {
 		else if (np == w*w) {
 			for (long x=ul.x; x<br.x; ++x) for (long y=ul.y; y<br.y; ++y)
 				I.put (coo(x,y), (x==ul.x)||(x==br.x-1)||(y==ul.y)||(y==br.y-1) ? RED : BLUE); }
-		else if (br == ul + coo(1,1)) { I.put (ul, (255*np) / (w*w)); }
+		else if (br == ul + coo(1,1)) { I.put (ul, Color((255*np) / (w*w))); }
 		else if (sub.size()) {
 			long ww = br.x-ul.x, hh = br.y-ul.y;
 			for (long x=0; x<3; ++x) for (long y=0; y<3; ++y)

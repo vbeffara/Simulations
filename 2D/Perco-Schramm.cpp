@@ -43,7 +43,7 @@ public:
 			coo.push_back(xy + cpx(omx,1));  coo.push_back(xy + cpx(0,2));
 			coo.push_back(xy + cpx(-omx,1)); coo.push_back(xy + cpx(-omx,-1));
 			coo.push_back(xy + cpx(0,-2));   coo.push_back(xy + cpx(omx,-1));
-			add (make_unique <Polygon> (coo, Pen(0, 1, cols[i] ? CYAN : YELLOW, true)));
+			add (make_unique <Polygon> (coo, Pen(BLACK, 1, cols[i] ? CYAN : YELLOW, true)));
 		}
 	}
 

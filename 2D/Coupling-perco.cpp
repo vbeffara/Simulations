@@ -72,8 +72,8 @@ class Configuration : public Image { public:
 
 			for (int x=-r1+1; x<r1-1; x++) {
 				for (int y=-r1+1; y<r1-1; y++) {
-					put(coo(x+w()/2,y+h()/2),0);
-					put(coo(x+w()/2,y+h()/2),0);
+					put(coo(x+w()/2,y+h()/2),BLACK);
+					put(coo(x+w()/2,y+h()/2),BLACK);
 				}
 			}
 

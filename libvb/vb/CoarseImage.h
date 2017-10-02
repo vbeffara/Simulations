@@ -5,7 +5,7 @@
 namespace vb {
 	class CoarseCell { public:
 		CoarseCell (int l) : fill(0), LL(l*l) { }
-		operator Color() { return fill*255/LL; }
+		operator Color() { return Color(fill*255/LL); }
 
 		int fill;              ///< The number of pixels with value 1 in the cell.
 		std::vector<char> sub; ///< The actual contents of the cell, if not constant.

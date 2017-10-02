@@ -1,7 +1,7 @@
 #pragma once /// \file
-#include <vb/Auto.h>
 #include <FL/Fl.H>
 #include <future>
+#include <vb/Auto.h>
 
 namespace vb {
 	static inline void close_window (Fl_Widget *) { exit(1); }
@@ -43,4 +43,4 @@ namespace vb {
 	private:
 		bool paused;
 	};
-}
+} // namespace vb

@@ -21,12 +21,12 @@ int main (int argc, char ** argv) {
 
   for (int x=0; x<w; ++x) {
     for (int y=0; y<h; ++y) {
-      if (prng.bernoulli(p1 + (p2-p1)*y/h)) img.put(coo(x,y),200);
-      else img.put(coo(x,y),100);
+      if (prng.bernoulli(p1 + (p2-p1)*y/h)) img.put(coo(x,y),Color(200));
+      else img.put(coo(x,y),Color(100));
     }
   }
 
-  for (int i=0; i<w; ++i) img.put(coo(i,h-1),200);
+  for (int i=0; i<w; ++i) img.put(coo(i,h-1),Color(200));
 
   img.show();
   img.fill (coo(0,h-1),Color(255,0,0));

@@ -30,7 +30,7 @@ class QG : public Image { public:
 		for (int j=0; j<h(); ++j)
 			for (int i=0; i<w(); ++i) {
 				coo z(i,j);
-				put (z, 255 * (I.at(z).f-minf)/(maxf-minf));
+				put (z, Color(255 * (I.at(z).f-minf)/(maxf-minf)));
 				if (H['c']) put(z, HSV (int(at(z))>128 ? 0 : .5, .8, .8));
 				I.at(z) = Info (z, z, numeric_limits<double>::infinity(), exp(g*I.at(z).f));
 		}

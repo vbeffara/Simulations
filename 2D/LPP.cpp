@@ -17,7 +17,7 @@ int main (int argc, char **argv) {
 
   for (int x=0; x<n; ++x)
     if (prng.bernoulli(r)) {
-      img.put(coo(x,0),255);
+      img.put(coo(x,0),WHITE);
       field[x]=1;
     } else {
       field[x]=0;
@@ -29,19 +29,19 @@ int main (int argc, char **argv) {
     for (int x=0; x<n; ++x)
       if  ( (prng.bernoulli(l)) ||
             ((x==y)&&(prng.bernoulli(d))) ) {
-        img.put(coo(x,y),255);
+        img.put(coo(x,y),WHITE);
         field[x]++;
         int xx=(x+1)%n;
         while (field[xx]==0) {
-          img.put(coo(xx,y),255);
+          img.put(coo(xx,y),WHITE);
           xx = (xx+1)%n;
         }
         field[xx]--;
-        img.put(coo(xx,y),255);
+        img.put(coo(xx,y),WHITE);
       }
     for (int x=0; x<n; ++x)
       if (field[x])
-        img.put(coo(x,y),255);
+        img.put(coo(x,y),WHITE);
 
     if (!(y%100)) img.update();
   }

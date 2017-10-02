@@ -19,8 +19,8 @@ namespace vb {
 
 		Color (unsigned char R, unsigned char G, unsigned char B, unsigned char A=255)	: b(B), g(G), r(R), a(A) {}
 #endif
-		Color (unsigned char V)	: Color (V,V,V)  	{}
-		Color ()               	: Color (0,0,0,0)	{}
+		Color () : Color (0,0,0,0) {}
+		explicit Color (unsigned char V) : Color (V,V,V) {}
 
 		bool operator== (const Color &o) const { return (r==o.r) && (g==o.g) && (b==o.b) && (a==o.a); }
 		bool operator!= (const Color &o) const { return (r!=o.r) || (g!=o.g) || (b!=o.b) || (a!=o.a); }

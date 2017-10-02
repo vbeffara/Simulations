@@ -14,8 +14,8 @@ class Glauber : public Image {
 void Glauber::fill (double p) {
   for (int i=0; i<n; ++i)
     for (int j=0; j<n; ++j)
-      if (prng.bernoulli(p)) put(coo(i,j),255);
-      else put(coo(i,j),0);
+      if (prng.bernoulli(p)) put(coo(i,j),WHITE);
+      else put(coo(i,j),BLACK);
 }
 
 void Glauber::step (int i, int j) {
@@ -28,8 +28,8 @@ void Glauber::step (int i, int j) {
   if (at(coo(i,   (j+1)%n)) == Color(255)) ++c;
   if (at(coo(i, (j+n-1)%n)) == Color(255)) ++c;
 
-  if ((c>2) || ((c==2) && prng.bernoulli(.5))) put(coo(i,j),255);
-  else put(coo(i,j),0);
+  if ((c>2) || ((c==2) && prng.bernoulli(.5))) put(coo(i,j),WHITE);
+  else put(coo(i,j),BLACK);
 }
 
 int main (int argc, char ** argv) {

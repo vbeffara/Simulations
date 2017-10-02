@@ -81,7 +81,7 @@ class Glass : public Image { public:
 
 		init[H['c']](ok);
 
-		fill ({0,0},0); for (int i=0; i<n; i++) put(coo(i,n/2),255); show();
+		fill ({0,0},BLACK); for (int i=0; i<n; i++) put(coo(i,n/2),WHITE); show();
 	};
 
 	void run () {
@@ -108,9 +108,9 @@ class Glass : public Image { public:
 						tmp    |= int(at(coo(x,y+1)));
 						tmp    |= int(at(coo(x,y-1)));
 						if (tmp==0) tmp=85;
-						put(coo(x,y),tmp);
+						put(coo(x,y),Color(tmp));
 					}
-				} else put(coo(x,y),0);
+				} else put(coo(x,y),BLACK);
 			}
 		}
 	}

@@ -43,6 +43,6 @@ int main (int argc, char ** argv) {
 
 	for (long x=0; x<n; ++x)
 		for (long y=0; y<n; ++y)
-			img.put(coo(x,y),color[cluster[x+n*y]]);
+			img.put(coo(x,y),Color(color[cluster[x+n*y]]));
 	img.show(); img.pause();
 }

@@ -8,10 +8,10 @@ class Stat { public:
 	operator int () { return s; }
 	operator Color() {
 		if (s<0) return Color(0,64,0);
-		if (s==0) return 0;
+		if (s==0) return BLACK;
 		if (ml<=.1*max) return Color(0,0,64);
 		if (ml<=.9*max) return Color(0,0,64 + 128*(ml-.1*max)/(.8*max));
-		return 64 + (s-min)*(255-64)/(max-min);
+		return Color(64 + (s-min)*(255-64)/(max-min));
 	}
 	int s,ml;
 	static int min,max;

@@ -1,6 +1,6 @@
 #pragma once /// \file
-#include <vb/Hub.h>
 #include <functional>
+#include <vb/Hub.h>
 #include <vector>
 
 namespace vb {
@@ -14,7 +14,7 @@ namespace vb {
 
 	class Auto : public boost::chrono::process_real_cpu_clock {
 	public:
-		Auto (double t);
+		explicit Auto (double t);
 		virtual ~Auto ();
 
 		Auto (const Auto &) = delete;
@@ -36,10 +36,10 @@ namespace vb {
 		void run ();
 
 		int next, slice;
-		long long n_call;
+		int64_t n_call;
 		int task;
 
 	protected:
 		bool die=false, hold=false;
 	};
-}
+} // namespace vb

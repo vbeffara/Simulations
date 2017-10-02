@@ -31,7 +31,7 @@ class Ising : public Image { public:
 				if ( (s<=0) || (prng.bernoulli(p[s])) ) { swap (atp(z), atp(zz)); }
 			} else {
 				int s = nnb(z);
-				if ( (s<=0) || (prng.bernoulli(p[s])) ) put(z,(255-int(at(z))));
+				if ( (s<=0) || (prng.bernoulli(p[s])) ) put(z,Color(255-int(at(z))));
 			}
 		}
 	}

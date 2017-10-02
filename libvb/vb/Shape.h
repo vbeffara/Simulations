@@ -6,7 +6,7 @@
 
 namespace vb {
 	class Pen { public:
-		Pen (Color c_=0, double w_=1.0, Color f_=255, bool ff_=false) : c(c_), f(f_), w(w_), ff(ff_) { }
+		Pen (Color c_=BLACK, double w_=1.0, Color f_=WHITE, bool ff_=false) : c(c_), f(f_), w(w_), ff(ff_) { }
 		Color c,f; double w; bool ff;
 	};
 

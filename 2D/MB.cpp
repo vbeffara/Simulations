@@ -7,7 +7,7 @@ int main(int argc, char ** argv) {
 
     Image img (2*n,2*n);
 
-    for (Color & c : img) c = 255;
-    coo z(n,n); while (img.contains(z)) { img.put(z,0); z += dz[prng()%4]; }
+    for (Color & c : img) c = WHITE;
+    coo z(n,n); while (img.contains(z)) { img.put(z,BLACK); z += dz[prng()%4]; }
     img.output();
 }

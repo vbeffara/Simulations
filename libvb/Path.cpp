@@ -24,6 +24,6 @@ namespace vb {
     void OldPath::output_pdf (const std::string &s) const {
         int l=0; cpx z(0); std::vector<cpx> p(1);
         for (char i : *this) { l = (relative ? l+i : i) % 4; z += gsl::at(dzc,l); p.push_back(z); }
-        Figure F; F.add (std::make_unique <Path> (p, Pen(0,.2))); F.output_pdf(s);
+        Figure F; F.add (std::make_unique <Path> (p, Pen(BLACK,.2))); F.output_pdf(s);
     }
 }

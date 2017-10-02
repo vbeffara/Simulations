@@ -3,9 +3,15 @@
 
 using namespace vb;
 
-class LERW : private Bitmap<char> {
-public:
-    LERW (Hub &H) : Bitmap<char> (2*int(H['n']),2*int(H['n'])) {
+class Site { public:
+    Site (char s) : s(s) {}
+    operator int() { return s; }
+    operator Color() { return Color(s); }
+    int s;
+};
+
+class LERW : private Bitmap<Site> { public:
+    LERW (Hub &H) : Bitmap<Site> (2*int(H['n']),2*int(H['n'])) {
         coo z(w()/2,h()/2); while (contains(z)) { int d = prng()&3; put(z,d); z += dz[d]; }
     }
 

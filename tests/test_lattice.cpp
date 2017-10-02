@@ -33,18 +33,18 @@ int main (int, char **) {
 	fd.push_back(L(coo(2,1)));
 	fd.push_back(L(coo(2,2)));
 	fd.push_back(L(coo(1,2)));
-	F.add (std::make_unique <Polygon> (fd, Pen(0,0,200,true)));
+	F.add (std::make_unique <Polygon> (fd, Pen(BLACK,0,Color(200),true)));
 
 	for (int i=0; i<3; ++i)
 		for (int j=0; j<3; ++j)
 			for (unsigned k=0; k<L.n; ++k)
-				F.add (std::make_unique <Circle> (L(coo(i,j),k), L.r[k], Pen(0,.2)));
+				F.add (std::make_unique <Circle> (L(coo(i,j),k), L.r[k], Pen(BLACK,.2)));
 
 	for (int i=0; i<3; ++i)
 		for (int j=0; j<3; ++j)
 			for (unsigned k=0; k<L.n; ++k)
 				for (unsigned l=0; l<L.adj[k].size(); ++l)
-					F.add (std::make_unique <Segment> (L(coo(i,j),k), L(coo(i,j),k) + L.shift(k,l), Pen(0,.1)));
+					F.add (std::make_unique <Segment> (L(coo(i,j),k), L(coo(i,j),k) + L.shift(k,l), Pen(BLACK,.1)));
 
 	F.show(); F.pause(); F.output_pdf();
 	return 0;
