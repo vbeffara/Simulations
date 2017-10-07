@@ -106,7 +106,7 @@ BOOST_AUTO_TEST_CASE (test_ProgressBar) {
 		ProgressBar P (1e8);
 		BOOST_TEST (Auto::tasks.size() == l+1);
 		BOOST_TEST (Auto::tasks.back().active);
-		for (int i=0; i<1e8; ++i) P.set(i);
+		for (int i=0; i<1e6; ++i) P.set(i);
 	}
 	BOOST_TEST (!Auto::tasks.back().active);
 }
