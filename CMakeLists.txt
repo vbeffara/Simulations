@@ -73,6 +73,7 @@ add_library (vb SHARED ${vb_sources})
 target_link_libraries (vb ${EXT_LIBRARIES} ${GMP} ${FLTK_LIBRARIES} ${MPFR} ${Boost_LIBRARIES})
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 	target_link_libraries (vb cilkrts)
+	set (CILK 1)
 endif ()
 
 if (${FPLLL_FOUND})
