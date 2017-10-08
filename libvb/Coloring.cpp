@@ -1,9 +1,10 @@
+#include <vb/config.h>
+#include <vb/Coloring.h>
+
 #ifdef CILK
 #include <cilk/cilk.h>
 #include <cilk/cilk_api.h>
 #endif
-
-#include <vb/Coloring.h>
 
 namespace vb {
 	Coloring::Coloring (cpx z1_, cpx z2_, int n, std::function <Color(cpx)> f_) :
@@ -34,7 +35,7 @@ namespace vb {
 		}
 #if defined(CILK)
 		cilk_for (unsigned i=0; i<cs.size(); ++i) if (!die) at(cs[i]) = aa_color(cs[i],true); // NOLINT
-#elif defined(OPENMP)
+#elif defined(_OPENMP)
 		#pragma omp parallel for schedule(dynamic)
 		for (unsigned i=0; i<cs.size(); ++i) if (!die) at(cs[i]) = aa_color(cs[i],true); // NOLINT
 #else

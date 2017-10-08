@@ -66,7 +66,7 @@ int main (int argc, char ** argv) {
 	});
 #endif
 
-#ifdef OPENMP
+#ifdef _OPENMP
 	timing ("OpenMP based multithreaded", [n]{
 		auto go = []{ static thread_local PRNG p; auto o = p.gaussian(); return o*o; };
 		double s=0;

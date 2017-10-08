@@ -12,7 +12,8 @@
                 "${workspaceRoot}/libvb",
                 "/usr/local/include/cairo",
                 "/Users/vincent/Boulot/Simulations/libvb",
-                "/Users/vincent/Boulot/Simulations/libvb/vb"
+                "/Users/vincent/Boulot/Simulations/libvb/vb",
+                "${workspaceRoot}/build/libvb"
             ],
             "defines": [],
             "intelliSenseMode": "clang-x64",
@@ -28,7 +29,7 @@
                     "/usr/local/include/cairo",
                     "/Users/vincent/Boulot/Simulations/libvb",
                     "/Users/vincent/Boulot/Simulations/libvb/vb"
-                    ],
+                ],
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": ""
             },

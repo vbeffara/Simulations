@@ -168,7 +168,7 @@ double cum_cilk2 (int n) {
 }
 #endif
 
-#ifdef OPENMP
+#ifdef _OPENMP
 int fib_omp (int n) {
     if (n < 30) return fib(n);
     int x, y;
@@ -203,7 +203,7 @@ int main (int argc, char ** argv) {
 #ifdef CILK
     timing ("Fibonacci  | CILK", []{ return fib_cilk(H['n']); });
 #endif
-#ifdef OPENMP
+#ifdef _OPENMP
     timing ("Fibonacci  | OpenMP (parallel sections)", []{ return fib_omp(H['n']); });
 #endif
 
@@ -218,7 +218,7 @@ int main (int argc, char ** argv) {
     timing ("Map+reduce | CILK", []{ return cum_cilk(H['l']); });
     timing ("Map+reduce | CILK 2", []{ return cum_cilk2(H['l']); });
 #endif
-#ifdef OPENMP
+#ifdef _OPENMP
     timing ("Map+reduce | OpenMP 1 (fill then sum)", []{ return cum_omp(H['l']); });
     timing ("Map+reduce | OpenMP 2 (direct reduction)", []{ return cum_omp2(H['l']); });
 #endif

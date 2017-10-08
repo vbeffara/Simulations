@@ -1,12 +1,13 @@
 cmake_minimum_required (VERSION 3.0)
 project (Simulations)
 
-set (CMAKE_CXX_FLAGS "-Wall -Wextra -Wno-unused-local-typedefs -Wno-unused-function -Wno-sign-compare -std=c++1z -fdiagnostics-color=always -pedantic -DBOOST_NO_AUTO_PTR")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z -fdiagnostics-color=always -pedantic -DBOOST_NO_AUTO_PTR")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-unused-local-typedefs -Wno-unused-function -Wno-sign-compare -Wno-mismatched-tags")
 set (CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 include (FindOpenMP)
-if (${OPENMP_FOUND})
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS} -DOPENMP")
+if (${OPENMP_CXX_FOUND})
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 endif ()
 
 include(CheckCXXCompilerFlag)
@@ -16,9 +17,8 @@ if (${COROUTINES_TS})
 endif ()
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcilkplus -DCILK")
-else ()
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Dcilk_spawn= -Dcilk_sync= -Dcilk_for=for -Wno-mismatched-tags")
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcilkplus")
+	set (CILK)
 endif ()
 
 if (${COV})
@@ -38,9 +38,6 @@ link_directories ("/usr/local/lib" "/opt/X11/lib")
 
 include (TestBigEndian)
 test_big_endian (BIGENDIAN)
-if (${BIGENDIAN})
-	add_definitions (-DBIGENDIAN)
-endif (${BIGENDIAN})
 
 include(CheckIncludeFileCXX)
 check_include_file_cxx (png++/png.hpp PNGPP "-include string")
@@ -59,8 +56,13 @@ if (FLTK_VERSION VERSION_LESS "1.3.4")
 	add_definitions (-DNO_RETINA)
 endif ()
 
+execute_process(COMMAND "git" describe --always --abbrev=40 WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" OUTPUT_VARIABLE GIT_SHA1 OUTPUT_STRIP_TRAILING_WHITESPACE)
+
 include_directories ("${PROJECT_SOURCE_DIR}/libvb" ${Boost_INCLUDE_DIRS} ${EXT_INCLUDE_DIRS} ${CMAES_INCLUDE_DIRS})
 link_directories (${CMAES_LIBRARY_DIRS})
+
+configure_file ("${PROJECT_SOURCE_DIR}/libvb/vb/config.h.in" "${CMAKE_CURRENT_BINARY_DIR}/libvb/vb/config.h")
+include_directories ("${CMAKE_CURRENT_BINARY_DIR}/libvb")
 
 file (GLOB vb_sources libvb/*.cpp)
 add_library (vb SHARED ${vb_sources})
@@ -82,9 +84,6 @@ if (${CMAES_FOUND})
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCMAES")
 	target_link_libraries (vb ${CMAES_LIBRARIES})
 endif ()
-
-execute_process(COMMAND "git" describe --always --abbrev=40 WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" OUTPUT_VARIABLE GIT_SHA1 OUTPUT_STRIP_TRAILING_WHITESPACE)
-set_source_files_properties(libvb/Hub.cpp PROPERTIES COMPILE_FLAGS -DGIT_SHA1=${GIT_SHA1})
 
 set (DIRS tests 1D 2D 3D)
 if (${PLAYGROUND})

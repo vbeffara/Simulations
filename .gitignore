@@ -22,3 +22,4 @@ bla*
 compile_commands.json
 fit.log
 warnings.txt
+.vscode/.cmaketools.json

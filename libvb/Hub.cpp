@@ -2,16 +2,13 @@
 #include <cln/cln.h>
 #include <FL/Fl.H>
 #include <FL/Fl_Gl_Window.H>
-#include <gsl/gsl>
+#include "gsl/gsl"
 #include <sys/stat.h>
+#include <vb/config.h>
 #include <vb/Hub.h>
 #include <iostream>
 #include <vector>
 #include <getopt.h>
-
-#define STR(s) #s
-#define XTR(s) STR(s)
-#define GIT_SHA1_lit XTR(GIT_SHA1)
 
 namespace vb {
 	Hub::Hub () {
@@ -34,7 +31,7 @@ namespace vb {
 	}
 
 	void Hub::init (std::string t, int argc, char ** argv, std::string c) {
-		title = std::move(t); help = "Syntax : " + c; version = GIT_SHA1_lit;
+		title = std::move(t); help = "Syntax : " + c; version = GIT_SHA1;
 
 		auto argv_ = gsl::span <char*> (argv,argc);
 		std::vector<std::string> fs;	boost::split (fs, argv_[0], boost::is_any_of(R"(/\)"));
