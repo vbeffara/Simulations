@@ -1,4 +1,3 @@
-#include <vb/config.h>
 #include <vb/Coloring.h>
 
 #ifdef CILK

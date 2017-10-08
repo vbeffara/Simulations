@@ -1,11 +1,14 @@
+#include <vb/config.h>
 #include <vb/Stream.h>
 #include <vb/util.h>
+#include <cmath>
+#include <numeric>
+
 #ifdef CILK
 #include <cilk/cilk.h>
 #include <cilk/cilk_api.h>
 #include <cilk/reducer_opadd.h>
 #endif
-#include <numeric>
 
 #ifdef __cpp_coroutines
 #include <experimental/coroutine>

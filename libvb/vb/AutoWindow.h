@@ -2,6 +2,7 @@
 #include <FL/Fl.H>
 #include <future>
 #include <vb/Auto.h>
+#include <vb/config.h>
 
 namespace vb {
 	static inline void close_window (Fl_Widget *) { exit(1); }

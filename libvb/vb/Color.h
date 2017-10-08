@@ -1,5 +1,6 @@
 #pragma once /// @file
 #include <iostream>
+#include <vb/config.h>
 
 namespace vb {
 	class Color {

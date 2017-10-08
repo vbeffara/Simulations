@@ -53,7 +53,11 @@ pkg_check_modules (FPLLL fplll)
 
 execute_process (COMMAND fltk-config --version OUTPUT_VARIABLE FLTK_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
 if (FLTK_VERSION VERSION_LESS "1.3.4")
-	add_definitions (-DNO_RETINA)
+	define (NO_RETINA)
+endif ()
+
+if (${CMAES_FOUND})
+	set (CMAES 1)
 endif ()
 
 execute_process(COMMAND "git" describe --always --abbrev=40 WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" OUTPUT_VARIABLE GIT_SHA1 OUTPUT_STRIP_TRAILING_WHITESPACE)
@@ -76,12 +80,11 @@ if (${FPLLL_FOUND})
 else ()
 	find_library (FPLLL fplll)
 	message ("--   Found FPLLL 4")
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DFPLLL4")
+	set (FPLLL4)
 	target_link_libraries (vb ${FPLLL})
 endif ()
 
 if (${CMAES_FOUND})
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCMAES")
 	target_link_libraries (vb ${CMAES_LIBRARIES})
 endif ()
 

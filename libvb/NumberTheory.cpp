@@ -1,4 +1,4 @@
-// #include <vb/impl/NumberTheory.hxx>
+#include <vb/config.h>
 #include <vb/NumberTheory.h>
 #include <boost/lexical_cast.hpp>
 #include <fplll.h>

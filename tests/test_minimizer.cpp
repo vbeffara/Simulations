@@ -1,3 +1,4 @@
+#include <vb/config.h>
 #include <vb/Hub.h>
 #include <vb/Minimizer.h>
 #include <gsl/gsl>
