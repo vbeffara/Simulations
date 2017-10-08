@@ -72,7 +72,8 @@ namespace vb {
 		Cycles cs; int i=0;
 		for (int l : s) {
 			std::vector<unsigned long> c; c.reserve(l);
-			for (int j=0; j<l; ++j) c.push_back(i++); cs.push_back (c);
+			for (int j=0; j<l; ++j) c.push_back(i++);
+			cs.push_back (c);
 		}
 		Permutation sigma (cs);
 		return Stream<Hypermap> ([sigma,a,p](Sink<Hypermap> & yield) {

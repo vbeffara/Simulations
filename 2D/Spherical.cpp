@@ -48,8 +48,9 @@ class Bargman : public Sphere { public:
         for (int i=0; i<=n; ++i) for (int j=0; j<=n-i; ++j) a[i].push_back(prng.gaussian());
         for (int i=0; i<=n; ++i) for (int j=0; j<=n-i; ++j) b[i].push_back(a[i][n-i-j]);
         for (int i=0; i<=n; ++i) for (int j=0; j<=n-i; ++j) c[i].push_back(a[n-i-j][j]);
-        for (int i=0; i<=n; ++i) for (int j=0; j<=n-i; ++j) eps = max (eps, abs(a[i][j])); eps *= double(H['e']);
+        for (int i=0; i<=n; ++i) for (int j=0; j<=n-i; ++j) eps = max (eps, abs(a[i][j]));
         for (int i=0; i<=n; ++i) for (int j=0; j<=n; ++j) sqsq[i].push_back(sqrt(i)/sqrt(j));
+        eps *= double(H['e']);
     }
 
     double vv (vector<vector<double>> &a, double x, double y, double z) {

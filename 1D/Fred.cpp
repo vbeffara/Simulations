@@ -40,7 +40,8 @@ int main (int argc, char ** argv) {
             M.swipe();
             double v=0; for (int k=0; k<nn; ++k) v += (k-nn/2)*(k-nn/2)*M[k].v*M[k].v; var[t]+=v;
         }
-        for (int k=0; k<nn; ++k) profile[k] += M[k].v*M[k].v; boltzmann[i] = M[nn/2].v;
+        for (int k=0; k<nn; ++k) profile[k] += M[k].v*M[k].v;
+        boltzmann[i] = M[nn/2].v;
     }
 
     { ofstream of("out.profile"); for (auto u : profile) of << u << endl; }
