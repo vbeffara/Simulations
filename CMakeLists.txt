@@ -56,18 +56,6 @@ if (FLTK_VERSION VERSION_LESS "1.3.4")
 	set (NO_RETINA 1)
 endif ()
 
-if (${CMAES_FOUND})
-	set (CMAES 1)
-endif ()
-
-execute_process(COMMAND "git" describe --always --abbrev=40 WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" OUTPUT_VARIABLE GIT_SHA1 OUTPUT_STRIP_TRAILING_WHITESPACE)
-
-include_directories ("${PROJECT_SOURCE_DIR}/libvb" ${Boost_INCLUDE_DIRS} ${EXT_INCLUDE_DIRS} ${CMAES_INCLUDE_DIRS})
-link_directories (${CMAES_LIBRARY_DIRS})
-
-configure_file ("${PROJECT_SOURCE_DIR}/libvb/vb/config.h.in" "${CMAKE_CURRENT_BINARY_DIR}/libvb/vb/config.h")
-include_directories ("${CMAKE_CURRENT_BINARY_DIR}/libvb")
-
 file (GLOB vb_sources libvb/*.cpp)
 add_library (vb SHARED ${vb_sources})
 target_link_libraries (vb ${EXT_LIBRARIES} ${GMP} ${FLTK_LIBRARIES} ${MPFR} ${Boost_LIBRARIES})
@@ -86,8 +74,17 @@ else ()
 endif ()
 
 if (${CMAES_FOUND})
+	link_directories (${CMAES_LIBRARY_DIRS})
 	target_link_libraries (vb ${CMAES_LIBRARIES})
+	set (CMAES 1)
 endif ()
+
+execute_process(COMMAND "git" describe --always --abbrev=40 WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" OUTPUT_VARIABLE GIT_SHA1 OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+configure_file ("${PROJECT_SOURCE_DIR}/libvb/vb/config.h.in" "${CMAKE_CURRENT_BINARY_DIR}/libvb/vb/config.h")
+include_directories ("${CMAKE_CURRENT_BINARY_DIR}/libvb")
+
+include_directories ("${PROJECT_SOURCE_DIR}/libvb" ${Boost_INCLUDE_DIRS} ${EXT_INCLUDE_DIRS} ${CMAES_INCLUDE_DIRS})
 
 set (DIRS tests 1D 2D 3D)
 if (${PLAYGROUND})
