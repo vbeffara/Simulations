@@ -56,6 +56,8 @@ if (FLTK_VERSION VERSION_LESS "1.3.4")
 	set (NO_RETINA 1)
 endif ()
 
+link_directories (${CMAES_LIBRARY_DIRS})
+
 file (GLOB vb_sources libvb/*.cpp)
 add_library (vb SHARED ${vb_sources})
 target_link_libraries (vb ${EXT_LIBRARIES} ${GMP} ${FLTK_LIBRARIES} ${MPFR} ${Boost_LIBRARIES})
@@ -74,7 +76,6 @@ else ()
 endif ()
 
 if (${CMAES_FOUND})
-	link_directories (${CMAES_LIBRARY_DIRS})
 	target_link_libraries (vb ${CMAES_LIBRARIES})
 	set (CMAES 1)
 endif ()
