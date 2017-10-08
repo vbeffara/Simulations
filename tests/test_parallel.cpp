@@ -1,4 +1,5 @@
 #include <vb/config.h>
+#include <vb/Generator.h>
 #include <vb/Stream.h>
 #include <vb/util.h>
 #include <cmath>
@@ -8,110 +9,6 @@
 #include <cilk/cilk.h>
 #include <cilk/cilk_api.h>
 #include <cilk/reducer_opadd.h>
-#endif
-
-#ifdef __cpp_coroutines
-#include <experimental/coroutine>
-
-namespace vb {
-	template <typename T> class generator;
-
-	namespace detail {
-		template<typename T> class generator_promise { public:
-			using value_type = std::remove_reference_t<T>;
-			using reference_type = std::conditional_t<std::is_reference_v<T>, T, T&>;
-			using pointer_type = value_type*;
-
-			generator_promise() = default;
-
-			generator<T> get_return_object() noexcept;
-
-			constexpr std::experimental::suspend_always initial_suspend() const { return {}; }
-			constexpr std::experimental::suspend_always final_suspend() const { return {}; }
-
-			std::experimental::suspend_always yield_value (T& value) noexcept { m_value = std::addressof(value); return {}; }
-			std::experimental::suspend_always yield_value (T&& value) noexcept { m_value = std::addressof(value); return {}; }
-
-			void unhandled_exception() { std::rethrow_exception(std::current_exception()); }
-
-			void return_void() { }
-
-			reference_type value() const noexcept { return *m_value; }
-
-		private:
-			pointer_type m_value;
-		};
-
-		template<typename T> class generator_iterator {
-			using coroutine_handle = std::experimental::coroutine_handle<generator_promise<T>>;
-		public:
-			using iterator_category = std::input_iterator_tag;
-			using difference_type = std::size_t;
-			using value_type = std::remove_reference_t<T>;
-			using reference = value_type&;
-			using pointer = value_type*;
-
-			explicit generator_iterator (std::nullptr_t) noexcept : m_coroutine(nullptr) {}
-			explicit generator_iterator (coroutine_handle coroutine) noexcept : m_coroutine(coroutine) {}
-
-			bool operator== (const generator_iterator& other) const noexcept { return m_coroutine == other.m_coroutine; }
-			bool operator!= (const generator_iterator& other) const noexcept { return !(*this == other); }
-
-			generator_iterator& operator++() {
-				m_coroutine.resume();
-				if (m_coroutine.done()) m_coroutine = nullptr;
-				return *this;
-			}
-
-			generator_iterator operator++(int) = delete;
-
-			reference operator*() const noexcept { return m_coroutine.promise().value(); }
-			pointer operator->() const noexcept { return std::addressof(operator*()); }
-		private:
-			coroutine_handle m_coroutine;
-		};
-	}
-
-	template<typename T> class generator { public:
-		using promise_type = detail::generator_promise<T>;
-		using iterator = detail::generator_iterator<T>;
-
-		generator ()                  noexcept : m_coroutine(nullptr)           {}
-		generator (generator&& other) noexcept : m_coroutine(other.m_coroutine) { other.m_coroutine = nullptr; }
-		generator (const generator&) = delete;
-
-		~generator() { if (m_coroutine) { m_coroutine.destroy(); } }
-
-		generator& operator= (generator other) noexcept { swap(other); return *this; }
-		generator& operator= (generator && other) noexcept { swap(other); return *this; }
-
-		iterator begin() {
-			if (m_coroutine) {
-				m_coroutine.resume();
-				if (!m_coroutine.done()) { return iterator{ m_coroutine }; }
-			}
-			return iterator{ nullptr };
-		}
-
-		iterator end() noexcept { return iterator{ nullptr }; }
-
-		void swap (generator& other) noexcept { std::swap(m_coroutine, other.m_coroutine); }
-
-	private:
-		friend class detail::generator_promise<T>;
-		explicit generator (std::experimental::coroutine_handle<promise_type> coroutine) noexcept : m_coroutine(coroutine) {}
-		std::experimental::coroutine_handle<promise_type> m_coroutine;
-	};
-
-	template<typename T> void swap(generator<T>& a, generator<T>& b) { a.swap(b); }
-
-	namespace detail {
-		template<typename T> generator<T> generator_promise<T>::get_return_object() noexcept {
-			using coroutine_handle = std::experimental::coroutine_handle<generator_promise<T>>;
-			return generator<T>{ coroutine_handle::from_promise(*this) };
-		}
-	}
-}
 #endif
 
 using namespace vb; using namespace std;
@@ -141,11 +38,6 @@ double cum4 (int n) {
 }
 
 #ifdef __cpp_coroutines
-template <typename T> generator<T> take (int n, generator<T> g) { for (auto x : g) { if (!n) break; --n; co_yield x; } }
-template <typename F, typename T> auto fmap (F f, generator<T> g) -> generator<decltype(f(T()))> { for (auto x : g) co_yield f(x); }
-
-generator <int> new_ints () { int i=0; while (true) { co_yield i++; } }
-
 double cum5 (int n) { double s=0; for (auto x : take(n,fmap(cost,new_ints()))) s += x; return s - long(s); }
 #endif
 
