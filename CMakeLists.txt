@@ -53,7 +53,7 @@ pkg_check_modules (FPLLL fplll)
 
 execute_process (COMMAND fltk-config --version OUTPUT_VARIABLE FLTK_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
 if (FLTK_VERSION VERSION_LESS "1.3.4")
-	define (NO_RETINA)
+	set (NO_RETINA 1)
 endif ()
 
 if (${CMAES_FOUND})
@@ -80,7 +80,7 @@ if (${FPLLL_FOUND})
 else ()
 	find_library (FPLLL fplll)
 	message ("--   Found FPLLL 4")
-	set (FPLLL4)
+	set (FPLLL4 1)
 	target_link_libraries (vb ${FPLLL})
 endif ()
 
