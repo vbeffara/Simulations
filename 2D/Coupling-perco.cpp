@@ -39,18 +39,18 @@ class Configuration : public Image { public:
 
 		for (auto & t : table) t=0;
 		for (long i=-r2; i<r2; i++) {
-			if (sides&1) table[N*N+expl[(N>>1)+i+N*((N>>1)-r2)]]=1;
-			if (sides&2) table[N*N+expl[(N>>1)+i+N*((N>>1)+r2-1)]]=1;
-			if (sides&4) table[N*N+expl[(N>>1)-r2+N*((N>>1)+i)]]=1;
-			if (sides&8) table[N*N+expl[(N>>1)+r2-1+N*((N>>1)+i)]]=1;
+			if (sides&1) table[N*N + expl[coo(N/2 + i   , N/2 - r2  )]]=1;
+			if (sides&2) table[N*N + expl[coo(N/2 + i   , N/2 + r2-1)]]=1;
+			if (sides&4) table[N*N + expl[coo(N/2 - r2  , N/2 + i   )]]=1;
+			if (sides&8) table[N*N + expl[coo(N/2 + r2-1, N/2 + i   )]]=1;
 		}
 
 		int n=0; int k;
 		for (long i=-r1; i<r1; i++) {
-			k = expl[(N>>1)+i + N*((N>>1)-r1)]; if (table[N*N+k]==1) { table[N*N+k]=0; n++; }
-			k = expl[(N>>1)+i + N*((N>>1)+r1-1)]; if (table[N*N+k]==1) { table[N*N+k]=0; n++; }
-			k = expl[(N>>1)-r1 + N*((N>>1)+i)]; if (table[N*N+k]==1) { table[N*N+k]=0; n++; }
-			k = expl[(N>>1)+r1-1 + N*((N>>1)+i)]; if (table[N*N+k]==1) { table[N*N+k]=0; n++; }
+			k = expl[coo(N/2 + i   , N/2 - r1  )]; if (table[N*N+k]==1) { table[N*N+k]=0; n++; }
+			k = expl[coo(N/2 + i   , N/2 + r1-1)]; if (table[N*N+k]==1) { table[N*N+k]=0; n++; }
+			k = expl[coo(N/2 - r1  , N/2 + i   )]; if (table[N*N+k]==1) { table[N*N+k]=0; n++; }
+			k = expl[coo(N/2 + r1-1, N/2 + i   )]; if (table[N*N+k]==1) { table[N*N+k]=0; n++; }
 		}
 
 		return n;

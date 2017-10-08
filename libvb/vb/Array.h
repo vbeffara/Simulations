@@ -22,8 +22,6 @@ namespace vb {
 		T &      	operator[]	(const coo & z)      	{ return at(z); }
 		T const &	operator[]	(const coo & z) const	{ return at(z); }
 
-		[[deprecated]] T const &	operator[]	(int64_t z) const { return at({z,0}); }
-
 		T &      	atp	(const coo & z)      	{ int64_t x = pmod (z.x,ww), y = pmod (z.y,hh); return at(coo(x,y)); }
 		T const &	atp	(const coo & z) const	{ int64_t x = pmod (z.x,ww), y = pmod (z.y,hh); return at(coo(x,y)); }
 
