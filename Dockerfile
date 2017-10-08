@@ -1,4 +1,4 @@
-FROM ubuntu:yakkety
+FROM ubuntu:zesty
 MAINTAINER Vincent Beffara <vbeffara@gmail.com>
 
 RUN apt-get update -qq
