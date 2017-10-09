@@ -21,8 +21,8 @@ class Model : public std::vector<state> { public:
     void step (int k) { rotate (k,at(k).x*2*M_PI); at(k).step(); }
 
     void swipe () {
-        for (unsigned k=0; k<size(); k+=2) step(k);
-        for (unsigned k=1; k<size(); k+=2) step(k);
+        for (int k=0; k<size(); k+=2) step(k);
+        for (int k=1; k<size(); k+=2) step(k);
     }
 };
 

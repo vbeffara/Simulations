@@ -16,11 +16,11 @@ int main (int argc, char ** argv) {
 	bool d=H['d'];
 
 	vector<int> env;
-	unsigned X=0;
+	int X=0;
 
 	for (int i=0; i<t; ++i) {
 		if (d) {
-			for (unsigned j=0; j<env.size(); ++j) {
+			for (int j=0; j<env.size(); ++j) {
 				if (X==j) cout << "*"; else cout << " ";
 				cout << env[j];
 			}

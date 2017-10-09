@@ -1,11 +1,12 @@
 #pragma once /// \file
-#include <vb/Bitmap.h>
+#include <iostream>
 #include <png++/png.hpp>
+#include <vb/Bitmap.h>
 
 namespace vb {
 	class CoarseCell { public:
-		CoarseCell (int l) : fill(0), LL(l*l) { }
-		operator Color() { return Color(fill*255/LL); }
+		explicit CoarseCell (int l) : fill(0), LL(l*l) { }
+		explicit operator Color() { return Color(fill*255/LL); }
 
 		int fill;              ///< The number of pixels with value 1 in the cell.
 		std::vector<char> sub; ///< The actual contents of the cell, if not constant.
@@ -14,7 +15,7 @@ namespace vb {
 
 	class CoarseImage : public Bitmap<CoarseCell> { public:
 		CoarseImage (int wd, int ht, int l) :
-			Bitmap<CoarseCell> (1+(wd-1)/l,1+(ht-1)/l,l),
+			Bitmap<CoarseCell> (1+(wd-1)/l, 1+(ht-1)/l, CoarseCell(l)),
 			true_width(wd), true_height(ht), L(l), LL(l*l), z0(0,0) {}
 
 		char at (coo z) const {
@@ -62,4 +63,4 @@ namespace vb {
 		int LL;            ///< The square of L
 		coo z0;            ///< The coordinates of the origin (hides that of vb::Bitmap).
 	};
-}
+} // namespace vb

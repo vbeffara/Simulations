@@ -1,13 +1,11 @@
 #include <vb/CoarseImage.h>
 #include <vb/Path.h>
 
-using namespace vb;
+class Snake : public vb::CoarseImage { public:
+	explicit Snake (int n) : vb::CoarseImage (2*n, 2*n, pow(n,.333)), z(1,vb::coo(n,n)) { put (vb::coo(n,n), 1); }
 
-class Snake : public CoarseImage { public:
-	Snake (int n) : CoarseImage (2*n, 2*n, pow(n,.333)), z(1,coo(n,n)) { put (coo(n,n), 1); }
-
-	void step (coo dz) {
-		coo nz = z.back()+dz;
+	void step (vb::coo dz) {
+		vb::coo nz = z.back()+dz;
 		if (at(nz) == 1) return;
 		z.push_back(nz);
 		put (nz,1);
@@ -16,15 +14,15 @@ class Snake : public CoarseImage { public:
 	void shrink () { if (z.size() > 1) { put (z.back(), 0); z.pop_back(); } }
 
 	bool alive () const {
-		coo lz=z.back();
+		vb::coo lz=z.back();
 		int lx=lz.x, ly=lz.y;
 		return ((lx>0) && (lx<true_width-1) && (ly>0) && (ly<true_height-1));
 	}
 
 	void output (const std::string &s = "") override {
-		OldPath P (z.size()-1);
-		for (unsigned long i=0; i<z.size()-1; ++i) {
-			coo dz = z[i+1]-z[i];
+		vb::OldPath P (z.size()-1);
+		for (int i=0; i<z.size()-1; ++i) {
+			vb::coo dz = z[i+1]-z[i];
 			int dx = dz.x, dy = dz.y;
 			if (dx>0) P[i]=0;
 			if (dx<0) P[i]=2;
@@ -34,18 +32,18 @@ class Snake : public CoarseImage { public:
 		P.output(s);
 	}
 
-	std::vector<coo> z;
+	std::vector<vb::coo> z;
 };
 
 int main (int argc, char ** argv) {
-	H.init ("Self-avoiding snake", argc,argv, "n=1000,a=.38");
-	double a = H['a'], e = 1.0 / (1.0 + 4*a);
+	vb::H.init ("Self-avoiding snake", argc,argv, "n=1000,a=.38");
+	double a = vb::H['a'], e = 1.0 / (1.0 + 4*a);
 
-	Snake S(H['n']); S.show();
+	Snake S(vb::H['n']); S.show();
 
 	while (S.alive()) {
-		if (prng.bernoulli(e)) S.shrink(); else {
-			S.step (dz[prng.uniform_int(4)]);
+		if (vb::prng.bernoulli(e)) S.shrink(); else {
+			S.step (vb::dz[vb::prng.uniform_int(4)]);
 		}
 	}
 	S.output(); return 0;

@@ -1,5 +1,5 @@
 #pragma once /// @file
-#include <iostream>
+#include <spdlog/fmt/fmt.h>
 #include <vb/config.h>
 
 namespace vb {
@@ -46,6 +46,6 @@ namespace vb {
 	inline Color Indexed (int i, double s=1, double v=1) { double x = i * 1.61803398874989484820; return HSV (x-int(x),s,v); }
 
 	inline std::ostream & operator<< (std::ostream & o, const Color & c) {
-		return o << "RGBA(" << c.r << "," << c.g << "," << c.b << "," << c.a << ")";
+		return o << fmt::format("RGBA({},{},{},{})", c.r, c.g, c.b, c.a);
 	}
 } // namespace vb
