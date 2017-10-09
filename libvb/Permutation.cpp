@@ -3,7 +3,7 @@
 
 namespace vb {
 	Permutation::Permutation (Cycles & c) {
-		unsigned sz=0; for (const auto & v : c) sz += v.size();
+		int sz=0; for (const auto & v : c) sz += v.size();
 		resize(sz);
 		for (auto v : c) {
 			for (int i=0; i<v.size()-1; ++i) at(v[i])=v[i+1];
@@ -14,10 +14,10 @@ namespace vb {
 	Cycles Permutation::cycles () const {
 		Cycles c;
 		std::vector<int> done (size(), 0);
-		for (unsigned i=0; i<size(); ++i) {
+		for (int i=0; i<size(); ++i) {
 			if (done[i]) continue;
 			std::vector<int> v (1,i); done[i]=1;
-			for (unsigned j=at(i); done[j]==0; j=at(j)) { v.push_back(j); done[j]=1; }
+			for (int j=at(i); done[j]==0; j=at(j)) { v.push_back(j); done[j]=1; }
 			c.push_back(v);
 		}
 		return c;
@@ -33,7 +33,7 @@ namespace vb {
 	Passport Permutation::passport () const {
 		std::vector<int> s = signature();
 		Passport out;
-		unsigned l=0, c=0;
+		int l=0, c=0;
 		for (int i=s.size()-1; i>=0; --i) {
 			if (s[i]==l) ++c;
 			else {
@@ -46,25 +46,25 @@ namespace vb {
 	}
 
 	bool Permutation::is_identity () const {
-		for (unsigned i=0; i<size(); ++i) if (at(i)!=i) return false;
+		for (int i=0; i<size(); ++i) if (at(i)!=i) return false;
 		return true;
 	}
 
 	Permutation Permutation::inverse () const {
 		Permutation s; s.resize(size());
-		for (unsigned i=0; i<size(); ++i) s[at(i)]=i;
+		for (int i=0; i<size(); ++i) s[at(i)]=i;
 		return s;
 	}
 
 	Permutation Permutation::operator* (const Permutation & o) const {
 		Permutation s; s.resize(size());
-		for (unsigned i=0; i<size(); ++i) s[i] = o[at(i)];
+		for (int i=0; i<size(); ++i) s[i] = o[at(i)];
 		return s;
 	}
 
 	Permutation Permutation::conjugate (const Permutation & s) const {
 		Permutation out(size());
-		for (unsigned i=0; i<size(); ++i) out[s[i]]=s[at(i)];
+		for (int i=0; i<size(); ++i) out[s[i]]=s[at(i)];
 		return out;
 	}
 
@@ -73,13 +73,13 @@ namespace vb {
 	}
 
 	bool connected (const Permutation & s, const Permutation & a) {
-		unsigned n=s.size(); std::vector<unsigned> l(n); for (unsigned i=0; i<n; ++i) l[i]=i;
+		int n=s.size(); std::vector<int> l(n); for (int i=0; i<n; ++i) l[i]=i;
 		bool dirty=true; while (dirty) {
 			dirty=false;
-			for (unsigned i=0; i<n; ++i) if (l[s[i]]<l[i]) { l[i]=l[s[i]]; dirty=true; }
-			for (unsigned i=0; i<n; ++i) if (l[a[i]]<l[i]) { l[i]=l[a[i]]; dirty=true; }
+			for (int i=0; i<n; ++i) if (l[s[i]]<l[i]) { l[i]=l[s[i]]; dirty=true; }
+			for (int i=0; i<n; ++i) if (l[a[i]]<l[i]) { l[i]=l[a[i]]; dirty=true; }
 		}
-		for (unsigned i=0; i<n; ++i) if (l[i]>0) return false;
+		for (int i=0; i<n; ++i) if (l[i]>0) return false;
 		return true;
 	}
 
@@ -88,7 +88,7 @@ namespace vb {
 		for (auto cc : P.cycles()) {
 			if (!f) os << " ";
 			os << "("; bool ff = true;
-			for (unsigned i : cc) { if (!ff) os << " "; os << i; ff = false; }
+			for (int i : cc) { if (!ff) os << " "; os << i; ff = false; }
 			os << ")"; f = false;
 		}
 		return os << ")";

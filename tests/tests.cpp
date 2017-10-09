@@ -210,7 +210,7 @@ BOOST_AUTO_TEST_CASE (test_Constellation0) {
 	Constellation0<double> C {M,H};
 	Constellation0<real_t> Cq (C);
 	Cq.findn(); Cq.belyi();
-	Polynomial<complex_t> Q; for (auto zd : Cq.f) for (unsigned j=0; j<zd.d; ++j) Q.add_root(zd.z);
+	Polynomial<complex_t> Q; for (auto zd : Cq.f) for (int j=0; j<zd.d; ++j) Q.add_root(zd.z);
 	for (auto & x : Q) {
 		auto xx = cln::complex (round1(realpart(x)), round1(imagpart(x)));
 		if (abs(x - xx) < 1e-100) x = xx;
@@ -229,27 +229,27 @@ BOOST_AUTO_TEST_CASE (test_Constellation1) {
 BOOST_AUTO_TEST_CASE (test_Minimizer) {
 	auto f = [](const Vector<double> &x, void *) {
 		double o = 0;
-		for (unsigned int i=0; i<400; ++i) o += (1 - cos(x[i]/(i+1)));
+		for (int i=0; i<400; ++i) o += (1 - cos(x[i]/(i+1)));
 		return o;
 	};
 
 	auto g = [](const Vector<double> &x) {
 		Vector<double> out(400);
-		for (unsigned int i=0; i<400; ++i) out[i] = sin(x[i]/(i+1))/(i+1);
+		for (int i=0; i<400; ++i) out[i] = sin(x[i]/(i+1))/(i+1);
 		return out;
 	};
 
 	auto fg = [](const Vector<double> &x, Vector<double> &g) {
 		double o = 0;
-		for (unsigned int i=0; i<400; ++i) {
+		for (int i=0; i<400; ++i) {
 			o += (1 - cos(x[i]/(i+1)));
 			g[i] = sin(x[i]/(i+1))/(i+1);
 		}
 		return o;
 	};
 
-	Vector<double> x0(400); for (unsigned int i=0; i<400; ++i) x0[i] = cos(double(i));
-	Vector<double> W0(400); for (unsigned int i=0; i<400; ++i) W0[i] = (i+1)*(i+1);
+	Vector<double> x0(400); for (int i=0; i<400; ++i) x0[i] = cos(double(i));
+	Vector<double> W0(400); for (int i=0; i<400; ++i) W0[i] = (i+1)*(i+1);
 
 	Minimizer<double> M (400,fg);
 	BOOST_TEST (M.minimize_qn (x0) < 1e-7);

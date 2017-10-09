@@ -11,7 +11,7 @@ namespace vb {
 
 		template <typename U> U operator() (U z) const;
 
-		unsigned     	degree    	() const;
+		int          	degree    	() const;
 		Polynomial<T>	derivative	() const;
 		void         	add_root  	(T l);
 

@@ -13,16 +13,16 @@ namespace vb {
 	private:
 		void next ();
 
-		std::vector<std::vector<unsigned>> todo_c, todo_p;
+		std::vector<std::vector<int>> todo_c, todo_p;
 		Permutation current;
-		unsigned n,i;
+		int n,i;
 	};
 
 	class Pairings {
 	public:
 		Pairings (int n);
 
-		unsigned size() const;
+		int size() const;
 
 		Pairings_Iterator	begin () const;
 		Pairings_Iterator	end	() const;
@@ -30,6 +30,6 @@ namespace vb {
 		Permutation rrand ();
 
 	private:
-		unsigned n;
+		int n;
 	};
 }

@@ -40,7 +40,7 @@ namespace vb {
 
 	private:
 		std::string snapshot_prefix;   ///< The filename prefix for PNG snapshots.
-		unsigned int snapshot_number;  ///< The number of the current snapshot.
+		int snapshot_number;  ///< The number of the current snapshot.
 		double snapshot_period;        ///< The time interval between automatic snapshots, in seconds.
 		int snapshot_task;
 

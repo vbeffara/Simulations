@@ -138,7 +138,7 @@ public:
 			W.step();
 
 			if (renew && (env.size()==3)) {
-				unsigned long r = i-last_renewal;
+				int r = i-last_renewal;
 				if (r+1>renewals.size())
 					renewals.resize(r+1);
 				renewals[r] ++;
@@ -147,7 +147,7 @@ public:
 		}
 
 		if (plot) {
-			vector<cpx> path; for (unsigned i=2; i<traj.size(); ++i) path.push_back (traj[i]);
+			vector<cpx> path; for (int i=2; i<traj.size(); ++i) path.push_back (traj[i]);
 			F.add (std::make_unique <Path> (path));
 			F.show(); F.pause();
 			F.output_pdf("Rancher");
@@ -155,7 +155,7 @@ public:
 
 		if (renew) {
 			long int n=0, sx=0, sxx=0;
-			for (unsigned i=0; i<renewals.size(); ++i) {
+			for (int i=0; i<renewals.size(); ++i) {
 				n += renewals[i];
 				sx += i*renewals[i];
 				sxx += i*i*renewals[i];

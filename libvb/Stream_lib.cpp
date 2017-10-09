@@ -49,7 +49,7 @@ namespace vb {
 	Stream <Permutation> permutations (std::vector<int> s) {
 		return Stream <Permutation> ([s](Sink <Permutation> & yield) {
 			int n=0; for (auto i : s) n += i; if (n==0) { yield ({{}}); return; }
-			unsigned L=0; for (unsigned i=0; i<s.size(); ++i) if (s[i]>L) {
+			int L=0; for (int i=0; i<s.size(); ++i) if (s[i]>L) {
 				L=s[i]; std::vector<int> ns = s; ns[i]=0;
 				for (auto c : tuples (L-1,n-1)) {
 					std::vector<int> cc ({0});

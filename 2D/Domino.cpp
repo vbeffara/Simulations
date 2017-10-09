@@ -8,13 +8,13 @@ vector<Color> dicolors   { BLACK,BLACK,BLACK,BLACK , H1,V1,H2,V2           , H3,
 vector<Color> halfcolors { BLACK,BLACK,BLACK,BLACK , RED,GREEN,YELLOW,BLUE , YELLOW,BLUE,RED,GREEN , RED,GREEN,YELLOW,BLUE , YELLOW,BLUE,RED,GREEN };
 
 class Half { public:
-    unsigned char d, type;
-    Half (unsigned char _d = 0, unsigned char _t = 0) : d(_d), type(_t) {}
+    uchar d, type;
+    Half (uchar _d = 0, uchar _t = 0) : d(_d), type(_t) {}
     operator Color () { return halfcolors [d+4*type]; }
 };
 
 class Tiling : public Bitmap<Half> { public:
-    void putd (coo c, unsigned char d) { at(c).d = d; at(c+dz[d]).d = (d+2)%4; step(); }
+    void putd (coo c, uchar d) { at(c).d = d; at(c+dz[d]).d = (d+2)%4; step(); }
     void freeze (coo c) { at(c).type = 0; at(c+dz[at(c).d]).type = 0; }
 
     Tiling (Hub &H) : Bitmap<Half> (H['n'],H['n']), r(H['r']), rr {r,r*r,1,r} {
@@ -44,7 +44,7 @@ class Tiling : public Bitmap<Half> { public:
 
     int flip (coo c) {
         if (at(c).type == 0) return 0;
-        unsigned char d = at(c).d; coo oc = c + dz[d] + dz[(d+1)%4];
+        uchar d = at(c).d; coo oc = c + dz[d] + dz[(d+1)%4];
         if (!contains(oc)) return 0;
         if (at(oc).type == 0) return 0;
         if (at(oc).d != ((d+2)%4)) return 0;
@@ -61,6 +61,6 @@ int main (int argc, char ** argv) {
     if (H['d']) halfcolors = dicolors;
     Console C; C.manage(T.r,0.0,1.0,"r"); C.show();
     T.show(); T.pause();
-    unsigned f = T.w()*T.h()*double(H['f']);
-    for (unsigned long long t=1 ;; ++t) { T.flip(T.rand()); if (t==f) T.freeze (coo(T.w()/2,T.h()/2)); }
+    int f = T.w()*T.h()*double(H['f']);
+    for (int64_t t=1 ;; ++t) { T.flip(T.rand()); if (t==f) T.freeze (coo(T.w()/2,T.h()/2)); }
 }

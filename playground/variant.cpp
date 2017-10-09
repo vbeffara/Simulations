@@ -39,8 +39,8 @@ bool operator< (const Expression &e1, const Expression &e2) {
 	return static_cast <const Expression_ &> (e1) < static_cast <const Expression_ &> (e2);
 }
 
-Expression operator"" _e (const char *s, unsigned long) { return Symbol(s); }
-Expression operator"" _e (unsigned long long x) { return Number(x); }
+Expression operator"" _e (const char *s, uint64_t) { return Symbol(s); }
+Expression operator"" _e (uint64_t x) { return Number(x); }
 
 struct flattener {
 	template <typename T> Expression operator() (const T &e) const { return e; }

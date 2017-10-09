@@ -5,9 +5,9 @@
 
 namespace vb {
 	// template Polynomial<bigint> guess (real_t x, real_t eps);
-	// template Polynomial<bigint> guess (real_t x, int leps, unsigned d);
+	// template Polynomial<bigint> guess (real_t x, int leps, int d);
 	// template Polynomial<cpxint> guess (complex_t x, real_t eps);
-	// template Polynomial<cpxint> guess (complex_t x, int leps, unsigned d);
+	// template Polynomial<cpxint> guess (complex_t x, int leps, int d);
 
 	using namespace cln;
 

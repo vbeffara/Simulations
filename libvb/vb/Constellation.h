@@ -14,7 +14,7 @@ namespace vb {
 		std::vector<Star<T>>	b,w,f;
 		std::vector<cplx>   	p;
 
-		unsigned dim {0};
+		int dim {0};
 
 		Constellation ();
 		Constellation (const Constellation &) = default;

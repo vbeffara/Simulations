@@ -2,14 +2,14 @@
 #include <vb/Minimizer.h>
 
 namespace vb {
-	template <typename T> Minimizer<T>::Minimizer (unsigned int n_) :
+	template <typename T> Minimizer<T>::Minimizer (int n_) :
 		n(n_), x(n), gx(n), old_x(n), old_gx(n), er(1.0) {}
 
-	template <typename T> Minimizer<T>::Minimizer (unsigned int n_,
+	template <typename T> Minimizer<T>::Minimizer (int n_,
 		std::function < T (const Vector<T>&,Vector<T>&) > fg_) :
 		Minimizer (n_) { fg=fg_; }
 
-	template <typename T> Minimizer<T>::Minimizer (unsigned int n_,
+	template <typename T> Minimizer<T>::Minimizer (int n_,
 		std::function < T (const Vector<T>&) > f_, std::function < Vector<T> (const Vector<T>&) > g_) :
 		Minimizer (n_) { f=f_; g=g_; }
 
@@ -62,7 +62,7 @@ namespace vb {
 		Vector<T> diag = W0;
 		if (diag.size() == 0) diag = Vector<T>::Constant (x0.size(),1,T(1.0));
 		Matrix<T> W(x0.size(),x0.size());
-		for (unsigned int i=0; i<x0.size(); ++i) W(i,i) = diag[i];
+		for (int i=0; i<x0.size(); ++i) W(i,i) = diag[i];
 
 		while (fx < old_fx) {
 			line_search(W*gx);

@@ -34,7 +34,7 @@ public:
 		while (n>0) {
 			cerr << n << endl;
 			for (int i=d; i<w()-2*d; ++i) for (int j=d; j<h()-2*d; ++j) put (coo(i,j),1);
-			for (unsigned t=states.size(); t-- > 0;) {
+			for (int t=states.size(); t-- > 0;) {
 				prng.state(states[t]);
 				for (int i=0; i<(1<<t); ++i) up();
 				if (t==states.size()-1) states.push_back(prng.state());

@@ -28,7 +28,7 @@ namespace vb {
 			subs.push_back (std::move(p)); return *this;
 		}
 
-		std::string type; bool braces; unsigned commas;
+		std::string type; bool braces; int commas;
 		std::vector <std::unique_ptr<Pov_Object>> subs;
 	};
 	inline std::ostream & operator<< (std::ostream & os, Pov_Object * o) { return o->output_pov(os); }

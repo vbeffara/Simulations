@@ -28,7 +28,7 @@ namespace vb {
 		Lattice &	bond      	(int k1, int k2, coo dz = coo(0,0));       	///< Add a bond.
 		cpx      	tau_rw    	() const;                                  	///< Compute the modulus of the SRW embedding.
 
-		unsigned n;                                	///< Number of vertices in a fundamental domain
+		int n;                                       	///< Number of vertices in a fundamental domain
 		std::vector < std::vector<Lattice_place> > adj;	///< Adjacency lists
 		cpx tau;                                       	///< Modulus of embedding in the complex plane
 		std::vector<cpx> z; std::vector<double> r;

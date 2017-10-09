@@ -14,23 +14,23 @@ namespace vb {
 
   double Lattice::energy () const {
     double t=0;
-    for (unsigned k=0; k<n; ++k)
-      for (unsigned l=0; l<adj[k].size(); ++l)
+    for (int k=0; k<n; ++k)
+      for (int l=0; l<adj[k].size(); ++l)
         t += norm(shift(k,l));
     return t;
   }
 
   cpx Lattice::shear () const {
     cpx t=0;
-    for (unsigned k=0; k<n; ++k)
-      for (unsigned l=0; l<adj[k].size(); ++l)
+    for (int k=0; k<n; ++k)
+      for (int l=0; l<adj[k].size(); ++l)
         t += shift(k,l) * shift(k,l);
     return t;
   }
 
   double Lattice::relax_once () {
     double diff=0;
-    for (unsigned k=1; k<n; ++k) { // Vertex 0 is pinned to ensure uniqueness
+    for (int k=1; k<n; ++k) { // Vertex 0 is pinned to ensure uniqueness
       if (int d = adj[k].size()) {
         cpx s(0);
         for (int l=0; l<d; ++l) s += shift(k,l);
@@ -48,8 +48,8 @@ namespace vb {
 
   cpx Lattice::tau_rw () const {
     double a=0, b=0, c=0;
-    for (unsigned k=0; k<n; ++k)
-      for (unsigned l=0; l<adj[k].size(); ++l) {
+    for (int k=0; k<n; ++k)
+      for (int l=0; l<adj[k].size(); ++l) {
         const Lattice_place &m = adj[k][l];
         cpx u = cpx(m.z.x,m.z.y) + z[m.k] - z[k];
         a += u.imag()*u.imag();
@@ -63,8 +63,8 @@ namespace vb {
 
   double cost_cp (Lattice const &L) {
     double t=0;
-    for (unsigned k=0; k<L.n; ++k)
-      for (unsigned l=0; l<L.adj[k].size(); ++l) {
+    for (int k=0; k<L.n; ++k)
+      for (int l=0; l<L.adj[k].size(); ++l) {
         cpx s = L.shift(k,l);
         double d = sqrt(norm(s));
         double rr = L.r[k] + L.r[L.adj[k][l].k];
@@ -96,7 +96,7 @@ namespace vb {
         else tau += cpx(0,delta);
       }
 
-      for (unsigned i=0; i<n; ++i) {
+      for (int i=0; i<n; ++i) {
         if (i>0) {
           z[i] += cpx(delta,0); tmp_cost = f(*this);
           if (tmp_cost < cost) cost = tmp_cost;

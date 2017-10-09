@@ -3,9 +3,9 @@
 
 namespace vb {
 	template <typename T> class Minimizer { public:
-		Minimizer (unsigned int n_);
-		Minimizer (unsigned int n_, std::function < T (const Vector<T>&,Vector<T>&) > fg_);
-		Minimizer (unsigned int n_, std::function < T (const Vector<T>&) > f_, std::function < Vector<T> (const Vector<T> &) > g_);
+		Minimizer (int n_);
+		Minimizer (int n_, std::function < T (const Vector<T>&,Vector<T>&) > fg_);
+		Minimizer (int n_, std::function < T (const Vector<T>&) > f_, std::function < Vector<T> (const Vector<T> &) > g_);
 
 		T compute (const Vector<T> & x = Vector<T>(0));
 
@@ -17,7 +17,7 @@ namespace vb {
 		T minimize_pr (const Vector<T> &x0);
 		T minimize_qn (const Vector<T> &x0);
 
-		unsigned n=0;
+		int n=0;
 
 		std::function < T        	(const Vector<T>&)           	> f;
 		std::function < Vector<T>	(const Vector<T>&)           	> g;

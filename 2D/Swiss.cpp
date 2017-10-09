@@ -16,9 +16,9 @@ const vector<Color> colors = { C_EAST, C_NORTH, C_WEST, C_SOUTH };
 
 class Site {
 public:
-    unsigned char s;
-    Site (unsigned char _s) : s(_s) { };
-    Site & operator= (unsigned char _s) { s=_s; return *this; }
+    uchar s;
+    Site (uchar _s) : s(_s) { };
+    Site & operator= (uchar _s) { s=_s; return *this; }
     operator int () { return s; }
     operator Color () { return colors[s]; }
 };

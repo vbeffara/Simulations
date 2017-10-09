@@ -33,7 +33,7 @@ class DLA : public CoarseImage { public:
 	void put     	(coo z)         	{ CoarseImage::put(z,1); QT.insert(z); r = std::max (r,sup(z)); }
 	bool neighbor	(coo z) const   	{ for (int i=0; i<4; ++i) if (at(z+dz[i])) return true; return false; }
 
-	coo jump (unsigned d) const {
+	coo jump (int d) const {
 		if (d<=2) return dz[prng.uniform_int(4)];
 		if (d<prec.size()) {
 			coo w (d-1, prng.discrete(prec[d]) - (d-1));

@@ -46,7 +46,7 @@ namespace vb {
 		while (real(m)<-.499) m+=1;
 		while (real(m)>.501) m-=1;
 
-		unsigned mdeg=0; cpx mpos=0;
+		int mdeg=0; cpx mpos=0;
 		for (auto v : V) if (v.adj.size()>mdeg) { mdeg = v.adj.size(); mpos = v.z; }
 
 		double slope = real(m) / imag(m);
@@ -65,7 +65,7 @@ namespace vb {
 	}
 
 	void Toroidal::output_pdf () {
-		for (unsigned e=0; e<sigma.size(); ++e) {
+		for (int e=0; e<sigma.size(); ++e) {
 			if (!initial[e]) continue;
 			V[E[e].src].bone = std::max (V[E[e].src].bone,initial[e]);
 		}
