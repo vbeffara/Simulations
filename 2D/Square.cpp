@@ -1,11 +1,9 @@
+#include <set>
 #include <vb/Array.h>
 #include <vb/Hub.h>
-#include <set>
 
-using namespace vb; using namespace std;
-
-using cooo = pair<int,double>;
-using ptt = pair<cooo,cooo>;
+using cooo = std::pair<int,double>;
+using ptt = std::pair<cooo,cooo>;
 
 class pt : public ptt { public:
 	pt (int i, int j, double x, double y) : ptt(cooo(i,x), cooo(j,y)) {};
@@ -19,9 +17,9 @@ class pt : public ptt { public:
 
 	double dist2 (const pt o) const { double dx = x() - o.x(), dy = y() - o.y(); return dx*dx + dy*dy; }
 
-	void step (const Array<double> & o) {
+	void step (const vb::Array<double> & o) {
 		int r=0;
-		double oo = o.at(coo(xi(),yi()));
+		double oo = o.at(vb::coo(xi(),yi()));
 
 		if     	(yf()==1) { r = 1; oo = -1/oo; yf() = xf(); xf() = 0; }
 		else if	(xf()==1) { r = 2; yf() = 1-yf(); xf() = 0; }
@@ -48,29 +46,29 @@ class pt : public ptt { public:
 	}
 };
 
-ostream &operator<< (ostream &os, const pt p) { return os << p.x() << " " << p.y() << endl; }
+std::ostream &operator<< (std::ostream &os, const pt p) { return os << p.x() << " " << p.y() << std::endl; }
 
 pt nopoint (-1,-1,-1,-1);
 
-using ptpair = pair<pt,pt>;
+using ptpair = std::pair<pt,pt>;
 
-class Lamination : public Array<double> { public:
-	Lamination (int n) : Array<double> (n,n,0) {
-		for (auto & v : *this) v = tan(prng.uniform_real(0,M_PI));
+class Lamination : public vb::Array<double> { public:
+	explicit Lamination (int n) : vb::Array<double> (n,n,0) {
+		for (auto & v : *this) v = tan(vb::prng.uniform_real(0,M_PI));
 	}
 
-	pt geodesique (pt p, ostream *os = nullptr) const {
-		set<pt> S;
+	pt geodesique (pt p, std::ostream *os = nullptr) const {
+		std::set<pt> S;
 		while (true) {
-			if (!contains(coo(p.xi(),p.yi()))) break;
+			if (!contains(vb::coo(p.xi(),p.yi()))) break;
 			if (os) (*os) << p;
 			p.step(*this);
 			if (S.count(p)) break;
 			S.insert(p);
 		}
-		if (os) (*os) << endl;
+		if (os) (*os) << std::endl;
 
-		if (!contains(coo(p.xi(),p.yi()))) return nopoint;
+		if (!contains(vb::coo(p.xi(),p.yi()))) return nopoint;
 
 		pt p_min = p; p.step(*this);
 		while (p != p_min) {
@@ -81,20 +79,20 @@ class Lamination : public Array<double> { public:
 		return p_min;
 	}
 
-	pair<pt,pt> leaf (pt p, ostream *os = nullptr) const {
+	std::pair<pt,pt> leaf (pt p, std::ostream *os = nullptr) const {
 		pt p1 = geodesique (p,os); p.reverse(); pt p2 = geodesique (p,os);
 		if (p1<p2) return {p1,p2}; else return {p2,p1};
 	}
 
-	set<pt> connections () const {
-		set<ptpair> S;
-		set<pt> P;
+	std::set<pt> connections () const {
+		std::set<ptpair> S;
+		std::set<pt> P;
 
 		for (int i=0; i<ww; ++i) {
 			for (int j=0; j<hh; ++j) {
 				for (int xx=1; xx<100; ++xx) {
 					double x = .01 * xx;
-					pair<pt,pt> pp = leaf (pt(i,j,x,0),nullptr);
+					std::pair<pt,pt> pp = leaf (pt(i,j,x,0),nullptr);
 
 					if ((pp.first != nopoint) && (pp.second != nopoint)) {
 						if (S.count(pp) == 0) { S.insert (pp); P.insert (pt(i,j,x,0)); }
@@ -113,20 +111,20 @@ class Lamination : public Array<double> { public:
 };
 
 int main (int argc, char ** argv) {
-	H.init ("Random lamination", argc,argv, "n=20,c");
-	Lamination o (H['n']);
+	vb::H.init ("Random lamination", argc,argv, "n=20,c");
+	Lamination o (vb::H['n']);
 
 	for (int i=0; i<o.ww; ++i) for (int j=0; j<o.hh; ++j) {
-		o.geodesique (pt(i,j,0,0),&cout);
-		o.geodesique (pt(i,j,1,0),&cout);
-		o.geodesique (pt(i,j,0,1),&cout);
-		o.geodesique (pt(i,j,1,1),&cout);
+		o.geodesique (pt(i,j,0,0),&std::cout);
+		o.geodesique (pt(i,j,1,0),&std::cout);
+		o.geodesique (pt(i,j,0,1),&std::cout);
+		o.geodesique (pt(i,j,1,1),&std::cout);
 	}
 
-	if (H['c']) {
-		set<pt> P = o.connections();
-		set<pt> E;
+	if (vb::H['c']) {
+		std::set<pt> P = o.connections();
+		std::set<pt> E;
 		for (pt i : P) { auto pp = o.leaf(i,nullptr); E.insert (pp.first); E.insert (pp.second); }
-		for (pt i : E) { o.geodesique (i,&cerr); }
+		for (pt i : E) { o.geodesique (i,&std::cerr); }
 	}
 }

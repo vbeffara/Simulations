@@ -3,11 +3,11 @@
 
 namespace vb {
 	class Adder { public: int s; int n=1;
-		Adder         	(int _s = 0) : s(_s)	{}
-		void dim      	(int _n)            	{ n = _n; }
-		int operator+=	(int t)             	{ s += t; return s; }
-		int operator-=	(int t)             	{ s -= t; return s; }
-		operator Color	()                  	{ return Color(s/n); }
+		explicit Adder          (int _s = 0) : s(_s)	{}
+		void dim                (int _n)            	{ n = _n; }
+		int operator+=          (int t)             	{ s += t; return s; }
+		int operator-=          (int t)             	{ s -= t; return s; }
+		explicit operator Color ()                  	{ return Color(s/n); }
 	};
 
 	class Cube_iterator;
@@ -43,10 +43,10 @@ namespace vb {
 		bool mirrors = true;
 	};
 
-	class Cube_iterator : public coo3 { public: Cube &c;
-		Cube_iterator           (Cube &cc, coo3 xyz) : coo3(xyz), c(cc)	{}
-		bool operator!=         (const Cube_iterator &o)               	{ return (&c != &o.c) || coo3::operator!= (o);                  	}
-		void operator++         ()                                     	{ x++; if (x == c.sx) { x=0; y++; } if (y == c.sy) { y=0; z++; }	}
-		const uchar & operator*	()                                     	{ return c.at(*((coo3*)this));                                  	}
+	class Cube_iterator : public coo3 { public: Cube *c;
+		Cube_iterator           (Cube *cc, coo3 xyz) : coo3(xyz), c(cc)	{}
+		bool operator!=         (const Cube_iterator &o)               	{ return (c != o.c) || coo3::operator!= (o);                  	}
+		void operator++         ()                                     	{ x++; if (x == c->sx) { x=0; y++; } if (y == c->sy) { y=0; z++; }	}
+		const uchar & operator*	()                                     	{ return c->at((coo3)(*this));                                  	}
 	};
-}
+} // namespace vb

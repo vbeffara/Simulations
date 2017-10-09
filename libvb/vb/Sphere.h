@@ -12,4 +12,4 @@ namespace vb {
     private:
         Sphere (int w, std::function <Color(cpx)> f);
     };
-}
+} // namespace vb

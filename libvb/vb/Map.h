@@ -4,12 +4,11 @@
 
 namespace vb {
 	using Edge = std::pair<int,int>;
-	using adj_list = std::vector<long>;
+	using adj_list = std::vector<int>;
 
 	class Vertex : public Circle { public:
 		adj_list adj;
-		Vertex (const cpx &z = cpx(0.0,0.0), const double &r = 0.0) : Circle(z,r) {};
-		Vertex (const double &z, const double &r = 0.0) : Circle(z,r) {};
+		explicit Vertex (const cpx &z = cpx(0.0,0.0), const double &r = 0.0) : Circle(z,r) {};
 	};
 
 	class Map : public Picture { public:
@@ -22,7 +21,7 @@ namespace vb {
 		int infinity;
 		double scale=1;
 
-		Map (int nn);
+		explicit Map (int nn);
 
 		adj_list::iterator find_edge (const Edge &e) const;
 
@@ -46,9 +45,9 @@ namespace vb {
 
 		void print_as_dot (std::ostream &os);
 
-		void plot_vertices (Figure &F);
-		void plot_edges (Figure &F);
-		void plot_circles (Figure &F);
+		void plot_vertices (Figure * F);
+		void plot_edges (Figure * F);
+		void plot_circles (Figure * F);
 
 		int nb_sommets () { return n; }
 		int nb_aretes ();

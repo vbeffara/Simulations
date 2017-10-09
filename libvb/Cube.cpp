@@ -3,14 +3,14 @@
 
 namespace vb {
 	Cube::Cube (int x, int y, int z) : Bitmap <Adder> (x+z,y+z), sx(x), sy(y), sz(z), data(sx*sy*sz,0) {
-		for (int x=0; x<sz; ++x) for (int y=0; y<sz; ++y) at(coo(sx+x,sy+y)) = (x/10+y/10) % 2 ? 200 : 150;
+		for (int x=0; x<sz; ++x) for (int y=0; y<sz; ++y) at(coo(sx+x,sy+y)) = Adder ((x/10+y/10) % 2 ? 200 : 150);
 		for (int x=0; x<sx; ++x) for (int y=0; y<sy; ++y) at(coo(x,y)).dim(sz);
 		for (int x=0; x<sx; ++x) for (int z=0; z<sz; ++z) at(coo(x,z+sy)).dim(sy);
 		for (int y=0; y<sy; ++y) for (int z=0; z<sz; ++z) at(coo(z+sx,y)).dim(sx);
 	}
 
-	Cube_iterator	Cube::begin	()	{ return Cube_iterator (*this, coo3(0,0,0)); 	}
-	Cube_iterator	Cube::end  	()	{ return Cube_iterator (*this, coo3(0,0,sz));	}
+	Cube_iterator	Cube::begin	()	{ return Cube_iterator (this, coo3(0,0,0)); 	}
+	Cube_iterator	Cube::end  	()	{ return Cube_iterator (this, coo3(0,0,sz));	}
 
 	void Cube::output_pov (std::string s) {
 		auto squares = std::make_unique <Pov_Union> ();
