@@ -3,11 +3,6 @@
 #include <boost/lexical_cast.hpp>
 #include <fplll.h>
 
-#ifdef FPLLL4
-#define lll_reduction lllReduction
-#define shortest_vector shortestVector
-#endif
-
 namespace vb {
 	// template Polynomial<bigint> guess (real_t x, real_t eps);
 	// template Polynomial<bigint> guess (real_t x, int leps, unsigned d);
