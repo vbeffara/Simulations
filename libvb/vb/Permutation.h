@@ -3,14 +3,14 @@
 #include <vector>
 
 namespace vb {
-	using Cycles = std::vector<std::vector<unsigned long>>;
+	using Cycles = std::vector<std::vector<int>>;
 
-	class Passport : public std::vector<std::pair<unsigned long,unsigned long>> {};
+	class Passport : public std::vector<std::pair<int,int>> {};
 
-	class Permutation : public std::vector<unsigned long> {
+	class Permutation : public std::vector<int> {
 	public:
-		Permutation (unsigned long n = 0)         	: std::vector<unsigned long> (n)           	{ for (unsigned long i=0; i<n; ++i) at(i)=i; }
-		Permutation (std::vector<unsigned long> s)	: std::vector<unsigned long> (std::move(s))	{ }
+		Permutation (int n = 0)         	: std::vector<int> (n)           	{ for (int i=0; i<n; ++i) at(i)=i; }
+		Permutation (std::vector<int> s)	: std::vector<int> (std::move(s))	{ }
 		Permutation (Cycles & c);
 
 		bool is_identity () const;
@@ -20,11 +20,11 @@ namespace vb {
 		Permutation conjugate	(const Permutation & s) const;
 
 		Cycles                    	cycles ()   	const;
-		std::vector<unsigned long>	signature ()	const;
+		std::vector<int>	signature ()	const;
 		Passport                  	passport () 	const;
 	};
 
-	Permutation Transposition (unsigned long n, unsigned long i, unsigned long j);
+	Permutation Transposition (int n, int i, int j);
 
 	bool connected (const Permutation & s, const Permutation & a);
 

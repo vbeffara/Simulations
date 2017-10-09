@@ -6,32 +6,32 @@ namespace vb {
 		unsigned sz=0; for (const auto & v : c) sz += v.size();
 		resize(sz);
 		for (auto v : c) {
-			for (unsigned long i=0; i<v.size()-1; ++i) at(v[i])=v[i+1];
+			for (int i=0; i<v.size()-1; ++i) at(v[i])=v[i+1];
 			at(v.back()) = v[0];
 		}
 	}
 
 	Cycles Permutation::cycles () const {
 		Cycles c;
-		std::vector<unsigned long> done (size(), 0);
+		std::vector<int> done (size(), 0);
 		for (unsigned i=0; i<size(); ++i) {
 			if (done[i]) continue;
-			std::vector<unsigned long> v (1,i); done[i]=1;
+			std::vector<int> v (1,i); done[i]=1;
 			for (unsigned j=at(i); done[j]==0; j=at(j)) { v.push_back(j); done[j]=1; }
 			c.push_back(v);
 		}
 		return c;
 	}
 
-	std::vector<unsigned long> Permutation::signature () const {
-		vector<unsigned long> output;
+	std::vector<int> Permutation::signature () const {
+		vector<int> output;
 		for (const auto & c : cycles()) output.push_back(c.size());
 		sort (output.begin(),output.end());
 		return output;
 	}
 
 	Passport Permutation::passport () const {
-		std::vector<unsigned long> s = signature();
+		std::vector<int> s = signature();
 		Passport out;
 		unsigned l=0, c=0;
 		for (int i=s.size()-1; i>=0; --i) {
@@ -68,7 +68,7 @@ namespace vb {
 		return out;
 	}
 
-	Permutation Transposition (unsigned long n, unsigned long i, unsigned long j) {
+	Permutation Transposition (int n, int i, int j) {
 		Permutation p(n); p[i]=j; p[j]=i; return p;
 	}
 

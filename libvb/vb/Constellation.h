@@ -5,7 +5,7 @@
 namespace vb {
 	template <typename T> struct Star {
 		typename cpx_t<T>::type z;
-		unsigned long d;
+		int d;
 	};
 
 	template <typename T> class Constellation { public:

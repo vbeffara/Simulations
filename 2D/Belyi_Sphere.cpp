@@ -7,14 +7,14 @@
 
 using namespace vb; using namespace std;
 
-Stream <Hypermap> triangulations (unsigned n) {
-	Cycles phic; for (unsigned long i=0; i<n/3; ++i) phic.emplace_back (std::vector<unsigned long> {i,i+n/3,i+2*n/3}); Permutation phi (phic);
-	int np = n/6; vector<unsigned long> a (n/2 - np,2);
+Stream <Hypermap> triangulations (int n) {
+	Cycles phic; for (int i=0; i<n/3; ++i) phic.emplace_back (std::vector<int> {i,i+n/3,i+2*n/3}); Permutation phi (phic);
+	int np = n/6; vector<int> a (n/2 - np,2);
 
 	return Stream<Hypermap> ([a,phi,n,np](Sink<Hypermap> & yield) {
 		std::vector<Hypermap> hs;
 		for (auto alph : permutations(a)) {
-			Permutation alpha (n); for (unsigned i=0; i<n-2*np; ++i) alpha[i] = alph[i];
+			Permutation alpha (n); for (int i=0; i<n-2*np; ++i) alpha[i] = alph[i];
 			for (long i=0; i<np; ++i) { alpha[n-2*np+2*i] = n-2*np+2*i+1; alpha[n-2*np+2*i+1] = n-2*np+2*i; }
 			if (!connected(phi,alpha)) continue;
 			Permutation sigma = (alpha*phi).inverse();

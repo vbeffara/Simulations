@@ -9,8 +9,8 @@
 namespace vb {
 	class Hypermap {
 	public:
-		struct Vertex	{ unsigned i=0;	cpx z;         	double r=1.0;	unsigned bone=0;	std::vector<unsigned> adj;	bool fixed = false;	};
-		struct Edge  	{ unsigned i=0;	unsigned src=0;	double a=NAN;	                	                          	                   	};
+		struct Vertex	{ int i=0;	cpx z;      double r=1.0;	int bone=0;	std::vector<int> adj;	bool fixed = false;	};
+		struct Edge  	{ int i=0;	int src=0;	double a=NAN;	                	                          	                   	};
 
 		Hypermap (Permutation s, Permutation a, Permutation p)	: sigma(std::move(s)), alpha(std::move(a)), phi(std::move(p)), initial(sigma.size(),3)	{}
 		Hypermap (Cycles s, Cycles a, Cycles p)               	: Hypermap (Permutation(s), Permutation(a), Permutation(p))                           	{}
@@ -23,11 +23,11 @@ namespace vb {
 		bool    	validate        	() const;
 		bool    	is_graph        	() const;
 		bool    	is_triangulation	() const;
-		bool    	is_simple       	(unsigned d = 2) const; // ! parallel but non-consecutive edges (like an eye) are not detected
+		bool    	is_simple       	(int d = 2) const; // ! parallel but non-consecutive edges (like an eye) are not detected
 		int     	euler           	() const;
-		unsigned	genus           	() const;
+		int 		genus           	() const;
 
-		void flip (unsigned e);
+		void flip (int e);
 
 		void	acpa	();
 
@@ -44,7 +44,7 @@ namespace vb {
 
 		Permutation sigma, alpha, phi;
 
-		std::vector<unsigned> initial;
+		std::vector<int> initial;
 		std::vector<Vertex>	V;
 		std::vector<Edge>  	E;
 
@@ -54,7 +54,7 @@ namespace vb {
 		int mode = 228; std::string title;
 
 	private:
-		Permutation	rebasing	(unsigned i)	const;
+		Permutation	rebasing	(int i)	const;
 		Permutation	rebasing	()          	const;
 	};
 

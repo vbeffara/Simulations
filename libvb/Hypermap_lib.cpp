@@ -11,7 +11,7 @@ namespace vb {
 	}
 
 	Hypermap H_artem (long n) {
-		std::vector<unsigned long> sigma(6*n), alpha(6*n), phi(6*n);
+		std::vector<int> sigma(6*n), alpha(6*n), phi(6*n);
 		for (long i=0; i<n; ++i) {
 			sigma[i]=2*n+i; sigma[n+i]=5*n+i+1; sigma[2*n+i]=n+i-1; sigma[3*n+i]=3*n+i+1; sigma[4*n+i]=4*n+i-1; sigma[5*n+i]=i;
 			alpha[i]=n+i; alpha[n+i]=i; alpha[2*n+i]=3*n+i; alpha[3*n+i]=2*n+i; alpha[4*n+i]=5*n+i; alpha[5*n+i]=4*n+i;
@@ -23,7 +23,7 @@ namespace vb {
 	}
 
 	Hypermap H_genus0 (long n) {
-		std::vector<unsigned long> sigma(6*n), alpha(6*n), phi(6*n);
+		std::vector<int> sigma(6*n), alpha(6*n), phi(6*n);
 		for (long i=0; i<n; ++i) { long j = (i+1)%n, k = (i+n-1)%n;
 			sigma[i]=j; sigma[n+i]=3*n+k; sigma[2*n+i]=n+i; sigma[3*n+i]=4*n+j; sigma[4*n+i]=2*n+i; sigma[5*n+i]=5*n+k;
 			alpha[i]=n+i; alpha[n+i]=i; alpha[2*n+i]=3*n+i; alpha[3*n+i]=2*n+i; alpha[4*n+i]=5*n+i; alpha[5*n+i]=4*n+i;
@@ -33,7 +33,7 @@ namespace vb {
 	}
 
 	Hypermap H_genus1 (long n) {
-		std::vector<unsigned long> sigma(6*n), alpha(6*n), phi(6*n);
+		std::vector<int> sigma(6*n), alpha(6*n), phi(6*n);
 		for (long i=0; i<n; ++i) { long j = (i+1)%n, k = (i+n-1)%n;
 			sigma[6*i]=6*i+1; sigma[6*i+1]=6*i+2; sigma[6*i+2]=6*i+3; sigma[6*i+3]=6*i+4; sigma[6*i+4]=6*i+5; sigma[6*i+5]=6*i;
 			alpha[6*i]=6*j+3; alpha[6*i+1]=6*j+4; alpha[6*i+2]=6*i+5; alpha[6*i+3]=6*k; alpha[6*i+4]=6*k+1; alpha[6*i+5]=6*i+2;
