@@ -2,7 +2,7 @@
 #include <cairo-pdf.h>
 
 namespace vb {
-	Figure::Figure (bool _o) : Picture (600,600), ortho(_o) {}
+	Figure::Figure () : Picture (600,600) {}
 
 	double Figure::left () {
 		double l = 0.0;

@@ -43,7 +43,7 @@ namespace vb {
 
 	Pairings_Iterator Pairings::end () const { return Pairings_Iterator(n,size(),false); }
 
-	Permutation Pairings::rand () {
+	Permutation Pairings::rrand () {
 		Permutation out(n);
 		for (unsigned long i=0; i<n; ++i) {
 			if (out[i]<i) continue;

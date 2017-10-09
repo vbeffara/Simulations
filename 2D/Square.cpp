@@ -92,7 +92,8 @@ class Lamination : public Array<double> { public:
 
 		for (int i=0; i<ww; ++i) {
 			for (int j=0; j<hh; ++j) {
-				for (double x=0.01; x<1; x+=.01) {
+				for (int xx=1; xx<100; ++xx) {
+					double x = .01 * xx;
 					pair<pt,pt> pp = leaf (pt(i,j,x,0),nullptr);
 
 					if ((pp.first != nopoint) && (pp.second != nopoint)) {

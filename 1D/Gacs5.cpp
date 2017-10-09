@@ -7,8 +7,6 @@
 #define R2_BIT 16
 #define ALL_BITS 31
 
-using namespace vb;
-
 class Automaton {
 public:
   Automaton (int);
@@ -30,8 +28,8 @@ Automaton::Automaton (int n) : size(n), main (n,0), alt (n) { }
 
 void Automaton::randomize (double e) {
   for (int i=0; i<size; ++i)
-    if (prng.bernoulli(e))
-      main[i] = prng() & ALL_BITS;
+    if (vb::prng.bernoulli(e))
+      main[i] = vb::prng() & ALL_BITS;
 }
 
 void Automaton::shift () {
@@ -55,7 +53,7 @@ void Automaton::emit () {
 
 void Automaton::forget (double r) {
   for (int i=0; i<size; ++i)
-    if (prng.bernoulli(r))
+    if (vb::prng.bernoulli(r))
       main[i] &= 1;
 }
 
@@ -64,39 +62,39 @@ void Automaton::effect (double r) {
     alt[i] = main[i];
   for (int i=0; i<size; i++) {
     if ( !(main[i]&1) && (main[(i+size-1)%size]&1) &&
-	 (main[i]&L1_BIT) && (prng.bernoulli(r)) )
+	 (main[i]&L1_BIT) && (vb::prng.bernoulli(r)) )
       alt[i] |= 1;
     else if ( !(main[i]&1) && (main[(i+size-1)%size]&1) &&
-	 (main[i]&R1_BIT) && (prng.bernoulli(r)) )
+	 (main[i]&R1_BIT) && (vb::prng.bernoulli(r)) )
       alt[(i+size-1)%size] &= 30;
     else if ( (main[i]&1) && !(main[(i+size-1)%size]&1) &&
-	 (main[i]&L2_BIT) && (prng.bernoulli(r)) )
+	 (main[i]&L2_BIT) && (vb::prng.bernoulli(r)) )
       alt[i] &= 30;
     else if ( (main[i]&1) && !(main[(i+size-1)%size]&1) &&
-	 (main[i]&R2_BIT) && (prng.bernoulli(r)) )
+	 (main[i]&R2_BIT) && (vb::prng.bernoulli(r)) )
       alt[(i+size-1)%size] |= 1;
   }
   this->swap();
 }
 
 int main (int argc, char **argv) {
-  H.init ("1D cellular automaton", argc,argv, "n=500,e=.03,r=.05");
-  const int n = H['n'];
-  const double e = H['e'];
-  const double r = H['r'];
+  vb::H.init ("1D cellular automaton", argc,argv, "n=500,e=.03,r=.05");
+  const int n = vb::H['n'];
+  const double e = vb::H['e'];
+  const double r = vb::H['r'];
 
-  Image img (n,n);
+  vb::Image img (n,n);
   img.show();
 
   Automaton a(n);
 
   for (int x=0; x<n; ++x)
-    a.main[x] = prng()&31;
+    a.main[x] = vb::prng()&31;
 
   for (int i=0; ; ++i) {
     int nb=0;
     for (int x=0; x<n; ++x) {
-      img.put (coo(x,i%n),Color(255 * ((a.main[x]>>0)&1)));
+      img.put (vb::coo(x,i%n),vb::Color(255 * ((a.main[x]>>0)&1)));
       nb += a.main[x]&1;
     }
     //    img.update();
@@ -108,6 +106,4 @@ int main (int argc, char **argv) {
       a.forget(r);
     }
   }
-
-  return 0;
 }

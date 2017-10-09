@@ -277,7 +277,7 @@ BOOST_AUTO_TEST_CASE (test_Figure) {
 	for (int i=0; i<10; ++i)
 		F.add (std::make_unique <Segment> (	cpx(prng.uniform_real(-5,5),prng.uniform_real(-5,5)),
 		                                   	cpx(prng.uniform_real(-5,5),prng.uniform_real(-5,5)),
-		                                   	Indexed(i,.6,.9)));
+		                                   	Pen(Indexed(i,.6,.9))));
 
 	for (int i=1; i<=5; ++i) F.add (std::make_unique <Circle> (cpx(0,0), i));
 	F.add (std::make_unique <Dot> (cpx(0,0)));

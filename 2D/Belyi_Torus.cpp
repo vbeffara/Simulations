@@ -30,7 +30,7 @@ int main (int argc, char ** argv) {
 	Coloring img (cpx(-1,-1),cpx(1,1),500,[](cpx){return BLACK;});
 
 	while ((target==0)||(v.size()<target)) {
-		Permutation alpha = Pairings(a).rand();                                        	if (!connected(phi,alpha))	continue;
+		Permutation alpha = Pairings(a).rrand();                                       	if (!connected(phi,alpha))	continue;
 		Permutation sigma = (alpha*phi).inverse(); Hypermap M (sigma,alpha,phi);       	if (M.genus() != g)       	continue;
 		bool good=true; for (auto & c : sigma.cycles()) if (c.size()<d) good=false;    	if (!good)                	continue;
 		good=true; if (D>0) for (auto & c : sigma.cycles()) if (c.size()>D) good=false;	if (!good)                	continue;

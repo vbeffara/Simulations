@@ -78,7 +78,7 @@ public:
 	void dessine_enveloppe () {
 		vector<cpx> V;
 
-		P = Color (128+prng.uniform_int(128), 128+prng.uniform_int(128), 128+prng.uniform_int(128));
+		P = Pen (Color (128+prng.uniform_int(128), 128+prng.uniform_int(128), 128+prng.uniform_int(128)));
 
 		for (auto i = env.begin(); i != env.end(); ++i) {
 			if (i == env.begin()) {

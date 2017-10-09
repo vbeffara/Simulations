@@ -48,11 +48,13 @@ int main (int argc, char ** argv) {
 	W.manage (Ac,.2,.4,"Ac");
 	W.show();
 
-	Figure F (false);
+	Figure F;
+	F.ortho = false;
 	F.add (std::make_unique <Path> (pos));
 	F.show();
 
-	Figure G (false);
+	Figure G;
+	G.ortho = false;
 	vector<vector<cpx>> graph (size+1);
 
 	ProgressBar PB (iterations); double t=0;

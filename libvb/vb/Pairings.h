@@ -27,7 +27,7 @@ namespace vb {
 		Pairings_Iterator	begin () const;
 		Pairings_Iterator	end	() const;
 
-		Permutation rand ();
+		Permutation rrand ();
 
 	private:
 		unsigned n;

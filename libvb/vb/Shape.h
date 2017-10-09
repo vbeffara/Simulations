@@ -1,17 +1,21 @@
 #pragma once /// @file
+#include <cairo.h>
 #include <vb/Color.h>
 #include <vb/cpx.h>
-#include <cairo.h>
 #include <vector>
 
 namespace vb {
 	class Pen { public:
-		Pen (Color c_=BLACK, double w_=1.0, Color f_=WHITE, bool ff_=false) : c(c_), f(f_), w(w_), ff(ff_) { }
-		Color c,f; double w; bool ff;
+		explicit Pen (Color c_, double w_=1.0, Color f_=WHITE, bool ff_=false) : c(c_), f(f_), w(w_), ff(ff_) { }
+		Pen () {}
+
+		Color c=BLACK, f=WHITE;
+		double w=1;
+		bool ff=false;
 	};
 
 	class Shape { public:
-		Shape (Pen p_) : p(p_) { }
+		explicit Shape (Pen p_) : p(p_) { }
 
 		Shape (const Shape &) = default;
 		Shape (Shape &&) = default;
@@ -41,7 +45,7 @@ namespace vb {
 	};
 
 	class Dot : public Shape { public:
-		Dot (cpx zz, Pen p = Pen()) : Shape(p), z(zz) {}
+		explicit Dot (cpx zz, Pen p = Pen()) : Shape(p), z(zz) {}
 
 		double left ()   override { return z.real(); }
 		double right ()  override { return z.real(); }
@@ -65,7 +69,7 @@ namespace vb {
 	};
 
 	class Path : public Shape { public:
-		Path (std::vector<cpx> z_, Pen p = Pen()) : Shape(p), z(std::move(z_)) {}
+		explicit Path (std::vector<cpx> z_, Pen p = Pen()) : Shape(p), z(std::move(z_)) {}
 
 		double left () override;
 		double right () override;
@@ -77,7 +81,7 @@ namespace vb {
 	};
 
 	class Polygon : public Path { public:
-		Polygon (std::vector<cpx> z, Pen p = Pen()) : Path(std::move(z),p) {}
+		explicit Polygon (std::vector<cpx> z, Pen p = Pen()) : Path(std::move(z),p) {}
 		void draw (cairo_t * cr) override;
 	};
-}
+} // namespace vb

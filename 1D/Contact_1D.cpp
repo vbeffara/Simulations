@@ -10,7 +10,7 @@ class Site { public:
 };
 
 class Contact : public vb::Automaton<Site> { public:
-	Contact (const vb::Hub & H) : Automaton<Site> (H['n'],1,H['p']) {
+	explicit Contact (const vb::Hub & H) : Automaton<Site> (H['n'],1,H['p']) {
 		for (auto &s : (*this)) if (vb::prng.bernoulli(H['e'])) s = 2;
 
 		add_rule (1,     	{ {},            	{{0,0}} 	});

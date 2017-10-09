@@ -4,7 +4,7 @@
 
 namespace vb {
 	class Figure : public Picture { public:
-		Figure (bool ortho = true);
+		Figure ();
 
 		double left (); double right (); double top (); double bottom ();
 		Figure & add (std::unique_ptr<Shape> && S);
@@ -15,12 +15,12 @@ namespace vb {
 		void output_pdf (const std::string &s = "");
 
 		double margin = 0;
+		bool ortho = true;
 
 	protected:
 		void paint () override;
 		void paint (cairo_t * cr, bool fill = true, bool crop = false);
 
-		bool ortho;
 		double basewidth = NAN;
 	};
-}
+} // namespace vb

@@ -7,12 +7,13 @@ namespace vb {
 	template <typename T> class Array_iterator;
 
 	template <typename T> class Array { public:
-		Array (int64_t w, int64_t h, T d) :  ww(w), hh(h), data (w*h,d) {};
-		Array (int64_t w, int64_t h) :  ww(w), hh(h), data (w*h) {};
+		Array (int64_t w, int64_t h, T d) :  ww(w), hh(h), data (w*h,d) {}
+		Array (int64_t w, int64_t h) :  ww(w), hh(h), data (w*h) {}
+		Array () = default;
+
 		explicit Array (const std::vector<std::vector<T>> & l) : ww(l.size()), hh(l[0].size()), data(ww*hh) {
 			for (int64_t i=0; i<ww; ++i) for (int64_t j=0; j<hh; ++j) put(coo(i,j),l[i][j]);
 		}
-		Array () : Array (0,0) {}
 
 		void resize (int64_t w, int64_t h) { ww=w; hh=h; data.resize(ww*hh); }
 		void resize (int64_t w, int64_t h, T t) { ww=w; hh=h; data.resize(ww*hh,t); }
@@ -36,7 +37,7 @@ namespace vb {
 		iterator	begin	()	{ return iterator (*this, coo(0,0)); 	}
 		iterator	end  	()	{ return iterator (*this, coo(0,hh));	}
 
-		int64_t ww,hh;
+		int64_t ww=0, hh=0;
 
 	private:
 		std::vector<T> data;
