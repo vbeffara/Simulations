@@ -3,7 +3,7 @@
 using namespace std; using namespace vb;
 
 class Site { public:
-	Site (int age) : a(age)	{ }
+	Site (int age = 0) : a(age)	{ }
 	operator int ()        	{ return a; }
 	operator Color ()      	{ return a==0 ? BLACK : Indexed(a); }
 	int a;

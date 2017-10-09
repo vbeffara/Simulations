@@ -7,7 +7,7 @@ namespace vb {
 		void dim                (int _n)            	{ n = _n; }
 		int operator+=          (int t)             	{ s += t; return s; }
 		int operator-=          (int t)             	{ s -= t; return s; }
-		explicit operator Color ()                  	{ return Color(s/n); }
+		explicit operator Color ()                  	{ return Grey(s/n); }
 	};
 
 	class Cube_iterator;

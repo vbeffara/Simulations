@@ -3,7 +3,7 @@
 const std::vector <vb::Color> C { vb::WHITE, vb::BLACK, vb::GREEN };
 
 class Site { public:
-	Site (int _s) : s(_s) {}
+	Site (int _s = 0) : s(_s) {}
 	operator vb::Color() { return C[s]; }
 	operator int() { return s; }
 	int s;

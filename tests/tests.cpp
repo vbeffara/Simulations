@@ -95,7 +95,7 @@ BOOST_AUTO_TEST_CASE (test_coo) {
 }
 
 BOOST_AUTO_TEST_CASE (test_Color) {
-	Color c (123);
+	Color c = Grey(123);
 	BOOST_TEST (c == Color(123,123,123));
 	BOOST_TEST (c != Color(122,123,123));
 }

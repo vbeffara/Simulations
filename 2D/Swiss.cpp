@@ -15,7 +15,7 @@ const std::vector<vb::Color> colors = { C_EAST, C_NORTH, C_WEST, C_SOUTH };
 class Site {
 public:
     uchar s;
-    Site (uchar _s) : s(_s) { };
+    Site (uchar _s = 0) : s(_s) { };
     Site & operator= (uchar _s) { s=_s; return *this; }
     operator int () { return s; }
     operator vb::Color () { return colors[s]; }

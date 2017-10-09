@@ -33,7 +33,7 @@ int main (int, char **) {
 	fd.push_back(L(coo(2,1)));
 	fd.push_back(L(coo(2,2)));
 	fd.push_back(L(coo(1,2)));
-	F.add (std::make_unique <Polygon> (fd, Pen(BLACK,0,Color(200),true)));
+	F.add (std::make_unique <Polygon> (fd, Pen(BLACK,0,Grey(200),true)));
 
 	for (int i=0; i<3; ++i)
 		for (int j=0; j<3; ++j)

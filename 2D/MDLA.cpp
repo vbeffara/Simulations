@@ -1,7 +1,7 @@
 #include <vb/Image.h>
 
-#define EMPTY  Color(0)
-#define AWAY   Color(50)
+#define EMPTY  BLACK
+#define AWAY   Grey(50)
 #define ALIVE  Color(0,200,0)
 #define DEAD   Color(255,0,0)
 

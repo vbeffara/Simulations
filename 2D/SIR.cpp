@@ -2,7 +2,7 @@
 
 using namespace vb;
 
-const Color none(0), prey(GREEN), pred(RED);
+const Color none(BLACK), prey(GREEN), pred(RED);
 
 class SIR : public Image { public:
     SIR (int n, double l_) : Image (n,n), l (l_) {

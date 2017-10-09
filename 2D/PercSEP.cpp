@@ -2,12 +2,12 @@
 
 using namespace vb; using namespace std;
 
-const vector<Color> C = { BLACK, Color(90), GREEN, Color(128,0,0) };
+const vector<Color> C = { BLACK, Grey(90), GREEN, Color(128,0,0) };
 
 class Site {
 	int state; // 0 closed, 1 empty, 2 occupied, 3 blocked
 public:
-	Site (int i) : state(i) {};
+	Site (int i = 0) : state(i) {};
 	operator int()   const { return state; }
 	operator Color() const { return C[state]; }
 };

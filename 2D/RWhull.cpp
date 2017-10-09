@@ -27,12 +27,12 @@ int m=1;
 
 class Stat {
 public:
-	Stat (int ss) : s(ss) { m = max(m,s); }
+	Stat (int ss = 0) : s(ss) { m = max(m,s); }
 	operator int () { return s; }
 	operator Color() {
 		if (s==0) return WHITE;
 		if (s==1) return RED;
-		return Color(215 - (s*215)/m);
+		return Grey(215 - (s*215)/m);
 	}
 	int s;
 };

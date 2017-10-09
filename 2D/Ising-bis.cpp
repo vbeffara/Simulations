@@ -4,8 +4,8 @@
 using namespace vb; using namespace std;
 
 struct Spin {
-	Spin (int s) : s(s) {}
-	operator Color() { return s ? Indexed((3+s)/2) : Color(128); }
+	Spin (int s = 0) : s(s) {}
+	operator Color() { return s ? Indexed((3+s)/2) : Grey(128); }
 	int s;
 };
 

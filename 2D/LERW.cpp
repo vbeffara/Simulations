@@ -4,9 +4,9 @@
 using namespace vb;
 
 class Site { public:
-    Site (char s) : s(s) {}
+    Site (char s = 0) : s(s) {}
     operator int() { return s; }
-    operator Color() { return Color(s); }
+    operator Color() { return Grey(s); }
     int s;
 };
 

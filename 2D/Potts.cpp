@@ -5,7 +5,7 @@ using namespace vb; using namespace std;
 const vector<Color> C = { RED, BLUE, YELLOW, GREEN, MAGENTA, CYAN };
 
 struct Spin {
-	Spin (int i) : s(i) {};
+	Spin (int i = 0) : s(i) {};
 	operator Color() const { if ((s>=0)&&(s<6)) return C[s]; else if (s<0) return WHITE; else return Indexed(s); }
 	int s;
 };

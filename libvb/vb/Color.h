@@ -21,7 +21,6 @@ namespace vb {
 		Color (unsigned char R, unsigned char G, unsigned char B, unsigned char A=255)	: b(B), g(G), r(R), a(A) {}
 #endif
 		Color () : Color (0,0,0,0) {}
-		explicit Color (unsigned char V) : Color (V,V,V) {}
 
 		bool operator== (const Color &o) const { return (r==o.r) && (g==o.g) && (b==o.b) && (a==o.a); }
 		bool operator!= (const Color &o) const { return (r!=o.r) || (g!=o.g) || (b!=o.b) || (a!=o.a); }
@@ -31,6 +30,8 @@ namespace vb {
 
 	const Color	NOCOLOR(0,0,0,0), BLACK(0,0,0), WHITE(255,255,255), RED(255,0,0), GREEN(0,255,0), BLUE(0,0,255),
 	           	CYAN(0,255,255), MAGENTA(255,0,255), YELLOW(255,255,0);
+
+	inline Color Grey (unsigned char x) { return Color(x,x,x); }
 
 	inline Color HSV (double h, double s, double v) {
 		int h_i = h*6; double f = h*6 - h_i; v*=255;

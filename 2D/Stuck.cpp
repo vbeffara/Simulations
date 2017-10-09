@@ -4,14 +4,14 @@
 using namespace std; using namespace vb;
 
 class Stat { public:
-	Stat (int ss) : s(ss), ml(max) { max = std::max(max,s); }
+	Stat (int ss = 0) : s(ss), ml(max) { max = std::max(max,s); }
 	operator int () { return s; }
 	operator Color() {
 		if (s<0) return Color(0,64,0);
 		if (s==0) return BLACK;
 		if (ml<=.1*max) return Color(0,0,64);
 		if (ml<=.9*max) return Color(0,0,64 + 128*(ml-.1*max)/(.8*max));
-		return Color(64 + (s-min)*(255-64)/(max-min));
+		return Grey(64 + (s-min)*(255-64)/(max-min));
 	}
 	int s,ml;
 	static int min,max;

@@ -5,7 +5,7 @@ using namespace std;
 
 class Site {
 public:
-	Site (int _s) : s(_s) {}
+	Site (int _s = 0) : s(_s) {}
 	operator Color () { switch (s) { case 0 : return BLACK; case 1 : return RED; } return WHITE; }
 	int s;
 };

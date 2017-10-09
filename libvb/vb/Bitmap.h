@@ -5,7 +5,7 @@
 
 namespace vb {
 	template <typename T> class Bitmap : public Picture, public Array<T> { public:
-		Bitmap (int wd, int ht, T d = T(0));
+		Bitmap (int wd, int ht, T d = T());
 
 		using Array<T>::at;   	using Array<T>::atp;
 		using Array<T>::begin;	using Array<T>::end;
