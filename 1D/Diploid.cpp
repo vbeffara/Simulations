@@ -1,13 +1,11 @@
 #include <vb/Hub.h>
 #include <vb/PRNG.h>
 
-using namespace vb; using namespace std;
-
 class Diploid { public:
 	int K;
 	double f, d, delta, GC, eta;
 
-	Diploid () : K(H['K']), f(H['f']), d(H['d']), delta(H['D']), GC(H['c']), eta(H['e']) {
+	Diploid () : K(vb::H['K']), f(vb::H['f']), d(vb::H['d']), delta(vb::H['D']), GC(vb::H['c']), eta(vb::H['e']) {
 		double DaA = d, DAA = d, Daa = d + delta, DaB = d - delta, DAB = d - delta, DBB = d - delta;
 		DR = {Daa, DaA, DAA, DaB, DAB, DBB};
 		B = {0,0,0,0,0,0}; De = {0,0,0,0,0,0};
@@ -20,7 +18,7 @@ class Diploid { public:
 				{0,c2,c1,c1,c0,c1},
 				{0,c3,c2,c2,c1,c0}};
 
-		nu = { int(K*double(H['x'])), int(K*double(H['y'])), int(K*double(H['z'])), 0, int(K*double(H['Z'])), 0 };
+		nu = { int(K*double(vb::H['x'])), int(K*double(vb::H['y'])), int(K*double(vb::H['z'])), 0, int(K*double(vb::H['Z'])), 0 };
 	}
 
 	void compute_B () {
@@ -61,34 +59,34 @@ class Diploid { public:
 		double BB = 0; for (const auto & x : B) BB += x;
 		double DD = 0; for (const auto & x : De) DD += x;
 
-		if (prng.bernoulli (BB*f/(BB*f+DD))) {
+		if (vb::prng.bernoulli (BB*f/(BB*f+DD))) {
 			for (auto & x : B) x /= BB;
-			nu[prng.discrete(B)] += 1;
+			nu[vb::prng.discrete(B)] += 1;
 		} else {
 			for (auto & x : De) x /= DD;
-		    nu[prng.discrete(De)] -= 1;
+		    nu[vb::prng.discrete(De)] -= 1;
 		}
 
-		return prng.exponential(BB*f+DD);
+		return vb::prng.exponential(BB*f+DD);
 	}
 
-	vector<int> nu;
-	vector<double> DR, B, De;
-	vector<vector<double>> Comp;
+	std::vector<int> nu;
+	std::vector<double> DR, B, De;
+	std::vector<std::vector<double>> Comp;
 };
 
 int main (int argc, char ** argv) {
-	H.init ("Diploid model", argc, argv, "s=0,i=10000000,K=10000,f=6,d=.7,D=.1,c=1,e=.02,x=.0001,y=.01,z=5.3,Z=.0001,t=1000");
+	vb::H.init ("Diploid model", argc, argv, "s=0,i=10000000,K=10000,f=6,d=.7,D=.1,c=1,e=.02,x=.0001,y=.01,z=5.3,Z=.0001,t=1000");
 
-	if (int seed = H['s']) prng.seed(seed);
+	if (int seed = vb::H['s']) vb::prng.seed(seed);
 
 	Diploid D;
 
-	double t = 0; int iterations = H['i'], period = H['t'];
+	double t = 0; int iterations = vb::H['i'], period = vb::H['t'];
 	for (int k=0; k<iterations; ++k) {
 		t += D.NewNu();
-		if (period && !(k%period)) { cout << t; for (const auto & x : D.nu) cout << " " << x; cout << endl; }
+		if (period && !(k%period)) { std::cout << t; for (const auto & x : D.nu) std::cout << " " << x; std::cout << std::endl; }
 	}
 
-	cerr << t; for (const auto & x : D.nu) cerr << " " << x; cerr << endl;
+	std::cerr << t; for (const auto & x : D.nu) std::cerr << " " << x; std::cerr << std::endl;
 }

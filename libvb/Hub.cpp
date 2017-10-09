@@ -43,15 +43,15 @@ namespace vb {
 
 		std::string getopt_arg ("h");
 		for (auto s : cs) {
-			if (s.length() == 1)	{ getopt_arg += s.substr(0,1);      	(*this)[s[0]] = "0";        	has_arg[s[0]] = false; }
-			else                	{ getopt_arg += s.substr(0,1) + ":";	(*this)[s[0]] = s.substr(2);	has_arg[s[0]] = true; }
+			if (s.length() == 1)	{ getopt_arg += s.substr(0,1);      	insert_or_assign(s[0], "0");        	has_arg[s[0]] = false; }
+			else                	{ getopt_arg += s.substr(0,1) + ":";	insert_or_assign(s[0], s.substr(2));	has_arg[s[0]] = true; }
 		}
 
 		char ch;
 		while ((ch = getopt(argc,argv,getopt_arg.c_str())) != -1) {
 			if (ch == 'h')       	{ L->info (help); exit(0); }
-			else if (has_arg[ch])	{ (*this)[ch] = optarg; }
-			else                 	{ (*this)[ch] = "1"; }
+			else if (has_arg[ch])	{ insert_or_assign(ch, optarg); }
+			else                 	{ insert_or_assign(ch, "1"); }
 		}
 
 		if (size()) {

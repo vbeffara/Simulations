@@ -52,6 +52,7 @@ pkg_check_modules (CMAES libcmaes)
 
 if (${CMAES_FOUND})
     link_directories (${CMAES_LIBRARY_DIRS})
+    include_directories (${CMAES_INCLUDE_DIRS})
     set (CMAES 1)
 endif ()
 

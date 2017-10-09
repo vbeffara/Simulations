@@ -44,4 +44,4 @@ namespace vb {
 		bool pause;
 		Bitmap<T> I;
 	};
-}
+} // namespace vb

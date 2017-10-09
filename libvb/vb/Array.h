@@ -8,10 +8,11 @@ namespace vb {
 
 	template <typename T> class Array { public:
 		Array (int64_t w, int64_t h, T d) :  ww(w), hh(h), data (w*h,d) {};
-		Array (int64_t w=0, int64_t h=0) :  ww(w), hh(h), data (w*h) {};
-		Array (const std::vector<std::vector<T>> & l) : ww(l.size()), hh(l[0].size()), data(ww*hh) {
+		Array (int64_t w, int64_t h) :  ww(w), hh(h), data (w*h) {};
+		explicit Array (const std::vector<std::vector<T>> & l) : ww(l.size()), hh(l[0].size()), data(ww*hh) {
 			for (int64_t i=0; i<ww; ++i) for (int64_t j=0; j<hh; ++j) put(coo(i,j),l[i][j]);
 		}
+		Array () : Array (0,0) {}
 
 		void resize (int64_t w, int64_t h) { ww=w; hh=h; data.resize(ww*hh); }
 		void resize (int64_t w, int64_t h, T t) { ww=w; hh=h; data.resize(ww*hh,t); }
@@ -48,4 +49,4 @@ namespace vb {
 		void operator++	()                                   	{ x++; if (x == b.ww) { x=0; y++; }                           	}
 		T & operator*  	()                                   	{ return b.at(*((coo*)this));                                 	}
 	};
-}
+} // namespace vb

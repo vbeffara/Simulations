@@ -16,10 +16,10 @@ namespace vb {
 		explicit Value (std::string s = "") : std::string (std::move(s)) {}
 		Value & operator= (const std::string & s) { std::string::operator=(s); return *this; }
 
-		operator bool()    	const { return strtol(c_str(), (char **) nullptr, 10); }
-		operator int()     	const { return strtol(c_str(), (char **) nullptr, 10); }
-		operator int64_t() 	const { return strtol(c_str(), (char **) nullptr, 10); }
-		operator double()  	const { return strtod(c_str(), (char **) nullptr); }
+		operator bool()    	const { return strtol(c_str(), (char **) nullptr, 10); } // NOLINT implicit conversion is the point
+		operator int()     	const { return strtol(c_str(), (char **) nullptr, 10); } // NOLINT implicit conversion is the point
+		operator int64_t() 	const { return strtol(c_str(), (char **) nullptr, 10); } // NOLINT implicit conversion is the point
+		operator double()  	const { return strtod(c_str(), (char **) nullptr); }     // NOLINT implicit conversion is the point
 	};
 
 	class Hub : public std::map <char,Value> {
@@ -34,6 +34,8 @@ namespace vb {
 		Hub & operator= (Hub &&) =delete;
 
 		void init (std::string t, int argc, char ** argv, std::string c = "");
+
+		const Value & operator[] (char c) const { return find(c)->second; }
 
 		std::string title="undefined", cmd="undefined", prog="undefined", version="undefined", dir="output/", help="undefined";
 		std::map <char,bool> has_arg;

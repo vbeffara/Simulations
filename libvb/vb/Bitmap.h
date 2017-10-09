@@ -1,7 +1,7 @@
 #pragma once /// \file
-#include <vb/Picture.h>
-#include <vb/Array.h>
 #include <gsl/gsl>
+#include <vb/Array.h>
+#include <vb/Picture.h>
 
 namespace vb {
 	template <typename T> class Bitmap : public Picture, public Array<T> { public:
@@ -24,7 +24,7 @@ namespace vb {
 
 	protected:
 		void paint () override {
-			long ppp = pixel_w()/w();
+			int64_t ppp = pixel_w()/w();
 			gsl::span <Color> stage ((Color *) cairo_image_surface_get_data (surface), ppp*w() + stride*(ppp*h()-1));
 
 			for (int x=0; x<w(); ++x)
@@ -48,4 +48,4 @@ namespace vb {
 			}
 		}
 	}
-}
+} // namespace vb

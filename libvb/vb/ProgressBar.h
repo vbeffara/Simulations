@@ -5,7 +5,7 @@
 namespace vb {
     class ProgressBar : public Auto {
     public:
-        ProgressBar (int length=100, double pow=1.0);
+        explicit ProgressBar (int length=100, double pow=1.0);
         ProgressBar (const ProgressBar &) = default;
         ProgressBar (ProgressBar &&) = default;
 
@@ -22,4 +22,4 @@ namespace vb {
         int final, current=0;
         double power;
     };
-}
+} // namespace vb

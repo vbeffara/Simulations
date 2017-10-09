@@ -1,6 +1,6 @@
 #pragma once
-#include <vb/cpx.h>
 #include <functional>
+#include <vb/cpx.h>
 
 namespace vb {
 	template <typename T> T sum (std::function <T(int)> f) {
@@ -30,4 +30,4 @@ namespace vb {
 	}
 
 	double BesselJ (int n, double z);
-}
+} // namespace vb

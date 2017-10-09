@@ -1,22 +1,21 @@
+#include <fstream>
 #include <vb/PRNG.h>
 #include <vb/ProgressBar.h>
-#include <fstream>
-
-using namespace vb; using namespace std;
 
 struct state {
     static double a,b;
     double v,x;
     void step () { x = a*x+b; while (x>=1) x -= 1; }
 };
+
 double state::a, state::b;
 
-class Model : public vector<state> { public:
-    Model (int n) : vector<state> (n,{0,0}) { for (auto & s : *this) s.x = prng.uniform_real(); }
+class Model : public std::vector<state> { public:
+    explicit Model (int n) : std::vector<state> (n,{0,0}) { for (auto & s : *this) s.x = vb::prng.uniform_real(); }
 
     void rotate (int k, double a) {
         double c=cos(a), s=sin(a), &x=at(k).v, &y=at((k+1)%size()).v;
-        tie(x,y) = make_tuple (c*x-s*y, s*x+c*y);
+        std::tie(x,y) = std::make_tuple (c*x-s*y, s*x+c*y);
     }
 
     void step (int k) { rotate (k,at(k).x*2*M_PI); at(k).step(); }
@@ -28,11 +27,11 @@ class Model : public vector<state> { public:
 };
 
 int main (int argc, char ** argv) {
-    H.init ("Deterministic Fourier law", argc, argv, "a=2,b=.2394879347,n=500,m=1000,t=100");
-    int nn=H['n'], mm=H['m'], tt=H['t']; state::a=H['a']; state::b=H['b'];
-    vector<double> profile(nn,0), boltzmann(mm,0), var(tt,0);
+    vb::H.init ("Deterministic Fourier law", argc, argv, "a=2,b=.2394879347,n=500,m=1000,t=100");
+    int nn=vb::H['n'], mm=vb::H['m'], tt=vb::H['t']; state::a=vb::H['a']; state::b=vb::H['b'];
+    std::vector<double> profile(nn,0), boltzmann(mm,0), var(tt,0);
 
-    ProgressBar PB (mm);
+    vb::ProgressBar PB (mm);
     for (int i=0; i<mm; ++i) {
         Model M(nn); M[nn/2].v = 1;
         for (int t=0; t<tt; ++t) {
@@ -44,12 +43,12 @@ int main (int argc, char ** argv) {
         boltzmann[i] = M[nn/2].v;
     }
 
-    { ofstream of("out.profile"); for (auto u : profile) of << u << endl; }
-    { ofstream of("out.variance"); for (auto u : var) of << u << endl; }
+    { std::ofstream of("out.profile"); for (auto u : profile) of << u << std::endl; }
+    { std::ofstream of("out.variance"); for (auto u : var) of << u << std::endl; }
     {
-        int nclass = sqrt(double(H['m']));
-        double bmin=0, bmax=0; for (auto b : boltzmann) { bmin=min(bmin,b); bmax=max(bmax,b); }
-        vector<int> data(nclass); for (auto b : boltzmann) data[(nclass-.01)*(b-bmin)/(bmax-bmin)]++;
-        ofstream of("out.boltzmann"); for (int i=0; i<nclass; ++i) of << bmin+i*(bmax-bmin)/nclass << " " << data[i] << endl;
+        int nclass = sqrt(double(vb::H['m']));
+        double bmin=0, bmax=0; for (auto b : boltzmann) { bmin=std::min(bmin,b); bmax=std::max(bmax,b); }
+        std::vector<int> data(nclass); for (auto b : boltzmann) data[(nclass-.01)*(b-bmin)/(bmax-bmin)]++;
+        std::ofstream of("out.boltzmann"); for (int i=0; i<nclass; ++i) of << bmin+i*(bmax-bmin)/nclass << " " << data[i] << std::endl;
     }
 }
