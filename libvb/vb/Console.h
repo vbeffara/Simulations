@@ -1,10 +1,10 @@
 #pragma once /// \file
-#include <vb/AutoWindow.h>
-#include <vb/cpx.h>
-#include <boost/lexical_cast.hpp>
 #include <FL/Fl_Hor_Nice_Slider.H>
 #include <FL/Fl_Output.H>
 #include <FL/Fl_Window.H>
+#include <boost/lexical_cast.hpp>
+#include <vb/AutoWindow.h>
+#include <vb/cpx.h>
 
 namespace vb {
 	template <typename T> void runinput (Fl_Widget *W);
@@ -46,7 +46,7 @@ namespace vb {
 		template <typename T> void manage (T &t, T t1, T t2, const char *n) { manage (t,t1,t2,n,[]{}); }
 	};
 
-	template <> void Console::manage (cpx &t, cpx t1, cpx t2, const char *n, const std::function<void()> &cb) {
+	template <> inline void Console::manage (cpx &t, cpx t1, cpx t2, const char *n, const std::function<void()> &cb) {
 		input<double> (real(t),real(t1),real(t2),[cb,&t](double tt){ t = {tt,imag(t)}; cb(); });
 		input<double> (imag(t),imag(t1),imag(t2),[cb,&t](double tt){ t = {real(t),tt}; cb(); });
 		if (n) watch (t,n);
@@ -55,4 +55,4 @@ namespace vb {
 	template <typename T> void runinput (Fl_Widget *W) {
 		auto M = static_cast <Console::Input<T>*> (W); M->f(M->value()); M->c->redraw();
 	}
-}
+} // namespace vb

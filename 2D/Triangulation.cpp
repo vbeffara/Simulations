@@ -2,10 +2,10 @@
 #include <vb/PRNG.h>
 #include <vb/ProgressBar.h>
 
-using namespace vb;
+using vb::Map; using vb::Edge;
 
 class Triangulation : public Map { public:
-	Triangulation (int n) : Map(n) {
+	explicit Triangulation (int n) : Map(n) {
 		for (int i=1; i<n; ++i)	(*this) << Edge(0,i);
 		for (int i=n-1; i>1; --i) (*this) << Edge(1,i);
 		(*this) << Edge(1,0) << Edge(2,0) << Edge(2,1) << Edge(2,3);
@@ -14,8 +14,8 @@ class Triangulation : public Map { public:
 	}
 
 	Edge random_edge () const {
-		int i = prng.uniform_int (n), j = prng.uniform_int (v[i]->adj.size());
-		adj_list::iterator k; for (k=v[i]->adj.begin(); j>0; ++k, --j) { };
+		int i = vb::prng.uniform_int (n), j = vb::prng.uniform_int (v[i]->adj.size());
+		vb::adj_list::iterator k; for (k=v[i]->adj.begin(); j>0; ++k, --j) { };
 		return Edge (i,*k);
 	}
 
@@ -37,12 +37,12 @@ class Triangulation : public Map { public:
 };
 
 int main (int argc, char ** argv) {
-	H.init ("Random triangulation", argc,argv, "n=10,t=-1");
-	int t = H['t']; if (t==-1) t=50*int(H['n'])*int(H['n']);
+	vb::H.init ("Random triangulation", argc,argv, "n=10,t=-1");
+	int t = vb::H['t']; if (t==-1) t=50*int(vb::H['n'])*int(vb::H['n']);
 
-	Triangulation T (H['n']); T.inscribe(T.face(Edge(0,1)));
+	Triangulation T (vb::H['n']); T.inscribe(T.face(Edge(0,1)));
 
-	{ ProgressBar P (t); for (int i=0; i<t; ++i) { T.flip(T.random_edge()); P.set(i); } }
+	{ vb::ProgressBar P (t); for (int i=0; i<t; ++i) { T.flip(T.random_edge()); P.set(i); } }
 
 	T.show();
 	T.inscribe (T.face (Edge (0,*(T.v[0]->adj.begin())))); T.balance_old(); T.pause();

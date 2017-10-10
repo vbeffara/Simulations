@@ -80,4 +80,4 @@ namespace vb {
 	std::ostream &operator<< (std::ostream &os, const Map &m);
 
 	Map &operator<< (Map &m, const Edge &e);
-}
+} // namespace vb

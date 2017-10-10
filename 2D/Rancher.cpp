@@ -8,19 +8,18 @@
  * inter (int) : inverse de la fréquence d'affichage des enveloppes
  */
 
-#include <vb/PRNG.h>
-#include <vb/Figure.h>
-#include <vb/Console.h>
 #include <boost/utility.hpp>
 #include <list>
+#include <vb/Console.h>
+#include <vb/Figure.h>
+#include <vb/PRNG.h>
 
-using namespace std;
-using namespace vb;
+using vb::cpx;
 
 class point {
 	cpx z;
 public:
-	point (cpx _z, bool _k=true) : z(_z), k(_k) {};
+	explicit point (cpx _z, bool _k=true) : z(_z), k(_k) {};
 	operator cpx() const { return z; }
 	bool k; ///< 0 si point à l'infini, 1 si point du plan (cf. plan projectif)
 };
@@ -35,22 +34,22 @@ double angle (const point &O, const point &A, const point &B) {
 
 class Rancher {
 public:
-	vector<point> traj;
-	list<point> env;
-	list<point>::iterator cur;
-	Figure F;
-	Pen P;
+	std::vector<point> traj;
+	std::list<point> env;
+	std::list<point>::iterator cur;
+	vb::Figure F;
+	vb::Pen P;
 
 	point rand_point () {
 		point p = *cur, pp = *boost::prior(cur), ppp = *boost::next(cur);
 		cpx vzp = pp; if (pp.k) vzp -= cpx(p);
-		double alpha = prng.uniform_real(0, 2*M_PI + angle(p, pp, ppp));
+		double alpha = vb::prng.uniform_real(0, 2*M_PI + angle(p, pp, ppp));
 
-		return cpx(p) + vzp*polar(1.0,alpha)/sqrt(norm(vzp));
+		return point (cpx(p) + vzp*std::polar(1.0,alpha)/sqrt(norm(vzp)));
 	}
 
-	list<point>::iterator insere_maillon (point & p) {
-		list<point>::iterator maillonmin2, maillonmax2, i;
+	std::list<point>::iterator insere_maillon (const point & p) {
+		std::list<point>::iterator maillonmin2, maillonmax2, i;
 		double minpente2 = +INFINITY, maxpente2 = -INFINITY;
 
 		for (i = env.begin(); i != env.end(); ++i) {
@@ -76,9 +75,9 @@ public:
 	}
 
 	void dessine_enveloppe () {
-		vector<cpx> V;
+		std::vector<cpx> V;
 
-		P = Pen (Color (128+prng.uniform_int(128), 128+prng.uniform_int(128), 128+prng.uniform_int(128)));
+		P = vb::Pen (vb::Color (128+vb::prng.uniform_int(128), 128+vb::prng.uniform_int(128), 128+vb::prng.uniform_int(128)));
 
 		for (auto i = env.begin(); i != env.end(); ++i) {
 			if (i == env.begin()) {
@@ -90,7 +89,7 @@ public:
 			} else V.push_back (*i);
 		}
 
-		F.add (std::make_unique <Path> (V,P));
+		F.add (std::make_unique <vb::Path> (V,P));
 	}
 
 	double env_width () {
@@ -102,16 +101,16 @@ public:
 	}
 
 	void main (int argc, char ** argv) {
-		H.init ("Rancher process", argc, argv, "p=.1,n=1000,i=1,o,r");
-		double pente = H['p'];
-		int    nb    = H['n'];
-		int    inter = H['i'];
-		bool   plot  = H['o'];
-		bool   renew = H['r'];
+		vb::H.init ("Rancher process", argc, argv, "p=.1,n=1000,i=1,o,r");
+		double pente = vb::H['p'];
+		int    nb    = vb::H['n'];
+		int    inter = vb::H['i'];
+		bool   plot  = vb::H['o'];
+		bool   renew = vb::H['r'];
 
 		int i=0;
 
-		Console W;
+		vb::Console W;
 		W.watch (i,"Path length");
 		W.lambda<int> ([this]{ return env.size(); }, "Envelope size");
 		W.lambda<double> ([this]{ return env_width(); }, "Envelope width");
@@ -128,7 +127,7 @@ public:
 		cur = env.begin(); ++cur;
 
 		int last_renewal=3;
-		vector<int> renewals;
+		std::vector<int> renewals;
 
 		for (i=3; i<nb; i++) {
 			point p = rand_point();
@@ -147,21 +146,21 @@ public:
 		}
 
 		if (plot) {
-			vector<cpx> path; for (int i=2; i<traj.size(); ++i) path.push_back (traj[i]);
-			F.add (std::make_unique <Path> (path));
+			std::vector<cpx> path; for (int i=2; i<traj.size(); ++i) path.push_back (traj[i]);
+			F.add (std::make_unique <vb::Path> (path));
 			F.show(); F.pause();
 			F.output_pdf("Rancher");
 		}
 
 		if (renew) {
-			long int n=0, sx=0, sxx=0;
+			int n=0, sx=0, sxx=0;
 			for (int i=0; i<renewals.size(); ++i) {
 				n += renewals[i];
 				sx += i*renewals[i];
 				sxx += i*i*renewals[i];
 			}
-			cerr << n << " renewals (density " << double(n)/nb << ")" << endl;
-			cerr << "Average length: " << double(sx)/n << endl;
+			std::cerr << n << " renewals (density " << double(n)/nb << ")" << std::endl;
+			std::cerr << "Average length: " << double(sx)/n << std::endl;
 		}
 	}
 };
