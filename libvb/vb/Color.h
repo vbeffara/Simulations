@@ -11,14 +11,14 @@ namespace vb {
 		unsigned char g; ///< The green component.
 		unsigned char b; ///< The blue component.
 
-		Color (unsigned char R, unsigned char G, unsigned char B, unsigned char A=255) 	: a(A), r(R), g(G), b(B)	{}
+		Color (unsigned char R, unsigned char G, unsigned char B, unsigned char A=255) noexcept : a(A), r(R), g(G), b(B)	{}
 #else
 		unsigned char b; ///< The blue component.
 		unsigned char g; ///< The green component.
 		unsigned char r; ///< The red component.
 		unsigned char a; ///< The alpha channel (for ARGB32).
 
-		Color (unsigned char R, unsigned char G, unsigned char B, unsigned char A=255)	: b(B), g(G), r(R), a(A) {}
+		Color (unsigned char R, unsigned char G, unsigned char B, unsigned char A=255) noexcept : b(B), g(G), r(R), a(A) {}
 #endif
 		Color () : Color (0,0,0,0) {}
 
@@ -44,7 +44,7 @@ namespace vb {
 		else            	return Color(v,p,q);
 	}
 
-	inline Color Indexed (int i, double s=1, double v=1) { double x = i * 1.61803398874989484820; return HSV (x-int(x),s,v); }
+	inline Color Indexed (int i, double s=1, double v=1) noexcept { double x = i * 1.61803398874989484820; return HSV (x-int(x),s,v); }
 
 	inline std::ostream & operator<< (std::ostream & o, const Color & c) {
 		return o << fmt::format("RGBA({},{},{},{})", c.r, c.g, c.b, c.a);

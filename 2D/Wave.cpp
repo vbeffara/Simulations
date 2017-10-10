@@ -7,9 +7,9 @@ double f (double x) { return exp(-1/x); }
 double g (double x) { return f(1-x)/(f(x)+f(1-x)); }
 
 double bump (double x, double e) {
-	if (x<0) x=-x;
-	if (x<=1-e) return 1;
-	if (x>=1+e) return 0;
+	if (x<0) { x=-x; }
+	if (x<=1-e) { return 1; }
+	if (x>=1+e) { return 0; }
 	return g((1+(x-1)/e)/2);
 }
 
@@ -29,7 +29,7 @@ class Wave : public vb::Coloring { public:
 		detail = 2.0/l_;
 	}
 
-	double v (cpx z) { double out = double(H['t'])*real(z); for (auto mm : m) out += mm(z); return out; }
+	double v (cpx z) { double out = double(H['t'])*real(z); for (auto mm : m) { out += mm(z); } return out; }
 
 	vb::Color c (cpx z) { return vb::Indexed (v(z) > 0 ? 1 : 2); }
 
@@ -38,6 +38,6 @@ class Wave : public vb::Coloring { public:
 
 int main (int argc, char ** argv) {
 	H.init ("Random planar waves", argc, argv, "n=600,k=1000,l=.2,w=0,e=0,s=0,t=0");
-	if (int s=H['s']) prng.seed(s);
+	if (int s=H['s']) { prng.seed(s); }
 	Wave W(H['n'],H['k'],H['l'],H['w'],H['e']); W.show(); W.output(); Fl::run();
 }

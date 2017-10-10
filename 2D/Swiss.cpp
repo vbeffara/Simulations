@@ -10,7 +10,7 @@
 #define C_WEST  vb::Color(0,0,255)
 #define C_SOUTH vb::Color(255,255,0)
 
-const std::vector<vb::Color> colors = { C_EAST, C_NORTH, C_WEST, C_SOUTH };
+const vb::Color colors[4] = { C_EAST, C_NORTH, C_WEST, C_SOUTH };
 
 class Site {
 public:
