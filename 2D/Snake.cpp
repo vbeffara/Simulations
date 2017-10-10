@@ -19,7 +19,8 @@ class Snake : public vb::CoarseImage { public:
 		return ((lx>0) && (lx<true_width-1) && (ly>0) && (ly<true_height-1));
 	}
 
-	void output (const std::string &s = "") override {
+	using vb::CoarseImage::output;
+	void output (const std::string &s) override {
 		vb::OldPath P (z.size()-1);
 		for (int i=0; i<z.size()-1; ++i) {
 			vb::coo dz = z[i+1]-z[i];

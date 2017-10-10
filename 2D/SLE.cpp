@@ -3,7 +3,7 @@
 
 using namespace vb; using namespace std;
 
-const Color INSIDE(BLACK), LEFTSIDE(HSV(0,.8,.8)), RIGHTSIDE(HSV(.5,.8,.8));
+const Color LEFTSIDE(Indexed(1)), RIGHTSIDE(Indexed(2));
 
 class Loewner : public std::vector<double> { public:
     Loewner (int64_t n, double k) {

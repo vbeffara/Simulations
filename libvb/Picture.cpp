@@ -44,7 +44,7 @@ namespace vb {
 
 	void Picture::output (const std::string &s) { output_png (s); }
 
-	void Picture::output () { output_png (""); }
+	void Picture::output () { output (""); }
 
 	void Picture::snapshot () {
 		std::string fn = fmt::format ("snapshots/{}_{:04d}", snapshot_prefix, snapshot_number++);
