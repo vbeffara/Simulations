@@ -7,13 +7,14 @@ using ptt = std::pair<cooo,cooo>;
 
 class pt : public ptt { public:
 	pt (int i, int j, double x, double y) : ptt(cooo(i,x), cooo(j,y)) {};
+	pt () : pt (-1,-1,-1,-1) {};
 
 	int &   	xi	()      	{ return first.first;                         	}
 	double &	xf	()      	{ return first.second;                        	}
-	double  	x 	() const	{ return (double)first.first + first.second;  	}
+	double  	x 	() const	{ return static_cast<double>(first.first) + first.second; }
 	int &   	yi	()      	{ return second.first;                        	}
 	double &	yf	()      	{ return second.second;                       	}
-	double  	y 	() const	{ return (double)second.first + second.second;	}
+	double  	y 	() const	{ return static_cast<double>(second.first) + second.second;	}
 
 	double dist2 (const pt o) const { double dx = x() - o.x(), dy = y() - o.y(); return dx*dx + dy*dy; }
 
@@ -48,31 +49,29 @@ class pt : public ptt { public:
 
 std::ostream &operator<< (std::ostream &os, const pt p) { return os << p.x() << " " << p.y() << std::endl; }
 
-pt nopoint (-1,-1,-1,-1);
-
 using ptpair = std::pair<pt,pt>;
 
 class Lamination : public vb::Array<double> { public:
 	explicit Lamination (int n) : vb::Array<double> (n,n,0) {
-		for (auto & v : *this) v = tan(vb::prng.uniform_real(0,M_PI));
+		for (auto & v : *this) { v = tan(vb::prng.uniform_real(0,M_PI)); }
 	}
 
 	pt geodesique (pt p, std::ostream *os = nullptr) const {
 		std::set<pt> S;
 		while (true) {
-			if (!contains(vb::coo(p.xi(),p.yi()))) break;
-			if (os) (*os) << p;
+			if (!contains(vb::coo(p.xi(),p.yi()))) { break; }
+			if (os != nullptr) { (*os) << p; }
 			p.step(*this);
-			if (S.count(p)) break;
+			if (S.count(p) != 0) { break; }
 			S.insert(p);
 		}
-		if (os) (*os) << std::endl;
+		if (os != nullptr) {  (*os) << std::endl; }
 
-		if (!contains(vb::coo(p.xi(),p.yi()))) return nopoint;
+		if (!contains(vb::coo(p.xi(),p.yi()))) { return pt(); }
 
 		pt p_min = p; p.step(*this);
 		while (p != p_min) {
-			if (p < p_min) p_min = p;
+			if (p < p_min) { p_min = p; }
 			p.step(*this);
 		}
 
@@ -81,7 +80,7 @@ class Lamination : public vb::Array<double> { public:
 
 	std::pair<pt,pt> leaf (pt p, std::ostream *os = nullptr) const {
 		pt p1 = geodesique (p,os); p.reverse(); pt p2 = geodesique (p,os);
-		if (p1<p2) return {p1,p2}; else return {p2,p1};
+		return (p1<p2) ? ptpair {p1,p2} : ptpair {p2,p1};
 	}
 
 	std::set<pt> connections () const {
@@ -94,13 +93,13 @@ class Lamination : public vb::Array<double> { public:
 					double x = .01 * xx;
 					std::pair<pt,pt> pp = leaf (pt(i,j,x,0),nullptr);
 
-					if ((pp.first != nopoint) && (pp.second != nopoint)) {
+					if ((pp.first != pt()) && (pp.second != pt())) {
 						if (S.count(pp) == 0) { S.insert (pp); P.insert (pt(i,j,x,0)); }
 					}
 
 					pp = leaf (pt(i,j,0,x),nullptr);
 
-					if ((pp.first != nopoint) && (pp.second != nopoint)) {
+					if ((pp.first != pt()) && (pp.second != pt())) {
 						if (S.count(pp) == 0) { S.insert (pp); P.insert (pt(i,j,0,x)); }
 					}
 				}
@@ -114,12 +113,12 @@ int main (int argc, char ** argv) {
 	vb::H.init ("Random lamination", argc,argv, "n=20,c");
 	Lamination o (vb::H['n']);
 
-	for (int i=0; i<o.ww; ++i) for (int j=0; j<o.hh; ++j) {
+	for (int i=0; i<o.ww; ++i) { for (int j=0; j<o.hh; ++j) {
 		o.geodesique (pt(i,j,0,0),&std::cout);
 		o.geodesique (pt(i,j,1,0),&std::cout);
 		o.geodesique (pt(i,j,0,1),&std::cout);
 		o.geodesique (pt(i,j,1,1),&std::cout);
-	}
+	} }
 
 	if (vb::H['c']) {
 		std::set<pt> P = o.connections();

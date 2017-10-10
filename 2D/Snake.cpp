@@ -6,7 +6,7 @@ class Snake : public vb::CoarseImage { public:
 
 	void step (vb::coo dz) {
 		vb::coo nz = z.back()+dz;
-		if (at(nz) == 1) return;
+		if (at(nz) == 1) { return; }
 		z.push_back(nz);
 		put (nz,1);
 	}
@@ -25,10 +25,10 @@ class Snake : public vb::CoarseImage { public:
 		for (int i=0; i<z.size()-1; ++i) {
 			vb::coo dz = z[i+1]-z[i];
 			int dx = dz.x, dy = dz.y;
-			if (dx>0) P[i]=0;
-			if (dx<0) P[i]=2;
-			if (dy>0) P[i]=1;
-			if (dy<0) P[i]=3;
+			if (dx>0) { P[i]=0; }
+			if (dx<0) { P[i]=2; }
+			if (dy>0) { P[i]=1; }
+			if (dy<0) { P[i]=3; }
 		}
 		P.output(s);
 	}
@@ -43,7 +43,7 @@ int main (int argc, char ** argv) {
 	Snake S(vb::H['n']); S.show();
 
 	while (S.alive()) {
-		if (vb::prng.bernoulli(e)) S.shrink(); else {
+		if (vb::prng.bernoulli(e)) { S.shrink(); } else {
 			S.step (vb::dz[vb::prng.uniform_int(4)]);
 		}
 	}
