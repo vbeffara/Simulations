@@ -68,10 +68,10 @@ namespace vb {
 		double top ();
 		double bottom ();
 
-		double fg_balance (const Vector<double> &x, Vector<double> &g);
-		double fg_circle_base (const Vector<double> &x, Vector<double> &g);
-		double fg_circle_bd (const Vector<double> &x, Vector<double> &g);
-		double fg_circle_disk (const Vector<double> &x, Vector<double> &g);
+		double fg_balance     (const Vector<double> &x, Vector<double> * g);
+		double fg_circle_base (const Vector<double> &x, Vector<double> * g);
+		double fg_circle_bd   (const Vector<double> &x, Vector<double> * g);
+		double fg_circle_disk (const Vector<double> &x, Vector<double> * g);
 
 	protected:
 		void paint () override;

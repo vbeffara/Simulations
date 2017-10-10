@@ -37,7 +37,7 @@ namespace Eigen {
 			IsComplex = 1,
 		};
 	};
-} // namespace vb
+} // namespace Eigen
 
 namespace vb {
 	template <typename T> using Vector = Eigen::Matrix <T,Eigen::Dynamic,1>;

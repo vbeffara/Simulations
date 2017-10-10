@@ -239,11 +239,11 @@ BOOST_AUTO_TEST_CASE (test_Minimizer) {
 		return out;
 	};
 
-	auto fg = [](const Vector<double> &x, Vector<double> &g) {
+	auto fg = [](const Vector<double> &x, Vector<double> *g) {
 		double o = 0;
 		for (int i=0; i<400; ++i) {
 			o += (1 - cos(x[i]/(i+1)));
-			g[i] = sin(x[i]/(i+1))/(i+1);
+			(*g)[i] = sin(x[i]/(i+1))/(i+1);
 		}
 		return o;
 	};

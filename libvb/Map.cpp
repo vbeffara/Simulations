@@ -129,7 +129,7 @@ namespace vb {
 			x[2*i+1] = v[i]->z.imag();
 		}
 
-		Minimizer<double> M (2*n, [this](const Vector<double> &x, Vector<double> &g) { return fg_balance (x,g); });
+		Minimizer<double> M (2*n, [this](const Vector<double> &x, Vector<double> *g) { return fg_balance (x,g); });
 		double output = M.minimize_qn (x);
 
 		for (long i=0; i<n; ++i) {
@@ -367,19 +367,19 @@ namespace vb {
 		return m;
 	}
 
-	double Map::fg_balance (const Vector<double> &x, Vector<double> &g) {
+	double Map::fg_balance (const Vector<double> &x, Vector<double> * g) {
 		double c = 0.0;
 
 		for (long i=0; i < n; ++i) {
-			g[2*i] = 0;
-			g[2*i+1] = 0;
+			(*g)[2*i] = 0;
+			(*g)[2*i+1] = 0;
 
 			for (long j : v[i]->adj) {
 				c += (x[2*j] - x[2*i]) * (x[2*j] - x[2*i]);
 				c += (x[2*j+1] - x[2*i+1]) * (x[2*j+1] - x[2*i+1]);
 				if (!(bd[i])) {
-					g[2*i]    -= x[2*j] - x[2*i];
-					g[2*i+1]    -= x[2*j+1] - x[2*i+1];
+					(*g)[2*i]    -= x[2*j] - x[2*i];
+					(*g)[2*i+1]    -= x[2*j+1] - x[2*i+1];
 				}
 			}
 		}
@@ -387,10 +387,10 @@ namespace vb {
 		return c;
 	}
 
-	double Map::fg_circle_base (const Vector<double> &x, Vector<double> &g) {
+	double Map::fg_circle_base (const Vector<double> &x, Vector<double> * g) {
 		double c = 0.0;
 
-		g = Vector<double>::Zero (g.rows(),1);
+		*g = Vector<double>::Zero (g->rows(),1);
 
 		for (long i=0; i < n; ++i) {
 			for (long j : v[i]->adj) {
@@ -403,26 +403,26 @@ namespace vb {
 
 				c += lsr * lsr;
 
-				g[3*i]   -= lsrl*dx;
-				g[3*i+1] -= lsrl*dy;
-				g[3*i+2] -= lsr;
+				(*g)[3*i]   -= lsrl*dx;
+				(*g)[3*i+1] -= lsrl*dy;
+				(*g)[3*i+2] -= lsr;
 			}
 		}
 
 		return c;
 	}
 
-	double Map::fg_circle_bd (const Vector<double> &x, Vector<double> &g) {
+	double Map::fg_circle_bd (const Vector<double> &x, Vector<double> * g) {
 		double c = fg_circle_base (x,g);
 
 		for (long i=0; i < n; ++i)
 			if (bd[i])
-				g[3*i+2] = 0.0;
+				(*g)[3*i+2] = 0.0;
 
 		return c;
 	}
 
-	double Map::fg_circle_disk (const Vector<double> &x, Vector<double> &g) {
+	double Map::fg_circle_disk (const Vector<double> &x, Vector<double> * g) {
 		double c = fg_circle_base (x,g);
 
 		for (long i=0; i < n; ++i) {
@@ -436,9 +436,9 @@ namespace vb {
 
 				c += .1*lr1*lr1;
 
-				g[3*i]   += .1*lr1r*x[3*i];
-				g[3*i+1] += .1*lr1r*x[3*i+1];
-				g[3*i+2] += .1*lr1;
+				(*g)[3*i]   += .1*lr1r*x[3*i];
+				(*g)[3*i+1] += .1*lr1r*x[3*i+1];
+				(*g)[3*i+2] += .1*lr1;
 			}
 		}
 

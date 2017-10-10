@@ -4,7 +4,7 @@
 namespace vb {
 	template <typename T> class Minimizer { public:
 		Minimizer (int n_);
-		Minimizer (int n_, std::function < T (const Vector<T>&,Vector<T>&) > fg_);
+		Minimizer (int n_, std::function < T (const Vector<T>&,Vector<T>*) > fg_);
 		Minimizer (int n_, std::function < T (const Vector<T>&) > f_, std::function < Vector<T> (const Vector<T> &) > g_);
 
 		T compute (const Vector<T> & x = Vector<T>(0));
@@ -21,7 +21,7 @@ namespace vb {
 
 		std::function < T        	(const Vector<T>&)           	> f;
 		std::function < Vector<T>	(const Vector<T>&)           	> g;
-		std::function < T        	(const Vector<T>&,Vector<T>&)	> fg;
+		std::function < T        	(const Vector<T>&,Vector<T>*)	> fg;
 		std::function < void     	(const Vector<T>&,T)         	> cb;
 
 		Vector<T> x;    	T fx;    	Vector<T> gx;

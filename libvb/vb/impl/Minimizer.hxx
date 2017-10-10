@@ -6,7 +6,7 @@ namespace vb {
 		n(n_), x(n), gx(n), old_x(n), old_gx(n), er(1.0) {}
 
 	template <typename T> Minimizer<T>::Minimizer (int n_,
-		std::function < T (const Vector<T>&,Vector<T>&) > fg_) :
+		std::function < T (const Vector<T>&,Vector<T>*) > fg_) :
 		Minimizer (n_) { fg=fg_; }
 
 	template <typename T> Minimizer<T>::Minimizer (int n_,
@@ -15,7 +15,7 @@ namespace vb {
 
 	template <typename T> T Minimizer<T>::compute (const Vector<T> &x_) {
 		if (x_.size()) x=x_;
-		if (fg)	{ fx = fg(x,gx); } else	{ fx = f(x); gx = g(x); }
+		if (fg)	{ fx = fg(x,&gx); } else	{ fx = f(x); gx = g(x); }
 		return fx;
 	}
 

@@ -18,7 +18,7 @@ public:
     Site (uchar _s = 0) : s(_s) { };
     Site & operator= (uchar _s) { s=_s; return *this; }
     operator int () { return s; }
-    operator vb::Color () { return colors[s]; }
+    explicit operator vb::Color () { return colors[s]; }
 };
 
 class World : public vb::Bitmap<Site> {

@@ -47,6 +47,6 @@ namespace vb {
 		Cube_iterator           (Cube *cc, coo3 xyz) : coo3(xyz), c(cc)	{}
 		bool operator!=         (const Cube_iterator &o)               	{ return (c != o.c) || coo3::operator!= (o);                  	}
 		void operator++         ()                                     	{ x++; if (x == c->sx) { x=0; y++; } if (y == c->sy) { y=0; z++; }	}
-		const uchar & operator*	()                                     	{ return c->at((coo3)(*this));                                  	}
+		const uchar & operator*	()                                     	{ return c->at(*this);                                  	}
 	};
 } // namespace vb

@@ -34,7 +34,7 @@ int main (int argc, char ** argv) {
 		x[3*i+2]      = .8*r;
 	}
 
-	Minimizer<double> MM (3*m.n, [&m](const Vector<double> &x, Vector<double> &g) { return m.fg_circle_disk (x,g); });
+	Minimizer<double> MM (3*m.n, [&m](const Vector<double> &x, Vector<double> * g) { return m.fg_circle_disk (x,g); });
 	if (H['v']) { MM.cb = cb; spdlog::set_level(spdlog::level::trace); }
 	MM.minimize_qn (x); x = MM.x;
 
