@@ -7,12 +7,12 @@
 // r: seed for the PRNG, set to 0 for time-based
 // s: number of vertices
 
+#include <iomanip>
 #include <vb/Coloring.h>
 #include <vb/Constellation1.h>
 #include <vb/NumberTheory.h>
 #include <vb/Pairings.h>
 #include <vb/ProgressBar.h>
-#include <iomanip>
 
 using namespace vb; using namespace std;
 

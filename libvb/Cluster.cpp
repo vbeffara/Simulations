@@ -75,4 +75,4 @@ namespace vb {
 	long Cluster::sub_index (coo z) const { long ww = w/3, i = (z.x-ul.x)/ww, j = (z.y-ul.y)/ww; return i+3*j; }
 
 	long Cluster::bs = 16;
-}
+} // namespace vb

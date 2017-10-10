@@ -1,7 +1,7 @@
+#include <vb/Console.h>
+#include <vb/Figure.h>
 #include <vb/PRNG.h>
 #include <vb/ProgressBar.h>
-#include <vb/Figure.h>
-#include <vb/Console.h>
 
 using namespace std; using namespace vb;
 

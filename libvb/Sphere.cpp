@@ -26,4 +26,4 @@ namespace vb {
         }
         update();
     }
-}
+} // namespace vb

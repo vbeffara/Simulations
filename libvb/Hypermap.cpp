@@ -236,7 +236,7 @@ namespace vb {
 		}
 		for (int i=0; i<V.size(); ++i) V[i].r = r[i];
 	}
-}
+} // namespace vb
 
 YAML::Node YAML::convert<vb::Hypermap>::encode (const vb::Hypermap & h) {
     Node node;

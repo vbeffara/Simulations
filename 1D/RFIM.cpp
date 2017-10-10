@@ -1,6 +1,6 @@
 
-#include <vb/PRNG.h>
 #include <vb/Hub.h>
+#include <vb/PRNG.h>
 
 using namespace std;
 using namespace vb;

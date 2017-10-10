@@ -1,8 +1,8 @@
-#include <vb/ProgressBar.h>
-#include <gsl/gsl>
-#include <iostream>
-#include <iomanip>
 #include <cmath>
+#include <gsl/gsl>
+#include <iomanip>
+#include <iostream>
+#include <vb/ProgressBar.h>
 
 namespace vb {
     ProgressBar::ProgressBar (int length, double pow) : Auto(.05), final(length), power(pow) {}
@@ -45,4 +45,4 @@ namespace vb {
             std::cerr << eta/60 << ":" << std::setw(2) << std::setfill('0') << eta%60 << ")   ";
         }
     }
-}
+} // namespace vb

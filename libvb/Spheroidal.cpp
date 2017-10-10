@@ -1,6 +1,6 @@
+#include <cassert>
 #include <vb/Figure.h>
 #include <vb/Spheroidal.h>
-#include <cassert>
 
 namespace vb {
 	Spheroidal::Spheroidal (Hypermap M, Hub & H) : Hypermap(std::move(M)) {
@@ -115,4 +115,4 @@ namespace vb {
 
 		F.output_pdf();
 	}
-}
+} // namespace vb

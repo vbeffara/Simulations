@@ -1,5 +1,5 @@
-#include <vb/Figure.h>
 #include <cairo-pdf.h>
+#include <vb/Figure.h>
 
 namespace vb {
 	Figure::Figure () : Picture (600,600) {}
@@ -93,4 +93,4 @@ namespace vb {
 	}
 
 	void Figure::output (const std::string &s) { output_pdf (s); }
-}
+} // namespace vb

@@ -1,5 +1,5 @@
-#include <vb/Hypermap_lib.h>
 #include <fstream>
+#include <vb/Hypermap_lib.h>
 
 namespace vb {
 	HLib::HLib () {
@@ -41,4 +41,4 @@ namespace vb {
 		}
 		return Hypermap (sigma, alpha, phi);
 	}
-}
+} // namespace vb

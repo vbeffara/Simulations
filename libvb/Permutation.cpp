@@ -1,5 +1,5 @@
-#include <vb/Permutation.h>
 #include <algorithm>
+#include <vb/Permutation.h>
 
 namespace vb {
 	Permutation::Permutation (Cycles & c) {
@@ -99,4 +99,4 @@ namespace vb {
 		for (auto c : P) { if (!first) os << " "; os << c.first << "(" << c.second << ")"; first = false; }
 		return os;
 	}
-}
+} // namespace vb

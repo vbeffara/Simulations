@@ -1,9 +1,9 @@
-#include <vb/config.h>
-#include <vb/Generator.h>
-#include <vb/Stream.h>
-#include <vb/util.h>
 #include <cmath>
 #include <numeric>
+#include <vb/Generator.h>
+#include <vb/Stream.h>
+#include <vb/config.h>
+#include <vb/util.h>
 
 #ifdef CILK
 #include <cilk/cilk.h>

@@ -1,8 +1,8 @@
-#include <iostream>
 #include <boost/config.hpp>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/edmonds_karp_max_flow.hpp>
 #include <boost/graph/graph_utility.hpp>
+#include <iostream>
 #include <vb/PRNG.h>
 #include <vb/ProgressBar.h>
 

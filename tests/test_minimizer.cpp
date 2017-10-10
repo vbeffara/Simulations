@@ -1,7 +1,7 @@
-#include <vb/config.h>
+#include <gsl/gsl>
 #include <vb/Hub.h>
 #include <vb/Minimizer.h>
-#include <gsl/gsl>
+#include <vb/config.h>
 
 using namespace std; using namespace vb;
 

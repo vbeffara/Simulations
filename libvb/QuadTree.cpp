@@ -56,4 +56,4 @@ namespace vb {
 		}
 		for (int i=0; i<w; ++i) { img.at(ul+coo(i,0)) = Color(128,0,0); img.at(ul+coo(0,i)) = Color(128,0,0); }
 	}
-}
+} // namespace vb

@@ -1,7 +1,7 @@
-#include <vb/config.h>
-#include <vb/NumberTheory.h>
 #include <boost/lexical_cast.hpp>
 #include <fplll.h>
+#include <vb/NumberTheory.h>
+#include <vb/config.h>
 
 namespace vb {
 	// template Polynomial<bigint> guess (real_t x, real_t eps);
@@ -119,4 +119,4 @@ namespace vb {
 
 		return boost::none;
 	}
-}
+} // namespace vb

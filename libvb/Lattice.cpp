@@ -238,4 +238,4 @@ namespace vb {
     C5.z[4]=cpx(.25,.5);
     return C5;
   }
-}
+} // namespace vb

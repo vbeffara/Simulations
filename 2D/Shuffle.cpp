@@ -1,7 +1,7 @@
 // Initial code in Python by Sunil Chhita, ported to C++ by VB.
+#include <fstream>
 #include <vb/Hub.h>
 #include <vb/Stream_lib.h>
-#include <fstream>
 
 using namespace vb; using namespace std;
 

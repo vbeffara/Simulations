@@ -16,4 +16,4 @@ namespace vb {
 	template Polynomial<cpxint> operator* (const cpxint & c, const Polynomial<cpxint> & Q);
 
 	template std::ostream & operator<< (std::ostream & os, const Polynomial<cpx> & P);
-}
+} // namespace vb

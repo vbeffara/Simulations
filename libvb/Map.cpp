@@ -444,4 +444,4 @@ namespace vb {
 
 		return c;
 	}
-}
+} // namespace vb

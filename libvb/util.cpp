@@ -7,4 +7,4 @@ namespace vb {
 		std::chrono::duration<double> dur = C.now() - basetime;
 		return dur.count();
 	}
-}
+} // namespace vb

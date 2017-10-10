@@ -1,7 +1,7 @@
-#include <vb/config.h>
-#include <vb/PRNG.h>
-#include <vb/util.h>
 #include <pcg_random.hpp>
+#include <vb/PRNG.h>
+#include <vb/config.h>
+#include <vb/util.h>
 
 #ifdef CILK
 #include <cilk/cilk.h>

@@ -55,4 +55,4 @@ namespace vb {
 		cairo_move_to (cr, z.back().real(), z.back().imag());
 		for (auto & zz : z) cairo_line_to (cr, zz.real(), zz.imag());
 	}
-}
+} // namespace vb

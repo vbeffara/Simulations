@@ -1,14 +1,14 @@
-#include <boost/algorithm/string.hpp>
-#include <cln/cln.h>
+#include "gsl/gsl"
 #include <FL/Fl.H>
 #include <FL/Fl_Gl_Window.H>
-#include "gsl/gsl"
-#include <sys/stat.h>
-#include <vb/config.h>
-#include <vb/Hub.h>
-#include <iostream>
-#include <vector>
+#include <boost/algorithm/string.hpp>
+#include <cln/cln.h>
 #include <getopt.h>
+#include <iostream>
+#include <sys/stat.h>
+#include <vb/Hub.h>
+#include <vb/config.h>
+#include <vector>
 
 namespace vb {
 	Hub::Hub () {
@@ -74,4 +74,4 @@ namespace vb {
 	}
 
 	Hub H;
-}
+} // namespace vb

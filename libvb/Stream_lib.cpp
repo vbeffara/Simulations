@@ -88,4 +88,4 @@ namespace vb {
 			}
 		});
 	}
-}
+} // namespace vb

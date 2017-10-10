@@ -1,6 +1,6 @@
-#include <vb/PRNG.h>
 #include <boost/lexical_cast.hpp>
 #include <sstream>
+#include <vb/PRNG.h>
 
 namespace vb {
 	int	PRNG::discrete (const std::vector<double> & p) {
@@ -18,4 +18,4 @@ namespace vb {
 	}
 
 	PRNG prng;
-}
+} // namespace vb

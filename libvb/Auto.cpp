@@ -21,4 +21,4 @@ namespace vb {
 		if (time>1) slice = std::min (n_call / (time*100), slice + slice/100.0);
 		next = slice;
 	}
-}
+} // namespace vb

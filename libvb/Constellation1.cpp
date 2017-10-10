@@ -7,4 +7,4 @@ namespace vb {
 	template Constellation1<real_t>::Constellation1 (const Constellation1<double> &);
 
 	template std::ostream & operator<< (std::ostream & os, const Constellation1<double> & C);
-}
+} // namespace vb

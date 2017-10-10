@@ -1,8 +1,8 @@
-#include <vb/Image.h>
-#include <vb/ProgressBar.h>
 #include <fftw3.h>
 #include <limits>
 #include <queue>
+#include <vb/Image.h>
+#include <vb/ProgressBar.h>
 
 using namespace vb; using namespace std;
 

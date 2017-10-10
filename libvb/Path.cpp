@@ -1,7 +1,7 @@
+#include <gsl/gsl>
+#include <vb/Figure.h>
 #include <vb/Path.h>
 #include <vb/TriMatrix.h>
-#include <vb/Figure.h>
-#include <gsl/gsl>
 
 namespace vb {
     OldPath::OldPath (int l, bool rel) : std::vector<char> (l), relative(rel) {}
@@ -26,4 +26,4 @@ namespace vb {
         for (char i : *this) { l = (relative ? l+i : i) % 4; z += gsl::at(dzc,l); p.push_back(z); }
         Figure F; F.add (std::make_unique <Path> (p, Pen(BLACK,.2))); F.output_pdf(s);
     }
-}
+} // namespace vb

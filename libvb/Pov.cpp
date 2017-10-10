@@ -1,7 +1,7 @@
 /// \file
+#include <fstream>
 #include <vb/Hub.h>
 #include <vb/Pov.h>
-#include <fstream>
 
 namespace vb {
 	Pov_Object::Pov_Object (std::string s, bool b) : type(std::move(s)), braces(b), commas(0) {}
@@ -73,4 +73,4 @@ namespace vb {
 		<< std::make_unique <Pov_Cylinder> (tri(b.x,b.y,a.z), tri(b.x,b.y,b.z), .1)
 		<< std::make_unique <Pov_Texture> (t);
 	}
-}
+} // namespace vb

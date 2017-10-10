@@ -64,4 +64,4 @@ namespace vb {
 		if ((event == FL_KEYDOWN) && (Fl::event_key() == 's')) snapshot();
 		return AutoWindow::handle (event);
 	}
-}
+} // namespace vb

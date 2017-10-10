@@ -3,4 +3,4 @@
 namespace vb {
 	template class Elliptic<double>;
 	template class Elliptic<real_t>;
-}
+} // namespace vb

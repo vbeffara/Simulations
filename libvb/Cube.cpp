@@ -46,4 +46,4 @@ namespace vb {
 
 		SS.output_pov(s == "" ? H.title : s);
 	}
-}
+} // namespace vb

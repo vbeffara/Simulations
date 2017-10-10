@@ -1,5 +1,5 @@
-#include <vb/Pairings.h>
 #include <vb/PRNG.h>
+#include <vb/Pairings.h>
 #include <vb/math.h>
 
 namespace vb {
@@ -52,4 +52,4 @@ namespace vb {
 		}
 		return out;
 	}
-}
+} // namespace vb

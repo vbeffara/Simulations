@@ -1,5 +1,5 @@
-#include <vb/Bitmap.h>
 #include <queue>
+#include <vb/Bitmap.h>
 
 using namespace vb; using namespace std;
 

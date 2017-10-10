@@ -107,4 +107,4 @@ namespace vb {
 		}
 		return Picture::handle(event);
 	}
-}
+} // namespace vb

@@ -3,4 +3,4 @@
 namespace vb {
 	template class Constellation<double>;
 	template class Constellation<real_t>;
-}
+} // namespace vb
