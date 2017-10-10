@@ -18,6 +18,7 @@ namespace vb {
 
 		operator bool()    	const { return strtol(c_str(), (char **) nullptr, 10); } // NOLINT implicit conversion is the point
 		operator int()     	const { return strtol(c_str(), (char **) nullptr, 10); } // NOLINT implicit conversion is the point
+		operator unsigned() const { return strtol(c_str(), (char **) nullptr, 10); } // NOLINT implicit conversion is the point
 		operator int64_t() 	const { return strtol(c_str(), (char **) nullptr, 10); } // NOLINT implicit conversion is the point
 		operator double()  	const { return strtod(c_str(), (char **) nullptr); }     // NOLINT implicit conversion is the point
 	};

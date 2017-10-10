@@ -4,7 +4,7 @@
 
 int main(int argc, char ** argv) {
 	vb::H.init ("Simple random walk", argc, argv, "a=15,o=1");
-	int adj = vb::H['a'];
+	unsigned adj = vb::H['a'];
 
 	auto C = std::make_unique <vb::Circle> (0,.5); vb::cpx & z = C->z;
 	auto P = std::make_unique <vb::Path> (std::vector<vb::cpx> {0}); std::vector<vb::cpx> & path = P->z;
@@ -12,7 +12,7 @@ int main(int argc, char ** argv) {
 
 	for (int a=1; a<200; ++a) {
 		for (int b=0; b<a; ++b) {
-			int d=9; while (!((1<<d) & adj)) d = vb::prng.uniform_int(8);
+			unsigned d=9; while (((1u<<d) & adj) == 0) { d = vb::prng.uniform_int(8); }
 			z += vb::cpx(vb::dz[d]); path.push_back(z);
 		}
 		f.update();
