@@ -50,6 +50,9 @@ find_package (FLTK)
 pkg_check_modules (EXT REQUIRED cairo fftw3 libpng yaml-cpp cln gsl eigen3 fplll spdlog)
 pkg_check_modules (CMAES libcmaes)
 
+include(CheckCXXSymbolExists)
+check_cxx_symbol_exists (spdlog::stdout_color_mt spdlog/spdlog.h SPDLOG_COLOR_MT)
+
 if (${CMAES_FOUND})
     link_directories (${CMAES_LIBRARY_DIRS})
     include_directories (${CMAES_INCLUDE_DIRS})
