@@ -4,6 +4,18 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "taskName": "cmake",
+            "type": "shell",
+            "command": "unbuffer cmake --build build | perl -pe 's|(\\x1b\\[[0-9;]*m)../|\\1|g'",
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
             "taskName": "warnings",
             "type": "shell",
             "command": "cat warnings.txt.tmp",
