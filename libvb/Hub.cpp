@@ -19,7 +19,7 @@ namespace vb {
 
 	    cln::default_float_format = cln::float_format(100);
 
-	    L = spdlog::stdout_logger_mt ("console", true);
+	    L = spdlog::stdout_color_mt ("console");
 	}
 
 	Hub::~Hub () {
@@ -60,7 +60,7 @@ namespace vb {
 			title += " (" + boost::join (cs,", ") + ")";
 		}
 
-	    L = spdlog::stdout_logger_mt (prog, true);
+	    L = spdlog::stdout_color_mt (prog);
 
 		cmd = argv_[0]; for (int i=1; i<argc; ++i) { cmd += " "; cmd += argv_[i]; }
 		L->info ("Command line : {}", cmd);

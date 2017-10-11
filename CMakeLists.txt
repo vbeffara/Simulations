@@ -47,7 +47,7 @@ find_library (MPFR mpfr)
 find_package (PkgConfig)
 find_package (Boost COMPONENTS chrono unit_test_framework context system REQUIRED)
 find_package (FLTK)
-pkg_check_modules (EXT REQUIRED cairo fftw3 libpng yaml-cpp cln gsl eigen3 fplll)
+pkg_check_modules (EXT REQUIRED cairo fftw3 libpng yaml-cpp cln gsl eigen3 fplll spdlog)
 pkg_check_modules (CMAES libcmaes)
 
 if (${CMAES_FOUND})
