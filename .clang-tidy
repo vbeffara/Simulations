@@ -1,2 +1,2 @@
 ---
-Checks:          '*,-*namespace*'
+Checks:          '*,-*namespace*,-llvm-header-guard'
