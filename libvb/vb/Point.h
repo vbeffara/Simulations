@@ -10,6 +10,6 @@ namespace vb {
 	};
 
 	struct PointQueue : public std::priority_queue<Point> {
-		auto get () { auto p {top()}; pop(); return p; }
+		auto get () { Point p {top()}; pop(); return p; }
 	};
 }
