@@ -2,7 +2,7 @@
 
 using namespace vb; using namespace std;
 
-const vector<Color> C = { RED, BLUE, YELLOW, GREEN, MAGENTA, CYAN };
+Color C[] = { RED, BLUE, YELLOW, GREEN, MAGENTA, CYAN };
 
 struct Spin {
 	Spin (int i = 0) : s(i) {};

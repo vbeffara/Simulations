@@ -13,7 +13,7 @@ int main (int argc, char ** argv) {
 		std::cout << X << std::endl;
 		if (env[X]>0) -- env[X];
 
-		X += 2*vb::prng.bernoulli(env[X]>0 ? p : .5) - 1;
+		X += vb::prng.bernoulli(env[X]>0 ? p : .5) ? 1 : - 1;
 
 		if (X==-1) X=1;
 		if (X==env.size()) env.push_back(1);

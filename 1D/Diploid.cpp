@@ -85,7 +85,9 @@ int main (int argc, char ** argv) {
 	double t = 0; int iterations = vb::H['i'], period = vb::H['t'];
 	for (int k=0; k<iterations; ++k) {
 		t += D.NewNu();
-		if (period && !(k%period)) { std::cout << t; for (const auto & x : D.nu) std::cout << " " << x; std::cout << std::endl; }
+		if ((period > 0) && (k%period == 0)) { 
+			std::cout << t; for (const auto & x : D.nu) std::cout << " " << x; std::cout << std::endl;
+		}
 	}
 
 	std::cerr << t; for (const auto & x : D.nu) std::cerr << " " << x; std::cerr << std::endl;

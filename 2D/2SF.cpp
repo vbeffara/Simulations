@@ -5,7 +5,7 @@ using namespace vb; using namespace std;
 enum Type { VOID, SITE, EDGE, DUAL, DEDG, EMPH };
 
 class Point { public:
-	Point (int = 0) { }
+	Point () = default;
 	Point (Type t_, int d_ = 0) : t(t_), d(d_) {}
 	operator Color() {
 		if (t == SITE) return ((d==0)||(d==1)) ? RED             	: Color(200,200,255);

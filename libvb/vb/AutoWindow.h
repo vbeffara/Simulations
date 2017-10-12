@@ -17,6 +17,8 @@ namespace vb {
 
 		void show () override { T::show(); update(); }
 
+		bool visible () { return static_cast<bool> (T::visible()); }
+
 		void pause() { paused=true; update(); }
 
 		void run (std::function<void()> f) {

@@ -9,32 +9,32 @@ class Perco : public Image { public:
 		for (int x=0; x<n; ++x) {
 			for (int y=0; y<n; ++y) {
 				if ((x%2 == 0) && (y%2 == 0)) put (coo(x,y), IN); else
-                if ((x%2 == 0) || (y%2 == 0)) put (coo(x,y), prng.bernoulli(p) ? IN : BLACK);
+				if ((x%2 == 0) || (y%2 == 0)) put (coo(x,y), prng.bernoulli(p) ? IN : BLACK);
 			}
 		}
-        fill (mid,RED); show();
+		fill (mid,RED); show();
 	}
 
 	void run () {
-        int s = H['s'], t = 0; bool c = H['c'];
+		int s = H['s'], t = 0; bool c = H['c'];
 
-        while (true) {
-            if ((s > 0) && ((t++ % s) == 0)) snapshot ();
-            auto z = rand (); if ((z.x+z.y) % 2 == 0) continue;
-            fill (mid, IN);
-    		if (c) swap (at(z), atp(z + dz[4+prng.uniform_int(4)]));
-    		else at(z) = prng.bernoulli (p) ? IN : BLACK;
-            fill (mid, RED);
-            step ();
+		while (true) {
+			if ((s > 0) && ((t++ % s) == 0)) snapshot ();
+			auto z = rand (); if ((z.x+z.y) % 2 == 0) continue;
+			fill (mid, IN);
+			if (c) swap (at(z), atp(z + dz[4+prng.uniform_int(4)]));
+			else at(z) = prng.bernoulli (p) ? IN : BLACK;
+			fill (mid, RED);
+			step ();
 		}
 	}
 
-    coo mid;
-    double p;
+	coo mid;
+	double p;
 };
 
 int main (int argc, char ** argv) {
 	H.init ("Percolation", argc, argv, "n=500,p=.5,c,d,s=0");
 	Perco P (H['n'], H['p']);
-    if (H['d']) P.run(); else P.pause();
+	if (H['d']) P.run(); else P.pause();
 }

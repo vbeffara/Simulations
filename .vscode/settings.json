@@ -1,6 +1,19 @@
 {
     "files.associations": {
         "*.ipp": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "queue": "cpp",
+        "__functional_base": "cpp",
+        "array": "cpp",
+        "future": "cpp",
+        "istream": "cpp",
+        "locale": "cpp",
+        "memory": "cpp",
+        "thread": "cpp",
+        "tuple": "cpp",
+        "utility": "cpp",
+        "gsl": "cpp",
+        "multi_span": "cpp",
+        "variant": "cpp"
     }
 }

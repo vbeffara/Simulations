@@ -32,7 +32,7 @@ int main (int argc, char ** argv) {
 		if (X==0) p = 1;
 		else p = (env[X-1]==1 ? 2.0/3.0 : 1.0/2.0);
 
-		int dX = 2*prng.bernoulli(p) - 1;
+		int dX = prng.bernoulli(p) ? 1 : -1;
 
 		if ((X==env.size()) && (dX==1)) env.push_back(2);
 		if ((dX==1) && (env[X]==1) && prng.bernoulli(.5)) env[X]=0;

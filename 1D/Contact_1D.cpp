@@ -1,6 +1,6 @@
 #include <vb/Automaton.h>
 
-const std::vector <vb::Color> C { vb::WHITE, vb::BLACK, vb::GREEN };
+const vb::Color C[] = { vb::WHITE, vb::BLACK, vb::GREEN };
 
 class Site { public:
 	Site (int _s = 0) : s(_s) {}

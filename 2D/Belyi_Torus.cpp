@@ -16,7 +16,7 @@
 
 using namespace vb; using namespace std;
 
-vector<int> ntri { 0, 1, 5, 46, 669 };
+int ntri_ [] = { 0, 1, 5, 46, 669 }; gsl::span<int> ntri { ntri_ };
 
 int main (int argc, char ** argv) {
 	H.init ("Toroidal enumeration", argc, argv, "s=1,m=228,r=1,o,d=0,D=0,g=1,f,n=2,q");

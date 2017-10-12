@@ -2,12 +2,12 @@
 
 using namespace vb; using namespace std;
 
-vector<Color> C { WHITE, RED, BLACK };
+std::array<Color,3> CC = { WHITE, RED, BLACK }; gsl::span<Color> C {CC};
 
 class TASEP : public vector<int> {
 	public:
 		TASEP () : vector<int>(int(H['n']),0), p(size(),1) {
-			for (int & e : *this) { e = 2*prng.bernoulli(H['r']); if (prng.bernoulli(H['d']) && (e==2)) e = 1; }
+			for (int & e : *this) { e = prng.bernoulli(H['r']) ? 2 : 0; if (prng.bernoulli(H['d']) && (e==2)) e = 1; }
 			for (double & q : p) q = prng.uniform_real(H['e'],1.0);
 		}
 		void step () {
