@@ -2,7 +2,7 @@
 #include <vb/ProgressBar.h>
 
 class Ising3 : public vb::Cube { public: int b; bool k; double beta; std::vector<double> glaub,kaw;
-	Ising3 (int n, double k_, double b_) : Cube (n, n, n), b(0), k(k_), beta(b_) {
+	Ising3 (int n, bool k_, double b_) : Cube (n, n, n), b(0), k(k_), beta(b_) {
 		for (int k=0; k<=6; ++k)  glaub.push_back(exp(k*beta) / (exp(k*beta) + exp((6-k)*beta)));
 		for (int k=0; k<=12; ++k) kaw.push_back(1/(1+exp(2*beta*(k-6))));
 	};

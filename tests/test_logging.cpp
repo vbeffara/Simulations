@@ -5,7 +5,7 @@
 
 using namespace vb;
 
-int main (int, char*[]) {
+int main ([[maybe_unused]] int argc, [[maybe_unused]] char ** argv) {
     spdlog::set_level(spdlog::level::trace); //Set global log level to info
 
     H.L->critical("Support for int: {0:d};  hex: {0:x};  oct: {0:o}; bin: {0:b}", 42);

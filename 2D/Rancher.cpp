@@ -133,7 +133,7 @@ public:
 			point p = rand_point();
 			if (plot) traj.push_back (p);
 			cur = insere_maillon(p);
-			if (plot && !((i+1)%inter)) dessine_enveloppe();
+			if (plot && ((i+1)%inter == 0)) dessine_enveloppe();
 			W.step();
 
 			if (renew && (env.size()==3)) {

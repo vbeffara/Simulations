@@ -9,7 +9,10 @@ namespace vb {
 
 		Rule (Pattern in, Pattern out) : cond(std::move(in)), move(std::move(out)) {}
 
-		bool check   (Automaton<T> &A, int i) { for (auto & c : cond) if (A.atp(i+c.first) != c.second) return false; return true; }
+		bool check   (Automaton<T> &A, int i) {
+			for (auto & c : cond) if (!(A.atp(i+c.first) == c.second)) return false;
+			return true;
+		}
 		void trigger (Automaton<T> &A, int i) { if (check(A,i)) for (auto & m : move) A.atp(i+m.first) = m.second; }
 
 	private:

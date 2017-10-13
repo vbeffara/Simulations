@@ -1,16 +1,10 @@
 #include <vb/Automaton.h>
+#include <vb/Wrapped.h>
 
-const vb::Color C[] = { vb::WHITE, vb::BLACK, vb::GREEN };
+template<> vb::Wrapped<int>::operator Color () const { return vb::Indexed(1+t); }
 
-class Site { public:
-	Site (int _s = 0) : s(_s) {}
-	operator vb::Color() { return C[s]; }
-	operator int() { return s; }
-	int s;
-};
-
-class Contact : public vb::Automaton<Site> { public:
-	explicit Contact (const vb::Hub & H) : Automaton<Site> (H['n'],1,H['p']) {
+class Contact : public vb::Automaton<vb::Wrapped<int>> { public:
+	explicit Contact (const vb::Hub & H) : Automaton<vb::Wrapped<int>> (H['n'],1,H['p']) {
 		for (auto &s : (*this)) if (vb::prng.bernoulli(H['e'])) s = 2;
 
 		add_rule (1,     	{ {},            	{{0,0}} 	});

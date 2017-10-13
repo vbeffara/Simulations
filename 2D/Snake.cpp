@@ -2,16 +2,16 @@
 #include <vb/Path.h>
 
 class Snake : public vb::CoarseImage { public:
-	explicit Snake (int n) : vb::CoarseImage (2*n, 2*n, pow(n,.333)), z(1,vb::coo(n,n)) { put (vb::coo(n,n), 1); }
+	explicit Snake (int n) : vb::CoarseImage (2*n, 2*n, pow(n,.333)), z(1,vb::coo(n,n)) { put (vb::coo(n,n), true); }
 
 	void step (vb::coo dz) {
 		vb::coo nz = z.back()+dz;
-		if (at(nz) == 1) { return; }
+		if (at(nz)) return;
 		z.push_back(nz);
-		put (nz,1);
+		put (nz,true);
 	}
 
-	void shrink () { if (z.size() > 1) { put (z.back(), 0); z.pop_back(); } }
+	void shrink () { if (z.size() > 1) { put (z.back(), false); z.pop_back(); } }
 
 	bool alive () const {
 		vb::coo lz=z.back();

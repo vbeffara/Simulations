@@ -11,7 +11,7 @@ struct Spin {
 };
 
 class Potts : public Bitmap<Spin> { public:
-	Potts (int n, int q, double beta) : Bitmap<Spin> (n,n), q(q), beta(beta) {
+	Potts (int n, int q, double beta_) : Bitmap<Spin> (n,n), q(q), beta(beta_) {
 		bcs["perio"] = []{};
 		bcs["free"] = [this]{
 			b=1; for (auto & c : *this) c=-1;
