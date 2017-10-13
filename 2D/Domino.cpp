@@ -8,13 +8,13 @@ vector<Color> dicolors   { BLACK,BLACK,BLACK,BLACK , H1,V1,H2,V2           , H3,
 vector<Color> halfcolors { BLACK,BLACK,BLACK,BLACK , RED,GREEN,YELLOW,BLUE , YELLOW,BLUE,RED,GREEN , RED,GREEN,YELLOW,BLUE , YELLOW,BLUE,RED,GREEN };
 
 class Half { public:
-    uchar d, type;
-    Half (uchar _d = 0, uchar _t = 0) : d(_d), type(_t) {}
+    uint8_t d, type;
+    Half (uint8_t _d = 0, uint8_t _t = 0) : d(_d), type(_t) {}
     operator Color () { return halfcolors [d+4*type]; }
 };
 
 class Tiling : public Bitmap<Half> { public:
-    void putd (coo c, uchar d) { at(c).d = d; at(c+dz[d]).d = (d+2)%4; step(); }
+    void putd (coo c, uint8_t d) { at(c).d = d; at(c+dz[d]).d = (d+2)%4; step(); }
     void freeze (coo c) { at(c).type = 0; at(c+dz[at(c).d]).type = 0; }
 
     Tiling (Hub &H) : Bitmap<Half> (H['n'],H['n']), r(H['r']), rr {r,r*r,1,r} {
@@ -44,7 +44,7 @@ class Tiling : public Bitmap<Half> { public:
 
     int flip (coo c) {
         if (at(c).type == 0) return 0;
-        uchar d = at(c).d; coo oc = c + dz[d] + dz[(d+1)%4];
+        uint8_t d = at(c).d; coo oc = c + dz[d] + dz[(d+1)%4];
         if (!contains(oc)) return 0;
         if (at(oc).type == 0) return 0;
         if (at(oc).d != ((d+2)%4)) return 0;

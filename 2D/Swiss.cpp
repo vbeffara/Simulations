@@ -14,9 +14,9 @@ const vb::Color colors[4] = { C_EAST, C_NORTH, C_WEST, C_SOUTH };
 
 class Site {
 public:
-    uchar s;
-    Site (uchar _s = 0) : s(_s) { };
-    Site & operator= (uchar _s) { s=_s; return *this; }
+    uint8_t s;
+    Site (uint8_t _s = 0) : s(_s) { };
+    Site & operator= (uint8_t _s) { s=_s; return *this; }
     operator int () { return s; }
     explicit operator vb::Color () { return colors[s]; }
 };

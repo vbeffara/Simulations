@@ -18,10 +18,14 @@
         {
             "taskName": "warnings",
             "type": "shell",
-            "command": "cat warnings.txt.tmp",
+            "command": "cat warnings.txt | sed -e 's|/Users/vincent/Boulot/Simulations/||g'",
             "problemMatcher": [
                 "$gcc"
-            ]
+            ],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            }
         }
     ]
 }

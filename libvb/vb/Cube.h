@@ -19,17 +19,17 @@ namespace vb {
 		coo3	rand 	(int b=0)	{ return coo3 (b+prng.uniform_int(sx-2*b), b+prng.uniform_int(sy-2*b), b+prng.uniform_int(sz-2*b)); }
 		coo3	wrap 	(coo3 c) 	{ int xx=((c.x%sx)+sx)%sx, yy=((c.y%sy)+sy)%sy, zz=((c.z%sz)+sz)%sz; return coo3(xx,yy,zz); }
 
-		void	putp	(const coo3 &c, uchar t)	{ put(wrap(c),t); }
+		void	putp	(const coo3 &c, uint8_t t)	{ put(wrap(c),t); }
 		bool	done	(const coo3 &c)                 	{ return (c.z==sz); }
 
-		uchar &	at 	(const coo3 &c) { return data[index(c)]; }
-		uchar &	atp	(const coo3 &c) { return at(wrap(c)); }
+		uint8_t &	at 	(const coo3 &c) { return data[index(c)]; }
+		uint8_t &	atp	(const coo3 &c) { return at(wrap(c)); }
 
 		using iterator = Cube_iterator; iterator begin (); iterator end ();
 
 		using Bitmap <Adder> :: at;
-		void put (const coo3 &c, uchar t) {
-		    uchar d = data[index(c)]; if (t!=d) {
+		void put (const coo3 &c, uint8_t t) {
+		    uint8_t d = data[index(c)]; if (t!=d) {
 				at(coo(c.x,c.y)) -= d; at(coo(c.x,c.z+sy)) -= d; at(coo(c.z+sx,c.y)) -= d;
 				at(coo(c.x,c.y)) += t; at(coo(c.x,c.z+sy)) += t; at(coo(c.z+sx,c.y)) += t;
 			    data[index(c)] = t;
@@ -39,7 +39,7 @@ namespace vb {
 
 		void output_pov (std::string s = "");
 
-		int sx,sy,sz; std::vector <uchar> data;
+		int sx,sy,sz; std::vector <uint8_t> data;
 		bool mirrors = true;
 	};
 
@@ -47,6 +47,6 @@ namespace vb {
 		Cube_iterator           (Cube *cc, coo3 xyz) : coo3(xyz), c(cc)	{}
 		bool operator!=         (const Cube_iterator &o)               	{ return (c != o.c) || coo3::operator!= (o);                  	}
 		void operator++         ()                                     	{ x++; if (x == c->sx) { x=0; y++; } if (y == c->sy) { y=0; z++; }	}
-		const uchar & operator*	()                                     	{ return c->at(*this);                                  	}
+		const uint8_t & operator*	()                                     	{ return c->at(*this);                                  	}
 	};
 } // namespace vb

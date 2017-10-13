@@ -5,7 +5,7 @@
 using namespace vb; using namespace std;
 
 class DLA : public CoarseImage { public:
-	DLA (Hub & H) : CoarseImage(H['n'],H['n'], pow(double(H['n']),.33)),
+	explicit DLA (const Hub & H) : CoarseImage(H['n'],H['n'], pow(double(H['n']),.33)),
 		n(H['n']), c(H['c']), r(1), QT(coo(-n/2,-n/2),coo(n/2,n/2),H['l']),
 		img (512,512) {
 		z0 = coo(n/2,n/2);
@@ -16,7 +16,7 @@ class DLA : public CoarseImage { public:
 			int l=2*d-1;
 			vector<vector<double>> M (l,vector<double>(l,0)); M[l/2][l/2]=1;
 			bool dirty=true; while (dirty) { dirty=false;
-				for (long i=1; i<l-1; ++i) for (long j=1; j<l-1; ++j) if ((i!=d-1)||(j!=d-1)) {
+				for (int i=1; i<l-1; ++i) for (int j=1; j<l-1; ++j) if ((i!=d-1)||(j!=d-1)) {
 					double t = (M[i][j+1] + M[i][j-1] + M[i+1][j] + M[i-1][j])/4;
 					if (t != M[i][j]) { M[i][j]=t; dirty=true;}
 				}
@@ -29,8 +29,8 @@ class DLA : public CoarseImage { public:
 	};
 
 	void show    	()      override	{ W.show(); CoarseImage::show(); img.show(); }
-	char at      	(coo z) const   	{ return contains(z) && CoarseImage::at(z); }
-	void put     	(coo z)         	{ CoarseImage::put(z,1); QT.insert(z); r = std::max (r,sup(z)); }
+	bool at      	(coo z) const   	{ return contains(z) && CoarseImage::at(z); }
+	void put     	(coo z)         	{ CoarseImage::put(z,true); QT.insert(z); r = std::max (r,sup(z)); }
 	bool neighbor	(coo z) const   	{ for (int i=0; i<4; ++i) if (at(z+dz[i])) return true; return false; }
 
 	coo jump (int d) const {

@@ -9,7 +9,7 @@ namespace vb {
 		explicit operator Color() { return Grey(fill*255/LL); }
 
 		int fill = 0;          ///< The number of pixels with value 1 in the cell.
-		std::vector<char> sub; ///< The actual contents of the cell, if not constant.
+		std::vector<bool> sub; ///< The actual contents of the cell, if not constant.
 		int LL;                ///< The number of vertices in the cell.
 	};
 
@@ -18,20 +18,20 @@ namespace vb {
 			Bitmap<CoarseCell> (1+(wd-1)/l, 1+(ht-1)/l, CoarseCell(l)),
 			true_width(wd), true_height(ht), L(l), LL(l*l), z0(0,0) {}
 
-		char at (coo z) const {
+		bool at (coo z) const {
 			z += z0; const CoarseCell & d = Bitmap<CoarseCell> :: at (coo(z.x/L,z.y/L));
 			if (d.fill==0) return 0;
 			if (d.fill==LL) return 1;
-			return d.sub[(z.x%L) + L*(z.y%L)];
+			return d.sub[(z.x%L) + L*(z.y%L)] > 0 ? true : false;
 		}
 
-		void put (coo z, int c) {
+		void put (coo z, bool c) {
 			step(); z += z0; CoarseCell & d = Bitmap<CoarseCell> :: at (coo(z.x/L,z.y/L));
 			if (d.fill == c*LL)	return;
 			if (d.fill == (1-c)*LL) d.sub.resize (LL,1-c);
 			int sub_xy = (z.x%L) + L * (z.y%L);
 			if (d.sub[sub_xy] != c) { d.sub[sub_xy] = c; d.fill += 2*c-1; }
-			if ((d.fill==0)||(d.fill==LL)) std::vector<char>().swap(d.sub);
+			if ((d.fill==0)||(d.fill==LL)) std::vector<bool>().swap(d.sub);
 		}
 
 		bool contains (coo z) const { z += z0; return (z.x>=0) && (z.y>=0) && (z.x<true_width) && (z.y<true_height); }

@@ -25,9 +25,9 @@ const vector<int> flip_ne = {1,0,3,2}, flip_nw = {3,2,1,0};
 
 class Mirror {
 public:
-	Mirror (uchar s_ = 0) : s(s_) {}
-	uchar s;
-	operator uchar () { return s; }
+	Mirror (uint8_t s_ = 0) : s(s_) {}
+	uint8_t s;
+	operator uint8_t () { return s; }
 	operator Color () {
 		if (s==0) return BLACK;
 		if (s==STATE_VISITED) return Grey(128);

@@ -6,19 +6,19 @@ namespace vb {
 	class Color {
 	public:
 #ifdef BIGENDIAN
-		unsigned char a; ///< The alpha channel (for ARGB32).
-		unsigned char r; ///< The red component.
-		unsigned char g; ///< The green component.
-		unsigned char b; ///< The blue component.
+		uint8_t a; ///< The alpha channel (for ARGB32).
+		uint8_t r; ///< The red component.
+		uint8_t g; ///< The green component.
+		uint8_t b; ///< The blue component.
 
-		Color (unsigned char R, unsigned char G, unsigned char B, unsigned char A=255) noexcept : a(A), r(R), g(G), b(B)	{}
+		Color (uint8_t R, uint8_t G, uint8_t B, uint8_t A=255) noexcept : a(A), r(R), g(G), b(B)	{}
 #else
-		unsigned char b; ///< The blue component.
-		unsigned char g; ///< The green component.
-		unsigned char r; ///< The red component.
-		unsigned char a; ///< The alpha channel (for ARGB32).
+		uint8_t b; ///< The blue component.
+		uint8_t g; ///< The green component.
+		uint8_t r; ///< The red component.
+		uint8_t a; ///< The alpha channel (for ARGB32).
 
-		Color (unsigned char R, unsigned char G, unsigned char B, unsigned char A=255) noexcept : b(B), g(G), r(R), a(A) {}
+		Color (uint8_t R, uint8_t G, uint8_t B, uint8_t A=255) noexcept : b(B), g(G), r(R), a(A) {}
 #endif
 		Color () : Color (0,0,0,0) {}
 
@@ -31,7 +31,7 @@ namespace vb {
 	const Color	NOCOLOR(0,0,0,0), BLACK(0,0,0), WHITE(255,255,255), RED(255,0,0), GREEN(0,255,0), BLUE(0,0,255),
 	           	CYAN(0,255,255), MAGENTA(255,0,255), YELLOW(255,255,0);
 
-	inline Color Grey (unsigned char x) { return Color(x,x,x); }
+	inline Color Grey (uint8_t x) { return Color(x,x,x); }
 
 	inline Color HSV (double h, double s, double v) {
 		int h_i = h*6; double f = h*6 - h_i; v*=255;

@@ -14,6 +14,8 @@
         "utility": "cpp",
         "gsl": "cpp",
         "multi_span": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "random": "cpp",
+        "__locale": "cpp"
     }
 }
