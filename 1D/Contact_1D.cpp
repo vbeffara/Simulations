@@ -1,7 +1,7 @@
 #include <vb/Automaton.h>
 #include <vb/Wrapped.h>
 
-template<> vb::Wrapped<int>::operator Color () const { return vb::Indexed(1+t); }
+template<> vb::Color vb::to_Color (int i) { return vb::Indexed(i+1); }
 
 class Contact : public vb::Automaton<vb::Wrapped<int>> { public:
 	explicit Contact (const vb::Hub & H) : Automaton<vb::Wrapped<int>> (H['n'],1,H['p']) {
