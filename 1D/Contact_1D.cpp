@@ -1,10 +1,9 @@
 #include <vb/Automaton.h>
-#include <vb/Wrapped.h>
 
 template<> vb::Color vb::to_Color (int i) { return vb::Indexed(i+1); }
 
-class Contact : public vb::Automaton<vb::Wrapped<int>> { public:
-	explicit Contact (const vb::Hub & H) : Automaton<vb::Wrapped<int>> (H['n'],1,H['p']) {
+class Contact : public vb::Automaton<int> { public:
+	explicit Contact (const vb::Hub & H) : Automaton<int> (H['n'],1,H['p']) {
 		for (auto &s : (*this)) if (vb::prng.bernoulli(H['e'])) s = 2;
 
 		add_rule (1,     	{ {},            	{{0,0}} 	});
