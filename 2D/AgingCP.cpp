@@ -2,15 +2,10 @@
 
 using namespace std; using namespace vb;
 
-class Site { public:
-	Site (int age = 0) : a(age)	{ }
-	operator int ()        	{ return a; }
-	operator Color ()      	{ return a==0 ? BLACK : Indexed(a); }
-	int a;
-};
+template<> Color vb::to_Color (int t) { return t==0 ? BLACK : Indexed(t); }
 
-class ACP : public Bitmap<Site> { public:
-	ACP (Hub & H) : Bitmap<Site> (int(H['n']), int(H['n'])), kid(H['z']), maxage (H['m']) {
+class ACP : public Bitmap<int> { public:
+	explicit ACP (const Hub & H) : Bitmap<int> (int(H['n']), int(H['n'])), kid(H['z']), maxage (H['m']) {
 		put (coo(w()/2,h()/2),1);
 		P = { H['d'], H['a'] };
 		for (int i=0; i<int(H['m']) - kid; ++i) P.push_back (double(H['b']) + double(H['r'])*i);

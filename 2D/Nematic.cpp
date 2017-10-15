@@ -3,16 +3,12 @@
 
 using namespace vb;
 
-class Site { public:
-	Site (int d_ = 0) : d(d_) {}
+const Color key [] = { BLACK, RED, GREEN };
 
-	operator Color () { static std::vector<Color> key = { BLACK, RED, GREEN }; return key[d]; }
+template<> Color vb::to_Color (int t) { return key[t]; }
 
-	int d;
-};
-
-class Nematic : public vb::Bitmap<Site> { public:
-	Nematic (int n_, int m_, int k_, double b_) : Bitmap<Site> (n_,m_), k(k_), b(b_), P(std::max(n_,m_),0) {};
+class Nematic : public vb::Bitmap<int> { public:
+	Nematic (int n_, int m_, int k_, double b_) : Bitmap<int> (n_,m_), k(k_), b(b_), P(std::max(n_,m_),0) {};
 
 	void prec () {
 		ok = std::min(k,std::min(w(),h())); ob = b; std::vector<double> Z(P.size());
@@ -35,16 +31,16 @@ class Nematic : public vb::Bitmap<Site> { public:
 		bool empty = true;
 		int hw = (d==1 ? w() : h());
 		for (int x=0; x < hw; z+=dz[d-1], ++x) {
-			if (at(z).d == 3-d) empty = false;
-			if (at(z).d == d) at(z) = 0;
+			if (at(z) == 3-d) empty = false;
+			if (at(z) == d) at(z) = 0;
 		}
 		if (empty) {
 			if (prng.bernoulli(dd)) { z -= dz[d-1] * prng.uniform_int(ok); add (z,d); fill (z + dz[d-1] * ok, d, hw-ok); }
 			else fill (z + dz[d-1], d, hw-1);
 		} else {
-			while (atp(z).d != 3-d) { z += dz[d-1]; } z += dz[d-1];
+			while (atp(z) != 3-d) { z += dz[d-1]; } z += dz[d-1];
 			for (coo zz = z - dz[d-1]*hw; zz != z; zz += dz[d-1]) {
-				int l=0; while (atp(zz).d == 0) { ++l; zz += dz[d-1]; } if (l>0) fill (zz - dz[d-1]*l, d, l);
+				int l=0; while (atp(zz) == 0) { ++l; zz += dz[d-1]; } if (l>0) fill (zz - dz[d-1]*l, d, l);
 			}
 		}
 		step();
@@ -60,8 +56,8 @@ class Nematic : public vb::Bitmap<Site> { public:
 			if ((k != ok) || (b != ob)) prec();
 			for (int i=0; i<h(); ++i) redo (coo(0,i), 1);
 			for (int i=0; i<w(); ++i) redo (coo(i,0), 2);
-			int nh = 0; for (auto v : *this) if (v.d == 1) ++nh;
-			int nv = 0; for (auto v : *this) if (v.d == 2) ++nv;
+			int nh = 0; for (auto v : *this) if (v == 1) ++nh;
+			int nv = 0; for (auto v : *this) if (v == 2) ++nv;
 			order = nh+nv>0 ? double (nh-nv) / double (nh+nv) : 0;
 			if ((!(t%100)) && H['l']) std::cout << order << std::endl;
 		}
