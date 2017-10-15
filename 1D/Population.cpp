@@ -12,7 +12,8 @@ double b        	(double x)              	{ return a0 * g(x,sigmab0) + aex1 * g(
 double c        	(double x, double y)    	{ return .1 * max (-Ac*(x-y)*(x-y)*(x-y)*(x-y) + (x-y)*(x-y) + 3, 0.0); }
 double rescaling	(double x, int size)    	{ return 6.0*(x-1.0)/(size-1.0) - 3.0; }
 
-double NewNu (vector<double> & nu, double K, double p, int size) {
+double NewNu (vector<double> * nup, double K, double p, int size) {
+	vector<double> & nu = *nup;
 	vector<double> B(size+1,0), De(size+1,0), M(size+1,0); double BB=0, DD=0, MM=0;
 
 	for (int x=1; x<=size; x++) {
@@ -23,10 +24,10 @@ double NewNu (vector<double> & nu, double K, double p, int size) {
 	}
 
     double u = prng.uniform_real()*(BB+DD+MM);
-    if (u < BB) {        	long z=0; double v = prng.uniform_real()*BB; while (v>0) { z++; v -= B[z]; } nu[z] += 1/K; }
-    else if (u < BB+DD) {	long z=0; double v = prng.uniform_real()*DD; while (v>0) { z++; v -= De[z]; } nu[z] -= 1/K; if (nu[z]<.5/K) nu[z]=0; }
-    else {               	long z=0; double v = prng.uniform_real()*MM; while (v>0) { z++; v -= M[z]; }
-                         	long dz = 2*prng.bernoulli()-1; if ((z>0) && (z+dz>=1) && (z+dz<=size)) nu[z+dz] += 1/K; }
+    if (u < BB) {        	int64_t z=0; double v = prng.uniform_real()*BB; while (v>0) { z++; v -= B[z]; } nu[z] += 1/K; }
+    else if (u < BB+DD) {	int64_t z=0; double v = prng.uniform_real()*DD; while (v>0) { z++; v -= De[z]; } nu[z] -= 1/K; if (nu[z]<.5/K) nu[z]=0; }
+    else {               	int64_t z=0; double v = prng.uniform_real()*MM; while (v>0) { z++; v -= M[z]; }
+                         	int64_t dz = prng.bernoulli() ? 1 : -1; if ((z>0) && (z+dz>=1) && (z+dz<=size)) nu[z+dz] += 1/K; }
 
     return prng.exponential (K*(BB+DD+MM));
 }
@@ -41,7 +42,7 @@ int main (int argc, char ** argv) {
 	vector<double> nu (size+1,0); nu[shift] = 3;
 
 	vector<cpx> pos (size,0);
-	for (long i=0; i<size; ++i) pos[i] = cpx(i,nu[i+1]);
+	for (int64_t i=0; i<size; ++i) pos[i] = cpx(i,nu[i+1]);
 
 	Console W;
 	W.manage (slope,-100.0,100.0,"slope");
@@ -61,17 +62,17 @@ int main (int argc, char ** argv) {
 
 	for (int k=1; k<=iterations; ++k) {
 		PB.set(k);
-		t += NewNu (nu,K,p,size);
-		if (!(k%(iterations/1000))) {
+		t += NewNu (&nu,K,p,size);
+		if (k%(iterations/1000) == 0) {
 			cout << k << " " << t; for (int i=1; i<=size; ++i) cout << " " << int(.2+nu[i]*K); cout << endl;
 			G.contents.clear();
-			for (long i=0; i<size; ++i) {
+			for (int64_t i=0; i<size; ++i) {
 				graph[i].emplace_back (1000.0*k/iterations,nu[i+1]);
 				G.add (std::make_unique <Path> (graph[i],Pen(Indexed(i))));
 			}
 			if (! G.visible()) { G.show(); } G.step();
 		}
-		for (long i=0; i<size; ++i) pos[i] = cpx(i,nu[i+1]);
+		for (int64_t i=0; i<size; ++i) pos[i] = cpx(i,nu[i+1]);
 		F.contents.clear(); F.add (std::make_unique <Path> (pos));
 		F.step();
 	}

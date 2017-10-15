@@ -12,21 +12,14 @@
 
 const vb::Color colors[4] = { C_EAST, C_NORTH, C_WEST, C_SOUTH };
 
-class Site {
-public:
-    uint8_t s;
-    Site (uint8_t _s = 0) : s(_s) { };
-    Site & operator= (uint8_t _s) { s=_s; return *this; }
-    operator int () { return s; }
-    explicit operator vb::Color () { return colors[s]; }
-};
+template<> vb::Color vb::to_Color (uint8_t t) { return colors[t]; }
 
-class World : public vb::Bitmap<Site> {
+class World : public vb::Bitmap<uint8_t> {
 public:
     int c;
     double p,q;
 
-    explicit World (const vb::Hub &H) : Bitmap<Site> (H['n'],H['n']), c(H['c']), p(H['p']), q(H['q']) {
+    explicit World (const vb::Hub &H) : Bitmap<uint8_t> (H['n'],H['n']), c(H['c']), p(H['p']), q(H['q']) {
         int mid = (w()+h())/2;
         for (int x=0; x<w(); ++x) {
             for (int y=0; y<h(); ++y) {

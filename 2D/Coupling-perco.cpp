@@ -3,7 +3,7 @@
 using namespace vb; using namespace std;
 
 class Configuration : public Image { public:
-	Configuration (int n) : Image(n,n), expl(n,n), table(2*n*n+1) {}
+	explicit Configuration (int n) : Image(n,n), expl(n,n), table(2*n*n+1) {}
 
 	void compute_cpts (int r1) {
 		int t=0;
@@ -33,20 +33,20 @@ class Configuration : public Image { public:
 		}
 	}
 
-	int nbarms (int r1, int r2, int sides) {
+	int nbarms (int r1, int r2, unsigned sides) {
 		compute_cpts (r1);
-		long N = w();
+		int N = w();
 
 		for (auto & t : table) t=0;
-		for (long i=-r2; i<r2; i++) {
-			if (sides&1) table[N*N + expl[coo(N/2 + i   , N/2 - r2  )]]=1;
-			if (sides&2) table[N*N + expl[coo(N/2 + i   , N/2 + r2-1)]]=1;
-			if (sides&4) table[N*N + expl[coo(N/2 - r2  , N/2 + i   )]]=1;
-			if (sides&8) table[N*N + expl[coo(N/2 + r2-1, N/2 + i   )]]=1;
+		for (int i=-r2; i<r2; i++) {
+			if ((sides&1)!=0) table[N*N + expl[coo(N/2 + i   , N/2 - r2  )]]=1;
+			if ((sides&2)!=0) table[N*N + expl[coo(N/2 + i   , N/2 + r2-1)]]=1;
+			if ((sides&4)!=0) table[N*N + expl[coo(N/2 - r2  , N/2 + i   )]]=1;
+			if ((sides&8)!=0) table[N*N + expl[coo(N/2 + r2-1, N/2 + i   )]]=1;
 		}
 
 		int n=0; int k;
-		for (long i=-r1; i<r1; i++) {
+		for (int i=-r1; i<r1; i++) {
 			k = expl[coo(N/2 + i   , N/2 - r1  )]; if (table[N*N+k]==1) { table[N*N+k]=0; n++; }
 			k = expl[coo(N/2 + i   , N/2 + r1-1)]; if (table[N*N+k]==1) { table[N*N+k]=0; n++; }
 			k = expl[coo(N/2 - r1  , N/2 + i   )]; if (table[N*N+k]==1) { table[N*N+k]=0; n++; }
@@ -87,7 +87,7 @@ class Configuration : public Image { public:
 };
 
 class Coupling : public Image { public:
-	Coupling (int r) : Image(2*r,2*r), r1(r/4), r2(r/2), r3(r), c1(2*r), c2(2*r) {
+	explicit Coupling (int r) : Image(2*r,2*r), r1(r/4), r2(r/2), r3(r), c1(2*r), c2(2*r) {
 		c1.pick(r1,r2,r3);
 		for (int i=0; i<w(); ++i) for (int j=0; j<h(); ++j) c2[coo(i,j)] = c1[coo(i,j)];
 		c1.show(); c2.show(); show(); compute_diff(); update();

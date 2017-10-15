@@ -4,17 +4,10 @@ using namespace vb; using namespace std;
 
 const vector<Color> C = { BLACK, Grey(90), GREEN, Color(128,0,0) };
 
-class Site {
-	int state; // 0 closed, 1 empty, 2 occupied, 3 blocked
-public:
-	Site (int i = 0) : state(i) {};
-	operator int()   const { return state; }
-	operator Color() const { return C[state]; }
-};
+template<> Color vb::to_Color (int t) { return C[t]; }
 
-class PercSEP : public Bitmap<Site> {
-public:
-	PercSEP (Hub & H) : Bitmap<Site> (2*int(H['n']), H['n']),
+class PercSEP : public Bitmap<int> { public:
+	explicit PercSEP (const Hub & H) : Bitmap<int> (2*int(H['n']), H['n']),
 			flow(0,0), d(H['d']), tasym(H['t']) {
 		for (int i=0; i<w(); ++i)
 			for (int j=0; j<h(); ++j)
@@ -61,7 +54,7 @@ int main (int argc, char ** argv) {
 	H.init ("Exclusion on Percolation", argc,argv, "n=400,p=.8,l=.3,d=0,t");
 	PercSEP P(H); P.show();
 
-	for (long t=1 ;; ++t) {
+	for (int64_t t=1 ;; ++t) {
 		if ((t%(P.w()*P.h()))==0) {
 			if (P.tasym) P.clean();
 			int na=0; for (int x=0;x<P.w();++x) for (int y=0;y<P.h();++y) if (P.at(coo(x,y))==2) ++na;

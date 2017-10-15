@@ -4,7 +4,7 @@
 
 using namespace vb;
 
-int main (int, char **) {
+int main ([[maybe_unused]] int argc, [[maybe_unused]] char ** argv) {
 	double x=1.1;
 
 	Console W;

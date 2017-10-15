@@ -7,7 +7,7 @@ class Ising3 : public vb::Cube { public: int b; bool k; double beta; std::vector
 		for (int k=0; k<=12; ++k) kaw.push_back(1/(1+exp(2*beta*(k-6))));
 	};
 
-	int64_t nbsum (vb::coo3 c) { int S=0; for (int i=0; i<6; ++i) S += atp(c+vb::dz3[i]) ? 1 : 0; return S; }
+	int64_t nbsum (vb::coo3 c) { int S=0; for (int i=0; i<6; ++i) S += atp(c+vb::dz3[i])!=0 ? 1 : 0; return S; }
 
 	void spin (vb::coo3 c) {
 		if (k) {
@@ -47,7 +47,7 @@ int main (int argc, char ** argv) {
     Ising3 C (vb::H['n'], vb::H['k'], vb::H['b']); BCs()[vb::H['c']] (C); C.show();
 	int T = vb::H['t']; if (T==0) T = 2*int(vb::H['n']);
     { vb::ProgressBar P (T); int s = vb::H['s']; for (int t=0; t<T; ++t) {
-		if (s && (t % (T/s)) == 0) C.output_pov (fmt::format ("snapshots/snapshot_{:04d}",t/(T/s)));
+		if ((s>0) && (t % (T/s)) == 0) C.output_pov (fmt::format ("snapshots/snapshot_{:04d}",t/(T/s)));
 		C.swipe(); P.set(t);
 	} }
 	if (vb::H['m']) C.mirrors=false;

@@ -5,7 +5,7 @@ using namespace vb; using namespace std;
 coo rot (coo z, coo p) { return p + coo { p.y-z.y, z.x-p.x }; }
 
 class Pivot : public Image { public:
-	Pivot (int nn_) : Image (4*nn_,4*nn_), nn(nn_), n(nn*nn), z(n) { show(); }
+	explicit Pivot (int nn_) : Image (4*nn_,4*nn_), nn(nn_), n(nn*nn), z(n) { show(); }
 
 	int piv () {
 		for (auto & c : *this) c = BLACK;
@@ -20,7 +20,7 @@ class Pivot : public Image { public:
 	}
 
 	void run () {
-		int p=0; while (!p) {
+		int p=0; while (p==0) {
 			z[0] = { 2*nn, 2*nn }; for (int k=1; k<n; k++) z[k] = z[k-1] + dz[prng.uniform_int(4)];
 			p = piv();
 		}

@@ -10,9 +10,9 @@ class Walker { public:
 	}
 
 	int step (int dir, int add) {
-		if     	(add==0)	{                                                                 	return 0; }
-		else if	(add>0) 	{ if (pos[dir] < Max[dir].at(coo(pos[(dir+1)%3], pos[(dir+2)%3])))	return 0; }
-		else   	        	{ if (pos[dir] > Min[dir].at(coo(pos[(dir+1)%3], pos[(dir+2)%3])))	return 0; }
+		if (add==0) {                                                                 	return 0; }
+		if (add>0)  { if (pos[dir] < Max[dir].at(coo(pos[(dir+1)%3], pos[(dir+2)%3])))	return 0; }
+		/* else */  { if (pos[dir] > Min[dir].at(coo(pos[(dir+1)%3], pos[(dir+2)%3])))	return 0; }
 		pos[dir] += add; reframe(); ++length; return 1;
 	}
 

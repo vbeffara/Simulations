@@ -17,7 +17,7 @@ Lattice G () {
 	return G;
 }
 
-int main (int, char **) {
+int main ([[maybe_unused]] int argc, [[maybe_unused]] char ** argv) {
 	Lattice L = SV();
 	L.relax(1e-14);
 	L.tau = L.tau_rw();

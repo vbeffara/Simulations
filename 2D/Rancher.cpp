@@ -16,11 +16,8 @@
 
 using vb::cpx;
 
-class point {
-	cpx z;
-public:
-	explicit point (cpx _z, bool _k=true) : z(_z), k(_k) {};
-	operator cpx() const { return z; }
+class point : public cpx { public:
+	explicit point (cpx _z, bool _k=true) : cpx(_z), k(_k) {};
 	bool k; ///< 0 si point à l'infini, 1 si point du plan (cf. plan projectif)
 };
 

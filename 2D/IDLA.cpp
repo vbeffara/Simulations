@@ -18,7 +18,7 @@ class Bounces : public map <string, function<coo(coo)>> { public:
 		emplace ( "maxb", [](coo z) { double l = pow(norm(z),double(H['b']));	return (abs(z.x)>abs(z.y)) ? coo(-l*sign(z.x),0) : coo(0,-l*sign(z.y)); } );
 
 		emplace ( "dent", [](coo z) {	if (z.x+z.y > 2 * abs(z.x-z.y))	return (z.y>z.x) ? coo(-1,0) : coo(0,-1);
-		                             	else                           	return (abs(z.y)>abs(z.x)) ? coo(0,-sign(z.y)) : coo(-sign(z.x),0);	} );
+		                             	/* else */                     	return (abs(z.y)>abs(z.x)) ? coo(0,-sign(z.y)) : coo(-sign(z.x),0);	} );
 
 		emplace ( "octo", [](coo z) {	double a = H['a'], b = H['b'];
 										if (abs(z.x) > 2*abs(z.y))        	return coo(-a*sign(z.x),0);
@@ -44,7 +44,7 @@ class Bouncy : public CoarseImage { public:
 					if (H['i'] && (norm(nz)<10)) c = nz.y>0 ? Indexed(0) : Indexed(1);
 					tree->put ((nz+z0)*2, c); tree->put (z+nz+z0*2, c);
 				}
-				put(nz,1); nz += jump(nz);
+				put(nz,true); nz += jump(nz);
 			}
 			z = nz;
 		}

@@ -1,2 +1,2 @@
 ---
-Checks:          '*,-*namespace*,-llvm-header-guard,-*braces*'
+Checks:          '*,-*namespace*,-llvm-header-guard,-*braces*,-*-vararg,-cert-err58-cpp'

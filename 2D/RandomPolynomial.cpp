@@ -49,7 +49,7 @@ template <typename T> class RPoly { public:
 
 int main (int argc, char ** argv) {
 	H.init ("Random polynomial in 2 variables", argc, argv, "n=100,g=gaussian,s=0,p");
-	int s = H['s']; if (s) prng.seed(s); RPoly<double> P (H['n'],H['p']);
+	int s = H['s']; if (s>0) prng.seed(s); RPoly<double> P (H['n'],H['p']);
 	double l = H['p'] ? 1 : 10; Coloring C (cpx(-l,-l),cpx(l,l),800,P);
 	C.show(); C.output(); Fl::run();
 }

@@ -3,7 +3,7 @@
 
 using namespace vb;
 
-const Color C [] = { RED, GREEN, BLUE, YELLOW };
+const Color CC [] = { RED, GREEN, BLUE, YELLOW }; gsl::span<const Color> C { CC };
 
 int main (int argc, char ** argv) {
 	H.init ("Rotor-Router Model", argc, argv, "n=500");

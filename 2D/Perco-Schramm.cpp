@@ -14,15 +14,15 @@ double omx = sqrt(3.0);
 
 class Perco_Schramm : public Figure {
 public:
-	Perco_Schramm (Hub & H) : w(2*int(H['n'])), h(int(H['l']) ? H['l'] : w-1), mask(w*h,true) {
+	explicit Perco_Schramm (const Hub & H) : w(2*int(H['n'])), h(int(H['l'])>0 ? H['l'] : w-1), mask(w*h,true) {
 		for (int i=0; i < w/2; ++i)     cols.push_back (true);
 		for (int i=0; i < w/2; ++i)     cols.push_back (false);
 		for (int i=0; i < (w-1)*h; ++i) cols.push_back (prng.bernoulli(H['p']));
 	}
 
 	void tri_boundary () {
-		for (long j=0; j<h; ++j) {
-			for (long i=0; i<w; ++i)
+		for (int j=0; j<h; ++j) {
+			for (int i=0; i<w; ++i)
 				mask[i+w*j] = (i <= (w+j)/2) && (i >= (w-j)/2-1) && (j<h);
 			cols[(w-j)/2 + w*j - 1] = true;
 			cols[(w+j)/2 + w*j] = false;
@@ -30,7 +30,7 @@ public:
 	}
 
 	void rect_boundary () {
-		for (long j=0; j<h-1; ++j) {
+		for (int j=0; j<h-1; ++j) {
 			cols[w*j] = true;
 			cols[w*j+h] = false;
 		}
@@ -65,12 +65,12 @@ private:
 	int w, h;
 	vector<bool> cols, mask;
 
-	cpx thepos (int i) { return cpx(omx*(((i/w)%2)+2*(i%w)) , 3*(i/w)); }
+	cpx thepos (int i) { return cpx(omx*(((i/w)%2)+2*(i%w)) , 3*int(i/w)); }
 
 	int follow (int base, int dir) {
 		static const vector<int> fola = { 1, w, w-1, -1, -w-1, -w };
 		static const vector<int> folb = { 1, w+1, w, -1, -w, -w+1 };
-		return ((base/w)%2 ? folb : fola) [dir] + base;
+		return (((base/w)%2)!=0 ? folb : fola) [dir] + base;
 	}
 
 	void seg (Path *p, int base, int dir, int rot) {

@@ -4,14 +4,10 @@ using namespace vb; using namespace std;
 
 Color C[] = { RED, BLUE, YELLOW, GREEN, MAGENTA, CYAN };
 
-struct Spin {
-	Spin (int i = 0) : s(i) {};
-	operator Color() const { if ((s>=0)&&(s<6)) return C[s]; else if (s<0) return WHITE; else return Indexed(s); }
-	int s;
-};
+template<> Color vb::to_Color (int t) { if ((t>=0)&&(t<6)) return C[t]; else if (t<0) return WHITE; else return Indexed(t); }
 
-class Potts : public Bitmap<Spin> { public:
-	Potts (int n, int q, double beta_) : Bitmap<Spin> (n,n), q(q), beta(beta_) {
+class Potts : public Bitmap<int> { public:
+	Potts (int n, int q, double beta_) : Bitmap<int> (n,n), q(q), beta(beta_) {
 		bcs["perio"] = []{};
 		bcs["free"] = [this]{
 			b=1; for (auto & c : *this) c=-1;
@@ -100,8 +96,8 @@ class Potts : public Bitmap<Spin> { public:
 		bcs[H['c']](); show();
 	}
 
-	int HH (const Spin & i, const Spin & j) const { return i.s==j.s ? 0 : 1; }
-	int HH (const coo & z,  const Spin & i) const { return HH(i,atp(z+dz[0])) + HH(i,atp(z+dz[1])) + HH(i,atp(z+dz[2])) + HH(i,atp(z+dz[3])); }
+	int HH (int i, int j)         const { return i==j ? 0 : 1; }
+	int HH (const coo & z, int i) const { return HH(i,atp(z+dz[0])) + HH(i,atp(z+dz[1])) + HH(i,atp(z+dz[2])) + HH(i,atp(z+dz[3])); }
 
 	void up () { up(rand()); }
 	void up (coo z) {

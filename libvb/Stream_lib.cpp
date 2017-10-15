@@ -57,7 +57,7 @@ namespace vb {
 					std::vector<int> missed (n);
 					for (int i=0; i<n; ++i) missed[i]=i;
 					for (auto i : cc) missed[i]=0;
-					for (int i=0, j=0; j<n; ++j) if (missed[j]) missed[i++] = missed[j];
+					for (int i=0, j=0; j<n; ++j) if (missed[j]!=0) missed[i++] = missed[j];
 					for (auto & p : permutations(ns)) {
 						auto out = p.cycles();
 						for (auto & c : out) for (auto & i : c) i = missed[i];
