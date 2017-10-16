@@ -4,10 +4,10 @@
 
 namespace vb {
 	void Pairings_Iterator::next () {
-		while (todo_c.size()>0) {
+		while (!todo_c.empty()) {
 			std::vector<int> c = todo_c.back(); todo_c.pop_back();
 			std::vector<int> p = todo_p.back(); todo_p.pop_back();
-			if (p.size() == 0) { for (int i=0; i<n/2; ++i) { current[c[2*i]]=c[2*i+1]; current[c[2*i+1]]=c[2*i]; } return; }
+			if (p.empty()) { for (int i=0; i<n/2; ++i) { current[c[2*i]]=c[2*i+1]; current[c[2*i+1]]=c[2*i]; } return; }
 			int i=p[0];
 			for (int k=1; k<p.size(); ++k) {
 				int o = p[k];
@@ -20,7 +20,8 @@ namespace vb {
 
 	Pairings_Iterator::Pairings_Iterator (int n_, int i_, bool d) : current(n_), n(n_), i(i_) {
 		if (d) {
-			std::vector<int> all; for (int i=0; i<n; ++i) all.push_back(i);
+			std::vector<int> all; all.reserve(n);
+for (int i=0; i<n; ++i) all.push_back(i);
 			std::vector<int> c;
 			todo_c.push_back(c); todo_p.push_back(all);
 			next();

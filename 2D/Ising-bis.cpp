@@ -3,15 +3,11 @@
 
 using namespace vb; using namespace std;
 
-struct Spin {
-	Spin (int s = 0) : s(s) {}
-	operator Color() { return s ? Indexed((3+s)/2) : Grey(128); }
-	int s;
-};
+template<> Color vb::to_Color (int t) { return t != 0 ? Indexed((3+t)/2) : Grey(128); }
 
-class Ising : public Bitmap<Spin> { public:
-	Ising (int n, double beta, int con) : Bitmap<Spin>(n,n), con(con), p(2*con+1) {
-		for (auto & s : *this) s = 2*prng.bernoulli(.5)-1;
+class Ising : public Bitmap<int> { public:
+	Ising (int n, double beta, int con) : Bitmap<int>(n,n), con(con), p(2*con+1) {
+		for (auto & s : *this) s = 2*static_cast<int>(prng.bernoulli(.5))-1;
 		if (con==6) {
 			int m=2*n/3;
 			for (int i=0; i<n; ++i) for (int j=0; j<n; ++j) if ((j>m) || (i<j/2) || (i>m+j/2)) put(coo(i,j),0);
@@ -21,9 +17,9 @@ class Ising : public Bitmap<Spin> { public:
 
 	void run() {
 		while (visible()) {
-			coo z = rand(); if (!at(z).s) continue;
-			int c = 0; for (int d=0; d<con; ++d) c += atp(z+dz[d]).s;
-			put(z,2*prng.bernoulli(p[c+con])-1);
+			coo z = rand(); if (at(z) == 0) continue;
+			int c = 0; for (int d=0; d<con; ++d) c += atp(z+dz[d]);
+			put(z,2*static_cast<int>(prng.bernoulli(p[c+con]))-1);
 		}
 	}
 
@@ -37,7 +33,7 @@ class Ising : public Bitmap<Spin> { public:
 			pattern = {{.5,.5}, {-.5,.5}, {-.5,-.5}, {.5,-.5}};
 		}
 		for (int i=0; i<w(); ++i) for (int j=0; j<h(); ++j) {
-			Color c = at(coo(i,j)); if (c==Spin(0)) continue;
+			Color c = to_Color(at(coo(i,j))); if (c==to_Color(0)) continue;
 			vector<cpx> p; p.reserve(pattern.size());
 			for (auto zz : pattern) p.push_back (cpx(i) + cpx(j)*shift + zz);
 			F.add (make_unique<Polygon> (p,Pen(BLACK,1,c,true)));
@@ -47,10 +43,10 @@ class Ising : public Bitmap<Spin> { public:
 
 	void explore () {
 		coo z0 = {w()/2, (con==6) ? h()/3 : h()/2};
-		vector<coo> list {z0}; auto s = at(list.back()).s;
-		while (list.size()) {
-			auto z = list.back(); list.pop_back(); if (atp(z).s == 3) continue;
-			putp(z,3); for (int d=0; d<con; ++d) if (atp(z+dz[d]).s==s) list.push_back(z+dz[d]);
+		vector<coo> list {z0}; auto s = at(list.back());
+		while (!list.empty() != 0u) {
+			auto z = list.back(); list.pop_back(); if (atp(z) == 3) continue;
+			putp(z,3); for (int d=0; d<con; ++d) if (atp(z+dz[d]) == s) list.push_back(z+dz[d]);
 		}
 	}
 

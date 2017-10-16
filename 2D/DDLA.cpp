@@ -5,7 +5,7 @@ using namespace vb; using namespace std;
 
 class DDLA : public CoarseImage {
 public:
-	DDLA (int n_) : CoarseImage (n_, n_, H['f'] ? pow(n_,.33) : 1), f(H['f']), n(n_), cursum(0), p(H['p']) {
+	explicit DDLA (int n_) : CoarseImage (n_, n_, H['f'] ? pow(n_,.33) : 1), f(H['f']), n(n_), cursum(0), p(H['p']) {
 		put({0,0},1);
 		pq.push ({{1,0},prng.exponential()/p}); pq.push ({{0,1},prng.exponential()/(1-p)});
 	};
@@ -14,7 +14,7 @@ public:
 		while (true) {
 			if ( (z.x >= n) || (z.y >= n) || (z.x+z.y > cursum) ) return true;
 			if (at(z)) return false;
-			z += dz[prng.bernoulli(p)];
+			z += dz[static_cast<std::__1::vector<class vb::coo, class std::__1::allocator<class vb::coo> >::size_type>(prng.bernoulli(p))];
 		}
 	}
 
@@ -32,8 +32,8 @@ public:
 				double curtime = pt.t;
 				if (ok(z)) {
 					put(z,1); cursum = max (cursum, z.x+z.y); if (f) fill (z);
-					if ( (z.x<n-1) && (at(z+coo{1,0})==0) ) pq.push ({z+coo{1,0},curtime+prng.exponential()/p});
-					if ( (z.y<n-1) && (at(z+coo{0,1})==0) ) pq.push ({z+coo{0,1},curtime+prng.exponential()/(1-p)});
+					if ( (z.x<n-1) && (static_cast<int>(at(z+coo{1,0}))==0) ) pq.push ({z+coo{1,0},curtime+prng.exponential()/p});
+					if ( (z.y<n-1) && (static_cast<int>(at(z+coo{0,1}))==0) ) pq.push ({z+coo{0,1},curtime+prng.exponential()/(1-p)});
 				} else {
 					pq.push ({z,curtime+prng.exponential()});
 				}

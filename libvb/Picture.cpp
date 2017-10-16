@@ -15,7 +15,7 @@ namespace vb {
 
 	void Picture::show() {
 		AutoWindow::show();
-		if (!surface) {
+		if (surface == nullptr) {
 			surface = cairo_image_surface_create (CAIRO_FORMAT_RGB24, pixel_w(), pixel_h());
 			cr = cairo_create (surface);
 			cairo_scale (cr,pixel_w()/w(),pixel_h()/h());
@@ -24,7 +24,7 @@ namespace vb {
 	}
 
 	void Picture::draw () {
-		if (!surface) {
+		if (surface == nullptr) {
 			surface = cairo_image_surface_create (CAIRO_FORMAT_RGB24, pixel_w(), pixel_h());
 			cr = cairo_create (surface);
 			cairo_scale (cr,pixel_w()/w(),pixel_h()/h());
@@ -38,7 +38,7 @@ namespace vb {
 
 	void Picture::output_png (const std::string &s) {
 		paint();
-		std::string os = H.dir + (s == "" ? H.title : s) + ".png";
+		std::string os = H.dir + (s.empty() ? H.title : s) + ".png";
 		cairo_surface_write_to_png (surface, os.c_str());
 	}
 

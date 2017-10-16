@@ -15,7 +15,7 @@ namespace vb {
 		Cycles c;
 		std::vector<int> done (size(), 0);
 		for (int i=0; i<size(); ++i) {
-			if (done[i]) continue;
+			if (done[i] != 0) continue;
 			std::vector<int> v (1,i); done[i]=1;
 			for (int j=at(i); done[j]==0; j=at(j)) { v.push_back(j); done[j]=1; }
 			c.push_back(v);

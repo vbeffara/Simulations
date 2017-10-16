@@ -13,7 +13,7 @@ namespace vb {
 	}
 
 	void Cluster::grow () {
-		if (np) {
+		if (np != 0) {
 			std::vector <Cluster> bak; bak.swap(sub);
 			ul.x -= w; ul.y -= w; w *= 3; ensure_sub();
 			Cluster &c = sub[4]; tile.swap(c.tile); c.np = np; c.sub.swap(bak);
@@ -23,16 +23,16 @@ namespace vb {
 	}
 
 	bool Cluster::at (coo z) const {
-		if ((!np) || (!fits(z))) return false;
+		if ((np == 0) || (!fits(z))) return false;
 		if (np == w*w) return true;
 		if (!sub.empty()) return sub[sub_index(z)].at(z);
 		long x = z.x - ul.x, y = z.y - ul.y, xy = x + w*y; return tile[xy];
 	}
 
 	void Cluster::put (coo z, bool b) {
-		long plain = w*w*b; if (np == plain) return;
+		long plain = w*w*static_cast<long>(b); if (np == plain) return;
 		if (w == bs) {
-			if (!tile.size()) tile.resize (w*w,!b);
+			if (tile.empty()) tile.resize (w*w,!b);
 			long x = z.x - ul.x, y = z.y - ul.y, xy = x + w*y;
 			np += (b?1:-1); tile [xy] = b;
 			if (np == plain) std::vector<bool>().swap(tile);
@@ -48,7 +48,7 @@ namespace vb {
 
 	void Cluster::validate () {
 		if ((np==0) || (np==w*w)) { assert (!tile.size()); assert (!sub.size()); }
-		if (sub.size()) {
+		if (!sub.empty() != 0u) {
 			long s=0; for (auto & c : sub) { c.validate(); s += c.np; } assert (s==np);
 		}
 	}
@@ -61,7 +61,7 @@ namespace vb {
 			for (long x=ul.x; x<br.x; ++x) for (long y=ul.y; y<br.y; ++y)
 				I.put (coo(x,y), (x==ul.x)||(x==br.x-1)||(y==ul.y)||(y==br.y-1) ? RED : BLUE); }
 		else if (br == ul + coo(1,1)) { I.put (ul, Grey((255*np) / (w*w))); }
-		else if (sub.size()) {
+		else if (!sub.empty() != 0u) {
 			long ww = br.x-ul.x, hh = br.y-ul.y;
 			for (long x=0; x<3; ++x) for (long y=0; y<3; ++y)
 				sub[x+3*y].paint (I,ul+coo(x*ww/3,y*hh/3),ul+coo((x+1)*ww/3,(y+1)*hh/3));

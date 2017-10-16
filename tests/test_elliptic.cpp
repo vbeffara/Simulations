@@ -9,10 +9,10 @@ int main (int argc, char ** argv) {
 	H.init ("Hypermap of genus 1",argc,argv,"m=228,v,w,q,n=0,g=lat_csquare,p,f=0,s=0,a,b,r=0");
 
 	auto M = HLib().at(H['g']);
-	int n = H['n']; if (n) M = H_genus1(n);
-	int r = H['r']; if (r) M = H_artem(r);
-	int f = H['f']; if (f) {
-		if (int(H['s'])) prng.seed(int(H['s']));
+	int n = H['n']; if (n != 0) M = H_genus1(n);
+	int r = H['r']; if (r != 0) M = H_artem(r);
+	int f = H['f']; if (f != 0) {
+		if (int(H['s']) != 0) prng.seed(int(H['s']));
 		for (int i=0; i<f; ++i) M.flip(prng.uniform_int(M.sigma.size()));
 	}
 

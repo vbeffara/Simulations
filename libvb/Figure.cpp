@@ -80,7 +80,7 @@ namespace vb {
 	}
 
 	void Figure::output_pdf (const std::string &s) {
-		std::string os = H.dir + (s == "" ? H.title : s) + ".pdf";
+		std::string os = H.dir + (s.empty() ? H.title : s) + ".pdf";
 
 		double real_h = w() * (top()-bottom()) / (right()-left());
 

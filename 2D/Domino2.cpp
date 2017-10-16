@@ -7,12 +7,12 @@ vector<vector<vector<double>>> W, hues;
 double minw, maxw, contrast = .2;
 
 class Domino { public:
-	Domino (coo z_ = {0,0}, int d_ = 0, bool active_ = false) : z(z_), d(d_), active(active_) { if (d>=2) { z += dz[d]; d -= 2; } }
-	Domino (int) : Domino() {}
+	explicit Domino (coo z_ = {0,0}, int d_ = 0, bool active_ = false) : z(z_), d(d_), active(active_) { if (d>=2) { z += dz[d]; d -= 2; } }
+	explicit Domino (int /*unused*/) : Domino() {}
 
 	double weight () const { return W [z.x % W.size()] [z.y % W[0].size()] [d]; }
 
-	operator Color () const {
+	explicit operator Color () const {
 		if (!active) return BLACK;
 		double hh = hues [z.x % W.size()] [z.y % W[0].size()] [d];
 		return HSV (hh, 1, contrast + (1-contrast)*(weight()-minw)/(maxw-minw));
@@ -22,8 +22,8 @@ class Domino { public:
 };
 
 class Tiling : public Bitmap<Domino> { public:
-	Tiling (int n) : Bitmap<Domino> (2*n,2*n) {
-		for (int i=0; i<n; ++i) for (int j=n-1-i; j<n+i; j+=2) { putd ({{i,j},1}); putd ({{2*n-1-i,j},1}); }
+	explicit Tiling (int n) : Bitmap<Domino> (2*n,2*n) {
+		for (int i=0; i<n; ++i) for (int j=n-1-i; j<n+i; j+=2) { putd (Domino {{i,j},1}); putd (Domino {{2*n-1-i,j},1}); }
 	};
 
 	void putd (Domino d) { d.active=true; putp(d.z,d); putp(d.z + dz[d.d],d); }
@@ -33,7 +33,7 @@ class Tiling : public Bitmap<Domino> { public:
 		int d = d1.d; coo zz = z + dz[(d+1)%4];
 		Domino d2 = atp(zz); if ((!d2.active) || (d2.z != zz) || (d2.d != d)) return;
 		double w1 = d1.weight() * d2.weight();
-		d1 = {z,(d+1)%4}; d2 = {z+dz[d],(d+1)%4};
+		d1 = Domino {z,(d+1)%4}; d2 = Domino {z+dz[d],(d+1)%4};
 		double w2 = d1.weight() * d2.weight();
 		if ((w2>=w1) || prng.bernoulli(w2/w1)) { putd (d1); putd (d2); }
 	}

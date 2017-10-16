@@ -14,7 +14,7 @@ namespace vb {
 		for (int i=0; i<E.size(); ++i) E[i].i=i;
 		for (int i=0; i<V.size(); ++i) V[i].i=i;
 		for (auto & v : V) {
-			v.z = NAN; v.bone=false; v.adj.clear();
+			v.z = NAN; v.bone=0; v.adj.clear();
 			for (int e : sc[v.i]) { E[e].a = NAN; E[e].src = v.i; }
 		}
 		for (auto & v : V) for (int e : sc[v.i]) { v.adj.push_back(E[alpha[e]].src); }
@@ -62,8 +62,8 @@ namespace vb {
 		sigma = sigma_c; alpha = alpha_c; phi = phi_c;
 		initial.resize (sigma.size(),0);
 		for (int i=0; i<N; ++i) {
-			initial[alpha[i]] = (initial[i]&1 ? 1 : 0);
-			if ((initial[i]&2) && (initial[alpha[sigma[sigma[sigma[alpha[i]]]]]]&2)) initial[alpha[i]] |= 4;
+			initial[alpha[i]] = ((initial[i]&1) != 0 ? 1 : 0);
+			if (((initial[i]&2) != 0) && ((initial[alpha[sigma[sigma[sigma[alpha[i]]]]]]&2) != 0)) initial[alpha[i]] |= 4;
 		}
 	}
 

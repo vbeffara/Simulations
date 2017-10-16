@@ -7,8 +7,8 @@ namespace vb {
 		n(0), ul(UL), br(BR), center((ul+br)/2), iul(br), ibr(ul), m(M), ch(0) {}
 
 	int QuadTree::index (coo z) const {
-		if (z.y<center.y)	{ if (z.x<center.x) return 0; else return 1; }
-		else             	{ if (z.x<center.x) return 2; else return 3; }
+		if (z.y<center.y)	{ if (z.x<center.x) return 0; return 1; }
+		else             	{ if (z.x<center.x) return 2; return 3; }
 	}
 
 	void QuadTree::insert (coo z) {
@@ -37,10 +37,10 @@ namespace vb {
 			int newnorm = sup (z-w);
 			if (newnorm < qi.d) { qi.d = newnorm; qi.z = w; }
 		} else {
-			int i0 = index(z); if (store[ch+i0] -> n) store[ch+i0] -> nn (z,qi);
+			int i0 = index(z); if (store[ch+i0] -> n != 0) store[ch+i0] -> nn (z,qi);
 			for (int i=0; i<4; ++i) if (i != i0) {
 				QuadTree *q = store[ch+i].get();
-				if ((q -> n) && (q -> odist(z) < qi.d)) q -> nn (z,qi);
+				if (((q -> n) != 0) && (q -> odist(z) < qi.d)) q -> nn (z,qi);
 			}
 		}
 	}

@@ -8,7 +8,7 @@ int main (int argc, char ** argv) {
 	double p = H['p'], q = H['q'];
 
 	// Connectivity (&1 -> to the right, &2 -> downwards)
-	vector<char> connect (n*n); for (auto & c : connect) c = prng.bernoulli(p) + 2*prng.bernoulli(p);
+	vector<char> connect (n*n); for (auto & c : connect) c = static_cast<int>(prng.bernoulli(p)) + 2*static_cast<int>(prng.bernoulli(p));
 
 	H.L->info ("Computing connected components ...");
 
@@ -19,16 +19,16 @@ int main (int argc, char ** argv) {
 		dirty = false;
 		for (long x=0;x<n;++x) {
 			for (long y=0;y<n;++y) {
-				if ((x>0) && (connect[(x-1)+n*y] & 1) && (cluster[x+n*y] > cluster[(x-1)+n*y])) {
+				if ((x>0) && ((connect[(x-1)+n*y] & 1) != 0) && (cluster[x+n*y] > cluster[(x-1)+n*y])) {
 					dirty = true; cluster[x+n*y] = cluster[(x-1)+n*y];
 				}
-				if ((x<n-1) && (connect[x+n*y] & 1) && (cluster[x+n*y] > cluster[(x+1)+n*y])) {
+				if ((x<n-1) && ((connect[x+n*y] & 1) != 0) && (cluster[x+n*y] > cluster[(x+1)+n*y])) {
 					dirty = true; cluster[x+n*y] = cluster[(x+1)+n*y];
 				}
-				if ((y>0) && (connect[x+n*(y-1)] & 2) && (cluster[x+n*y] > cluster[x+n*(y-1)])) {
+				if ((y>0) && ((connect[x+n*(y-1)] & 2) != 0) && (cluster[x+n*y] > cluster[x+n*(y-1)])) {
 					dirty = true; cluster[x+n*y] = cluster[x+n*(y-1)];
 				}
-				if ((y<n-1) && (connect[x+n*y] & 2) && (cluster[x+n*y] > cluster[x+n*(y+1)])) {
+				if ((y<n-1) && ((connect[x+n*y] & 2) != 0) && (cluster[x+n*y] > cluster[x+n*(y+1)])) {
 					dirty = true; cluster[x+n*y] = cluster[x+n*(y+1)];
 				}
 			}
@@ -37,7 +37,7 @@ int main (int argc, char ** argv) {
 
 	H.L->info (" ... Done.");
 
-	vector<char> color (n*n); for (auto & c : color) c = 255 * prng.bernoulli(q);
+	vector<char> color (n*n); for (auto & c : color) c = 255 * static_cast<int>(prng.bernoulli(q));
 
 	Image img (n,n);
 

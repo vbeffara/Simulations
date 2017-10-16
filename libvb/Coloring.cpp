@@ -79,7 +79,7 @@ namespace vb {
     void Coloring::tessel_go (coo ul, coo lr) {
         int size = std::min(lr.x-ul.x,lr.y-ul.y); if (size <= 1) return;
 
-        coo z = ul; Color tmp = at(ul); bool mono = true; if (pixel_detail && (size>pixel_detail)) mono = false;
+        coo z = ul; Color tmp = at(ul); bool mono = true; if ((pixel_detail != 0) && (size>pixel_detail)) mono = false;
         for (; mono && (z != coo {lr.x,ul.y}); z += {1,0}) mono = mono && (at(z) == tmp);
         for (; mono && (z != coo {lr.x,lr.y}); z += {0,1}) mono = mono && (at(z) == tmp);
         for (; mono && (z != coo {ul.x,lr.y}); z += {-1,0}) mono = mono && (at(z) == tmp);

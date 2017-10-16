@@ -8,10 +8,10 @@ void init_ok_glass (vector<char> & ok) {
 	 // Flippable iff at least two of the 4 neighbors are empty.
 	for (int i=0; i<256; i++) {
 		int tmp = 0;
-		if (i&1) tmp++;
-		if (i&4) tmp++;
-		if (i&16) tmp++;
-		if (i&64) tmp++;
+		if ((i&1) != 0) tmp++;
+		if ((i&4) != 0) tmp++;
+		if ((i&16) != 0) tmp++;
+		if ((i&64) != 0) tmp++;
 		ok[i] = (tmp<=2 ? 1 : 0);
 	}
 }
@@ -73,7 +73,7 @@ void init_ok_connect6 (vector<char> & ok) {
 }
 
 class Glass : public Image { public:
-	Glass (int n) : Image(n,n) {
+	explicit Glass (int n) : Image(n,n) {
 		init.emplace ("none", init_ok_none);
 		init.emplace ("glass", init_ok_glass);
 		init.emplace ("connect4", init_ok_connect4);
@@ -100,7 +100,7 @@ class Glass : public Image { public:
 			if (at(coo(x  ,y-1)) != BLACK) nb += 64;
 			if (at(coo(x+1,y-1)) != BLACK) nb += 128;
 
-			if (ok[nb]) {
+			if (ok[nb] != 0) {
 				if (prng.bernoulli(p)) {
 					if (at(coo(x,y)) == BLACK) {
 						int tmp = int(at(coo(x+1,y)));

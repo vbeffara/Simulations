@@ -147,7 +147,7 @@ namespace vb {
 			dirty = false;
 			for (int i=0; i<n; ++i) {
 				if (bd[i]) continue;
-				if (v[i]->adj.size() == 0) continue;
+				if (v[i]->adj.empty()) continue;
 
 				cpx old = v[i]->z; v[i]->z = 0.0;
 				for (int j : v[i]->adj) v[i]->z += v[j]->z;
@@ -302,7 +302,7 @@ namespace vb {
 
 			for (int i=0; i<n; ++i) {
 				if (v[i]->z == nowhere) continue;
-				if (v[i]->adj.size() == 0) continue;
+				if (v[i]->adj.empty()) continue;
 
 				cpx prev_z = v[v[i]->adj.back()]->z;
 				double prev_r = v[v[i]->adj.back()]->r;

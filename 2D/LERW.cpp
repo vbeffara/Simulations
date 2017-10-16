@@ -3,19 +3,14 @@
 
 using namespace vb;
 
-class Site { public:
-    Site (char s = 0) : s(s) {}
-    operator int() { return s; }
-    operator Color() { return Grey(s); }
-    int s;
-};
+template<> Color vb::to_Color (int t) { return Grey(t); }
 
-class LERW : private Bitmap<Site> { public:
-    LERW (Hub &H) : Bitmap<Site> (2*int(H['n']),2*int(H['n'])) {
+class LERW : private Bitmap<int> { public:
+    explicit LERW (Hub &H) : Bitmap<int> (2*int(H['n']),2*int(H['n'])) {
         coo z(w()/2,h()/2); while (contains(z)) { int d = prng()&3; put(z,d); z += dz[d]; }
     }
 
-    using Bitmap<Site>::output;
+    using Bitmap<int>::output;
     void output (const std::string &s) override {
         OldPath P (0);
         coo z (w()/2,h()/2); while (contains(z)) { int d = at(z); P.push_back(d); z += dz[d]; }

@@ -14,7 +14,7 @@ namespace vb {
         T.put(z,1);
         for (char i : *this) {
             l = (relative ? l+i : i) % 4; z += dz[l];
-            if (T.at(z)) return false; else T.put(z,1);
+            if (T.at(z) != 0) return false; T.put(z,1);
         }
         return true;
     }

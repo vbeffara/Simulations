@@ -25,10 +25,10 @@ const vector<int> flip_ne = {1,0,3,2}, flip_nw = {3,2,1,0};
 
 class Mirror {
 public:
-	Mirror (uint8_t s_ = 0) : s(s_) {}
+	explicit Mirror (uint8_t s_ = 0) : s(s_) {}
 	uint8_t s;
-	operator uint8_t () { return s; }
-	operator Color () {
+	explicit operator uint8_t () { return s; }
+	explicit operator Color () {
 		if (s==0) return BLACK;
 		if (s==STATE_VISITED) return Grey(128);
 		return colors[s%8];
@@ -37,7 +37,7 @@ public:
 
 class Mirrors : public Bitmap<Mirror> {
 public:
-	Mirrors (Hub & H) :	Bitmap<Mirror> (H['n'],H['n']),
+	explicit Mirrors (Hub & H) :	Bitmap<Mirror> (H['n'],H['n']),
 	                   	p(H['p']), q(H['q']), f(H['f']) {}
 	void main ();
 	double p, q, f;
@@ -48,7 +48,7 @@ void Mirrors::main () {
 
 	while (true) {
 		for (Mirror & m : *this) {
-			m = STATE_NONE;
+			m = Mirror { STATE_NONE };
 			if (prng.bernoulli(1-q)) {
 				m.s |= STATE_PRESENT;
 				if (prng.bernoulli(p)) m.s |= STATE_NE;
@@ -58,9 +58,9 @@ void Mirrors::main () {
 
 		coo z(w()/2,h()/2);
 		for (int t=0, d=0; (t<8*w()*h()) && contains(z); ++t) {
-			if (at(z) & STATE_PRESENT) {
-				if (at(z).s & STATE_NE) d = flip_ne[d]; else d = flip_nw[d];
-				if (at(z).s & STATE_FLIP) at(z).s ^= STATE_NE;
+			if ((at(z).s & STATE_PRESENT) != 0) {
+				if ((at(z).s & STATE_NE) != 0) d = flip_ne[d]; else d = flip_nw[d];
+				if ((at(z).s & STATE_FLIP) != 0) at(z).s ^= STATE_NE;
 			}
 			at(z).s |= STATE_VISITED; z += dz[d];
 		}

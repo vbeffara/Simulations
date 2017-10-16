@@ -9,15 +9,15 @@ vector<Color> halfcolors { BLACK,BLACK,BLACK,BLACK , RED,GREEN,YELLOW,BLUE , YEL
 
 class Half { public:
     uint8_t d, type;
-    Half (uint8_t _d = 0, uint8_t _t = 0) : d(_d), type(_t) {}
-    operator Color () { return halfcolors [d+4*type]; }
+    explicit Half (uint8_t _d = 0, uint8_t _t = 0) : d(_d), type(_t) {}
+    explicit operator Color () { return halfcolors [d+4*type]; }
 };
 
 class Tiling : public Bitmap<Half> { public:
     void putd (coo c, uint8_t d) { at(c).d = d; at(c+dz[d]).d = (d+2)%4; step(); }
     void freeze (coo c) { at(c).type = 0; at(c+dz[at(c).d]).type = 0; }
 
-    Tiling (Hub &H) : Bitmap<Half> (H['n'],H['n']), r(H['r']), rr {r,r*r,1,r} {
+    explicit Tiling (Hub &H) : Bitmap<Half> (H['n'],H['n']), r(H['r']), rr {r,r*r,1,r} {
         for (int x=0;x<w();++x) for (int y=0;y<h();++y) { at(coo(x,y)) = Half ( 2*(x%2), 1 + ((x+y)%2) + 2*(x%2) ); }
         if (H['o'] == "aztec") {
             for (int i=0; i<h()/2; ++i) {

@@ -13,14 +13,14 @@ class Cluster2 : public Cluster { public:
 		auto subij = static_cast<Cluster2*> (static_cast<void*> (&sub[i+3*j]));
 		return subij->inrad_go(z);
 	}
-	int inrad (coo z) { if ((dist_to_box(z) > 0) || (!at(z))) return 0; else return inrad_go (z); }
+	int inrad (coo z) { if ((dist_to_box(z) > 0) || (!at(z))) return 0; return inrad_go (z); }
 };
 
 int main (int argc, char ** argv) {
     H.init ("Once-reinforced random walk, Cluster version", argc,argv, "l=0,a=10,v,s=0");
     int l = H['l'];
     double a = H['a']; a = 1 / (1+a);
-    int s = H['s']; if (s) prng.seed(s);
+    int s = H['s']; if (s != 0) prng.seed(s);
     Image I (729,729); I.show();
     if (H['v']) I.snapshot_setup("ORRW_cluster",60);
 
@@ -35,7 +35,7 @@ int main (int argc, char ** argv) {
 			long ns = sup(z); if ((ns >= sup_ + 10) || (t >= t_ + 1000000)) {
 				sup_ = max (sup_, ns); t_ = t; W.paint (I);
 				H.L->info ("time = {:<15} radius = {:>5} {:>9} particles", double(t),sup_,W.np);
-				if (l && (sup_ >= l)) break;
+				if ((l != 0) && (sup_ >= l)) break;
 			}
 		}
     }

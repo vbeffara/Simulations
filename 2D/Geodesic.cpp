@@ -56,7 +56,7 @@ class QG : public Image { public:
 		}
 	}
 
-	void fill_white () { for (auto & u : I) u.f = prng.gaussian() * sqrt((double)n); }
+	void fill_white () { for (auto & u : I) u.f = prng.gaussian() * sqrt(static_cast<double>(n)); }
 
 	void fill_free (int n0 = 0) {
 		auto in = fftw_alloc_complex(ww*hh), out = fftw_alloc_complex(ww*hh);

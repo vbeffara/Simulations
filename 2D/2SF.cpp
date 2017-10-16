@@ -6,14 +6,14 @@ enum Type { VOID, SITE, EDGE, DUAL, DEDG, EMPH };
 
 class Point { public:
 	Point () = default;
-	Point (Type t_, int d_ = 0) : t(t_), d(d_) {}
-	operator Color() {
+	explicit Point (Type t_, int d_ = 0) : t(t_), d(d_) {}
+	explicit operator Color() {
 		if (t == SITE) return ((d==0)||(d==1)) ? RED             	: Color(200,200,255);
 		if (t == EDGE) return ((d==0)||(d==1)) ? RED             	: Color(200,200,255);
 		if (t == DUAL) return ((d==2)||(d==3)) ? Color(200,100,0)	: Color(128,255,128);
 		if (t == DEDG) return ((d==2)||(d==3)) ? Color(200,100,0)	: Color(128,255,128);
 
-		if (t==EMPH) return BLACK; else if (d<0) return WHITE; else return Indexed(d);
+		if (t==EMPH) return BLACK; if (d<0) return WHITE; else return Indexed(d);
 	}
 
 	Type t = VOID;
@@ -29,7 +29,7 @@ class SF : public Bitmap<Point> { public:
 
 	void path (coo z, Type t = EMPH) {
 		while (contains(z) && (at(z).t != t)) {
-			int d = at(z).d; at(z).t = t; at(z+dz[d]) = { t, d }; z += dz[d] * 2;
+			int d = at(z).d; at(z).t = t; at(z+dz[d]) = Point { t, d }; z += dz[d] * 2;
 		}
 	}
 
@@ -52,8 +52,8 @@ class SF : public Bitmap<Point> { public:
 				int s=0, dd=-1;
 				for (int d=0; d<4; ++d) if (at(z + dz[d]).t == VOID) { ++s; dd=d; }
 				if (s==1) {
-					at(z) = { DUAL, dd };
-					at(z + dz[dd]) = { DEDG, dd };
+					at(z) = Point { DUAL, dd };
+					at(z + dz[dd]) = Point { DEDG, dd };
 					dirty = true;
 				}
 			}
@@ -80,10 +80,10 @@ class SF : public Bitmap<Point> { public:
 	}
 
 	void go () {
-		put (root, SITE); if (H['v']) show();
+		put (root, Point { SITE }); if (H['v']) show();
 		if (a<1) special(); else lerw(start, false);                                    	stage();
 		for (int i=0; i<n; ++i) { for (int j=0; j<=n; ++j) lerw(coo(2*i+1,2*j), true); }	stage();
-		put (root, EMPH); path (start);                                                 	stage();
+		put (root, Point { EMPH }); path (start);                                                 	stage();
 		dual();                                                                         	stage();
 		output();
 	}

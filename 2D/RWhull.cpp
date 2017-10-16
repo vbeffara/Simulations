@@ -25,21 +25,15 @@ vector<int> bridge (int n, bool p=false) {
 
 int m=1;
 
-class Stat {
-public:
-	Stat (int ss = 0) : s(ss) { m = max(m,s); }
-	operator int () { return s; }
-	operator Color() {
-		if (s==0) return WHITE;
-		if (s==1) return RED;
-		return Grey(215 - (s*215)/m);
-	}
-	int s;
-};
+template<> Color vb::to_Color (int t) {
+	if (t==0) return WHITE;
+	if (t==1) return RED;
+	return Grey(215 - (t*215)/m);
+}
 
-class Snake : public Bitmap<Stat> {
+class Snake : public Bitmap<int> {
 public:
-	Snake (int n_) : Bitmap<Stat> (6*n_,6*n_), n(n_) {
+	explicit Snake (int n_) : Bitmap<int> (6*n_,6*n_), n(n_) {
 		p.emplace_back(3*n,3*n);
 		put (p.back(),1); show();
 	};

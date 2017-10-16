@@ -9,11 +9,11 @@
 
 class Automaton {
 public:
-  Automaton (int);
+  explicit Automaton (int /*n*/);
 
   void swap() { main.swap(alt); };
 
-  void randomize (double);
+  void randomize (double /*e*/);
   void shift ();
   void emit ();
   void forget (double r);
@@ -45,8 +45,8 @@ void Automaton::shift () {
 void Automaton::emit () {
   for (int i=0; i<size; i++) {
     alt[i] = main[i];
-    if ( (main[i]&1) && !(main[(i+size-1)%size]&1) ) alt[i] |= L1_BIT|R1_BIT;
-    if ( !(main[i]&1) && (main[(i+size-1)%size]&1) ) alt[i] |= L2_BIT|R2_BIT;
+    if ( ((main[i]&1) != 0) && ((main[(i+size-1)%size]&1) == 0) ) alt[i] |= L1_BIT|R1_BIT;
+    if ( ((main[i]&1) == 0) && ((main[(i+size-1)%size]&1) != 0) ) alt[i] |= L2_BIT|R2_BIT;
   }
   this->swap();
 }
@@ -61,17 +61,17 @@ void Automaton::effect (double r) {
   for (int i=0; i<size; i++)
     alt[i] = main[i];
   for (int i=0; i<size; i++) {
-    if ( !(main[i]&1) && (main[(i+size-1)%size]&1) &&
-	 (main[i]&L1_BIT) && (vb::prng.bernoulli(r)) )
+    if ( ((main[i]&1) == 0) && ((main[(i+size-1)%size]&1) != 0) &&
+	 ((main[i]&L1_BIT) != 0) && (vb::prng.bernoulli(r)) )
       alt[i] |= 1;
-    else if ( !(main[i]&1) && (main[(i+size-1)%size]&1) &&
-	 (main[i]&R1_BIT) && (vb::prng.bernoulli(r)) )
+    else if ( ((main[i]&1) == 0) && ((main[(i+size-1)%size]&1) != 0) &&
+	 ((main[i]&R1_BIT) != 0) && (vb::prng.bernoulli(r)) )
       alt[(i+size-1)%size] &= 30;
-    else if ( (main[i]&1) && !(main[(i+size-1)%size]&1) &&
-	 (main[i]&L2_BIT) && (vb::prng.bernoulli(r)) )
+    else if ( ((main[i]&1) != 0) && ((main[(i+size-1)%size]&1) == 0) &&
+	 ((main[i]&L2_BIT) != 0) && (vb::prng.bernoulli(r)) )
       alt[i] &= 30;
-    else if ( (main[i]&1) && !(main[(i+size-1)%size]&1) &&
-	 (main[i]&R2_BIT) && (vb::prng.bernoulli(r)) )
+    else if ( ((main[i]&1) != 0) && ((main[(i+size-1)%size]&1) == 0) &&
+	 ((main[i]&R2_BIT) != 0) && (vb::prng.bernoulli(r)) )
       alt[(i+size-1)%size] |= 1;
   }
   this->swap();

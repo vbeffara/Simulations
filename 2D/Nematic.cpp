@@ -59,7 +59,7 @@ class Nematic : public vb::Bitmap<int> { public:
 			int nh = 0; for (auto v : *this) if (v == 1) ++nh;
 			int nv = 0; for (auto v : *this) if (v == 2) ++nv;
 			order = nh+nv>0 ? double (nh-nv) / double (nh+nv) : 0;
-			if ((!(t%100)) && H['l']) std::cout << order << std::endl;
+			if (((t%100) == 0) && H['l']) std::cout << order << std::endl;
 		}
 	};
 
@@ -70,5 +70,5 @@ class Nematic : public vb::Bitmap<int> { public:
 
 int main (int argc, char ** argv) {
 	H.init ("Nematic system on the square lattice", argc,argv, "n=500,m=0,k=7,b=2,v,l,t=0");
-	Nematic (H['n'], int(H['m']) ? H['m'] : H['n'], H['k'], H['b']).go();
+	Nematic (H['n'], int(H['m']) != 0 ? H['m'] : H['n'], H['k'], H['b']).go();
 }

@@ -7,7 +7,7 @@ double cost () { return prng.exponential(); }
 
 class FPP : public CoarseImage {
 public:
-	FPP (int n) : CoarseImage (n,n, pow(n,.33)), area(0) {
+	explicit FPP (int n) : CoarseImage (n,n, pow(n,.33)), area(0) {
 		invasion = H['i']; twostep = H['2']; trace = H['t'];
 
 		pq.push ({{n>>1,n>>1},cost()});
@@ -28,7 +28,7 @@ public:
 
 				double curtime = invasion ? 0.0 : pt.t;
 
-				int deg=1; if (twostep) for (int d=0; d<4; ++d) deg += at(z+dz[d]);
+				int deg=1; if (twostep) for (int d=0; d<4; ++d) deg += static_cast<int>(at(z+dz[d]));
 
 				for (int i=0; i<deg; ++i) spread (curtime,z);
 				if (twostep) for (int d=0; d<4; ++d) { auto zz=z+dz[d]; if (at(zz)) spread (curtime,zz); }

@@ -121,7 +121,7 @@ auto height (const Array<int> & A) {
 int main (int argc, char ** argv) {
 	H.init ("Domino shuffle", argc,argv, "m=50,a=1,b=.5,c=.3,s=0,r=0,w=unif");
 	int m = H['m'];
-	int seed = H['s']; if (seed) prng.seed (seed);
+	int seed = H['s']; if (seed != 0) prng.seed (seed);
 
 	Array<double> TP;
 	if (H['w'] == "unif") TP = weights (m, Array<double> (1,1,1)); else
@@ -134,11 +134,11 @@ int main (int argc, char ** argv) {
 	auto A1 = aztecgen(TP); auto H1 = height(A1);
 
 	string name = H.dir + H.title; ofstream asy (name + ".asy");
-	for (auto z : coos(A1)) if (A1[z]) {
-		coo edge (1, (z.x+z.y)%2 ? 1 : -1);
+	for (auto z : coos(A1)) if (A1[z] != 0) {
+		coo edge (1, ((z.x+z.y)%2) != 0 ? 1 : -1);
 		auto s = [](coo z){
 			coo zz = (z+coo{1,1})/2;
-			coo sh = dz[(zz.y + (((zz.x+1)%4)/2 ? 5 : 3)) % 4];
+			coo sh = dz[(zz.y + ((((zz.x+1)%4)/2) != 0 ? 5 : 3)) % 4];
 			return cpx(z) + 2 * double(H['r']) * cpx(sh);
 		};
 		auto l = [](cpx z){ return fmt::format ("({},{})", real(z), imag(z)); };
@@ -149,5 +149,5 @@ int main (int argc, char ** argv) {
 	ofstream dat (name + ".dat");
 	for (auto z : coos(H1)) { dat << H1[z] << " "; if (z.x == H1.ww-1) dat << endl; }
 
-	if (system (("asy -fpdf -o " + H.dir + R"( ")" + name + R"(.asy")").c_str())) H.L->error ("Couldn't run asymptote");
+	if (system (("asy -fpdf -o " + H.dir + R"( ")" + name + R"(.asy")").c_str()) != 0) H.L->error ("Couldn't run asymptote");
 }

@@ -24,7 +24,7 @@ int main (int argc, char **argv) {
 		int h = height[x];
 		int d = prng()&(1<<14);
 
-		if (d) { // If trying to grow
+		if (d != 0) { // If trying to grow
 			if ( (height[x-1]>h) || (height[x+1]>h)  || (prng.bernoulli(e)) || ((c>0)&&(x==n/2)&&(prng.bernoulli(c))) )
 				++ height[x];
 			} else { // If trying to shrink

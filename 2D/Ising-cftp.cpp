@@ -1,18 +1,16 @@
 #include <vb/Image.h>
 
-using namespace vb;
-using namespace std;
+using namespace vb; using namespace std;
 
-class Site {
-public:
-	Site (int _s = 0) : s(_s) {}
-	operator Color () { switch (s) { case 0 : return BLACK; case 1 : return RED; } return WHITE; }
-	int s;
-};
+template<> Color vb::to_Color (int t) {
+	if (t==0) return BLACK;
+	if (t==1) return RED;
+	return WHITE;
+}
 
-class IsingCFTP : public Bitmap<Site> {
+class IsingCFTP : public Bitmap<int> {
 public:
-	IsingCFTP (Hub & H) : Bitmap<Site> (H['n'], H['n']), b(H['b']), d(0), s(H['s']),
+	explicit IsingCFTP (Hub & H) : Bitmap<int> (H['n'], H['n']), b(H['b']), d(0), s(H['s']),
 								  status (w(),h()) {
 		for (int i=0; i<w(); ++i) for (int j=0; j<h(); ++j) put (coo(i,j),1);
 		snap(); b *= log(1+sqrt(double(2)));
@@ -21,7 +19,7 @@ public:
 
 	void up (coo z) {
 		double U = prng.uniform_real(); int n1=0, n2=0;
-		for (int i=0; i<4; ++i) { if (atp(z+dz[i]).s>=1) ++n1; if (atp(z+dz[i]).s>=2) ++n2; }
+		for (int i=0; i<4; ++i) { if (atp(z+dz[i])>=1) ++n1; if (atp(z+dz[i])>=2) ++n2; }
 		if (U<p[n2]) put(z,2); else if (U<p[n1]) put(z,1); else put(z,0);
 	}
 
@@ -40,7 +38,7 @@ public:
 				if (t==states.size()-1) states.push_back(prng.state());
 			}
 			snap(); if(s) status.snapshot();
-			n=0; for (int i=0; i<w(); ++i) for (int j=0; j<h(); ++j) if (at(coo(i,j)).s==1) ++n;
+			n=0; for (int i=0; i<w(); ++i) for (int j=0; j<h(); ++j) if (at(coo(i,j))==1) ++n;
 		}
 	}
 
@@ -58,7 +56,7 @@ public:
 	double b;
 	int d;
 	bool s;
-	Image status;
+	Bitmap<int> status;
 	vector<double> p;
 };
 

@@ -3,10 +3,10 @@
 using namespace vb; using namespace std;
 
 class Ising : public Image { public:
-	Ising (int nn, double bb, double rr, bool cc) : Image(nn,nn), n(nn), c(cc), beta(bb) {
-		if (rr) { for (auto & i : *this) i = prng.bernoulli(rr) ? BLACK : WHITE; }
+	Ising (int nn, double bb, double rr, bool cc) : Image(nn,nn), n(nn), c(static_cast<int>(cc)), beta(bb) {
+		if (rr != 0.0) { for (auto & i : *this) i = prng.bernoulli(rr) ? BLACK : WHITE; }
 		else { for (int x=1; x<n-1; x++) for (int y=1; y<n-1; y++) put(coo(x,y), x<(n>>1) ? BLACK : WHITE); }
-		if (c) for (int i=0; i<n; i++) {
+		if (c != 0) for (int i=0; i<n; i++) {
 			put (coo(i,0), i<n/2 ? BLACK : WHITE);
 			put (coo(i,n-1), i<n/2 ? BLACK : WHITE);
 			put (coo(0,i),BLACK); put (coo(n-1,i),WHITE);
@@ -21,12 +21,12 @@ class Ising : public Image { public:
 
 	void run (int nstep, bool k) {
 		vector<double> p(10,0); for (int i=0; i<10; ++i) p[i] = exp(-i*beta);
-		if (!nstep) nstep = 10 + n * 0.01 / fabs(beta-log(1+sqrt(2)));
+		if (nstep == 0) nstep = 10 + n * 0.01 / fabs(beta-log(1+sqrt(2)));
 
 		for (int i=0; i!=nstep; i++) for (int j=0; j<n*n; ++j) {
 			step(); coo z = rand(c);
 			if (k) {
-				coo zz = z + dz[prng.uniform_int(4)]; if (c && !contains (zz,c)) continue; if (atp(z) == atp(zz)) continue;
+				coo zz = z + dz[prng.uniform_int(4)]; if ((c != 0) && !contains (zz,c)) continue; if (atp(z) == atp(zz)) continue;
 				int s = nnb(z) + nnb(zz) + 2;
 				if ( (s<=0) || (prng.bernoulli(p[s])) ) { swap (atp(z), atp(zz)); }
 			} else {
