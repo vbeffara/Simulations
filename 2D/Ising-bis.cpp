@@ -7,7 +7,7 @@ template<> Color vb::to_Color (int t) { return t != 0 ? Indexed((3+t)/2) : Grey(
 
 class Ising : public Bitmap<int> { public:
 	Ising (int n, double beta, int con) : Bitmap<int>(n,n), con(con), p(2*con+1) {
-		for (auto & s : *this) s = 2*static_cast<int>(prng.bernoulli(.5))-1;
+		for (auto & s : *this) s = (prng.bernoulli(.5) ? 1 : -1);
 		if (con==6) {
 			int m=2*n/3;
 			for (int i=0; i<n; ++i) for (int j=0; j<n; ++j) if ((j>m) || (i<j/2) || (i>m+j/2)) put(coo(i,j),0);
@@ -19,7 +19,7 @@ class Ising : public Bitmap<int> { public:
 		while (visible()) {
 			coo z = rand(); if (at(z) == 0) continue;
 			int c = 0; for (int d=0; d<con; ++d) c += atp(z+dz[d]);
-			put(z,2*static_cast<int>(prng.bernoulli(p[c+con]))-1);
+			put(z,prng.bernoulli(p[c+con]) ? 1 : -1);
 		}
 	}
 

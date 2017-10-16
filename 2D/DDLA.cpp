@@ -14,7 +14,7 @@ public:
 		while (true) {
 			if ( (z.x >= n) || (z.y >= n) || (z.x+z.y > cursum) ) return true;
 			if (at(z)) return false;
-			z += dz[static_cast<std::__1::vector<class vb::coo, class std::__1::allocator<class vb::coo> >::size_type>(prng.bernoulli(p))];
+			z += dz[prng.bernoulli(p) ? 1 : 0];
 		}
 	}
 
@@ -32,8 +32,8 @@ public:
 				double curtime = pt.t;
 				if (ok(z)) {
 					put(z,1); cursum = max (cursum, z.x+z.y); if (f) fill (z);
-					if ( (z.x<n-1) && (static_cast<int>(at(z+coo{1,0}))==0) ) pq.push ({z+coo{1,0},curtime+prng.exponential()/p});
-					if ( (z.y<n-1) && (static_cast<int>(at(z+coo{0,1}))==0) ) pq.push ({z+coo{0,1},curtime+prng.exponential()/(1-p)});
+					if ( (z.x<n-1) && !at(z+coo{1,0}) ) pq.push ({z+coo{1,0},curtime+prng.exponential()/p});
+					if ( (z.y<n-1) && !at(z+coo{0,1}) ) pq.push ({z+coo{0,1},curtime+prng.exponential()/(1-p)});
 				} else {
 					pq.push ({z,curtime+prng.exponential()});
 				}

@@ -86,7 +86,7 @@ int main(int argc, char **argv) {
 	{ ProgressBar PB (n_iter);
 		for (int iter=1;iter<=n_iter;++iter) {
 			for (int i=0; i<2*n*(n+1); ++i) {
-				auto o = static_cast<int>(prng.bernoulli(p));
+				auto o = prng.bernoulli(p) ? 1 : 0;
 				cap[all_edges[i]] = o;
 				cap[rev_edges[i]] = o;
 			}

@@ -8,7 +8,7 @@ int main (int argc, char ** argv) {
 	double p = H['p'], q = H['q'];
 
 	// Connectivity (&1 -> to the right, &2 -> downwards)
-	vector<char> connect (n*n); for (auto & c : connect) c = static_cast<int>(prng.bernoulli(p)) + 2*static_cast<int>(prng.bernoulli(p));
+	vector<char> connect (n*n); for (auto & c : connect) c = (prng.bernoulli(p) ? 1 : 0) + (prng.bernoulli(p) ? 2 : 0);
 
 	H.L->info ("Computing connected components ...");
 
@@ -37,7 +37,7 @@ int main (int argc, char ** argv) {
 
 	H.L->info (" ... Done.");
 
-	vector<char> color (n*n); for (auto & c : color) c = 255 * static_cast<int>(prng.bernoulli(q));
+	vector<uint8_t> color (n*n); for (auto & c : color) c = (prng.bernoulli(q) ? 255 : 0);
 
 	Image img (n,n);
 

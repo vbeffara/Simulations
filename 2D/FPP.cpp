@@ -28,7 +28,7 @@ public:
 
 				double curtime = invasion ? 0.0 : pt.t;
 
-				int deg=1; if (twostep) for (int d=0; d<4; ++d) deg += static_cast<int>(at(z+dz[d]));
+				int deg=1; if (twostep) for (int d=0; d<4; ++d) deg += (at(z+dz[d]) ? 1 : 0);
 
 				for (int i=0; i<deg; ++i) spread (curtime,z);
 				if (twostep) for (int d=0; d<4; ++d) { auto zz=z+dz[d]; if (at(zz)) spread (curtime,zz); }

@@ -30,7 +30,7 @@ namespace vb {
 	}
 
 	void Cluster::put (coo z, bool b) {
-		long plain = w*w*static_cast<long>(b); if (np == plain) return;
+		long plain = b ? w*w : 0; if (np == plain) return;
 		if (w == bs) {
 			if (tile.empty()) tile.resize (w*w,!b);
 			long x = z.x - ul.x, y = z.y - ul.y, xy = x + w*y;
