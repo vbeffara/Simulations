@@ -24,9 +24,9 @@ class Ising : public Image { public:
 		if (nstep == 0) nstep = 10 + n * 0.01 / fabs(beta-log(1+sqrt(2)));
 
 		for (int i=0; i!=nstep; i++) for (int j=0; j<n*n; ++j) {
-			step(); coo z = rand(c);
+			step(); coo z = rand(static_cast<int64_t>(c));
 			if (k) {
-				coo zz = z + dz[prng.uniform_int(4)]; if (c && !contains (zz,c)) continue; if (atp(z) == atp(zz)) continue;
+				coo zz = z + dz[prng.uniform_int(4)]; if (c && !contains (zz,static_cast<int64_t>(c))) continue; if (atp(z) == atp(zz)) continue;
 				int s = nnb(z) + nnb(zz) + 2;
 				if ( (s<=0) || (prng.bernoulli(p[s])) ) { swap (atp(z), atp(zz)); }
 			} else {

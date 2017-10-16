@@ -1,2 +1,2 @@
 ---
-Checks:          '*,-*braces*,-*-vararg,-cert-err58-cpp'
+Checks:          '*,-*braces*,-*-vararg,-cert-err58-cpp,-google-build-using-namespace'

@@ -79,14 +79,14 @@ int fib_omp (int n) {
 double cum_omp (int n) {
     vector<double> X(n);
     #pragma omp parallel for
-    for (int i=0; i<n; ++i) X[i] = cost(i);
+    for (int i=0; i<n; ++i) X[i] = cost(i); // NOLINT
     double s=0; for (auto x:X) s+=x; return s - int64_t(s);
 }
 
 double cum_omp2 (int n) {
     double s=0;
     #pragma omp parallel for reduction(+:s)
-    for (int i=0; i<n; ++i) s += cost(i);
+    for (int i=0; i<n; ++i) s += cost(i); // NOLINT
     return s - int64_t(s);
 }
 #endif

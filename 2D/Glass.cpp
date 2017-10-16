@@ -13,7 +13,7 @@ vector<bool> init_ok_glass () {
 		if ((i&4) != 0) tmp++;
 		if ((i&16) != 0) tmp++;
 		if ((i&64) != 0) tmp++;
-		ok[i] = (tmp<=2 ? 1 : 0);
+		ok[i] = (tmp<=2);
 	}
 	return ok;
 }
@@ -46,7 +46,7 @@ vector<bool> init_ok_connect4 () {
 		nb1 = (nb1&1) + ((nb1&4)/4) + ((nb1&16)/16) + ((nb1&64)/64);
 		nb2 = (nb2&1) + ((nb2&4)/4) + ((nb2&16)/16) + ((nb2&64)/64);
 
-		ok[i] = ((nb1>1)||(nb2>1)  ? 0 : 1);
+		ok[i] = (((nb1>1)||(nb2>1)  ? 0 : 1) != 0);
 	}
 	return ok;
 }
@@ -73,7 +73,7 @@ vector<bool> init_ok_connect6 () {
 		if (tmp[5]!=tmp[4]) nb++;
 		if (tmp[0]!=tmp[5]) nb++;
 
-		ok[i] = (nb<=2 ? 1 : 0);
+		ok[i] = ((nb<=2 ? 1 : 0) != 0);
 	}
 	return ok;
 }
