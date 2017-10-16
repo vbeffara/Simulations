@@ -7,15 +7,14 @@
 #include <vb/Hub.h>
 #include <vb/PRNG.h>
 
-using namespace vb;
-using namespace std;
+using std::cout; using std::endl;
 
 int main (int argc, char ** argv) {
-	H.init ("Ladder", argc,argv, "t=20,d");
-	int t=H['t'];
-	bool d=H['d'];
+	vb::H.init ("Ladder", argc,argv, "t=20,d");
+	int t=vb::H['t'];
+	bool d=vb::H['d'];
 
-	vector<int> env;
+	std::vector<int> env;
 	int X=0;
 
 	for (int i=0; i<t; ++i) {
@@ -32,10 +31,10 @@ int main (int argc, char ** argv) {
 		if (X==0) p = 1;
 		else p = (env[X-1]==1 ? 2.0/3.0 : 1.0/2.0);
 
-		int dX = prng.bernoulli(p) ? 1 : -1;
+		int dX = vb::prng.bernoulli(p) ? 1 : -1;
 
 		if ((X==env.size()) && (dX==1)) env.push_back(2);
-		if ((dX==1) && (env[X]==1) && prng.bernoulli(.5)) env[X]=0;
+		if ((dX==1) && (env[X]==1) && vb::prng.bernoulli(.5)) env[X]=0;
 		if ((dX==1) && (env[X]==2)) env[X]=1;
 		X += dX;
 	}

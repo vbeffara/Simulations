@@ -1,11 +1,12 @@
 #include <vb/Image.h>
 
-using namespace vb; using namespace std;
+using std::vector, vb::H, vb::coo, vb::prng, vb::BLACK, vb::WHITE;
 
-void init_ok_none (vector<char> & ok) { for (int i=0; i<256; i++) ok[i]=1; }
+vector<bool> init_ok_none () { vector<bool> ok(256,0); for (int i=0; i<256; i++) ok[i]=1; return ok; }
 
-void init_ok_glass (vector<char> & ok) {
-	 // Flippable iff at least two of the 4 neighbors are empty.
+vector<bool> init_ok_glass () {
+	// Flippable iff at least two of the 4 neighbors are empty.
+	vector<bool> ok(256,0);
 	for (int i=0; i<256; i++) {
 		int tmp = 0;
 		if ((i&1) != 0) tmp++;
@@ -14,14 +15,16 @@ void init_ok_glass (vector<char> & ok) {
 		if ((i&64) != 0) tmp++;
 		ok[i] = (tmp<=2 ? 1 : 0);
 	}
+	return ok;
 }
 
-void init_ok_connect4 (vector<char> & ok) {
+vector<bool> init_ok_connect4 () {
 	/* This is connectivity-conditioning, on  the square lattice (which is
 	 * a bit awkward, in particular it is not ergodic for the wrong reason
 	 * that the lattice  and dual lattice look different  - the checkboard
 	 * configuration is fixed ...). */
 
+	vector<bool> ok(256,0);
 	vector<int> tmp1(8), tmp2(8);
 
 	for (int i=0; i<256; i++) {
@@ -45,11 +48,13 @@ void init_ok_connect4 (vector<char> & ok) {
 
 		ok[i] = ((nb1>1)||(nb2>1)  ? 0 : 1);
 	}
+	return ok;
 }
 
-void init_ok_connect6 (vector<char> & ok) {
+vector<bool> init_ok_connect6 () {
 	// Connectivity-conditioning on the triangular lattice.
 
+	vector<bool> ok(256,0);
 	int tmp[6];
 
 	for (int i=0; i<256; i++) {
@@ -70,16 +75,17 @@ void init_ok_connect6 (vector<char> & ok) {
 
 		ok[i] = (nb<=2 ? 1 : 0);
 	}
+	return ok;
 }
 
-class Glass : public Image { public:
-	explicit Glass (int n) : Image(n,n) {
+class Glass : public vb::Image { public:
+	explicit Glass (int n) : vb::Image(n,n) {
+		std::map <std::string,std::function<vector<bool>()>> init;
 		init.emplace ("none", init_ok_none);
 		init.emplace ("glass", init_ok_glass);
 		init.emplace ("connect4", init_ok_connect4);
 		init.emplace ("connect6", init_ok_connect6);
-
-		init[H['c']](ok);
+		ok = init[H['c']]();
 
 		fill ({0,0},BLACK); for (int i=0; i<n; i++) put(coo(i,n/2),WHITE); show();
 	};
@@ -100,7 +106,7 @@ class Glass : public Image { public:
 			if (at(coo(x  ,y-1)) != BLACK) nb += 64;
 			if (at(coo(x+1,y-1)) != BLACK) nb += 128;
 
-			if (ok[nb] != 0) {
+			if (ok[nb]) {
 				if (prng.bernoulli(p)) {
 					if (at(coo(x,y)) == BLACK) {
 						int tmp = int(at(coo(x+1,y)));
@@ -108,18 +114,17 @@ class Glass : public Image { public:
 						tmp    |= int(at(coo(x,y+1)));
 						tmp    |= int(at(coo(x,y-1)));
 						if (tmp==0) tmp=85;
-						put(coo(x,y),Grey(tmp));
+						put(coo(x,y),vb::Grey(tmp));
 					}
 				} else put(coo(x,y),BLACK);
 			}
 		}
 	}
 
-	map <string,function<void(vector<char>&)>> init;
-	vector<char> ok = vector<char>(256);
+	vector<bool> ok;
 };
 
-int main (int argc, char **argv) {
+int main (int argc, char ** argv) {
 	H.init ("Glassy Glauber dynamics for percolation",argc,argv,"n=300,p=.5,c=none");
 	Glass img (H['n']); img.run();
 }

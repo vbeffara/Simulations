@@ -3,7 +3,8 @@
 #include <vb/PRNG.h>
 #include <vb/ProgressBar.h>
 
-using namespace std; using namespace vb;
+using std::vector, std::cout, std::endl, std::max;
+using vb::prng, vb::H, vb::cpx, vb::Path;
 
 double a0 = 10, aex1 = 20, aex2 = 20, sigmab0 = .5, sigmabex1 = .1, sigmabex2 = .1, Ac = .3, sigmac = .1, slope = 0;
 
@@ -44,21 +45,21 @@ int main (int argc, char ** argv) {
 	vector<cpx> pos (size,0);
 	for (int64_t i=0; i<size; ++i) pos[i] = cpx(i,nu[i+1]);
 
-	Console W;
+	vb::Console W;
 	W.manage (slope,-100.0,100.0,"slope");
 	W.manage (Ac,.2,.4,"Ac");
 	W.show();
 
-	Figure F;
+	vb::Figure F;
 	F.ortho = false;
 	F.add (std::make_unique <Path> (pos));
 	F.show();
 
-	Figure G;
+	vb::Figure G;
 	G.ortho = false;
 	vector<vector<cpx>> graph (size+1);
 
-	ProgressBar PB (iterations); double t=0;
+	vb::ProgressBar PB (iterations); double t=0;
 
 	for (int k=1; k<=iterations; ++k) {
 		PB.set(k);
@@ -68,7 +69,7 @@ int main (int argc, char ** argv) {
 			G.contents.clear();
 			for (int64_t i=0; i<size; ++i) {
 				graph[i].emplace_back (1000.0*k/iterations,nu[i+1]);
-				G.add (std::make_unique <Path> (graph[i],Pen(Indexed(i))));
+				G.add (std::make_unique <Path> (graph[i],vb::Pen(vb::Indexed(i))));
 			}
 			if (! G.visible()) { G.show(); } G.step();
 		}

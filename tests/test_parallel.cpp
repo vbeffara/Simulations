@@ -19,26 +19,26 @@ double cost (double x) { for (int i=0; i<10; ++i) x = cos(x); return x; }
 
 double cum (int n) {
     vector<double> X(n); for (int i=0; i<n; ++i) X[i] = cost(i);
-    double s=0; for (auto x:X) s+=x; return s - long(s);
+    double s=0; for (auto x:X) s+=x; return s - int64_t(s);
 }
 
-double cum2 (int n) { double s=0; for (int i=0; i<n; ++i) s += cost(i); return s - long(s); }
+double cum2 (int n) { double s=0; for (int i=0; i<n; ++i) s += cost(i); return s - int64_t(s); }
 
 double cum3 (int n) {
     vector<double> X(n);
     std::iota (X.begin(), X.end(), 0);
     std::transform (X.begin(), X.end(), X.begin(), cost);
     double s = std::accumulate (X.begin(), X.end(), 0.0);
-    return s - long(s);
+    return s - int64_t(s);
 }
 
 double cum4 (int n) {
     auto costs = take (n, fmap (cost, ints()));
-    double s=0; for (auto x : costs) s+=x; return s - long(s);
+    double s=0; for (auto x : costs) s+=x; return s - int64_t(s);
 }
 
 #ifdef __cpp_coroutines
-double cum5 (int n) { double s=0; for (auto x : take(n,fmap(cost,new_ints()))) s += x; return s - long(s); }
+double cum5 (int n) { double s=0; for (auto x : take(n,fmap(cost,new_ints()))) s += x; return s - int64_t(s); }
 #endif
 
 #ifdef CILK
@@ -53,13 +53,13 @@ int fib_cilk (int n) {
 double cum_cilk (int n) {
     vector<double> X(n);
     cilk_for (int i=0; i<n; ++i) X[i] = cost(i);
-    double s=0; for (auto x:X) s+=x; return s - long(s);
+    double s=0; for (auto x:X) s+=x; return s - int64_t(s);
 }
 
 double cum_cilk2 (int n) {
     cilk::reducer_opadd <double> s (0);
     cilk_for (int i=0; i<n; ++i) *s += cost(i);
-    return s.get_value() - long(s.get_value());
+    return s.get_value() - int64_t(s.get_value());
 }
 #endif
 
@@ -80,14 +80,14 @@ double cum_omp (int n) {
     vector<double> X(n);
     #pragma omp parallel for
     for (int i=0; i<n; ++i) X[i] = cost(i);
-    double s=0; for (auto x:X) s+=x; return s - long(s);
+    double s=0; for (auto x:X) s+=x; return s - int64_t(s);
 }
 
 double cum_omp2 (int n) {
     double s=0;
     #pragma omp parallel for reduction(+:s)
     for (int i=0; i<n; ++i) s += cost(i);
-    return s - long(s);
+    return s - int64_t(s);
 }
 #endif
 

@@ -1,14 +1,15 @@
 #include <vb/PRNG.h>
 #include <vb/ProgressBar.h>
 
-using namespace vb; using namespace std;
+using std::cout, std::endl, std::max;
+using vb::H, vb::prng;
 
 int main(int argc, char ** argv) {
 	H.init ("PingPong process", argc,argv, "n=1000,a=1,b=.5,f");
 	int n = H['n']; double a = H['a'], b = H['b']; bool fast = H['f'];
 
 	int x=0, xmin=-1, xmax=1;
-	ProgressBar PB (n,fast?1:3);
+	vb::ProgressBar PB (n,fast?1:3);
 
 	while (abs(x)<n) {
 		if (fast)	x = prng.bernoulli(double(x-xmin)/(xmax-xmin))	? xmax	: xmin;
