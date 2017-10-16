@@ -95,7 +95,7 @@ namespace vb {
 			}
 		}
 
-		if (!eee.empty() != 0u) F.add (std::make_unique <Path> (eee,Pen(BLACK,.5)));
+		if (!eee.empty()) F.add (std::make_unique <Path> (eee,Pen(BLACK,.5)));
 
 		for (auto v : V) {
 			if (v.r<0) continue;

@@ -43,7 +43,7 @@ namespace vb {
 		mode_t mode = S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH;
 		mkdir("output", mode); mkdir(dir.c_str(), mode); mkdir((dir + "snapshots").c_str(), mode);
 
-		std::vector<std::string> cs;	if (!c.empty() != 0u) boost::split (cs, c, boost::is_any_of(", "), boost::token_compress_on);
+		std::vector<std::string> cs;	if (!c.empty()) boost::split (cs, c, boost::is_any_of(", "), boost::token_compress_on);
 
 		std::string getopt_arg ("h");
 		for (auto s : cs) {

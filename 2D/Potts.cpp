@@ -4,7 +4,7 @@ using namespace vb; using namespace std;
 
 Color C[] = { RED, BLUE, YELLOW, GREEN, MAGENTA, CYAN };
 
-template<> Color vb::to_Color (int t) { if ((t>=0)&&(t<6)) return C[t]; if (t<0) return WHITE; else return Indexed(t); }
+template<> Color vb::to_Color (int t) { if ((t>=0)&&(t<6)) return C[t]; if (t<0) return WHITE; return Indexed(t); }
 
 class Potts : public Bitmap<int> { public:
 	Potts (int n, int q, double beta_) : Bitmap<int> (n,n), q(q), beta(beta_) {

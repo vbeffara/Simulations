@@ -48,7 +48,7 @@ namespace vb {
 
 	void Cluster::validate () {
 		if ((np==0) || (np==w*w)) { assert (!tile.size()); assert (!sub.size()); }
-		if (!sub.empty() != 0u) {
+		if (!sub.empty()) {
 			long s=0; for (auto & c : sub) { c.validate(); s += c.np; } assert (s==np);
 		}
 	}
@@ -61,7 +61,7 @@ namespace vb {
 			for (long x=ul.x; x<br.x; ++x) for (long y=ul.y; y<br.y; ++y)
 				I.put (coo(x,y), (x==ul.x)||(x==br.x-1)||(y==ul.y)||(y==br.y-1) ? RED : BLUE); }
 		else if (br == ul + coo(1,1)) { I.put (ul, Grey((255*np) / (w*w))); }
-		else if (!sub.empty() != 0u) {
+		else if (!sub.empty()) {
 			long ww = br.x-ul.x, hh = br.y-ul.y;
 			for (long x=0; x<3; ++x) for (long y=0; y<3; ++y)
 				sub[x+3*y].paint (I,ul+coo(x*ww/3,y*hh/3),ul+coo((x+1)*ww/3,(y+1)*hh/3));

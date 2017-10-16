@@ -44,7 +44,7 @@ class Ising : public Bitmap<int> { public:
 	void explore () {
 		coo z0 = {w()/2, (con==6) ? h()/3 : h()/2};
 		vector<coo> list {z0}; auto s = at(list.back());
-		while (!list.empty() != 0u) {
+		while (!list.empty()) {
 			auto z = list.back(); list.pop_back(); if (atp(z) == 3) continue;
 			putp(z,3); for (int d=0; d<con; ++d) if (atp(z+dz[d]) == s) list.push_back(z+dz[d]);
 		}
