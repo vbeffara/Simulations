@@ -16,12 +16,12 @@ class Info {
 	};
 
 class QG : public Image { public:
-	explicit QG (const Hub & H) : Image (1<<int(H['n']), 1<<int(H['n'])), I(w(),h(),Info({0,0},{0,0},0,0)), g(H['g']), n(H['n']) {
-		if     	(H['w'] == "dyadic")  	fill_dyadic	(H['z']);
-		else if	(H['w'] == "boolean") 	fill_boolean (H['z']);
-		else if	(H['w'] == "white")   	fill_white ();
-		else if	(H['w'] == "free")    	fill_free (H['z']);
-		else if	(H['w'] == "gaussian")	fill_gaussian (H['z']);
+	explicit QG (const Hub & H) : Image (1u<<unsigned(H['n']), 1u<<unsigned(H['n'])), I(w(),h(),Info({0,0},{0,0},0,0)), g(H['g']), n(H['n']) {
+		if     	(std::string(H['w']) == std::string("dyadic"))  	fill_dyadic	(H['z']);
+		else if	(std::string(H['w']) == std::string("boolean")) 	fill_boolean (H['z']);
+		else if	(std::string(H['w']) == std::string("white"))   	fill_white ();
+		else if	(std::string(H['w']) == std::string("free"))    	fill_free (H['z']);
+		else if	(std::string(H['w']) == std::string("gaussian"))	fill_gaussian (H['z']);
 		else { H.L->error ("Noise type {} unknown, no noise for you!", string(H['w'])); exit (1); }
 
 		minf = maxf = I.at({0,0}).f; for (auto & u : I) { minf = min (minf,u.f); maxf = max (maxf,u.f); }
@@ -38,7 +38,7 @@ class QG : public Image { public:
 
 	void fill_dyadic (int n0) {
 		for (int l=n-1; l>=n0; --l) {
-			int ll = 1<<l;
+			int ll = 1u<<unsigned(l);
 			for (int i=0; i<ww/ll; ++i) for (int j=0; j<hh/ll; ++j) {
 				double g = prng.gaussian();
 				for (int x=i*ll; x<(i+1)*ll; ++x) for (int y=j*ll; y<(j+1)*ll; ++y) I.at(coo(x,y)).f += g;
@@ -48,7 +48,7 @@ class QG : public Image { public:
 
 	void fill_boolean (int n0) {
 		for (int l=n-1; l>=n0; --l) {
-			int ll = 1<<l;
+			int ll = 1u<<unsigned(l);
 			for (int i=0; i<ww/ll; ++i) for (int j=0; j<hh/ll; ++j) {
 				double g = prng.uniform_real(-1,1);
 				for (int x=i*ll; x<(i+1)*ll; ++x) for (int y=j*ll; y<(j+1)*ll; ++y) I.at(coo(x,y)).f += g;
@@ -144,7 +144,7 @@ class QG : public Image { public:
 int main (int argc, char **argv) {
 	H.init ("Random 2D geometry", argc, argv, "w=free,n=9,z=0,g=1,s=0,b,i,q,c");
 	if (int s = H['s']) prng.seed(s);
-	int n = H['n'], nn = 1<<n;
+	unsigned n = H['n'], nn = 1u<<n;
 
 	QG img (H); if (!H['i']) img.show();
 

@@ -20,35 +20,35 @@ int main (int argc, char **argv) {
     for (int j=0; j<n; ++j) {
       int ij = i+n*j;
 
-      if (prng.bernoulli(p)) adj[ij] |= 1;
-      if (prng.bernoulli(p)) adj[ij] |= 2;
-      if ((i>0) && ((adj[ij-1] & 1)!=0)) adj[ij] |= 4;
-      if ((j>0) && ((adj[ij-n] & 2)!=0)) adj[ij] |= 8;
+      if (prng.bernoulli(p)) adj[ij] |= 1u;
+      if (prng.bernoulli(p)) adj[ij] |= 2u;
+      if ((i>0) && ((adj[ij-1] & 1u)!=0)) adj[ij] |= 4u;
+      if ((j>0) && ((adj[ij-n] & 2u)!=0)) adj[ij] |= 8u;
     }
   }
 
   for (int i=0; i<n; ++i) {
-    adj[i] |= 5;
-    adj[n*i] |= 10;
-    adj[n-1+n*i] |= 10;
-    adj[(n-1)*n+i] |= 5;
+    adj[i] |= 5u;
+    adj[n*i] |= 10u;
+    adj[n-1+n*i] |= 10u;
+    adj[(n-1)*n+i] |= 5u;
   }
 
   for (int i=0; i<n; ++i) {
-    adj[i] &= 7;
-    adj[n*i] &= 11;
-    adj[n-1+n*i] &= 14;
-    adj[(n-1)*n+i] &= 13;
+    adj[i] &= 7u;
+    adj[n*i] &= 11u;
+    adj[n-1+n*i] &= 14u;
+    adj[(n-1)*n+i] &= 13u;
   }
 
   for (int i=0; i<n; ++i) {
     for (int j=0; j<n; ++j) {
       int ij = i+n*j;
 
-      if ((i<n-1) && ((adj[ij] & 1)!=0)) m << Edge(ij, ij+1);
-      if ((j<n-1) && ((adj[ij] & 2)!=0)) m << Edge(ij, ij+n);
-      if ((i>0)   && ((adj[ij] & 4)!=0)) m << Edge(ij, ij-1);
-      if ((j>0)   && ((adj[ij] & 8)!=0)) m << Edge(ij, ij-n);
+      if ((i<n-1) && ((adj[ij] & 1u)!=0)) m << Edge(ij, ij+1);
+      if ((j<n-1) && ((adj[ij] & 2u)!=0)) m << Edge(ij, ij+n);
+      if ((i>0)   && ((adj[ij] & 4u)!=0)) m << Edge(ij, ij-1);
+      if ((j>0)   && ((adj[ij] & 8u)!=0)) m << Edge(ij, ij-n);
 
       m.v[ij] -> z = cpx(i,j);
 
@@ -62,6 +62,4 @@ int main (int argc, char **argv) {
   cout << n << " " << p << " " << output << endl;
 
   if (!batch) m.pause();
-
-  return 0;
 }

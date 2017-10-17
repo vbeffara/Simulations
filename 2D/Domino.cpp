@@ -17,7 +17,7 @@ class Tiling : public Bitmap<Half> { public:
     void putd (coo c, uint8_t d) { at(c).d = d; at(c+dz[d]).d = (d+2)%4; step(); }
     void freeze (coo c) { at(c).type = 0; at(c+dz[at(c).d]).type = 0; }
 
-    explicit Tiling (Hub &H) : Bitmap<Half> (H['n'],H['n']), r(H['r']), rr {r,r*r,1,r} {
+    explicit Tiling (const Hub &H) : Bitmap<Half> (H['n'],H['n']), r(H['r']), rr {r,r*r,1,r} {
         for (int x=0;x<w();++x) for (int y=0;y<h();++y) { at(coo(x,y)) = Half ( 2*(x%2), 1 + ((x+y)%2) + 2*(x%2) ); }
         if (H['o'] == "aztec") {
             for (int i=0; i<h()/2; ++i) {

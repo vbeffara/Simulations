@@ -10,8 +10,8 @@ public:
 	explicit FPP (int n) : CoarseImage (n,n, pow(n,.33)), area(0) {
 		invasion = H['i']; twostep = H['2']; trace = H['t'];
 
-		pq.push ({{n>>1,n>>1},cost()});
-		if (twostep) pq.push ({{(true_width>>1)+1, true_height>>1}, cost()});
+		pq.push ({{n/2,n/2},cost()});
+		if (twostep) pq.push ({{(true_width/2)+1, true_height/2}, cost()});
 	};
 
 	void spread (double t, const coo &z) {
@@ -24,7 +24,7 @@ public:
 
 			auto pt = pq.get(); const coo &z = pt;
 			if (!at(z)) {
-				put(z,1); ++area;
+				put(z,true); ++area;
 
 				double curtime = invasion ? 0.0 : pt.t;
 
