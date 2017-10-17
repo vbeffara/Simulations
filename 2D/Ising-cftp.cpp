@@ -10,7 +10,7 @@ template<> Color vb::to_Color (int t) {
 
 class IsingCFTP : public Bitmap<int> {
 public:
-	explicit IsingCFTP (Hub & H) : Bitmap<int> (H['n'], H['n']), b(H['b']), d(0), s(H['s']),
+	explicit IsingCFTP (const Hub & H) : Bitmap<int> (H['n'], H['n']), b(H['b']), d(0), s(H['s']),
 								  status (w(),h()) {
 		for (int i=0; i<w(); ++i) for (int j=0; j<h(); ++j) put (coo(i,j),1);
 		snap(); b *= log(1+sqrt(double(2)));
@@ -32,9 +32,9 @@ public:
 		while (n>0) {
 			cerr << n << endl;
 			for (int i=d; i<w()-2*d; ++i) for (int j=d; j<h()-2*d; ++j) put (coo(i,j),1);
-			for (int t=states.size(); t-- > 0;) {
+			for (unsigned t=states.size(); t-- > 0;) {
 				prng.state(states[t]);
-				for (int i=0; i<(1<<t); ++i) up();
+				for (int i=0; i<(1u<<t); ++i) up();
 				if (t==states.size()-1) states.push_back(prng.state());
 			}
 			snap(); if(s) status.snapshot();

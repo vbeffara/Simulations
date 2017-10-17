@@ -23,22 +23,15 @@ const vector<Color> colors = {	MIRROR_NW, MIRROR_NE, MIRROR_FLIP_NW, MIRROR_FLIP
 
 const vector<int> flip_ne = {1,0,3,2}, flip_nw = {3,2,1,0};
 
-class Mirror {
-public:
-	explicit Mirror (uint8_t s_ = 0) : s(s_) {}
-	uint8_t s;
-	explicit operator uint8_t () { return s; }
-	explicit operator Color () {
-		if (s==0) return BLACK;
-		if (s==STATE_VISITED) return Grey(128);
-		return colors[s%8];
-	}
-};
+template<> Color vb::to_Color (uint8_t t) {
+	if (t==0) return BLACK;
+	if (t==STATE_VISITED) return Grey(128);
+	return colors[t%8];
+}
 
-class Mirrors : public Bitmap<Mirror> {
+class Mirrors : public Bitmap<uint8_t> {
 public:
-	explicit Mirrors (Hub & H) :	Bitmap<Mirror> (H['n'],H['n']),
-	                   	p(H['p']), q(H['q']), f(H['f']) {}
+	explicit Mirrors (const Hub & H) : Bitmap<uint8_t> (H['n'],H['n']), p(H['p']), q(H['q']), f(H['f']) {}
 	void main ();
 	double p, q, f;
 };
@@ -47,22 +40,22 @@ void Mirrors::main () {
 	show();
 
 	while (true) {
-		for (Mirror & m : *this) {
-			m = Mirror { STATE_NONE };
+		for (auto & m : *this) {
+			m = STATE_NONE;
 			if (prng.bernoulli(1-q)) {
-				m.s |= STATE_PRESENT;
-				if (prng.bernoulli(p)) m.s |= STATE_NE;
-				if (prng.bernoulli(f)) m.s |= STATE_FLIP;
+				m |= STATE_PRESENT;
+				if (prng.bernoulli(p)) m |= STATE_NE;
+				if (prng.bernoulli(f)) m |= STATE_FLIP;
 			}
 		}
 
 		coo z(w()/2,h()/2);
 		for (int t=0, d=0; (t<8*w()*h()) && contains(z); ++t) {
-			if ((at(z).s & STATE_PRESENT) != 0) {
-				if ((at(z).s & STATE_NE) != 0) d = flip_ne[d]; else d = flip_nw[d];
-				if ((at(z).s & STATE_FLIP) != 0) at(z).s ^= STATE_NE;
+			if ((at(z) & STATE_PRESENT) != 0) {
+				if ((at(z) & STATE_NE) != 0) d = flip_ne[d]; else d = flip_nw[d];
+				if ((at(z) & STATE_FLIP) != 0) at(z) ^= STATE_NE;
 			}
-			at(z).s |= STATE_VISITED; z += dz[d];
+			at(z) |= STATE_VISITED; z += dz[d];
 		}
 
 		pause();

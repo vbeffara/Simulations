@@ -5,7 +5,7 @@ using namespace vb; using namespace std;
 class Ising : public Image { public:
 	Ising (int nn, double bb, double rr, bool cc) : Image(nn,nn), n(nn), c(cc), beta(bb) {
 		if (rr != 0.0) { for (auto & i : *this) i = prng.bernoulli(rr) ? BLACK : WHITE; }
-		else { for (int x=1; x<n-1; x++) for (int y=1; y<n-1; y++) put(coo(x,y), x<(n>>1) ? BLACK : WHITE); }
+		else { for (int x=1; x<n-1; x++) for (int y=1; y<n-1; y++) put(coo(x,y), x<(n/2) ? BLACK : WHITE); }
 		if (c) for (int i=0; i<n; i++) {
 			put (coo(i,0), i<n/2 ? BLACK : WHITE);
 			put (coo(i,n-1), i<n/2 ? BLACK : WHITE);

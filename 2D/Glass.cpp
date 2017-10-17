@@ -2,17 +2,17 @@
 
 using std::vector, vb::H, vb::coo, vb::prng, vb::BLACK, vb::WHITE;
 
-vector<bool> init_ok_none () { vector<bool> ok(256,0); for (int i=0; i<256; i++) ok[i]=1; return ok; }
+vector<bool> init_ok_none () { vector<bool> ok(256,false); for (int i=0; i<256; i++) ok[i]=true; return ok; }
 
 vector<bool> init_ok_glass () {
 	// Flippable iff at least two of the 4 neighbors are empty.
-	vector<bool> ok(256,0);
-	for (int i=0; i<256; i++) {
+	vector<bool> ok(256,false);
+	for (unsigned i=0; i<256; i++) {
 		int tmp = 0;
-		if ((i&1) != 0) tmp++;
-		if ((i&4) != 0) tmp++;
-		if ((i&16) != 0) tmp++;
-		if ((i&64) != 0) tmp++;
+		if ((i&1u) != 0) tmp++;
+		if ((i&4u) != 0) tmp++;
+		if ((i&16u) != 0) tmp++;
+		if ((i&64u) != 0) tmp++;
 		ok[i] = (tmp<=2);
 	}
 	return ok;
@@ -24,13 +24,13 @@ vector<bool> init_ok_connect4 () {
 	 * that the lattice  and dual lattice look different  - the checkboard
 	 * configuration is fixed ...). */
 
-	vector<bool> ok(256,0);
-	vector<int> tmp1(8), tmp2(8);
+	vector<bool> ok(256,false);
+	vector<unsigned> tmp1(8), tmp2(8);
 
-	for (int i=0; i<256; i++) {
-		for (int j=0; j<8; j++) {
-			tmp1[j] = (i&(1<<j)) / (1<<j);
-			tmp2[j] = 1<<j;
+	for (unsigned i=0; i<256; i++) {
+		for (unsigned j=0; j<8; j++) {
+			tmp1[j] = (i&(1u<<j)) / (1u<<j);
+			tmp2[j] = 1u<<j;
 		}
 
 		if ( (tmp1[0]==tmp1[2]) && (tmp1[0]==tmp1[1]) ) tmp2[2]=tmp2[0];
@@ -40,13 +40,13 @@ vector<bool> init_ok_connect4 () {
 		if ( (tmp1[0]==tmp1[2]) && (tmp1[0]==tmp1[1]) ) tmp2[2]=tmp2[0];
 		if ( (tmp1[2]==tmp1[4]) && (tmp1[2]==tmp1[3]) ) tmp2[4]=tmp2[2];
 
-		int nb1 = (tmp1[0]*tmp2[0]) | (tmp1[2]*tmp2[2]) | (tmp1[4]*tmp2[4]) | (tmp1[6]*tmp2[6]);
-		int nb2 = ((1-tmp1[0])*tmp2[0]) | ((1-tmp1[2])*tmp2[2]) | ((1-tmp1[4])*tmp2[4]) | ((1-tmp1[6])*tmp2[6]);
+		unsigned nb1 = (tmp1[0]*tmp2[0]) | (tmp1[2]*tmp2[2]) | (tmp1[4]*tmp2[4]) | (tmp1[6]*tmp2[6]);
+		unsigned nb2 = ((1-tmp1[0])*tmp2[0]) | ((1-tmp1[2])*tmp2[2]) | ((1-tmp1[4])*tmp2[4]) | ((1-tmp1[6])*tmp2[6]);
 
-		nb1 = (nb1&1) + ((nb1&4)/4) + ((nb1&16)/16) + ((nb1&64)/64);
-		nb2 = (nb2&1) + ((nb2&4)/4) + ((nb2&16)/16) + ((nb2&64)/64);
+		nb1 = (nb1&1u) + ((nb1&4u)/4) + ((nb1&16u)/16) + ((nb1&64u)/64);
+		nb2 = (nb2&1u) + ((nb2&4u)/4) + ((nb2&16u)/16) + ((nb2&64u)/64);
 
-		ok[i] = (((nb1>1)||(nb2>1)  ? 0 : 1) != 0);
+		ok[i] = (nb1<=1) && (nb2<=1);
 	}
 	return ok;
 }
@@ -54,16 +54,16 @@ vector<bool> init_ok_connect4 () {
 vector<bool> init_ok_connect6 () {
 	// Connectivity-conditioning on the triangular lattice.
 
-	vector<bool> ok(256,0);
-	int tmp[6];
+	vector<bool> ok(256,false);
+	unsigned tmp[6];
 
-	for (int i=0; i<256; i++) {
-		tmp[0]=(i&1)/1;
-		tmp[1]=(i&2)/2;
-		tmp[2]=(i&4)/4;
-		tmp[3]=(i&16)/16;
-		tmp[4]=(i&32)/32;
-		tmp[5]=(i&64)/64;
+	for (unsigned i=0; i<256; i++) {
+		tmp[0]=(i&1u)/1;
+		tmp[1]=(i&2u)/2;
+		tmp[2]=(i&4u)/4;
+		tmp[3]=(i&16u)/16;
+		tmp[4]=(i&32u)/32;
+		tmp[5]=(i&64u)/64;
 
 		int nb=0;
 		if (tmp[1]!=tmp[0]) nb++;
@@ -73,7 +73,7 @@ vector<bool> init_ok_connect6 () {
 		if (tmp[5]!=tmp[4]) nb++;
 		if (tmp[0]!=tmp[5]) nb++;
 
-		ok[i] = ((nb<=2 ? 1 : 0) != 0);
+		ok[i] = (nb<=2);
 	}
 	return ok;
 }

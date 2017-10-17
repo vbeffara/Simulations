@@ -6,8 +6,8 @@ using namespace vb;
 template<> Color vb::to_Color (int t) { return Grey(t); }
 
 class LERW : private Bitmap<int> { public:
-    explicit LERW (Hub &H) : Bitmap<int> (2*int(H['n']),2*int(H['n'])) {
-        coo z(w()/2,h()/2); while (contains(z)) { int d = prng()&3; put(z,d); z += dz[d]; }
+    explicit LERW (const Hub &H) : Bitmap<int> (2*int(H['n']),2*int(H['n'])) {
+        coo z(w()/2,h()/2); while (contains(z)) { int d = prng()&3u; put(z,d); z += dz[d]; }
     }
 
     using Bitmap<int>::output;
