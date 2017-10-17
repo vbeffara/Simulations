@@ -10,7 +10,7 @@ namespace vb {
 
 	void Hypermap::from_hypermap () {
 		Cycles sc = sigma.cycles();
-		long nb = sc.size(); V.resize(nb); E.resize(6*nb);
+		int nb = sc.size(); V.resize(nb); E.resize(6*nb);
 		for (int i=0; i<E.size(); ++i) E[i].i=i;
 		for (int i=0; i<V.size(); ++i) V[i].i=i;
 		for (auto & v : V) {
@@ -62,8 +62,9 @@ namespace vb {
 		sigma = sigma_c; alpha = alpha_c; phi = phi_c;
 		initial.resize (sigma.size(),0);
 		for (int i=0; i<N; ++i) {
-			initial[alpha[i]] = ((initial[i]&1) != 0 ? 1 : 0);
-			if (((initial[i]&2) != 0) && ((initial[alpha[sigma[sigma[sigma[alpha[i]]]]]]&2) != 0)) initial[alpha[i]] |= 4;
+			initial[alpha[i]] = initial[i] % 2;
+			if (((unsigned(initial[i]) & 2u) != 0) &&
+			    ((unsigned(initial[alpha[sigma[sigma[sigma[alpha[i]]]]]]) & 2u) != 0)) initial[alpha[i]] |= 4;
 		}
 	}
 
@@ -187,7 +188,9 @@ namespace vb {
 		return p[n];
 	}
 
-	double acpa_step (const Hypermap & M, const std::vector<double> & in, std::vector<double> & out, std::vector<double> & er) {
+	double acpa_step (const Hypermap & M, const std::vector<double> & in, std::vector<double> * pout, std::vector<double> * per) {
+		std::vector<double> & out { * pout };
+		std::vector<double> & er { * per };
 		out = in; double se = 0;
 		for (int i=0; i<out.size(); ++i) {
 			if (M.V[i].fixed) continue;
@@ -212,7 +215,7 @@ namespace vb {
 		for (int i=0; i<n; ++i) if (V[i].adj.size() > 2) { r[i] = V[i].r; }
 		for (int t=1 ;; ++t) {
 			old_e = e; old_r=r; double se = 0;
-			for (int i=0; i<m; ++i) se = acpa_step(*this,r,r,e);
+			for (int i=0; i<m; ++i) se = acpa_step(*this,r,&r,&e);
 			if (se/n<tgt) break;
 			double mv=0;
 			for (int i=0; i<n; ++i) {
