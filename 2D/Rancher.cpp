@@ -16,14 +16,15 @@
 
 using vb::cpx;
 
-class point : public cpx { public:
-	explicit point (cpx _z, bool _k=true) : cpx(_z), k(_k) {};
-	bool k; ///< 0 si point à l'infini, 1 si point du plan (cf. plan projectif)
+class point { public:
+	explicit point (cpx _z, bool _k=true) : z(_z), k(_k) {};
+	cpx z;
+	bool k;
 };
 
 double angle (const point &O, const point &A, const point &B) {
-	cpx vza = A; if (A.k) vza -= cpx(O);
-	cpx vzb = B; if (B.k) vzb -= cpx(O);
+	cpx vza = A.z; if (A.k) vza -= O.z;
+	cpx vzb = B.z; if (B.k) vzb -= O.z;
 	double output = arg(vzb) - arg(vza);
 	if (output>M_PI) output -= 2*M_PI;
 	return output;
@@ -39,10 +40,10 @@ public:
 
 	point rand_point () {
 		point p = *cur, pp = *boost::prior(cur), ppp = *boost::next(cur);
-		cpx vzp = pp; if (pp.k) vzp -= cpx(p);
+		cpx vzp = pp.z; if (pp.k) vzp -= p.z;
 		double alpha = vb::prng.uniform_real(0, 2*M_PI + angle(p, pp, ppp));
 
-		return point (cpx(p) + vzp*std::polar(1.0,alpha)/sqrt(norm(vzp)));
+		return point (p.z + vzp*std::polar(1.0,alpha)/sqrt(norm(vzp)));
 	}
 
 	std::list<point>::iterator insere_maillon (const point & p) {
@@ -79,11 +80,11 @@ public:
 		for (auto i = env.begin(); i != env.end(); ++i) {
 			if (i == env.begin()) {
 				auto j = i; ++j;
-				V.emplace_back (0, cpx(*j).imag() + cpx(*j).real() * cpx(*i).imag());
+				V.emplace_back (0, (j->z).imag() + (j->z).real() * (i->z).imag());
 			} else if (!(i->k)) {
 				auto j = i; --j;
-				V.emplace_back (0, cpx(*j).imag() + cpx(*j).real() * cpx(*i).imag());
-			} else V.push_back (*i);
+				V.emplace_back (0, (j->z).imag() + (j->z).real() * (i->z).imag());
+			} else V.push_back (i->z);
 		}
 
 		F.add (std::make_unique <vb::Path> (V,P));
@@ -94,7 +95,7 @@ public:
 		point p1 = *i;
 		i = env.end(); --i; --i;
 		point p2 = *i;
-		return sqrt (norm (cpx(p1) - cpx(p2)));
+		return sqrt (norm (p1.z - p2.z));
 	}
 
 	void main (int argc, char ** argv) {
@@ -143,7 +144,7 @@ public:
 		}
 
 		if (plot) {
-			std::vector<cpx> path; for (int i=2; i<traj.size(); ++i) path.push_back (traj[i]);
+			std::vector<cpx> path; for (int i=2; i<traj.size(); ++i) path.push_back (traj[i].z);
 			F.add (std::make_unique <vb::Path> (path));
 			F.show(); F.pause();
 			F.output_pdf("Rancher");

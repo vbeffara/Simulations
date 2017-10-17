@@ -15,14 +15,14 @@ int main (int argc, char **argv) {
 	vector<int> height (n);
 	for (int i=0; i<n; ++i) {
 		height[i]=0;
-		img.put(coo(i,0),1);
+		img.put(coo(i,0),true);
 	}
 
 	bool running = true;
 	while (running) {
-		long x = 1 + prng()%(n-2);
+		int64_t x = 1 + prng.uniform_int(n-2);
 		int h = height[x];
-		int d = prng()&(1<<14);
+		int d = prng.uniform_int(1u<<14u);
 
 		if (d != 0) { // If trying to grow
 			if ( (height[x-1]>h) || (height[x+1]>h)  || (prng.bernoulli(e)) || ((c>0)&&(x==n/2)&&(prng.bernoulli(c))) )
@@ -33,17 +33,17 @@ int main (int argc, char **argv) {
 
 		if (height[x]>=n) break;
 
-		if (height[x]<h) img.put(coo(x,h),0);
-		if (height[x]>h) img.put(coo(x,h+1),1);
+		if (height[x]<h) img.put(coo(x,h),false);
+		if (height[x]>h) img.put(coo(x,h+1),true);
 
 		if(f) {
 			height[0]=height[1];
-			img.put(coo(0,height[0]),1);
-			img.put(coo(0,height[0]+1),0);
+			img.put(coo(0,height[0]),true);
+			img.put(coo(0,height[0]+1),false);
 
 			height[n-1]=height[n-2];
-			img.put(coo(n-1,height[n-1]),1);
-			img.put(coo(n-1,height[n-1]+1),0);
+			img.put(coo(n-1,height[n-1]),true);
+			img.put(coo(n-1,height[n-1]+1),false);
 		}
 	}
 }

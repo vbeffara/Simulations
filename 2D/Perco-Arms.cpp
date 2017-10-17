@@ -92,7 +92,7 @@ int main(int argc, char **argv) {
 				cap[rev_edges[i]] = o;
 			}
 
-			int64_t flow = edmonds_karp_max_flow (g,(n>>1)*(n+1),n*n);
+			int64_t flow = edmonds_karp_max_flow (g,(n/2)*(n+1),n*n);
 			stats[flow]++;
 
 			PB.set (iter);
