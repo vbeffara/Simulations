@@ -11,11 +11,12 @@ using namespace boost; using namespace std; using namespace vb;
 using Traits         	= adjacency_list_traits <listS,vecS,directedS>;
 using edge_descriptor	= Traits::edge_descriptor;
 using Graph          	= adjacency_list <listS,vecS,directedS,no_property,
-                     				property < edge_capacity_t, long,
-                     				property < edge_residual_capacity_t, long,
+                     				property < edge_capacity_t, int64_t,
+                     				property < edge_residual_capacity_t, int64_t,
                      				property < edge_reverse_t, edge_descriptor > > > >;
 
-void add_one (Graph &g, int i, int j) {
+void add_one (Graph * gg, int i, int j) {
+	Graph &g {*gg};
 	edge_descriptor e1,e2;
 	bool t;
 
@@ -41,18 +42,18 @@ int main(int argc, char **argv) {
 	for (int x=0; x<n; ++x) {
 		for (int y=0; y<n; ++y) {
 			int i=x+n*y;
-			if (x<n-1) add_one (g,i,i+1);
-			if (y<n-1) add_one (g,i,i+n);
+			if (x<n-1) add_one (&g,i,i+1);
+			if (y<n-1) add_one (&g,i,i+n);
 		}
 	}
 
 	// Wired boundary conditions
 
 	for (int i=0; i<n; ++i) {
-		add_one(g,i,n*n);
-		add_one(g,n*i,n*n);
-		add_one(g,(n-1)+n*i,n*n);
-		add_one(g,(n-1)*n+i,n*n);
+		add_one(&g,i,n*n);
+		add_one(&g,n*i,n*n);
+		add_one(&g,(n-1)+n*i,n*n);
+		add_one(&g,(n-1)*n+i,n*n);
 	}
 
 	// Prepare for quick edge access
@@ -91,7 +92,7 @@ int main(int argc, char **argv) {
 				cap[rev_edges[i]] = o;
 			}
 
-			long flow = edmonds_karp_max_flow (g,(n>>1)*(n+1),n*n);
+			int64_t flow = edmonds_karp_max_flow (g,(n>>1)*(n+1),n*n);
 			stats[flow]++;
 
 			PB.set (iter);

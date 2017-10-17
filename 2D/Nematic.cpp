@@ -3,9 +3,10 @@
 
 using namespace vb;
 
-const Color key [] = { BLACK, RED, GREEN };
-
-template<> Color vb::to_Color (int t) { return key[t]; }
+template<> Color vb::to_Color (int t) {
+	static const std::vector<Color> key = { BLACK, RED, GREEN };
+	return key[t];
+}
 
 class Nematic : public vb::Bitmap<int> { public:
 	Nematic (int n_, int m_, int k_, double b_) : Bitmap<int> (n_,m_), k(k_), b(b_), P(std::max(n_,m_),0) {};

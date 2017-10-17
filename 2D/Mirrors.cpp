@@ -2,11 +2,11 @@
 
 using namespace vb; using namespace std;
 
-#define STATE_NONE    0
-#define STATE_PRESENT 128
-#define STATE_NE      1
-#define STATE_FLIP    2
-#define STATE_VISITED 4
+#define STATE_NONE    0u
+#define STATE_PRESENT 128u
+#define STATE_NE      1u
+#define STATE_FLIP    2u
+#define STATE_VISITED 4u
 
 #define MIRROR_NONE           	Color(0)
 #define MIRROR_NE             	Color(255,0,0)

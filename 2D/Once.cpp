@@ -11,7 +11,7 @@ int main(int argc, char ** argv) {
     CoarseImage img(n,n,L); img.show();
 
     for (coo z(n/2,n/2);;) {
-        img.put (z,1);
+        img.put (z,true);
         coo nz = z + dz[prng()%4]; if (!img.contains(nz)) break;
         if (img.at(nz) || prng.bernoulli(a)) z=nz;
     }
