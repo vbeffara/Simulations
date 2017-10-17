@@ -73,7 +73,7 @@ namespace vb {
 			}
 
 			auto P = find_univpoly_ring (cl_C_ring, cl_symbol("z")) -> create (d);
-			for (long i=0; i<=d; ++i) set_coeff (P, i, cln::complex(V[2*i],V[2*i+1]));
+			for (int i=0; i<=d; ++i) set_coeff (P, i, cln::complex(V[2*i],V[2*i+1]));
 			finalize (P);
 			if (realpart(coeff(P,d)) == 0) P = cln::complex(0,1) * P;
 			if (realpart(coeff(P,d))<0) P=-P;

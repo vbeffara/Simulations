@@ -46,7 +46,7 @@ namespace vb {
 		cairo_restore(cr);
 
 		cairo_save(cr);
-		cairo_translate (cr, w()/2,h()/2);
+		cairo_translate (cr, w()*.5,h()*.5);
 		cairo_scale (cr, scale,scale);
 		cairo_translate (cr, -mid_x,-mid_y);
 		cairo_set_source_rgb (cr, 0,0,0);
@@ -124,7 +124,7 @@ namespace vb {
 	double Map::balance () {
 		Vector<double> x(2*n);
 
-		for (long i=0; i<n; ++i) {
+		for (int i=0; i<n; ++i) {
 			x[2*i]   = v[i]->z.real();
 			x[2*i+1] = v[i]->z.imag();
 		}
@@ -132,7 +132,7 @@ namespace vb {
 		Minimizer<double> M (2*n, [this](const Vector<double> &x, Vector<double> *g) { return fg_balance (x,g); });
 		double output = M.minimize_qn (x);
 
-		for (long i=0; i<n; ++i) {
+		for (int i=0; i<n; ++i) {
 			v[i]->z = cpx (M.x[2*i],M.x[2*i+1]);
 		}
 
@@ -370,11 +370,11 @@ namespace vb {
 	double Map::fg_balance (const Vector<double> &x, Vector<double> * g) {
 		double c = 0.0;
 
-		for (long i=0; i < n; ++i) {
+		for (int i=0; i < n; ++i) {
 			(*g)[2*i] = 0;
 			(*g)[2*i+1] = 0;
 
-			for (long j : v[i]->adj) {
+			for (int j : v[i]->adj) {
 				c += (x[2*j] - x[2*i]) * (x[2*j] - x[2*i]);
 				c += (x[2*j+1] - x[2*i+1]) * (x[2*j+1] - x[2*i+1]);
 				if (!(bd[i])) {
@@ -392,8 +392,8 @@ namespace vb {
 
 		*g = Vector<double>::Zero (g->rows(),1);
 
-		for (long i=0; i < n; ++i) {
-			for (long j : v[i]->adj) {
+		for (int i=0; i < n; ++i) {
+			for (int j : v[i]->adj) {
 				double dx = x[3*j]-x[3*i];
 				double dy = x[3*j+1]-x[3*i+1];
 				double l = sqrt(dx*dx + dy*dy);
@@ -415,7 +415,7 @@ namespace vb {
 	double Map::fg_circle_bd (const Vector<double> &x, Vector<double> * g) {
 		double c = fg_circle_base (x,g);
 
-		for (long i=0; i < n; ++i)
+		for (int i=0; i < n; ++i)
 			if (bd[i])
 				(*g)[3*i+2] = 0.0;
 
@@ -425,7 +425,7 @@ namespace vb {
 	double Map::fg_circle_disk (const Vector<double> &x, Vector<double> * g) {
 		double c = fg_circle_base (x,g);
 
-		for (long i=0; i < n; ++i) {
+		for (int i=0; i < n; ++i) {
 			double l2 = x[3*i]*x[3*i] + x[3*i+1]*x[3*i+1];
 			double l = sqrt(l2);
 			double r = x[3*i+2];

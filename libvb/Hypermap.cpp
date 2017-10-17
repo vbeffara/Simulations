@@ -63,8 +63,8 @@ namespace vb {
 		initial.resize (sigma.size(),0);
 		for (int i=0; i<N; ++i) {
 			initial[alpha[i]] = initial[i] % 2;
-			if (((unsigned(initial[i]) & 2u) != 0) &&
-			    ((unsigned(initial[alpha[sigma[sigma[sigma[alpha[i]]]]]]) & 2u) != 0)) initial[alpha[i]] |= 4;
+			if (((initial[i] & 2u) != 0) &&
+			    ((initial[alpha[sigma[sigma[sigma[alpha[i]]]]]] & 2u) != 0)) initial[alpha[i]] |= 4u;
 		}
 	}
 
@@ -154,7 +154,7 @@ namespace vb {
 
 	void Hypermap::relabel (const Permutation & p) {
 		sigma = sigma.conjugate(p); alpha = alpha.conjugate(p); phi = phi.conjugate(p);
-		std::vector<int> b (sigma.size()); for (int i=0; i<sigma.size(); ++i) b[p[i]] = initial[i]; initial=b;
+		std::vector<unsigned> b (sigma.size()); for (int i=0; i<sigma.size(); ++i) b[p[i]] = initial[i]; initial=b;
 	}
 
 	void Hypermap::dessin () {
@@ -196,7 +196,7 @@ namespace vb {
 			if (M.V[i].fixed) continue;
 			auto & adj = M.V[i].adj; int n = adj.size(); if (n==2) continue;
 			double s = M.alpha_xyz (out[i],out[adj[0]],out[adj[n-1]]);
-			for (long j=0; j<n-1; ++j) s += M.alpha_xyz (out[i],out[adj[j]],out[adj[j+1]]);
+			for (int j=0; j<n-1; ++j) s += M.alpha_xyz (out[i],out[adj[j]],out[adj[j+1]]);
 			er[i] = s-2*M_PI; se += fabs(er[i]);
 			double c = cos(s/n); double nr = M.ccn(n) * (1-c + sqrt(2*(1-c))) / (1+c); out[i] *= 1.1*nr - .1;
 		}

@@ -85,9 +85,12 @@ namespace vb {
 
 		for (auto & v : V) {
 			cpx z = v.z;
-			if ( (((mode&1) != 0)&&((v.bone) != 0)) || (((mode&2) != 0)&&(v.bone == 0)) ) F.add (std::make_unique <Circle> (z,fabs(v.r),Pen(BLACK,.3)));
+			if ( (((mode&1u) != 0) && (v.bone != 0)) ||
+				 (((mode&2u) != 0) && (v.bone == 0)) ) F.add (std::make_unique <Circle> (z,fabs(v.r),Pen(BLACK,.3)));
 			for (int e : sc[v.i]) {
-				if ( (((mode&4) != 0)&&((initial[e]&1) != 0)) || (((mode&8) != 0)&&((v.bone&1) != 0)) || (((mode&16) != 0)&&((v.bone&1) == 0)) ) {
+				if ( (((mode&4u) != 0) && ((initial[e]&1u) != 0)) ||
+					 (((mode&8u) != 0) && ((v.bone & 1u) != 0)) ||
+					 (((mode&16u) != 0) && ((v.bone & 1u) == 0)) ) {
 					eee.emplace_back(z);
 					eee.emplace_back(z+std::polar(v.r,E[e].a));
 					eee.emplace_back(NAN);
@@ -100,10 +103,10 @@ namespace vb {
 		for (auto v : V) {
 			if (v.r<0) continue;
 			cpx z = v.z;
-			if (((mode&32) != 0)&&((v.bone&2) != 0)) F.add (std::make_unique <Circle> (z,.01,Pen(BLACK,2,BLACK,true)));
-			if (((mode&64) != 0)&&((v.bone&4) != 0)) F.add (std::make_unique <Circle> (z,.01,Pen(BLACK,2,WHITE,true)));
-			if (((mode&128) != 0)&&((v.bone&8) != 0)) F.add (std::make_unique <Circle> (z,.01,Pen(BLACK,2,RED,true)));
-			if (((mode&256) != 0)&&((v.bone&8) != 0)) {
+			if (((mode&32) != 0)&&((v.bone & 2u) != 0)) F.add (std::make_unique <Circle> (z,.01,Pen(BLACK,2,BLACK,true)));
+			if (((mode&64) != 0)&&((v.bone & 4u) != 0)) F.add (std::make_unique <Circle> (z,.01,Pen(BLACK,2,WHITE,true)));
+			if (((mode&128) != 0)&&((v.bone & 8u) != 0)) F.add (std::make_unique <Circle> (z,.01,Pen(BLACK,2,RED,true)));
+			if (((mode&256) != 0)&&((v.bone & 8u) != 0)) {
 				std::vector<cpx> ast; for (int i=0; i<3; ++i) {
 					ast.emplace_back (z+std::polar(.013,i*M_PI/3));
 					ast.emplace_back (z+std::polar(.013,(i+3)*M_PI/3));

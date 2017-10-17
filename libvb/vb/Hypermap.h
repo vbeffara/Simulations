@@ -9,7 +9,7 @@
 namespace vb {
 	class Hypermap {
 	public:
-		struct Vertex	{ int i=0;	cpx z;      double r=1.0;	int bone=0;	std::vector<int> adj;	bool fixed = false;	};
+		struct Vertex	{ int i=0;	cpx z;      double r=1.0;	unsigned bone=0;	std::vector<int> adj;	bool fixed = false;	};
 		struct Edge  	{ int i=0;	int src=0;	double a=NAN;	                	                          	                   	};
 
 		Hypermap (Permutation s, Permutation a, Permutation p)	: sigma(std::move(s)), alpha(std::move(a)), phi(std::move(p)), initial(sigma.size(),3)	{}
@@ -44,14 +44,14 @@ namespace vb {
 
 		Permutation sigma, alpha, phi;
 
-		std::vector<int> initial;
+		std::vector<unsigned> initial;
 		std::vector<Vertex>	V;
 		std::vector<Edge>  	E;
 
 		double alpha_xyz	(double x, double y, double z)	const;
 		double ccn      	(int n)                       	const;
 
-		int mode = 228; std::string title;
+		unsigned mode = 228; std::string title;
 
 	private:
 		Permutation	rebasing	(int i)	const;

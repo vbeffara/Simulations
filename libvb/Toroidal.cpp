@@ -77,9 +77,11 @@ namespace vb {
 				for (auto & v : V) {
 					cpx z = v.z + cpx(a) + cpx(b)*m;
 					if ((imag(z)<-.6)||(imag(z)>1.7*std::max(1.0,imag(m)))||(real(z)<-.8)||(real(z)>2.6)) continue;
-					if ( (((mode&1) != 0)&&((v.bone) != 0)) || (((mode&2) != 0)&&(v.bone == 0)) ) F.add (std::make_unique <Circle> (z,v.r,Pen(BLACK,.3)));
+					if ( (((mode&1) != 0)&&(v.bone != 0)) ||
+						 (((mode&2) != 0)&&(v.bone == 0)) ) F.add (std::make_unique <Circle> (z,v.r,Pen(BLACK,.3)));
 					for (int e : sc[v.i]) {
-						if ( (((mode&4) != 0)&&((initial[e]&1) != 0)) || (((mode&8) != 0)&&((v.bone&1) != 0)) || (((mode&16) != 0)&&((v.bone&1) == 0)) ) {
+						if ( (((mode&4) != 0)&&((initial[e]&1) != 0)) ||
+							 (((mode&8) != 0)&&((v.bone&1) != 0)) || (((mode&16) != 0)&&((v.bone&1) == 0)) ) {
 							eee.emplace_back(z);
 							eee.emplace_back(z+std::polar(v.r,E[e].a));
 							eee.emplace_back(NAN);
