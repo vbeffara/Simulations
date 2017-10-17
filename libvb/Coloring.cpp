@@ -64,7 +64,7 @@ namespace vb {
 		cilk_for (int i=0; i<l; ++i) { coo c = s+d*i; if (!die) at(c) = f(c_to_z(c)); }
 		#else
 		#pragma omp parallel for schedule(dynamic)
-		for (int i=0; i<l; ++i) { coo c = s+d*i; if (!die) at(c) = f(c_to_z(c)); }
+		for (int i=0; i<l; ++i) { coo c = s+d*i; if (!die) at(c) = f(c_to_z(c)); } // NOLINT
 		#endif
 	}
 

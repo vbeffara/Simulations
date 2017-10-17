@@ -105,7 +105,7 @@ auto create (Array<int> * px0, const Array<double> & p) {
 auto aztecgen (const Array<double> & xr) {
 	auto x0 = probs(xr); int n = x0.size(); Array<int> a1;
 	if (prng.bernoulli(x0[0][coo(0,0)])) a1 = Array<int> ({{1,0},{0,1}}); else a1 = Array<int> ({{0,1},{1,0}});
-	for (long i=0; i<n-1; ++i) { a1=delslide(a1); create(&a1,x0[i+1]); }
+	for (int i=0; i<n-1; ++i) { a1=delslide(a1); create(&a1,x0[i+1]); }
 	return a1;
 }
 
@@ -132,7 +132,8 @@ int main (int argc, char ** argv) {
 		H.L->error (R"(No such weight, "{}".)", string(H['w'])); exit(1);
 	}
 
-	auto A1 = aztecgen(TP); auto H1 = height(A1);
+	auto A1 = aztecgen(TP);
+	auto H1 = height(A1);
 
 	string name = H.dir + H.title; ofstream asy (name + ".asy");
 	for (auto z : coos(A1)) if (A1[z] != 0) {

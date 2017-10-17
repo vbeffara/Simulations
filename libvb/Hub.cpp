@@ -40,7 +40,7 @@ namespace vb {
 		auto argv_ = gsl::span <char*> (argv,argc);
 		std::vector<std::string> fs;	boost::split (fs, argv_[0], boost::is_any_of(R"(/\)"));
 		prog = fs.back(); dir = "output/" + prog + "/";
-		mode_t mode = S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH;
+		mode_t mode = 0755u;
 		mkdir("output", mode); mkdir(dir.c_str(), mode); mkdir((dir + "snapshots").c_str(), mode);
 
 		std::vector<std::string> cs;	if (!c.empty()) boost::split (cs, c, boost::is_any_of(", "), boost::token_compress_on);

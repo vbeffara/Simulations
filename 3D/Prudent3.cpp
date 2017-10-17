@@ -37,7 +37,7 @@ int main (int argc, char ** argv) {
 	int l = H['l'], n = H['n'];
 	vector<int> ends (l,0);
 
-	{	ProgressBar PB (n*l); long t=0;
+	{	ProgressBar PB (n*l); int64_t t=0;
 	 	for (int i=0; i<n; ++i) {
 	 		Walker W; while (W.length < l) {
 	 			if (n==1) cout << W;

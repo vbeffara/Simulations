@@ -51,7 +51,7 @@ namespace vb {
 		}
 
 		cairo_save(cr);
-		cairo_translate     	(cr, w()/2, (crop ? real_h : h())/2);
+		cairo_translate     	(cr, w()*.5, (crop ? real_h : h())*.5);
 		cairo_scale         	(cr, scale_x*.98, -scale_y*.98); // A tiny margin for stoke width.
 		cairo_translate     	(cr, -mid_x,-mid_y);
 		cairo_set_line_width	(cr, basewidth);
