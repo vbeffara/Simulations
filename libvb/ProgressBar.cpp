@@ -8,7 +8,7 @@ namespace vb {
     ProgressBar::ProgressBar (int length, double pow) : Auto(.05), final(length), power(pow) {}
 
     ProgressBar::~ProgressBar () {
-        set(final); update(); std::cerr << "\n";
+        set(final); ProgressBar::update(); std::cerr << "\n";
     }
 
     void ProgressBar::set (int pos) {
