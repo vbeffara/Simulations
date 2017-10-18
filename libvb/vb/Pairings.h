@@ -22,7 +22,7 @@ namespace vb {
 	public:
 		Pairings (int n);
 
-		int size() const;
+		int64_t size() const;
 
 		Pairings_Iterator	begin () const;
 		Pairings_Iterator	end	() const;

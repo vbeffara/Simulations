@@ -36,8 +36,9 @@ namespace vb {
 
 	Pairings::Pairings (int n) : n(n)	{}
 
-	int Pairings::size () const {
-		return fact(n)/fact(n/2)/pow(2,n/2);
+	int64_t Pairings::size () const {
+		int64_t nn = n;
+		return fact(nn)/fact(nn/2)/(uint64_t(1) << unsigned(n/2));
 	}
 
 	Pairings_Iterator Pairings::begin () const { return Pairings_Iterator(n,0,true); }
