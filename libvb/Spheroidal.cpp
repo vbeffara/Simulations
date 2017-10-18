@@ -103,10 +103,10 @@ namespace vb {
 		for (auto v : V) {
 			if (v.r<0) continue;
 			cpx z = v.z;
-			if (((mode&32) != 0)&&((v.bone & 2u) != 0)) F.add (std::make_unique <Circle> (z,.01,Pen(BLACK,2,BLACK,true)));
-			if (((mode&64) != 0)&&((v.bone & 4u) != 0)) F.add (std::make_unique <Circle> (z,.01,Pen(BLACK,2,WHITE,true)));
-			if (((mode&128) != 0)&&((v.bone & 8u) != 0)) F.add (std::make_unique <Circle> (z,.01,Pen(BLACK,2,RED,true)));
-			if (((mode&256) != 0)&&((v.bone & 8u) != 0)) {
+			if (((mode&32u) != 0)&&((v.bone & 2u) != 0)) F.add (std::make_unique <Circle> (z,.01,Pen(BLACK,2,BLACK,true)));
+			if (((mode&64u) != 0)&&((v.bone & 4u) != 0)) F.add (std::make_unique <Circle> (z,.01,Pen(BLACK,2,WHITE,true)));
+			if (((mode&128u) != 0)&&((v.bone & 8u) != 0)) F.add (std::make_unique <Circle> (z,.01,Pen(BLACK,2,RED,true)));
+			if (((mode&256u) != 0)&&((v.bone & 8u) != 0)) {
 				std::vector<cpx> ast; for (int i=0; i<3; ++i) {
 					ast.emplace_back (z+std::polar(.013,i*M_PI/3));
 					ast.emplace_back (z+std::polar(.013,(i+3)*M_PI/3));

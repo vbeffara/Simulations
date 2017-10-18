@@ -124,13 +124,12 @@ int main (int argc, char ** argv) {
 	int m = H['m'];
 	int seed = H['s']; if (seed != 0) prng.seed (seed);
 
-	Array<double> TP;
-	if (H['w'] == "unif") TP = weights (m, Array<double> (1,1,1)); else
-	if (H['w'] == "two") TP = twoperiodic (m,H['a'],H['b']); else
-	if (H['w'] == "three") TP = threeperiodic (m,H['a'],H['b'],H['c']); else
-	if (H['w'] == "kenyon") TP = threebytwo (m,H['b']); else {
-		H.L->error (R"(No such weight, "{}".)", string(H['w'])); exit(1);
-	}
+	std::map <string, function<Array<double>()>> TPs;
+	TPs["unif"]   = [&](){ return weights (m, Array<double> (1,1,1)); };
+	TPs["two"]    = [&](){ return twoperiodic (m,H['a'],H['b']); };
+	TPs["three"]  = [&](){ return threeperiodic (m,H['a'],H['b'],H['c']); };
+	TPs["kenyon"] = [&](){ return threebytwo (m,H['b']); };
+	Array<double> TP = TPs[H['w']]();
 
 	auto A1 = aztecgen(TP);
 	auto H1 = height(A1);
@@ -151,5 +150,5 @@ int main (int argc, char ** argv) {
 	ofstream dat (name + ".dat");
 	for (auto z : coos(H1)) { dat << H1[z] << " "; if (z.x == H1.ww-1) dat << endl; }
 
-	if (system (("asy -fpdf -o " + H.dir + R"( ")" + name + R"(.asy")").c_str()) != 0) H.L->error ("Couldn't run asymptote");
+	execlp ("asy", "asy", "-fpdf", "-o", (name+".pdf2").c_str(), (name+".asy").c_str(), nullptr);
 }

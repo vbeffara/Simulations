@@ -18,10 +18,10 @@ namespace vb {
 		}
 	}
 
-	Pairings_Iterator::Pairings_Iterator (int n_, int i_, bool d) : current(n_), n(n_), i(i_) {
+	Pairings_Iterator::Pairings_Iterator (int n, int i, bool d) : current(n), n(n), i(i) {
 		if (d) {
 			std::vector<int> all; all.reserve(n);
-for (int i=0; i<n; ++i) all.push_back(i);
+			for (int i=0; i<n; ++i) all.push_back(i);
 			std::vector<int> c;
 			todo_c.push_back(c); todo_p.push_back(all);
 			next();
@@ -34,7 +34,7 @@ for (int i=0; i<n; ++i) all.push_back(i);
 
 	Permutation & Pairings_Iterator::operator* () { return current; }
 
-	Pairings::Pairings (int n_) : n(n_)	{}
+	Pairings::Pairings (int n) : n(n)	{}
 
 	int Pairings::size () const {
 		return fact(n)/fact(n/2)/pow(2,n/2);

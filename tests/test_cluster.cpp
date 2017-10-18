@@ -9,7 +9,7 @@ class Cluster2 : public Cluster { public:
 	int inrad_go (coo z) {
 		if (np == w*w) return dist_to_out (z);
 		if (w == bs) return 1;
-		long ww=w/3, i = (z.x-ul.x)/ww, j = (z.y-ul.y)/ww;
+		int64_t ww=w/3, i = (z.x-ul.x)/ww, j = (z.y-ul.y)/ww;
 		auto subij = static_cast<Cluster2*> (static_cast<void*> (&sub[i+3*j]));
 		return subij->inrad_go(z);
 	}
@@ -24,15 +24,15 @@ int main (int argc, char ** argv) {
     Image I (729,729); I.show();
     if (H['v']) I.snapshot_setup("ORRW_cluster",60);
 
-    Cluster2 W; coo z(0,0); W.insert(z); long sup_=0, t_=0;
+    Cluster2 W; coo z(0,0); W.insert(z); int64_t sup_=0, t_=0;
 
-    for (long t=0 ;; t++) {
+    for (int64_t t=0 ;; t++) {
 		int ir = W.inrad_go(z), d = 1 + ir/2;
         coo nz = z + dz[prng.uniform_int(4)] * d;
         bool there = (d>1) ? true : W.at(nz);
         if (there || prng.bernoulli(a)) {
 			z = nz; if (!there) W.insert(z);
-			long ns = sup(z); if ((ns >= sup_ + 10) || (t >= t_ + 1000000)) {
+			int64_t ns = sup(z); if ((ns >= sup_ + 10) || (t >= t_ + 1000000)) {
 				sup_ = max (sup_, ns); t_ = t; W.paint (I);
 				H.L->info ("time = {:<15} radius = {:>5} {:>9} particles", double(t),sup_,W.np);
 				if ((l != 0) && (sup_ >= l)) break;
