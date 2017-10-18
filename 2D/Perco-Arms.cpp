@@ -29,7 +29,7 @@ void add_one (Graph * gg, int i, int j) {
 
 int main(int argc, char **argv) {
 	H.init ("Percolation arm exponents", argc,argv, "n=100,t=1,p=.5");
-	int64_t n = H['n'];
+	int64_t n = H['n']; if (n<=0) n=100;
 	int n_iter = H['t'];
 	double p = H['p'];
 
