@@ -8,7 +8,7 @@ namespace vb {
 		if (t==1) return RED;
 		return WHITE;
 	}
-}
+} // namespace vb
 
 class IsingCFTP : public Bitmap<int> {
 public:

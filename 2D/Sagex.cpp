@@ -5,7 +5,7 @@ using namespace vb; using namespace std;
 
 namespace vb {
 	template<> Color to_Color (int t) { static const vector<Color> C = { BLACK, RED, GREEN }; return C[t]; }
-}
+} // namespace vb
 
 class Site { public:
 	explicit Site          	(int i = 0) :	state(i)	{};

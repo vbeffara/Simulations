@@ -2,7 +2,7 @@
 
 namespace vb {
 	template<> Color to_Color (int t) { return Indexed(t+1); }
-}
+} // namespace vb
 
 class Contact : public vb::Automaton<int> { public:
 	explicit Contact (const vb::Hub & H) : Automaton<int> (H['n'],1,H['p']) {

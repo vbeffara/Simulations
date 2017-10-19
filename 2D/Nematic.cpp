@@ -8,7 +8,7 @@ namespace vb {
 		static const std::vector<Color> key = { BLACK, RED, GREEN };
 		return key[t];
 	}
-}
+} // namespace vb
 
 class Nematic : public vb::Bitmap<int> { public:
 	Nematic (int n_, int m_, int k_, double b_) : Bitmap<int> (n_,m_), k(k_), b(b_), P(std::max(n_,m_),0) {};

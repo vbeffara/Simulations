@@ -4,7 +4,7 @@ using namespace std; using namespace vb;
 
 namespace vb {
 	template<> Color to_Color (int t) { return t==0 ? BLACK : Indexed(t); }
-}
+} // namespace vb
 
 class ACP : public Bitmap<int> { public:
 	explicit ACP (const Hub & H) : Bitmap<int> (int(H['n']), int(H['n'])), kid(H['z']), maxage (H['m']) {

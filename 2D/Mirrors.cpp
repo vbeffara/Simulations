@@ -29,7 +29,7 @@ namespace vb {
 		if (t==STATE_VISITED) return Grey(128);
 		return colors[t%8];
 	}
-}
+} // namespace vb
 
 class Mirrors : public Bitmap<uint8_t> {
 public:

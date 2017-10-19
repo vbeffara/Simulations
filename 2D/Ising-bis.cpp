@@ -5,7 +5,7 @@ using namespace vb; using namespace std;
 
 namespace vb {
 	template<> Color to_Color (int t) { return t != 0 ? Indexed((3+t)/2) : Grey(128); }
-}
+} // namespace vb
 
 class Ising : public Bitmap<int> { public:
 	Ising (int n, double beta, int con) : Bitmap<int>(n,n), con(con), p(2*con+1) {

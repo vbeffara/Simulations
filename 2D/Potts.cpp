@@ -7,7 +7,7 @@ namespace vb {
 		static const vector<Color> C { RED, BLUE, YELLOW, GREEN, MAGENTA, CYAN };
 		if ((t>=0)&&(t<6)) return C[t]; if (t<0) return WHITE; return Indexed(t);
 	}
-}
+} // namespace vb
 
 class Potts : public Bitmap<int> { public:
 	Potts (int n, int q, double beta_) : Bitmap<int> (n,n), q(q), beta(beta_) {

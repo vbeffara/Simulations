@@ -15,7 +15,7 @@ namespace vb {
         static const std::vector<Color> colors { C_EAST, C_NORTH, C_WEST, C_SOUTH };
         return colors[t];
     }
-}
+} // namespace vb
 
 class World : public vb::Bitmap<uint8_t> {
 public:

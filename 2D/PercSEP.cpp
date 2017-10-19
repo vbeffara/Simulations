@@ -6,7 +6,7 @@ const vector<Color> C = { BLACK, Grey(90), GREEN, Color(128,0,0) };
 
 namespace vb {
 	template<> Color to_Color (int t) { return C[t]; }
-}
+} // namespace vb
 
 class PercSEP : public Bitmap<int> { public:
 	explicit PercSEP (const Hub & H) : Bitmap<int> (2*int(H['n']), H['n']),

@@ -31,7 +31,7 @@ namespace vb {
 		if (t==1) return RED;
 		return Grey(215 - (t*215)/m);
 	}
-}
+} // namespace vb
 
 class Snake : public Bitmap<int> {
 public:

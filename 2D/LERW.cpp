@@ -5,7 +5,7 @@ using namespace vb;
 
 namespace vb {
     template<> Color to_Color (int t) { return Grey(t); }
-}
+} // namespace vb
 
 class LERW : private Bitmap<int> { public:
     explicit LERW (const Hub &H) : Bitmap<int> (2*int(H['n']),2*int(H['n'])) {
