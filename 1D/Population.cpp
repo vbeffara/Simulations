@@ -3,8 +3,8 @@
 #include <vb/PRNG.h>
 #include <vb/ProgressBar.h>
 
-using std::vector, std::cout, std::endl, std::max;
-using vb::prng, vb::H, vb::cpx, vb::Path;
+using std::vector; using std::cout; using std::endl; using std::max;
+using vb::prng; using vb::H; using vb::cpx; using vb::Path;
 
 double a0 = 10, aex1 = 20, aex2 = 20, sigmab0 = .5, sigmabex1 = .1, sigmabex2 = .1, Ac = .3, sigmac = .1, slope = 0;
 

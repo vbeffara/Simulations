@@ -1,8 +1,8 @@
 #include <vb/PRNG.h>
 #include <vb/ProgressBar.h>
 
-using std::cout, std::endl, std::max;
-using vb::H, vb::prng;
+using std::cout; using std::endl; using std::max;
+using vb::H; using vb::prng;
 
 int main(int argc, char ** argv) {
 	H.init ("PingPong process", argc,argv, "n=1000,a=1,b=.5,f");
