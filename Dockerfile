@@ -1,4 +1,4 @@
-FROM ubuntu:zesty
+FROM ubuntu:artful
 MAINTAINER Vincent Beffara <vbeffara@gmail.com>
 
 RUN apt-get update -qq
