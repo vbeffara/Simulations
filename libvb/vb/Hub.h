@@ -1,9 +1,10 @@
 #pragma once /// \file
 #undef False
+#define SPDLOG_FMT_EXTERNAL
 #include <boost/chrono.hpp>
 #include <cstdlib>
 #include <map>
-#include <spdlog/fmt/ostr.h>
+#include <fmt/ostream.h>
 #include <spdlog/spdlog.h>
 #include <string>
 
