@@ -23,10 +23,12 @@ const vector<Color> colors = {	MIRROR_NW, MIRROR_NE, MIRROR_FLIP_NW, MIRROR_FLIP
 
 const vector<int> flip_ne = {1,0,3,2}, flip_nw = {3,2,1,0};
 
-template<> Color vb::to_Color (uint8_t t) {
-	if (t==0) return BLACK;
-	if (t==STATE_VISITED) return Grey(128);
-	return colors[t%8];
+namespace vb {
+	template<> Color to_Color (uint8_t t) {
+		if (t==0) return BLACK;
+		if (t==STATE_VISITED) return Grey(128);
+		return colors[t%8];
+	}
 }
 
 class Mirrors : public Bitmap<uint8_t> {

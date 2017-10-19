@@ -3,9 +3,11 @@
 
 using namespace vb;
 
-template<> Color vb::to_Color (int t) {
-	static const std::vector<Color> key = { BLACK, RED, GREEN };
-	return key[t];
+namespace vb {
+	template<> Color to_Color (int t) {
+		static const std::vector<Color> key = { BLACK, RED, GREEN };
+		return key[t];
+	}
 }
 
 class Nematic : public vb::Bitmap<int> { public:

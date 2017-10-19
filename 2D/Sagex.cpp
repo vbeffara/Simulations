@@ -3,7 +3,9 @@
 
 using namespace vb; using namespace std;
 
-template<> Color vb::to_Color (int t) { static const vector<Color> C = { BLACK, RED, GREEN }; return C[t]; }
+namespace vb {
+	template<> Color to_Color (int t) { static const vector<Color> C = { BLACK, RED, GREEN }; return C[t]; }
+}
 
 class Site { public:
 	explicit Site          	(int i = 0) :	state(i)	{};

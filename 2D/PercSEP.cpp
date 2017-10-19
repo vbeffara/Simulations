@@ -4,7 +4,9 @@ using namespace vb; using namespace std;
 
 const vector<Color> C = { BLACK, Grey(90), GREEN, Color(128,0,0) };
 
-template<> Color vb::to_Color (int t) { return C[t]; }
+namespace vb {
+	template<> Color to_Color (int t) { return C[t]; }
+}
 
 class PercSEP : public Bitmap<int> { public:
 	explicit PercSEP (const Hub & H) : Bitmap<int> (2*int(H['n']), H['n']),

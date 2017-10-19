@@ -2,9 +2,11 @@
 
 using namespace vb; using namespace std;
 
-template<> Color vb::to_Color (int t) {
-	static const vector<Color> C { RED, BLUE, YELLOW, GREEN, MAGENTA, CYAN };
-	if ((t>=0)&&(t<6)) return C[t]; if (t<0) return WHITE; return Indexed(t);
+namespace vb {
+	template<> Color to_Color (int t) {
+		static const vector<Color> C { RED, BLUE, YELLOW, GREEN, MAGENTA, CYAN };
+		if ((t>=0)&&(t<6)) return C[t]; if (t<0) return WHITE; return Indexed(t);
+	}
 }
 
 class Potts : public Bitmap<int> { public:

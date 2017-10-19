@@ -10,9 +10,11 @@
 #define C_WEST  vb::Color(0,0,255)
 #define C_SOUTH vb::Color(255,255,0)
 
-template<> vb::Color vb::to_Color (uint8_t t) {
-    static const std::vector<vb::Color> colors { C_EAST, C_NORTH, C_WEST, C_SOUTH };
-    return colors[t];
+namespace vb {
+    template<> Color to_Color (uint8_t t) {
+        static const std::vector<Color> colors { C_EAST, C_NORTH, C_WEST, C_SOUTH };
+        return colors[t];
+    }
 }
 
 class World : public vb::Bitmap<uint8_t> {

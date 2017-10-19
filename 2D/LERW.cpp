@@ -3,7 +3,9 @@
 
 using namespace vb;
 
-template<> Color vb::to_Color (int t) { return Grey(t); }
+namespace vb {
+    template<> Color to_Color (int t) { return Grey(t); }
+}
 
 class LERW : private Bitmap<int> { public:
     explicit LERW (const Hub &H) : Bitmap<int> (2*int(H['n']),2*int(H['n'])) {

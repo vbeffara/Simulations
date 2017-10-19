@@ -25,10 +25,12 @@ vector<int> bridge (int n, bool p=false) {
 
 int m=1;
 
-template<> Color vb::to_Color (int t) {
-	if (t==0) return WHITE;
-	if (t==1) return RED;
-	return Grey(215 - (t*215)/m);
+namespace vb {
+	template<> Color to_Color (int t) {
+		if (t==0) return WHITE;
+		if (t==1) return RED;
+		return Grey(215 - (t*215)/m);
+	}
 }
 
 class Snake : public Bitmap<int> {

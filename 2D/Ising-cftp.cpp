@@ -2,10 +2,12 @@
 
 using namespace vb; using namespace std;
 
-template<> Color vb::to_Color (int t) {
-	if (t==0) return BLACK;
-	if (t==1) return RED;
-	return WHITE;
+namespace vb {
+	template<> Color to_Color (int t) {
+		if (t==0) return BLACK;
+		if (t==1) return RED;
+		return WHITE;
+	}
 }
 
 class IsingCFTP : public Bitmap<int> {
