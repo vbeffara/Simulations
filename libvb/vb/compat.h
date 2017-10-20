@@ -38,7 +38,7 @@ apply_impl( Fn && fn, Tpl && tpl, index_sequence< I ... >)
     return std::invoke( std::forward< Fn >( fn), std::get< I >( std::forward< Tpl >( tpl) ) ... );
 }
 
-#if _LIBCPP_STD_VER <= 14
+#if _LIBCPP_STD_VER <= 17
 template< typename Fn, typename Tpl >
 auto
 apply( Fn && fn, Tpl && tpl)

@@ -1,5 +1,5 @@
 #pragma once
-// #include <vb/compat.h>
+#include <vb/compat.h>
 #include <boost/coroutine2/all.hpp>
 
 namespace vb {
