@@ -10,7 +10,7 @@ namespace vb {
 
 	using namespace cln;
 
-	boost::optional<cl_UP_R> guess (const cl_R & x, int nd) {
+	std::optional<cl_UP_R> guess (const cl_R & x, int nd) {
 		cl_F xf = cl_float(x);
 		auto m = expt (cl_float(10,xf),nd*2/3);
 
@@ -40,10 +40,10 @@ namespace vb {
 			if (abs(xx-xf) < expt(cl_float(10,xf),5-nd)) return P;
 		}
 
-		return boost::none;
+		return std::nullopt;
 	}
 
-	boost::optional<cl_UP_N> guess_c (const cl_N & x, int nd) {
+	std::optional<cl_UP_N> guess_c (const cl_N & x, int nd) {
 		auto m = expt (cl_float(10),nd*2/3);
 
 		for (int d=1; d<=nd/10; ++d) {
@@ -81,10 +81,10 @@ namespace vb {
 			if (abs(xx-x) < expt(cl_float(10),10-nd)) return P;
 		}
 
-		return boost::none;
+		return std::nullopt;
 	}
 
-	boost::optional<cl_UP_N> guess_r (const cl_N & x, int nd) {
+	std::optional<cl_UP_N> guess_r (const cl_N & x, int nd) {
 		auto m = expt (cl_float(10),nd*2/3);
 
 		for (int d=1; d<=nd/10; ++d) {
@@ -116,6 +116,6 @@ namespace vb {
 			if (abs(xx-x) < expt(cl_float(10),10-nd)) return P;
 		}
 
-		return boost::none;
+		return std::nullopt;
 	}
 } // namespace vb

@@ -197,7 +197,7 @@ namespace vb {
 		return { to_cpx<T> (xmin,ymin), to_cpx<T> (xmax,ymax) };
 	}
 
-	template <typename T> boost::optional<Hypermap> Constellation0<T>::explore () const {
+	template <typename T> std::optional<Hypermap> Constellation0<T>::explore () const {
 		std::vector<Star<T>> Z;
 		for (const auto & z : b) Z.push_back(z);
 		for (const auto & z : f) Z.push_back(z);
@@ -227,7 +227,7 @@ namespace vb {
 					he.push_back(index++);
 				}
 			}
-			if (hs.size()!=2*z.d) return boost::none;
+			if (hs.size()!=2*z.d) return std::nullopt;
 			hands.push_back(hs);
 			halfedges.push_back(he);
 		}
@@ -263,7 +263,7 @@ namespace vb {
 							T nd = abs(nz-hands[k][kk]);
 							if (nd < d) { d = abs(nz-hands[k][kk]); h = kk; }
 						}
-						if (h<0) return boost::none;
+						if (h<0) return std::nullopt;
 						pairs.emplace_back(std::vector<int> {halfedges[i][j],halfedges[k][h]});
 						looking = false;
 					}
@@ -273,7 +273,7 @@ namespace vb {
 							T nd = abs(nz-hands[k][kk]);
 							if (nd < d) { d = abs(nz-hands[k][kk]); h = kk; }
 						}
-						if (h<0) return boost::none;
+						if (h<0) return std::nullopt;
 						if (halfedges[i][j] < halfedges[k][h])
 							pairs.emplace_back(std::vector<int> {halfedges[i][j],halfedges[k][h]});
 						looking = false;
@@ -283,9 +283,9 @@ namespace vb {
 			}
 		}
 
-		if (pairs.size() != index/2) return boost::none;
+		if (pairs.size() != index/2) return std::nullopt;
 		Permutation sigma(halfedges), alpha(pairs), phi((sigma*alpha).inverse());
-		for (auto & c : phi.cycles()) if (c.size() != 3) return boost::none;
+		for (auto & c : phi.cycles()) if (c.size() != 3) return std::nullopt;
 
 		return Hypermap (sigma,alpha,phi);
 	}

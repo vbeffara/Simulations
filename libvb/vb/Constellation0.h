@@ -1,8 +1,8 @@
 #pragma once
+#include <optional>
 #include <vb/Constellation.h>
 #include <vb/Hypermap_lib.h>
 #include <vb/Polynomial.h>
-#include <boost/optional.hpp>
 
 namespace vb {
 	template <typename T> class Constellation0 : public Constellation<T> { public:
@@ -19,7 +19,7 @@ namespace vb {
 
 		void	belyi	();	// does too many things at once
 
-		boost::optional<Hypermap>	explore	()	const; // Recover the hypermap
+		std::optional<Hypermap>	explore	()	const; // Recover the hypermap
 
 	private:
 		Vector<cplx>	vec    	()	const override;

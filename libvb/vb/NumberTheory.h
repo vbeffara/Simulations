@@ -1,11 +1,11 @@
 #pragma once
 #include <vb/Polynomial.h>
-#include <boost/optional.hpp>
+#include <optional>
 
 namespace vb {
-	boost::optional<cln::cl_UP_R> guess   (const cln::cl_R & x, int nd);
-	boost::optional<cln::cl_UP_N> guess_c (const cln::cl_N & x, int nd);
-	boost::optional<cln::cl_UP_N> guess_r (const cln::cl_N & x, int nd);
+	std::optional<cln::cl_UP_R> guess   (const cln::cl_R & x, int nd);
+	std::optional<cln::cl_UP_N> guess_c (const cln::cl_N & x, int nd);
+	std::optional<cln::cl_UP_N> guess_r (const cln::cl_N & x, int nd);
 
 	#ifdef UNIT_TESTS
 	TEST_CASE ("NumberTheory guess functions") {
