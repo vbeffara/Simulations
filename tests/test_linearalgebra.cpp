@@ -1,5 +1,4 @@
 #include <iomanip>
-#include <vb/Hub.h>
 #include <vb/LinearAlgebra.h>
 
 using namespace vb; using namespace cln; using namespace std;

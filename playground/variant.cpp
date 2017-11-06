@@ -1,5 +1,4 @@
 #include <vb/cpx.h>
-#include <vb/util.h>
 #include <vector>
 
 #if __has_include(<variant>)

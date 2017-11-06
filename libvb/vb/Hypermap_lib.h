@@ -1,6 +1,5 @@
 #pragma once
 #include <vb/Hypermap.h>
-#include <map>
 
 /*
  * Naming: m_* are genus 0 "true" maps, lat_* are genus 1 maps, rest are genus 0 hypermaps
@@ -18,4 +17,13 @@ namespace vb {
 	Hypermap H_genus1	(int n);	// One arbitrary triangulation of the torus with n vertices
 
 	class HLib : public std::map <std::string,Hypermap> { public: HLib (); };
+
+	#ifdef UNIT_TESTS
+	TEST_CASE ("vb::Hypermap library") {
+		CHECK (HLib().at("tripod_l").sigma.size() == 4);
+		CHECK (!H_artem(12).is_simple(6));
+		CHECK (H_genus0(15).is_triangulation());
+		CHECK (H_genus1(18).is_graph());
+	}
+	#endif
 }

@@ -30,4 +30,12 @@ namespace vb {
 
 	std::ostream & operator<< (std::ostream &os, const Passport &P);
 	std::ostream & operator<< (std::ostream &os, const Permutation &P);
+
+	#ifdef UNIT_TESTS
+	TEST_CASE ("vb::Permutation") {
+		Permutation P1 = Transposition (4,0,1), P2 = Transposition (4,0,2), P = P1 * P2;
+		Passport PP = P.passport();
+		CHECK (PP[0].first == 3);
+	}
+	#endif
 }

@@ -1,6 +1,5 @@
 #pragma once
 #include <vb/Constellation1.h>
-#include <vb/NumberTheory.h>
 #include <vb/Toroidal.h>
 #include <iomanip>
 

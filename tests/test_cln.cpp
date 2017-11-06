@@ -1,5 +1,4 @@
 #include <vb/cpx.h>
-#include <vb/util.h>
 
 using namespace vb; using namespace std; using namespace cln;
 

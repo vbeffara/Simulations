@@ -10,7 +10,6 @@
 #include <iomanip>
 #include <vb/Coloring.h>
 #include <vb/Constellation1.h>
-#include <vb/NumberTheory.h>
 #include <vb/Pairings.h>
 #include <vb/ProgressBar.h>
 

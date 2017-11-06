@@ -16,4 +16,15 @@ namespace vb {
 	Stream <Permutation> permutations (std::vector<int> s);
 
 	Stream <Hypermap> hypermaps (const std::vector<int> & s, const std::vector<int> & a, const std::vector<int> & p);
+
+	#ifdef UNIT_TESTS
+	TEST_CASE ("vb::Stream lib") {
+		CHECK (size(cycles(3,6)) == 40);
+		CHECK (size(permutations(7)) == fact(7));
+		CHECK (size(hypermaps ({2,2,2},{2,2,2},{3,3})) == 1);
+
+		int n=0; for (const auto & c : partitions(6)) n += size (permutations(c));
+		CHECK (n == fact(6));
+	}
+	#endif
 }

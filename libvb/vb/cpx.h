@@ -1,8 +1,8 @@
 #pragma once /// @file
-
 #include <cln/cln.h>
 #include <cmath>
 #include <complex>
+#include <vb/util.h>
 
 namespace cln {
 	inline cl_R norm (const cl_N & z) { return realpart(z)*realpart(z) + imagpart(z)*imagpart(z); }
@@ -48,4 +48,13 @@ namespace vb {
 	template <typename T> typename cpx_t<T>::type to_cpx (const T & x, const T & y) { return typename cpx_t<T>::type (x,y); }
 	template <typename T> typename cpx_t<T>::type to_cpx (const cpx & z) { return to_cpx<T> (real(z),imag(z)); }
 	template <> complex_t to_cpx <real_t> (const real_t & x, const real_t & y);
+
+	#ifdef UNIT_TESTS
+	TEST_CASE ("vb::cpx") {
+		cpx z (1.0,2.3);
+		CHECK (str(z) == "(1,2.3)");
+		cpxint zz = cln::complex (1,-3);
+		CHECK (str(zz) == "1-3i");
+	}
+	#endif
 } // namespace vb

@@ -2,7 +2,6 @@
 #include <FL/Fl_Hor_Nice_Slider.H>
 #include <FL/Fl_Output.H>
 #include <FL/Fl_Window.H>
-#include <boost/lexical_cast.hpp>
 #include <vb/AutoWindow.h>
 #include <vb/cpx.h>
 

@@ -9,9 +9,7 @@
 #include <vb/Constellation1.h>
 #include <vb/Cube.h>
 #include <vb/Figure.h>
-#include <vb/Hypermap_lib.h>
 #include <vb/Minimizer.h>
-#include <vb/NumberTheory.h>
 #include <vb/Pov.h>
 #include <vb/ProgressBar.h>
 #include <vb/Stream_lib.h>

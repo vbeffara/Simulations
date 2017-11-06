@@ -2,6 +2,7 @@
 #include <vb/Constellation.h>
 #include <vb/Elliptic.h>
 #include <vb/Hypermap.h>
+#include <vb/NumberTheory.h>
 
 namespace vb {
 	template <typename T> class Constellation1 : public Constellation<T> { public:
@@ -44,4 +45,14 @@ namespace vb {
 	};
 
 	template <typename T> std::ostream & operator<< (std::ostream & os, const Constellation1<T> & C);
+
+	#ifdef UNIT_TESTS
+	TEST_CASE ("vb::Constellation1") {
+		auto M = HLib().at("lat_SV");
+		Constellation1<double> C {M,H};
+		Constellation1<real_t> Cq (C);
+		Cq.findn();
+		CHECK (str(*(guess_r(Cq.E.j(),80))) == "1*z^2 + -914416*z + 590816592");
+	}
+	#endif
 }
