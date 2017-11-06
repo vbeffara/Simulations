@@ -49,4 +49,15 @@ namespace vb {
 		void operator++         ()                                     	{ x++; if (x == c->sx) { x=0; y++; } if (y == c->sy) { y=0; z++; }	}
 		const uint8_t & operator*	()                                     	{ return c->at(*this);                                  	}
 	};
+
+	#ifdef UNIT_TESTS
+	TEST_CASE ("vb::Cube") {
+		Cube C (100,100,100);
+		C.putp(C.rand(),1);
+		int s=0; for (auto v : C) s += v;
+		CHECK (s == 1);
+		CHECK (Color(C.at({0,0})).a == 255);
+		C.output_pov();
+	}
+	#endif
 } // namespace vb

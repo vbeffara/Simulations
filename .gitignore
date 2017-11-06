@@ -24,3 +24,4 @@ fit.log
 /warnings.*
 .vscode/.cmaketools.json
 /.idea
+Simulations.srctrl*

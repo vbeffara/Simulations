@@ -7,7 +7,6 @@
 #include <vb/Coloring.h>
 #include <vb/Constellation0.h>
 #include <vb/Constellation1.h>
-#include <vb/Cube.h>
 #include <vb/Figure.h>
 #include <vb/Hypermap_lib.h>
 #include <vb/Minimizer.h>
@@ -22,33 +21,6 @@ using namespace vb; using namespace std; using namespace cln;
 template <typename T> auto str (const T & t) { return boost::lexical_cast<string>(t); }
 
 // Data structures
-
-BOOST_AUTO_TEST_CASE (test_Array) {
-	Array<int> A (23,45,1);
-	BOOST_TEST (A.contains({6,3}));
-	BOOST_TEST (!A.contains({23,1}));
-	BOOST_TEST (!A.contains({5,45}));
-
-	A.put({1,1}, 2);
-	BOOST_TEST (A.at({3,4}) == 1);
-	BOOST_TEST (A.at({1,1}) == 2);
-
-	A.putp({5*23+4,7*45+10}, 0);
-	BOOST_TEST (A.atp({23+4,-45+10}) == 0);
-
-	A.at(A.rand()) += 10;
-	int s = 0; for (auto i : A) s += i;
-	BOOST_TEST (s == 23*45 + 10);
-}
-
-BOOST_AUTO_TEST_CASE (test_Cube) {
-	Cube C (100,100,100);
-	C.putp(C.rand(),1);
-	int s=0; for (auto v : C) s += v;
-	BOOST_TEST (s == 1);
-	BOOST_TEST (Color(C.at({0,0})).a == 255);
-	C.output_pov();
-}
 
 BOOST_AUTO_TEST_CASE (test_TriMatrix) {
 	TriMatrix <int> M;
