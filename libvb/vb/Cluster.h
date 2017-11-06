@@ -26,4 +26,20 @@ namespace vb {
 		std::vector <Cluster> sub;
 		static int64_t bs;
 	};
+
+	#ifdef UNIT_TESTS
+	TEST_CASE ("vb::Cluster") {
+		Cluster C;
+		C.insert ({35,42});
+		C.insert ({1234,5678});
+		C.insert ({91823749,-2793474});
+		C.remove ({1234,5678});
+
+		CHECK (C.at({35,42}));
+		CHECK (!C.at({1234,5678}));
+		CHECK (C.at({91823749,-2793474}));
+		CHECK (!C.at({3,4}));
+		CHECK (!C.at({981327,2371827}));
+	}
+	#endif
 }

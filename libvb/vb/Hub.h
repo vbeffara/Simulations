@@ -51,4 +51,27 @@ namespace vb {
 	};
 
 	extern Hub H;
+
+	#ifdef UNIT_TESTS
+	TEST_CASE ("vb::Value") {
+		Value v1 ("1"), v2 ("3.4");
+		CHECK (bool(v1));
+		CHECK (int(v1) == 1);
+		CHECK (int64_t(v1) == 1);
+		CHECK (double(v2) == 3.4);
+
+		v1 = "45"; CHECK (int(v1) == 45);
+	}
+
+	TEST_CASE ("vb::Hub") {
+		std::vector<std::string> argv_ { "cmd", "-s", "3", "-u" };
+		std::vector<char*> argv; argv.reserve(argv_.size()); for (auto & s : argv_) argv.push_back(&s[0]);
+
+		H.init ("Title", 4, argv.data(), "s=5,t=7,u,v");
+		CHECK (int(H['t']) == 7);
+		CHECK (int(H['s']) == 3);
+		CHECK (H['u']);
+		CHECK (!H['v']);
+	}
+	#endif
 } // namespace vb

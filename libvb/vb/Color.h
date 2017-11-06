@@ -51,4 +51,12 @@ namespace vb {
 	inline std::ostream & operator<< (std::ostream & o, const Color & c) {
 		return o << fmt::format("RGBA({},{},{},{})", c.r, c.g, c.b, c.a);
 	}
+
+	#ifdef UNIT_TESTS
+	TEST_CASE ("vb::Color") {
+		Color c = Grey(123);
+		CHECK (c == Color(123,123,123));
+		CHECK (c != Color(122,123,123));
+	}
+	#endif
 } // namespace vb

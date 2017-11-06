@@ -1,4 +1,3 @@
-#include <vb/Hub.h>
 #include <vb/Stream_lib.h>
 
 using namespace std;

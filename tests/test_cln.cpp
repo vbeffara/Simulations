@@ -1,4 +1,3 @@
-#include <boost/lexical_cast.hpp>
 #include <vb/cpx.h>
 #include <vb/util.h>
 

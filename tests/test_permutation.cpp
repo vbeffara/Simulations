@@ -1,6 +1,5 @@
 #include <algorithm>
 #include <iomanip>
-#include <vb/Hub.h>
 #include <vb/Stream_lib.h>
 
 using namespace vb; using namespace std;

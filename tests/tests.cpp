@@ -1,6 +1,5 @@
 #define BOOST_TEST_MODULE libvb unit tests
 #define BOOST_TEST_DYN_LINK
-#include <boost/lexical_cast.hpp>
 #include <boost/test/unit_test.hpp>
 
 #include <vb/Cluster.h>
@@ -18,93 +17,8 @@
 
 using namespace vb; using namespace std; using namespace cln;
 
-template <typename T> auto str (const T & t) { return boost::lexical_cast<string>(t); }
-
-// Data structures
-
-BOOST_AUTO_TEST_CASE (test_TriMatrix) {
-	TriMatrix <int> M;
-	M.put({35,42}, 3);
-	M.put({1234,5678}, 5);
-	M.put({91823749,-2793474}, 23);
-
-	BOOST_TEST (M.at({35,42}) == 3);
-	BOOST_TEST (M.at({1234,5678}) == 5);
-	BOOST_TEST (M.at({91823749,-2793474}) == 23);
-	BOOST_TEST (M.at({3,4}) == 0);
-	BOOST_TEST (M.at({981327,2371827}) == 0);
-}
-
-BOOST_AUTO_TEST_CASE (test_Cluster) {
-	Cluster C;
-	C.insert ({35,42});
-	C.insert ({1234,5678});
-	C.insert ({91823749,-2793474});
-	C.remove ({1234,5678});
-
-	BOOST_TEST (C.at({35,42}));
-	BOOST_TEST (!C.at({1234,5678}));
-	BOOST_TEST (C.at({91823749,-2793474}));
-	BOOST_TEST (!C.at({3,4}));
-	BOOST_TEST (!C.at({981327,2371827}));
-}
-
-// Utility classes
-
-BOOST_AUTO_TEST_CASE (test_coo) {
-	coo z1 {2,3}, z2 {4,-1};
-	BOOST_TEST (z1+z2 == coo(6,2));
-	BOOST_TEST (z1-z2 == coo(-2,4));
-	BOOST_TEST (-z1 == coo(-2,-3));
-	BOOST_TEST (z1*3 == coo(6,9));
-	BOOST_TEST (z1/2 == coo(1,1));
-
-	z1 += z2; z2 -= z1;
-	BOOST_TEST (cpx(z2) == cpx(-2,-3));
-	BOOST_TEST (norm(z2) == 13);
-	BOOST_TEST (sup(z2) == 3);
-	BOOST_TEST (str(z1) == "(6,2)");
-}
-
-BOOST_AUTO_TEST_CASE (test_Color) {
-	Color c = Grey(123);
-	BOOST_TEST (c == Color(123,123,123));
-	BOOST_TEST (c != Color(122,123,123));
-}
-
-BOOST_AUTO_TEST_CASE (test_ProgressBar) {
-	auto l = Auto::tasks.size();
-	{
-		ProgressBar P (1e8);
-		BOOST_TEST (Auto::tasks.size() == l+1);
-		BOOST_TEST (Auto::tasks.back().active);
-		for (int i=0; i<1e6; ++i) P.set(i);
-	}
-	BOOST_TEST (!Auto::tasks.back().active);
-}
-
-BOOST_AUTO_TEST_CASE (test_Value) {
-	Value v1 ("1"), v2 ("3.4");
-	BOOST_TEST (bool(v1));
-	BOOST_TEST (int(v1) == 1);
-	BOOST_TEST (int64_t(v1) == 1);
-	BOOST_TEST (double(v2) == 3.4);
-
-	v1 = "45"; BOOST_TEST (int(v1) == 45);
-}
-
 // Globals and control structures
 
-BOOST_AUTO_TEST_CASE (test_Hub) {
-	vector<string> argv_ { "cmd", "-s", "3", "-u" };
-	vector<char*> argv; argv.reserve(argv_.size()); for (auto & s : argv_) argv.push_back(&s[0]);
-
-	H.init ("Title", 4, argv.data(), "s=5,t=7,u,v");
-	BOOST_TEST (int(H['t']) == 7);
-	BOOST_TEST (int(H['s']) == 3);
-	BOOST_TEST (H['u']);
-	BOOST_TEST (!H['v']);
-}
 
 
 BOOST_AUTO_TEST_CASE (test_Stream) {
