@@ -6,7 +6,7 @@ ninja -C build
 mkdir -p build/cov
 
 lcov -z -d build
-./build/tests/tests
+./build/tests/doctest
 lcov -c -d build -d libvb -o build/cov/cov.info --gcov-tool gcov-6 --no-external -q
 
 genhtml -q -o build/cov build/cov/cov.info

@@ -17,7 +17,6 @@ unittests:
     - Xvfb :4 &
     - export DISPLAY=:4
     - lcov -z -d build
-    - ./build/tests/tests -r short -l error -x
     - ./build/tests/doctest
     - lcov -c -d build -d libvb -o build/cov/cov.info --no-external -q
     - codecov -t $CODECOV_TOKEN

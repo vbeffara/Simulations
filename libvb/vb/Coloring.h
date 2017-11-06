@@ -36,4 +36,11 @@ namespace vb {
 		int handle (int event) override;
 		int pixel_detail=0;
 	};
+
+	#ifdef UNIT_TESTS
+	TEST_CASE ("vb::Coloring") {
+		Coloring C (cpx(0,0), cpx(1,1), 500, [](cpx z){ return Indexed(real(z)*imag(z)*10); });
+		C.scale(1.2); C.shift(cpx(.2,.3)); C.show(); C.hide();
+	}
+	#endif
 } // namespace vb

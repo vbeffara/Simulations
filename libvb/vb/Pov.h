@@ -53,4 +53,10 @@ namespace vb {
 	class Pov_Box         	: public Pov_Object { public: Pov_Box         	(tri a, tri b);          	                    	};
 	class Pov_Plane       	: public Pov_Object { public: Pov_Plane       	(tri a, double d);       	                    	};
 	class Pov_Frame       	: public Pov_Union  { public: Pov_Frame       	(tri a, tri b,           	std::string t = "");	};
+
+	#ifdef UNIT_TESTS
+	TEST_CASE ("vb::Pov and friends") {
+		Pov_Box PB ({0.0,1.0,2.0}, {3.0,4.0,5.0});
+	}
+	#endif
 }
