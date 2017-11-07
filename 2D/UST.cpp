@@ -10,7 +10,8 @@ class Point { public:
 	explicit operator Color() {
 		if ((t == SITE) || (t == EDGE)) return WHITE;
 		if (t == EMPH) return RED;
-		if (d<0) return BLACK; return Indexed(d);
+		if (d<0) return BLACK;
+		return Indexed(d);
 	}
 
 	int d = -1;
