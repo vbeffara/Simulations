@@ -1,6 +1,5 @@
 #include <fplll.h>
 #include <vb/NumberTheory.h>
-#include <vb/config.h>
 
 namespace vb {
 	// template Polynomial<bigint> guess (real_t x, real_t eps);
