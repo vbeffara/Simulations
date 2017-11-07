@@ -7,8 +7,8 @@ namespace vb {
 		n(0), ul(UL), br(BR), center((ul+br)/2), iul(br), ibr(ul), m(M), ch(0) {}
 
 	int QuadTree::index (coo z) const {
-		if (z.y<center.y)	{ if (z.x<center.x) return 0; return 1; }
-		            	      if (z.x<center.x) return 2; return 3;
+		if (z.y<center.y) return (z.x<center.x) ? 0 : 1;
+		return (z.x<center.x) ? 2 : 3;
 	}
 
 	void QuadTree::insert (coo z) {

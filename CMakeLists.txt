@@ -2,8 +2,14 @@ cmake_minimum_required (VERSION 3.0)
 project (Simulations)
 
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -fdiagnostics-color=always -pedantic -DBOOST_NO_AUTO_PTR")
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-unused-local-typedefs -Wno-unused-function -Wno-sign-compare -Wno-mismatched-tags -Wno-undefined-var-template")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-unused-local-typedefs -Wno-unused-function -Wno-sign-compare")
 set (CMAKE_EXPORT_COMPILE_COMMANDS 1)
+
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-mismatched-tags -Wno-undefined-var-template")
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-int-in-bool-context")
+endif()
 
 include (FindOpenMP)
 if (${OPENMP_CXX_FOUND})

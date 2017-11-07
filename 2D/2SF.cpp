@@ -13,7 +13,9 @@ class Point { public:
 		if (t == DUAL) return ((d==2)||(d==3)) ? Color(200,100,0)	: Color(128,255,128);
 		if (t == DEDG) return ((d==2)||(d==3)) ? Color(200,100,0)	: Color(128,255,128);
 
-		if (t==EMPH) return BLACK; if (d<0) return WHITE; return Indexed(d);
+		if (t==EMPH) return BLACK;
+		if (d<0) return WHITE;
+		return Indexed(d);
 	}
 
 	Type t = VOID;
