@@ -16,3 +16,4 @@ script:
   - cd build
   - cmake .. -G Ninja -DCOV=1
   - ninja
+  - cd ..
