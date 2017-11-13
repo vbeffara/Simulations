@@ -1,33 +1,6 @@
 {
     "files.associations": {
-        "*.ipp": "cpp",
-        "vector": "cpp",
-        "queue": "cpp",
-        "__functional_base": "cpp",
-        "array": "cpp",
-        "future": "cpp",
-        "istream": "cpp",
-        "locale": "cpp",
-        "memory": "cpp",
-        "thread": "cpp",
-        "tuple": "cpp",
-        "utility": "cpp",
-        "gsl": "cpp",
-        "multi_span": "cpp",
-        "variant": "cpp",
-        "random": "cpp",
-        "__locale": "cpp",
-        "__config": "cpp",
-        "__nullptr": "cpp",
-        "exception": "cpp",
-        "initializer_list": "cpp",
-        "new": "cpp",
-        "stdexcept": "cpp",
-        "typeinfo": "cpp",
-        "type_traits": "cpp",
-        "cctype": "cpp",
-        "cstddef": "cpp",
-        "cstdlib": "cpp",
-        "cstdint": "cpp"
+        "algorithm": "cpp",
+        "list": "cpp"
     }
 }
