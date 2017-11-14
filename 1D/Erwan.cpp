@@ -1,7 +1,13 @@
 #include <vb/LinearAlgebra.h>
 #include <vb/PRNG.h>
+#include <vb/config.h>
 
 using namespace vb; using namespace std; using Eigen::Matrix2d;
+
+#ifdef CMAES
+#include "cmaes.h"
+using namespace libcmaes;
+#endif
 
 double lambda (const Matrix2d & A) { return abs (A(0,0) + A(1,1)); }
 
@@ -54,22 +60,38 @@ class Erwan { public:
         return s/t;
     }
 
-    vector<vector<double>> explore (int n, int t, int m) {
-        double rec = 1.0; vector<vector<double>> best;
-        vector<vector<double>> p = random_markov(4);
-        for (int i=0; i<m; ++i) {
-            p = random_markov(4);
-            double tmp = avg (n,t,p);
-            if (tmp < rec) {
-                H.L->info ("  Current best value: {}", tmp);
-                rec = tmp; best = p;
+    vector<vector<double>> x_to_p (const double *x) {
+        vector<vector<double>> p;
+        for (int i=0; i<4; ++i) {
+            p.push_back ({}); double s=0;
+            for (int j=0; j<4; ++j) {
+                double ss = x[4*i+j]*x[4*i+j];
+                if (ss<.2) ss=.2; if (ss>5) ss=5;
+                p.back().push_back (ss); s += ss;
             }
+            for (auto & v : p.back()) v /= s;
         }
-        return best;
+        return p;
+    }
+
+    vector<vector<double>> explore_cmaes (int n, int t) {
+#ifdef CMAES
+        FitFunc f = [this,n,t] (const double *x, const int /* N */) {
+            return abs (avg (n,t,x_to_p(x)) - 2.0/3.0);
+        };
+        vector<double> x0 (16,.25);
+        double sigma = 0.1;
+        CMAParameters<> cmaparams(x0,sigma);
+        CMASolutions cmasols = cmaes<>(f,cmaparams);
+        return x_to_p(cmasols.get_best_seen_candidate().get_x_ptr());
+#else
+        H.L->warn ("No CMAES, answering at random");
+        return random_markov(4);
+#endif
     }
 
     void run (int n, int t) {
-        auto p = explore (n,t/100,H['m']);
+        auto p = explore_cmaes (n, t/1000);
 
         for (int i=0; i<4; ++i) {
             H.L->info ("Transition matrix: {} {} {} {}", p[i][0], p[i][1], p[i][2], p[i][3]);
@@ -86,6 +108,6 @@ class Erwan { public:
 };
 
 int main (int argc, char ** argv) {
-    H.init ("Erwan's product of random matrices", argc,argv, "n=100,t=100,m=1000");
+    H.init ("Erwan's product of random matrices", argc,argv, "n=1000,t=10000");
     Erwan().run(H['n'],H['t']);
 }
