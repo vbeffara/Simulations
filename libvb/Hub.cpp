@@ -13,9 +13,7 @@
 namespace vb {
 	Hub::Hub () {
 	    Fl::gl_visual (FL_RGB);
-	    #ifndef NO_RETINA
 	    Fl::use_high_res_GL (1);
-	    #endif
 
 	    cln::default_float_format = cln::float_format(100);
 

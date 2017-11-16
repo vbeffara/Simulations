@@ -39,7 +39,7 @@ namespace vb {
 		#ifdef CILK
 		cilk_for (int i=0; i<cs.size(); ++i) if (!die) at(cs[i]) = aa_color(cs[i],true); // NOLINT
 		#else
-		#pragma omp parallel for schedule(dynamic)
+		#pragma omp parallel for simd schedule(dynamic)
 		for (int i=0; i<cs.size(); ++i) if (!die) at(cs[i]) = aa_color(cs[i],true); // NOLINT
 		#endif
 	}
@@ -65,7 +65,7 @@ namespace vb {
 		#ifdef CILK
 		cilk_for (int i=0; i<l; ++i) { coo c = s+d*i; if (!die) at(c) = f(c_to_z(c)); }
 		#else
-		#pragma omp parallel for schedule(dynamic)
+		#pragma omp parallel for simd schedule(dynamic)
 		for (int i=0; i<l; ++i) { coo c = s+d*i; if (!die) at(c) = f(c_to_z(c)); } // NOLINT
 		#endif
 	}

@@ -1,11 +1,7 @@
 #pragma once
 
-#cmakedefine BIGENDIAN
-
-#cmakedefine CMAES
-
 #cmakedefine GIT_SHA1 "@GIT_SHA1@"
 
-#cmakedefine NO_RETINA
-
+#cmakedefine BIGENDIAN
+#cmakedefine CMAES
 #cmakedefine SPDLOG_COLOR_MT
