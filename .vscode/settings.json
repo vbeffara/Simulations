@@ -1,6 +1,15 @@
 {
     "files.associations": {
         "algorithm": "cpp",
-        "list": "cpp"
+        "list": "cpp",
+        "array": "cpp",
+        "deque": "cpp",
+        "map": "cpp",
+        "string": "cpp",
+        "string_view": "cpp",
+        "unordered_map": "cpp",
+        "vector": "cpp",
+        "gsl_util": "cpp",
+        "span": "cpp"
     }
 }

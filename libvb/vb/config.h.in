@@ -2,13 +2,6 @@
 
 #cmakedefine BIGENDIAN
 
-#cmakedefine CILK
-#ifndef CILK
-#define cilk_spawn /**/
-#define cilk_sync /**/
-#define cilk_for = for
-#endif
-
 #cmakedefine CMAES
 
 #cmakedefine GIT_SHA1 "@GIT_SHA1@"

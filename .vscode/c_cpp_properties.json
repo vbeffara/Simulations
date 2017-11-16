@@ -12,7 +12,8 @@
                 "${workspaceRoot}/libvb",
                 "/usr/local/Cellar/cairo/1.14.10/include/cairo",
                 "${workspaceRoot}/build/libvb",
-                "/usr/local/include/eigen3"
+                "/usr/local/include/eigen3",
+                "/usr/local/include/libcmaes"
             ],
             "defines": [],
             "intelliSenseMode": "clang-x64",

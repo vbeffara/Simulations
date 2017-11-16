@@ -1,9 +1,9 @@
 #include <pcg_random.hpp>
 #include <vb/PRNG.h>
-#include <vb/config.h>
 #include <vb/util.h>
 
-#ifdef CILK
+#if __has_include(<cilk/cilk.h>)
+#define CILK
 #include <cilk/cilk.h>
 #include <cilk/cilk_api.h>
 #include <cilk/reducer_opadd.h>

@@ -1,8 +1,12 @@
 #include <vb/Coloring.h>
 
-#ifdef CILK
+#if __has_include(<cilk/cilk.h>)
+#define CILK
 #include <cilk/cilk.h>
 #include <cilk/cilk_api.h>
+#else
+#define cilk_spawn //
+#define cilk_sync //
 #endif
 
 namespace vb {
@@ -32,14 +36,12 @@ namespace vb {
 				if (!u) cs.push_back(c);
 			}
 		}
-#if defined(CILK)
+		#ifdef CILK
 		cilk_for (int i=0; i<cs.size(); ++i) if (!die) at(cs[i]) = aa_color(cs[i],true); // NOLINT
-#elif defined(_OPENMP)
+		#else
 		#pragma omp parallel for schedule(dynamic)
 		for (int i=0; i<cs.size(); ++i) if (!die) at(cs[i]) = aa_color(cs[i],true); // NOLINT
-#else
-		for (auto c : cs) if (!die) at(c) = aa_color(c,true);
-#endif
+		#endif
 	}
 
 	void Coloring::scale (double s) { cpx mid = (z1+z2)/2.0; z1 = mid + s * (z1-mid); z2 = mid + s * (z2-mid); }
