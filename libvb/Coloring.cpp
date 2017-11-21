@@ -1,14 +1,5 @@
 #include <vb/Coloring.h>
 
-#if __has_include(<cilk/cilk.h>)
-#define CILK
-#include <cilk/cilk.h>
-#include <cilk/cilk_api.h>
-#else
-#define cilk_spawn //
-#define cilk_sync //
-#endif
-
 namespace vb {
 	Coloring::Coloring (cpx z1_, cpx z2_, int n, std::function <Color(cpx)> f_) :
 			Picture(n,n*imag(z2_-z1_)/real(z2_-z1_)), eps(real(z1_-z2_)/n), z1(z1_), z2(z2_), f(std::move(f_)) {}
@@ -36,12 +27,8 @@ namespace vb {
 				if (!u) cs.push_back(c);
 			}
 		}
-		#ifdef CILK
-		cilk_for (int i=0; i<cs.size(); ++i) if (!die) at(cs[i]) = aa_color(cs[i],true); // NOLINT
-		#else
-		#pragma omp parallel for simd schedule(dynamic)
+		#pragma omp parallel for schedule(dynamic)
 		for (int i=0; i<cs.size(); ++i) if (!die) at(cs[i]) = aa_color(cs[i],true); // NOLINT
-		#endif
 	}
 
 	void Coloring::scale (double s) { cpx mid = (z1+z2)/2.0; z1 = mid + s * (z1-mid); z2 = mid + s * (z2-mid); }
@@ -62,20 +49,20 @@ namespace vb {
 	}
 
     void Coloring::line (coo s, coo d, int l) {
-		#ifdef CILK
-		cilk_for (int i=0; i<l; ++i) { coo c = s+d*i; if (!die) at(c) = f(c_to_z(c)); }
-		#else
-		#pragma omp parallel for simd schedule(dynamic)
-		for (int i=0; i<l; ++i) { coo c = s+d*i; if (!die) at(c) = f(c_to_z(c)); } // NOLINT
-		#endif
+		if (l>=10) {
+			auto one = std::async ([=]{ line (s,d,l/2); }), two = std::async ([=]{ line (s+d*(l/2),d,l-(l/2)); });
+			one.get(); two.get();
+		} else {
+			for (int i=0; i<l; ++i) { coo c = s+d*i; if (!die) at(c) = f(c_to_z(c)); } // NOLINT
+		}
 	}
 
     void Coloring::tessel (coo ul, coo lr) {
-        cilk_spawn line (ul, coo(1,0), lr.x-ul.x);
-        cilk_spawn line (coo(lr.x,ul.y), coo(0,1), lr.y-ul.y);
-        cilk_spawn line (lr, coo(-1,0), lr.x-ul.x);
-        cilk_spawn line (coo(ul.x,lr.y), coo(0,-1), lr.y-ul.y);
-        cilk_sync; tessel_go (ul, lr);
+        line (ul, coo(1,0), lr.x-ul.x);
+        line (coo(lr.x,ul.y), coo(0,1), lr.y-ul.y);
+        line (lr, coo(-1,0), lr.x-ul.x);
+        line (coo(ul.x,lr.y), coo(0,-1), lr.y-ul.y);
+        tessel_go (ul, lr);
     }
 
     void Coloring::tessel_go (coo ul, coo lr) {
@@ -93,7 +80,9 @@ namespace vb {
         coo lr_ = (lr.x-ul.x > lr.y-ul.y) ? coo {(ul.x+lr.x)/2,lr.y} : coo {lr.x,(ul.y+lr.y)/2};
         coo dd_ = (lr.x-ul.x > lr.y-ul.y) ? coo {0,1} : coo {1,0};
 
-        line (ul_,dd_,size); cilk_spawn tessel_go (ul,lr_); cilk_spawn tessel_go (ul_,lr); cilk_sync;
+		line (ul_,dd_,size);
+		auto one = std::async ([=]{ tessel_go (ul,lr_); }), two = std::async ([=]{ tessel_go (ul_,lr); });
+		one.get(); two.get();
     }
 
 	int Coloring::handle (int event) {

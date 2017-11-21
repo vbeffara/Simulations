@@ -2,13 +2,6 @@
 #include <vb/PRNG.h>
 #include <vb/util.h>
 
-#if __has_include(<cilk/cilk.h>)
-#define CILK
-#include <cilk/cilk.h>
-#include <cilk/cilk_api.h>
-#include <cilk/reducer_opadd.h>
-#endif
-
 using namespace vb; using namespace std;
 
 int main (int argc, char ** argv) {
@@ -58,15 +51,6 @@ int main (int argc, char ** argv) {
 	timing ("Stored state, first version", [n]{
 		double s=0; for (int i=0; i<n; ++i) { double o = prng.gaussian(); s += o*o; } return s/n;
 	});
-
-#ifdef CILK
-	timing ("CILK based multithreaded", [n]{
-		auto go = []{ static thread_local PRNG p; auto o = p.gaussian(); return o*o; };
-		cilk::reducer <cilk::op_add<double>> ps (0);
-		cilk_for (int i=0; i<n; ++i) *ps += go();
-		return ps.get_value()/n;
-	});
-#endif
 
 #ifdef _OPENMP
 	timing ("OpenMP based multithreaded", [n]{

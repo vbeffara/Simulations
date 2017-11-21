@@ -7,23 +7,6 @@
 
 using namespace vb; using namespace std;
 
-#if __has_include(<cilk/cilk.h>)
-#define CILK
-#include <cilk/cilk.h>
-#include <cilk/cilk_api.h>
-#include <cilk/reducer_opadd.h>
-
-int fib (int n) { return n<2 ? n : fib(n-1) + fib(n-2); }
-
-int fib_cilk (int n) {
-    if (n < 20) return fib(n);
-    int x = cilk_spawn fib_cilk (n-1);
-    int y = fib_cilk (n-2);
-    cilk_sync;
-    return x + y;
-}
-#endif
-
 double cost (double x) { for (int i=0; i<10; ++i) x = cos(x); return x; }
 
 int main (int argc, char ** argv) {
@@ -64,10 +47,6 @@ int main (int argc, char ** argv) {
     });
 #endif
 
-#ifdef CILK
-    timing ("Fibonacci  | CILK", []{ return fib_cilk(H['n']); });
-#endif
-
     timing ("Map+reduce | Single (fill then sum)", [=]{
         vector<double> X(l); for (int i=0; i<l; ++i) X[i] = cost(i);
         double s=0; for (auto x:X) s+=x; return s - int64_t(s);
@@ -98,6 +77,34 @@ int main (int argc, char ** argv) {
     });
 #endif
 
+    timing ("Map+reduce | Async (split fill then sum)", [=]{
+        class mr { public:
+            vector<double> X;
+            mr (int l) : X(l) { run (0,l); }
+            void run (int l1, int l2) {
+                if (l2-l1 <= 100000) { for (int i=l1; i<l2; ++i) X[i] = cost(i); return; }
+                int l3 = (l1+l2)/2;
+                auto one = async ([=]{ run (l1,l3); }), two = async ([=]{ run (l3,l2); });
+                one.get(); two.get();
+            }
+            double sum () { double s=0; for (auto x:X) s+=x; return s - int64_t(s); }
+        };
+        return mr(l).sum();
+    });
+
+    timing ("Map+reduce | Async (split direct sum)", [=]{
+        class mr { public:
+            double run (int l1, int l2) {
+                if (l2-l1 <= 100000) { double s=0; for (int i=l1; i<l2; ++i) s += cost(i); return s; }
+                int l3 = (l1+l2)/2;
+                auto one = async ([=]{ return run (l1,l3); }), two = async ([=]{ return run (l3,l2); });
+                return one.get() + two.get();
+            }
+            double sum (int l) { double s=run(0,l); return s - int64_t(s); }
+        };
+        return mr().sum(l);
+    });
+
 #ifdef _OPENMP
     timing ("Map+reduce | OpenMP (fill then sum)", [=]{
         vector<double> X(l);
@@ -125,20 +132,6 @@ int main (int argc, char ** argv) {
         #pragma omp parallel for simd reduction(+:s)
         for (int i=0; i<l; ++i) s += cost(i); // NOLINT
         return s - int64_t(s);
-    });
-#endif
-
-#ifdef CILK
-    timing ("Map+reduce | CILK (fill then sum)", [=]{
-        vector<double> X(l);
-        cilk_for (int i=0; i<l; ++i) X[i] = cost(i);
-        double s=0; for (auto x:X) s+=x; return s - int64_t(s);
-    });
-
-    timing ("Map+reduce | CILK (direct reduction)", [=]{
-        cilk::reducer_opadd <double> s (0);
-        cilk_for (int i=0; i<l; ++i) *s += cost(i);
-        return s.get_value() - int64_t(s.get_value());
     });
 #endif
 }
