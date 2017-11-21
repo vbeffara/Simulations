@@ -1,4 +1,5 @@
 #include <cmath>
+#include <future>
 #include <numeric>
 #include <vb/Generator.h>
 #include <vb/Stream.h>
@@ -32,6 +33,17 @@ int main (int argc, char ** argv) {
     timing ("Fibonacci  | Single (recursive)", [=]{
         class fib { public: int operator() (int n) { return n<2 ? n : (*this)(n-1) + (*this)(n-2); } };
         return fib()(n);
+    });
+
+    timing ("Fibonacci  | Async (recursive)", [=]{
+        class fib       { public: int operator() (int n) { return n<2 ? n : (*this)(n-1) + (*this)(n-2); } };
+        class fib_async { public: int operator() (int n) {
+            if (n<30) return fib()(n);
+            auto res1 = async ([=](){ return (*this)(n-1); });
+            auto res2 = async ([=](){ return (*this)(n-2); });
+            return res1.get() + res2.get();
+        } };
+        return fib_async()(n);
     });
 
 #ifdef _OPENMP
