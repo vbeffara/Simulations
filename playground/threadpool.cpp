@@ -37,8 +37,9 @@ public:
         }
     }
 
-    thread_pool(int nt) {
-        for (int i = 0; i < nt; ++i) runners.emplace_back(async([=] { runner(); }));
+    thread_pool() {
+        int nt = thread::hardware_concurrency();
+        for (int i = 0; i < (nt ? nt : 1); ++i) runners.emplace_back(async([=] { runner(); }));
     }
 
     ~thread_pool() { stop = true; }
@@ -61,12 +62,11 @@ void go(thread_pool & TP, vector<double> & X, int i, int j) {
 
 int main(int argc, char ** argv) {
     H.init("Thread pool project", argc, argv, "l=4000000");
-    int l = H['l'];
+    vector<double> X((int(H['l'])));
 
-    vector<double> X(l);
     {
-        thread_pool TP(8);
-        TP.enqueue([l, &X, &TP] { go(TP, X, 0, l); });
+        thread_pool TP;
+        TP.enqueue([&X, &TP] { go(TP, X, 0, X.size()); });
     }
 
     double s = 0;

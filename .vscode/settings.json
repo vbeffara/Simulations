@@ -24,6 +24,7 @@
         "valarray": "cpp",
         "multi_span": "cpp",
         "string_span": "cpp",
-        "*.ipp": "cpp"
+        "*.ipp": "cpp",
+        "thread": "cpp"
     }
 }
