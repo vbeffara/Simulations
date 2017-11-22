@@ -49,12 +49,10 @@ namespace vb {
 	}
 
     void Coloring::line (coo s, coo d, int l) {
-		if (l>=10) {
-			auto one = std::async ([=]{ line (s,d,l/2); }), two = std::async ([=]{ line (s+d*(l/2),d,l-(l/2)); });
-			one.get(); two.get();
-		} else {
-			for (int i=0; i<l; ++i) { coo c = s+d*i; if (!die) at(c) = f(c_to_z(c)); } // NOLINT
-		}
+		if (l<=50) { for (int i=0; i<l; ++i) { coo c = s+d*i; if (!die) at(c) = f(c_to_z(c)); } return; } // NOLINT
+		auto one = std::async (std::launch::async, [=]{ line (s,d,l/2); });
+		line (s+d*(l/2),d,l-(l/2));
+		one.get();
 	}
 
     void Coloring::tessel (coo ul, coo lr) {
@@ -81,8 +79,10 @@ namespace vb {
         coo dd_ = (lr.x-ul.x > lr.y-ul.y) ? coo {0,1} : coo {1,0};
 
 		line (ul_,dd_,size);
-		auto one = std::async ([=]{ tessel_go (ul,lr_); }), two = std::async ([=]{ tessel_go (ul_,lr); });
-		one.get(); two.get();
+		if (size<=50) { tessel_go (ul,lr_); tessel_go (ul_,lr); return; }
+		auto one = std::async (std::launch::async, [=]{ tessel_go (ul,lr_); });
+		tessel_go (ul_,lr);
+		one.get();
     }
 
 	int Coloring::handle (int event) {
