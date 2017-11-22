@@ -9,21 +9,25 @@
 using namespace std;
 using vb::H;
 
+struct task : public function<vector<task>(void)> {
+    using function<vector<task>(void)>::function;
+};
+
 class thread_pool {
 public:
-    vector<function<void(void)>> tasks;
-    vector<future<void>>         runners;
-    mutex                        tasks_m;
-    atomic<int>                  running = 0;
-    bool                         stop    = false;
+    vector<task>         tasks;
+    vector<future<void>> runners;
+    mutex                tasks_m;
+    atomic<int>          running = 0;
+    bool                 stop    = false;
 
-    void enqueue(function<void(void)> t) {
+    void enqueue(task t) {
         lock_guard l(tasks_m);
         tasks.push_back(t);
     }
 
     void runner() {
-        function<void(void)> t;
+        task t;
         while (!(stop && tasks.empty() && (running == 0))) {
             {
                 lock_guard l(tasks_m);
@@ -32,7 +36,7 @@ public:
                 ++running;
                 tasks.pop_back();
             }
-            t();
+            for (auto tt : t()) enqueue(tt);
             --running;
         }
     }
@@ -50,24 +54,20 @@ double cost(double x) {
     return x;
 }
 
-void go(thread_pool & TP, vector<double> & X, int i, int j) {
+vector<task> go(vector<double> & X, int i, int j) {
     if (j - i <= 1000) {
         for (int k = i; k < j; ++k) X[k] = cost(k);
-        return;
+        return {};
     }
     int k = (i + j) / 2;
-    TP.enqueue([k, j, &X, &TP] { go(TP, X, k, j); });
-    TP.enqueue([i, k, &X, &TP] { go(TP, X, i, k); });
+    return {bind(go, ref(X), i, k), bind(go, ref(X), k, j)};
 }
 
 int main(int argc, char ** argv) {
     H.init("Thread pool project", argc, argv, "l=4000000");
     vector<double> X((int(H['l'])));
 
-    {
-        thread_pool TP;
-        TP.enqueue([&X, &TP] { go(TP, X, 0, X.size()); });
-    }
+    thread_pool().enqueue([&X] { return go(X, 0, X.size()); });
 
     double s = 0;
     for (auto x : X) s += x;

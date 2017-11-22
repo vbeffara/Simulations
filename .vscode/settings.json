@@ -25,6 +25,9 @@
         "multi_span": "cpp",
         "string_span": "cpp",
         "*.ipp": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "__functional_03": "cpp",
+        "functional": "cpp",
+        "iosfwd": "cpp"
     }
 }
