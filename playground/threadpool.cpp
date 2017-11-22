@@ -69,7 +69,7 @@ int main(int argc, char ** argv) {
     H.init("Thread pool project", argc, argv, "l=4000000");
     vector<double> X((int(H['l'])));
 
-    thread_pool().enqueue([&X] { return go(X, 0, X.size()); });
+    thread_pool().enqueue(bind(go, ref(X), 0, X.size()));
 
     double s = 0;
     for (auto x : X) s += x;
