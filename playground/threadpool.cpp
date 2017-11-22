@@ -15,37 +15,33 @@ public:
     vector<future<void>>         runners;
     mutex                        tasks_m;
     atomic<int>                  running = 0;
-
-    bool done() { return (tasks.empty()) && (running == 0); }
+    bool                         stop    = false;
 
     void enqueue(function<void(void)> t) {
-        unique_lock l(tasks_m);
+        lock_guard l(tasks_m);
         tasks.push_back(t);
     }
 
-    optional<function<void(void)>> get_one() {
-        unique_lock l(tasks_m);
-        if (tasks.empty()) return {};
-        auto t = tasks.back();
-        ++running;
-        tasks.pop_back();
-        return t;
-    }
-
     void runner() {
-        while (!done()) {
-            if (auto t = get_one()) {
-                (*t)();
-                --running;
+        function<void(void)> t;
+        while (!(stop && tasks.empty() && (running == 0))) {
+            {
+                lock_guard l(tasks_m);
+                if (tasks.empty()) continue;
+                t = tasks.back();
+                ++running;
+                tasks.pop_back();
             }
+            t();
+            --running;
         }
     }
 
-    void start() {
-        for (int i = 0; i < 10; ++i) runners.emplace_back(async([=] { runner(); }));
+    thread_pool(int nt) {
+        for (int i = 0; i < nt; ++i) runners.emplace_back(async([=] { runner(); }));
     }
 
-    void finish() { runners.clear(); }
+    ~thread_pool() { stop = true; }
 };
 
 double cost(double x) {
@@ -64,15 +60,14 @@ void go(thread_pool & TP, vector<double> & X, int i, int j) {
 }
 
 int main(int argc, char ** argv) {
-    H.init("Thread pool project", argc, argv, "n=41,l=4000000");
-    int n = H['n'], l = H['l'];
+    H.init("Thread pool project", argc, argv, "l=4000000");
+    int l = H['l'];
 
     vector<double> X(l);
-
-    thread_pool TP;
-    TP.enqueue([l, &X, &TP] { go(TP, X, 0, l); });
-    TP.start();
-    TP.finish();
+    {
+        thread_pool TP(8);
+        TP.enqueue([l, &X, &TP] { go(TP, X, 0, l); });
+    }
 
     double s = 0;
     for (auto x : X) s += x;
