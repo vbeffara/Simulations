@@ -1,6 +1,5 @@
 #include <cmath>
 #include <functional>
-#include <future>
 #include <iostream>
 #include <optional>
 #include <vb/Hub.h>
@@ -15,11 +14,11 @@ struct task : public function<vector<task>(void)> {
 
 class thread_pool {
 public:
-    vector<task>         tasks;
-    vector<future<void>> runners;
-    mutex                tasks_m;
-    atomic<int>          running = 0;
-    bool                 stop    = false;
+    vector<task>   tasks;
+    vector<thread> runners;
+    mutex          tasks_m;
+    atomic<int>    running = 0;
+    bool           stop    = false;
 
     void enqueue(task t) {
         lock_guard l(tasks_m);
@@ -43,10 +42,13 @@ public:
 
     thread_pool() {
         int nt = thread::hardware_concurrency();
-        for (int i = 0; i < (nt ? nt : 1); ++i) runners.emplace_back(async([=] { runner(); }));
+        for (int i = 0; i < (nt ? nt : 1); ++i) runners.push_back(thread([=] { runner(); }));
     }
 
-    ~thread_pool() { stop = true; }
+    ~thread_pool() {
+        stop = true;
+        for (auto & t : runners) t.join();
+    }
 };
 
 double cost(double x) {
@@ -55,7 +57,7 @@ double cost(double x) {
 }
 
 vector<task> go(vector<double> & X, int i, int j) {
-    if (j - i <= 1000) {
+    if (j - i <= 10000) {
         for (int k = i; k < j; ++k) X[k] = cost(k);
         return {};
     }
