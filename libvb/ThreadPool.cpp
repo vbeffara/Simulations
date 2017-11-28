@@ -2,7 +2,7 @@
 
 namespace vb {
     void ThreadPool::enqueue(task t) {
-        std::lock_guard l(tasks_m);
+        std::lock_guard<std::mutex> l(tasks_m);
         tasks.push_back(t);
     }
 
@@ -10,7 +10,7 @@ namespace vb {
         task t;
         while (!(stop && tasks.empty() && (running == 0))) {
             {
-                std::lock_guard l(tasks_m);
+                std::lock_guard<std::mutex> l(tasks_m);
                 if (tasks.empty()) continue;
                 t = tasks.back();
                 ++running;
