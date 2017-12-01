@@ -14,6 +14,7 @@ namespace vb {
     class ThreadPool {
     public:
         ThreadPool();
+        ThreadPool(task t);
         ~ThreadPool();
 
         void enqueue(task t);
@@ -23,7 +24,7 @@ namespace vb {
         std::vector<task>        tasks;
         std::vector<std::thread> runners;
         std::mutex               tasks_m;
-        std::atomic<int>         running = 0;
-        bool                     stop    = false;
+        std::atomic<int>         running{0};
+        bool                     stop = false;
     };
 } // namespace vb

@@ -26,6 +26,8 @@ namespace vb {
         for (int i = 0; i < (nt ? nt : 1); ++i) runners.push_back(std::thread([=] { runner(); }));
     }
 
+    ThreadPool::ThreadPool(task t) : ThreadPool() { enqueue(t); }
+
     ThreadPool::~ThreadPool() {
         stop = true;
         for (auto & t : runners) t.join();

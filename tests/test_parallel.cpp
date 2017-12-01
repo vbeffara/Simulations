@@ -115,7 +115,7 @@ int main(int argc, char ** argv) {
         };
 
         vector<double> X((int(H['l'])));
-        ThreadPool().enqueue(bind(go, ref(X), 0, X.size()));
+        ThreadPool(bind(go, ref(X), 0, X.size()));
 
         double s = 0;
         for (auto x : X) s += x;

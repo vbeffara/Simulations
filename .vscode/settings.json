@@ -28,6 +28,19 @@
         "thread": "cpp",
         "__functional_03": "cpp",
         "functional": "cpp",
-        "iosfwd": "cpp"
+        "iosfwd": "cpp",
+        "__config": "cpp",
+        "__nullptr": "cpp",
+        "exception": "cpp",
+        "new": "cpp",
+        "stdexcept": "cpp",
+        "typeinfo": "cpp",
+        "gsl": "cpp",
+        "type_traits": "cpp",
+        "cctype": "cpp",
+        "cstddef": "cpp",
+        "cstdlib": "cpp",
+        "cstdint": "cpp",
+        "variant": "cpp"
     }
 }
