@@ -3,7 +3,7 @@
 namespace vb {
     void ThreadPool::enqueue(task t) {
         std::lock_guard<std::mutex> l(tasks_m);
-        tasks.push_back(t);
+        tasks.push_back(std::move(t));
     }
 
     void ThreadPool::runner() {
@@ -16,17 +16,17 @@ namespace vb {
                 ++running;
                 tasks.pop_back();
             }
-            for (auto tt : t()) enqueue(tt);
+            for (const auto & tt : t()) enqueue(tt);
             --running;
         }
     }
 
     ThreadPool::ThreadPool() {
         int nt = std::thread::hardware_concurrency();
-        for (int i = 0; i < (nt ? nt : 1); ++i) runners.push_back(std::thread([=] { runner(); }));
+        for (int i = 0; i < (nt > 0 ? nt : 1); ++i) runners.emplace_back([=] { runner(); });
     }
 
-    ThreadPool::ThreadPool(task t) : ThreadPool() { enqueue(t); }
+    ThreadPool::ThreadPool(task t) : ThreadPool() { enqueue(std::move(t)); }
 
     ThreadPool::~ThreadPool() {
         stop = true;
