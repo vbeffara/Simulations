@@ -1,11 +1,6 @@
 #include <vb/ThreadPool.h>
 
 namespace vb {
-    void ThreadPool::enqueue(task t) {
-        std::lock_guard<std::mutex> l(tasks_m);
-        tasks.push_back(std::move(t));
-    }
-
     void ThreadPool::runner() {
         task t;
         while (!(stop && tasks.empty() && (running == 0))) {
@@ -16,7 +11,9 @@ namespace vb {
                 ++running;
                 tasks.pop_back();
             }
-            for (const auto & tt : t()) enqueue(tt);
+            const auto                  ts = t();
+            std::lock_guard<std::mutex> l(tasks_m);
+            for (const auto & tt : ts) tasks.push_back(tt);
             --running;
         }
     }
@@ -26,7 +23,10 @@ namespace vb {
         for (int i = 0; i < (nt > 0 ? nt : 1); ++i) runners.emplace_back([=] { runner(); });
     }
 
-    ThreadPool::ThreadPool(task t) : ThreadPool() { enqueue(std::move(t)); }
+    ThreadPool::ThreadPool(task t) : ThreadPool() {
+        std::lock_guard<std::mutex> l(tasks_m);
+        tasks.push_back(std::move(t));
+    }
 
     ThreadPool::~ThreadPool() {
         stop = true;

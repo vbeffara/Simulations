@@ -13,7 +13,7 @@ namespace vb {
         for (int i = 0; i < pixel_w(); ++i)
             for (int j = 0; j < pixel_h(); ++j) at(coo(i, j)) = BLACK;
         run([&] { tessel({0, 0}, {pixel_w() - 1, pixel_h() - 1}); });
-        // if (aa) run([&]() { do_aa(); });
+        if (aa) run([&]() { do_aa(); });
         update();
     }
 

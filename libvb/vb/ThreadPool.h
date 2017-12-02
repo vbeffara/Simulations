@@ -1,6 +1,5 @@
 #pragma once
 
-#include <atomic>
 #include <functional>
 #include <mutex>
 #include <thread>
@@ -17,14 +16,13 @@ namespace vb {
         ThreadPool(task t);
         ~ThreadPool();
 
-        void enqueue(task t);
+    private:
         void runner();
 
-    private:
         std::vector<task>        tasks;
         std::vector<std::thread> runners;
         std::mutex               tasks_m;
-        std::atomic<int>         running{0};
-        bool                     stop = false;
+        int                      running = 0;
+        bool                     stop    = false;
     };
 } // namespace vb
