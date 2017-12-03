@@ -1,35 +1,44 @@
+#include <atomic>
+#include <mutex>
+#include <optional>
+#include <thread>
 #include <vb/ThreadPool.h>
 
 namespace vb {
-    void ThreadPool::runner() {
-        task t;
-        while (!(stop && tasks.empty() && (running == 0))) {
-            {
-                std::lock_guard<std::mutex> l(tasks_m);
-                if (tasks.empty()) continue;
-                t = tasks.back();
-                ++running;
-                tasks.pop_back();
-            }
-            const auto                  ts = t();
-            std::lock_guard<std::mutex> l(tasks_m);
-            for (const auto & tt : ts) tasks.push_back(tt);
-            --running;
-        }
+    void execute_plain(Job t) {
+        const auto ts = t();
+        for (auto f : ts) execute_plain(f);
     }
 
-    ThreadPool::ThreadPool() {
-        int nt = std::thread::hardware_concurrency();
-        for (int i = 0; i < (nt > 0 ? nt : 1); ++i) runners.emplace_back([=] { runner(); });
-    }
+    void execute_parallel(Job t) {
+        std::vector<Job> tasks{std::move(t)};
+        std::atomic<int> ntasks{1};
+        std::mutex       tasks_m;
 
-    ThreadPool::ThreadPool(task t) : ThreadPool() {
-        std::lock_guard<std::mutex> l(tasks_m);
-        tasks.push_back(std::move(t));
-    }
-
-    ThreadPool::~ThreadPool() {
-        stop = true;
+        std::vector<std::thread> runners;
+        for (int i = 0; i < std::max(std::thread::hardware_concurrency(), 1u); ++i)
+            runners.emplace_back([&] {
+                std::optional<Job> t;
+                while (ntasks > 0) {
+                    if (!t) {
+                        std::lock_guard<std::mutex> l(tasks_m);
+                        if (tasks.empty()) continue;
+                        t = std::move(tasks.back());
+                        tasks.pop_back();
+                    }
+                    auto ts = (*t)();
+                    ntasks += ts.size() - 1;
+                    if (ts.empty()) {
+                        t = {};
+                    } else {
+                        for (int i = 0; i < ts.size() - 1; ++i) {
+                            std::lock_guard<std::mutex> l(tasks_m);
+                            tasks.push_back(std::move(ts[i]));
+                        }
+                        t = std::move(ts.back());
+                    }
+                }
+            });
         for (auto & t : runners) t.join();
     }
 } // namespace vb

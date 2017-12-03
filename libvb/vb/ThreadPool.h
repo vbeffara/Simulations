@@ -1,28 +1,19 @@
 #pragma once
 
 #include <functional>
-#include <mutex>
-#include <thread>
 #include <vector>
 
 namespace vb {
-    struct task : public std::function<std::vector<task>(void)> {
-        using std::function<std::vector<task>(void)>::function;
+    struct Job;
+
+    using Project = std::vector<Job>;
+
+    struct Job : public std::function<Project(void)> {
+        template <typename T> Job(T t) : std::function<Project(void)>(t) {}
+        using std::function<Project(void)>::operator();
     };
 
-    class ThreadPool {
-    public:
-        ThreadPool();
-        ThreadPool(task t);
-        ~ThreadPool();
+    void execute_plain(Job t);
 
-    private:
-        void runner();
-
-        std::vector<task>        tasks;
-        std::vector<std::thread> runners;
-        std::mutex               tasks_m;
-        int                      running = 0;
-        bool                     stop    = false;
-    };
+    void execute_parallel(Job t);
 } // namespace vb

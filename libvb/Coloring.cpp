@@ -81,7 +81,7 @@ namespace vb {
         }
     }
 
-    std::vector<vb::task> Coloring::tessel_go(coo ul, coo lr) {
+    Project Coloring::tessel_go(coo ul, coo lr) {
         int size = std::min(lr.x - ul.x, lr.y - ul.y);
         if (size <= 1) return {};
 
@@ -113,7 +113,7 @@ namespace vb {
         line(coo(lr.x, ul.y), coo(0, 1), lr.y - ul.y);
         line(lr, coo(-1, 0), lr.x - ul.x);
         line(coo(ul.x, lr.y), coo(0, -1), lr.y - ul.y);
-        ThreadPool([this, ul, lr]() { return tessel_go(ul, lr); });
+        execute_parallel(std::bind(&Coloring::tessel_go, this, ul, lr));
     }
 
     int Coloring::handle(int event) {

@@ -104,18 +104,27 @@ int main(int argc, char ** argv) {
     });
 #endif
 
-    timing("Map+reduce | Async (vb::ThreadPool)", [=] {
-        function<vector<task>(vector<double> &, int, int)> go = [&go](vector<double> & X, int i, int j) -> vector<task> {
-            if (j - i <= 10000) {
-                for (int k = i; k < j; ++k) X[k] = cost(k);
-                return {};
-            }
-            int k = (i + j) / 2;
-            return {bind(go, ref(X), i, k), bind(go, ref(X), k, j)};
-        };
+    function<Project(vector<double> &, int, int)> go = [&go](vector<double> & X, int i, int j) -> Project {
+        if (j - i <= 1000) {
+            for (int k = i; k < j; ++k) X[k] = cost(k);
+            return {};
+        }
+        int k = (i + j) / 2;
+        return {bind(go, ref(X), i, k), bind(go, ref(X), k, j)};
+    };
 
+    timing("Map+reduce | ThreadPool (execute_plain)", [=] {
         vector<double> X((int(H['l'])));
-        ThreadPool(bind(go, ref(X), 0, X.size()));
+        execute_plain(bind(go, ref(X), 0, X.size()));
+
+        double s = 0;
+        for (auto x : X) s += x;
+        return s - int64_t(s);
+    });
+
+    timing("Map+reduce | ThreadPool (execute_parallel)", [=] {
+        vector<double> X((int(H['l'])));
+        execute_parallel(bind(go, ref(X), 0, X.size()));
 
         double s = 0;
         for (auto x : X) s += x;
