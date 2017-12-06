@@ -1,41 +1,52 @@
 #include <atomic>
+#include <future>
 #include <mutex>
 #include <optional>
 #include <thread>
 #include <vb/ThreadPool.h>
 
 namespace vb {
+    Project Parallel(std::vector<Job> js) { return {std::move(js), {}}; }
+
+    Project Sequence(Job j1, Job j2) { return {{j1}, {j2}}; }
+
     void execute_plain(Job t) {
-        const auto ts = t();
-        for (auto f : ts) execute_plain(f);
+        for (auto f : t().jobs) execute_plain(f);
+    }
+
+    void execute_async(Job t) {
+        std::vector<std::future<void>> ts;
+        for (auto f : t().jobs) ts.emplace_back(std::async([f]() { execute_async(f); }));
     }
 
     void execute_parallel(Job t) {
-        std::vector<Job> tasks{std::move(t)};
-        std::atomic<int> ntasks{1};
-        std::mutex       tasks_m;
+        Project    P{{std::move(t)}, {}};
+        std::mutex m;
 
         std::vector<std::thread> runners;
         for (int i = 0; i < std::max(std::thread::hardware_concurrency(), 1u); ++i)
             runners.emplace_back([&] {
                 std::optional<Job> t;
-                while (ntasks > 0) {
+                while (P.njobs > 0) {
                     if (!t) {
-                        std::lock_guard<std::mutex> l(tasks_m);
-                        if (tasks.empty()) continue;
-                        t = std::move(tasks.back());
-                        tasks.pop_back();
+                        std::lock_guard<std::mutex> l(m);
+                        if (P.jobs.empty()) continue;
+                        t = std::move(P.jobs.back());
+                        P.jobs.pop_back();
                     }
                     auto ts = (*t)();
-                    ntasks += ts.size() - 1;
-                    if (ts.empty()) {
+                    {
+                        std::lock_guard<std::mutex> l(m);
+                        P.njobs += ts.jobs.size() - 1;
+                    }
+                    if (ts.jobs.empty()) {
                         t = {};
                     } else {
-                        for (int i = 0; i < ts.size() - 1; ++i) {
-                            std::lock_guard<std::mutex> l(tasks_m);
-                            tasks.push_back(std::move(ts[i]));
+                        for (int i = 0; i < ts.jobs.size() - 1; ++i) {
+                            std::lock_guard<std::mutex> l(m);
+                            P.jobs.push_back(std::move(ts.jobs[i]));
                         }
-                        t = std::move(ts.back());
+                        t = std::move(ts.jobs.back());
                     }
                 }
             });

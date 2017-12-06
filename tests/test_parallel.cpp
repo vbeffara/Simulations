@@ -105,12 +105,12 @@ int main(int argc, char ** argv) {
 #endif
 
     function<Project(vector<double> &, int, int)> go = [&go](vector<double> & X, int i, int j) -> Project {
-        if (j - i <= 1000) {
+        if (j - i <= 10000) {
             for (int k = i; k < j; ++k) X[k] = cost(k);
             return {};
         }
         int k = (i + j) / 2;
-        return {bind(go, ref(X), i, k), bind(go, ref(X), k, j)};
+        return Parallel({bind(go, ref(X), i, k), bind(go, ref(X), k, j)});
     };
 
     timing("Map+reduce | ThreadPool (execute_plain)", [=] {
@@ -131,13 +131,22 @@ int main(int argc, char ** argv) {
         return s - int64_t(s);
     });
 
+    timing("Map+reduce | ThreadPool (execute_async)", [=] {
+        vector<double> X((int(H['l'])));
+        execute_async(bind(go, ref(X), 0, X.size()));
+
+        double s = 0;
+        for (auto x : X) s += x;
+        return s - int64_t(s);
+    });
+
     timing("Map+reduce | Async (std::async, split fill + sum)", [=] {
         class mr {
         public:
             vector<double> X;
             mr(int l) : X(l) { run(0, l); }
             void run(int l1, int l2) {
-                if (l2 - l1 <= 100000) {
+                if (l2 - l1 <= 10000) {
                     for (int i = l1; i < l2; ++i) X[i] = cost(i);
                     return;
                 }

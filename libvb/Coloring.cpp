@@ -105,7 +105,7 @@ namespace vb {
         coo dd_ = (lr.x - ul.x > lr.y - ul.y) ? coo{0, 1} : coo{1, 0};
 
         line(ul_, dd_, size);
-        return {[this, ul, lr_]() { return tessel_go(ul, lr_); }, [this, ul_, lr]() { return tessel_go(ul_, lr); }};
+        return Parallel({[this, ul, lr_]() { return tessel_go(ul, lr_); }, [this, ul_, lr]() { return tessel_go(ul_, lr); }});
     }
 
     void Coloring::tessel(coo ul, coo lr) {
