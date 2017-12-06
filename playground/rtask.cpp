@@ -9,14 +9,18 @@ struct project {
     project() = default;
     template <typename... Ts> explicit project(Ts... ts) { (add(ts), ...); }
 
-    template <typename T> void add(T t) {
+    template <typename T> project & add(T t) {
         ++ndep;
         deps.emplace_back();
         deps.back().j   = std::move(t);
         deps.back().par = this;
+        return *this;
     }
 
-    template <typename T> void then(T t) { j = std::move(t); }
+    template <typename T> project & then(T t) {
+        j = std::move(t);
+        return *this;
+    }
 
     vector<project>                   deps;
     optional<function<project(void)>> j;
@@ -63,8 +67,7 @@ void step() {
 }
 
 int main() {
-    project p;
-    p.then([]() { return fakefib(5, 0); });
+    auto p = project{}.then([]() { return fakefib(5, 0); });
     fringe.push_back(&p);
     while (!fringe.empty()) step();
 }
