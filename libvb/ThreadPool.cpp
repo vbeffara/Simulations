@@ -1,14 +1,11 @@
+#include <vb/ThreadPool.h>
 #include <atomic>
 #include <future>
 #include <mutex>
-#include <optional>
 #include <thread>
-#include <vb/ThreadPool.h>
 
 namespace vb {
-    Project Parallel(std::vector<Job> js) { return {std::move(js), {}}; }
-
-    Project Sequence(Job j1, Job j2) { return {{j1}, {j2}}; }
+    Project Parallel(std::vector<Job> js) { return {std::move(js)}; }
 
     void execute_plain(Job t) {
         for (auto f : t().jobs) execute_plain(f);
@@ -20,7 +17,7 @@ namespace vb {
     }
 
     void execute_parallel(Job t) {
-        Project    P{{std::move(t)}, {}};
+        Project    P{{std::move(t)}};
         std::mutex m;
 
         std::vector<std::thread> runners;

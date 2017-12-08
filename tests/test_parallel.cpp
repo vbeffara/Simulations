@@ -1,10 +1,10 @@
-#include <cmath>
-#include <future>
-#include <numeric>
 #include <vb/Generator.h>
 #include <vb/Stream.h>
 #include <vb/ThreadPool.h>
 #include <vb/util.h>
+#include <cmath>
+#include <future>
+#include <numeric>
 
 using namespace vb;
 using namespace std;
@@ -134,6 +134,28 @@ int main(int argc, char ** argv) {
     timing("Map+reduce | ThreadPool (execute_async)", [=] {
         vector<double> X((int(H['l'])));
         execute_async(bind(go, ref(X), 0, X.size()));
+
+        double s = 0;
+        for (auto x : X) s += x;
+        return s - int64_t(s);
+    });
+
+    function<Project2(vector<double> &, int, int)> go2 = [&go2](vector<double> & X, int i, int j) -> Project2 {
+        if (j - i <= 10000) {
+            for (int k = i; k < j; ++k) X[k] = cost(k);
+            return {};
+        }
+        int      k = (i + j) / 2;
+        Project2 p;
+        p.add([i, k, &X, &go2] { return go2(X, i, k); });
+        p.add([k, j, &X, &go2] { return go2(X, k, j); });
+        p.then([] { return Project2{}; });
+        return p;
+    };
+
+    timing("Map+reduce | ThreadPool (Project2::run)", [=] {
+        vector<double> X((int(H['l'])));
+        Project2::run(bind(go2, ref(X), 0, X.size()));
 
         double s = 0;
         for (auto x : X) s += x;
