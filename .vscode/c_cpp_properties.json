@@ -42,7 +42,12 @@
                 "${workspaceRoot}",
                 "${workspaceRoot}/libvb",
                 "/usr/include/c++/7",
-                "/usr/include/x86_64-linux-gnu/c++/7"
+                "/usr/include/x86_64-linux-gnu/c++/7",
+                "/usr/include/linux",
+                "/usr/include/x86_64-linux-gnu",
+                "/usr/include/c++/7/tr1",
+                "/usr/include/eigen3",
+                "${workspaceRoot}/build/libvb"
             ],
             "defines": [],
             "intelliSenseMode": "clang-x64",

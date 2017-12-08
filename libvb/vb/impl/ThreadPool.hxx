@@ -1,5 +1,6 @@
 #pragma once
 #include <vb/ThreadPool.h>
+#include <mutex>
 #include <thread>
 
 namespace vb {
