@@ -1,8 +1,8 @@
 #pragma once /// \file
-#include <gsl/gsl>
 #include <vb/Picture.h>
 #include <vb/ThreadPool.h>
 #include <vb/coo.h>
+#include <gsl/gsl>
 
 namespace vb {
     class Coloring : public Picture {
@@ -28,10 +28,10 @@ namespace vb {
     private:
         Color aa_color(coo c, bool pre = false) const;
 
-        void    line(coo s, coo d, int l);
-        void    tessel(coo ul, coo lr);
-        Project tessel_go(coo ul, coo lr);
-        void    do_aa();
+        Project2 line(coo s, coo d, int l);
+        void     tessel(coo ul, coo lr);
+        Project2 tessel_go(coo ul, coo lr);
+        void     do_aa();
 
         gsl::span<Color> stage;
 

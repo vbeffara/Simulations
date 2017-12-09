@@ -1,4 +1,5 @@
 #pragma once
+#include <vb/Hub.h>
 #include <vb/ThreadPool.h>
 #include <mutex>
 #include <thread>

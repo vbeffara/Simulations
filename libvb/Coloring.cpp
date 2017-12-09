@@ -73,15 +73,19 @@ namespace vb {
         return Color(r / 9, g / 9, b / 9, a / 9);
     }
 
-    void Coloring::line(coo s, coo d, int l) {
-#pragma omp parallel for schedule(dynamic)
+    Project2 Coloring::line(coo s, coo d, int l) {
+        if (l > 20) {
+            int l2 = l / 2;
+            return {[=] { return line(s, d, l2); }, [=] { return line(s + d * l2, d, l - l2); }};
+        }
         for (int i = 0; i < l; ++i) {
             coo c = s + d * i;
             if (!die) at(c) = f(c_to_z(c));
         }
+        return {};
     }
 
-    Project Coloring::tessel_go(coo ul, coo lr) {
+    Project2 Coloring::tessel_go(coo ul, coo lr) {
         int size = std::min(lr.x - ul.x, lr.y - ul.y);
         if (size <= 1) return {};
 
@@ -104,16 +108,15 @@ namespace vb {
         coo lr_ = (lr.x - ul.x > lr.y - ul.y) ? coo{(ul.x + lr.x) / 2, lr.y} : coo{lr.x, (ul.y + lr.y) / 2};
         coo dd_ = (lr.x - ul.x > lr.y - ul.y) ? coo{0, 1} : coo{1, 0};
 
-        line(ul_, dd_, size);
-        return Parallel({[this, ul, lr_]() { return tessel_go(ul, lr_); }, [this, ul_, lr]() { return tessel_go(ul_, lr); }});
+        Project2 p{[=] { return line(ul_, dd_, size); }};
+        return p.then([=] { return Project2{[=] { return tessel_go(ul, lr_); }, [=] { return tessel_go(ul_, lr); }}; });
     }
 
     void Coloring::tessel(coo ul, coo lr) {
-        line(ul, coo(1, 0), lr.x - ul.x);
-        line(coo(lr.x, ul.y), coo(0, 1), lr.y - ul.y);
-        line(lr, coo(-1, 0), lr.x - ul.x);
-        line(coo(ul.x, lr.y), coo(0, -1), lr.y - ul.y);
-        execute_parallel(std::bind(&Coloring::tessel_go, this, ul, lr));
+        Project2 p{[=] { return line(ul, coo(1, 0), lr.x - ul.x); }, [=] { return line(coo(lr.x, ul.y), coo(0, 1), lr.y - ul.y); },
+                   [=] { return line(lr, coo(-1, 0), lr.x - ul.x); }, [=] { return line(coo(ul.x, lr.y), coo(0, -1), lr.y - ul.y); }};
+        p.then([=] { return tessel_go(ul, lr); });
+        execute_par(p);
     }
 
     int Coloring::handle(int event) {

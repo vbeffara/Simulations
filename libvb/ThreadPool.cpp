@@ -1,6 +1,8 @@
+#include <vb/Hub.h>
 #include <vb/ThreadPool.h>
 #include <atomic>
 #include <future>
+#include <iostream>
 #include <mutex>
 #include <thread>
 
@@ -56,9 +58,14 @@ namespace vb {
     }
 
     void execute_par(Project2 p) {
-        std::vector<Project2 *> fringe  = {&p};
-        int                     n_total = 1;
-        std::mutex              m;
+        for (auto & pp : p.deps) pp.par = &p;
+
+        std::vector<Project2 *> fringe;
+        for (auto & pp : p.deps) fringe.push_back(&pp);
+        if (p.deps.empty()) fringe.push_back(&p);
+
+        int        n_total = fringe.size();
+        std::mutex m;
 
         std::vector<std::thread> runners;
         for (int i = 0; i < std::max(std::thread::hardware_concurrency(), 1u); ++i)
@@ -73,13 +80,13 @@ namespace vb {
                     }
 
                     if (p->next) {
-                        auto np = (*(p->next))();
-                        np.par  = p->par;
-                        *p      = np;
+                        auto par = p->par;
+                        *p       = (*(p->next))();
+                        p->par   = par;
                     }
 
                     std::lock_guard<std::mutex> l(m);
-                    if (p->deps.empty()) {
+                    if (p->ndep == 0) {
                         if (p->next) {
                             ++n_total;
                             fringe.push_back(p);
