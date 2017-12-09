@@ -28,8 +28,6 @@ namespace vb {
         template <typename F> Project2 & add(F f);
         template <typename F> Project2 & then(F f);
 
-        template <typename F> static void run(F f);
-
         std::vector<Project2>                    deps;
         std::optional<std::function<Project2()>> next;
         Project2 *                               par  = nullptr;
@@ -39,6 +37,8 @@ namespace vb {
     void execute_plain(Job t);
     void execute_async(Job t);
     void execute_parallel(Job t);
+    void execute_seq(Project2 p);
+    void execute_par(Project2 p);
 } // namespace vb
 
 #include <vb/impl/ThreadPool.hxx>

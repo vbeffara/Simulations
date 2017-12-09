@@ -18,5 +18,5 @@ Project2 fakefib(int n, int d) {
 }
 
 int main() {
-    Project2::run([] { return fakefib(5, 0); });
+    vb::execute_par([] { return fakefib(5, 0); });
 }

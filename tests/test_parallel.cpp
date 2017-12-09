@@ -145,17 +145,22 @@ int main(int argc, char ** argv) {
             for (int k = i; k < j; ++k) X[k] = cost(k);
             return {};
         }
-        int      k = (i + j) / 2;
-        Project2 p;
-        p.add([i, k, &X, &go2] { return go2(X, i, k); });
-        p.add([k, j, &X, &go2] { return go2(X, k, j); });
-        p.then([] { return Project2{}; });
-        return p;
+        int k = (i + j) / 2;
+        return {[=, &X, &go2] { return go2(X, i, k); }, [=, &X, &go2] { return go2(X, k, j); }};
     };
 
-    timing("Map+reduce | ThreadPool (Project2::run)", [=] {
+    timing("Map+reduce | ThreadPool (execute_seq)", [=] {
         vector<double> X((int(H['l'])));
-        Project2::run(bind(go2, ref(X), 0, X.size()));
+        execute_seq([&] { return go2(X, 0, X.size()); });
+
+        double s = 0;
+        for (auto x : X) s += x;
+        return s - int64_t(s);
+    });
+
+    timing("Map+reduce | ThreadPool (execute_par)", [=] {
+        vector<double> X((int(H['l'])));
+        execute_par([&] { return go2(X, 0, X.size()); });
 
         double s = 0;
         for (auto x : X) s += x;

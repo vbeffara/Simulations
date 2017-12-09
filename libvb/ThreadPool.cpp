@@ -49,4 +49,58 @@ namespace vb {
             });
         for (auto & t : runners) t.join();
     }
+
+    void execute_seq(Project2 p) {
+        for (auto pp : p.deps) execute_seq(pp);
+        if (p.next) execute_seq((*p.next)());
+    }
+
+    void execute_par(Project2 p) {
+        std::vector<Project2 *> fringe  = {&p};
+        int                     n_total = 1;
+        std::mutex              m;
+
+        std::vector<std::thread> runners;
+        for (int i = 0; i < std::max(std::thread::hardware_concurrency(), 1u); ++i)
+            runners.emplace_back([&] {
+                Project2 * p;
+                while (n_total > 0) {
+                    {
+                        std::lock_guard<std::mutex> l(m);
+                        if (fringe.empty()) continue;
+                        p = fringe.back();
+                        fringe.pop_back();
+                    }
+
+                    if (p->next) {
+                        auto np = (*(p->next))();
+                        np.par  = p->par;
+                        *p      = np;
+                    }
+
+                    std::lock_guard<std::mutex> l(m);
+                    if (p->deps.empty()) {
+                        if (p->next) {
+                            ++n_total;
+                            fringe.push_back(p);
+                        } else if (p->par != nullptr) {
+                            --(p->par->ndep);
+                            if (p->par->ndep == 0) {
+                                ++n_total;
+                                fringe.push_back(p->par);
+                            }
+                        }
+                    } else {
+                        for (auto & t : p->deps) {
+                            t.par = p;
+                            ++n_total;
+                            fringe.push_back(&t);
+                        }
+                    }
+
+                    --n_total;
+                }
+            });
+        for (auto & t : runners) t.join();
+    }
 } // namespace vb
