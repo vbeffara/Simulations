@@ -1,22 +1,32 @@
 #include <vb/ThreadPool.h>
-#include <iostream>
+#include <vb/util.h>
 #include <mutex>
 #include <thread>
 
-using vb::Project;
+using namespace vb;
+using namespace std;
 
-Project fakefib(int n, int d) {
-    Project p;
-    if (n > 0) p.add([=] { return fakefib(n - 1, d + 2); });
-    if (n > 1) p.add([=] { return fakefib(n - 2, d + 2); });
-    p.then([n, d]() -> Project {
-        for (int i = 0; i < d; ++i) std::cout << ' ';
-        std::cout << n << '\n';
+Project go(int n, int * t) {
+    if (n < 2) {
+        *t = 1;
         return {};
+    }
+    int *   t1 = new int;
+    int *   t2 = new int;
+    Project p{[=] { return go(n - 1, t1); }, [=] { return go(n - 2, t2); }};
+    p.then([=] {
+        *t = (*t1) + (*t2);
+        delete t1;
+        delete t2;
+        return Project{};
     });
     return p;
-}
+};
 
-int main() {
-    vb::execute_par([] { return fakefib(5, 0); });
+int main(int argc, char ** argv) {
+    H.init("Playground for ThreadPool", argc, argv, "n=5");
+    int * s = new int;
+    execute_par([=] { return go(H['n'], s); });
+    H.L->info("Fib({}) = {}", int(H['n']), *s);
+    delete s;
 }

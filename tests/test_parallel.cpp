@@ -34,7 +34,7 @@ int main(int argc, char ** argv) {
         class fib_async {
         public:
             int operator()(int n) {
-                if (n < 30) return fib()(n);
+                if (n < 25) return fib()(n);
                 auto res1 = async([=]() { return (*this)(n - 1); });
                 auto res2 = async([=]() { return (*this)(n - 2); });
                 return res1.get() + res2.get();
@@ -48,7 +48,7 @@ int main(int argc, char ** argv) {
         public:
             int operator()(int n) { return n < 2 ? n : (*this)(n - 1) + (*this)(n - 2); }
         };
-        if (n < 30) {
+        if (n < 25) {
             *t = fib()(n);
             return {};
         }
@@ -80,7 +80,7 @@ int main(int argc, char ** argv) {
         class fib_omp {
         public:
             int operator()(int n) {
-                if (n < 30) return fib()(n);
+                if (n < 25) return fib()(n);
                 int x, y;
 #pragma omp parallel sections
                 {
