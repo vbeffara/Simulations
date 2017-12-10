@@ -5,22 +5,22 @@
 #include <thread>
 
 namespace vb {
-    void execute_seq(Project2 p) {
+    void execute_seq(Project p) {
         for (auto pp : p.deps) execute_seq(pp);
         if (p.next) execute_seq((*p.next)());
     }
 
-    void execute_asy(Project2 p) {
+    void execute_asy(Project p) {
         std::vector<std::future<void>> ts;
         for (auto & f : p.deps) ts.emplace_back(std::async([&f] { execute_asy(f); }));
         for (auto & t : ts) t.get();
         if (p.next) execute_asy((*p.next)());
     }
 
-    void execute_par(Project2 p) {
+    void execute_par(Project p) {
         for (auto & pp : p.deps) pp.par = &p;
 
-        std::vector<Project2 *> fringe;
+        std::vector<Project *> fringe;
         for (auto & pp : p.deps) fringe.push_back(&pp);
         if (p.deps.empty()) fringe.push_back(&p);
 
@@ -30,7 +30,7 @@ namespace vb {
         std::vector<std::thread> runners;
         for (int i = 0; i < std::max(std::thread::hardware_concurrency(), 1u); ++i)
             runners.emplace_back([&] {
-                Project2 * p;
+                Project * p;
                 while (n_total > 0) {
                     {
                         std::lock_guard<std::mutex> l(m);

@@ -3,13 +3,13 @@
 #include <mutex>
 #include <thread>
 
-using vb::Project2;
+using vb::Project;
 
-Project2 fakefib(int n, int d) {
-    Project2 p;
+Project fakefib(int n, int d) {
+    Project p;
     if (n > 0) p.add([=] { return fakefib(n - 1, d + 2); });
     if (n > 1) p.add([=] { return fakefib(n - 2, d + 2); });
-    p.then([n, d]() -> Project2 {
+    p.then([n, d]() -> Project {
         for (int i = 0; i < d; ++i) std::cout << ' ';
         std::cout << n << '\n';
         return {};

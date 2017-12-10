@@ -4,10 +4,10 @@
 #include <vector>
 
 namespace vb {
-    struct Project2 {
-        template <typename... Ts> Project2(Ts... ts) { (add(ts), ...); } // NOLINT
+    struct Project {
+        template <typename... Ts> Project(Ts... ts) { (add(ts), ...); } // NOLINT
 
-        template <typename T> Project2 & add(T t) {
+        template <typename T> Project & add(T t) {
             ++ndep;
             deps.emplace_back();
             deps.back().next = std::move(t);
@@ -15,18 +15,18 @@ namespace vb {
             return *this;
         }
 
-        template <typename T> Project2 & then(T t) {
+        template <typename T> Project & then(T t) {
             next = std::move(t);
             return *this;
         }
 
-        std::vector<Project2>                    deps;
-        std::optional<std::function<Project2()>> next;
-        Project2 *                               par  = nullptr;
-        int                                      ndep = 0;
+        std::vector<Project>                    deps;
+        std::optional<std::function<Project()>> next;
+        Project *                               par  = nullptr;
+        int                                     ndep = 0;
     };
 
-    void execute_seq(Project2 p);
-    void execute_par(Project2 p);
-    void execute_asy(Project2 p);
+    void execute_seq(Project p);
+    void execute_par(Project p);
+    void execute_asy(Project p);
 } // namespace vb

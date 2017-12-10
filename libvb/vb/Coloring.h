@@ -28,10 +28,10 @@ namespace vb {
     private:
         Color aa_color(coo c, bool pre = false) const;
 
-        Project2 line(coo s, coo d, int l);
-        void     tessel(coo ul, coo lr);
-        Project2 tessel_go(coo ul, coo lr);
-        void     do_aa();
+        Project line(coo s, coo d, int l);
+        Project tessel_go(coo ul, coo lr);
+        void    tessel(coo ul, coo lr);
+        void    do_aa();
 
         gsl::span<Color> stage;
 

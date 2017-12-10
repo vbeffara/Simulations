@@ -43,6 +43,34 @@ int main(int argc, char ** argv) {
         return fib_async()(n);
     });
 
+    function<Project(int, int *)> go = [&go](int n, int * t) -> Project {
+        class fib {
+        public:
+            int operator()(int n) { return n < 2 ? n : (*this)(n - 1) + (*this)(n - 2); }
+        };
+        if (n < 30) {
+            *t = fib()(n);
+            return {};
+        }
+        int *   t1 = new int, *t2 = new int;
+        Project p = {[=] { return go(n - 1, t1); }, [=] { return go(n - 2, t2); }};
+        p.then([=] {
+            *t = *t1 + *t2;
+            delete t1;
+            delete t2;
+            return Project{};
+        });
+        return p;
+    };
+
+    timing("Fibonacci  | ThreadPool (recursive)", [=] {
+        int * s = new int;
+        execute_par([=] { return go(n, s); });
+        int ss = *s;
+        delete s;
+        return ss;
+    });
+
 #ifdef _OPENMP
     timing("Fibonacci  | OpenMP (parallel sections)", [=] {
         class fib {
@@ -104,8 +132,8 @@ int main(int argc, char ** argv) {
     });
 #endif
 
-    function<Project2(vector<double> &, int, int)> go2 = [&go2](vector<double> & X, int i, int j) -> Project2 {
-        if (j - i <= 10000) {
+    function<Project(vector<double> &, int, int)> go2 = [&go2](vector<double> & X, int i, int j) -> Project {
+        if (j - i <= 1000) {
             for (int k = i; k < j; ++k) X[k] = cost(k);
             return {};
         }
@@ -146,7 +174,7 @@ int main(int argc, char ** argv) {
             vector<double> X;
             mr(int l) : X(l) { run(0, l); }
             void run(int l1, int l2) {
-                if (l2 - l1 <= 10000) {
+                if (l2 - l1 <= 1000) {
                     for (int i = l1; i < l2; ++i) X[i] = cost(i);
                     return;
                 }
@@ -168,7 +196,7 @@ int main(int argc, char ** argv) {
         class mr {
         public:
             double run(int l1, int l2) {
-                if (l2 - l1 <= 100000) {
+                if (l2 - l1 <= 1000) {
                     double s = 0;
                     for (int i = l1; i < l2; ++i) s += cost(i);
                     return s;
