@@ -2,6 +2,7 @@
 #include <atomic>
 #include <future>
 #include <mutex>
+#include <queue>
 #include <thread>
 
 namespace vb {
@@ -20,9 +21,9 @@ namespace vb {
     void execute_par(Project p) {
         for (auto & pp : p.deps) pp.par = &p;
 
-        std::vector<Project *> fringe;
-        for (auto & pp : p.deps) fringe.push_back(&pp);
-        if (p.deps.empty()) fringe.push_back(&p);
+        std::queue<Project *> fringe;
+        for (auto & pp : p.deps) fringe.push(&pp);
+        if (p.deps.empty()) fringe.push(&p);
 
         int        n_total = fringe.size();
         std::mutex m;
@@ -35,8 +36,8 @@ namespace vb {
                     {
                         std::lock_guard<std::mutex> l(m);
                         if (fringe.empty()) continue;
-                        p = fringe.back();
-                        fringe.pop_back();
+                        p = fringe.front();
+                        fringe.pop();
                     }
 
                     if (p->next) {
@@ -49,19 +50,19 @@ namespace vb {
                     if (p->ndep == 0) {
                         if (p->next) {
                             ++n_total;
-                            fringe.push_back(p);
+                            fringe.push(p);
                         } else if (p->par != nullptr) {
                             --(p->par->ndep);
                             if (p->par->ndep == 0) {
                                 ++n_total;
-                                fringe.push_back(p->par);
+                                fringe.push(p->par);
                             }
                         }
                     } else {
                         for (auto & t : p->deps) {
                             t.par = p;
                             ++n_total;
-                            fringe.push_back(&t);
+                            fringe.push(&t);
                         }
                     }
 
