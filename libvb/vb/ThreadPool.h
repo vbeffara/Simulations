@@ -4,29 +4,21 @@
 #include <vector>
 
 namespace vb {
-    struct Job;
-
-    struct Project {
-        Project(std::vector<Job> js) : jobs(std::move(js)), njobs(jobs.size()) {}
-        Project() = default;
-
-        std::vector<Job> jobs;
-        int              njobs{0};
-    };
-
-    Project Parallel(std::vector<Job> js);
-
-    struct Job {
-        template <typename T> Job(T t) : f(t) {}
-        std::function<Project(void)> f;
-        Project                      operator()() { return f(); }
-    };
-
     struct Project2 {
         template <typename... Ts> Project2(Ts... ts) { (add(ts), ...); } // NOLINT
 
-        template <typename F> Project2 & add(F f);
-        template <typename F> Project2 & then(F f);
+        template <typename T> Project2 & add(T t) {
+            ++ndep;
+            deps.emplace_back();
+            deps.back().next = std::move(t);
+            deps.back().par  = this;
+            return *this;
+        }
+
+        template <typename T> Project2 & then(T t) {
+            next = std::move(t);
+            return *this;
+        }
 
         std::vector<Project2>                    deps;
         std::optional<std::function<Project2()>> next;
@@ -34,11 +26,7 @@ namespace vb {
         int                                      ndep = 0;
     };
 
-    void execute_plain(Job t);
-    void execute_async(Job t);
-    void execute_parallel(Job t);
     void execute_seq(Project2 p);
     void execute_par(Project2 p);
+    void execute_asy(Project2 p);
 } // namespace vb
-
-#include <vb/impl/ThreadPool.hxx>

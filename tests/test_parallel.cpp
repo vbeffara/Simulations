@@ -104,42 +104,6 @@ int main(int argc, char ** argv) {
     });
 #endif
 
-    function<Project(vector<double> &, int, int)> go = [&go](vector<double> & X, int i, int j) -> Project {
-        if (j - i <= 10000) {
-            for (int k = i; k < j; ++k) X[k] = cost(k);
-            return {};
-        }
-        int k = (i + j) / 2;
-        return Parallel({bind(go, ref(X), i, k), bind(go, ref(X), k, j)});
-    };
-
-    timing("Map+reduce | ThreadPool (execute_plain)", [=] {
-        vector<double> X((int(H['l'])));
-        execute_plain(bind(go, ref(X), 0, X.size()));
-
-        double s = 0;
-        for (auto x : X) s += x;
-        return s - int64_t(s);
-    });
-
-    timing("Map+reduce | ThreadPool (execute_parallel)", [=] {
-        vector<double> X((int(H['l'])));
-        execute_parallel(bind(go, ref(X), 0, X.size()));
-
-        double s = 0;
-        for (auto x : X) s += x;
-        return s - int64_t(s);
-    });
-
-    timing("Map+reduce | ThreadPool (execute_async)", [=] {
-        vector<double> X((int(H['l'])));
-        execute_async(bind(go, ref(X), 0, X.size()));
-
-        double s = 0;
-        for (auto x : X) s += x;
-        return s - int64_t(s);
-    });
-
     function<Project2(vector<double> &, int, int)> go2 = [&go2](vector<double> & X, int i, int j) -> Project2 {
         if (j - i <= 10000) {
             for (int k = i; k < j; ++k) X[k] = cost(k);
@@ -152,6 +116,15 @@ int main(int argc, char ** argv) {
     timing("Map+reduce | ThreadPool (execute_seq)", [=] {
         vector<double> X((int(H['l'])));
         execute_seq([&] { return go2(X, 0, X.size()); });
+
+        double s = 0;
+        for (auto x : X) s += x;
+        return s - int64_t(s);
+    });
+
+    timing("Map+reduce | ThreadPool (execute_asy)", [=] {
+        vector<double> X((int(H['l'])));
+        execute_asy([&] { return go2(X, 0, X.size()); });
 
         double s = 0;
         for (auto x : X) s += x;
