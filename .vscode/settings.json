@@ -42,6 +42,7 @@
         "cstdlib": "cpp",
         "cstdint": "cpp",
         "variant": "cpp",
-        "optional": "cpp"
+        "optional": "cpp",
+        "ios": "cpp"
     }
 }
