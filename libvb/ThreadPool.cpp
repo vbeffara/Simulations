@@ -62,12 +62,12 @@ namespace vb {
         for (auto & t : runners) t.join();
     }
 
-    Project loop(int a, int b, const std::function<void(int)> & f, int l) {
+    Project loop(int a, int b, std::function<void(int)> f, int l) {
         if (b - a <= l) {
             for (int i = a; i < b; ++i) f(i);
             return {};
         }
         int c = (a + b) / 2;
-        return {[a, c, l, &f] { return loop(a, c, f, l); }, [c, b, l, &f] { return loop(c, b, f, l); }};
+        return {[a, c, l, f] { return loop(a, c, f, l); }, [c, b, l, f] { return loop(c, b, f, l); }};
     }
 } // namespace vb

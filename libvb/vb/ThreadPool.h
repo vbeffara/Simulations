@@ -37,5 +37,5 @@ namespace vb {
     void execute_par(Project p);
     void execute_asy(Project p);
 
-    Project loop(int a, int b, const std::function<void(int)> & f, int l = 1);
+    Project loop(int a, int b, std::function<void(int)> f, int l = 100);
 } // namespace vb

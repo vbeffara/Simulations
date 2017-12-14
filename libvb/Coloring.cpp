@@ -18,23 +18,17 @@ namespace vb {
     }
 
     void Coloring::do_aa() {
-        int              pw = pixel_w(), ph = pixel_h();
-        std::vector<coo> cs;
-        for (int y = 0; y < ph; ++y) {
-            for (int x = 0; x < pw; ++x) {
-                coo   c{x, y};
-                Color cc = at(c);
-                bool  u  = true;
-                for (int d = 0; d < 4; ++d) {
-                    coo c2 = c + dz[d];
-                    if ((c2.x >= 0) && (c2.x < pw) && (c2.y >= 0) && (c2.y < ph) && (at(c2) != cc)) u = false;
-                }
-                if (!u) cs.push_back(c);
+        int pw = pixel_w(), ph = pixel_h();
+        execute_par(loop(0, pw * ph, [=](int i) {
+            auto [x, y] = std::div(i, ph);
+            coo   c{x, y};
+            Color cc = at(c);
+            bool  u  = true;
+            for (int d = 0; d < 4; ++d) {
+                coo c2 = c + dz[d];
+                if ((c2.x >= 0) && (c2.x < pw) && (c2.y >= 0) && (c2.y < ph) && (at(c2) != cc)) u = false;
             }
-        }
-
-        execute_par(loop(0, cs.size(), [this, &cs](int i) {
-            if (!die) at(cs[i]) = aa_color(cs[i], true);
+            if (!(u || die)) at(c) = aa_color(c, true);
         }));
     }
 
@@ -75,15 +69,10 @@ namespace vb {
     }
 
     Project Coloring::line(coo s, coo d, int l) {
-        if (l > 20) {
-            int l2 = l / 2;
-            return {[=] { return line(s, d, l2); }, [=] { return line(s + d * l2, d, l - l2); }};
-        }
-        for (int i = 0; i < l; ++i) {
+        return loop(0, l, [=](int i) {
             coo c = s + d * i;
             if (!die) at(c) = f(c_to_z(c));
-        }
-        return {};
+        });
     }
 
     Project Coloring::tessel_go(coo ul, coo lr) {
