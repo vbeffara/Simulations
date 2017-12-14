@@ -1,7 +1,5 @@
+#include <vb/Hub.h>
 #include <vb/ThreadPool.h>
-#include <vb/util.h>
-#include <mutex>
-#include <thread>
 
 using namespace vb;
 using namespace std;

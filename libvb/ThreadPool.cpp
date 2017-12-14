@@ -1,10 +1,6 @@
-#include <vb/Hub.h>
 #include <vb/ThreadPool.h>
-#include <atomic>
 #include <boost/lockfree/queue.hpp>
 #include <future>
-#include <mutex>
-#include <queue>
 #include <thread>
 
 namespace vb {
@@ -27,8 +23,7 @@ namespace vb {
         for (auto & pp : p.deps) fringe.push(&pp);
         if (p.deps.empty()) fringe.push(&p);
 
-        std::atomic<int>         n_total{int(std::max(p.deps.size(), 1ul))};
-        std::mutex               m;
+        Project::counter         n_total{int(std::max(p.deps.size(), 1ul))};
         std::vector<std::thread> runners;
 
         for (int i = 0; i < std::max(std::thread::hardware_concurrency(), 1u); ++i)
@@ -48,7 +43,6 @@ namespace vb {
                             ++n_total;
                             fringe.push(p);
                         } else if (p->par != nullptr) {
-                            std::lock_guard<std::mutex> l(m);
                             if (--(p->par->ndep) == 0) {
                                 ++n_total;
                                 fringe.push(p->par);
