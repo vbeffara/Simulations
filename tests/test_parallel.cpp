@@ -9,6 +9,8 @@
 using namespace vb;
 using namespace std;
 
+int fib(int n) { return n < 2 ? n : fib(n - 1) + fib(n - 2); }
+
 double cost(double x) {
     for (int i = 0; i < 10; ++i) x = cos(x);
     return x;
@@ -18,23 +20,13 @@ int main(int argc, char ** argv) {
     H.init("Test of various parallel frameworks", argc, argv, "n=41,l=4000000");
     int n = H['n'], l = H['l'];
 
-    timing("Fibonacci  | Single (recursive)", [=] {
-        class fib {
-        public:
-            int operator()(int n) { return n < 2 ? n : (*this)(n - 1) + (*this)(n - 2); }
-        };
-        return fib()(n);
-    });
+    timing("Fibonacci  | Single (recursive)", [=] { return fib(n); });
 
     timing("Fibonacci  | Async (recursive)", [=] {
-        class fib {
-        public:
-            int operator()(int n) { return n < 2 ? n : (*this)(n - 1) + (*this)(n - 2); }
-        };
         class fib_async {
         public:
             int operator()(int n) {
-                if (n < 25) return fib()(n);
+                if (n < 25) return fib(n);
                 auto res1 = async([=]() { return (*this)(n - 1); });
                 auto res2 = async([=]() { return (*this)(n - 2); });
                 return res1.get() + res2.get();
@@ -44,12 +36,8 @@ int main(int argc, char ** argv) {
     });
 
     function<Project(int, int *)> go = [&go](int n, int * t) -> Project {
-        class fib {
-        public:
-            int operator()(int n) { return n < 2 ? n : (*this)(n - 1) + (*this)(n - 2); }
-        };
         if (n < 25) {
-            *t = fib()(n);
+            *t = fib(n);
             return {};
         }
         auto    t1 = new int;
@@ -64,12 +52,22 @@ int main(int argc, char ** argv) {
         return p;
     };
 
-    timing("Fibonacci  | ThreadPool (recursive)", [=] {
-        int * s = new int;
-        execute_par([=] { return go(n, s); });
-        int ss = *s;
-        delete s;
-        return ss;
+    timing("Fibonacci  | ThreadPool (execute_seq)", [=] {
+        auto s = make_unique<int>(0);
+        execute_seq([&, n] { return go(n, s.get()); });
+        return *s;
+    });
+
+    timing("Fibonacci  | ThreadPool (execute_asy)", [=] {
+        auto s = make_unique<int>(0);
+        execute_asy([&, n] { return go(n, s.get()); });
+        return *s;
+    });
+
+    timing("Fibonacci  | ThreadPool (execute_par)", [=] {
+        auto s = make_unique<int>(0);
+        execute_par([&, n] { return go(n, s.get()); });
+        return *s;
     });
 
 #ifdef _OPENMP
