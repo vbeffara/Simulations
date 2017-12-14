@@ -26,8 +26,8 @@ vector<double> random_p(int k) {
 }
 
 vector<vector<double>> random_markov(int k) {
-    vector<vector<double>> p;
-    for (int i = 0; i < k; ++i) p.push_back(random_p(k));
+    vector<vector<double>> p(k);
+    for (auto & x : p) x = random_p(k);
     return p;
 }
 
@@ -81,7 +81,7 @@ public:
     vector<vector<double>> x_to_p(const double * x) {
         vector<vector<double>> p;
         for (int i = 0; i < 4; ++i) {
-            p.push_back({});
+            p.emplace_back();
             double s = 0;
             for (int j = 0; j < 4; ++j) {
                 double ss = x[4 * i + j] * x[4 * i + j];
@@ -114,8 +114,8 @@ public:
 
         for (int i = 0; i < 4; ++i) { H.L->info("Transition matrix: {} {} {} {}", p[i][0], p[i][1], p[i][2], p[i][3]); }
 
-        vector<double> n2s;
-        for (int i = 0; i < int(t); ++i) n2s.push_back(markov(n, p));
+        vector<double> n2s(int{t});
+        for (auto & x : n2s) x = markov(n, p);
         sort(begin(n2s), end(n2s));
         for (auto v : n2s) cout << v << endl;
         double s = 0.0;

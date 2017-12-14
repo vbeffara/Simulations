@@ -5,7 +5,7 @@
 
 namespace vb {
     void execute_seq(Project p) {
-        for (auto pp : p.deps) execute_seq(pp);
+        for (const auto & pp : p.deps) execute_seq(pp);
         if (p.next) execute_seq((*p.next)());
     }
 

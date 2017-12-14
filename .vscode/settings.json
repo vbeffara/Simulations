@@ -45,6 +45,7 @@
         "optional": "cpp",
         "ios": "cpp",
         "cmath": "cpp",
-        "*.tcc": "cpp"
+        "*.tcc": "cpp",
+        "ostream": "cpp"
     }
 }

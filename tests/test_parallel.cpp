@@ -52,8 +52,9 @@ int main(int argc, char ** argv) {
             *t = fib()(n);
             return {};
         }
-        int *   t1 = new int, *t2 = new int;
-        Project p = {[=] { return go(n - 1, t1); }, [=] { return go(n - 2, t2); }};
+        auto    t1 = new int;
+        auto    t2 = new int;
+        Project p{[=] { return go(n - 1, t1); }, [=] { return go(n - 2, t2); }};
         p.then([=] {
             *t = *t1 + *t2;
             delete t1;
@@ -172,7 +173,7 @@ int main(int argc, char ** argv) {
         class mr {
         public:
             vector<double> X;
-            mr(int l) : X(l) { run(0, l); }
+            explicit mr(int l) : X(l) { run(0, l); }
             void run(int l1, int l2) {
                 if (l2 - l1 <= 1000) {
                     for (int i = l1; i < l2; ++i) X[i] = cost(i);
