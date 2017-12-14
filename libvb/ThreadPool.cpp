@@ -1,5 +1,7 @@
+#include <vb/Hub.h>
 #include <vb/ThreadPool.h>
 #include <atomic>
+#include <boost/lockfree/queue.hpp>
 #include <future>
 #include <mutex>
 #include <queue>
@@ -21,24 +23,19 @@ namespace vb {
     void execute_par(Project p) {
         for (auto & pp : p.deps) pp.par = &p;
 
-        std::queue<Project *> fringe;
+        boost::lockfree::queue<Project *> fringe;
         for (auto & pp : p.deps) fringe.push(&pp);
         if (p.deps.empty()) fringe.push(&p);
 
-        int        n_total = fringe.size();
-        std::mutex m;
-
+        std::atomic<int>         n_total{int(std::max(p.deps.size(), 1ul))};
+        std::mutex               m;
         std::vector<std::thread> runners;
+
         for (int i = 0; i < std::max(std::thread::hardware_concurrency(), 1u); ++i)
             runners.emplace_back([&] {
                 Project * p;
                 while (n_total > 0) {
-                    {
-                        std::lock_guard<std::mutex> l(m);
-                        if (fringe.empty()) continue;
-                        p = fringe.front();
-                        fringe.pop();
-                    }
+                    if (!fringe.pop(p)) continue;
 
                     if (p->next) {
                         auto par = p->par;
@@ -46,14 +43,13 @@ namespace vb {
                         p->par   = par;
                     }
 
-                    std::lock_guard<std::mutex> l(m);
                     if (p->ndep == 0) {
                         if (p->next) {
                             ++n_total;
                             fringe.push(p);
                         } else if (p->par != nullptr) {
-                            --(p->par->ndep);
-                            if (p->par->ndep == 0) {
+                            std::lock_guard<std::mutex> l(m);
+                            if (--(p->par->ndep) == 0) {
                                 ++n_total;
                                 fringe.push(p->par);
                             }

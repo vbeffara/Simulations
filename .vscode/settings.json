@@ -43,6 +43,8 @@
         "cstdint": "cpp",
         "variant": "cpp",
         "optional": "cpp",
-        "ios": "cpp"
+        "ios": "cpp",
+        "cmath": "cpp",
+        "*.tcc": "cpp"
     }
 }
