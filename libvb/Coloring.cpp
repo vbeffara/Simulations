@@ -32,9 +32,10 @@ namespace vb {
                 if (!u) cs.push_back(c);
             }
         }
-#pragma omp parallel for schedule(dynamic)
-        for (int i = 0; i < cs.size(); ++i)
-            if (!die) at(cs[i]) = aa_color(cs[i], true); // NOLINT
+
+        execute_par(loop(0, cs.size(), [this, &cs](int i) {
+            if (!die) at(cs[i]) = aa_color(cs[i], true);
+        }));
     }
 
     void Coloring::scale(double s) {

@@ -7,9 +7,9 @@
 namespace vb {
     struct Project {
         struct counter : public std::atomic<int> {
-            constexpr counter(int o = 0) : std::atomic<int>(o) {}
-            constexpr counter(const counter & o) : std::atomic<int>(o.load()) {}
-            constexpr counter & operator=(const counter & o) { return store(o.load()), *this; }
+            counter(int o = 0) : std::atomic<int>(o) {}
+            counter(const counter & o) : std::atomic<int>(o.load()) {}
+            counter & operator=(const counter & o) { return store(o.load()), *this; }
         };
 
         template <typename... Ts> Project(Ts... ts) { (add(ts), ...); } // NOLINT
@@ -36,4 +36,6 @@ namespace vb {
     void execute_seq(Project p);
     void execute_par(Project p);
     void execute_asy(Project p);
+
+    Project loop(int a, int b, const std::function<void(int)> & f, int l = 1);
 } // namespace vb
