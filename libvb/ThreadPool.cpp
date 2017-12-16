@@ -28,35 +28,35 @@ namespace vb {
 
         for (int i = 0; i < std::max(std::thread::hardware_concurrency(), 1u); ++i)
             runners.emplace_back([&] {
-                Project * p;
+                Project * p = nullptr;
                 while (n_total > 0) {
-                    if (!fringe.pop(p)) continue;
+                    if ((p == nullptr) && (!fringe.pop(p))) {
+                        p = nullptr;
+                        continue;
+                    }
 
+                    auto par = p->par;
                     if (p->next) {
-                        auto par = p->par;
-                        *p       = (*(p->next))();
-                        p->par   = par;
+                        *p     = (*(p->next))();
+                        p->par = par;
                     }
 
-                    if (p->ndep == 0) {
-                        if (p->next) {
-                            ++n_total;
-                            fringe.push(p);
-                        } else if (p->par != nullptr) {
-                            if (--(p->par->ndep) == 0) {
-                                ++n_total;
-                                fringe.push(p->par);
-                            }
+                    if (p->ndep > 0) {
+                        n_total += p->deps.size() - 1;
+                        for (int i = 0; i < p->deps.size(); ++i) {
+                            p->deps[i].par = p;
+                            if (i > 0) fringe.push(&(p->deps[i]));
                         }
-                    } else {
-                        for (auto & t : p->deps) {
-                            t.par = p;
-                            ++n_total;
-                            fringe.push(&t);
-                        }
+                        p = &(p->deps.front());
+                        continue;
                     }
-
+                    if (p->next) continue;
+                    if ((par != nullptr) && (--(par->ndep) == 0)) {
+                        p = par;
+                        continue;
+                    }
                     --n_total;
+                    p = nullptr;
                 }
             });
         for (auto & t : runners) t.join();
