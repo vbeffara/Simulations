@@ -1,5 +1,5 @@
 #include <vb/ThreadPool.h>
-#include <boost/lockfree/queue.hpp>
+#include <boost/lockfree/stack.hpp>
 #include <future>
 #include <thread>
 
@@ -19,7 +19,7 @@ namespace vb {
     void execute_par(Project p) {
         for (auto & pp : p.deps) pp.par = &p;
 
-        boost::lockfree::queue<Project *> fringe;
+        boost::lockfree::stack<Project *> fringe;
         for (auto & pp : p.deps) fringe.push(&pp);
         if (p.deps.empty()) fringe.push(&p);
 
