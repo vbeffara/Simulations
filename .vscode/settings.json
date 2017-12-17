@@ -46,6 +46,8 @@
         "ios": "cpp",
         "cmath": "cpp",
         "*.tcc": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "stack": "cpp",
+        "coroutine": "cpp"
     }
 }

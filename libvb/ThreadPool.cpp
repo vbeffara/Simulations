@@ -23,17 +23,16 @@ namespace vb {
         for (auto & pp : p.deps) fringe.push(&pp);
         if (p.deps.empty()) fringe.push(&p);
 
-        Project::counter         n_total{int(std::max(p.deps.size(), 1ul))};
         std::vector<std::thread> runners;
+        bool                     done = false;
 
         for (int i = 0; i < std::max(std::thread::hardware_concurrency(), 1u); ++i)
             runners.emplace_back([&] {
                 Project * p = nullptr;
-                while (n_total > 0) {
-                    if ((p == nullptr) && (!fringe.pop(p))) {
-                        p = nullptr;
-                        continue;
-                    }
+                while (true) {
+                    if ((p == nullptr) && !fringe.pop(p)) p = nullptr;
+                    if ((p == nullptr) && done) break;
+                    if (p == nullptr) continue;
 
                     auto par = p->par;
                     if (p->next) {
@@ -42,7 +41,6 @@ namespace vb {
                     }
 
                     if (p->ndep > 0) {
-                        n_total += p->deps.size() - 1;
                         for (int i = 0; i < p->deps.size(); ++i) {
                             p->deps[i].par = p;
                             if (i > 0) fringe.push(&(p->deps[i]));
@@ -51,18 +49,17 @@ namespace vb {
                         continue;
                     }
                     if (p->next) continue;
-                    if ((par != nullptr) && (--(par->ndep) == 0)) {
-                        p = par;
-                        continue;
+                    if (par == nullptr) {
+                        done = true;
+                        break;
                     }
-                    --n_total;
-                    p = nullptr;
+                    p = (--(par->ndep) == 0) ? par : nullptr;
                 }
             });
         for (auto & t : runners) t.join();
     }
 
-    Project loop(int a, int b, std::function<void(int)> f, int l) {
+    Project loop(int a, int b, const std::function<void(int)> & f, int l) {
         if (b - a <= l) {
             for (int i = a; i < b; ++i) f(i);
             return {};
