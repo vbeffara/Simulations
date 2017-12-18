@@ -30,16 +30,16 @@ namespace vb {
             runners.emplace_back([&] {
                 Project * p = nullptr;
                 while (true) {
-                    if ((p == nullptr) && !fringe.pop(p)) p = nullptr;
-                    if ((p == nullptr) && done) break;
-                    if (p == nullptr) continue;
-
+                    if ((p == nullptr) && !fringe.pop(p)) {
+                        if (done) break;
+                        p = nullptr;
+                        continue;
+                    }
                     auto par = p->par;
-                    if (p->next) {
-                        *p     = (*(p->next))();
+                    if (auto n = p->next) {
+                        *p     = (*n)();
                         p->par = par;
                     }
-
                     if (p->ndep > 0) {
                         for (int i = 0; i < p->deps.size(); ++i) {
                             p->deps[i].par = p;
