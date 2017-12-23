@@ -99,14 +99,15 @@ namespace vb {
         coo dd_ = (lr.x - ul.x > lr.y - ul.y) ? coo{0, 1} : coo{1, 0};
 
         Project p{[=] { return line(ul_, dd_, size); }};
-        return p.then([=] { return Project{[=] { return tessel_go(ul, lr_); }, [=] { return tessel_go(ul_, lr); }}; });
+        p.then([=] { return Project{[=] { return tessel_go(ul, lr_); }, [=] { return tessel_go(ul_, lr); }}; });
+        return p;
     }
 
     void Coloring::tessel(coo ul, coo lr) {
         Project p{[=] { return line(ul, coo(1, 0), lr.x - ul.x); }, [=] { return line(coo(lr.x, ul.y), coo(0, 1), lr.y - ul.y); },
                   [=] { return line(lr, coo(-1, 0), lr.x - ul.x); }, [=] { return line(coo(ul.x, lr.y), coo(0, -1), lr.y - ul.y); }};
         p.then([=] { return tessel_go(ul, lr); });
-        execute_par(p);
+        execute_par(std::move(p));
     }
 
     int Coloring::handle(int event) {

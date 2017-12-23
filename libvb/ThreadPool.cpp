@@ -4,19 +4,19 @@
 #include <thread>
 
 namespace vb {
-    void execute_seq(Project p) {
-        for (const auto & pp : p.deps) execute_seq(pp);
+    void execute_seq(Project && p) {
+        for (auto & pp : p.deps) execute_seq(std::move(pp));
         if (p.next) execute_seq((*p.next)());
     }
 
-    void execute_asy(Project p) {
+    void execute_asy(Project && p) {
         std::vector<std::future<void>> ts;
-        for (auto & f : p.deps) ts.emplace_back(std::async([&f] { execute_asy(f); }));
+        for (auto & f : p.deps) ts.emplace_back(std::async([&f] { execute_asy(std::move(f)); }));
         for (auto & t : ts) t.get();
         if (p.next) execute_asy((*p.next)());
     }
 
-    void execute_par(Project p) {
+    void execute_par(Project && p) {
         for (auto & pp : p.deps) pp.par = &p;
 
         boost::lockfree::stack<Project *> fringe;
@@ -40,12 +40,12 @@ namespace vb {
                         *p     = (*n)();
                         p->par = par;
                     }
-                    if (p->ndep > 0) {
-                        for (int i = 0; i < p->deps.size(); ++i) {
+                    if (auto n = p->ndep; n > 0) {
+                        for (int i = 0; i < n; ++i) {
                             p->deps[i].par = p;
                             if (i > 0) fringe.push(&(p->deps[i]));
                         }
-                        p = &(p->deps.front());
+                        p = &(p->deps[0]);
                         continue;
                     }
                     if (p->next) continue;

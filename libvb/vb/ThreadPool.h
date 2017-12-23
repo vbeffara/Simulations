@@ -33,9 +33,9 @@ namespace vb {
         counter                                 ndep;
     }; // namespace vb
 
-    void execute_seq(Project p);
-    void execute_par(Project p);
-    void execute_asy(Project p);
+    void execute_seq(Project && p);
+    void execute_par(Project && p);
+    void execute_asy(Project && p);
 
     Project loop(int a, int b, const std::function<void(int)> & f, int l = 100);
 } // namespace vb
