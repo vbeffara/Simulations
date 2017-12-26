@@ -16,9 +16,9 @@ namespace vb {
 
         template <typename T> Project & add(T t) {
             ++ndep;
-            deps.emplace_back();
-            deps.back().next = std::move(t);
-            deps.back().par  = this;
+            deps.emplace_back(std::make_unique<Project>());
+            deps.back()->next = std::move(t);
+            deps.back()->par  = this;
             return *this;
         }
 
@@ -27,7 +27,7 @@ namespace vb {
             return *this;
         }
 
-        std::vector<Project>                    deps;
+        std::vector<std::unique_ptr<Project>>   deps;
         std::optional<std::function<Project()>> next;
         Project *                               par = nullptr;
         counter                                 ndep;

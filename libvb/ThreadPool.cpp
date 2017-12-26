@@ -5,22 +5,22 @@
 
 namespace vb {
     void execute_seq(Project && p) {
-        for (auto & pp : p.deps) execute_seq(std::move(pp));
+        for (auto & pp : p.deps) execute_seq(std::move(*pp));
         if (p.next) execute_seq((*p.next)());
     }
 
     void execute_asy(Project && p) {
         std::vector<std::future<void>> ts;
-        for (auto & f : p.deps) ts.emplace_back(std::async([&f] { execute_asy(std::move(f)); }));
+        for (auto & f : p.deps) ts.emplace_back(std::async([&f] { execute_asy(std::move(*f)); }));
         for (auto & t : ts) t.get();
         if (p.next) execute_asy((*p.next)());
     }
 
     void execute_par(Project && p) {
-        for (auto & pp : p.deps) pp.par = &p;
+        for (auto & pp : p.deps) pp->par = &p;
 
         boost::lockfree::stack<Project *> fringe;
-        for (auto & pp : p.deps) fringe.push(&pp);
+        for (auto & pp : p.deps) fringe.push(pp.get());
         if (p.deps.empty()) fringe.push(&p);
 
         std::vector<std::thread> runners;
@@ -42,10 +42,10 @@ namespace vb {
                     }
                     if (auto n = p->ndep; n > 0) {
                         for (int i = 0; i < n; ++i) {
-                            p->deps[i].par = p;
-                            if (i > 0) fringe.push(&(p->deps[i]));
+                            p->deps[i]->par = p;
+                            if (i > 0) fringe.push((p->deps[i]).get());
                         }
-                        p = &(p->deps[0]);
+                        p = (p->deps[0]).get();
                         continue;
                     }
                     if (p->next) continue;
