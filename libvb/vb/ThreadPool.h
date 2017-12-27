@@ -1,6 +1,7 @@
 #pragma once
 #include <vb/Hub.h>
 #include <atomic>
+#include <boost/lockfree/stack.hpp>
 #include <functional>
 #include <optional>
 #include <vector>
@@ -16,11 +17,10 @@ namespace vb {
         template <typename... Ts> Project(Ts... ts) { (add(ts), ...); } // NOLINT
 
         template <typename T> Project & add(T t) {
-            if (ndep >= 2) H.L->error("ndep >= 2");
-            deps[ndep]       = std::make_unique<Project>();
-            deps[ndep]->next = std::move(t);
-            deps[ndep]->par  = this;
-            ++ndep;
+            int i         = ndep++;
+            deps[i]       = std::make_unique<Project>();
+            deps[i]->next = std::move(t);
+            deps[i]->par  = this;
             return *this;
         }
 
@@ -35,9 +35,12 @@ namespace vb {
         counter                                 ndep;
     }; // namespace vb
 
+    void project_runner(boost::lockfree::stack<Project *> & fringe, bool & done);
+
     void execute_seq(Project && p);
-    void execute_par(Project && p);
     void execute_asy(Project && p);
+    void execute_run(Project && p);
+    void execute_par(Project && p);
 
     Project loop(int a, int b, const std::function<void(int)> & f, int l = 100);
 } // namespace vb

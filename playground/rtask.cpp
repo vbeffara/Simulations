@@ -32,6 +32,11 @@ int main(int argc, char ** argv) {
         execute_seq([=] { return go(H['n']); });
         return int(s);
     });
+    timing("ThreadPool (execute_run)", [=] {
+        s = 1;
+        execute_run([=] { return go(H['n']); });
+        return int(s);
+    });
     timing("ThreadPool (execute_par)", [=] {
         s = 1;
         execute_par([=] { return go(H['n']); });
