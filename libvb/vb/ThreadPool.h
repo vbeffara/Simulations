@@ -14,25 +14,28 @@ namespace vb {
             counter & operator=(const counter & o) { return store(o.load()), *this; }
         };
 
-        template <typename... Ts> Project(Ts... ts) { (add(ts), ...); } // NOLINT
+        using ftp = std::function<Project()>;
 
-        template <typename T> Project & add(T t) {
-            int i         = ndep++;
-            deps[i]       = std::make_unique<Project>();
-            deps[i]->next = std::move(t);
-            deps[i]->par  = this;
-            return *this;
+        Project() = default;
+        Project(ftp && t) : next(std::move(t)) {}
+        Project(ftp && t1, ftp && t2) : ndep(2) {
+            deps[0]      = std::make_unique<Project>(std::move(t1));
+            deps[1]      = std::make_unique<Project>(std::move(t2));
+            deps[0]->par = this;
+            deps[1]->par = this;
         }
 
-        template <typename T> Project & then(T t) {
+        template <typename T> Project(T && t) : Project(ftp(std::move(t))) {}
+
+        Project & then(ftp && t) {
             next = std::move(t);
             return *this;
         }
 
-        std::unique_ptr<Project>                deps[2];
-        std::optional<std::function<Project()>> next;
-        Project *                               par = nullptr;
-        counter                                 ndep;
+        std::unique_ptr<Project> deps[2];
+        std::optional<ftp>       next;
+        Project *                par = nullptr;
+        counter                  ndep;
     }; // namespace vb
 
     void project_runner(boost::lockfree::stack<Project *> & fringe, bool & done);
