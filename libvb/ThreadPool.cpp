@@ -3,6 +3,24 @@
 #include <thread>
 
 namespace vb {
+    Project::Project() = default;
+
+    Project::Project(ftp && t) : next(std::move(t)) {}
+
+    Project::Project(ftp && t1, ftp && t2) : ndep(2) {
+        deps[0]      = std::make_unique<Project>(std::move(t1));
+        deps[1]      = std::make_unique<Project>(std::move(t2));
+        deps[0]->par = this;
+        deps[1]->par = this;
+    }
+
+    Project::Project(ftp && t1, ftp && t2, ftp && n) : next(std::move(n)), ndep(2) {
+        deps[0]      = std::make_unique<Project>(std::move(t1));
+        deps[1]      = std::make_unique<Project>(std::move(t2));
+        deps[0]->par = this;
+        deps[1]->par = this;
+    }
+
     void project_runner(boost::lockfree::stack<Project *> & fringe, bool & done) {
         Project * p = nullptr;
         while (true) {

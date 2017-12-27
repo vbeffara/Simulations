@@ -42,13 +42,13 @@ int main(int argc, char ** argv) {
         }
         auto    t1 = new int;
         auto    t2 = new int;
-        Project p{[=] { return go(n - 1, t1); }, [=] { return go(n - 2, t2); }};
-        p.then([=] {
-            *t = *t1 + *t2;
-            delete t1;
-            delete t2;
-            return Project{};
-        });
+        Project p{[=] { return go(n - 1, t1); }, [=] { return go(n - 2, t2); },
+                  [=] {
+                      *t = *t1 + *t2;
+                      delete t1;
+                      delete t2;
+                      return Project{};
+                  }};
         return p;
     };
 

@@ -15,8 +15,8 @@ void plain(int n) {
 
 Project go(int n) {
     if (n < 2) { return {}; }
-    Project p{[=] { return go(n - 1); }, [=] { return go(n - 2); }};
-    p.then([=] { return ++s, Project{}; });
+    Project p{[=] { return go(n - 1); }, [=] { return go(n - 2); }, [=] { return ++s, Project{}; }};
+    // p.then([=] { return ++s, Project{}; });
     return p;
 };
 

@@ -98,8 +98,10 @@ namespace vb {
         coo lr_ = (lr.x - ul.x > lr.y - ul.y) ? coo{(ul.x + lr.x) / 2, lr.y} : coo{lr.x, (ul.y + lr.y) / 2};
         coo dd_ = (lr.x - ul.x > lr.y - ul.y) ? coo{0, 1} : coo{1, 0};
 
-        Project p{[=] { return line(ul_, dd_, size); }};
-        p.then([=] { return Project{[=] { return tessel_go(ul, lr_); }, [=] { return tessel_go(ul_, lr); }}; });
+        Project p{[=] { return line(ul_, dd_, size); }, [=] { return Project{}; },
+                  [=] {
+                      return Project{[=] { return tessel_go(ul, lr_); }, [=] { return tessel_go(ul_, lr); }};
+                  }};
         return p;
     }
 
