@@ -5,23 +5,23 @@
 
 namespace vb {
     void execute_seq(Project && p) {
-        for (auto & pp : p.deps) execute_seq(std::move(*pp));
+        for (int i = 0; i < p.ndep; ++i) execute_seq(std::move(*(p.deps[i])));
         if (p.next) execute_seq((*p.next)());
     }
 
     void execute_asy(Project && p) {
         std::vector<std::future<void>> ts;
-        for (auto & f : p.deps) ts.emplace_back(std::async([&f] { execute_asy(std::move(*f)); }));
+        for (int i = 0; i < p.ndep; ++i) ts.emplace_back(std::async([&p, i] { execute_asy(std::move(*(p.deps[i]))); }));
         for (auto & t : ts) t.get();
         if (p.next) execute_asy((*p.next)());
     }
 
     void execute_par(Project && p) {
-        for (auto & pp : p.deps) pp->par = &p;
+        for (int i = 0; i < p.ndep; ++i) p.deps[i]->par = &p;
 
         boost::lockfree::stack<Project *> fringe;
-        for (auto & pp : p.deps) fringe.push(pp.get());
-        if (p.deps.empty()) fringe.push(&p);
+        for (int i = 0; i < p.ndep; ++i) fringe.push(p.deps[i].get());
+        if (p.ndep == 0) fringe.push(&p);
 
         std::vector<std::thread> runners;
         bool                     done = false;

@@ -1,4 +1,5 @@
 #pragma once
+#include <vb/Hub.h>
 #include <atomic>
 #include <functional>
 #include <optional>
@@ -15,10 +16,11 @@ namespace vb {
         template <typename... Ts> Project(Ts... ts) { (add(ts), ...); } // NOLINT
 
         template <typename T> Project & add(T t) {
+            if (ndep >= 2) H.L->error("ndep >= 2");
+            deps[ndep]       = std::make_unique<Project>();
+            deps[ndep]->next = std::move(t);
+            deps[ndep]->par  = this;
             ++ndep;
-            deps.emplace_back(std::make_unique<Project>());
-            deps.back()->next = std::move(t);
-            deps.back()->par  = this;
             return *this;
         }
 
@@ -27,7 +29,7 @@ namespace vb {
             return *this;
         }
 
-        std::vector<std::unique_ptr<Project>>   deps;
+        std::unique_ptr<Project>                deps[2];
         std::optional<std::function<Project()>> next;
         Project *                               par = nullptr;
         counter                                 ndep;

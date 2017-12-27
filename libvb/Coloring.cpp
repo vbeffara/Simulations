@@ -104,10 +104,11 @@ namespace vb {
     }
 
     void Coloring::tessel(coo ul, coo lr) {
-        Project p{[=] { return line(ul, coo(1, 0), lr.x - ul.x); }, [=] { return line(coo(lr.x, ul.y), coo(0, 1), lr.y - ul.y); },
-                  [=] { return line(lr, coo(-1, 0), lr.x - ul.x); }, [=] { return line(coo(ul.x, lr.y), coo(0, -1), lr.y - ul.y); }};
-        p.then([=] { return tessel_go(ul, lr); });
-        execute_par(std::move(p));
+        execute_par([=] { return line(ul, coo(1, 0), lr.x - ul.x); });
+        execute_par([=] { return line(coo(lr.x, ul.y), coo(0, 1), lr.y - ul.y); });
+        execute_par([=] { return line(lr, coo(-1, 0), lr.x - ul.x); });
+        execute_par([=] { return line(coo(ul.x, lr.y), coo(0, -1), lr.y - ul.y); });
+        execute_par([=] { return tessel_go(ul, lr); });
     }
 
     int Coloring::handle(int event) {
