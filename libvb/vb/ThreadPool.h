@@ -24,12 +24,12 @@ namespace vb {
 
         template <typename T> Project(T && t) : Project(ftp(std::move(t))) {}
 
-        Project & operator=(Project && o);
+        Project & operator=(Project && o) = default;
 
-        std::unique_ptr<Project> deps[2];
-        std::optional<ftp>       next;
-        Project *                par = nullptr;
-        counter                  ndep;
+        std::vector<Project> deps;
+        std::optional<ftp>   next;
+        Project *            par = nullptr;
+        counter              ndep;
     }; // namespace vb
 
     void project_runner(boost::lockfree::stack<Project *> & fringe, bool & done);
