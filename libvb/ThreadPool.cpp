@@ -6,8 +6,9 @@ namespace vb {
     Project::Project(ftp && t) : next(std::move(t)) {}
 
     Project::Project(ftp && t1, ftp && t2) : ndep(2) {
-        deps.push_back(std::move(t1));
-        deps.push_back(std::move(t2));
+        deps.reserve(2);
+        deps.emplace_back(std::move(t1));
+        deps.emplace_back(std::move(t2));
         deps[0].par = this;
         deps[1].par = this;
     }
@@ -51,6 +52,7 @@ namespace vb {
 
     void execute_asy(Project && p) {
         std::vector<std::future<void>> ts;
+        ts.reserve(p.ndep);
         for (int i = 0; i < p.ndep; ++i) ts.emplace_back(std::async([&p, i] { execute_asy(std::move(p.deps[i])); }));
         for (auto & t : ts) t.get();
         if (p.next) execute_asy((*p.next)());
