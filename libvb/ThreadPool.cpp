@@ -3,8 +3,6 @@
 #include <thread>
 
 namespace vb {
-    Project::Project() = default;
-
     Project::Project(ftp && t) : next(std::move(t)) {}
 
     Project::Project(ftp && t1, ftp && t2) : ndep(2) {
@@ -21,6 +19,14 @@ namespace vb {
         deps[1]->par = this;
     }
 
+    Project & Project::operator=(Project && o) {
+        deps[0] = std::move(o.deps[0]);
+        deps[1] = std::move(o.deps[1]);
+        next    = std::move(o.next);
+        ndep    = o.ndep;
+        return *this;
+    }
+
     void project_runner(boost::lockfree::stack<Project *> & fringe, bool & done) {
         Project * p = nullptr;
         while (true) {
@@ -30,10 +36,7 @@ namespace vb {
                 continue;
             }
             auto par = p->par;
-            if (auto n = p->next) {
-                *p     = (*n)();
-                p->par = par;
-            }
+            if (auto n = p->next) *p = (*n)();
             if (auto n = p->ndep; n > 0) {
                 for (int i = 0; i < n; ++i) {
                     p->deps[i]->par = p;

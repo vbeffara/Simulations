@@ -16,12 +16,15 @@ namespace vb {
 
         using ftp = std::function<Project()>;
 
-        Project();
+        Project()           = default;
+        Project(Project &&) = default;
         Project(ftp && t);
         Project(ftp && t1, ftp && t2);
         Project(ftp && t1, ftp && t2, ftp && n);
 
         template <typename T> Project(T && t) : Project(ftp(std::move(t))) {}
+
+        Project & operator=(Project && o);
 
         std::unique_ptr<Project> deps[2];
         std::optional<ftp>       next;
