@@ -21,25 +21,26 @@ Project go(int n) {
 };
 
 int main(int argc, char ** argv) {
-    H.init("Playground for ThreadPool", argc, argv, "n=5");
-    timing("Plain recursion", [=] {
-        s = 1;
-        plain(H['n']);
-        return int(s);
-    });
-    timing("ThreadPool (execute_seq)", [=] {
-        s = 1;
-        execute_seq([=] { return go(H['n']); });
-        return int(s);
-    });
+    H.init("Playground for ThreadPool", argc, argv, "n=5,r");
     timing("ThreadPool (execute_run)", [=] {
         s = 1;
         execute_run([=] { return go(H['n']); });
         return int(s);
     });
+    if (H['r']) return 0;
+    timing("ThreadPool (execute_seq)", [=] {
+        s = 1;
+        execute_seq([=] { return go(H['n']); });
+        return int(s);
+    });
     timing("ThreadPool (execute_par)", [=] {
         s = 1;
         execute_par([=] { return go(H['n']); });
+        return int(s);
+    });
+    timing("Plain recursion", [=] {
+        s = 1;
+        plain(H['n']);
         return int(s);
     });
 }

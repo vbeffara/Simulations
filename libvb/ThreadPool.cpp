@@ -5,10 +5,9 @@
 namespace vb {
     Project::Project(ftp && t) : next(std::move(t)) {}
 
-    Project::Project(ftp && t1, ftp && t2) : ndep(2) {
-        deps.reserve(2);
-        deps.emplace_back(std::move(t1));
-        deps.emplace_back(std::move(t2));
+    Project::Project(ftp && t1, ftp && t2) : deps(2), ndep(2) {
+        deps[0]     = std::move(t1);
+        deps[1]     = std::move(t2);
         deps[0].par = this;
         deps[1].par = this;
     }
