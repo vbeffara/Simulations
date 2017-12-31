@@ -62,15 +62,12 @@ namespace vb {
         boost::lockfree::stack<Project *> fringe;
         for (int i = 0; i < p.ndep; ++i) fringe.push(&(p.deps[i]));
         if (p.ndep == 0) fringe.push(&p);
-
-        std::vector<std::thread> runners;
-        bool                     done = false;
+        bool done = false;
         project_runner(fringe, done);
     }
 
     void execute_par(Project && p) {
         for (int i = 0; i < p.ndep; ++i) p.deps[i].par = &p;
-
         boost::lockfree::stack<Project *> fringe;
         for (int i = 0; i < p.ndep; ++i) fringe.push(&(p.deps[i]));
         if (p.ndep == 0) fringe.push(&p);
