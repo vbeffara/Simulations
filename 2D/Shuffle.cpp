@@ -22,91 +22,70 @@ auto threebytwo(double b) {
     return p;
 }
 
-Array<int> delslide(Array<int> a0) {
-    int n = a0.ww;
-    a0.resize(n + 2, n + 2, 0);
-    for (int y = a0.hh - 2; y > 0; --y)
-        for (int x = a0.ww - 2; x > 0; --x) swap(a0[{x, y}], a0[{(x - 1) + n * (y - 1), 0}]);
+struct Tiling {
+    void delslide() {
+        int n = state.ww;
+        state.resize(n + 2, n + 2, 0);
+        for (int y = state.hh - 2; y > 0; --y)
+            for (int x = state.ww - 2; x > 0; --x) swap(state[{x, y}], state[{(x - 1) + n * (y - 1), 0}]);
 
-    for (int i = 0; i < n / 2; ++i) {
-        for (int j = 0; j < n / 2; ++j) {
-            coo z{2 * i, 2 * j};
-            if ((a0[z] == 1) && (a0[z + coo{1, 1}] == 1)) {
-                a0[z]             = 0;
-                a0[z + coo{1, 1}] = 0;
-            } else if ((a0[z + coo{0, 1}] == 1) && (a0[z + coo{1, 0}] == 1)) {
-                a0[z + coo{1, 0}] = 0;
-                a0[z + coo{0, 1}] = 0;
+        for (int i = 0; i < n / 2; ++i) {
+            for (int j = 0; j < n / 2; ++j) {
+                coo z{2 * i, 2 * j};
+                if ((state[z] == 1) && (state[z + coo{1, 1}] == 1)) {
+                    state[z]             = 0;
+                    state[z + coo{1, 1}] = 0;
+                } else if ((state[z + coo{0, 1}] == 1) && (state[z + coo{1, 0}] == 1)) {
+                    state[z + coo{1, 0}] = 0;
+                    state[z + coo{0, 1}] = 0;
+                }
+            }
+        }
+        for (int i = 0; i <= n; i += 2) {
+            for (int j = 0; j <= n; j += 2) {
+                if (state[coo(i + 1, j + 1)] == 1) {
+                    state[coo(i, j)]         = 1;
+                    state[coo(i + 1, j + 1)] = 0;
+                } else if (state[coo(i, j)] == 1) {
+                    state[coo(i, j)]         = 0;
+                    state[coo(i + 1, j + 1)] = 1;
+                } else if (state[coo(i + 1, j)] == 1) {
+                    state[coo(i, j + 1)] = 1;
+                    state[coo(i + 1, j)] = 0;
+                } else if (state[coo(i, j + 1)] == 1) {
+                    state[coo(i + 1, j)] = 1;
+                    state[coo(i, j + 1)] = 0;
+                }
             }
         }
     }
-    for (int i = 0; i <= n; i += 2) {
-        for (int j = 0; j <= n; j += 2) {
-            if (a0[coo(i + 1, j + 1)] == 1) {
-                a0[coo(i, j)]         = 1;
-                a0[coo(i + 1, j + 1)] = 0;
-            } else if (a0[coo(i, j)] == 1) {
-                a0[coo(i, j)]         = 0;
-                a0[coo(i + 1, j + 1)] = 1;
-            } else if (a0[coo(i + 1, j)] == 1) {
-                a0[coo(i, j + 1)] = 1;
-                a0[coo(i + 1, j)] = 0;
-            } else if (a0[coo(i, j + 1)] == 1) {
-                a0[coo(i + 1, j)] = 1;
-                a0[coo(i, j + 1)] = 0;
-            }
-        }
-    }
-    return a0;
-}
 
-auto create(Array<int> x0, const Array<double> & p) {
-    int n = x0.ww;
-    for (int i = 0; i < n / 2; ++i) {
-        for (int j = 0; j < n / 2; ++j) {
-            if ((x0[coo(2 * i, 2 * j)] == 0) && (x0[coo(2 * i + 1, 2 * j)] == 0) && (x0[coo(2 * i, 2 * j + 1)] == 0) &&
-                (x0[coo(2 * i + 1, 2 * j + 1)] == 0)) {
-                bool a1 = true, a2 = true, a3 = true, a4 = true;
-                if (j > 0) a1 = (x0[coo(2 * i, 2 * j - 1)] == 0) && (x0[coo(2 * i + 1, 2 * j - 1)] == 0);
-                if (j < n / 2 - 1) a2 = (x0[coo(2 * i, 2 * j + 2)] == 0) && (x0[coo(2 * i + 1, 2 * j + 2)] == 0);
-                if (i > 0) a3 = (x0[coo(2 * i - 1, 2 * j)] == 0) && (x0[coo(2 * i - 1, 2 * j + 1)] == 0);
-                if (i < n / 2 - 1) a4 = (x0[coo(2 * i + 2, 2 * j)] == 0) && (x0[coo(2 * i + 2, 2 * j + 1)] == 0);
-                if (a1 && a2 && a3 && a4) {
-                    if (prng.bernoulli(p.atp(coo(i, j)))) {
-                        x0[coo(2 * i, 2 * j)]         = 1;
-                        x0[coo(2 * i + 1, 2 * j + 1)] = 1;
-                    } else {
-                        x0[coo(2 * i + 1, 2 * j)] = 1;
-                        x0[coo(2 * i, 2 * j + 1)] = 1;
+    void create(const Array<double> & p) {
+        int n = state.ww;
+        for (int i = 0; i < n / 2; ++i) {
+            for (int j = 0; j < n / 2; ++j) {
+                if ((state[coo(2 * i, 2 * j)] == 0) && (state[coo(2 * i + 1, 2 * j)] == 0) && (state[coo(2 * i, 2 * j + 1)] == 0) &&
+                    (state[coo(2 * i + 1, 2 * j + 1)] == 0)) {
+                    bool a1 = true, a2 = true, a3 = true, a4 = true;
+                    if (j > 0) a1 = (state[coo(2 * i, 2 * j - 1)] == 0) && (state[coo(2 * i + 1, 2 * j - 1)] == 0);
+                    if (j < n / 2 - 1) a2 = (state[coo(2 * i, 2 * j + 2)] == 0) && (state[coo(2 * i + 1, 2 * j + 2)] == 0);
+                    if (i > 0) a3 = (state[coo(2 * i - 1, 2 * j)] == 0) && (state[coo(2 * i - 1, 2 * j + 1)] == 0);
+                    if (i < n / 2 - 1) a4 = (state[coo(2 * i + 2, 2 * j)] == 0) && (state[coo(2 * i + 2, 2 * j + 1)] == 0);
+                    if (a1 && a2 && a3 && a4) {
+                        if (prng.bernoulli(p.atp(coo(i, j)))) {
+                            state[coo(2 * i, 2 * j)]         = 1;
+                            state[coo(2 * i + 1, 2 * j + 1)] = 1;
+                        } else {
+                            state[coo(2 * i + 1, 2 * j)] = 1;
+                            state[coo(2 * i, 2 * j + 1)] = 1;
+                        }
                     }
                 }
             }
         }
     }
-    return x0;
-}
 
-auto height(const Array<int> & A) {
-    int        m = A.ww / 2;
-    Array<int> h(m + 1, m + 1, 0);
-    int        z = 0;
-    for (int x = 0; x < m; ++x) {
-        z += 4 * A[coo(2 * x, 0)] + 4 * A[coo(2 * x + 1, 0)] - 2;
-        h[coo(x + 1, 0)] = z;
-    }
-    for (int y = 0; y < m; ++y) {
-        int z            = h[coo(0, y)] + 4 * A[coo(0, 2 * y)] + 4 * A[coo(0, 2 * y + 1)] - 2;
-        h[coo(0, y + 1)] = z;
-        for (int x = 0; x < m; ++x) {
-            z -= 4 * A[coo(2 * x, 2 * y + 1)] + 4 * A[coo(2 * x + 1, 2 * y + 1)] - 2;
-            h[coo(x + 1, y + 1)] = z;
-        }
-    }
-    return h;
-}
-
-struct Tiling {
-    auto probs() {
+    void probs() {
         vector<Array<pair<double, double>>> A(n, {per, per});
 
         for (auto z : coos(A[0]))
@@ -155,12 +134,12 @@ struct Tiling {
         }
     }
 
-    void output_pdf(const Array<int> & A1, const string & name, int off = 0) {
+    void output_pdf(const string & name, int off = 0) const {
         Figure F;
         int    ddx[4] = {0, 2, 0, 2}, ddy[4] = {0, -2, -4, -6};
         int    offx = ddx[off % 4], offy = ddy[off % 4];
-        for (auto z : coos(A1))
-            if (A1[z] != 0) {
+        for (auto z : coos(state))
+            if (state[z] != 0) {
                 coo  edge(1, ((z.x + z.y) % 2) != 0 ? 1 : -1);
                 auto s = [=](coo z) {
                     z += coo(offx, offy);
@@ -169,25 +148,44 @@ struct Tiling {
                     return cpx(z) + 2 * double(H['r']) * cpx(sh) - cpx(offx, offy);
                 };
                 double gr = a * TP.atp(z + coo(offx / 2, offy / 2)) + b;
-                F.add(make_unique<Segment>(s(z * 2 - edge), s(z * 2 + edge), Pen(Grey(255 * gr), 130.0 / A1.ww)));
+                F.add(make_unique<Segment>(s(z * 2 - edge), s(z * 2 + edge), Pen(Grey(255 * gr), 130.0 / state.ww)));
             }
         if (H['v']) F.show();
         F.output(name);
     }
 
-    auto aztecgen() {
-        Array<int> as{0, 0};
-        for (int i = 0; i < n; ++i) {
-            as = create(delslide(std::move(as)), pbs[i]);
-            if (H['v']) output_pdf(as, "snapshots/" + fmt::format("snapshot_{:04d}", i), n - i - 1);
+    auto height() const {
+        int        m = state.ww / 2;
+        Array<int> h(m + 1, m + 1, 0);
+        int        z = 0;
+        for (int x = 0; x < m; ++x) {
+            z += 4 * state[coo(2 * x, 0)] + 4 * state[coo(2 * x + 1, 0)] - 2;
+            h[coo(x + 1, 0)] = z;
         }
-        return as;
+        for (int y = 0; y < m; ++y) {
+            int z            = h[coo(0, y)] + 4 * state[coo(0, 2 * y)] + 4 * state[coo(0, 2 * y + 1)] - 2;
+            h[coo(0, y + 1)] = z;
+            for (int x = 0; x < m; ++x) {
+                z -= 4 * state[coo(2 * x, 2 * y + 1)] + 4 * state[coo(2 * x + 1, 2 * y + 1)] - 2;
+                h[coo(x + 1, y + 1)] = z;
+            }
+        }
+        return h;
+    }
+
+    auto aztecgen() {
+        for (int i = 0; i < n; ++i) {
+            delslide();
+            create(pbs[i]);
+            if (H['v']) output_pdf("snapshots/" + fmt::format("snapshot_{:04d}", i), n - i - 1);
+        }
     }
 
     void run() {
-        auto as = aztecgen(), H1 = height(as);
+        aztecgen();
+        output_pdf(name);
 
-        output_pdf(as, name);
+        auto     H1 = height();
         ofstream dat(H.dir + name + ".dat");
         for (auto z : coos(H1)) {
             dat << H1[z] << " ";
@@ -213,6 +211,7 @@ struct Tiling {
     int                   m, per, n;
     double                pmin{1.0}, pmax{0.0}, a{0.0}, b{0.0};
     vector<Array<double>> pbs;
+    Array<uint8_t>        state;
 };
 
 int main(int argc, char ** argv) {
