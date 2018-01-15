@@ -12,7 +12,7 @@
                 "/usr/local/include/eigen3",
                 "/usr/local/include/libcmaes",
                 "/usr/local/LLVM/include/c++/v1",
-                "/usr/local/LLVM/lib/clang/6.0.0/include"
+                "/usr/local/LLVM/lib/clang/7.0.0/include"
             ],
             "defines": [],
             "intelliSenseMode": "clang-x64",
@@ -20,9 +20,7 @@
                 "path": [
                     "/usr/local/include",
                     "/usr/include",
-                    "${workspaceRoot}",
-                    "/usr/local/LLVM/include/c++/v1",
-                    "/usr/local/LLVM/lib/clang/6.0.0/include"
+                    "${workspaceRoot}"
                 ],
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": ""

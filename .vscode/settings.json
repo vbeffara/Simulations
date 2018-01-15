@@ -48,6 +48,8 @@
         "*.tcc": "cpp",
         "ostream": "cpp",
         "stack": "cpp",
-        "coroutine": "cpp"
+        "coroutine": "cpp",
+        "hashtable": "cpp",
+        "sstream": "cpp"
     }
 }

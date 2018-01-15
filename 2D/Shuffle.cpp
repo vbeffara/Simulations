@@ -1,4 +1,5 @@
 // Initial code in Python by Sunil Chhita, ported to C++ by VB.
+#include <vb/Figure.h>
 #include <vb/Stream_lib.h>
 #include <fstream>
 
@@ -21,36 +22,38 @@ auto threebytwo(double b) {
     return p;
 }
 
-Array<int> delslide(const Array<int> & x1) {
-    int        n = x1.ww;
-    Array<int> a0(n + 2, n + 2);
-    for (int i = 0; i < n + 2; ++i)
-        for (int j = 0; j < n + 2; ++j) a0[coo(i, j)] = ((i == 0) || (i == n + 1) || (j == 0) || (j == n + 1)) ? 0 : x1[coo(i - 1, j - 1)];
+Array<int> delslide(Array<int> a0) {
+    int n = a0.ww;
+    a0.resize(n + 2, n + 2, 0);
+    for (int y = a0.hh - 2; y > 0; --y)
+        for (int x = a0.ww - 2; x > 0; --x) swap(a0[{x, y}], a0[{(x - 1) + n * (y - 1), 0}]);
+
     for (int i = 0; i < n / 2; ++i) {
         for (int j = 0; j < n / 2; ++j) {
-            if ((a0[coo(2 * i, 2 * j)] == 1) && (a0[coo(2 * i + 1, 2 * j + 1)] == 1)) {
-                a0[coo(2 * i, 2 * j)]         = 0;
-                a0[coo(2 * i + 1, 2 * j + 1)] = 0;
-            } else if ((a0[coo(2 * i, 2 * j + 1)] == 1) && (a0[coo(2 * i + 1, 2 * j)] == 1)) {
-                a0[coo(2 * i + 1, 2 * j)] = 0;
-                a0[coo(2 * i, 2 * j + 1)] = 0;
+            coo z{2 * i, 2 * j};
+            if ((a0[z] == 1) && (a0[z + coo{1, 1}] == 1)) {
+                a0[z]             = 0;
+                a0[z + coo{1, 1}] = 0;
+            } else if ((a0[z + coo{0, 1}] == 1) && (a0[z + coo{1, 0}] == 1)) {
+                a0[z + coo{1, 0}] = 0;
+                a0[z + coo{0, 1}] = 0;
             }
         }
     }
-    for (int i = 0; i < n / 2 + 1; ++i) {
-        for (int j = 0; j < n / 2 + 1; ++j) {
-            if (a0[coo(2 * i + 1, 2 * j + 1)] == 1) {
-                a0[coo(2 * i, 2 * j)]         = 1;
-                a0[coo(2 * i + 1, 2 * j + 1)] = 0;
-            } else if (a0[coo(2 * i, 2 * j)] == 1) {
-                a0[coo(2 * i, 2 * j)]         = 0;
-                a0[coo(2 * i + 1, 2 * j + 1)] = 1;
-            } else if (a0[coo(2 * i + 1, 2 * j)] == 1) {
-                a0[coo(2 * i, 2 * j + 1)] = 1;
-                a0[coo(2 * i + 1, 2 * j)] = 0;
-            } else if (a0[coo(2 * i, 2 * j + 1)] == 1) {
-                a0[coo(2 * i + 1, 2 * j)] = 1;
-                a0[coo(2 * i, 2 * j + 1)] = 0;
+    for (int i = 0; i <= n; i += 2) {
+        for (int j = 0; j <= n; j += 2) {
+            if (a0[coo(i + 1, j + 1)] == 1) {
+                a0[coo(i, j)]         = 1;
+                a0[coo(i + 1, j + 1)] = 0;
+            } else if (a0[coo(i, j)] == 1) {
+                a0[coo(i, j)]         = 0;
+                a0[coo(i + 1, j + 1)] = 1;
+            } else if (a0[coo(i + 1, j)] == 1) {
+                a0[coo(i, j + 1)] = 1;
+                a0[coo(i + 1, j)] = 0;
+            } else if (a0[coo(i, j + 1)] == 1) {
+                a0[coo(i + 1, j)] = 1;
+                a0[coo(i, j + 1)] = 0;
             }
         }
     }
@@ -152,67 +155,68 @@ struct Tiling {
         }
     }
 
-    auto aztecgen() {
-        if (prng.bernoulli(pbs[0][coo(0, 0)]))
-            As.push_back(Array<int>({{1, 0}, {0, 1}}));
-        else
-            As.push_back(Array<int>({{0, 1}, {1, 0}}));
-        for (int i = 1; i < n; ++i) As.push_back(create(delslide(As.back()), pbs[i]));
-    }
-
     void output_pdf(const Array<int> & A1, const string & name, int off = 0) {
-        {
-            ofstream asy(name + ".asy");
-            int      ddx[4] = {0, 2, 0, 2}, ddy[4] = {0, -2, -4, -6};
-            int      offx = ddx[off % 4], offy = ddy[off % 4];
-            for (auto z : coos(A1))
-                if (A1[z] != 0) {
-                    coo  edge(1, ((z.x + z.y) % 2) != 0 ? 1 : -1);
-                    auto s = [=](coo z) {
-                        z += coo(offx, offy);
-                        coo zz = (z + coo{1, 1}) / 2;
-                        coo sh = dz[(zz.y + ((((zz.x + 1) % 4) / 2) != 0 ? 5 : 3)) % 4];
-                        return cpx(z) + 2 * double(H['r']) * cpx(sh) - cpx(offx, offy);
-                    };
-                    auto l = [](cpx z) { return fmt::format("({},{})", real(z), imag(z)); };
-                    asy << fmt::format("draw ({}--{}, gray ({}));\n", l(s(z * 2 - edge)), l(s(z * 2 + edge)),
-                                       TP.atp(z + coo(offx / 2, offy / 2)) / 1.3);
-                }
-            int L = A1.ww * 2 + 2;
-            asy << fmt::format("draw ((-4,-4) -- ({},-4) -- ({},{}) -- (-4,{}) -- (-4,-4), gray(1));\n", L, L, L, L);
-        }
-        if (fork() == 0) execlp("asy", "asy", "-fpdf", "-o", (name + ".pdf2").c_str(), (name + ".asy").c_str(), nullptr);
+        Figure F;
+        int    ddx[4] = {0, 2, 0, 2}, ddy[4] = {0, -2, -4, -6};
+        int    offx = ddx[off % 4], offy = ddy[off % 4];
+        for (auto z : coos(A1))
+            if (A1[z] != 0) {
+                coo  edge(1, ((z.x + z.y) % 2) != 0 ? 1 : -1);
+                auto s = [=](coo z) {
+                    z += coo(offx, offy);
+                    coo zz = (z + coo{1, 1}) / 2;
+                    coo sh = dz[(zz.y + ((((zz.x + 1) % 4) / 2) != 0 ? 5 : 3)) % 4];
+                    return cpx(z) + 2 * double(H['r']) * cpx(sh) - cpx(offx, offy);
+                };
+                double gr = a * TP.atp(z + coo(offx / 2, offy / 2)) + b;
+                F.add(make_unique<Segment>(s(z * 2 - edge), s(z * 2 + edge), Pen(Grey(255 * gr), 130.0 / A1.ww)));
+            }
+        if (H['v']) F.show();
+        F.output(name);
     }
 
-    void output() {
-        string name = H.dir + H.title;
-        output_pdf(As.back(), name);
+    auto aztecgen() {
+        Array<int> as{0, 0};
+        for (int i = 0; i < n; ++i) {
+            as = create(delslide(std::move(as)), pbs[i]);
+            if (H['v']) output_pdf(as, "snapshots/" + fmt::format("snapshot_{:04d}", i), n - i - 1);
+        }
+        return as;
+    }
 
-        if (H['v'])
-            for (int i = 0; i < As.size(); i += 2)
-                output_pdf(As[i], H.dir + "snapshots/" + fmt::format("snapshot_{:04d}", i), As.size() - 1 - i);
+    void run() {
+        auto as = aztecgen(), H1 = height(as);
 
-        auto     H1 = height(As.back());
-        ofstream dat(name + ".dat");
+        output_pdf(as, name);
+        ofstream dat(H.dir + name + ".dat");
         for (auto z : coos(H1)) {
             dat << H1[z] << " ";
             if (z.x == H1.ww - 1) dat << "\n";
         }
     }
 
-    Tiling(Array<double> TP, int m) : TP(move(TP)), m(m), per(lcm(TP.ww, TP.hh)), n(m * per / 2) {
+    Tiling(Array<double> TP_, int m) : TP(move(TP_)), m(m), per(lcm(TP.ww, TP.hh)), n(m * per / 2) {
         probs();
-        aztecgen();
+        for (auto z : coos(TP)) {
+            if (TP[z] == 0) continue;
+            if (TP[z] > pmax) pmax = TP[z];
+            if (TP[z] < pmin) pmin = TP[z];
+        }
+        if (pmin != pmax) {
+            a = .7 / (pmax - pmin);
+            b = -.7 * pmin / (pmax - pmin);
+        }
     }
 
+    string                name = H.title;
     const Array<double>   TP;
     int                   m, per, n;
+    double                pmin{1.0}, pmax{0.0}, a{0.0}, b{0.0};
     vector<Array<double>> pbs;
-    vector<Array<int>>    As;
 };
 
 int main(int argc, char ** argv) {
-    H.init("Domino shuffle", argc, argv, "m=50,a=1,b=.5,c=.3,s=0,r=0,w=unif,v");
+    H.init("Domino shuffle", argc, argv, "m=50,a=1,b=.5,c=.3,s=0,r=0,w=two,v");
     if (int seed = H['s']; seed != 0) prng.seed(seed);
 
     std::map<string, function<Array<double>()>> TPs;
@@ -221,5 +225,5 @@ int main(int argc, char ** argv) {
     TPs["three"]  = [&] { return threeperiodic(H['a'], H['b'], H['c']); };
     TPs["kenyon"] = [&] { return threebytwo(H['b']); };
 
-    Tiling{TPs[H['w']](), H['m']}.output();
+    Tiling{TPs[H['w']](), H['m']}.run();
 }

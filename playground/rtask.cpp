@@ -11,14 +11,14 @@ void plain(int n) {
     plain(n - 1);
     plain(n - 2);
     ++s;
-};
+}
 
 Project go(int n) {
     if (n < 2) { return {}; }
     Project p{[=] { return go(n - 1); }, [=] { return go(n - 2); }, [=] { return ++s, Project{}; }};
     // p.then([=] { return ++s, Project{}; });
     return p;
-};
+}
 
 int main(int argc, char ** argv) {
     H.init("Playground for ThreadPool", argc, argv, "n=5,r");
