@@ -43,6 +43,7 @@
                 "/usr/include/x86_64-linux-gnu",
                 "/usr/include/c++/7/tr1",
                 "/usr/include/eigen3",
+                "/usr/include/cairo",
                 "${workspaceRoot}/build/libvb"
             ],
             "defines": [],
