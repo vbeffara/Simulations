@@ -4,4 +4,3 @@
 
 #cmakedefine BIGENDIAN
 #cmakedefine CMAES
-#cmakedefine SPDLOG_COLOR_MT
