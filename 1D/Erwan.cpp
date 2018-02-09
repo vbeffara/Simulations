@@ -6,10 +6,8 @@ using namespace vb;
 using namespace std;
 using Eigen::Matrix2d;
 
-#ifdef CMAES
 #include "cmaes.h"
 using namespace libcmaes;
-#endif
 
 double lambda(const Matrix2d & A) { return abs(A(0, 0) + A(1, 1)); }
 
@@ -96,17 +94,12 @@ public:
     }
 
     vector<vector<double>> explore_cmaes(int n, int t) {
-#ifdef CMAES
         FitFunc         f = [this, n, t](const double * x, const int /* N */) { return abs(avg(n, t, x_to_p(x)) - 2.0 / 3.0); };
         vector<double>  x0(16, .25);
         double          sigma = 0.1;
         CMAParameters<> cmaparams(x0, sigma);
         CMASolutions    cmasols = cmaes<>(f, cmaparams);
         return x_to_p(cmasols.get_best_seen_candidate().get_x_ptr());
-#else
-        H.L->warn("No CMAES, answering at random");
-        return random_markov(4);
-#endif
     }
 
     void run(int n, int t) {

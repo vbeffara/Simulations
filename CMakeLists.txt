@@ -2,8 +2,7 @@ cmake_minimum_required (VERSION 3.0)
 project (Simulations)
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
-set(CMAKE_SKIP_RPATH 0)
+conan_basic_setup(KEEP_RPATHS)
 
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -fdiagnostics-color=always -pedantic")
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-unused-local-typedefs -Wno-unused-function -Wno-sign-compare")
@@ -53,24 +52,17 @@ find_library (MPFR mpfr)
 find_package (PkgConfig)
 find_package (FLTK)
 pkg_check_modules (EXT REQUIRED cairo fftw3 cln gsl eigen3 fplll)
-pkg_check_modules (CMAES libcmaes)
-
-if (${CMAES_FOUND})
-    link_directories (${CMAES_LIBRARY_DIRS})
-    include_directories (${CMAES_INCLUDE_DIRS})
-    set (CMAES 1)
-endif ()
 
 file (GLOB vb_sources ${PROJECT_SOURCE_DIR}/libvb/*.cpp)
 add_library (vb SHARED ${vb_sources})
-target_link_libraries (vb ${EXT_LIBRARIES} ${GMP} ${FLTK_LIBRARIES} ${MPFR} ${CMAES_LIBRARIES} ${CONAN_LIBS})
+target_link_libraries (vb ${EXT_LIBRARIES} ${GMP} ${FLTK_LIBRARIES} ${MPFR} ${CONAN_LIBS})
 
 execute_process(COMMAND "git" describe --always --abbrev=40 WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" OUTPUT_VARIABLE GIT_SHA1 OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 configure_file ("${PROJECT_SOURCE_DIR}/libvb/vb/config.h.in" "${CMAKE_CURRENT_BINARY_DIR}/libvb/vb/config.h")
 include_directories ("${CMAKE_CURRENT_BINARY_DIR}/libvb")
 
-include_directories ("${PROJECT_SOURCE_DIR}/libvb" ${EXT_INCLUDE_DIRS} ${CMAES_INCLUDE_DIRS})
+include_directories ("${PROJECT_SOURCE_DIR}/libvb" ${EXT_INCLUDE_DIRS})
 
 set (DIRS tests 1D 2D 3D)
 if (${PLAYGROUND})
