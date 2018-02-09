@@ -1,9 +1,9 @@
 [requires]
 # gmp/6.1.2@bincrafters/stable
-Boost.Chrono/[>=1.65.0]@bincrafters/testing
-Boost.Coroutine2/[>=1.65.0]@bincrafters/testing
-Boost.Graph/[>=1.65.0]@bincrafters/testing
-Boost.Lockfree/[>=1.65.0]@bincrafters/testing
+Boost.Chrono/1.65.1@bincrafters/testing
+Boost.Coroutine2/1.65.1@bincrafters/testing
+Boost.Graph/1.65.1@bincrafters/testing
+Boost.Lockfree/1.65.1@bincrafters/testing
 doctest/1.2.6@bincrafters/stable
 libcmaes/0.9.5+HEAD@vbeffara/testing
 libpng/1.6.34@bincrafters/stable

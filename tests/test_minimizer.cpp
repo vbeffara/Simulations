@@ -1,5 +1,4 @@
-#include <vb/Minimizer.h>
-#include <vb/config.h>
+#include <vb/Hub.h>
 #include <cmaes.h>
 #include <gsl/gsl>
 

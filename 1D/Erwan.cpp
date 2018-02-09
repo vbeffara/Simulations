@@ -1,6 +1,5 @@
 #include <vb/LinearAlgebra.h>
 #include <vb/PRNG.h>
-#include <vb/config.h>
 
 using namespace vb;
 using namespace std;
