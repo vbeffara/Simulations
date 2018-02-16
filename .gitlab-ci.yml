@@ -3,6 +3,7 @@ image: vbeffara/simulations
 cmake:
   stage: build
   script:
+    - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
     - conan create conan/yaml-cpp.py vbeffara/testing
     - conan create conan/libcmaes.py vbeffara/testing
     - mkdir -p build/cov
