@@ -3,8 +3,11 @@ image: vbeffara/simulations
 cmake:
   stage: build
   script:
+    - conan create conan/yaml-cpp.py vbeffara/testing
+    - conan create conan/libcmaes.py vbeffara/testing
     - mkdir -p build/cov
     - cd build
+    - conan install .. --build missing
     - cmake .. -G Ninja -DCOV=1
     - ninja
   artifacts:
