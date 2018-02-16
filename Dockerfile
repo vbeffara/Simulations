@@ -6,5 +6,5 @@ RUN apt-get install -y python-pip cmake gcc g++ ccache lcov git ninja-build xvfb
 RUN apt-get install -y libcairo2-dev libfltk1.3-dev libfftw3-dev libfplll-dev libgmp-dev libmpfr-dev libpng++-dev
 RUN apt-get install -y libyaml-cpp-dev libcln-dev libgsl-dev libeigen3-dev libspdlog-dev
 
-RUN pip install codecov
+RUN pip install codecov conan
 RUN gem install coveralls-lcov
