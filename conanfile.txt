@@ -14,3 +14,7 @@ yaml-cpp/0.6.1@vbeffara/testing
 
 [generators]
 cmake
+
+[imports]
+lib, *.dylib* -> ./lib # Copies all dylib files from packages lib folder to my "lib" folder
+lib, *.so* -> ./lib # Copies all so files from packages lib folder to my "lib" folder
