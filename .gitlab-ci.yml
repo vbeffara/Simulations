@@ -4,11 +4,11 @@ cmake:
   stage: build
   script:
     - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
-    - conan create conan/yaml-cpp.py vbeffara/testing
-    - conan create conan/libcmaes.py vbeffara/testing
+    - conan create conan/yaml-cpp.py vbeffara/testing -s compiler.libcxx=libstdc++11
+    - conan create conan/libcmaes.py vbeffara/testing -s compiler.libcxx=libstdc++11
     - mkdir -p build/cov
     - cd build
-    - conan install .. --build missing
+    - conan install .. --build missing -s compiler.libcxx=libstdc++11
     - cmake .. -G Ninja -DCOV=1
     - ninja
   artifacts:
