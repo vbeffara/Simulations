@@ -8,7 +8,7 @@ doctest/1.2.6@bincrafters/stable
 gsl_microsoft/20180102@bincrafters/stable
 libcmaes/0.9.5+HEAD@vbeffara/testing
 libpng/1.6.34@bincrafters/stable
-range-v3/0.3.0@ericniebler/stable
+range-v3/0.3.5@ericniebler/stable
 spdlog/0.16.3@bincrafters/stable
 yaml-cpp/0.6.1@vbeffara/testing
 
