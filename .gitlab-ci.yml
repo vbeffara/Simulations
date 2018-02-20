@@ -4,8 +4,7 @@ cmake:
   stage: build
   script:
     - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
-    - conan create conan/yaml-cpp.py vbeffara/testing -s compiler.libcxx=libstdc++11
-    - conan create conan/libcmaes.py vbeffara/testing -s compiler.libcxx=libstdc++11
+    - conan remote add vb https://api.bintray.com/conan/vbeffara/misc
     - mkdir -p build/cov
     - cd build
     - conan install .. --build missing -s compiler.libcxx=libstdc++11
