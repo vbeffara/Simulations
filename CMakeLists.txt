@@ -1,12 +1,16 @@
 cmake_minimum_required (VERSION 3.0)
 project (Simulations)
 
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup(KEEP_RPATHS)
+
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -fdiagnostics-color=always -pedantic")
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-unused-local-typedefs -Wno-unused-function -Wno-sign-compare")
 set (CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-mismatched-tags -Wno-undefined-var-template")
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-mismatched-tags -Wno-undefined-var-template -Wno-nested-anon-types")
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter -Wno-unused-variable")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-int-in-bool-context")
 endif()
@@ -26,7 +30,7 @@ if (${COV})
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 --coverage -fprofile-arcs -ftest-coverage")
 	set (CMAKE_EXE_LINKER_FLAGS "--coverage -fprofile-arcs -ftest-coverage")
 else ()
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=native -mtune=native")
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 endif ()
 
 if (${DEBUG})
@@ -46,30 +50,20 @@ check_include_file_cxx (png++/png.hpp PNGPP "-include string")
 find_library (GMP gmp)
 find_library (MPFR mpfr)
 find_package (PkgConfig)
-find_package (Boost COMPONENTS chrono context system REQUIRED)
 find_package (FLTK)
-pkg_check_modules (EXT REQUIRED cairo fftw3 libpng yaml-cpp cln gsl eigen3 fplll spdlog)
-pkg_check_modules (CMAES libcmaes)
-
-include(CheckCXXSymbolExists)
-check_cxx_symbol_exists (spdlog::stdout_color_mt spdlog/spdlog.h SPDLOG_COLOR_MT)
-
-if (${CMAES_FOUND})
-    link_directories (${CMAES_LIBRARY_DIRS})
-    include_directories (${CMAES_INCLUDE_DIRS})
-    set (CMAES 1)
-endif ()
+pkg_check_modules (EXT REQUIRED cairo fftw3 cln gsl eigen3 fplll)
 
 file (GLOB vb_sources ${PROJECT_SOURCE_DIR}/libvb/*.cpp)
 add_library (vb SHARED ${vb_sources})
-target_link_libraries (vb ${EXT_LIBRARIES} ${GMP} ${FLTK_LIBRARIES} ${MPFR} ${Boost_LIBRARIES} ${CMAES_LIBRARIES})
+target_link_libraries (vb ${EXT_LIBRARIES} ${GMP} ${FLTK_LIBRARIES} ${MPFR} ${CONAN_LIBS})
 
 execute_process(COMMAND "git" describe --always --abbrev=40 WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" OUTPUT_VARIABLE GIT_SHA1 OUTPUT_STRIP_TRAILING_WHITESPACE)
+set_source_files_properties(libvb/Hub.cpp PROPERTIES COMPILE_FLAGS -DGIT_SHA1='"${GIT_SHA1}"')
 
 configure_file ("${PROJECT_SOURCE_DIR}/libvb/vb/config.h.in" "${CMAKE_CURRENT_BINARY_DIR}/libvb/vb/config.h")
 include_directories ("${CMAKE_CURRENT_BINARY_DIR}/libvb")
 
-include_directories ("${PROJECT_SOURCE_DIR}/libvb" ${Boost_INCLUDE_DIRS} ${EXT_INCLUDE_DIRS} ${CMAES_INCLUDE_DIRS})
+include_directories ("${PROJECT_SOURCE_DIR}/libvb" ${EXT_INCLUDE_DIRS})
 
 set (DIRS tests 1D 2D 3D)
 if (${PLAYGROUND})

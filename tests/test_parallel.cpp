@@ -5,9 +5,11 @@
 #include <cmath>
 #include <future>
 #include <numeric>
+#include <range/v3/all.hpp>
 
-using namespace vb;
+using namespace ranges;
 using namespace std;
+using namespace vb;
 
 int fib(int n) { return n < 2 ? n : fib(n - 1) + fib(n - 2); }
 
@@ -113,6 +115,11 @@ int main(int argc, char ** argv) {
         std::iota(X.begin(), X.end(), 0);
         std::transform(X.begin(), X.end(), X.begin(), cost);
         double s = std::accumulate(X.begin(), X.end(), 0.0);
+        return s - int64_t(s);
+    });
+
+    timing("Map+reduce | Single (Ranges)", [=] {
+        auto s = ranges::accumulate(view::ints(0, l) | view::transform(cost), 0.0);
         return s - int64_t(s);
     });
 
