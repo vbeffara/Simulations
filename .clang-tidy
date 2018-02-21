@@ -1,2 +1,2 @@
 ---
-Checks:          '*,-*braces*,-*-vararg,-cert-err58-cpp,-google-build-using-namespace,-fuchsia-default-arguments,-llvm-include-order'
+Checks:          '*,-*braces*,-*-vararg,-cert-err58-cpp,-google-build-using-namespace,-fuchsia-*,-llvm-include-order'
