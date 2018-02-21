@@ -6,6 +6,7 @@
 #include <future>
 #include <numeric>
 #include <range/v3/all.hpp>
+#include <range/v3/experimental/utility/generator.hpp>
 
 using namespace ranges;
 using namespace std;
@@ -134,6 +135,16 @@ int main(int argc, char ** argv) {
     timing("Map+reduce | Coroutine (native)", [=] {
         double s = 0;
         for (auto x : take(l, fmap(cost, new_ints()))) s += x;
+        return s - int64_t(s);
+    });
+
+    timing("Map+reduce | Coroutine (native with ranges)", [=] {
+        auto costs = []() -> ranges::v3::experimental::generator<double> {
+            int i = 0;
+            for (;;) { co_yield cost(i++); }
+        };
+
+        auto s = ranges::accumulate(costs() | view::take(l), 0.0);
         return s - int64_t(s);
     });
 #endif
