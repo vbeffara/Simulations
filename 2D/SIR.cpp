@@ -9,7 +9,7 @@ class SIR : public Image { public:
         int n0 = H['d'] ? 0 : int(H['n'])/2;
         for (int i=n0-10; i<n0+10; ++i) for (int j=n0-10; j<n0+10; ++j) if (contains(coo(i,j))) put(coo(i,j),prey);
         put (coo(n0,n0),pred);
-        for (auto c = begin(); c != end(); ++c) if (*c == prey) fringe.push_back(c);
+        for (auto z : coos()) if (at(z) == prey) fringe.push_back(z);
         show();
     }
 

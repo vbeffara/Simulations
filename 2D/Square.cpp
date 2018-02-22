@@ -52,7 +52,7 @@ using ptpair = std::pair<pt,pt>;
 
 class Lamination : public vb::Array<double> { public:
 	explicit Lamination (int n) : vb::Array<double> (n,n,0) {
-		for (auto & v : *this) { v = tan(vb::prng.uniform_real(0,M_PI)); }
+		for (auto z : coos()) { put(z,tan(vb::prng.uniform_real(0,M_PI))); }
 	}
 
 	pt geodesique (pt p, std::ostream *os = nullptr) const {

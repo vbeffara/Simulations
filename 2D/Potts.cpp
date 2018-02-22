@@ -15,7 +15,7 @@ class Potts : public Bitmap<int> { public:
 	Potts (int n, int q, double beta_) : Bitmap<int> (n,n), q(q), beta(beta_) {
 		bcs["perio"] = []{};
 		bcs["free"] = [this]{
-			b=1; for (auto & c : *this) c=-1;
+			b=1; for (auto z : coos()) put(z,-1);
 		};
 		bcs["wired"] = [this]{
 			b=1;

@@ -4,9 +4,9 @@ using namespace vb;
 
 class Voter : public Image { public:
 	Voter (int n, double p, int d) : Image (n,n) {
-		for (auto & v : *this)
-			if (d>1)	v = Indexed(prng.uniform_int(d));
-			else    	v = prng.bernoulli(p) ? WHITE : BLACK;
+		for (auto z:coos())
+			if (d>1)	put(z, Indexed(prng.uniform_int(d)));
+			else    	put(z, prng.bernoulli(p) ? WHITE : BLACK);
 	}
 
 	void up () { coo z = rand(); put(z,atp(z+dz[prng.uniform_int(4)])); }

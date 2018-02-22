@@ -59,8 +59,8 @@ class Nematic : public vb::Bitmap<int> { public:
 			if ((k != ok) || (b != ob)) prec();
 			for (int i=0; i<h(); ++i) redo (coo(0,i), 1);
 			for (int i=0; i<w(); ++i) redo (coo(i,0), 2);
-			int nh = 0; for (auto v : *this) if (v == 1) ++nh;
-			int nv = 0; for (auto v : *this) if (v == 2) ++nv;
+			int nh = 0; for (auto z : coos()) if (at(z) == 1) ++nh;
+			int nv = 0; for (auto z : coos()) if (at(z) == 2) ++nv;
 			order = nh+nv>0 ? double (nh-nv) / double (nh+nv) : 0;
 			if (((t%100) == 0) && H['l']) std::cout << order << std::endl;
 		}

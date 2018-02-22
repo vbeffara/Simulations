@@ -66,12 +66,12 @@ class Stuck : public Bitmap<Stat> { public:
 	void update () override {
 		if (H['c']) center();
 		int m=Stat::max;
-		for (auto v : *this) if (v.s > 0) m = min (m,v.s);
+		for (auto z : coos()) if (at(z).s > 0) m = min (m,at(z).s);
 		if (m<Stat::max) Stat::min=m;
 		Bitmap<Stat>::update();
 	}
 
-	int nsup () { int n=0; for (Stat v : *this) if ((v.s>0) && (v.ml>.9*Stat::max)) ++n; return n; }
+	int nsup () { int n=0; for (auto z : coos()) if ((at(z).s>0) && (at(z).ml>.9*Stat::max)) ++n; return n; }
 
 	double alpha, beta;
 	coo z;

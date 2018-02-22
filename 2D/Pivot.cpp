@@ -8,7 +8,7 @@ class Pivot : public Image { public:
 	explicit Pivot (int nn_) : Image (4*nn_,4*nn_), nn(nn_), n(nn*nn), z(n) { show(); }
 
 	int piv () {
-		for (auto & c : *this) c = BLACK;
+		for (auto z : coos()) put(z,BLACK);
 		for (int k=0; k<n/4; k++) putp (z[k],WHITE);
 		for (int k=n/4; k<3*n/4; k++) {
 			bool piv = true;
@@ -27,7 +27,7 @@ class Pivot : public Image { public:
 
 		H.L->info ("Pivot found at time {} and location {}.", p, z[p]);
 
-		for (auto & c : *this) c = BLACK;
+		for (auto z : coos()) put(z,BLACK);
 		for (int k=0; k<n; k++) putp(z[k]-z[p]+coo(2*nn,2*nn),WHITE);
 		for (int k=p+1; k<n; k++) {
 			coo zz = rot(z[k]-z[p],{0,0}) + coo(2*nn,2*nn);

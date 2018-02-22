@@ -17,7 +17,7 @@ int main (int argc, char ** argv) {
 
     Image img (2*n,2*n);
 
-    for (Color & c : img) if (g) c = AWAY; else c = prng.bernoulli(p) ? ALIVE : EMPTY;
+    for (auto z : img.coos()) if (g) img.put(z,AWAY); else img.put(z, prng.bernoulli(p) ? ALIVE : EMPTY);
     img.put (coo(n,n),DEAD); img.show();
     if (t>0) img.snapshot_setup ("MDLA",t);
 

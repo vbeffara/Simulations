@@ -42,7 +42,8 @@ void Mirrors::main () {
 	show();
 
 	while (true) {
-		for (auto & m : *this) {
+		for (auto z : coos()) {
+			auto & m = at(z);
 			m = STATE_NONE;
 			if (prng.bernoulli(1-q)) {
 				m |= STATE_PRESENT;

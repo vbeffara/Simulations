@@ -8,7 +8,6 @@ namespace vb {
 		Bitmap (int wd, int ht, T d = T());
 
 		using Array<T>::at;   	using Array<T>::atp;
-		using Array<T>::begin;	using Array<T>::end;
 		using Array<T>::contains; // TODO: rename, clashes with Fl_Widget
 
 		void	put 	(coo z, T const & c)	{ Array<T>::put(z,c);  step(); }
