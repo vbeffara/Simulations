@@ -1,4 +1,5 @@
 #include <vb/PRNG.h>
+#include <vb/Ranges.h>
 #include <vb/util.h>
 
 using namespace vb;
@@ -16,6 +17,11 @@ int main(int argc, char ** argv) {
             s += o * o;
         }
         return s / n;
+    });
+
+    timing("vb::PRNG::gaussian through range", [n] {
+        auto os = rv::generate([] { return prng.gaussian(); }) | rv::transform([](double o) { return o * o; }) | rv::take(n);
+        return ranges::accumulate(os, 0.0) / n;
     });
 
     timing("boost::gaussian_distribution", [n] {

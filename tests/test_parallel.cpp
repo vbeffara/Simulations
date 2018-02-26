@@ -1,4 +1,3 @@
-#include <vb/Generator.h>
 #include <vb/Ranges.h>
 #include <vb/Stream.h>
 #include <vb/ThreadPool.h>
@@ -6,7 +5,6 @@
 #include <cmath>
 #include <future>
 #include <numeric>
-#include <range/v3/experimental/utility/generator.hpp>
 
 using namespace ranges;
 using namespace std;
@@ -132,14 +130,8 @@ int main(int argc, char ** argv) {
     // });
 
 #ifdef __cpp_coroutines
-    timing("Map+reduce | Coroutine (native)", [=] {
-        double s = 0;
-        for (auto x : take(l, fmap(cost, new_ints()))) s += x;
-        return s - int64_t(s);
-    });
-
     timing("Map+reduce | Coroutine (native with ranges)", [=] {
-        auto costs = []() -> ranges::v3::experimental::generator<double> {
+        auto costs = []() -> re::generator<double> {
             int i = 0;
             for (;;) { co_yield cost(i++); }
         };
