@@ -1,12 +1,10 @@
 #pragma once /// \file
 #include <vb/PRNG.h>
+#include <vb/Ranges.h>
 #include <vb/coo.h>
 #include <vb/math.h>
-#include <range/v3/all.hpp>
 
 namespace vb {
-    template <typename T> class Array_iterator;
-
     template <typename T> class Array {
     public:
         Array(int64_t w, int64_t h, T d) : ww(w), hh(h), data(w * h, d) {}
@@ -51,10 +49,8 @@ namespace vb {
         coo  rand(int64_t b = 0) const { return coo(b + prng.uniform_int(ww - 2 * b), b + prng.uniform_int(hh - 2 * b)); }
 
         auto coos() const {
-            using ranges::view::cartesian_product;
-            using ranges::view::ints;
-            using ranges::view::transform;
-            return cartesian_product(ints(0LL, ww), ints(0LL, hh)) | transform([](auto xy) { return std::make_from_tuple<coo>(xy); });
+            return rv::cartesian_product(rv::ints(int64_t(0), ww), rv::ints(int64_t(0), hh)) |
+                   rv::transform([](auto xy) { return std::make_from_tuple<coo>(xy); });
         }
 
         int64_t ww = 0, hh = 0;

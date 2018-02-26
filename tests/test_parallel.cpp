@@ -1,11 +1,11 @@
 #include <vb/Generator.h>
+#include <vb/Ranges.h>
 #include <vb/Stream.h>
 #include <vb/ThreadPool.h>
 #include <vb/util.h>
 #include <cmath>
 #include <future>
 #include <numeric>
-#include <range/v3/all.hpp>
 #include <range/v3/experimental/utility/generator.hpp>
 
 using namespace ranges;
@@ -124,12 +124,12 @@ int main(int argc, char ** argv) {
         return s - int64_t(s);
     });
 
-    timing("Map+reduce | Coroutine (Boost)", [=] {
-        auto   costs = take(l, fmap(cost, ints()));
-        double s     = 0;
-        for (auto x : costs) s += x;
-        return s - int64_t(s);
-    });
+    // timing("Map+reduce | Coroutine (Boost)", [=] {
+    //     auto   costs = take(l, fmap(cost, ints()));
+    //     double s     = 0;
+    //     for (auto x : costs) s += x;
+    //     return s - int64_t(s);
+    // });
 
 #ifdef __cpp_coroutines
     timing("Map+reduce | Coroutine (native)", [=] {
