@@ -73,18 +73,16 @@
         {
             "name": "Linux",
             "includePath": [
-                "/usr/include",
-                "/usr/local/include",
-                "${workspaceRoot}",
                 "${workspaceRoot}/libvb",
                 "/usr/include/c++/7",
                 "/usr/include/x86_64-linux-gnu/c++/7",
                 "/usr/include/linux",
                 "/usr/include/x86_64-linux-gnu",
                 "/usr/include/c++/7/tr1",
-                "/usr/include/eigen3",
                 "/usr/include/cairo",
-                "${workspaceRoot}/build/libvb"
+                "${workspaceRoot}/build/libvb",
+                "/home/vincent/.conan/data/range-v3/0.3.0/ericniebler/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include",
+                "/home/vincent/.conan/data/range-v3/0.3.5/ericniebler/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include"
             ],
             "defines": [],
             "intelliSenseMode": "clang-x64",
@@ -92,10 +90,11 @@
                 "path": [
                     "/usr/include",
                     "/usr/local/include",
-                    "${workspaceRoot}"
+                    "${workspaceRoot}",
+                    "/home/vincent/.conan/data"
                 ],
                 "limitSymbolsToIncludedHeaders": true,
-                "databaseFilename": ""
+                "databaseFilename": "browse.path.db"
             }
         },
         {
