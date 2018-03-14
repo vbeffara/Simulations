@@ -51,7 +51,7 @@ find_library (GMP gmp)
 find_library (MPFR mpfr)
 find_package (PkgConfig)
 find_package (FLTK)
-pkg_check_modules (EXT REQUIRED cairo fftw3 cln gsl eigen3 fplll)
+pkg_check_modules (EXT REQUIRED cairo cln gsl eigen3 fplll)
 
 file (GLOB vb_sources ${PROJECT_SOURCE_DIR}/libvb/*.cpp)
 add_library (vb SHARED ${vb_sources})
