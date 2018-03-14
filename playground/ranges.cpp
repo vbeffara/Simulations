@@ -1,25 +1,46 @@
-#include <vb/Array.h>
-#include <optional>
+#include <iostream>
+#include <range/v3/all.hpp>
+#include <vector>
 
-using namespace std;
-using namespace vb;
+const std::vector<int> p4{0, 1, 2, 3};
 
-template <typename T, typename F> auto iterate(T t, F f) {
-    return rv::generate([t, f, ap = false]() mutable -> T const & {
-        if (std::exchange(ap, true)) t = f(std::move(t));
+auto perms() {
+    return ranges::view::generate([t = p4]() -> const std::vector<int> & {
+        std::cout << "Returning vector of size " << t.size() << '\n';
         return t;
     });
 }
 
-template <typename T, typename F> auto iterate_m(T t, F f) {
-    return iterate(std::optional<T>(t), [f](auto t) { return f(std::move(*t)); }) |
-           rv::take_while([](auto x) { return x != std::nullopt; }) | rv::indirect;
+auto perms_n(int n) {
+    return ranges::view::generate_n(
+        [t = p4]() -> const std::vector<int> & {
+            std::cout << "Returning vector of size " << t.size() << '\n';
+            return t;
+        },
+        n);
 }
 
 int main(int /*argc*/, char ** /*argv*/) {
-    auto is = iterate(1, [](int i) { return i + 3; }) | rv::take(10);
-    for (auto i : is) cout << i << '\n';
-
-    auto ls = iterate_m(10, [](int i) { return (i > 0) ? optional<int>(i - 1) : nullopt; });
-    for (auto l : ls) cout << l << '\n';
+    auto ps = perms();
+    for (const auto & p : ps | ranges::view::take(2)) std::cout << " -> Obtained vector of size " << p.size() << '\n';
+    std::cout << "==========\n";
+    for (const auto & p : perms() | ranges::view::take(2)) std::cout << " -> Obtained vector of size " << p.size() << '\n';
+    std::cout << "==========\n";
+    for (const auto & p : perms_n(2)) std::cout << " -> Obtained vector of size " << p.size() << '\n';
 }
+
+// template <typename T, typename F> auto iterate(T t, F f) {
+//     return rv::generate([t = std::move(t), f, ap = false]() mutable -> T {
+//         if (std::exchange(ap, true)) t = f(std::move(t));
+//         return t;
+//     });
+// }
+
+// template <typename T, typename F> auto iterate_m(T t, F f) {
+//     return iterate(std::optional<T>(t), [f](auto i) { return f(*i); }) | rv::take_while([](auto x) { return x != std::nullopt; }) |
+//            rv::transform([](auto x) { return *x; });
+// }
+
+// auto perms(int n) {
+//     return iterate_m(Permutation(n), [](auto p) { return next_permutation(p.begin(), p.end()) ? optional<Permutation>(p) : nullopt; });
+// }

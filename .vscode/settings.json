@@ -81,7 +81,8 @@
         "system_error": "cpp",
         "dense": "cpp",
         "__locale": "cpp",
-        "slist": "cpp"
+        "slist": "cpp",
+        "__bit_reference": "cpp"
     },
     "python.pythonPath": "/usr/local/opt/python3/bin/python3.6"
 }
