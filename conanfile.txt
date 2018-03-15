@@ -13,6 +13,9 @@ range-v3/0.3.5@ericniebler/stable
 spdlog/0.16.3@bincrafters/stable
 yaml-cpp/0.6.2@vbeffara/testing
 
+[options]
+spdlog:fmt_external=False
+
 [generators]
 cmake
 
