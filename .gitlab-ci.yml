@@ -7,7 +7,7 @@ cmake:
     - apt-get install -y python-pip cmake gcc-7 g++-7 ninja-build git
     - apt-get install -y libcairo2-dev libfplll-dev libgmp-dev libmpfr-dev libgl1-mesa-dev
     - apt-get install -y libcln-dev libgsl-dev libeigen3-dev libpng++-dev
-    - pip install codecov conan
+    - pip install conan
     - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
     - conan remote add vb https://api.bintray.com/conan/vbeffara/misc
     - mkdir -p build/cov
@@ -23,9 +23,9 @@ unittests:
   stage: test
   script:
     - apt-get update
-    - apt-get install lcov ruby xvfb
+    - apt-get install -y lcov ruby xvfb
     - gem install coveralls-lcov
-    - pip install codecov conan
+    - pip install codecov
     - Xvfb :4 &
     - export DISPLAY=:4
     - lcov -z -d build
