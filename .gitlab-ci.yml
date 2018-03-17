@@ -23,7 +23,7 @@ unittests:
   stage: test
   script:
     - apt-get update
-    - apt-get install -y lcov ruby xvfb
+    - apt-get install -y lcov python-pip ruby xvfb
     - gem install coveralls-lcov
     - pip install codecov
     - Xvfb :4 &
