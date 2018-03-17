@@ -1,6 +1,6 @@
 image: ubuntu:artful
 
-before-script:
+before_script:
   - apt-get update
   - apt-get install -y python-pip cmake gcc-7 g++-7 ninja-build git
   - apt-get install -y libcairo2-dev libfplll-dev libgmp-dev libmpfr-dev libgl1-mesa-dev
