@@ -2,7 +2,7 @@ image: ubuntu:latest
 
 cmake:
   stage: build
-  before-script:
+  script:
     - apt-get update
     - apt-get install -y python-pip cmake gcc g++ ninja-build
     - apt-get install -y libcairo2-dev libfplll-dev libgmp-dev libmpfr-dev libgl1-mesa-dev
@@ -10,7 +10,6 @@ cmake:
     - pip install codecov conan
     - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
     - conan remote add vb https://api.bintray.com/conan/vbeffara/misc
-  script:
     - mkdir -p build/cov
     - cd build
     - conan install .. --build missing -s compiler.libcxx=libstdc++11
@@ -22,12 +21,11 @@ cmake:
 
 unittests:
   stage: test
-  before-script:
+  script:
     - apt-get update
     - apt-get install lcov ruby xvfb
     - gem install coveralls-lcov
     - pip install codecov conan
-  script:
     - Xvfb :4 &
     - export DISPLAY=:4
     - lcov -z -d build
