@@ -8,7 +8,6 @@ fftw/3.3.7@vbeffara/testing
 fltk/1.3.4@vbeffara/testing
 gsl_microsoft/20180102@bincrafters/stable
 libcmaes/0.9.5+HEAD@vbeffara/testing
-libpng/1.6.34@bincrafters/stable
 png++/0.2.5@vbeffara/testing
 range-v3/0.3.5@ericniebler/stable
 spdlog/0.16.3@bincrafters/stable
