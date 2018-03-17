@@ -1,4 +1,5 @@
 // Initial code in Python by Sunil Chhita, ported to C++ by VB.
+#include <gsl/gsl>
 #include <vb/Array.h>
 #include <vb/Figure.h>
 #include <fstream>
@@ -137,7 +138,7 @@ struct Tiling {
     void output_pdf(const string & name, int off = 0) const {
         Figure F;
         int    ddx[4] = {0, 2, 0, 2}, ddy[4] = {0, -2, -4, -6};
-        int    offx = ddx[off % 4], offy = ddy[off % 4];
+        int    offx = gsl::at(ddx,off % 4), offy = gsl::at(ddy,off % 4);
         for (auto z : state.coos())
             if (state[z] != 0) {
                 coo  edge(1, ((z.x + z.y) % 2) != 0 ? 1 : -1);

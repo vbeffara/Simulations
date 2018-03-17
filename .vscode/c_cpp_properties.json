@@ -51,9 +51,11 @@
                 "/Users/vincent/.conan/data/boost_throw_exception/1.66.0/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/throw_exception/include",
                 "/Users/vincent/.conan/data/boost_tuple/1.66.0/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/tuple/include",
                 "/Users/vincent/.conan/data/boost_type_traits/1.66.0/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/type_traits/include",
+                "/Users/vincent/.conan/data/fftw/3.3.7/vbeffara/testing/package/814b2a2853c18e1c6738ff44c099f7b41e949fd8/include",
                 "/Users/vincent/.conan/data/gsl_microsoft/20180102/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include",
                 "/Users/vincent/.conan/data/libcmaes/0.9.5+HEAD/vbeffara/testing/package/814b2a2853c18e1c6738ff44c099f7b41e949fd8/include",
                 "/Users/vincent/.conan/data/libcmaes/0.9.5+HEAD/vbeffara/testing/package/5192fbfae23de223dbd7d85ec60480dbb38c5d68/include",
+                "/Users/vincent/.conan/data/png++/0.2.9/vbeffara/testing/package/d9ca97ff2092274726322e8f382de58d7a8e722f/include",
                 "/Users/vincent/.conan/data/range-v3/0.3.5/ericniebler/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include",
                 "/Users/vincent/.conan/data/spdlog/0.16.3/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include",
                 "/Users/vincent/.conan/data/yaml-cpp/0.6.1/vbeffara/testing/package/5192fbfae23de223dbd7d85ec60480dbb38c5d68/include"

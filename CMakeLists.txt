@@ -44,9 +44,6 @@ link_directories ("/usr/local/lib" "/opt/X11/lib")
 include (TestBigEndian)
 test_big_endian (BIGENDIAN)
 
-include(CheckIncludeFileCXX)
-check_include_file_cxx (png++/png.hpp PNGPP "-include string")
-
 find_package (PkgConfig)
 pkg_check_modules (EXT REQUIRED cairo cln gsl eigen3 fplll)
 

@@ -1,5 +1,6 @@
 #include <vb/LinearAlgebra.h>
 #include <vb/PRNG.h>
+#include <gsl/gsl>
 
 using namespace vb;
 using namespace std;
@@ -75,7 +76,7 @@ public:
         return s / t;
     }
 
-    vector<vector<double>> x_to_p(const double * x) {
+    vector<vector<double>> x_to_p(const gsl::span<const double> x) {
         vector<vector<double>> p;
         for (int i = 0; i < 4; ++i) {
             p.emplace_back();
@@ -93,12 +94,12 @@ public:
     }
 
     vector<vector<double>> explore_cmaes(int n, int t) {
-        FitFunc         f = [this, n, t](const double * x, const int /* N */) { return abs(avg(n, t, x_to_p(x)) - 2.0 / 3.0); };
+        FitFunc         f = [this, n, t](const double * x, const int /* N */) { return abs(avg(n, t, x_to_p({x, 16})) - 2.0 / 3.0); };
         vector<double>  x0(16, .25);
         double          sigma = 0.1;
         CMAParameters<> cmaparams(x0, sigma);
         CMASolutions    cmasols = cmaes<>(f, cmaparams);
-        return x_to_p(cmasols.get_best_seen_candidate().get_x_ptr());
+        return x_to_p({cmasols.get_best_seen_candidate().get_x_ptr(),16});
     }
 
     void run(int n, int t) {
