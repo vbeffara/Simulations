@@ -1,6 +1,5 @@
 #pragma once /// \file
 #include <vb/PRNG.h>
-#include <vb/Ranges.h>
 #include <vb/coo.h>
 #include <vb/math.h>
 
@@ -48,18 +47,16 @@ namespace vb {
         bool contains(const coo & z, int64_t b = 0) const { return (z.x >= b) && (z.y >= b) && (z.x < ww - b) && (z.y < hh - b); }
         coo  rand(int64_t b = 0) const { return coo(b + prng.uniform_int(ww - 2 * b), b + prng.uniform_int(hh - 2 * b)); }
 
-        auto coos() const {
-            return rv::cartesian_product(rv::ints(int64_t(0), ww), rv::ints(int64_t(0), hh)) |
-                   rv::transform([](auto xy) { return std::make_from_tuple<coo>(xy); });
-        }
-
         int64_t ww = 0, hh = 0;
 
     private:
         std::vector<T> data;
     };
+} // namespace vb
 
 #ifdef UNIT_TESTS
+#include <vb/Ranges.h> // nograph
+namespace vb {
     TEST_CASE("vb::Array") {
         Array<int> A(23, 45, 1);
         CHECK(A.contains({6, 3}));
@@ -75,8 +72,8 @@ namespace vb {
 
         A.at(A.rand()) += 10;
         int s = 0;
-        for (auto z : A.coos()) s += A[z];
+        for (auto z : coos(A)) s += A[z];
         CHECK(s == 23 * 45 + 10);
     }
-#endif
 } // namespace vb
+#endif

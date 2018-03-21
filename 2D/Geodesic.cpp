@@ -1,5 +1,6 @@
 #include <vb/Image.h>
 #include <vb/ProgressBar.h>
+#include <vb/Ranges.h>
 #include <fftw3.h>
 #include <limits>
 #include <queue>
@@ -36,7 +37,7 @@ public:
         }
 
         minf = maxf = I.at({0, 0}).f;
-        for (auto z : I.coos()) {
+        for (auto z : coos(I)) {
             minf = min(minf, I.at(z).f);
             maxf = max(maxf, I.at(z).f);
         }
@@ -76,7 +77,7 @@ public:
     }
 
     void fill_white() {
-        for (auto z : I.coos()) I[z].f = prng.gaussian() * sqrt(static_cast<double>(n));
+        for (auto z : coos(I)) I[z].f = prng.gaussian() * sqrt(static_cast<double>(n));
     }
 
     void fill_free(int n0 = 0) {
