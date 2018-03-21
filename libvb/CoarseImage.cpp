@@ -1,6 +1,16 @@
 #include <vb/CoarseImage.h>
-#include <cstring>
-#include <png++/png.hpp>
+#include <fstream>
+#include <png.h>
+
+static void write_data(png_struct * png, uint8_t * data, size_t length) {
+    auto stream = reinterpret_cast<std::ostream *>(png_get_io_ptr(png));
+    stream->write(reinterpret_cast<char *>(data), length);
+}
+
+static void flush_data(png_struct * png) {
+    auto stream = reinterpret_cast<std::ostream *>(png_get_io_ptr(png));
+    stream->flush();
+}
 
 namespace vb {
     bool CoarseImage::at(coo z) const {
@@ -27,23 +37,28 @@ namespace vb {
     }
 
     void CoarseImage::output_fine(const std::string & fn) const {
-        using row = png::packed_pixel_row<png::gray_pixel_1>;
+        auto stream = std::ofstream(fn, std::ios::binary);
+        auto png    = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
+        auto info   = png_create_info_struct(png);
+        auto row    = std::vector<uint8_t>(1 + true_width / 8);
 
-        png::image_info m_info(png::make_image_info<png::gray_pixel_1>());
-        m_info.set_width(true_width);
-        m_info.set_height(true_height);
+        png_set_write_fn(png, &stream, write_data, flush_data);
+        png_set_IHDR(png, info, true_width, true_height, 1, PNG_COLOR_TYPE_GRAY, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT,
+                     PNG_FILTER_TYPE_DEFAULT);
+        png_write_info(png, info);
 
-        std::ofstream             stream(fn, std::ios::binary);
-        png::writer<std::ostream> wr(stream);
-        wr.set_image_info(m_info);
-        wr.write_info();
-
-        row m_row(true_width);
         for (int j = 0; j < true_height; ++j) {
-            for (int i = 0; i < true_width; ++i) m_row[i] = at(coo(i, j) - z0) ? 0 : 1;
-            wr.write_row(png::row_traits<row>::get_data(m_row));
+            for (int i = 0; i < true_width; ++i) {
+                if (at(coo(i, j) - z0))
+                    row.at(i / 8) |= (128 >> (i % 8));
+                else
+                    row.at(i / 8) &= ~(128 >> (i % 8));
+            }
+            png_write_row(png, row.data());
         }
 
-        wr.write_end_info();
+        png_write_end(png, info);
+        png_destroy_info_struct(png, &info);
+        png_destroy_write_struct(&png, &info);
     }
 } // namespace vb

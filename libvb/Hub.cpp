@@ -1,6 +1,5 @@
 #include "gsl/gsl"
 #include <vb/Hub.h>
-#include <vb/config.h>
 #include <FL/Fl.H>
 #include <FL/Fl_Gl_Window.H>
 #include <boost/algorithm/string.hpp>

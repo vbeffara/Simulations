@@ -59,7 +59,8 @@
                 "/Users/vincent/.conan/data/range-v3/0.3.5/ericniebler/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include",
                 "/Users/vincent/.conan/data/spdlog/0.16.3/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include",
                 "/Users/vincent/.conan/data/yaml-cpp/0.6.1/vbeffara/testing/package/5192fbfae23de223dbd7d85ec60480dbb38c5d68/include",
-                "/Users/vincent/.conan/data/fltk/1.3.4/vbeffara/testing/package/814b2a2853c18e1c6738ff44c099f7b41e949fd8/include"
+                "/Users/vincent/.conan/data/fltk/1.3.4/vbeffara/testing/package/814b2a2853c18e1c6738ff44c099f7b41e949fd8/include",
+                "/Users/vincent/.conan/data/libpng/1.6.34/bincrafters/stable/package/3332e7bb20e8456f89560287f0181be30dc3cabc/include"
             ],
             "defines": [],
             "intelliSenseMode": "clang-x64",
