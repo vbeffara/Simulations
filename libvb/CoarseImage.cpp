@@ -40,7 +40,6 @@ namespace vb {
         auto stream = std::ofstream(fn, std::ios::binary);
         auto png    = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
         auto info   = png_create_info_struct(png);
-        auto row    = std::vector<uint8_t>(1 + true_width / 8);
 
         png_set_write_fn(png, &stream, write_data, flush_data);
         png_set_IHDR(png, info, true_width, true_height, 1, PNG_COLOR_TYPE_GRAY, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT,
@@ -48,12 +47,9 @@ namespace vb {
         png_write_info(png, info);
 
         for (int j = 0; j < true_height; ++j) {
-            for (int i = 0; i < true_width; ++i) {
-                if (at(coo(i, j) - z0))
-                    row.at(i / 8) |= (128 >> (i % 8));
-                else
-                    row.at(i / 8) &= ~(128 >> (i % 8));
-            }
+            auto row = std::vector<uint8_t>(1 + true_width / 8, 0);
+            for (int i = 0; i < true_width; ++i)
+                if (at(coo(i, j) - z0)) row.at(i / 8) |= (128 >> (i % 8));
             png_write_row(png, row.data());
         }
 
