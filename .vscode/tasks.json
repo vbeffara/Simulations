@@ -18,7 +18,7 @@
         {
             "taskName": "warnings",
             "type": "shell",
-            "command": "cat warnings.txt | sed -e 's|/Users/vincent/Boulot/Simulations/||g'",
+            "command": "cat warnings.txt | grep -v clang-tidy | sed -e 's|^/Users/vincent/Boulot/Simulations/||g'",
             "problemMatcher": [
                 "$gcc"
             ],
