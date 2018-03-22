@@ -49,7 +49,7 @@ namespace vb {
         for (int j = 0; j < true_height; ++j) {
             auto row = std::vector<uint8_t>(1 + true_width / 8, 0);
             for (int i = 0; i < true_width; ++i)
-                if (at(coo(i, j) - z0)) row.at(i / 8) |= (128 >> (i % 8));
+                if (!at(coo(i, j) - z0)) row.at(i / 8) |= (128 >> (i % 8));
             png_write_row(png, row.data());
         }
 

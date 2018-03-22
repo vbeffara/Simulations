@@ -9,50 +9,70 @@ class DLA : public CoarseImage {
 public:
     explicit DLA(const Hub & H)
         : CoarseImage(H['n'], H['n'], pow(double(H['n']), .33)), n(H['n']), c(H['c']), r(1),
-          QT(coo(-n / 2, -n / 2), coo(n / 2, n / 2), H['l']), img(512, 512) {
+          QT(coo(-n / 2, -n / 2), coo(n / 2, n / 2), H['l']), prec(int(H['p'])), img(512, 512) {
         z0 = coo(n / 2, n / 2);
         W.watch(QT.n, "Nb of particles");
         W.watch(r, "Cluster radius");
-        prec.emplace_back(vector<double>());
-        prec.emplace_back(vector<double>());
-        for (int d = 2; d < int(H['p']); ++d) {
-            H.L->info("Precomputing harmonic measure: d={}", d);
-            int                    l = 2 * d - 1;
-            vector<vector<double>> M(l, vector<double>(l, 0));
-            M[l / 2][l / 2] = 1;
-            bool dirty      = true;
+
+        H.L->info("Precomputing harmonic measures, d up to {} ...", int(H['p']));
+        for (int r = 1; r < int(H['p']); ++r) {
+            bool          dirty = true;
+            Array<double> MM(2 * r + 1, 2 * r + 1);
+            MM.at({r, r}) = 1;
             while (dirty) {
                 dirty = false;
-                for (int i = 1; i < l - 1; ++i)
-                    for (int j = 1; j < l - 1; ++j)
-                        if ((i != d - 1) || (j != d - 1)) {
-                            double t = (M[i][j + 1] + M[i][j - 1] + M[i + 1][j] + M[i - 1][j]) / 4;
-                            if (t != M[i][j]) {
-                                M[i][j] = t;
-                                dirty   = true;
+                for (int i = 1; i < 2 * r; ++i)
+                    for (int j = 1; j < 2 * r; ++j) {
+                        coo    z(i, j);
+                        double t = MM.at(z);
+                        MM.at(z) = 0;
+                        if (t > 1e-13) {
+                            dirty = true;
+
+                            int ii = (i <= r) ? i : 2 * r - i;
+                            int jj = (j <= r) ? j : 2 * r - j;
+                            int d  = min(ii, jj);
+                            if (d == r) --d;
+
+                            if (d <= 1)
+                                for (int k = 0; k < 4; ++k) MM.at(z + dz[k]) += t / 4;
+                            else {
+                                const auto & ps = prec[d];
+                                for (int k = 0; k < d; ++k) {
+                                    MM.at({i - d, j + k}) += t * ps[k] / 8;
+                                    MM.at({i - d, j - k}) += t * ps[k] / 8;
+                                    MM.at({i + d, j + k}) += t * ps[k] / 8;
+                                    MM.at({i + d, j - k}) += t * ps[k] / 8;
+                                    MM.at({i + k, j - d}) += t * ps[k] / 8;
+                                    MM.at({i - k, j - d}) += t * ps[k] / 8;
+                                    MM.at({i + k, j + d}) += t * ps[k] / 8;
+                                    MM.at({i - k, j + d}) += t * ps[k] / 8;
+                                }
                             }
                         }
+                    }
             }
-            vector<double> D1 = M[1];
-            double         s1 = 0;
-            for (int i = 0; i < l; ++i) s1 += D1[i];
-            for (int i = 0; i < l; ++i) D1[i] /= s1;
-            prec.push_back(D1);
+
+            prec[r].push_back(4 * MM.at({0, r}));
+            for (int i = 1; i < r; ++i) prec[r].push_back(8 * MM.at({0, r + i}));
         }
         start = now();
     };
 
     void show() override {
         W.show();
-        CoarseImage::show();
         img.show();
+        CoarseImage::show();
     }
+
     bool at(coo z) const { return contains(z) && CoarseImage::at(z); }
+
     void put(coo z) {
         CoarseImage::put(z, true);
         QT.insert(z);
         r = std::max(r, sup(z));
     }
+
     bool neighbor(coo z) const {
         for (int i = 0; i < 4; ++i)
             if (at(z + dz[i])) return true;
@@ -60,10 +80,11 @@ public:
     }
 
     coo jump(int d) const {
-        if (d <= 2) return dz[prng.uniform_int(4)];
+        if (d <= 1) return dz[prng.uniform_int(4)];
         if (d < prec.size()) {
-            coo w(d - 1, prng.discrete(prec[d]) - (d - 1));
+            coo w(d, prng.discrete(prec[d]));
             if (prng.bernoulli()) w.x = -w.x;
+            if (prng.bernoulli()) w.y = -w.y;
             if (prng.bernoulli()) swap(w.x, w.y);
             return w;
         }
@@ -82,7 +103,7 @@ public:
             while (!neighbor(z)) {
                 qi.d = sup(z - qi.z);
                 QT.nn(z, qi);
-                z += jump(qi.d);
+                z += jump(qi.d - 1);
                 if (sup(z) > 100 * r) {
                     z.x *= .9;
                     z.y *= .9;
@@ -106,7 +127,7 @@ public:
 };
 
 int main(int argc, char ** argv) {
-    H.init("Lattice DLA", argc, argv, "n=2000,p=30,c=50,l=30,f,s=0");
+    H.init("Lattice DLA", argc, argv, "n=2000,p=64,c=50,l=30,f,s=0");
     if (auto s = int(H['s'])) prng.seed(s);
     DLA dla(H);
     dla.show();
