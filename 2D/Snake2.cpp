@@ -102,5 +102,5 @@ int main(int argc, char ** argv) {
         if (H['p']) S.pause();
         S.output();
     }
-    if (H['v'] && H['d']) std::cout << S.path.back().x << '\n';
+    H.output("Final value of x", "x", S.path.back().x);
 }

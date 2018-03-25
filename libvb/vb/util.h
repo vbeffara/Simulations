@@ -1,12 +1,9 @@
 #pragma once
 #include <vb/Hub.h>
-#include <boost/lexical_cast.hpp>
 #include <chrono>
 #include <iostream>
 
 namespace vb {
-    template <typename T> auto str(const T & t) { return boost::lexical_cast<std::string>(t); }
-
     double time();
 
     template <typename F> void timing(const std::string & label, const F & f) {

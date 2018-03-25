@@ -27,7 +27,21 @@ namespace vb {
         Duration d_u   = end_u - start_u;
         auto     end_s = boost::chrono::process_system_cpu_clock::now();
         Duration d_s   = end_s - start_s;
-        L->info("Time spent   : {} real, {} user, {} system", d.count(), d_u.count(), d_s.count());
+        output("Time spent", "", fmt::format("{} real, {} user, {} system", d.count(), d_u.count(), d_s.count()), false);
+
+        for (auto & o : outputs) {
+            for (int i = o.label.size(); i < max_label_width; ++i) o.label.append(" ");
+            L->info("{} : {}", o.label, o.value);
+        }
+
+        std::string diary;
+        for (auto [k, v] : *this) diary += fmt::format(" {} {}", k, str(v));
+        diary += " |";
+        for (auto [k, ks, v, o] : outputs)
+            if (o) diary += fmt::format(" {} {}", ks, str(v));
+        auto f = spdlog::basic_logger_mt(fmt::format("{} {}", prog, version), "diary.log");
+        f->set_pattern("%Y-%m-%d %H:%M:%S %n |%v");
+        f->info(diary);
     }
 
     void Hub::init(std::string t, int argc, char ** argv, std::string c) {
@@ -86,14 +100,19 @@ namespace vb {
             cmd += " ";
             cmd += argv_[i];
         }
-        L->info("Command line : {}", cmd);
-        L->info("Code version : {}", version);
-        L->info("Image title  : {}", title);
+        output("Command line", "", cmd, false);
+        output("Code version", "", version, false);
+        output("Image title", "", title, false);
 
         start       = boost::chrono::process_real_cpu_clock::now();
         start_u     = boost::chrono::process_user_cpu_clock::now();
         start_s     = boost::chrono::process_system_cpu_clock::now();
         initialized = true;
+    }
+
+    void Hub::output_str(std::string l, std::string ls, std::string s, bool o) {
+        if (l.size() > max_label_width) max_label_width = l.size();
+        outputs.push_back({l, ls, s, o});
     }
 
     Hub H;
