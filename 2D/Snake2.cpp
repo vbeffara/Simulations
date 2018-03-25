@@ -1,4 +1,5 @@
 #include <vb/Bitmap.h>
+#include <vb/Ranges.h>
 
 using namespace vb;
 
@@ -19,32 +20,48 @@ namespace vb {
 
 class Snake : public Bitmap<site> {
 public:
-    Snake(int n, double l, bool t) : Bitmap(4 * n + 1, 2 * n + 1), lambda(l), t(t), path(1, {2 * n, 0}) {
+    Snake(int n, double l) : Bitmap(4 * n + 1, 2 * n + 1), lambda(l), path(1, {2 * n, 0}) {
         for (int x = 0; x < w(); ++x) put({x, 0}, VERTEX);
-        show();
+        if (H['d']) triangle();
+        if (!H['v']) show();
     }
 
-    bool trapped(coo z) {
-        std::vector<coo> q(1, z), cc(0);
-        bool             ans = true;
-        while (q.size() > 0) {
-            coo z = q.back();
-            q.pop_back();
-            if (at(z) == EMPTY) {
-                at(z) = WORK;
-                cc.push_back(z);
-                for (int i = 0; i < 4; ++i) {
-                    coo nz = z + dz[i] * 2;
-                    if (!contains(nz)) {
-                        ans = false;
-                        break;
-                    }
-                    if (at(nz) == EMPTY) q.push_back(nz);
-                }
-            }
+    void triangle() {
+        for (int y = 0; y < h(); ++y) {
+            int yy = y + (y % 2);
+            int s  = 2 + yy / sqrt(3);
+            s += (s % 2);
+            for (int x = w() / 2 + s; x < w(); ++x) put({x, y}, VERTEX);
+            for (int x = w() / 2 - s; x >= 0; --x) put({x, y}, VERTEX);
         }
-        for (auto z : cc) at(z) = EMPTY;
-        return ans;
+    }
+
+    bool border(coo z) { return (z.x == 0) || (z.x == w() - 1) || (z.y == h() - 1); }
+
+    bool trapped(coo z, int d) {
+        if (border(z)) return false;
+        bool surrounded = true;
+        for (int i = 0; i < 4; ++i)
+            if (at(z + dz[i] * 2) == EMPTY) surrounded = false;
+        if (surrounded) return true;
+
+        d = (d + 1) % 4;
+        while (at(z + dz[d] * 2) == VERTEX) d = (d + 3) % 4;
+        coo zz = z;
+        int dd = d;
+        while (true) {
+            zz += dz[d] * 2;
+            d = (d + 1) % 4;
+            while (at(zz + dz[d] * 2) == VERTEX) d = (d + 3) % 4;
+            if ((zz == z) && (dd == d)) return true;
+            if (border(zz)) return false;
+        }
+    }
+
+    bool allowed(coo z, int d) {
+        coo nz = z + dz[d] * 2;
+        if ((at(nz) == VERTEX) || (nz.y < 0) || trapped(nz, d)) return false;
+        return true;
     }
 
     void run() {
@@ -58,27 +75,30 @@ public:
                 }
                 continue;
             }
-            coo z = path.back(), d = dz[prng.uniform_int(4)], nz = z + d * 2;
-            if ((at(nz) == VERTEX) || (nz.y < 0)) continue;
-            if (!contains(nz)) break;
-            if (t && trapped(nz)) continue;
-            put(z + d, EDGE);
+            coo z = path.back();
+            int d = prng.uniform_int(4);
+            if (!allowed(z, d)) continue;
+            coo nz = z + dz[d] * 2;
+            put(z + dz[d], EDGE);
             put(nz, VERTEX);
-            if ((nz.x == 0) || (nz.x == w() - 1) || (nz.y == h() - 1)) break;
             path.push_back(nz);
+            if (border(nz)) break;
         }
     }
 
     double           lambda;
-    bool             t;
     std::vector<coo> path;
 };
 
 int main(int argc, char ** argv) {
-    H.init("Self-avoiding snake in the half plane", argc, argv, "n=200,l=1.0,t");
-    Snake S(H['n'], H['l'], H['t']);
+    H.init("Self-avoiding snake in the half plane", argc, argv, "n=200,l=1.0,d,v,p");
+    Snake S(H['n'], H['l']);
     S.run();
     S.fill({S.w() / 2 + 1, 1}, RIGHT);
     S.fill({S.w() / 2 - 1, 1}, LEFT);
-    S.output();
+    if (S.visible()) {
+        if (H['p']) S.pause();
+        S.output();
+    }
+    if (H['v'] && H['d']) std::cout << S.path.back().x << '\n';
 }
