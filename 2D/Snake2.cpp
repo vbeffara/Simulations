@@ -51,16 +51,18 @@ public:
         int dd = d;
         while (true) {
             zz += dz[d] * 2;
+            if (border(zz)) return false;
             d = (d + 1) % 4;
             while (at(zz + dz[d] * 2) == VERTEX) d = (d + 3) % 4;
             if ((zz == z) && (dd == d)) return true;
-            if (border(zz)) return false;
         }
     }
 
     bool allowed(coo z, int d) {
         coo nz = z + dz[d] * 2;
-        if ((at(nz) == VERTEX) || (nz.y < 0) || trapped(nz, d)) return false;
+        if (at(nz) == VERTEX) return false;
+        if (nz.y < 0) return false;
+        if (trapped(nz, d)) return false;
         return true;
     }
 
