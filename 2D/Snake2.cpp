@@ -20,7 +20,7 @@ namespace vb {
 
 class Snake : public Bitmap<site> {
 public:
-    Snake(int n, double l) : Bitmap(4 * n + 1, 2 * n + 1), lambda(l), path(1, {2 * n, 0}) {
+    Snake(int n, double l, bool hex) : Bitmap(4 * n + 1, 2 * n + 1), lambda(l), path(1, {2 * n, 0}), hex(hex) {
         for (int x = 0; x < w(); ++x) put({x, 0}, VERTEX);
         if (H['d']) triangle();
         if (!H['v']) show();
@@ -29,7 +29,7 @@ public:
     void triangle() {
         for (int y = 0; y < h(); ++y) {
             int yy = y + (y % 2);
-            int s  = 2 + yy / sqrt(3);
+            int s  = 2 + yy * (hex ? 1 : 1 / sqrt(3)) * double(H['a']);
             s += (s % 2);
             for (int x = w() / 2 + s; x < w(); ++x) put({x, y}, VERTEX);
             for (int x = w() / 2 - s; x >= 0; --x) put({x, y}, VERTEX);
@@ -38,28 +38,36 @@ public:
 
     bool border(coo z) { return (z.x == 0) || (z.x == w() - 1) || (z.y == h() - 1); }
 
+    bool edge(coo z, int d) {
+        int xx = (z.x - (w() - 1) / 2) / 2;
+        int yy = z.y / 2;
+        int pp = (xx + yy + 2 * w()) % 2;
+        return (d != 3 - 2 * pp);
+    }
+
     bool trapped(coo z, int d) {
         if (border(z)) return false;
         bool surrounded = true;
         for (int i = 0; i < 4; ++i)
-            if (at(z + dz[i] * 2) == EMPTY) surrounded = false;
+            if ((at(z + dz[i] * 2) == EMPTY) && (!hex || edge(z, i))) surrounded = false;
         if (surrounded) return true;
 
         d = (d + 1) % 4;
-        while (at(z + dz[d] * 2) == VERTEX) d = (d + 3) % 4;
+        while ((at(z + dz[d] * 2) == VERTEX) || (hex && !edge(z, d))) d = (d + 3) % 4;
         coo zz = z;
         int dd = d;
         while (true) {
             zz += dz[d] * 2;
             if (border(zz)) return false;
             d = (d + 1) % 4;
-            while (at(zz + dz[d] * 2) == VERTEX) d = (d + 3) % 4;
+            while ((at(zz + dz[d] * 2) == VERTEX) || (hex && !edge(zz, d))) d = (d + 3) % 4;
             if ((zz == z) && (dd == d)) return true;
         }
     }
 
     bool allowed(coo z, int d) {
         coo nz = z + dz[d] * 2;
+        if (hex && !edge(z, d)) return false;
         if (at(nz) == VERTEX) return false;
         if (nz.y < 0) return false;
         if (trapped(nz, d)) return false;
@@ -90,11 +98,12 @@ public:
 
     double           lambda;
     std::vector<coo> path;
+    bool             hex;
 };
 
 int main(int argc, char ** argv) {
-    H.init("Self-avoiding snake in the half plane", argc, argv, "n=200,l=1.0,d,v,p");
-    Snake S(H['n'], H['l']);
+    H.init("Self-avoiding snake in the half plane", argc, argv, "n=200,l=1.0,d,v,p,x,a=1.0");
+    Snake S(H['n'], H['l'], H['x']);
     S.run();
     S.fill({S.w() / 2 + 1, 1}, RIGHT);
     S.fill({S.w() / 2 - 1, 1}, LEFT);
