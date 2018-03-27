@@ -1,20 +1,16 @@
 #include <vb/Bitmap.h>
-#include <vb/Ranges.h>
 
 using namespace vb;
 
-enum site { EMPTY = 0, VERTEX, EDGE, WORK, LEFT, RIGHT };
+enum site { EMPTY = 0, VERTEX, EDGE, LEFT, RIGHT };
 
 namespace vb {
-    template <> Color to_Color(site s) {
-        switch (s) {
-        case EMPTY: return WHITE;
-        case VERTEX: return BLACK;
-        case EDGE: return Grey(128);
-        case WORK: return RED;
-        case LEFT: return Indexed(1);
-        case RIGHT: return Indexed(2);
-        }
+    template <> Color to_Color(site t) {
+        if (t == VERTEX) return BLACK;
+        if (t == EDGE) return Grey(128);
+        if (t == LEFT) return Indexed(1);
+        if (t == RIGHT) return Indexed(2);
+        return WHITE;
     }
 } // namespace vb
 
@@ -22,28 +18,24 @@ class Snake : public Bitmap<site> {
 public:
     Snake(int n, double l, bool hex) : Bitmap(4 * n + 1, 2 * n + 1), lambda(l), path(1, {2 * n, 0}), hex(hex) {
         for (int x = 0; x < w(); ++x) put({x, 0}, VERTEX);
-        if (H['d']) triangle();
+        if (double a = H['a']) triangle(a);
         if (!H['v']) show();
     }
 
-    void triangle() {
+    void triangle(double a) {
+        double ta = tan(a * M_PI / 180);
         for (int y = 0; y < h(); ++y) {
             int yy = y + (y % 2);
-            int s  = 2 + yy * (hex ? 1 : 1 / sqrt(3)) * double(H['a']);
+            int s  = 2 + yy * ta;
             s += (s % 2);
-            for (int x = w() / 2 + s; x < w(); ++x) put({x, y}, VERTEX);
-            for (int x = w() / 2 - s; x >= 0; --x) put({x, y}, VERTEX);
+            for (int x = 0; x < w(); ++x)
+                if (abs(x - w() / 2) >= s) put({x, y}, VERTEX);
         }
     }
 
     bool border(coo z) { return (z.x == 0) || (z.x == w() - 1) || (z.y == h() - 1); }
 
-    bool edge(coo z, int d) {
-        int xx = (z.x - (w() - 1) / 2) / 2;
-        int yy = z.y / 2;
-        int pp = (xx + yy + 2 * w()) % 2;
-        return (d != 3 - 2 * pp);
-    }
+    bool edge(coo z, int d) { return (d != 3 - ((z.x + z.y + w() / 2) % 4)); }
 
     bool trapped(coo z, int d) {
         if (border(z)) return false;
@@ -66,12 +58,9 @@ public:
     }
 
     bool allowed(coo z, int d) {
-        coo nz = z + dz[d] * 2;
         if (hex && !edge(z, d)) return false;
-        if (at(nz) == VERTEX) return false;
-        if (nz.y < 0) return false;
-        if (trapped(nz, d)) return false;
-        return true;
+        coo nz = z + dz[d] * 2;
+        return (at(nz) != VERTEX) && (nz.y >= 0) && !trapped(nz, d);
     }
 
     void run() {
@@ -91,8 +80,8 @@ public:
             coo nz = z + dz[d] * 2;
             put(z + dz[d], EDGE);
             put(nz, VERTEX);
-            path.push_back(nz);
             if (border(nz)) break;
+            path.push_back(nz);
         }
     }
 
@@ -102,7 +91,7 @@ public:
 };
 
 int main(int argc, char ** argv) {
-    H.init("Self-avoiding snake in the half plane", argc, argv, "n=200,l=1.0,d,v,p,x,a=1.0");
+    H.init("Self-avoiding snake in the half plane", argc, argv, "n=200,l=1.0,v,p,x,a=0");
     Snake S(H['n'], H['l'], H['x']);
     S.run();
     S.fill({S.w() / 2 + 1, 1}, RIGHT);
