@@ -11,6 +11,7 @@ libcmaes/0.9.5+HEAD@vbeffara/testing
 libpng/1.6.34@bincrafters/stable
 range-v3/0.3.5@ericniebler/stable
 spdlog/0.16.3@bincrafters/stable
+sqlite_modern_cpp/3.2+HEAD@vbeffara/testing
 yaml-cpp/0.6.2@vbeffara/testing
 
 [options]

@@ -2,7 +2,6 @@
 /.waf*
 /00_Results
 /build
-/doxygen
 /output
 amc.*
 out*
@@ -17,12 +16,8 @@ out*
 *.o
 /graph
 bla*
-/tools/graph
 /Notepad.org
 compile_commands.json
-fit.log
 /warnings.*
-.vscode/.cmaketools.json
-/.idea
-Simulations.srctrl*
-diary.log
+*.log
+*.db
