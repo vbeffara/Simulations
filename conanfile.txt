@@ -16,6 +16,7 @@ yaml-cpp/0.6.2@vbeffara/testing
 
 [options]
 spdlog:fmt_external=False
+sqlite3:shared=True
 
 [generators]
 cmake
