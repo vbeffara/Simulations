@@ -1,62 +1,101 @@
 #pragma once /// \file
-#include <vector>
 #include <iostream>
 #include <memory>
+#include <variant>
+#include <vector>
 
 namespace vb {
-	class tri { public: double x,y,z; tri (double xx, double yy, double zz) : x(xx), y(yy), z(zz) {} };
-	inline std::ostream & operator<< (std::ostream &os, const tri &c) { return os << "<" << c.x << "," << c.y << "," << c.z << ">"; }
+    namespace pov {
+        struct tri {
+            double x, y, z;
+        };
+        inline std::ostream & operator<<(std::ostream & os, const tri & c) { return os << "<" << c.x << "," << c.y << "," << c.z << ">"; }
 
-	class Pov_Object {
-	public:
-		Pov_Object (std::string s, bool b = false);
-		Pov_Object (const Pov_Object &) = default;
-		Pov_Object (Pov_Object &&) = default;
+        using obj = std::variant<double, tri, std::string>;
 
-		virtual ~Pov_Object () = default;
+        struct output_pov {
+            output_pov(std::ostream & os) : os(os) {}
+            template <typename T> std::ostream & operator()(T && t) { return os << t; }
+            std::ostream &                       os;
+        };
+        inline std::ostream & operator<<(std::ostream & os, const obj & c) { return std::visit(output_pov(os), c); }
+    } // namespace pov
 
-		Pov_Object & operator= (const Pov_Object &) = default;
-		Pov_Object & operator= (Pov_Object &&) = default;
+    using pov::tri;
 
-		virtual std::ostream & output_pov (std::ostream & os);
-		void output_pov (const std::string &s);
+    class Pov_Object {
+    public:
+        Pov_Object(std::string s, bool b = false);
+        virtual ~Pov_Object() = default;
 
-		Pov_Object & operator<< (tri a);
-		Pov_Object & operator<< (double x);
+        virtual std::ostream & output_pov(std::ostream & os);
+        void                   output_pov(const std::string & s);
 
-		template <typename T> Pov_Object & operator<< (std::unique_ptr<T> && p) {
-			subs.push_back (std::move(p)); return *this;
-		}
+        Pov_Object & operator<<(tri a);
+        Pov_Object & operator<<(double x);
 
-		std::string type; bool braces; int commas;
-		std::vector <std::unique_ptr<Pov_Object>> subs;
-	};
-	inline std::ostream & operator<< (std::ostream & os, Pov_Object * o) { return o->output_pov(os); }
+        template <typename T> Pov_Object & operator<<(std::unique_ptr<T> && p) {
+            subs.push_back(std::move(p));
+            return *this;
+        }
 
-	class Pov_Coordinate : public Pov_Object { public: tri t;
-		Pov_Coordinate (tri a) : Pov_Object ("coordinate"), t(a) {}
-		std::ostream & output_pov (std::ostream & os) override { return os << t; }
-	};
+        std::string                              type;
+        bool                                     braces;
+        int                                      commas;
+        std::vector<std::unique_ptr<Pov_Object>> subs;
+        std::vector<pov::obj>                    objs;
+    };
+    inline std::ostream & operator<<(std::ostream & os, Pov_Object * o) { return o->output_pov(os); }
 
-	class Pov_Coefficient : public Pov_Object { public: double v;
-		Pov_Coefficient (double x) : Pov_Object ("coefficient"), v(x) {}
-		std::ostream & output_pov (std::ostream & os) override { return os << v; }
-	};
+    class Pov_Scene : public Pov_Object {
+    public:
+        Pov_Scene();
+    };
+    class Pov_Camera : public Pov_Object {
+    public:
+        Pov_Camera(tri a, tri b, double d);
+    };
+    class Pov_Light_Source : public Pov_Object {
+    public:
+        Pov_Light_Source(tri a);
+    };
+    class Pov_Union : public Pov_Object {
+    public:
+        Pov_Union();
+    };
+    class Pov_Sphere : public Pov_Object {
+    public:
+        Pov_Sphere(tri a, double r);
+    };
+    class Pov_Cylinder : public Pov_Object {
+    public:
+        Pov_Cylinder(tri a, tri b, double r);
+    };
+    class Pov_Box : public Pov_Object {
+    public:
+        Pov_Box(tri a, tri b);
+    };
+    class Pov_Plane : public Pov_Object {
+    public:
+        Pov_Plane(tri a, double d);
+    };
+    class Pov_Frame : public Pov_Union {
+    public:
+        Pov_Frame(tri a, tri b, std::string t = "");
+    };
 
-	class Pov_Scene       	: public Pov_Object { public: Pov_Scene       	();                      	                    	};
-	class Pov_Texture     	: public Pov_Object { public: Pov_Texture     	(std::string t);         	                    	};
-	class Pov_Camera      	: public Pov_Object { public: Pov_Camera      	(tri a, tri b, double d);	                    	};
-	class Pov_Light_Source	: public Pov_Object { public: Pov_Light_Source	(tri a);                 	                    	};
-	class Pov_Union       	: public Pov_Object { public: Pov_Union       	();                      	                    	};
-	class Pov_Sphere      	: public Pov_Object { public: Pov_Sphere      	(tri a, double r);       	                    	};
-	class Pov_Cylinder    	: public Pov_Object { public: Pov_Cylinder    	(tri a, tri b, double r);	                    	};
-	class Pov_Box         	: public Pov_Object { public: Pov_Box         	(tri a, tri b);          	                    	};
-	class Pov_Plane       	: public Pov_Object { public: Pov_Plane       	(tri a, double d);       	                    	};
-	class Pov_Frame       	: public Pov_Union  { public: Pov_Frame       	(tri a, tri b,           	std::string t = "");	};
+    class Pov_Obj : public Pov_Object {
+    public:
+        Pov_Obj(pov::obj o) : Pov_Object("unused", false), o(o) {}
+        std::ostream & output_pov(std::ostream & os) override { return os << o; }
+        pov::obj       o;
+    };
 
-	#ifdef UNIT_TESTS
-	TEST_CASE ("vb::Pov and friends") {
-		Pov_Box PB ({0.0,1.0,2.0}, {3.0,4.0,5.0});
-	}
-	#endif
-}
+    namespace pov {
+        inline obj Texture(std::string t) { return "texture { " + t + " }"; }
+    } // namespace pov
+
+#ifdef UNIT_TESTS
+    TEST_CASE("vb::Pov and friends") { Pov_Box PB({0.0, 1.0, 2.0}, {3.0, 4.0, 5.0}); }
+#endif
+} // namespace vb
