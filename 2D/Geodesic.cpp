@@ -21,20 +21,15 @@ class QG : public Image {
 public:
     explicit QG(const Hub & H)
         : Image(1u << unsigned(H['n']), 1u << unsigned(H['n'])), I(w(), h(), Info({0, 0}, {0, 0}, 0, 0)), g(H['g']), n(H['n']) {
-        if (std::string(H['w']) == std::string("dyadic"))
-            fill_dyadic(H['z']);
-        else if (std::string(H['w']) == std::string("boolean"))
-            fill_boolean(H['z']);
-        else if (std::string(H['w']) == std::string("white"))
-            fill_white();
-        else if (std::string(H['w']) == std::string("free"))
-            fill_free(H['z']);
-        else if (std::string(H['w']) == std::string("gaussian"))
-            fill_gaussian(H['z']);
-        else {
-            H.L->error("Noise type {} unknown, no noise for you!", string(H['w']));
-            exit(1);
-        }
+
+        map<string, function<void()>> fields;
+        fields["boolean"]  = [&, this] { fill_boolean(H['z']); };
+        fields["dyadic"]   = [&, this] { fill_dyadic(H['z']); };
+        fields["free"]     = [&, this] { fill_free(H['z']); };
+        fields["gaussian"] = [&, this] { fill_radial([](double x) { return exp(-x * x); }, H['l']); };
+        fields["power"]    = [&, this] { fill_radial([&](double x) { return pow(1 + x * x, -double(H['a']) / 2); }, H['l']); };
+        fields["white"]    = [&, this] { fill_white(); };
+        fields[H['w']]();
 
         minf = maxf = I.at({0, 0}).f;
         for (auto z : coos(I)) {
@@ -43,13 +38,11 @@ public:
         }
         H.L->info("Renormalized field: min = {}, max = {}", minf / log(w()), maxf / log(w()));
 
-        for (int j = 0; j < h(); ++j)
-            for (int i = 0; i < w(); ++i) {
-                coo z(i, j);
-                put(z, Grey(255 * (I.at(z).f - minf) / (maxf - minf)));
-                if (H['c']) put(z, HSV(int(at(z)) > 128 ? 0 : .5, .8, .8));
-                I.at(z) = Info(z, z, numeric_limits<double>::infinity(), exp(g * I.at(z).f));
-            }
+        for (auto z : coos(*this)) {
+            put(z, Grey(255 * (I.at(z).f - minf) / (maxf - minf)));
+            if (H['c']) put(z, Indexed(int(at(z)) > 128 ? 1 : 2));
+            I.at(z) = Info(z, z, numeric_limits<double>::infinity(), exp(g * I.at(z).f));
+        }
     };
 
     void fill_dyadic(int n0) {
@@ -88,49 +81,48 @@ public:
         for (int i = 0; i < ww; ++i) sinarrayi[i] = sin(M_PI * i / ww);
         for (int j = 0; j < hh; ++j) sinarrayj[j] = sin(M_PI * j / hh);
 
-        for (int j = 0; j < hh; ++j)
-            for (int i = 0; i < ww; ++i) {
-                if ((i == 0) && (j == 0)) continue;
-                double norm       = sqrt(ww * hh * (sinarrayi[i] * sinarrayi[i] + sinarrayj[j] * sinarrayj[j]));
-                auto   fij        = cpx(prng.gaussian(), prng.gaussian()) * sqrt(M_PI / 2) / norm;
-                in[i + ww * j][0] = real(fij);
-                in[i + ww * j][1] = imag(fij);
-                if (norm > sqrt(ww * hh) * (1 - n0 / 100.0)) {
-                    in[i + ww * j][0] = 0;
-                    in[i + ww * j][1] = 0;
-                }
+        for (auto [i, j] : coos(*this)) {
+            if ((i == 0) && (j == 0)) continue;
+            double norm       = sqrt(ww * hh * (sinarrayi[i] * sinarrayi[i] + sinarrayj[j] * sinarrayj[j]));
+            auto   fij        = cpx(prng.gaussian(), prng.gaussian()) * sqrt(M_PI / 2) / norm;
+            in[i + ww * j][0] = real(fij);
+            in[i + ww * j][1] = imag(fij);
+            if (norm > sqrt(ww * hh) * (1 - n0 / 100.0)) {
+                in[i + ww * j][0] = 0;
+                in[i + ww * j][1] = 0;
             }
+        }
         in[0][0] = 0;
         in[0][1] = 0;
 
         fftw_execute(p);
-        for (int j = 0; j < hh; ++j)
-            for (int i = 0; i < ww; ++i) I.at(coo(i, j)).f = out[i + ww * j][0];
+        for (auto [i, j] : coos(*this)) I.at(coo(i, j)).f = out[i + ww * j][0];
         fftw_destroy_plan(p);
         fftw_free(in);
         fftw_free(out);
     }
 
-    void fill_gaussian(double l = 10) {
-        auto      in = fftw_alloc_complex(ww * hh), out = fftw_alloc_complex(ww * hh);
-        fftw_plan p = fftw_plan_dft_2d(ww, hh, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+    void fill_radial(function<double(double)> f, double l) {
+        auto d  = fftw_alloc_complex(ww * hh);
+        auto p1 = fftw_plan_dft_2d(ww, hh, d, d, FFTW_FORWARD, FFTW_ESTIMATE);
+        auto p2 = fftw_plan_dft_2d(ww, hh, d, d, FFTW_BACKWARD, FFTW_ESTIMATE);
 
-        for (int64_t j = 0; j < hh; ++j)
-            for (int64_t i = 0; i < ww; ++i) {
-                int64_t ii        = min(i, ww - i);
-                int64_t jj        = min(j, hh - j);
-                double  re        = prng.gaussian(0, exp(-(ii * ii + jj * jj) / (l * l)));
-                double  im        = 0 * prng.gaussian(0, exp(-(ii * ii + jj * jj) / (l * l)));
-                in[i + ww * j][0] = re;
-                in[i + ww * j][1] = im;
-            }
+        for (auto [i, j] : coos(*this)) {
+            auto ii = min(i, ww - i), jj = min(j, hh - j);
+            d[i + ww * j][0] = d[i + ww * j][1] = f(sqrt(ii * ii + jj * jj) / l);
+        }
 
-        fftw_execute(p);
-        for (int j = 0; j < hh; ++j)
-            for (int i = 0; i < ww; ++i) I.at(coo(i, j)).f = sign(out[i + ww * j][0]);
-        fftw_destroy_plan(p);
-        fftw_free(in);
-        fftw_free(out);
+        fftw_execute(p1);
+        for (int i = 0; i < ww * hh; ++i) {
+            d[i][0] *= prng.gaussian();
+            d[i][1] *= prng.gaussian();
+        }
+        fftw_execute(p2);
+        for (auto z : coos(*this)) I.at(z).f = sign(d[z.x + ww * z.y][0]);
+
+        fftw_destroy_plan(p1);
+        fftw_destroy_plan(p2);
+        fftw_free(d);
     }
 
     void dijkstra() {
@@ -179,11 +171,8 @@ public:
 
     void ball() {
         double r = radius();
-        for (int y = 0; y < h(); ++y) {
-            for (int x = 0; x < w(); ++x) {
-                if (I.at(coo(x, y)).d <= r) put(coo(x, y), Color(0, 0, 127 + at(coo(x, y)).b / 2));
-            }
-        }
+        for (auto z : coos(*this))
+            if (I.at(z).d <= r) put(z, Color(0, 0, 127 + at(z).b / 2));
     }
 
     Array<Info> I;
@@ -192,7 +181,7 @@ public:
 };
 
 int main(int argc, char ** argv) {
-    H.init("Random 2D geometry", argc, argv, "w=free,n=9,z=0,g=1,s=0,b,i,q,c");
+    H.init("Random 2D geometry", argc, argv, "w=free,n=9,z=0,g=1,s=0,b,i,q,c,l=10,a=1");
     if (int s = H['s']) prng.seed(s);
     unsigned n = H['n'], nn = 1u << n;
 
