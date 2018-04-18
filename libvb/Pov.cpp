@@ -1,83 +1,32 @@
-/// \file
 #include <vb/Hub.h>
 #include <vb/Pov.h>
-#include <fstream>
 
 namespace vb {
-    Pov_Object::Pov_Object(std::string s, bool b) : type(std::move(s)), braces(b), commas(0) {}
-
-    std::ostream & Pov_Object::output_pov(std::ostream & os) {
-        os << type << " ";
-        if (braces) os << "{ ";
-        for (int i = 0; i < subs.size(); ++i) os << subs[i].get() << (i < commas ? ", " : " ");
-        if (braces) os << "}";
-        os << std::endl;
+    std::ostream & operator<<(std::ostream & os, const bunch & b) {
+        if (!b.before.empty()) os << b.before << '\n';
+        for (const auto & s : b) os << s << '\n';
+        if (!b.after.empty()) os << b.after << '\n';
         return os;
     }
 
-    void Pov_Object::output_pov(const std::string & s) {
-        std::string   os = H.dir + s + ".pov";
-        std::ofstream f(os.c_str());
-        output_pov(f);
-    }
+    std::string pov::Box(tri a, tri b) { return fmt::format("box {{ {}, {} }}", a, b); }
+    std::string pov::Camera(tri a, tri b, double d) { return fmt::format("camera {{ location {} look_at {} angle {} }}", a, b, d); }
+    std::string pov::Cylinder(tri a, tri b, double r) { return fmt::format("cylinder {{ {}, {}, {} }}", a, b, r); }
+    std::string pov::Light_Source(tri a) { return fmt::format("light_source {{ {} color White*2 }}", a); }
+    std::string pov::Plane(tri a, double d) { return fmt::format("plane {{ {}, {} }}", a, d); }
+    std::string pov::Sphere(tri a, double r) { return fmt::format("sphere {{ {}, {} }}", a, r); }
+    std::string pov::Texture(std::string t) { return fmt::format("texture {{ {} }}", t); }
 
-    Pov_Object & Pov_Object::operator<<(tri a) { return (*this) << std::make_unique<Pov_Obj>(a); }
-    Pov_Object & Pov_Object::operator<<(double x) { return (*this) << std::make_unique<Pov_Obj>(x); }
-
-    Pov_Scene::Pov_Scene() : Pov_Object("") {
-        (*this) << std::make_unique<Pov_Object>(R"(#version 3.7;)") << std::make_unique<Pov_Object>(R"(#include "colors.inc")")
-                << std::make_unique<Pov_Object>(R"(#include "rad_def.inc")")
-                << std::make_unique<Pov_Object>(R"(global_settings { radiosity { Rad_Settings(Radiosity_Normal,off,off) } })")
-                << std::make_unique<Pov_Object>(R"(background { color White })");
-    }
-
-    Pov_Union::Pov_Union() : Pov_Object("union", true) {}
-
-    Pov_Camera::Pov_Camera(tri a, tri b, double d) : Pov_Object("camera", true) {
-        std::string s = fmt::format("location {} look_at {} angle {}", a, b, d);
-        (*this) << std::make_unique<Pov_Object>(s);
-    }
-
-    Pov_Light_Source::Pov_Light_Source(tri a) : Pov_Object("light_source", true) {
-        (*this) << a << std::make_unique<Pov_Object>("color White*2", false);
-    }
-
-    Pov_Sphere::Pov_Sphere(tri a, double r) : Pov_Object("sphere", true) {
-        (*this) << a << r;
-        commas = 1;
-    }
-
-    Pov_Cylinder::Pov_Cylinder(tri a, tri b, double r) : Pov_Object("cylinder", true) {
-        (*this) << a << b << r;
-        commas = 2;
-    }
-
-    Pov_Box::Pov_Box(tri a, tri b) : Pov_Object("box", true) {
-        (*this) << a << b;
-        commas = 1;
-    }
-
-    Pov_Plane::Pov_Plane(tri a, double d) : Pov_Object("plane", true) {
-        (*this) << a << d;
-        commas = 1;
-    }
-
-    Pov_Frame::Pov_Frame(tri a, tri b, std::string t) : Pov_Union() {
-        (*this) << std::make_unique<Pov_Sphere>(tri{a.x, a.y, a.z}, .1) << std::make_unique<Pov_Sphere>(tri{a.x, a.y, b.z}, .1)
-                << std::make_unique<Pov_Sphere>(tri{a.x, b.y, a.z}, .1) << std::make_unique<Pov_Sphere>(tri{a.x, b.y, b.z}, .1)
-                << std::make_unique<Pov_Sphere>(tri{b.x, a.y, a.z}, .1) << std::make_unique<Pov_Sphere>(tri{b.x, a.y, b.z}, .1)
-                << std::make_unique<Pov_Sphere>(tri{b.x, b.y, a.z}, .1) << std::make_unique<Pov_Sphere>(tri{b.x, b.y, b.z}, .1)
-                << std::make_unique<Pov_Cylinder>(tri{a.x, a.y, a.z}, tri{a.x, a.y, b.z}, .1)
-                << std::make_unique<Pov_Cylinder>(tri{a.x, a.y, a.z}, tri{a.x, b.y, a.z}, .1)
-                << std::make_unique<Pov_Cylinder>(tri{a.x, a.y, a.z}, tri{b.x, a.y, a.z}, .1)
-                << std::make_unique<Pov_Cylinder>(tri{a.x, b.y, b.z}, tri{a.x, a.y, b.z}, .1)
-                << std::make_unique<Pov_Cylinder>(tri{a.x, b.y, b.z}, tri{a.x, b.y, a.z}, .1)
-                << std::make_unique<Pov_Cylinder>(tri{a.x, b.y, b.z}, tri{b.x, b.y, b.z}, .1)
-                << std::make_unique<Pov_Cylinder>(tri{b.x, a.y, b.z}, tri{a.x, a.y, b.z}, .1)
-                << std::make_unique<Pov_Cylinder>(tri{b.x, a.y, b.z}, tri{b.x, b.y, b.z}, .1)
-                << std::make_unique<Pov_Cylinder>(tri{b.x, a.y, b.z}, tri{b.x, a.y, a.z}, .1)
-                << std::make_unique<Pov_Cylinder>(tri{b.x, b.y, a.z}, tri{a.x, b.y, a.z}, .1)
-                << std::make_unique<Pov_Cylinder>(tri{b.x, b.y, a.z}, tri{b.x, a.y, a.z}, .1)
-                << std::make_unique<Pov_Cylinder>(tri{b.x, b.y, a.z}, tri{b.x, b.y, b.z}, .1) << std::make_unique<Pov_Obj>(pov::Texture(t));
+    Pov_Union pov::Frame(tri a, tri b, std::string t) {
+        Pov_Union u;
+        u << Sphere({a.x, a.y, a.z}, .1) << Sphere({a.x, a.y, b.z}, .1) << Sphere({a.x, b.y, a.z}, .1) << Sphere({a.x, b.y, b.z}, .1)
+          << Sphere({b.x, a.y, a.z}, .1) << Sphere({b.x, a.y, b.z}, .1) << Sphere({b.x, b.y, a.z}, .1) << Sphere({b.x, b.y, b.z}, .1)
+          << Cylinder({a.x, a.y, a.z}, {a.x, a.y, b.z}, .1) << Cylinder({a.x, a.y, a.z}, {a.x, b.y, a.z}, .1)
+          << Cylinder({a.x, a.y, a.z}, {b.x, a.y, a.z}, .1) << Cylinder({a.x, b.y, b.z}, {a.x, a.y, b.z}, .1)
+          << Cylinder({a.x, b.y, b.z}, {a.x, b.y, a.z}, .1) << Cylinder({a.x, b.y, b.z}, {b.x, b.y, b.z}, .1)
+          << Cylinder({b.x, a.y, b.z}, {a.x, a.y, b.z}, .1) << Cylinder({b.x, a.y, b.z}, {b.x, b.y, b.z}, .1)
+          << Cylinder({b.x, a.y, b.z}, {b.x, a.y, a.z}, .1) << Cylinder({b.x, b.y, a.z}, {a.x, b.y, a.z}, .1)
+          << Cylinder({b.x, b.y, a.z}, {b.x, a.y, a.z}, .1) << Cylinder({b.x, b.y, a.z}, {b.x, b.y, b.z}, .1) << Texture(t);
+        return u;
     }
 } // namespace vb
