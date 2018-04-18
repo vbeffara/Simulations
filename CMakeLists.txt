@@ -4,7 +4,7 @@ project (Simulations)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(KEEP_RPATHS)
 
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -fdiagnostics-color=always -pedantic")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -g -fdiagnostics-color=always -pedantic")
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-unused-local-typedefs -Wno-unused-function -Wno-sign-compare")
 set (CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
@@ -34,7 +34,6 @@ else ()
 endif ()
 
 if (${DEBUG})
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 else ()
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNDEBUG")
 endif ()
@@ -43,6 +42,9 @@ link_directories ("/usr/local/lib" "/opt/X11/lib")
 
 include (TestBigEndian)
 test_big_endian (BIGENDIAN)
+if (${BIGENDIAN})
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBIGENDIAN")
+endif ()
 
 find_package (PkgConfig)
 pkg_check_modules (EXT REQUIRED cairo cln gsl eigen3 fplll)
@@ -53,9 +55,6 @@ target_link_libraries (vb ${EXT_LIBRARIES} ${CONAN_LIBS})
 
 execute_process(COMMAND "git" describe --always --abbrev=40 WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" OUTPUT_VARIABLE GIT_SHA1 OUTPUT_STRIP_TRAILING_WHITESPACE)
 set_source_files_properties(libvb/Hub.cpp PROPERTIES COMPILE_FLAGS -DGIT_SHA1='"${GIT_SHA1}"')
-
-configure_file ("${PROJECT_SOURCE_DIR}/libvb/vb/config.h.in" "${CMAKE_CURRENT_BINARY_DIR}/libvb/vb/config.h")
-include_directories ("${CMAKE_CURRENT_BINARY_DIR}/libvb")
 
 include_directories ("${PROJECT_SOURCE_DIR}/libvb" ${EXT_INCLUDE_DIRS})
 

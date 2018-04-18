@@ -1,4 +1,7 @@
 #include <vb/Ranges.h>
+#include <range/v3/numeric/accumulate.hpp>
+#include <range/v3/view/generate.hpp>
+#include <range/v3/view/take.hpp>
 
 using namespace vb;
 using namespace std;

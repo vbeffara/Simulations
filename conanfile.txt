@@ -4,8 +4,10 @@ boost_coroutine2/1.66.0@bincrafters/stable
 boost_graph/1.66.0@bincrafters/stable
 boost_lockfree/1.66.0@bincrafters/stable
 doctest/1.2.6@bincrafters/stable
+# eigen/3.3.4@conan/stable
 fftw/3.3.7@vbeffara/testing
 fltk/1.3.4@vbeffara/testing
+# gmp/6.1.2@bincrafters/stable
 gsl_microsoft/20180102@bincrafters/stable
 libcmaes/0.9.5+HEAD@vbeffara/testing
 libpng/1.6.34@bincrafters/stable

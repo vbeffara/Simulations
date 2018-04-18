@@ -1,7 +1,9 @@
 #pragma once
-#include <range/v3/all.hpp>
-#include <range/v3/experimental/utility/generator.hpp>
 #include <vb/Array.h>
+#include <range/v3/experimental/utility/generator.hpp>
+#include <range/v3/view/cartesian_product.hpp>
+#include <range/v3/view/iota.hpp>
+#include <range/v3/view/transform.hpp>
 
 namespace vb {
     namespace rv = ranges::view;
