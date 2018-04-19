@@ -13,8 +13,8 @@ namespace vb {
             for (int z = 0; z < sz; ++z) at(coo(z + sx, y)).dim(sx);
     }
 
-    Cube_iterator Cube::begin() { return Cube_iterator(this, coo3(0, 0, 0)); }
-    Cube_iterator Cube::end() { return Cube_iterator(this, coo3(0, 0, sz)); }
+    Cube_iterator Cube::begin() { return Cube_iterator(this, {0, 0, 0}); }
+    Cube_iterator Cube::end() { return Cube_iterator(this, {0, 0, sz}); }
 
     void Cube::output_pov(std::string s) {
         Pov_Union squares1, squares2, cube, corner, ground;
@@ -23,28 +23,27 @@ namespace vb {
             for (int y = 0; y < sy; ++y)
                 for (int z = 0; z < sz; ++z)
                     if (at({x, y, z}) == 255)
-                        squares1 << pov::Box({x - .5 * sx, y - .5 * sy, z - .5 * sz}, {x + 1 - .5 * sx, y + 1 - .5 * sy, z + 1 - .5 * sz});
+                        squares1 << Box({x - .5 * sx, y - .5 * sy, z - .5 * sz}, {x + 1 - .5 * sx, y + 1 - .5 * sy, z + 1 - .5 * sz});
                     else if (at({x, y, z}) == 255 / 2)
-                        squares2 << pov::Box({x - .5 * sx, y - .5 * sy, z - .5 * sz}, {x + 1 - .5 * sx, y + 1 - .5 * sy, z + 1 - .5 * sz});
+                        squares2 << Box({x - .5 * sx, y - .5 * sy, z - .5 * sz}, {x + 1 - .5 * sx, y + 1 - .5 * sy, z + 1 - .5 * sz});
 
-        squares1 << pov::Texture("pigment { color rgb <.3,.5,.8> } normal { bumps .1 scale .1 } finish { "
-                                 "reflection {0} ambient 0 diffuse .5 brilliance 1.5 roughness .1 }");
-        squares2 << pov::Texture("pigment { color rgb <.3,.5,.8> transmit .8 } normal { bumps .1 scale .1 } finish { "
-                                 "reflection {0} ambient 0 diffuse .5 brilliance 1.5 roughness .1 }");
+        squares1 << Texture("pigment { color rgb <.3,.5,.8> } normal { bumps .1 scale .1 } finish { "
+                            "reflection {0} ambient 0 diffuse .5 brilliance 1.5 roughness .1 }");
+        squares2 << Texture("pigment { color rgb <.3,.5,.8> transmit .8 } normal { bumps .1 scale .1 } finish { "
+                            "reflection {0} ambient 0 diffuse .5 brilliance 1.5 roughness .1 }");
 
-        cube << pov::Frame(tri{-.5 * sx, -.5 * sy, -.5 * sz}, tri{.5 * sx, .5 * sy, .5 * sz}, "pigment { color rgb <.8,0,0> }") << squares1
+        cube << Frame(tri{-.5 * sx, -.5 * sy, -.5 * sz}, tri{.5 * sx, .5 * sy, .5 * sz}, "pigment { color rgb <.8,0,0> }") << squares1
              << squares2 << "rotate 360*clock*y";
 
-        if (mirrors) {
-            corner << pov::Plane(tri{1., 0., 0.}, -.75 * sx) << pov::Plane(tri{0, 0, 1}, .75 * sz)
-                   << pov::Texture("pigment { color White } finish { reflection {.5} ambient 0 diffuse 0 }");
-            ground << pov::Plane(tri{0., 1., 0.}, -.75 * sy)
-                   << pov::Texture("pigment { color White } finish { reflection 0 ambient 0.2 diffuse 0.1 }");
-        }
-
         Pov_Scene SS;
-        SS << pov::Camera(tri{1.30 * sx, .9 * sy, -1.5 * sz}, tri{0., 0., 0.}, 60) << pov::Light_Source(tri{50. * sx, 30. * sy, -15. * sz})
-           << cube << corner << ground;
+        SS << Camera({1.3 * sx, .9 * sy, -1.5 * sz}, {0, 0, 0}, 60) << Light_Source({50. * sx, 30. * sy, -15. * sz}) << cube;
+
+        if (mirrors) {
+            corner << Plane({1, 0, 0}, -.75 * sx) << Plane({0, 0, 1}, .75 * sz)
+                   << Texture("pigment { color White } finish { reflection {.5} ambient 0 diffuse 0 }");
+            ground << Plane({0, 1, 0}, -.75 * sy) << Texture("pigment { color White } finish { reflection {.1} ambient 0.2 diffuse 0.1 }");
+            SS << corner << ground;
+        }
         SS.output_pov(s.empty() ? H.title : s);
     }
 } // namespace vb

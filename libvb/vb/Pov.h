@@ -1,7 +1,6 @@
 #pragma once /// \file
+#include <vb/Hub.h>
 #include <fstream>
-#include <iostream>
-#include <vector>
 
 namespace vb {
     struct tri {
@@ -39,14 +38,12 @@ namespace vb {
         Pov_Union() : bunch("union {", "}"){};
     };
 
-    namespace pov {
-        std::string Box(tri a, tri b);
-        std::string Camera(tri a, tri b, double d);
-        std::string Cylinder(tri a, tri b, double r);
-        std::string Light_Source(tri a);
-        std::string Plane(tri a, double d);
-        std::string Sphere(tri a, double r);
-        std::string Texture(std::string t);
-        Pov_Union   Frame(tri a, tri b, std::string t);
-    } // namespace pov
+    std::string Box(tri a, tri b);
+    std::string Camera(tri a, tri b, double d);
+    std::string Cylinder(tri a, tri b, double r);
+    std::string Light_Source(tri a);
+    std::string Plane(tri a, double d);
+    std::string Sphere(tri a, double r);
+    std::string Texture(const std::string & t);
+    Pov_Union   Frame(tri a, tri b, const std::string & t);
 } // namespace vb
