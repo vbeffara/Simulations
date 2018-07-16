@@ -28,10 +28,10 @@ namespace vb {
         Duration d = end - start, d_u = end_u - start_u, d_s = end_s - start_s;
         output("Time spent", "", fmt::format("{} real, {} user, {} system", d.count(), d_u.count(), d_s.count()), false);
 
+        auto        format = fmt::format("{{:<{}}} : {{}}", max_label_width);
         std::string os, ls;
-        for (auto [k, ks, v, o] : outputs) {
-            for (int i = k.size(); i < max_label_width; ++i) k.append(" ");
-            L->info("{} : {}", k, v);
+        for (const auto & [k, ks, v, o] : outputs) {
+            L->info(fmt::format(format, k, v));
             if (o) {
                 os += ",?";
                 ls += "," + ks;
@@ -49,12 +49,12 @@ namespace vb {
               "  cmd_id, a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z);";
 
         std::vector<std::string> as;
-        for (auto [k, v] : *this) as.push_back(fmt::format("{}={}", k, std::string(v)));
+        for (const auto & [k, v] : *this) as.push_back(fmt::format("{}={}", k, std::string(v)));
         std::string args = boost::join(as, ", ");
 
-        std::optional<long long> id;
+        std::optional<int64_t> id;
         db << "select cmd_id from cmds where prog = ? and version = ? and args = ?;" << prog << version << args >>
-            [&](long long i) { id = i; };
+            [&](int64_t i) { id = i; };
 
         if (!id) {
             db << "insert into cmds (prog,version,args) values (?,?,?);" << prog << version << args;
@@ -62,7 +62,7 @@ namespace vb {
         }
 
         auto tmp = db << "insert into runs (cmd_id" + ls + ") values (?" + os + ");" << *id;
-        for (auto [k, ks, v, o] : outputs)
+        for (const auto & [k, ks, v, o] : outputs)
             if (o) tmp << v;
     }
 
@@ -132,9 +132,9 @@ namespace vb {
         initialized = true;
     }
 
-    void Hub::output_str(std::string l, std::string ls, std::string s, bool o) {
+    void Hub::output_str(const std::string & l, const std::string & ls, const std::string & s, bool out) {
         if (l.size() > max_label_width) max_label_width = l.size();
-        outputs.push_back({l, ls, s, o});
+        outputs.push_back({l, ls, s, out});
     }
 
     Hub H;

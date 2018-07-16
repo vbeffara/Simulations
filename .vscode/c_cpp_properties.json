@@ -25,7 +25,6 @@
                 "/Users/vincent/.conan/data/boost_level5group/1.66.0/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/mpl/include",
                 "/Users/vincent/.conan/data/boost_level5group/1.66.0/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/utility/include",
                 "/Users/vincent/.conan/data/boost_level8group/1.66.0/bincrafters/stable/package/8e483304b1c9e99a717a55fe3493cdb207d62ab8/math/include",
-                "/Users/vincent/.conan/data/boost_level8group/1.66.0/bincrafters/stable/package/8e483304b1c9e99a717a55fe3493cdb207d62ab8/lexical_cast/include",
                 "/Users/vincent/.conan/data/boost_lockfree/1.66.0/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/lockfree/include",
                 "/Users/vincent/.conan/data/boost_move/1.66.0/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/move/include",
                 "/Users/vincent/.conan/data/boost_numeric_conversion/1.66.0/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/numeric_conversion/include",
@@ -71,7 +70,8 @@
             ],
             "compilerPath": "/usr/local/opt/llvm/bin/clang",
             "cStandard": "c11",
-            "cppStandard": "c++17"
+            "cppStandard": "c++17",
+            "compileCommands": "${workspaceFolder}/build/compile_commands.json"
         },
         {
             "name": "Linux",
@@ -121,5 +121,5 @@
             }
         }
     ],
-    "version": 3
+    "version": 4
 }

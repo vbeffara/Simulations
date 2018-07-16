@@ -9,7 +9,7 @@ namespace vb {
     template <typename F> void timing(const std::string & label, const F & f) {
         double t      = time();
         auto   result = f();
-        H.L->info("{:<60} time = {:<10} ans = {}", label, time() - t, result);
+        H.output_str(label, "", fmt::format("time = {:<10} ans = {}", time() - t, result), false);
     }
 
     template <typename V>

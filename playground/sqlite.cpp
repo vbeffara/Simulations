@@ -3,7 +3,7 @@
 using namespace std;
 
 struct User {
-    long long             id;
+    int64_t               id=-1;
     std::optional<int>    age;
     std::optional<string> name;
     std::optional<double> weight;
@@ -27,7 +27,7 @@ int main() {
     user.id = db.last_insert_rowid();
 
     db << "select id,age,name,weight from user where age > 18;" >>
-        [](long long id, std::optional<int> age, string name, std::optional<double> weight) {
+        [](int64_t id, std::optional<int> age, string name, std::optional<double> weight) {
             cout << "id=" << id;
             cout << " age=" << (age ? to_string(*age) : "NULL");
             cout << " name=" << name;

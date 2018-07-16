@@ -82,7 +82,9 @@
         "dense": "cpp",
         "__locale": "cpp",
         "slist": "cpp",
-        "__bit_reference": "cpp"
+        "__bit_reference": "cpp",
+        "cfenv": "cpp",
+        "typeindex": "cpp"
     },
-    "python.pythonPath": "/usr/local/opt/python3/bin/python3.6"
+    "python.pythonPath": "/usr/local/opt/python/bin/python3.7"
 }

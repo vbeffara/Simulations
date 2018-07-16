@@ -102,7 +102,7 @@ public:
         fftw_free(out);
     }
 
-    void fill_radial(function<double(double)> f, double l) {
+    void fill_radial(const function<double(double)> & f, double l) {
         auto d  = fftw_alloc_complex(ww * hh);
         auto p1 = fftw_plan_dft_2d(ww, hh, d, d, FFTW_FORWARD, FFTW_ESTIMATE);
         auto p2 = fftw_plan_dft_2d(ww, hh, d, d, FFTW_BACKWARD, FFTW_ESTIMATE);

@@ -23,7 +23,7 @@ if "-x" in argv:
     for f in glob("[123]*/*.cpp") + glob("tests/*.cpp") + glob("playground/*.cpp"):
         G.add_node(f, fillcolor="pink")
 
-for f in G.nodes():
+for f in list(G.nodes()):
     ff = f
     if ff[:3] == "vb/":
         ff = "libvb/" + f

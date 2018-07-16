@@ -1,7 +1,6 @@
 #pragma once /// \file
 #undef False
 #include <boost/chrono.hpp>
-#include <boost/lexical_cast.hpp>
 #include <cstdlib>
 #include <map>
 #undef CHAR_WIDTH
@@ -10,7 +9,7 @@
 #include <string>
 
 namespace vb {
-    template <typename T> auto str(const T & t) { return boost::lexical_cast<std::string>(t); }
+    template <typename T> auto str(const T & t) { return fmt::format("{}", t); }
 
     using Duration  = boost::chrono::duration<double>;
     using TimePoint = boost::chrono::time_point<boost::chrono::process_real_cpu_clock, Duration>;
@@ -52,7 +51,7 @@ namespace vb {
 
         const Value & operator[](char c) const { return find(c)->second; }
 
-        void                       output_str(std::string l, std::string ls, std::string s, bool out = true);
+        void                       output_str(const std::string & l, const std::string & ls, const std::string & s, bool out = true);
         template <typename T> void output(std::string l, std::string ls, const T & x, bool out = true) { output_str(l, ls, str(x), out); }
 
         std::string title = "undefined", cmd = "undefined", prog = "undefined", version = "undefined", dir = "output/", help = "undefined";
