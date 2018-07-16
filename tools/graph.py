@@ -23,12 +23,12 @@ if "-x" in argv:
     for f in glob("[123]*/*.cpp") + glob("tests/*.cpp") + glob("playground/*.cpp"):
         G.add_node(f, fillcolor="pink")
 
-for f in list(G.nodes()):
+for f in list(G):
     ff = f
     if ff[:3] == "vb/":
         ff = "libvb/" + f
     for l in open(ff, encoding="utf-8"):
-        if l.startswith("#include") and not l.endswith("nograph"):
+        if l.startswith("#include") and not l.rstrip().endswith("nograph"):
             h = l[10:-2]
             if h.startswith("vb/") or full:
                 if not h in G.nodes():
