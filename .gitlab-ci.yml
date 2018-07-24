@@ -1,4 +1,4 @@
-image: ubuntu:artful
+image: ubuntu:bionic
 
 before_script:
   - apt-get update
