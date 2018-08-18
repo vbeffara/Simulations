@@ -5,6 +5,7 @@ boost_graph/1.66.0@bincrafters/stable
 boost_lockfree/1.66.0@bincrafters/stable
 doctest/1.2.6@bincrafters/stable
 # eigen/3.3.4@conan/stable # CMAES depends on version 3.3.5
+glfw/3.2.1@bincrafters/stable
 # gmp/6.1.2@bincrafters/stable
 gsl_microsoft/20180102@bincrafters/stable
 libpng/1.6.34@bincrafters/stable
