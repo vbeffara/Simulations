@@ -3,7 +3,7 @@ image: ubuntu:bionic
 before_script:
   - apt-get update
   - apt-get install -y python-pip cmake gcc-7 g++-7 ninja-build git
-  - apt-get install -y libcairo2-dev libfplll-dev libgmp-dev libmpfr-dev libgl1-mesa-dev
+  - apt-get install -y libcairo2-dev libfplll-dev libgmp-dev libmpfr-dev libgl1-mesa-dev libglu1-mesa-dev
   - apt-get install -y libcln-dev libgsl-dev libeigen3-dev
   - apt-get install -y lcov python-pip ruby xvfb
 
