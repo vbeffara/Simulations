@@ -5,7 +5,7 @@
 #include <map>
 #undef CHAR_WIDTH
 #include <spdlog/fmt/ostr.h>
-#include <spdlog/spdlog.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 #include <string>
 
 namespace vb {

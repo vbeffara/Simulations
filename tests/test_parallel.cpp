@@ -1,5 +1,4 @@
 #include <vb/Ranges.h>
-#include <vb/Stream.h>
 #include <vb/ThreadPool.h>
 #include <future>
 #include <numeric>
