@@ -1,8 +1,5 @@
 [requires]
-boost_chrono/1.66.0@bincrafters/stable
-boost_coroutine2/1.66.0@bincrafters/stable
-boost_graph/1.66.0@bincrafters/stable
-boost_lockfree/1.66.0@bincrafters/stable
+boost/1.68.0@conan/stable
 doctest/1.2.6@bincrafters/stable
 # eigen/3.3.4@conan/stable # CMAES depends on version 3.3.5
 glfw/3.2.1@bincrafters/stable
