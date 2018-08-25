@@ -1,7 +1,7 @@
 [requires]
 boost/1.68.0@conan/stable
 doctest/1.2.6@bincrafters/stable
-# eigen/3.3.4@conan/stable # CMAES depends on version 3.3.5
+eigen/3.3.5@conan/stable
 glfw/3.2.1@bincrafters/stable
 # gmp/6.1.2@bincrafters/stable
 gsl_microsoft/20180102@bincrafters/stable
