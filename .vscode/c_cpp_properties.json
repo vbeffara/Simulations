@@ -18,7 +18,8 @@
                 "/Users/vincent/.conan/data/libpng/1.6.34/bincrafters/stable/package/3332e7bb20e8456f89560287f0181be30dc3cabc/include",
                 "/Users/vincent/.conan/data/range-v3/0.3.5/ericniebler/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include",
                 "/Users/vincent/.conan/data/spdlog/0.16.3/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include",
-                "/Users/vincent/.conan/data/sqlite_modern_cpp/3.2+HEAD/vbeffara/testing/package/f38017fbab1c828f5e9c067dbdf260c41361e3a6/include"
+                "/Users/vincent/.conan/data/sqlite_modern_cpp/3.2+HEAD/vbeffara/testing/package/f38017fbab1c828f5e9c067dbdf260c41361e3a6/include",
+                "/Users/vincent/.conan/data/spdlog/1.0.0/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include"
             ],
             "defines": [],
             "intelliSenseMode": "clang-x64",
