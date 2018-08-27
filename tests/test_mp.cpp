@@ -38,4 +38,11 @@ int main(int argc, char ** argv) {
     test("Boost mpfr_float (100 digits)", n, number<mpfr_float_backend<100>>(0));
     test("Boost mpfr_float (200 digits)", n, number<mpfr_float_backend<200>>(0));
     test("Boost mpfr_float (1000 digits)", n, number<mpfr_float_backend<1000>>(0));
+
+    mpfr_float::default_precision(100);
+    test("Boost mpfr_float (100 digits)", n, number<mpfr_float_backend<0>>(0));
+    mpfr_float::default_precision(200);
+    test("Boost mpfr_float (200 digits)", n, number<mpfr_float_backend<0>>(0));
+    mpfr_float::default_precision(1000);
+    test("Boost mpfr_float (1000 digits)", n, number<mpfr_float_backend<0>>(0));
 }
