@@ -2,11 +2,6 @@
 #include <fplll.h>
 
 namespace vb {
-    // template Polynomial<bigint> guess (real_t x, real_t eps);
-    // template Polynomial<bigint> guess (real_t x, int leps, int d);
-    // template Polynomial<cpxint> guess (complex_t x, real_t eps);
-    // template Polynomial<cpxint> guess (complex_t x, int leps, int d);
-
     using namespace cln;
 
     std::optional<cl_UP_R> guess(const cl_R & x, int nd) {
@@ -108,8 +103,8 @@ namespace vb {
             ZZ_mat<mpz_t> M(d + 1, d + 3);
 
             for (int i = 0; i <= d; ++i) {
-                auto re = fmt::format("{}",round1(realpart(t) * m));
-                auto im = fmt::format("{}",round1(imagpart(t) * m));
+                auto re = fmt::format("{}", round1(realpart(t) * m));
+                auto im = fmt::format("{}", round1(imagpart(t) * m));
                 M[i][0].set_str(re.c_str());
                 M[i][1].set_str(im.c_str());
                 M[i][i + 2] = 1;
@@ -122,9 +117,9 @@ namespace vb {
 
             vector<cl_I> V(2 * (d + 1), 0);
             for (int j = 0; j < d + 1; ++j) {
-                cl_I ai = fmt::format("{}",o[j]).c_str();
+                cl_I ai = fmt::format("{}", o[j]).c_str();
                 if (ai != 0)
-                    for (int i = 0; i < d + 1; ++i) V[i] += ai * cl_I{fmt::format("{}",M[j][i + 2]).c_str()};
+                    for (int i = 0; i < d + 1; ++i) V[i] += ai * cl_I{fmt::format("{}", M[j][i + 2]).c_str()};
             }
 
             auto P = find_univpoly_ring(cl_C_ring, cl_symbol("z"))->create(d);
