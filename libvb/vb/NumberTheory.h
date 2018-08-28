@@ -1,17 +1,22 @@
 #pragma once
 #include <vb/Polynomial.h>
 #include <boost/multiprecision/gmp.hpp>
+#include <boost/multiprecision/mpc.hpp>
 #include <boost/multiprecision/mpfr.hpp>
 #include <optional>
 
 namespace vb {
+    using boost::multiprecision::mpc_complex;
     using boost::multiprecision::mpf_float;
+    using boost::multiprecision::mpfr_float;
     using boost::multiprecision::mpz_int;
 
     std::optional<cln::cl_UP_R> guess(const cln::cl_R & x, int nd);
     std::optional<cln::cl_UP_N> guess_r(const cln::cl_N & x, int nd);
 
     std::optional<Polynomial<mpz_int>> guess(const mpf_float & x, int nd);
+    std::optional<Polynomial<mpz_int>> guess(const mpfr_float & x, int nd);
+    std::optional<Polynomial<mpz_int>> guess(const mpc_complex & x, int nd);
 
 #ifdef UNIT_TESTS
     TEST_CASE("NumberTheory guess functions") {

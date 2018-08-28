@@ -6,6 +6,8 @@ using namespace std;
 int main() {
     cln::default_float_format = cln::float_format(100);
     boost::multiprecision::mpf_float::default_precision(100);
+    boost::multiprecision::mpfr_float::default_precision(100);
+    boost::multiprecision::mpc_complex::default_precision(100);
 
     vector<string> xs;
     xs.emplace_back("0.9162918442410306144165008200767499077603397502333144975769802641182380808885019256331544308341889255");
@@ -21,11 +23,15 @@ int main() {
         H.L->info("x = {}", x);
         if (auto P = guess(real_t{x.c_str()}, 80)) H.L->info("  CLN: {}", *P);
         if (auto P = guess(mpf_float{x.c_str()}, 80)) H.L->info("  GMP: {}", format(*P));
-        cout << endl;
+        if (auto P = guess(mpfr_float{x.c_str()}, 80)) H.L->info("  MPFR: {}", format(*P));
+        H.L->info("");
     }
 
-    complex_t z = to_cpx(real_t("0.1722882583776278670500267959231284336682007863854856624427574750255049273322927690638923632"),
-                         real_t("0.5302487364574217190358808797265653491226567421626168710631761419479819886565504921987031543"));
-    cout << "x = " << z << endl;
-    if (auto P = guess_r(z, 80)) cout << "  root of " << *P << endl;
+    const char * r = "0.1722882583776278670500267959231284336682007863854856624427574750255049273322927690638923632";
+    const char * i = "0.5302487364574217190358808797265653491226567421626168710631761419479819886565504921987031543";
+    H.L->info("x = {} + {} i", r, i);
+    complex_t z = to_cpx(real_t(r), real_t(i));
+    if (auto P = guess_r(z, 80)) H.L->info("  CLN: {}", *P);
+    mpc_complex zz{mpfr_float(r), mpfr_float(i)};
+    if (auto P = guess(zz, 80)) H.L->info("  MPC: {}", format(*P));
 }

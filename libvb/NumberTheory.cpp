@@ -45,6 +45,90 @@ namespace vb {
         return {};
     }
 
+    std::optional<Polynomial<mpz_int>> guess(const mpfr_float & x, int nd) {
+        if (x == 0) return {{0, 1}};
+
+        mpz_int m = pow(mpz_int(10), nd * 2 / 3);
+
+        for (int d = 1; d <= nd / 10; ++d) {
+            mpfr_float    t = x / x;
+            ZZ_mat<mpz_t> M(d + 1, d + 2);
+
+            for (int i = 0; i <= d; ++i) {
+                M[i][0]     = mpz_int(t * m).backend().data();
+                M[i][i + 1] = 1;
+                t *= x;
+            }
+
+            lll_reduction(M);
+            vector<Z_NR<mpz_t>> o;
+            shortest_vector(M, o);
+
+            vector<mpz_int> V(d + 1, 0);
+            for (int j = 0; j < d + 1; ++j) {
+                mpz_int ai = o[j].get_data();
+                for (int i = 0; i <= d; ++i) V[i] += ai * M[j][i + 1].get_data();
+            }
+
+            Polynomial<mpz_int> P(begin(V), end(V));
+            if (V[d] < 0) P = -P;
+            auto PP = derivative(P);
+
+            mpfr_float xx = x, ox = x + 1, er = 2;
+            while (abs(xx - ox) < er) {
+                er = abs(xx - ox);
+                ox = xx;
+                xx -= eval(P, xx) / eval(PP, xx);
+            }
+            if (abs(xx - x) < pow(mpfr_float(10), 5 - nd)) return P;
+        }
+
+        return {};
+    }
+
+    std::optional<Polynomial<mpz_int>> guess(const mpc_complex & x, int nd) {
+        if (x == 0) return {{0, 1}};
+
+        mpz_int m = pow(mpz_int(10), nd * 2 / 3);
+
+        for (int d = 1; d <= nd / 5; ++d) {
+            mpc_complex   t{1, 0};
+            ZZ_mat<mpz_t> M(d + 1, d + 3);
+
+            for (int i = 0; i <= d; ++i) {
+                M[i][0]     = mpz_int(t.real() * m).backend().data();
+                M[i][1]     = mpz_int(imag(t) * m).backend().data();
+                M[i][i + 2] = 1;
+                t *= x;
+            }
+
+            lll_reduction(M);
+            vector<Z_NR<mpz_t>> o;
+            shortest_vector(M, o);
+
+            vector<mpz_int> V(d + 1, 0);
+            for (int j = 0; j < d + 1; ++j) {
+                mpz_int ai = o[j].get_data();
+                for (int i = 0; i <= d; ++i) V[i] += ai * M[j][i + 2].get_data();
+            }
+
+            Polynomial<mpz_int> P(begin(V), end(V));
+            if (V[d] < 0) P = -P;
+            auto PP = derivative(P);
+
+            mpc_complex xx = x, ox = x + 1;
+            mpfr_float  er = 2;
+            while (abs(xx - ox) < er) {
+                er = abs(xx - ox);
+                ox = xx;
+                xx -= eval(P, xx) / eval(PP, xx);
+            }
+            if (abs(xx - x) < pow(mpf_float(10), 5 - nd)) return P;
+        }
+
+        return {};
+    }
+
     std::optional<cl_UP_R> guess(const cl_R & x, int nd) {
         cl_F xf = cl_float(x);
         auto m  = expt(cl_float(10, xf), nd * 2 / 3);
