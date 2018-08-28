@@ -9,11 +9,17 @@ namespace vb {
 
     template <typename T> void add_root(Polynomial<T> & P, const T & x) { P *= Polynomial<T>{{-x, T(1)}}; }
 
+    template <typename T, typename V> V eval(const Polynomial<T> & P, const V & x) {
+        V out = P[P.degree()];
+        for (int i = P.degree() - 1; i >= 0; --i) out = out * x + P[i];
+        return out;
+    }
+
     template <typename T> Polynomial<T> derivative(const Polynomial<T> & P) {
         std::vector<T> out(P.degree());
         for (int i = 0; i < P.degree(); ++i) out[i] = T(i + 1) * P[i + 1];
         if (out.empty()) out.push_back(T(0));
-        return out;
+        return Polynomial<T>(begin(out), end(out));
     }
 
     template <typename T> std::string format(const Polynomial<T> & P, const std::string & v = "z") {
