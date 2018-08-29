@@ -21,8 +21,8 @@ int main() {
 
     for (const auto & x : xs) {
         H.L->info("x = {}", x);
-        if (auto P = guess(real_t{x.c_str()}, 80)) H.L->info("  CLN: {}", *P);
-        if (auto P = guess(mpf_float{x.c_str()}, 80)) H.L->info("  GMP: {}", format(*P));
+        if (auto P = guess_r(real_t{x.c_str()}, 80)) H.L->info("  CLN:  {}", *P);
+        if (auto P = guess(mpf_float{x.c_str()}, 80)) H.L->info("  GMP:  {}", format(*P));
         if (auto P = guess(mpfr_float{x.c_str()}, 80)) H.L->info("  MPFR: {}", format(*P));
         H.L->info("");
     }
@@ -31,7 +31,7 @@ int main() {
     const char * i = "0.5302487364574217190358808797265653491226567421626168710631761419479819886565504921987031543";
     H.L->info("x = {} + {} i", r, i);
     complex_t z = to_cpx(real_t(r), real_t(i));
-    if (auto P = guess_r(z, 80)) H.L->info("  CLN: {}", *P);
-    mpc_complex zz{mpfr_float(r), mpfr_float(i)};
-    if (auto P = guess(zz, 80)) H.L->info("  MPC: {}", format(*P));
+    if (auto P = guess_r(z, 80)) H.L->info("  CLN:  {}", *P);
+    mpc_complex zz{mpf_float(r), mpf_float(i)};
+    if (auto P = guess(zz, 80)) H.L->info("  MPC:  {}", format(*P));
 }
