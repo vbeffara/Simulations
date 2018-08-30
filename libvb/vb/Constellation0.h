@@ -56,7 +56,7 @@ namespace vb {
         for (auto zd : Cq.f)
             for (int j = 0; j < zd.d; ++j) add_root(Q, zd.z);
         for (auto & x : Q.data()) {
-            auto xx = cln::complex(round1(realpart(x)), round1(imagpart(x)));
+            auto xx = complex_t(round(real(x)), round(imag(x)));
             if (abs(x - xx) < 1e-100) x = xx;
         }
         CHECK(format(Q) == " z^55 + -55 z^50 + 1205 z^45 + -13090 z^40 + 69585 z^35 + -134761 z^30 + -69585 z^25 + -13090 z^20 + "

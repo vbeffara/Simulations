@@ -242,26 +242,26 @@ namespace vb {
         os << "Black vertices / zeros: " << std::endl;
         for (auto & zd : C.b) {
             os << "| " << zd.d << "\t" << zd.z << std::endl;
-            auto P = guess_r(zd.z, nd);
+            auto P = guess(zd.z, nd);
             if (P) os << "|\t\troot of " << *P << std::endl;
         }
         os << std::endl;
         os << "White vertices / ones: " << std::endl;
         for (auto & zd : C.w) {
             os << "| " << zd.d << "\t" << zd.z << std::endl;
-            auto P = guess_r(zd.z, nd);
+            auto P = guess(zd.z, nd);
             if (P) os << "|\t\troot of " << *P << std::endl;
         }
         os << std::endl;
         os << "Red vertices / poles: " << std::endl;
         for (auto & zd : C.f) {
             os << "| " << zd.d << "\t" << zd.z << std::endl;
-            auto P = guess_r(zd.z, nd);
+            auto P = guess(zd.z, nd);
             if (P) os << "|\t\troot of " << *P << std::endl;
         }
         os << std::endl;
         os << u8"λ     := " << C.p[0] << std::endl;
-        auto L = guess_r(C.p[0], nd);
+        auto L = guess(C.p[0], nd);
         if (L) os << u8"Λ[z_] := " << *L << std::endl;
         Polynomial<complex_t> P{{1}};
         for (auto zd : C.b)

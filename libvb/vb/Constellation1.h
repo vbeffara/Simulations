@@ -52,7 +52,7 @@ namespace vb {
 		Constellation1<double> C {M,H};
 		Constellation1<real_t> Cq (C);
 		Cq.findn();
-		CHECK (str(*(guess_r(Cq.E.j(),80))) == "1*z^2 + -914416*z + 590816592");
+		CHECK (str(*(guess(Cq.E.j(),80))) == "1*z^2 + -914416*z + 590816592");
 	}
 	#endif
 }

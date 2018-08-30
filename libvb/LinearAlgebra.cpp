@@ -1,4 +1,5 @@
 #include <vb/impl/LinearAlgebra.hxx>
+#include <vb/mp.h>
 
 namespace vb {
 	template Vector<double>   	solve<double>   	(const Matrix<double> &,   	const Vector<double> &);

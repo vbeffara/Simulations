@@ -69,13 +69,13 @@ int main (int argc, char ** argv) {
 				int nd = std::max(10,lc/2-15); real_t eps = pow(real_t(.1),nd);
 				cout << fixed << setprecision(std::min(nd,80));
 				cout << "     Modulus:         " << CC.tau() << endl;
-				if (nd>30) { auto P = guess_r (CC.tau(),nd); if (P) cout << "        root of " << *P << std::endl; }
+				if (nd>30) { auto P = guess (CC.tau(),nd); if (P) cout << "        root of " << *P << std::endl; }
 				cout << "     Klein invariant: " << CC.E.j() << endl;
-				if (nd>30) { auto P = guess_r (CC.E.j(),nd); if (P) cout << "        root of " << *P << std::endl; }
+				if (nd>30) { auto P = guess (CC.E.j(),nd); if (P) cout << "        root of " << *P << std::endl; }
 				cout << "     g2 coefficient:  " << CC.E.g2() << endl;
-				if (nd>30) { auto P = guess_r (CC.E.g2(),nd); if (P) cout << "        root of " << *P << std::endl; }
+				if (nd>30) { auto P = guess (CC.E.g2(),nd); if (P) cout << "        root of " << *P << std::endl; }
 				cout << "     g3 coefficient:  " << CC.E.g3() << endl;
-				if (nd>30) { auto P = guess_r (CC.E.g3(),nd); if (P) cout << "        root of " << *P << std::endl; }
+				if (nd>30) { auto P = guess (CC.E.g3(),nd); if (P) cout << "        root of " << *P << std::endl; }
 				cout << endl << scientific << setprecision(6);
 			}
 		}
