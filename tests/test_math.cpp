@@ -10,8 +10,6 @@ using namespace vb;
 using namespace std;
 
 int main() {
-    cln::default_float_format = cln::float_format(100);
-
     cpx              ttau(.125, 1.25), qq(q_<double>(ttau)), zz(.25, .75);
     Elliptic<double> EE{qq};
     complex_t        tau = to_cpx<real_t>(1, 10) / 8, q(q_<real_t>(tau)), z = to_cpx<real_t>(1, 3) / 4;

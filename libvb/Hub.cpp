@@ -1,11 +1,9 @@
 #include "gsl/gsl"
-#include <vb/Hub.h>
+#include <vb/mp.h>
 #include <FL/Fl.H>
 #include <FL/Fl_Gl_Window.H>
 #include <boost/algorithm/string.hpp>
-#include <cln/cln.h>
 #include <getopt.h>
-#include <iostream>
 #include <sqlite_modern_cpp.h>
 #include <sys/stat.h>
 #include <vector>
@@ -15,7 +13,8 @@ namespace vb {
         Fl::gl_visual(FL_RGB);
         Fl::use_high_res_GL(1);
 
-        cln::default_float_format = cln::float_format(100);
+        real_t::default_precision(150);
+        complex_t::default_precision(150);
 
         L = spdlog::stderr_color_mt("console");
     }

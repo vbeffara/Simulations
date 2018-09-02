@@ -3,7 +3,6 @@
 #include <iomanip>
 
 using namespace vb;
-using namespace cln;
 using namespace std;
 
 template <typename T> void test(string s) {
