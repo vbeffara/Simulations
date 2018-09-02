@@ -42,7 +42,7 @@ namespace vb {
                 ox = xx;
                 xx -= eval(P, xx) / eval(PP, xx);
             }
-            if (abs(xx - x) < pow(mpf_float(10), 5 - nd)) return P;
+            if (abs(xx - x) < pow(real_t(10), 5 - nd)) return P;
         }
 
         return {};

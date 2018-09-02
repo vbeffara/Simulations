@@ -12,93 +12,198 @@ namespace vb {
         return out;
     }
 
-    template <typename T>
-    Elliptic<T>::Elliptic(cplx q_) : q(std::move(q_)), q14(sqrt(sqrt(q))), eta1_(eta1()), eta1_q_(eta1_q()), e1_(e1()) {}
+    template <typename T> Elliptic<T>::Elliptic(cplx q_) {
+        q       = std::move(q_);
+        q14     = sqrt(sqrt(q));
+        eta1_   = eta1();
+        eta1_q_ = eta1_q();
+        e1_     = e1();
+    }
 
     template <typename T> auto Elliptic<T>::theta1(const cplx & z) const -> cplx {
-        return sum([&](int n) { return cplx(2 * pow(T(-1), n)) * q14 * pow(q, n * (n + 1)) * sin(cplx(2 * n + 1) * z); });
+        return sum([&](int n) {
+            cplx out(2);
+            out *= pow(T(-1), n);
+            out *= q14;
+            out *= pow(q, n * (n + 1));
+            out *= sin(cplx(2 * n + 1) * z);
+            return out;
+        });
     }
 
     template <typename T> auto Elliptic<T>::theta1_z(const cplx & z) const -> cplx {
-        return sum(
-            [&](int n) { return cplx(cplx(2) * pow(cplx(-1), n)) * q14 * pow(q, n * (n + 1)) * T(2 * n + 1) * cos(cplx(2 * n + 1) * z); });
+        return sum([&](int n) {
+            cplx out(2);
+            out *= pow(cplx(-1), n);
+            out *= q14;
+            out *= pow(q, n * (n + 1));
+            out *= T(2 * n + 1);
+            out *= cos(cplx(2 * n + 1) * z);
+            return out;
+        });
     }
 
     template <typename T> auto Elliptic<T>::theta1_q(const cplx & z) const -> cplx {
         return sum([&](int n) {
-            return cplx(cplx(2) * pow(cplx(-1), n)) * (cplx(n) + cplx(.5)) * (cplx(n) + cplx(.5)) * q14 * pow(q, n * (n + 1) - 1) *
-                   sin(cplx(2 * n + 1) * z);
+            cplx out(2);
+            out *= pow(cplx(-1), n);
+            out *= cplx(n) + cplx(1) / cplx(2);
+            out *= cplx(n) + cplx(1) / cplx(2);
+            out *= q14;
+            out *= pow(q, n * (n + 1) - 1);
+            out *= sin(cplx(2 * n + 1) * z);
+            return out;
         });
     }
 
     template <typename T> auto Elliptic<T>::theta1_zq(const cplx & z) const -> cplx {
         return sum([&](int n) {
-            return T(2 * pow(T(-1), n)) * (n + T(1) / 2) * (n + T(1) / 2) * q14 * pow(q, n * (n + 1) - 1) * T(2 * n + 1) *
-                   cos(cplx(2 * n + 1) * z);
+            cplx out(2);
+            out *= pow(T(-1), n);
+            out *= (n + T(1) / T(2));
+            out *= (n + T(1) / T(2));
+            out *= q14;
+            out *= pow(q, n * (n + 1) - 1);
+            out *= T(2 * n + 1);
+            out *= cos(cplx(2 * n + 1) * z);
+            return out;
         });
     }
 
     template <typename T> auto Elliptic<T>::theta1_zz(const cplx & z) const -> cplx {
-        return sum([&](int n) { return cplx(-2) * q14 * pow(q, n * (n + 1)) * pow(cplx(2 * n + 1), 2) * sin(cplx(2 * n + 1) * z); });
+        return sum([&](int n) {
+            cplx out(-2);
+            out *= q14;
+            out *= pow(q, n * (n + 1));
+            out *= pow(cplx(2 * n + 1), 2);
+            out *= sin(cplx(2 * n + 1) * z);
+            return out;
+        });
     }
 
     template <typename T> auto Elliptic<T>::theta1_zzq(const cplx & z) const -> cplx {
         return sum([&](int n) {
-            return -T(2 * pow(T(-1), n)) * (n + T(1) / 2) * (n + T(1) / 2) * q14 * pow(q, n * (n + 1) - 1) * pow(T(2 * n + 1), 2) *
-                   sin(cplx(2 * n + 1) * z);
+            cplx out(-2);
+            out *= pow(T(-1), n);
+            out *= (n + T(1) / T(2));
+            out *= (n + T(1) / T(2));
+            out *= q14;
+            out *= pow(q, n * (n + 1) - 1);
+            out *= pow(T(2 * n + 1), 2);
+            out *= sin(cplx(2 * n + 1) * z);
+            return out;
         });
     }
 
     template <typename T> auto Elliptic<T>::theta1_zzz(const cplx & z) const -> cplx {
         return sum([&](int n) {
-            return -cplx(cplx(2) * pow(cplx(-1), n)) * q14 * pow(q, n * (n + 1)) * pow(cplx(2 * n + 1), 3) * cos(cplx(2 * n + 1) * z);
+            cplx out(-2);
+            out *= pow(cplx(-1), n);
+            out *= q14;
+            out *= pow(q, n * (n + 1));
+            out *= pow(cplx(2 * n + 1), 3);
+            out *= cos(cplx(2 * n + 1) * z);
+            return out;
         });
     }
 
     template <typename T> auto Elliptic<T>::theta1_zzzq(const cplx & z) const -> cplx {
         return sum([&](int n) {
-            return -cplx(2 * pow(T(-1), n)) * (cplx(n) + cplx(.5)) * (cplx(n) + cplx(.5)) * q14 * pow(q, n * (n + 1) - 1) *
-                   pow(cplx(2 * n + 1), 3) * cos(cplx(2 * n + 1) * z);
+            cplx out(-2);
+            out *= pow(T(-1), n);
+            out *= cplx(n) + cplx(1) / cplx(2);
+            out *= cplx(n) + cplx(1) / cplx(2);
+            out *= q14;
+            out *= pow(q, n * (n + 1) - 1);
+            out *= pow(cplx(2 * n + 1), 3);
+            out *= cos(cplx(2 * n + 1) * z);
+            return out;
         });
     }
 
     template <typename T> auto Elliptic<T>::theta2(const cplx & z) const -> cplx {
-        return sum([&](int n) { return cplx(2) * q14 * pow(q, n * (n + 1)) * cos(cplx(2 * n + 1) * z); });
+        return sum([&](int n) {
+            cplx out(2);
+            out *= q14;
+            out *= pow(q, n * (n + 1));
+            out *= cos(cplx(2 * n + 1) * z);
+            return out;
+        });
     }
 
     template <typename T> auto Elliptic<T>::theta2_z(const cplx & z) const -> cplx {
-        return sum([&](int n) { return -cplx(2) * q14 * pow(q, n * (n + 1)) * cplx(2 * n + 1) * sin(cplx(2 * n + 1) * z); });
+        return sum([&](int n) {
+            cplx out(-2);
+            out *= q14;
+            out *= pow(q, n * (n + 1));
+            out *= cplx(2 * n + 1);
+            out *= sin(cplx(2 * n + 1) * z);
+            return out;
+        });
     }
 
     template <typename T> auto Elliptic<T>::theta2_q(const cplx & z) const -> cplx {
         return sum([&](int n) {
-            return cplx(2) * (cplx(n) + cplx(.5)) * (cplx(n) + cplx(.5)) * q14 * pow(q, n * (n + 1) - 1) * cos(cplx(2 * n + 1) * z);
+            cplx out(2);
+            out *= cplx(n) + cplx(1) / cplx(2);
+            out *= cplx(n) + cplx(1) / cplx(2);
+            out *= q14;
+            out *= pow(q, n * (n + 1) - 1);
+            out *= cos(cplx(2 * n + 1) * z);
+            return out;
         });
     }
 
     template <typename T> auto Elliptic<T>::theta3(const cplx & z) const -> cplx {
-        return sum([&](int n) { return cplx(n == 0 ? 1 : 2) * pow(q, n * n) * cos(cplx(2 * n) * z); });
+        return sum([&](int n) {
+            cplx out(n == 0 ? 1 : 2);
+            out *= pow(q, n * n);
+            out *= cos(cplx(2 * n) * z);
+            return out;
+        });
     }
 
     template <typename T> auto Elliptic<T>::theta3_q(const cplx & z) const -> cplx {
-        return sum([&](int n) { return cplx(2) * cplx((n + 1) * (n + 1)) * pow(q, n * (n + 2)) * cos(cplx(2 * n + 2) * z); });
+        return sum([&](int n) {
+            cplx out(2);
+            out *= cplx((n + 1) * (n + 1));
+            out *= pow(q, n * (n + 2));
+            out *= cos(cplx(2 * n + 2) * z);
+            return out;
+        });
     }
 
     template <typename T> auto Elliptic<T>::theta4(const cplx & z) const -> cplx {
-        return sum([&](int n) { return T(n == 0 ? 1 : 2) * pow(-q, n * n) * cos(T(2 * n) * z); });
+        return sum([&](int n) {
+            cplx out(n == 0 ? 1 : 2);
+            out *= pow(-q, n * n);
+            out *= cos(T(2 * n) * z);
+            return out;
+        });
     }
 
     template <typename T> auto Elliptic<T>::theta4_q(const cplx & z) const -> cplx {
-        return sum([&](int n) { return -T(2) * T((n + 1) * (n + 1)) * pow(-q, n * (n + 2)) * cos(T(2 * n + 2) * z); });
+        return sum([&](int n) {
+            cplx out(-2);
+            out *= T((n + 1) * (n + 1));
+            out *= pow(-q, n * (n + 2));
+            out *= cos(T(2 * n + 2) * z);
+            return out;
+        });
     }
 
     template <typename T> auto Elliptic<T>::eta1() const -> cplx {
-        return -pi_<T>() * pi_<T>() / T(6) * theta1_zzz(cplx(0)) / theta1_z(cplx(0));
+        cplx out = -pi_<T>() * pi_<T>() / T(6);
+        out *= theta1_zzz(cplx(0));
+        out /= theta1_z(cplx(0));
+        return out;
     }
 
     template <typename T> auto Elliptic<T>::eta1_q() const -> cplx {
-        return -pi_<T>() * pi_<T>() / T(6) * (theta1_z(cplx(0)) * theta1_zzzq(cplx(0)) - theta1_zzz(cplx(0)) * theta1_zq(cplx(0))) /
-               pow(theta1_z(cplx(0)), 2);
+        cplx out = -pi_<T>() * pi_<T>() / T(6);
+        out *= theta1_z(cplx(0)) * theta1_zzzq(cplx(0)) - theta1_zzz(cplx(0)) * theta1_zq(cplx(0));
+        out /= pow(theta1_z(cplx(0)), 2);
+        return out;
     }
 
     template <typename T> auto Elliptic<T>::sigma(const cplx & z) const -> cplx {
@@ -112,12 +217,17 @@ namespace vb {
     }
 
     template <typename T> auto Elliptic<T>::e1() const -> cplx {
-        return pi_<cplx>() * pi_<cplx>() * (pow(theta2(cplx(0)), 4) + cplx(2) * pow(theta4(cplx(0)), 4)) / cplx(3);
+        cplx out = pi_<T>() * pi_<T>();
+        out *= (pow(theta2(cplx(0)), 4) + cplx(2) * pow(theta4(cplx(0)), 4));
+        out /= cplx(3);
+        return out;
     }
 
     template <typename T> auto Elliptic<T>::e1_q() const -> cplx {
-        return pi_<cplx>() * pi_<cplx>() *
-               (cplx(4) * theta2_q(cplx(0)) * pow(theta2(cplx(0)), 3) + cplx(8) * theta4_q(cplx(0)) * pow(theta4(cplx(0)), 3)) / cplx(3);
+        cplx out = pi_<T>() * pi_<T>();
+        out *= (cplx(4) * theta2_q(cplx(0)) * pow(theta2(cplx(0)), 3) + cplx(8) * theta4_q(cplx(0)) * pow(theta4(cplx(0)), 3));
+        out /= cplx(3);
+        return out;
     }
 
     template <typename T> auto Elliptic<T>::zeta(const cplx & z) const -> cplx {

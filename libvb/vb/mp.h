@@ -21,8 +21,8 @@ namespace vb {
     using boost::multiprecision::mpfr_float;
     using boost::multiprecision::mpz_int;
 
-    using real_t    = mpfr_float;
     using complex_t = mpc_complex;
+    using real_t    = mpfr_float;
 
     template <> class cpx_t<real_t> {
     public:
@@ -49,16 +49,12 @@ namespace vb {
     template <> complex_t to_cpx<real_t>(const real_t & x, const real_t & y);
 } // namespace vb
 
-namespace boost::multiprecision {
-    template <> struct scalar_result_from_possible_complex<mpc_complex> { typedef mpfr_float type; };
-} // namespace boost::multiprecision
-
 namespace Eigen {
-    template <> struct NumTraits<vb::mpc_complex> : GenericNumTraits<vb::mpc_complex> {
-        using Real       = vb::mpfr_float;
-        using NonInteger = vb::mpc_complex;
-        using Literal    = vb::mpc_complex;
-        using Nested     = vb::mpc_complex;
+    template <> struct NumTraits<vb::complex_t> : GenericNumTraits<vb::complex_t> {
+        using Real       = vb::real_t;
+        using NonInteger = vb::complex_t;
+        using Literal    = vb::complex_t;
+        using Nested     = vb::complex_t;
 
         static inline Real epsilon() { return 0; }
         static inline int  dummy_precision() { return 0; }

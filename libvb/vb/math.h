@@ -1,5 +1,6 @@
 #pragma once
 #include <vb/cpx.h>
+#include <boost/math/constants/constants.hpp>
 #include <functional>
 
 namespace vb {
@@ -34,10 +35,8 @@ namespace vb {
     template <typename T> T binom(T n, T k) { return fact(n) / fact(k) / fact(n - k); }
     template <typename T> T catalan(T n) { return binom(2 * n, n) / (n + 1); }
 
-    template <typename T> T pi_() {
-        static T pi = T(4) * atan(T(1));
-        return pi;
-    }
+    using boost::math::constants::pi;
+    template <typename T> T pi_() { return boost::math::constants::pi<T>(); }
 
     template <typename T> typename cpx_t<T>::type I_() { return to_cpx<T>(0, 1); }
 
