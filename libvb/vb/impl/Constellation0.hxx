@@ -267,7 +267,7 @@ namespace vb {
         for (auto zd : C.b)
             for (int j = 0; j < zd.d; ++j) add_root(P, zd.z);
         for (auto & x : P.data()) {
-            auto xx = cln::complex(round1(realpart(x)), round1(imagpart(x)));
+            auto xx = complex_t(round(real(x)), round(imag(x)));
             if (abs(x - xx) < pow(T(.1), nd)) x = xx;
         }
         os << "P[z_] := " << P << std::endl;
@@ -275,7 +275,7 @@ namespace vb {
         for (auto zd : C.f)
             for (int j = 0; j < zd.d; ++j) add_root(Q, zd.z);
         for (auto & x : Q.data()) {
-            auto xx = cln::complex(round1(realpart(x)), round1(imagpart(x)));
+            auto xx = complex_t(round(real(x)), round(imag(x)));
             if (abs(x - xx) < pow(T(.1), nd)) x = xx;
         }
         os << "Q[z_] := " << Q << std::endl;
@@ -367,7 +367,7 @@ namespace vb {
         for (int i = 0; i < Z.size(); ++i) {
             for (int j = 0; j < hands[i].size(); ++j) {
                 auto l       = hands[i][j];
-                auto r       = Z[i].z + exp(to_cpx<T>(0, -2 * M_PI / (10 * Z[i].d))) * (l - Z[i].z);
+                cplx r       = Z[i].z + exp(to_cpx<T>(0, -2 * M_PI / (10 * Z[i].d))) * (l - Z[i].z);
                 auto sl      = imag((*this)(l));
                 bool looking = true;
                 while (looking) {

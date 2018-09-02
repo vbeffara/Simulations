@@ -4,6 +4,8 @@
 #include <boost/multiprecision/mpc.hpp>
 #include <boost/multiprecision/mpfr.hpp>
 #include <cln/cln.h>
+#undef Success
+#include <Eigen/Dense>
 
 namespace cln {
     inline cl_R norm(const cl_N & z) { return realpart(z) * realpart(z) + imagpart(z) * imagpart(z); }
@@ -19,7 +21,7 @@ namespace vb {
     using boost::multiprecision::mpfr_float;
     using boost::multiprecision::mpz_int;
 
-    using real_t    = mpf_float;
+    using real_t    = mpfr_float;
     using complex_t = mpc_complex;
 
     template <> class cpx_t<real_t> {
@@ -50,3 +52,22 @@ namespace vb {
 namespace boost::multiprecision {
     template <> struct scalar_result_from_possible_complex<mpc_complex> { typedef mpfr_float type; };
 } // namespace boost::multiprecision
+
+namespace Eigen {
+    template <> struct NumTraits<vb::mpc_complex> : GenericNumTraits<vb::mpc_complex> {
+        using Real       = vb::mpfr_float;
+        using NonInteger = vb::mpc_complex;
+        using Literal    = vb::mpc_complex;
+        using Nested     = vb::mpc_complex;
+
+        static inline Real epsilon() { return 0; }
+        static inline int  dummy_precision() { return 0; }
+        static inline int  digits10() { return 0; }
+
+        enum {
+            IsInteger = 0,
+            IsSigned  = 1,
+            IsComplex = 1,
+        };
+    };
+} // namespace Eigen

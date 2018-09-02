@@ -1,6 +1,4 @@
 #include <vb/mp.h>
-#include <boost/multiprecision/gmp.hpp>
-#include <boost/multiprecision/mpfr.hpp>
 
 using namespace vb;
 using namespace std;

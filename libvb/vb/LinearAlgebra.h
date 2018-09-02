@@ -11,15 +11,15 @@ namespace vb {
 } // namespace vb
 
 #ifdef UNIT_TESTS
-#include <vb/mp.h>
+#include <vb/mp.h> // nograph
 using namespace vb;
 TEST_CASE("Linear Algebra wrapper") {
-    Matrix<mpf_float> m(3, 3);
+    Matrix<mpfr_float> m(3, 3);
     for (int i = 0; i < 3; ++i)
         for (int j = 0; j < 3; ++j) m(i, j) = pow(2 * i + 1, j);
-    Vector<mpf_float> v(3);
+    Vector<mpfr_float> v(3);
     for (int i = 0; i < 3; ++i) v(i) = 3 * i - 2;
-    Vector<mpf_float> x(3);
+    Vector<mpfr_float> x(3);
     x << -3.5, 1.5, 0;
     CHECK((solve(m, v) - x).squaredNorm() < 1e-50);
 }
