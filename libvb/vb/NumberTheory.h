@@ -30,12 +30,14 @@ namespace vb {
             }
 
             Polynomial<mpz_int> P(begin(V), end(V));
+            if (P.degree() == 0) continue;
             if (V[d] < 0) P = -P;
             auto PP = derivative(P);
 
             T xx = x, ox = x + 1, er = 2;
             while (real(abs(xx - ox)) < real(er)) {
                 er = abs(xx - ox);
+                if (real(er) < pow(real_t(10), -5 * nd)) er = 0;
                 ox = xx;
                 xx -= eval(P, xx) / eval(PP, xx);
             }

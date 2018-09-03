@@ -243,21 +243,21 @@ namespace vb {
         for (auto & zd : C.b) {
             os << "| " << zd.d << "\t" << zd.z << std::endl;
             auto P = guess(zd.z, nd);
-            if (P) os << "|\t\troot of " << *P << std::endl;
+            if (P) os << "|\t\troot of " << format(*P) << std::endl;
         }
         os << std::endl;
         os << "White vertices / ones: " << std::endl;
         for (auto & zd : C.w) {
             os << "| " << zd.d << "\t" << zd.z << std::endl;
             auto P = guess(zd.z, nd);
-            if (P) os << "|\t\troot of " << *P << std::endl;
+            if (P) os << "|\t\troot of " << format(*P) << std::endl;
         }
         os << std::endl;
         os << "Red vertices / poles: " << std::endl;
         for (auto & zd : C.f) {
             os << "| " << zd.d << "\t" << zd.z << std::endl;
             auto P = guess(zd.z, nd);
-            if (P) os << "|\t\troot of " << *P << std::endl;
+            if (P) os << "|\t\troot of " << format(*P) << std::endl;
         }
         os << std::endl;
         os << u8"λ     := " << C.p[0] << std::endl;
