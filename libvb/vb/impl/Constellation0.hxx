@@ -236,33 +236,32 @@ namespace vb {
         T   lerr(-log10(err));
         int nd = std::max(5, to_int(lerr) / 2 - 10);
         if (err == T(0)) nd = 10;
-        os << std::setprecision(nd) << std::fixed;
+        os << std::setprecision(10) << std::fixed;
         os << "Keeping " << nd << " digits." << std::endl << std::endl;
 
         os << "Black vertices / zeros: " << std::endl;
         for (auto & zd : C.b) {
-            os << "| " << zd.d << "\t" << zd.z << std::endl;
-            auto P = guess(zd.z, nd);
-            if (P) os << "|\t\troot of " << format(*P) << std::endl;
+            os << "| " << zd.d << "\t" << zd.z;
+            if (auto P = guess(zd.z, nd)) os << "\troot of " << format(*P);
+            os << std::endl;
         }
         os << std::endl;
         os << "White vertices / ones: " << std::endl;
         for (auto & zd : C.w) {
-            os << "| " << zd.d << "\t" << zd.z << std::endl;
-            auto P = guess(zd.z, nd);
-            if (P) os << "|\t\troot of " << format(*P) << std::endl;
+            os << "| " << zd.d << "\t" << zd.z;
+            if (auto P = guess(zd.z, nd)) os << "\troot of " << format(*P);
+            os << std::endl;
         }
         os << std::endl;
         os << "Red vertices / poles: " << std::endl;
         for (auto & zd : C.f) {
-            os << "| " << zd.d << "\t" << zd.z << std::endl;
-            auto P = guess(zd.z, nd);
-            if (P) os << "|\t\troot of " << format(*P) << std::endl;
+            os << "| " << zd.d << "\t" << zd.z;
+            if (auto P = guess(zd.z, nd)) os << "\troot of " << format(*P);
+            os << std::endl;
         }
         os << std::endl;
         os << u8"λ     := " << C.p[0] << std::endl;
-        auto L = guess(C.p[0], nd);
-        if (L) os << u8"Λ[z_] := " << *L << std::endl;
+        if (auto L = guess(C.p[0], nd)) os << u8"Λ[z_] := " << format(*L) << std::endl;
         Polynomial<complex_t> P{{1}};
         for (auto zd : C.b)
             for (int j = 0; j < zd.d; ++j) add_root(P, zd.z);
@@ -270,7 +269,7 @@ namespace vb {
             auto xx = complex_t(round(real(x)), round(imag(x)));
             if (abs(x - xx) < pow(T(.1), nd)) x = xx;
         }
-        os << "P[z_] := " << P << std::endl;
+        os << "P[z_] := " << format(P) << std::endl;
         Polynomial<complex_t> Q{{1}};
         for (auto zd : C.f)
             for (int j = 0; j < zd.d; ++j) add_root(Q, zd.z);
@@ -278,7 +277,7 @@ namespace vb {
             auto xx = complex_t(round(real(x)), round(imag(x)));
             if (abs(x - xx) < pow(T(.1), nd)) x = xx;
         }
-        os << "Q[z_] := " << Q << std::endl;
+        os << "Q[z_] := " << format(Q) << std::endl;
         return os;
     }
 
