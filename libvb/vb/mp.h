@@ -1,5 +1,5 @@
 #pragma once
-#include <vb/cpx.h>
+#include <vb/math.h>
 #include <boost/multiprecision/gmp.hpp>
 #include <boost/multiprecision/mpc.hpp>
 #include <boost/multiprecision/mpfr.hpp>
@@ -23,6 +23,8 @@ namespace vb {
     template <typename T> int to_int(const T & z) { return int(z); }
 
     template <> complex_t to_cpx<real_t>(const real_t & x, const real_t & y);
+    template <> real_t    sum<real_t>(const std::function<real_t(int)> & f);
+    template <> complex_t sum<complex_t>(const std::function<complex_t(int)> & f);
 } // namespace vb
 
 namespace Eigen {

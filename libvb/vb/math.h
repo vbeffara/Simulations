@@ -4,11 +4,12 @@
 #include <functional>
 
 namespace vb {
-    template <typename T> T sum(std::function<T(int)> f) {
+    template <typename T> T sum(const std::function<T(int)> & f) {
         T out(0), old(1);
         for (int n = 0; out != old; ++n) {
-            old = out;
-            out += f(n);
+            old  = out;
+            T dd = f(n);
+            if (isnormal(real(dd))) out += dd;
         }
         return out;
     }
@@ -60,11 +61,11 @@ namespace vb {
 
         CHECK(abs(q_<double>(cpx(1.0 + 1e-5)) - q_<double>(cpx(1.0)) - 1e-5 * q_t<double>(cpx(1.0))) < 1e-9);
 
-        auto e = sum<double>([](int n) {
+        auto e = sum<cpx>([](int n) {
             auto out = 1.0 / fact(n);
             return std::isinf(out) ? 0 : out;
         });
-        CHECK(abs(log(e) - 1) < 1e-6);
+        CHECK(abs(log(abs(e)) - 1) < 1e-6);
     }
 #endif
 

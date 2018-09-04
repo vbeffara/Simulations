@@ -13,8 +13,8 @@ namespace vb {
         Fl::gl_visual(FL_RGB);
         Fl::use_high_res_GL(1);
 
-        real_t::default_precision(150);
-        complex_t::default_precision(150);
+        real_t::default_precision(100);
+        complex_t::default_precision(100);
 
         L = spdlog::stderr_color_mt("console");
     }

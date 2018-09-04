@@ -4,7 +4,7 @@
 using namespace vb;
 using namespace std;
 
-void out(real_t x) { std::cerr << setprecision(x.backend().precision()) << fixed << x << "[" << x.backend().precision() << "]\n"; }
+void out(real_t x) { std::cerr << setprecision(x.backend().precision()) << x << "[" << x.backend().precision() << "]\n"; }
 
 void out2(std::string s, cpx z, complex_t zz) {
     H.L->info("{} : {} and {}", s, z, zz);
@@ -13,9 +13,6 @@ void out2(std::string s, cpx z, complex_t zz) {
 }
 
 int main() {
-    real_t::default_precision(150);
-    complex_t::default_precision(150);
-
     cpx       ttau(.125, 1.25);
     complex_t tau = complex_t(1, 10) / 8;
     out2("Tau", ttau, tau);
