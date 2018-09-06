@@ -53,6 +53,7 @@ file (GLOB vb_sources ${PROJECT_SOURCE_DIR}/libvb/*.cpp)
 add_library (vb SHARED ${vb_sources})
 target_link_libraries (vb ${EXT_LIBRARIES} ${CONAN_LIBS})
 
+include(CheckIncludeFileCXX)
 check_include_file_cxx("mpc.h" MPC)
 if (${MPC})
 	target_link_libraries (vb "mpc")

@@ -7,7 +7,7 @@
 namespace vb {
     template <typename T> using Polynomial = boost::math::tools::polynomial<T>;
 
-    template <typename T> void add_root(Polynomial<T> & P, const T & x) { P *= Polynomial<T>{{-x, T{1}}}; }
+    template <typename T> void add_root(Polynomial<T> & P, const T & x) { P *= Polynomial<T>{-x, 1}; }
 
     template <typename T, typename V> V eval(const Polynomial<T> & P, const V & x) {
         if (P.size() == 0) return 0;
