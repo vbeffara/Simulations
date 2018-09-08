@@ -30,4 +30,6 @@ namespace vb {
         }
         return x;
     }
+
+    template <typename T> std::string pretty(const T & t) { return fmt::format("{}", t); }
 } // namespace vb

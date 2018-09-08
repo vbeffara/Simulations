@@ -22,9 +22,11 @@ namespace vb {
 
     template <typename T> int to_int(const T & z) { return int(z); }
 
-    template <> complex_t to_cpx<real_t>(const real_t & x, const real_t & y);
-    template <> real_t    sum<real_t>(const std::function<real_t(int)> & f);
-    template <> complex_t sum<complex_t>(const std::function<complex_t(int)> & f);
+    template <> complex_t   to_cpx<real_t>(const real_t & x, const real_t & y);
+    template <> real_t      sum<real_t>(const std::function<real_t(int)> & f);
+    template <> complex_t   sum<complex_t>(const std::function<complex_t(int)> & f);
+    template <> std::string pretty<real_t>(const real_t & t);
+    template <> std::string pretty<complex_t>(const complex_t & t);
 } // namespace vb
 
 namespace Eigen {

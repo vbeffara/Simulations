@@ -2,17 +2,14 @@
 #include <vb/Constellation0.h>
 
 using namespace vb;
-using namespace std;
 
 int main(int argc, char ** argv) {
     H.init("Hypermap of genus 0", argc, argv, "m=228,v,q,g=m_cube,p,a,f=0,s=0,u=0,d=1,D=0,o");
 
     auto M = HLib().at(H['g']);
-    int  u = H['u'];
-    if (u != 0) M = H_genus0(u);
-    int f = H['f'];
-    if (f != 0) {
-        if (int(H['s']) != 0) prng.seed(int(H['s']));
+    if (int u = H['u']; u != 0) M = H_genus0(u);
+    if (int f = H['f']; f != 0) {
+        if (int s = (H['s']); s != 0) prng.seed(s);
         int  d = H['d'], D = H['D'];
         bool bad = true;
         while (bad) {
@@ -25,14 +22,15 @@ int main(int argc, char ** argv) {
             }
         }
     }
-    cout << M << endl;
+    std::cout << M;
 
     Constellation0<double> C{M, H};
+    C.belyi();
+    if (!H['q']) std::cout << std::endl << C;
 
     if (H['v']) {
-        C.belyi();
-        auto     bd = C.bounds();
-        Coloring CC(bd.first, bd.second, 800, [&](cpx z) { return HSV((imag(C(z)) > 0) ? 0 : .5, .8, .8); });
+        auto [ul, br] = C.bounds();
+        Coloring CC(ul, br, 800, [&](cpx z) { return Indexed(imag(C(z)) > 0 ? 1 : 2); });
         CC.scale(1.5);
         CC.show();
         if (H['o']) CC.output();
@@ -42,14 +40,9 @@ int main(int argc, char ** argv) {
         }
     }
 
-    if (!H['q']) {
-        C.belyi();
-        cout << endl << C;
-        return 0;
-    }
-
+    if (!H['q']) return 0;
     Constellation0<real_t> Cq(C);
     Cq.findn();
     Cq.belyi();
-    cout << endl << Cq;
+    std::cout << std::endl << Cq;
 }

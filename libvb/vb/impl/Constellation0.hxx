@@ -235,21 +235,21 @@ namespace vb {
 
         os << "Black vertices / zeros: " << std::endl;
         for (auto & zd : C.b) {
-            os << "| " << zd.d << "\t" << zd.z;
+            os << "| " << zd.d << "\t" << fmt::format("{:<30}", pretty(zd.z));
             if (auto P = guess(zd.z, nd)) os << "\troot of " << format(*P);
             os << std::endl;
         }
         os << std::endl;
         os << "White vertices / ones: " << std::endl;
         for (auto & zd : C.w) {
-            os << "| " << zd.d << "\t" << zd.z;
+            os << "| " << zd.d << "\t" << fmt::format("{:<30}", pretty(zd.z));
             if (auto P = guess(zd.z, nd)) os << "\troot of " << format(*P);
             os << std::endl;
         }
         os << std::endl;
         os << "Red vertices / poles: " << std::endl;
         for (auto & zd : C.f) {
-            os << "| " << zd.d << "\t" << zd.z;
+            os << "| " << zd.d << "\t" << fmt::format("{:<30}", pretty(zd.z));
             if (auto P = guess(zd.z, nd)) os << "\troot of " << format(*P);
             os << std::endl;
         }
