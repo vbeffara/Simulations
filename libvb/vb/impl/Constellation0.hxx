@@ -58,13 +58,12 @@ namespace vb {
 
     template <typename T> void Constellation0<T>::normalize() {
         p[0] = cplx(1);
-        cplx avg(0);
-        int  d = 0;
+        cplx avg(0), d(0);
         for (auto zd : w) {
             d += zd.d;
             avg += (*this)(zd.z) * cplx(zd.d);
         }
-        p[0] = cplx(d) / avg;
+        p[0] = d / avg;
     }
 
     template <typename T> void Constellation0<T>::linear(cplx u, cplx v) {
@@ -95,21 +94,15 @@ namespace vb {
     }
 
     template <typename T> void Constellation0<T>::make_p_1() {
-        using std::real;
-        T eps = real(pow(cost(), T(.25)));
+        T eps = real(pow(cost(), T(.5)));
         if (eps > T(.1)) eps = T(.1);
-        Polynomial<cplx> P{{1}};
-        for (auto zd : b)
-            for (int j = 0; j < zd.d; ++j) add_root(P, zd.z);
-        Polynomial<cplx> Q{{1}};
-        for (auto zd : f)
-            for (int j = 0; j < zd.d; ++j) add_root(Q, zd.z);
-        int i = 0;
+        Polynomial<cplx> P{1}, Q{1};
+        for (auto zd : b) add_root(P, zd.z, zd.d);
+        for (auto zd : f) add_root(Q, zd.z, zd.d);
+        int i = 0, j = 0;
         while (norm(P[i]) < eps) ++i;
-        int j = 0;
         while (norm(Q[j]) < eps) ++j;
         bool is_P;
-        cplx l(1);
 
         if (Q.degree() == 0)
             is_P = true;
@@ -118,9 +111,10 @@ namespace vb {
         else
             is_P = (i < j);
 
+        cplx l(1);
         if ((is_P) && (i < P.degree())) l = pow(P[i], cplx(T(1) / T(P.degree() - i)));
         if ((!is_P) && (j < Q.degree())) l = pow(Q[j], cplx(T(1) / T(Q.degree() - j)));
-        if ((l != cplx(0.0)) && (norm(l) > eps)) {
+        if ((l != cplx(0)) && (norm(l) > eps)) {
             linear(T(1) / l);
             normalize();
         }
@@ -222,11 +216,11 @@ namespace vb {
         Polynomial<typename cpx_t<T>::type> P{{1}};
         for (auto zd : C.b)
             for (int j = 0; j < zd.d; ++j) add_root(P, zd.z);
-        os << "P[z_] := " << P << std::endl;
+        os << "P[z_] := " << format(P) << std::endl;
         Polynomial<typename cpx_t<T>::type> Q{{1}};
         for (auto zd : C.f)
             for (int j = 0; j < zd.d; ++j) add_root(Q, zd.z);
-        os << "Q[z_] := " << Q << std::endl;
+        os << "Q[z_] := " << format(Q) << std::endl;
         return os;
     }
 
