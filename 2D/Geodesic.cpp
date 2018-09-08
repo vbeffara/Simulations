@@ -81,7 +81,7 @@ public:
         for (int i = 0; i < ww; ++i) sinarrayi[i] = sin(M_PI * i / ww);
         for (int j = 0; j < hh; ++j) sinarrayj[j] = sin(M_PI * j / hh);
 
-        for (auto [i, j] : coos(*this)) {
+        for (const auto [i, j] : coos(*this)) {
             if ((i == 0) && (j == 0)) continue;
             double norm       = sqrt(ww * hh * (sinarrayi[i] * sinarrayi[i] + sinarrayj[j] * sinarrayj[j]));
             auto   fij        = cpx(prng.gaussian(), prng.gaussian()) * sqrt(M_PI / 2) / norm;
@@ -107,7 +107,7 @@ public:
         auto p1 = fftw_plan_dft_2d(ww, hh, d, d, FFTW_FORWARD, FFTW_ESTIMATE);
         auto p2 = fftw_plan_dft_2d(ww, hh, d, d, FFTW_BACKWARD, FFTW_ESTIMATE);
 
-        for (auto [i, j] : coos(*this)) {
+        for (const auto [i, j] : coos(*this)) {
             auto ii = min(i, ww - i), jj = min(j, hh - j);
             d[i + ww * j][0] = d[i + ww * j][1] = f(sqrt(ii * ii + jj * jj) / l);
         }

@@ -6,7 +6,7 @@ using namespace std;
 
 void out(real_t x) { std::cerr << setprecision(x.backend().precision()) << x << "[" << x.backend().precision() << "]\n"; }
 
-void out2(std::string s, cpx z, complex_t zz) {
+void out2(const std::string & s, cpx z, const complex_t & zz) {
     H.L->info("{} : {} and {}", s, z, zz);
     out(real(zz));
     out(imag(zz));
