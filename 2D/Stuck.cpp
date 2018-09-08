@@ -26,7 +26,7 @@ class Stuck : public Bitmap<Stat> {
 public:
     explicit Stuck(const Hub & H) : Bitmap<Stat>(2 * int(H['n']), 2 * int(H['n'])), alpha(H['a']), beta(H['b']) {
         for (int i = 0; i < w() / 2; ++i)
-            for (int j = 0; j < h() / 2; ++j) at(coo(2 * i, 2 * j)) = Stat{-1};
+            for (int j = 0; j < h() / 2; ++j) at({2 * i, 2 * j}) = Stat{-1};
         z = {w() / 2, h() / 2};
         C.manage(alpha, 0.142, 0.35, "alpha");
         C.lambda<int>([this]() { return nsup(); }, "Support");
@@ -39,18 +39,18 @@ public:
     }
 
     void center() {
-        coo c(0, 0);
+        coo c{0, 0};
         for (int x = 0; x < w(); ++x)
             for (int y = 0; y < h(); ++y)
-                if (at(coo(x, y)).s == Stat::max) c = {x - w() / 2, y - h() / 2};
+                if (at({x, y}).s == Stat::max) c = {x - w() / 2, y - h() / 2};
         c.x -= c.x % 2;
         c.y -= c.y % 2;
-        if (c != coo(0, 0)) {
+        if (c != coo{0, 0}) {
             static Array<Stat> & me  = *this;
             static Array<Stat>   tmp = me;
             for (int x = 0; x < w(); ++x)
                 for (int y = 0; y < h(); ++y) {
-                    coo z(x, y);
+                    coo z{x, y};
                     tmp.at(z) = atp(z + c);
                 }
             me = tmp;
@@ -78,7 +78,7 @@ public:
         }
         if (H['o'])
             for (int x = 0; x < w(); x += 2) {
-                for (int y = 1; y < h(); y += 2) cout << x << " " << y << " " << at(coo(x, y)).s << endl;
+                for (int y = 1; y < h(); y += 2) cout << x << " " << y << " " << at({x, y}).s << endl;
                 cout << endl;
             }
     }
@@ -100,7 +100,7 @@ public:
     }
 
     double  alpha, beta;
-    coo     z;
+    coo     z = {0, 0};
     Console C;
 };
 

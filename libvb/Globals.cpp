@@ -7,6 +7,6 @@
 namespace vb {
     std::vector<Task> Auto::tasks;
 
-    const std::vector<coo>  dz  = {coo(1, 0), coo(0, 1), coo(-1, 0), coo(0, -1), coo(1, 1), coo(-1, -1), coo(-1, 1), coo(1, -1)};
+    const std::vector<coo>  dz  = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}, {1, 1}, {-1, -1}, {-1, 1}, {1, -1}};
     const std::vector<coo3> dz3 = {coo3(1, 0, 0), coo3(-1, 0, 0), coo3(0, 1, 0), coo3(0, -1, 0), coo3(0, 0, 1), coo3(0, 0, -1)};
 } // namespace vb

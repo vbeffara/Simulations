@@ -7,12 +7,16 @@ using namespace std;
 void out(real_t x) { std::cerr << setprecision(x.backend().precision()) << x << "[" << x.backend().precision() << "]\n"; }
 
 void out2(const std::string & s, cpx z, const complex_t & zz) {
-    H.L->info("{} : {} and {}", s, z, zz);
+    H.L->info("{} : {} and {}", s, pretty(z), pretty(zz));
     out(real(zz));
     out(imag(zz));
 }
 
-int main() {
+int main(int argc, char ** argv) {
+    H.init("Tests for elliptic functions", argc, argv, "n=100");
+    real_t::default_precision(H['n']);
+    complex_t::default_precision(H['n']);
+
     cpx       ttau(.125, 1.25);
     complex_t tau = complex_t(1, 10) / 8;
     out2("Tau", ttau, tau);

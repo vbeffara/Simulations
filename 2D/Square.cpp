@@ -23,7 +23,7 @@ public:
 
     void step(const vb::Array<double> & o) {
         int    r  = 0;
-        double oo = o.at(vb::coo(xi(), yi()));
+        double oo = o.at({xi(), yi()});
 
         if (yf() == 1) {
             r    = 1;
@@ -114,7 +114,7 @@ public:
     pt geodesique(pt p, std::ostream * os = nullptr) const {
         std::set<pt> S;
         while (true) {
-            if (!contains(vb::coo(p.xi(), p.yi()))) { break; }
+            if (!contains({p.xi(), p.yi()})) { break; }
             if (os != nullptr) { (*os) << p; }
             p.step(*this);
             if (S.count(p) != 0) { break; }
@@ -122,7 +122,7 @@ public:
         }
         if (os != nullptr) { (*os) << std::endl; }
 
-        if (!contains(vb::coo(p.xi(), p.yi()))) { return pt(); }
+        if (!contains({p.xi(), p.yi()})) { return pt(); }
 
         pt p_min = p;
         p.step(*this);

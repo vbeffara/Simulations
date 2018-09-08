@@ -12,7 +12,7 @@ namespace vb {
 
         explicit Array(const std::vector<std::vector<T>> & l) : ww(l.size()), hh(l[0].size()), data(ww * hh) {
             for (int64_t i = 0; i < ww; ++i)
-                for (int64_t j = 0; j < hh; ++j) put(coo(i, j), l[i][j]);
+                for (int64_t j = 0; j < hh; ++j) put({i, j}, l[i][j]);
         }
 
         void resize(int64_t w, int64_t h) {
@@ -34,18 +34,18 @@ namespace vb {
 
         T & atp(const coo & z) {
             int64_t x = pmod(z.x, ww), y = pmod(z.y, hh);
-            return at(coo(x, y));
+            return at({x, y});
         }
         T const & atp(const coo & z) const {
             int64_t x = pmod(z.x, ww), y = pmod(z.y, hh);
-            return at(coo(x, y));
+            return at({x, y});
         }
 
         void put(const coo & z, T const & c) { at(z) = c; }
         void putp(const coo & z, T const & c) { atp(z) = c; }
 
         bool contains(const coo & z, int64_t b = 0) const { return (z.x >= b) && (z.y >= b) && (z.x < ww - b) && (z.y < hh - b); }
-        coo  rand(int64_t b = 0) const { return coo(b + prng.uniform_int(ww - 2 * b), b + prng.uniform_int(hh - 2 * b)); }
+        coo  rand(int64_t b = 0) const { return {b + prng.uniform_int(ww - 2 * b), b + prng.uniform_int(hh - 2 * b)}; }
 
         int64_t ww = 0, hh = 0;
 

@@ -17,7 +17,7 @@ public:
             int m = 2 * n / 3;
             for (int i = 0; i < n; ++i)
                 for (int j = 0; j < n; ++j)
-                    if ((j > m) || (i < j / 2) || (i > m + j / 2)) put(coo(i, j), 0);
+                    if ((j > m) || (i < j / 2) || (i > m + j / 2)) put({i, j}, 0);
         }
         for (int c = -con; c <= con; ++c) p[c + con] = 1 / (1 + exp(-beta * c));
     };
@@ -45,7 +45,7 @@ public:
         }
         for (int i = 0; i < w(); ++i)
             for (int j = 0; j < h(); ++j) {
-                Color c = to_Color(at(coo(i, j)));
+                Color c = to_Color(at({i, j}));
                 if (c == to_Color(0)) continue;
                 vector<cpx> p;
                 p.reserve(pattern.size());

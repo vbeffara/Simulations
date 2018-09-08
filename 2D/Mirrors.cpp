@@ -54,7 +54,7 @@ void Mirrors::main() {
             }
         }
 
-        coo z(w() / 2, h() / 2);
+        coo z{w() / 2, h() / 2};
         for (int t = 0, d = 0; (t < 8 * w() * h()) && contains(z); ++t) {
             if ((at(z) & STATE_PRESENT) != 0) {
                 if ((at(z) & STATE_NE) != 0)

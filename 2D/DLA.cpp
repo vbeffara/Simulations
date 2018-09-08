@@ -8,9 +8,9 @@ using namespace std;
 class DLA : public CoarseImage {
 public:
     explicit DLA(const Hub & H)
-        : CoarseImage(H['n'], H['n'], pow(double(H['n']), .33)), n(H['n']), c(H['c']), r(1),
-          QT(coo(-n / 2, -n / 2), coo(n / 2, n / 2), H['l']), prec(int(H['p'])), img(512, 512) {
-        z0 = coo(n / 2, n / 2);
+        : CoarseImage(H['n'], H['n'], pow(double(H['n']), .33)), n(H['n']), c(H['c']), r(1), QT({-n / 2, -n / 2}, {n / 2, n / 2}, H['l']),
+          prec(int(H['p'])), img(512, 512) {
+        z0 = {n / 2, n / 2};
         W.watch(QT.n, "Nb of particles");
         W.watch(r, "Cluster radius");
 
@@ -23,7 +23,7 @@ public:
                 dirty = false;
                 for (int i = 1; i < 2 * r; ++i)
                     for (int j = 1; j < 2 * r; ++j) {
-                        coo    z(i, j);
+                        coo    z{i, j};
                         double t = MM.at(z);
                         MM.at(z) = 0;
                         if (t > 1e-13) {
@@ -82,7 +82,7 @@ public:
     coo jump(int d) const {
         if (d <= 1) return dz[prng.uniform_int(4)];
         if (d < prec.size()) {
-            coo w(d, prng.discrete(prec[d]));
+            coo w{d, prng.discrete(prec[d])};
             if (prng.bernoulli()) w.x = -w.x;
             if (prng.bernoulli()) w.y = -w.y;
             if (prng.bernoulli()) swap(w.x, w.y);
@@ -90,15 +90,16 @@ public:
         }
         if (d < c) return jump(prec.size() - 1);
         int    l     = d - c / 2;
-        double theta = prng.uniform_real(0, 2 * M_PI), x = l * cos(theta), y = l * sin(theta);
-        return coo(x, y);
+        double theta = prng.uniform_real(0, 2 * M_PI);
+        int    x = l * cos(theta), y = l * sin(theta);
+        return {x, y};
     }
 
     void runDLA() {
         put({0, 0});
         while (r < n / 2 - 1) {
             double    t = prng.uniform_real(0, 2 * M_PI);
-            coo       z((2 * r + 20) * cos(t), (2 * r + 20) * sin(t));
+            coo       z{int((2 * r + 20) * cos(t)), int((2 * r + 20) * sin(t))};
             QuadIndex qi{{0, 0}, sup(z)};
             while (!neighbor(z)) {
                 qi.d = sup(z - qi.z);

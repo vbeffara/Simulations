@@ -15,7 +15,7 @@ static void flush_data(png_struct * png) {
 namespace vb {
     bool CoarseImage::at(coo z) const {
         z += z0;
-        const CoarseCell & d = Bitmap<CoarseCell>::at(coo(z.x / L, z.y / L));
+        const CoarseCell & d = Bitmap<CoarseCell>::at({z.x / L, z.y / L});
         if (d.fill == 0) return false;
         if (d.fill == LL) return true;
         return d.sub[(z.x % L) + L * (z.y % L)];
@@ -25,7 +25,7 @@ namespace vb {
         step();
         z += z0;
         int          cc = c ? 1 : 0;
-        CoarseCell & d  = Bitmap<CoarseCell>::at(coo(z.x / L, z.y / L));
+        CoarseCell & d  = Bitmap<CoarseCell>::at({z.x / L, z.y / L});
         if (d.fill == cc * LL) return;
         if (d.fill == (1 - cc) * LL) d.sub.resize(LL, !c);
         int sub_xy = (z.x % L) + L * (z.y % L);
@@ -49,7 +49,7 @@ namespace vb {
         for (int j = 0; j < true_height; ++j) {
             auto row = std::vector<uint8_t>(1 + true_width / 8, 0);
             for (int i = 0; i < true_width; ++i)
-                if (!at(coo(i, j) - z0)) row.at(i / 8) |= (128u >> static_cast<unsigned>(i % 8));
+                if (!at(coo{i, j} - z0)) row.at(i / 8) |= (128u >> static_cast<unsigned>(i % 8));
             png_write_row(png, row.data());
         }
 

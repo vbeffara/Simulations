@@ -52,7 +52,7 @@ public:
                 for (int j = 0; j < hh / ll; ++j) {
                     double g = prng.gaussian();
                     for (int x = i * ll; x < (i + 1) * ll; ++x)
-                        for (int y = j * ll; y < (j + 1) * ll; ++y) I.at(coo(x, y)).f += g;
+                        for (int y = j * ll; y < (j + 1) * ll; ++y) I.at({x, y}).f += g;
                 }
         }
     }
@@ -64,7 +64,7 @@ public:
                 for (int j = 0; j < hh / ll; ++j) {
                     double g = prng.uniform_real(-1, 1);
                     for (int x = i * ll; x < (i + 1) * ll; ++x)
-                        for (int y = j * ll; y < (j + 1) * ll; ++y) I.at(coo(x, y)).f += g;
+                        for (int y = j * ll; y < (j + 1) * ll; ++y) I.at({x, y}).f += g;
                 }
         }
     }
@@ -96,7 +96,7 @@ public:
         in[0][1] = 0;
 
         fftw_execute(p);
-        for (auto [i, j] : coos(*this)) I.at(coo(i, j)).f = out[i + ww * j][0];
+        for (auto [i, j] : coos(*this)) I.at({i, j}).f = out[i + ww * j][0];
         fftw_destroy_plan(p);
         fftw_free(in);
         fftw_free(out);
@@ -126,7 +126,7 @@ public:
     }
 
     void dijkstra() {
-        coo                  mid(w() / 2, h() / 2);
+        coo                  mid{w() / 2, h() / 2};
         priority_queue<Info> Q;
         I.at(mid).d = 0;
         Q.push(I.at(mid));
@@ -154,10 +154,10 @@ public:
     double radius() {
         double r = I.at({0, 0}).d;
         for (int i = 0; i < w(); ++i) {
-            r = min(r, I.at(coo(i, 0)).d);
-            r = min(r, I.at(coo(0, i)).d);
-            r = min(r, I.at(coo(i, h() - 1)).d);
-            r = min(r, I.at(coo(w() - 1, i)).d);
+            r = min(r, I.at({i, 0}).d);
+            r = min(r, I.at({0, i}).d);
+            r = min(r, I.at({i, h() - 1}).d);
+            r = min(r, I.at({w() - 1, i}).d);
         }
         return r;
     }
@@ -192,10 +192,10 @@ int main(int argc, char ** argv) {
         img.dijkstra();
         if (H['b']) img.ball();
         for (int i = 0; i <= nn - 1; i += 1) {
-            img.trace(coo(0, i));
-            img.trace(coo(nn - 1, i));
-            img.trace(coo(i, 0));
-            img.trace(coo(i, nn - 1));
+            img.trace({0, i});
+            img.trace({nn - 1, i});
+            img.trace({i, 0});
+            img.trace({i, nn - 1});
         }
     }
 

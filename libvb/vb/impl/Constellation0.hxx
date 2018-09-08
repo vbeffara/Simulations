@@ -28,12 +28,21 @@ namespace vb {
             S.linear(-1 / S.V[inf].r, 0);
             S.mobiusto0(S.V[S.E[0].src].z);
             b.clear();
-            for (auto c : M.sigma.cycles()) { b.push_back({to_cpx<T>(S.V[S.E[c[0]].src].z), int(c.size())}); }
+            for (auto c : M.sigma.cycles()) {
+                const auto & z = S.V[S.E[c[0]].src].z;
+                b.push_back({cplx(real(z), imag(z)), int(c.size())});
+            }
             w.clear();
-            for (auto c : M.alpha.cycles()) { w.push_back({to_cpx<T>(S.V[S.E[c[0] + N].src].z), int(c.size())}); }
+            for (auto c : M.alpha.cycles()) {
+                const auto & z = S.V[S.E[c[0] + N].src].z;
+                w.push_back({cplx(real(z), imag(z)), int(c.size())});
+            }
             f.clear();
             for (auto c : M.phi.cycles()) {
-                if (S.E[c[0] + 3 * N].src != inf) f.push_back({to_cpx<T>(S.V[S.E[c[0] + 3 * N].src].z), int(c.size())});
+                if (S.E[c[0] + 3 * N].src != inf) {
+                    const auto & z = S.V[S.E[c[0] + 3 * N].src].z;
+                    f.push_back({cplx(real(z), imag(z)), int(c.size())});
+                }
             }
             dim = b.size() + w.size() + f.size();
             make_c_0();
@@ -43,7 +52,7 @@ namespace vb {
                 if (M3 == M4) break;
             }
         }
-    }
+    } // namespace vb
 
     template <typename T> template <typename U> Constellation0<T>::Constellation0(const Constellation0<U> & C) : Constellation<T>(C) {
         dim--;
@@ -228,7 +237,7 @@ namespace vb {
         using T = real_t;
         T   err(C.cost());
         T   lerr(-log10(err));
-        int nd = std::max(5, to_int(lerr) / 2 - 10);
+        int nd = std::max(5, int(lerr) / 2 - 10);
         if (err == T(0)) nd = 10;
         os << std::setprecision(10) << std::fixed;
         os << "Keeping " << nd << " digits." << std::endl << std::endl;
@@ -295,7 +304,7 @@ namespace vb {
             ymin = std::min(ymin, imag(z.z));
             ymax = std::max(ymax, imag(z.z));
         }
-        return {to_cpx<T>(xmin, ymin), to_cpx<T>(xmax, ymax)};
+        return {{xmin, ymin}, {xmax, ymax}};
     }
 
     template <typename T> std::optional<Hypermap> Constellation0<T>::explore() const {
@@ -323,10 +332,10 @@ namespace vb {
             std::vector<cplx> hs;
             std::vector<int>  he;
 
-            cplx u = z.z + rad * exp(to_cpx<T>(0, .001));
+            cplx u = z.z + rad * exp(cplx(0, .001));
             T    s = imag((*this)(u));
             for (int i = 0; i < 10 * z.d; ++i) {
-                u    = z.z + exp(to_cpx<T>(0, 2 * M_PI / (10 * z.d))) * (u - z.z);
+                u    = z.z + exp(cplx(0, 2 * pi_<T>() / (10 * z.d))) * (u - z.z);
                 T ns = imag((*this)(u));
                 if (s * ns < 0) {
                     hs.push_back(u);
@@ -341,10 +350,10 @@ namespace vb {
 
         std::vector<cplx> hs;
         std::vector<int>  he;
-        cplx              u = large * exp(to_cpx<T>(0, .001));
+        cplx              u = large * exp(cplx(0, .001));
         T                 s = imag((*this)(u));
         for (int i = 0; i < 10 * maxdeg; ++i) {
-            u    = exp(to_cpx<T>(0, -2 * M_PI / (10 * maxdeg))) * u;
+            u    = exp(cplx(0, -2 * pi_<T>() / (10 * maxdeg))) * u;
             T ns = imag((*this)(u));
             if (s * ns < 0) {
                 hs.push_back(u);
@@ -360,11 +369,11 @@ namespace vb {
         for (int i = 0; i < Z.size(); ++i) {
             for (int j = 0; j < hands[i].size(); ++j) {
                 auto l       = hands[i][j];
-                cplx r       = Z[i].z + exp(to_cpx<T>(0, -2 * M_PI / (10 * Z[i].d))) * (l - Z[i].z);
+                cplx r       = Z[i].z + exp(cplx(0, -2 * pi_<T>() / (10 * Z[i].d))) * (l - Z[i].z);
                 auto sl      = imag((*this)(l));
                 bool looking = true;
                 while (looking) {
-                    cplx nz = l + exp(to_cpx<T>(0, M_PI / 3)) * (r - l);
+                    cplx nz = l + exp(cplx(0, pi_<T>() / 3)) * (r - l);
                     if (abs(nz) > large) {
                         T   d = large;
                         int h = -1;

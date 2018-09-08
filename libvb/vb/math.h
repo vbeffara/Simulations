@@ -39,12 +39,14 @@ namespace vb {
     using boost::math::constants::pi;
     template <typename T> T pi_() { return boost::math::constants::pi<T>(); }
 
-    template <typename T> typename cpx_t<T>::type I_() { return to_cpx<T>(0, 1); }
+    template <typename T> typename cpx_t<T>::type I_() { return {0, 1}; }
 
-    template <typename T> typename cpx_t<T>::type q_(const typename cpx_t<T>::type & tau) { return exp(to_cpx<T>(0, pi_<T>()) * tau); }
+    template <typename T> typename cpx_t<T>::type q_(const typename cpx_t<T>::type & tau) {
+        return exp(typename cpx_t<T>::type(0, pi_<T>()) * tau);
+    }
 
     template <typename T> typename cpx_t<T>::type q_t(const typename cpx_t<T>::type & tau) {
-        return to_cpx<T>(0, pi_<T>()) * exp(to_cpx<T>(0, pi_<T>()) * tau);
+        return typename cpx_t<T>::type(0, pi_<T>()) * q_<T>(tau);
     }
 
 #ifdef UNIT_TESTS

@@ -15,14 +15,8 @@ namespace vb {
     using complex_t = mpc_complex;
     using real_t    = mpfr_float;
 
-    template <> class cpx_t<real_t> {
-    public:
-        using type = complex_t;
-    };
+    template <> struct cpx_t<real_t> { using type = complex_t; };
 
-    template <typename T> int to_int(const T & z) { return int(z); }
-
-    template <> complex_t   to_cpx<real_t>(const real_t & x, const real_t & y);
     template <> real_t      sum<real_t>(const std::function<real_t(int)> & f);
     template <> complex_t   sum<complex_t>(const std::function<complex_t(int)> & f);
     template <> std::string pretty<real_t>(const real_t & t);

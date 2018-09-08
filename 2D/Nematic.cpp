@@ -85,8 +85,8 @@ public:
         if (H['v']) snapshot_setup("movie", 10);
         for (int t = int(H['t']) - 1; t != 0; --t) {
             if ((k != ok) || (b != ob)) prec();
-            for (int i = 0; i < h(); ++i) redo(coo(0, i), 1);
-            for (int i = 0; i < w(); ++i) redo(coo(i, 0), 2);
+            for (int i = 0; i < h(); ++i) redo({0, i}, 1);
+            for (int i = 0; i < w(); ++i) redo({i, 0}, 2);
             int nh = 0;
             for (auto z : coos(*this))
                 if (at(z) == 1) ++nh;

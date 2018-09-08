@@ -1,8 +1,6 @@
 #include <vb/mp.h>
 
 namespace vb {
-    template <> complex_t to_cpx<real_t>(const real_t & x, const real_t & y) { return complex_t(x, y); };
-
     template <> real_t sum<real_t>(const std::function<real_t(int)> & f) {
         real_t out = 0, eps = pow(real_t(.1), 10 + real_t::default_precision());
         for (int n = 0;; ++n) {

@@ -15,13 +15,22 @@ namespace vb {
             S.output_pdf();
             int N = M.sigma.size();
             b.clear();
-            for (auto c : M.sigma.cycles()) b.push_back({to_cpx<T>(S.V[S.E[c[0]].src].z), int(c.size())});
+            for (auto c : M.sigma.cycles()) {
+                const auto & z = S.V[S.E[c[0]].src].z;
+                b.push_back({{real(z), imag(z)}, int(c.size())});
+            }
             w.clear();
-            for (auto c : M.alpha.cycles()) w.push_back({to_cpx<T>(S.V[S.E[c[0] + N].src].z), int(c.size())});
+            for (auto c : M.alpha.cycles()) {
+                const auto & z = S.V[S.E[c[0] + N].src].z;
+                w.push_back({{real(z), imag(z)}, int(c.size())});
+            }
             f.clear();
-            for (auto c : M.phi.cycles()) f.push_back({to_cpx<T>(S.V[S.E[c[0] + 3 * N].src].z), int(c.size())});
+            for (auto c : M.phi.cycles()) {
+                const auto & z = S.V[S.E[c[0] + 3 * N].src].z;
+                f.push_back({{real(z), imag(z)}, int(c.size())});
+            }
             dim  = b.size() + w.size() + f.size() + p.size();
-            p[0] = to_cpx<T>(S.m);
+            p[0] = cplx(S.m);
             shift(-b[0].z);
             normalize();
         } while (findn() > T(1e-6));
@@ -102,7 +111,7 @@ namespace vb {
     }
 
     template <typename T> auto Constellation1<T>::logderp_t(cplx z, int k) const -> cplx {
-        return to_cpx<T>(0, pi_<T>()) * E.q * logderp_q(z, k);
+        return cplx(0, pi_<T>()) * E.q * logderp_q(z, k);
     }
 
     template <typename T> auto Constellation1<T>::logder(cplx z, int k) const -> cplx {
@@ -111,7 +120,7 @@ namespace vb {
         for (auto zd : f) out -= logderp(z - zd.z, k) * T(zd.d);
         if (k == 0) {
             out += p[1];
-            out -= to_cpx<T>(0, T(2) * pi_<T>()) * round(real(out / to_cpx<T>(0, T(2) * pi_<T>())));
+            out -= cplx(0, T(2) * pi_<T>()) * round(real(out / cplx(0, T(2) * pi_<T>())));
         }
         return out;
     }
@@ -256,7 +265,7 @@ namespace vb {
         using T = real_t;
         T   err(C.cost());
         T   lerr(-log10(err));
-        int nd = std::max(5, to_int(lerr) / 2 - 12);
+        int nd = std::max(5, int(lerr) / 2 - 12);
         if (err == T(0)) nd = 10;
         os << std::setprecision(nd) << std::fixed;
         int eps = nd - 5;
@@ -310,6 +319,6 @@ namespace vb {
 
     template <typename T> auto Constellation1<T>::bounds() const -> std::pair<cplx, cplx> {
         T xmin = std::min(T(0), real(tau())), xmax = std::max(T(1), real(T(1) + tau())), ymin = T(0), ymax = imag(tau());
-        return {to_cpx<T>(xmin, ymin), to_cpx<T>(xmax, ymax)};
+        return {{xmin, ymin}, {xmax, ymax}};
     }
 } // namespace vb

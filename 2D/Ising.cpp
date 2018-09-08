@@ -11,14 +11,14 @@ public:
             for (auto z : coos(*this)) put(z, prng.bernoulli(rr) ? BLACK : WHITE);
         } else {
             for (int x = 1; x < n - 1; x++)
-                for (int y = 1; y < n - 1; y++) put(coo(x, y), x < (n / 2) ? BLACK : WHITE);
+                for (int y = 1; y < n - 1; y++) put({x, y}, x < (n / 2) ? BLACK : WHITE);
         }
         if (c)
             for (int i = 0; i < n; i++) {
-                put(coo(i, 0), i < n / 2 ? BLACK : WHITE);
-                put(coo(i, n - 1), i < n / 2 ? BLACK : WHITE);
-                put(coo(0, i), BLACK);
-                put(coo(n - 1, i), WHITE);
+                put({i, 0}, i < n / 2 ? BLACK : WHITE);
+                put({i, n - 1}, i < n / 2 ? BLACK : WHITE);
+                put({0, i}, BLACK);
+                put({n - 1, i}, WHITE);
             }
     }
 

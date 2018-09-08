@@ -10,7 +10,7 @@ int main(int argc, char ** argv) {
     Image img(2 * n, 2 * n);
 
     for (auto z : coos(img)) img.put(z, WHITE);
-    coo z(n, n);
+    coo z{n, n};
     while (img.contains(z)) {
         img.put(z, BLACK);
         z += dz[prng() % 4];

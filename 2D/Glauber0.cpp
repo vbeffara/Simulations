@@ -3,44 +3,49 @@
 using namespace vb;
 
 class Glauber : public Image {
-  public:
-    explicit Glauber (int n_) : Image(n_,n_), n(n_) { };
-    void fill (double p);
-    void step (int i=-1, int j=-1);
-  private:
+public:
+    explicit Glauber(int n_) : Image(n_, n_), n(n_){};
+    void fill(double p);
+    void step(int i = -1, int j = -1);
+
+private:
     int n;
 };
 
-void Glauber::fill (double p) {
-  for (int i=0; i<n; ++i)
-    for (int j=0; j<n; ++j)
-      if (prng.bernoulli(p)) put(coo(i,j),WHITE);
-      else put(coo(i,j),BLACK);
+void Glauber::fill(double p) {
+    for (int i = 0; i < n; ++i)
+        for (int j = 0; j < n; ++j)
+            if (prng.bernoulli(p))
+                put({i, j}, WHITE);
+            else
+                put({i, j}, BLACK);
 }
 
-void Glauber::step (int i, int j) {
-  if (i==-1) i=prng.uniform_int(n);
-  if (j==-1) j=prng.uniform_int(n);
+void Glauber::step(int i, int j) {
+    if (i == -1) i = prng.uniform_int(n);
+    if (j == -1) j = prng.uniform_int(n);
 
-  int c=0;
-  if (at(coo((i+1)%n,   j)) == WHITE) ++c;
-  if (at(coo((i+n-1)%n, j)) == WHITE) ++c;
-  if (at(coo(i,   (j+1)%n)) == WHITE) ++c;
-  if (at(coo(i, (j+n-1)%n)) == WHITE) ++c;
+    int c = 0;
+    if (at({(i + 1) % n, j}) == WHITE) ++c;
+    if (at({(i + n - 1) % n, j}) == WHITE) ++c;
+    if (at({i, (j + 1) % n}) == WHITE) ++c;
+    if (at({i, (j + n - 1) % n}) == WHITE) ++c;
 
-  if ((c>2) || ((c==2) && prng.bernoulli(.5))) put(coo(i,j),WHITE);
-  else put(coo(i,j),BLACK);
+    if ((c > 2) || ((c == 2) && prng.bernoulli(.5)))
+        put({i, j}, WHITE);
+    else
+        put({i, j}, BLACK);
 }
 
-int main (int argc, char ** argv) {
-  H.init ("Glauber dynamics at zero temperature", argc,argv, "n=500,p=.51");
-  int    n = H['n'];
-  double p = H['p'];
+int main(int argc, char ** argv) {
+    H.init("Glauber dynamics at zero temperature", argc, argv, "n=500,p=.51");
+    int    n = H['n'];
+    double p = H['p'];
 
-  Glauber G(n);
-  G.fill(p);
-  G.show();
+    Glauber G(n);
+    G.fill(p);
+    G.show();
 
-  while (true) G.step();
-  return 0;
+    while (true) G.step();
+    return 0;
 }

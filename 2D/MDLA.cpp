@@ -23,7 +23,7 @@ int main(int argc, char ** argv) {
             img.put(z, AWAY);
         else
             img.put(z, prng.bernoulli(p) ? ALIVE : EMPTY);
-    img.put(coo(n, n), DEAD);
+    img.put({n, n}, DEAD);
     img.show();
     if (t > 0) img.snapshot_setup("MDLA", t);
 

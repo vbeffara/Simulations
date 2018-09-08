@@ -6,10 +6,10 @@ namespace vb {
     template <typename T> Constellation<T>::Constellation() = default;
 
     template <typename T> template <typename U> Constellation<T>::Constellation(const Constellation<U> & C) {
-        for (auto zd : C.b) b.push_back({to_cpx<T>(zd.z), zd.d});
-        for (auto zd : C.w) w.push_back({to_cpx<T>(zd.z), zd.d});
-        for (auto zd : C.f) f.push_back({to_cpx<T>(zd.z), zd.d});
-        for (auto z : C.p) p.push_back(to_cpx<T>(z));
+        for (auto zd : C.b) b.push_back({cplx(real(zd.z), imag(zd.z)), zd.d});
+        for (auto zd : C.w) w.push_back({cplx(real(zd.z), imag(zd.z)), zd.d});
+        for (auto zd : C.f) f.push_back({cplx(real(zd.z), imag(zd.z)), zd.d});
+        for (auto z : C.p) p.push_back(cplx(real(z), imag(z)));
         dim = b.size() + w.size() + f.size() + p.size();
     }
 

@@ -17,9 +17,9 @@ auto twoperiodic(double a, double b) { return dupe(Array<double>({{a, b}, {b, a}
 auto threeperiodic(double a, double b, double c) { return dupe(Array<double>({{a, b, c}, {b, c, a}, {c, a, b}})); }
 auto threebytwo(double b) {
     Array<double> p(6, 6, 1);
-    p[coo(0, 0)] = b;
-    p[coo(4, 2)] = b;
-    p[coo(2, 4)] = b;
+    p[{0, 0}] = b;
+    p[{4, 2}] = b;
+    p[{2, 4}] = b;
     return p;
 }
 
@@ -44,18 +44,18 @@ struct Tiling {
         }
         for (int i = 0; i <= n; i += 2) {
             for (int j = 0; j <= n; j += 2) {
-                if (state[coo(i + 1, j + 1)] == 1) {
-                    state[coo(i, j)]         = 1;
-                    state[coo(i + 1, j + 1)] = 0;
-                } else if (state[coo(i, j)] == 1) {
-                    state[coo(i, j)]         = 0;
-                    state[coo(i + 1, j + 1)] = 1;
-                } else if (state[coo(i + 1, j)] == 1) {
-                    state[coo(i, j + 1)] = 1;
-                    state[coo(i + 1, j)] = 0;
-                } else if (state[coo(i, j + 1)] == 1) {
-                    state[coo(i + 1, j)] = 1;
-                    state[coo(i, j + 1)] = 0;
+                if (state[{i + 1, j + 1}] == 1) {
+                    state[{i, j}]         = 1;
+                    state[{i + 1, j + 1}] = 0;
+                } else if (state[{i, j}] == 1) {
+                    state[{i, j}]         = 0;
+                    state[{i + 1, j + 1}] = 1;
+                } else if (state[{i + 1, j}] == 1) {
+                    state[{i, j + 1}] = 1;
+                    state[{i + 1, j}] = 0;
+                } else if (state[{i, j + 1}] == 1) {
+                    state[{i + 1, j}] = 1;
+                    state[{i, j + 1}] = 0;
                 }
             }
         }
@@ -65,20 +65,20 @@ struct Tiling {
         int n = state.ww;
         for (int i = 0; i < n / 2; ++i) {
             for (int j = 0; j < n / 2; ++j) {
-                if ((state[coo(2 * i, 2 * j)] == 0) && (state[coo(2 * i + 1, 2 * j)] == 0) && (state[coo(2 * i, 2 * j + 1)] == 0) &&
-                    (state[coo(2 * i + 1, 2 * j + 1)] == 0)) {
+                if ((state[{2 * i, 2 * j}] == 0) && (state[{2 * i + 1, 2 * j}] == 0) && (state[{2 * i, 2 * j + 1}] == 0) &&
+                    (state[{2 * i + 1, 2 * j + 1}] == 0)) {
                     bool a1 = true, a2 = true, a3 = true, a4 = true;
-                    if (j > 0) a1 = (state[coo(2 * i, 2 * j - 1)] == 0) && (state[coo(2 * i + 1, 2 * j - 1)] == 0);
-                    if (j < n / 2 - 1) a2 = (state[coo(2 * i, 2 * j + 2)] == 0) && (state[coo(2 * i + 1, 2 * j + 2)] == 0);
-                    if (i > 0) a3 = (state[coo(2 * i - 1, 2 * j)] == 0) && (state[coo(2 * i - 1, 2 * j + 1)] == 0);
-                    if (i < n / 2 - 1) a4 = (state[coo(2 * i + 2, 2 * j)] == 0) && (state[coo(2 * i + 2, 2 * j + 1)] == 0);
+                    if (j > 0) a1 = (state[{2 * i, 2 * j - 1}] == 0) && (state[{2 * i + 1, 2 * j - 1}] == 0);
+                    if (j < n / 2 - 1) a2 = (state[{2 * i, 2 * j + 2}] == 0) && (state[{2 * i + 1, 2 * j + 2}] == 0);
+                    if (i > 0) a3 = (state[{2 * i - 1, 2 * j}] == 0) && (state[{2 * i - 1, 2 * j + 1}] == 0);
+                    if (i < n / 2 - 1) a4 = (state[{2 * i + 2, 2 * j}] == 0) && (state[{2 * i + 2, 2 * j + 1}] == 0);
                     if (a1 && a2 && a3 && a4) {
-                        if (prng.bernoulli(p.atp(coo(i, j)))) {
-                            state[coo(2 * i, 2 * j)]         = 1;
-                            state[coo(2 * i + 1, 2 * j + 1)] = 1;
+                        if (prng.bernoulli(p.atp({i, j}))) {
+                            state[{2 * i, 2 * j}]         = 1;
+                            state[{2 * i + 1, 2 * j + 1}] = 1;
                         } else {
-                            state[coo(2 * i + 1, 2 * j)] = 1;
-                            state[coo(2 * i, 2 * j + 1)] = 1;
+                            state[{2 * i + 1, 2 * j}] = 1;
+                            state[{2 * i, 2 * j + 1}] = 1;
                         }
                     }
                 }
@@ -141,14 +141,14 @@ struct Tiling {
         int    offx = gsl::at(ddx, off % 4), offy = gsl::at(ddy, off % 4);
         for (auto z : coos(state))
             if (state[z] != 0) {
-                coo  edge(1, ((z.x + z.y) % 2) != 0 ? 1 : -1);
+                coo  edge{1, ((z.x + z.y) % 2) != 0 ? 1 : -1};
                 auto s = [=](coo z) {
-                    z += coo(offx, offy);
+                    z += coo{offx, offy};
                     coo zz = (z + coo{1, 1}) / 2;
                     coo sh = dz[(zz.y + ((((zz.x + 1) % 4) / 2) != 0 ? 5 : 3)) % 4];
                     return cpx(z) + 2 * double(H['r']) * cpx(sh) - cpx(offx, offy);
                 };
-                double gr = a * TP.atp(z + coo(offx / 2, offy / 2)) + b;
+                double gr = a * TP.atp(z + coo{offx / 2, offy / 2}) + b;
                 F.add(make_unique<Segment>(s(z * 2 - edge), s(z * 2 + edge), Pen(Grey(255 * gr), 130.0 / state.ww)));
             }
         if (H['v']) F.show();
@@ -160,15 +160,15 @@ struct Tiling {
         Array<int> h(m + 1, m + 1, 0);
         int        z = 0;
         for (int x = 0; x < m; ++x) {
-            z += 4 * state[coo(2 * x, 0)] + 4 * state[coo(2 * x + 1, 0)] - 2;
-            h[coo(x + 1, 0)] = z;
+            z += 4 * state[{2 * x, 0}] + 4 * state[{2 * x + 1, 0}] - 2;
+            h[{x + 1, 0}] = z;
         }
         for (int y = 0; y < m; ++y) {
-            int z            = h[coo(0, y)] + 4 * state[coo(0, 2 * y)] + 4 * state[coo(0, 2 * y + 1)] - 2;
-            h[coo(0, y + 1)] = z;
+            int z         = h[{0, y}] + 4 * state[{0, 2 * y}] + 4 * state[{0, 2 * y + 1}] - 2;
+            h[{0, y + 1}] = z;
             for (int x = 0; x < m; ++x) {
-                z -= 4 * state[coo(2 * x, 2 * y + 1)] + 4 * state[coo(2 * x + 1, 2 * y + 1)] - 2;
-                h[coo(x + 1, y + 1)] = z;
+                z -= 4 * state[{2 * x, 2 * y + 1}] + 4 * state[{2 * x + 1, 2 * y + 1}] - 2;
+                h[{x + 1, y + 1}] = z;
             }
         }
         return h;

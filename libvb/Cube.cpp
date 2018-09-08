@@ -4,13 +4,13 @@
 namespace vb {
     Cube::Cube(int x, int y, int z) : Bitmap<Adder>(x + z, y + z), sx(x), sy(y), sz(z), data(sx * sy * sz, 0) {
         for (int x = 0; x < sz; ++x)
-            for (int y = 0; y < sz; ++y) at(coo(sx + x, sy + y)) = Adder(((x / 10 + y / 10) % 2) != 0 ? 200 : 150);
+            for (int y = 0; y < sz; ++y) at({sx + x, sy + y}) = Adder(((x / 10 + y / 10) % 2) != 0 ? 200 : 150);
         for (int x = 0; x < sx; ++x)
-            for (int y = 0; y < sy; ++y) at(coo(x, y)).dim(sz);
+            for (int y = 0; y < sy; ++y) at({x, y}).dim(sz);
         for (int x = 0; x < sx; ++x)
-            for (int z = 0; z < sz; ++z) at(coo(x, z + sy)).dim(sy);
+            for (int z = 0; z < sz; ++z) at({x, z + sy}).dim(sy);
         for (int y = 0; y < sy; ++y)
-            for (int z = 0; z < sz; ++z) at(coo(z + sx, y)).dim(sx);
+            for (int z = 0; z < sz; ++z) at({z + sx, y}).dim(sx);
     }
 
     Cube_iterator Cube::begin() { return Cube_iterator(this, {0, 0, 0}); }

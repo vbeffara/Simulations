@@ -11,7 +11,7 @@ namespace vb {
         eps          = real(z2 - z1) / pixel_w();
         pixel_detail = detail / eps;
         for (int i = 0; i < pixel_w(); ++i)
-            for (int j = 0; j < pixel_h(); ++j) at(coo(i, j)) = BLACK;
+            for (int j = 0; j < pixel_h(); ++j) at({i, j}) = BLACK;
         run([&] { tessel({0, 0}, {pixel_w() - 1, pixel_h() - 1}); });
         if (aa) run([&]() { do_aa(); });
         update();
@@ -90,7 +90,7 @@ namespace vb {
 
         if (mono) {
             for (int i = ul.x + 1; i < lr.x; ++i)
-                for (int j = ul.y + 1; j < lr.y; ++j) at(coo(i, j)) = tmp;
+                for (int j = ul.y + 1; j < lr.y; ++j) at({i, j}) = tmp;
             return {};
         }
 
@@ -106,10 +106,10 @@ namespace vb {
     }
 
     void Coloring::tessel(coo ul, coo lr) {
-        execute_par([=] { return line(ul, coo(1, 0), lr.x - ul.x); });
-        execute_par([=] { return line(coo(lr.x, ul.y), coo(0, 1), lr.y - ul.y); });
-        execute_par([=] { return line(lr, coo(-1, 0), lr.x - ul.x); });
-        execute_par([=] { return line(coo(ul.x, lr.y), coo(0, -1), lr.y - ul.y); });
+        execute_par([=] { return line(ul, {1, 0}, lr.x - ul.x); });
+        execute_par([=] { return line({lr.x, ul.y}, {0, 1}, lr.y - ul.y); });
+        execute_par([=] { return line(lr, {-1, 0}, lr.x - ul.x); });
+        execute_par([=] { return line({ul.x, lr.y}, {0, -1}, lr.y - ul.y); });
         execute_par([=] { return tessel_go(ul, lr); });
     }
 
