@@ -70,16 +70,16 @@ public:
             I.b = 1;
             for (int i = 0; i < I.sx; ++i)
                 for (int j = 0; j < I.sx; ++j) {
-                    I.put(vb::coo3(i, j, I.sz - 1), 255);
-                    I.put(vb::coo3(0, i, j), 255);
-                    I.put(vb::coo3(i, 0, j), 255);
+                    I.put({i, j, I.sz - 1}, 255);
+                    I.put({0, i, j}, 255);
+                    I.put({i, 0, j}, 255);
                 }
         });
         emplace("cube", [](Ising3 & I) {
             I.b = 0;
             for (int x = I.sx / 10; x < 9 * I.sx / 10; ++x)
                 for (int y = I.sy / 10; y < 9 * I.sy / 10; ++y)
-                    for (int z = I.sz / 10; z < 9 * I.sz / 10; ++z) I.put(vb::coo3(x, y, z), 255);
+                    for (int z = I.sz / 10; z < 9 * I.sz / 10; ++z) I.put({x, y, z}, 255);
         });
         emplace("slope", [](Ising3 & I) {
             I.b = 1;

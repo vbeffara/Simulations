@@ -27,11 +27,11 @@ namespace vb {
 
         int  index(coo3 c) { return c.x + sx * c.y + sx * sy * c.z; }
         coo3 rand(int b = 0) {
-            return coo3(b + prng.uniform_int(sx - 2 * b), b + prng.uniform_int(sy - 2 * b), b + prng.uniform_int(sz - 2 * b));
+            return {b + prng.uniform_int(sx - 2 * b), b + prng.uniform_int(sy - 2 * b), b + prng.uniform_int(sz - 2 * b)};
         }
         coo3 wrap(coo3 c) {
             int xx = ((c.x % sx) + sx) % sx, yy = ((c.y % sy) + sy) % sy, zz = ((c.z % sz) + sz) % sz;
-            return coo3(xx, yy, zz);
+            return {xx, yy, zz};
         }
 
         void putp(const coo3 & c, uint8_t t) { put(wrap(c), t); }
@@ -44,16 +44,15 @@ namespace vb {
         iterator begin();
         iterator end();
 
-        using Bitmap<Adder>::at;
         void put(const coo3 & c, uint8_t t) {
             uint8_t d = data[index(c)];
             if (t != d) {
-                at({c.x, c.y}) -= d;
-                at({c.x, c.z + sy}) -= d;
-                at({c.z + sx, c.y}) -= d;
-                at({c.x, c.y}) += t;
-                at({c.x, c.z + sy}) += t;
-                at({c.z + sx, c.y}) += t;
+                Bitmap<Adder>::at({c.x, c.y}) -= d;
+                Bitmap<Adder>::at({c.x, c.z + sy}) -= d;
+                Bitmap<Adder>::at({c.z + sx, c.y}) -= d;
+                Bitmap<Adder>::at({c.x, c.y}) += t;
+                Bitmap<Adder>::at({c.x, c.z + sy}) += t;
+                Bitmap<Adder>::at({c.z + sx, c.y}) += t;
                 data[index(c)] = t;
             }
             step();
@@ -92,7 +91,7 @@ namespace vb {
         int s = 0;
         for (auto v : C) s += v;
         CHECK(s == 1);
-        CHECK(Color(C.at({0, 0})).a == 255);
+        CHECK(Color(C.Bitmap<Adder>::at({0, 0})).a == 255);
         C.output_pov();
     }
 #endif

@@ -26,14 +26,8 @@ namespace vb {
 
     inline std::ostream & operator<<(std::ostream & os, const coo z) { return os << "(" << z.x << "," << z.y << ")"; }
 
-    struct rect {
-        coo ul, br;
-    };
-
     class coo3 {
     public:
-        coo3(int64_t xx, int64_t yy, int64_t zz) : x(xx), y(yy), z(zz) {}
-
         bool operator==(const coo3 & c) const { return (x == c.x) && (y == c.y) && (z == c.z); }
         bool operator!=(const coo3 & c) const { return (x != c.x) || (y != c.y) || (z != c.z); }
         coo3 operator+(const coo3 & c) const { return {x + c.x, y + c.y, z + c.z}; }
