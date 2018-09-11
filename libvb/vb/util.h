@@ -12,15 +12,6 @@ namespace vb {
         H.output_str(label, "", fmt::format("time = {:<10} ans = {}", time() - t, result), false);
     }
 
-    template <typename V>
-    std::ostream & vprint(std::ostream & os, const V & v, std::string op = ",", const std::string & in = "(",
-                          const std::string & out = ")") {
-        std::string sep = "";
-        os << in;
-        for (const auto & x : v) os << exchange(sep, op) << x;
-        return os << out;
-    }
-
     template <typename T> T check(T x, T y) {
         static double merr = -1.0;
         double        err  = abs(x - y);

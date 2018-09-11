@@ -1,4 +1,5 @@
 #pragma once
+#include <vb/Hub.h>
 
 // Toroidal: Hypermap-based triangulation of genus 1
 //
@@ -22,15 +23,15 @@
 #include <vb/Hypermap.h>
 
 namespace vb {
-	class Toroidal : public Hypermap {
-	public:
-		Toroidal (Hypermap M, Hub & H);
+    class Toroidal : public Hypermap {
+    public:
+        Toroidal(Hypermap M, Hub & H);
 
-		void pack      	();	//< Run acpa() and then compute an embedding into a torus.
-		void output_pdf	();	//< Make a PDF of a few periods of the covering.
+        void pack();       //< Run acpa() and then compute an embedding into a torus.
+        void output_pdf(); //< Make a PDF of a few periods of the covering.
 
-		void flip	();
+        void flip();
 
-		cpx m;
-	};
-}
+        cpx m;
+    };
+} // namespace vb

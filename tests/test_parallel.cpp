@@ -1,5 +1,6 @@
 #include <vb/Ranges.h>
 #include <vb/ThreadPool.h>
+#include <vb/util.h>
 #include <future>
 #include <numeric>
 #include <range/v3/numeric/accumulate.hpp>

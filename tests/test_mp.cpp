@@ -1,4 +1,5 @@
 #include <vb/mp.h>
+#include <vb/util.h>
 
 using namespace vb;
 using namespace std;

@@ -1,3 +1,4 @@
+#include <vb/Hub.h>
 #include <vb/LinearAlgebra.h>
 #include <vb/PRNG.h>
 #include <gsl/gsl>
@@ -99,7 +100,7 @@ public:
         double          sigma = 0.1;
         CMAParameters<> cmaparams(x0, sigma);
         CMASolutions    cmasols = cmaes<>(f, cmaparams);
-        return x_to_p({cmasols.get_best_seen_candidate().get_x_ptr(),16});
+        return x_to_p({cmasols.get_best_seen_candidate().get_x_ptr(), 16});
     }
 
     void run(int n, int t) {

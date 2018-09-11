@@ -1,5 +1,6 @@
 #pragma once
 #include <vb/math.h>
+#include <vb/Hub.h>
 #include <boost/multiprecision/gmp.hpp>
 #include <boost/multiprecision/mpc.hpp>
 #include <boost/multiprecision/mpfr.hpp>

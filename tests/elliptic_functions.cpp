@@ -1,5 +1,6 @@
 #include <vb/Elliptic.h>
 #include <vb/mp.h>
+#include <iostream>
 
 using namespace vb;
 using namespace std;
