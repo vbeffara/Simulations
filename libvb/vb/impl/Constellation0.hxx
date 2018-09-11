@@ -210,26 +210,27 @@ namespace vb {
         int nd = std::max(5, int(lerr) / 2 - 7);
         if (err == T(0)) nd = 10;
         os << std::setprecision(nd) << std::fixed;
-        os << "Keeping " << nd << " digits." << std::endl;
+        os << "Keeping " << nd << " digits."
+           << "\n";
 
-        os << "Black vertices / zeros: " << std::endl;
-        for (int i = 0; i < C.b.size(); ++i) os << "| " << C.b[i].d << "\t" << C.b[i].z << std::endl;
-        os << std::endl;
-        os << "White vertices / ones: " << std::endl;
-        for (int i = 0; i < C.w.size(); ++i) os << "| " << C.w[i].d << "\t" << C.w[i].z << std::endl;
-        os << std::endl;
-        os << "Red vertices / poles: " << std::endl;
-        for (int i = 0; i < C.f.size(); ++i) os << "| " << C.f[i].d << "\t" << C.f[i].z << std::endl;
-        os << std::endl;
-        os << u8"λ     := " << C.p[0] << std::endl;
-        Polynomial<typename cpx_t<T>::type> P{{1}};
-        for (auto zd : C.b)
-            for (int j = 0; j < zd.d; ++j) add_root(P, zd.z);
-        os << "P[z_] := " << format(P) << std::endl;
-        Polynomial<typename cpx_t<T>::type> Q{{1}};
-        for (auto zd : C.f)
-            for (int j = 0; j < zd.d; ++j) add_root(Q, zd.z);
-        os << "Q[z_] := " << format(Q) << std::endl;
+        os << "Black vertices / zeros: "
+           << "\n";
+        for (const auto & u : C.b) os << "| " << u.d << "\t" << u.z << "\n";
+        os << "\n";
+        os << "White vertices / ones: "
+           << "\n";
+        for (const auto & u : C.w) os << "| " << u.d << "\t" << u.z << "\n";
+        os << "\n";
+        os << "Red vertices / poles: "
+           << "\n";
+        for (const auto & u : C.f) os << "| " << u.d << "\t" << u.z << "\n";
+        os << "\n";
+        os << u8"λ     := " << C.p[0] << "\n";
+        Polynomial<typename cpx_t<T>::type> P{1}, Q{1};
+        for (auto zd : C.b) add_root(P, zd.z, zd.d);
+        for (auto zd : C.f) add_root(Q, zd.z, zd.d);
+        os << "P[z_] := " << format(P) << "\n";
+        os << "Q[z_] := " << format(Q) << "\n";
         return os;
     }
 
@@ -240,47 +241,48 @@ namespace vb {
         int nd = std::max(5, int(lerr) / 2 - 10);
         if (err == T(0)) nd = 10;
         os << std::setprecision(10) << std::fixed;
-        os << "Keeping " << nd << " digits." << std::endl << std::endl;
+        os << "Keeping " << nd << " digits."
+           << "\n"
+           << "\n";
 
-        os << "Black vertices / zeros: " << std::endl;
+        os << "Black vertices / zeros: "
+           << "\n";
         for (auto & zd : C.b) {
             os << "| " << zd.d << "\t" << fmt::format("{:<30}", pretty(zd.z));
             if (auto P = guess(zd.z, nd)) os << "\troot of " << format(*P);
-            os << std::endl;
+            os << "\n";
         }
-        os << std::endl;
-        os << "White vertices / ones: " << std::endl;
+        os << "\n";
+        os << "White vertices / ones: "
+           << "\n";
         for (auto & zd : C.w) {
             os << "| " << zd.d << "\t" << fmt::format("{:<30}", pretty(zd.z));
             if (auto P = guess(zd.z, nd)) os << "\troot of " << format(*P);
-            os << std::endl;
+            os << "\n";
         }
-        os << std::endl;
-        os << "Red vertices / poles: " << std::endl;
+        os << "\n";
+        os << "Red vertices / poles: "
+           << "\n";
         for (auto & zd : C.f) {
             os << "| " << zd.d << "\t" << fmt::format("{:<30}", pretty(zd.z));
             if (auto P = guess(zd.z, nd)) os << "\troot of " << format(*P);
-            os << std::endl;
+            os << "\n";
         }
-        os << std::endl;
-        os << u8"λ     := " << C.p[0] << std::endl;
-        if (auto L = guess(C.p[0], nd)) os << u8"Λ[z_] := " << format(*L) << std::endl;
-        Polynomial<complex_t> P{{1}};
-        for (auto zd : C.b)
-            for (int j = 0; j < zd.d; ++j) add_root(P, zd.z);
+        os << "\n";
+        os << u8"λ     := " << C.p[0] << "\n";
+        if (auto L = guess(C.p[0], nd)) os << u8"Λ[z_] := " << format(*L) << "\n";
+        Polynomial<complex_t> P{1}, Q{1};
+        for (auto zd : C.b) add_root(P, zd.z, zd.d);
+        for (auto zd : C.f) add_root(Q, zd.z, zd.d);
         for (auto & x : P.data()) {
             auto xx = complex_t(round(real(x)), round(imag(x)));
             if (abs(x - xx) < pow(T(.1), nd)) x = xx;
         }
-        os << "P[z_] := " << format(P) << std::endl;
-        Polynomial<complex_t> Q{{1}};
-        for (auto zd : C.f)
-            for (int j = 0; j < zd.d; ++j) add_root(Q, zd.z);
         for (auto & x : Q.data()) {
             auto xx = complex_t(round(real(x)), round(imag(x)));
             if (abs(x - xx) < pow(T(.1), nd)) x = xx;
         }
-        os << "Q[z_] := " << format(Q) << std::endl;
+        os << "P[z_] := " << format(P) << "\nQ[z_] := " << format(Q) << "\n";
         return os;
     }
 

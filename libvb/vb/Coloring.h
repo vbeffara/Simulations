@@ -2,6 +2,7 @@
 #include <vb/Picture.h>
 #include <vb/ThreadPool.h>
 #include <vb/coo.h>
+#include <vb/cpx.h>
 #include <gsl/gsl>
 
 namespace vb {

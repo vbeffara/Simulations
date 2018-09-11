@@ -1,6 +1,6 @@
 #pragma once
-
 #include <vb/coo.h>
+#include <vb/cpx.h>
 
 namespace vb {
     class Lattice_place {

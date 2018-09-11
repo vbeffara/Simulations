@@ -1,25 +1,24 @@
 #pragma once /// @file
-#include <vb/cpx.h>
+#include <complex>
 #include <vector>
 
 namespace vb {
     struct coo {
-        bool operator==(const coo & z) const { return (x == z.x) && (y == z.y); }
-        bool operator!=(const coo & z) const { return (x != z.x) || (y != z.y); }
-        coo  operator+(const coo & z) const { return {x + z.x, y + z.y}; }
-        coo  operator-(const coo & z) const { return {x - z.x, y - z.y}; }
-        coo  operator-() const { return {-x, -y}; }
-
-        coo operator*(int64_t d) const { return {x * d, y * d}; }
-        coo operator/(int64_t d) const { return {x / d, y / d}; }
-
-        void operator+=(const coo & z) { *this = *this + z; }
-        void operator-=(const coo & z) { *this = *this - z; }
-
-        explicit operator cpx() const { return cpx(x, y); }
-
         int64_t x, y;
+
+        void operator+=(const coo & z) { *this = {x + z.x, y + z.y}; }
+        void operator-=(const coo & z) { *this = {x - z.x, y - z.y}; }
+
+        template <typename T> explicit operator std::complex<T>() const { return {T(x), T(y)}; }
     };
+
+    inline bool operator==(const coo & z1, const coo & z2) { return (z1.x == z2.x) && (z1.y == z2.y); }
+    inline bool operator!=(const coo & z1, const coo & z2) { return (z1.x != z2.x) || (z1.y != z2.y); }
+    inline coo  operator+(const coo & z1, const coo & z2) { return {z1.x + z2.x, z1.y + z2.y}; }
+    inline coo  operator-(const coo & z1, const coo & z2) { return {z1.x - z2.x, z1.y - z2.y}; }
+    inline coo  operator-(const coo & z) { return {-z.x, -z.y}; }
+    inline coo  operator*(const coo & z, int64_t d) { return {z.x * d, z.y * d}; }
+    inline coo  operator/(const coo & z, int64_t d) { return {z.x / d, z.y / d}; }
 
     inline int64_t norm(coo z) { return z.x * z.x + z.y * z.y; }
     inline int64_t sup(coo z) { return std::max(std::abs(z.x), std::abs(z.y)); }
@@ -35,8 +34,8 @@ namespace vb {
         int64_t x, y, z;
     };
 
-    extern const std::vector<coo>  dz;
-    extern const std::vector<coo3> dz3;
+    inline const std::vector<coo>  dz  = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}, {1, 1}, {-1, -1}, {-1, 1}, {1, -1}};
+    inline const std::vector<coo3> dz3 = {{1, 0, 0}, {-1, 0, 0}, {0, 1, 0}, {0, -1, 0}, {0, 0, 1}, {0, 0, -1}};
 
 #ifdef UNIT_TESTS
     TEST_CASE("vb::coo") {
@@ -49,10 +48,9 @@ namespace vb {
 
         z1 += z2;
         z2 -= z1;
-        CHECK(cpx(z2) == cpx(-2, -3));
+        CHECK(std::complex<double>(z2) == std::complex<double>(-2, -3));
         CHECK(norm(z2) == 13);
         CHECK(sup(z2) == 3);
-        CHECK(pretty(z1) == "(6,2)");
     }
 #endif
 } // namespace vb

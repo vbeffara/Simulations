@@ -1,6 +1,6 @@
 #include <vb/Image.h>
 
-using std::vector, vb::H, vb::coo, vb::prng, vb::BLACK, vb::WHITE;
+using std::vector, vb::H, vb::prng, vb::BLACK, vb::WHITE;
 
 vector<bool> init_ok_none() {
     vector<bool> ok(256, false);
