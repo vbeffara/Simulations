@@ -1,6 +1,5 @@
 #pragma once
 #define BOOST_NO_CXX11_LAMBDAS // missing T(0) in boost::math::tools::polynomial::normalize()
-#include <vb/cpx.h>
 #include <vb/Hub.h>
 #include <boost/math/tools/polynomial.hpp>
 #include <vector>
