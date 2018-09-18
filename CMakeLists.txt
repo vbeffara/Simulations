@@ -46,12 +46,9 @@ if (${BIGENDIAN})
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBIGENDIAN")
 endif ()
 
-find_package (PkgConfig)
-pkg_check_modules (EXT REQUIRED fplll)
-
 file (GLOB vb_sources ${PROJECT_SOURCE_DIR}/libvb/*.cpp)
 add_library (vb SHARED ${vb_sources})
-target_link_libraries (vb ${EXT_LIBRARIES} ${CONAN_LIBS})
+target_link_libraries (vb ${CONAN_LIBS})
 
 include(CheckIncludeFileCXX)
 check_include_file_cxx("mpc.h" MPC)
@@ -64,7 +61,7 @@ endif ()
 execute_process(COMMAND "git" describe --always --abbrev=40 WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" OUTPUT_VARIABLE GIT_SHA1 OUTPUT_STRIP_TRAILING_WHITESPACE)
 set_source_files_properties(libvb/Hub.cpp PROPERTIES COMPILE_FLAGS -DGIT_SHA1='"${GIT_SHA1}"')
 
-include_directories ("${PROJECT_SOURCE_DIR}/libvb" ${EXT_INCLUDE_DIRS})
+include_directories ("${PROJECT_SOURCE_DIR}/libvb")
 
 set (DIRS tests 1D 2D 3D)
 if (${PLAYGROUND})

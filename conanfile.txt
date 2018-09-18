@@ -2,7 +2,7 @@
 boost/1.68.0@conan/stable
 doctest/1.2.6@bincrafters/stable
 eigen/3.3.5@conan/stable
-# gmp/6.1.2@bincrafters/stable
+gmp/6.1.2@bincrafters/stable
 gsl_microsoft/20180102@bincrafters/stable
 libpng/1.6.34@bincrafters/stable
 range-v3/0.3.6@ericniebler/stable
@@ -12,7 +12,9 @@ yaml-cpp/0.6.2@bincrafters/stable
 cairo/1.14.12@vbeffara/testing
 fftw/3.3.8@vbeffara/stable
 fltk/1.3.4@vbeffara/testing
+fplll/5.2.1@vbeffara/testing
 libcmaes/0.9.5+HEAD@vbeffara/testing
+mpfr/4.0.1@vbeffara/testing
 sqlite_modern_cpp/3.2+HEAD@vbeffara/testing
 
 [options]
