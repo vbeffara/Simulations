@@ -2,13 +2,13 @@ image: ubuntu:bionic
 
 before_script:
   - apt-get update
-  - apt-get install -y python-pip cmake gcc-7 g++-7 ninja-build git lcov python-pip ruby libmpc-dev libgl1-mesa-dev
+  - apt-get install -y python3-pip cmake gcc-7 g++-7 ninja-build git lcov python-pip ruby libmpc-dev libgl1-mesa-dev
   - apt-get install -y xvfb libglu1-mesa-dev xorg-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
 
 cmake:
   stage: build
   script:
-    - pip install conan
+    - pip3 install conan
     - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
     - conan remote add vb https://api.bintray.com/conan/vbeffara/misc
     - mkdir -p build/cov
@@ -24,7 +24,7 @@ unittests:
   stage: test
   script:
     - gem install coveralls-lcov
-    - pip install codecov
+    - pip3 install codecov
     - Xvfb :4 &
     - export DISPLAY=:4
     - lcov -z -d build
