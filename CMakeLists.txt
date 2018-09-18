@@ -47,7 +47,7 @@ if (${BIGENDIAN})
 endif ()
 
 find_package (PkgConfig)
-pkg_check_modules (EXT REQUIRED cairo fplll)
+pkg_check_modules (EXT REQUIRED fplll)
 
 file (GLOB vb_sources ${PROJECT_SOURCE_DIR}/libvb/*.cpp)
 add_library (vb SHARED ${vb_sources})

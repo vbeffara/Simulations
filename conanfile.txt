@@ -9,6 +9,7 @@ range-v3/0.3.6@ericniebler/stable
 spdlog/1.1.0@bincrafters/stable
 yaml-cpp/0.6.2@bincrafters/stable
 
+cairo/1.14.12@vbeffara/testing
 fftw/3.3.8@vbeffara/stable
 fltk/1.3.4@vbeffara/testing
 libcmaes/0.9.5+HEAD@vbeffara/testing
