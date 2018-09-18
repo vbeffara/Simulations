@@ -13,6 +13,20 @@ namespace vb {
             for (int z = 0; z < sz; ++z) Bitmap<Adder>::at({z + sx, y}).dim(sx);
     }
 
+    void Cube::put(const coo3 & c, uint8_t t) {
+        uint8_t d = data[index(c)];
+        if (t != d) {
+            Bitmap<Adder>::at({c.x, c.y}) -= d;
+            Bitmap<Adder>::at({c.x, c.z + sy}) -= d;
+            Bitmap<Adder>::at({c.z + sx, c.y}) -= d;
+            Bitmap<Adder>::at({c.x, c.y}) += t;
+            Bitmap<Adder>::at({c.x, c.z + sy}) += t;
+            Bitmap<Adder>::at({c.z + sx, c.y}) += t;
+            data[index(c)] = t;
+        }
+        step();
+    }
+
     Cube_iterator Cube::begin() { return Cube_iterator(this, {0, 0, 0}); }
     Cube_iterator Cube::end() { return Cube_iterator(this, {0, 0, sz}); }
 

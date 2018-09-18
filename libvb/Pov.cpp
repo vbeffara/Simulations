@@ -1,3 +1,4 @@
+#include <vb/Hub.h>
 #include <vb/Pov.h>
 
 namespace vb {
@@ -7,6 +8,8 @@ namespace vb {
         if (!b.after.empty()) os << b.after;
         return os;
     }
+
+    void Pov_Scene::output_pov(const std::string & s) { std::ofstream((H.dir + s + ".pov").c_str()) << (*this); }
 
     std::string Box(tri a, tri b) { return fmt::format("box {{ {}, {} }}", a, b); }
     std::string Camera(tri a, tri b, double d) { return fmt::format("camera {{ location {} look_at {} angle {} }}", a, b, d); }

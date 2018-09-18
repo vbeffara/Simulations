@@ -1,5 +1,4 @@
 #pragma once /// \file
-#include <vb/Hub.h>
 #include <fstream>
 
 namespace vb {
@@ -30,7 +29,7 @@ namespace vb {
                     << R"(background { color White })";
         }
 
-        void output_pov(const std::string & s) { std::ofstream((H.dir + s + ".pov").c_str()) << (*this); }
+        void output_pov(const std::string & s);
     };
 
     class Pov_Union : public bunch {
