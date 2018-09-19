@@ -50,14 +50,6 @@ file (GLOB vb_sources ${PROJECT_SOURCE_DIR}/libvb/*.cpp)
 add_library (vb SHARED ${vb_sources})
 target_link_libraries (vb ${CONAN_LIBS})
 
-include(CheckIncludeFileCXX)
-check_include_file_cxx("mpc.h" MPC)
-if (${MPC})
-	target_link_libraries (vb "mpc")
-else ()
-	message (FATAL_ERROR "MPC is required." )
-endif ()
-
 execute_process(COMMAND "git" describe --always --abbrev=40 WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" OUTPUT_VARIABLE GIT_SHA1 OUTPUT_STRIP_TRAILING_WHITESPACE)
 set_source_files_properties(libvb/Hub.cpp PROPERTIES COMPILE_FLAGS -DGIT_SHA1='"${GIT_SHA1}"')
 

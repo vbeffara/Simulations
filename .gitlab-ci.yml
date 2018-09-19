@@ -2,7 +2,7 @@ image: ubuntu:bionic
 
 before_script:
   - apt-get update
-  - apt-get install -y python3-pip cmake gcc-7 g++-7 ninja-build git lcov python-pip ruby libmpc-dev libgl1-mesa-dev
+  - apt-get install -y python3-pip cmake gcc-7 g++-7 ninja-build git lcov ruby libgl1-mesa-dev
   - apt-get install -y xvfb libglu1-mesa-dev xorg-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
 
 cmake:
