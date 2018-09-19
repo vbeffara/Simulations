@@ -59,7 +59,7 @@ int main(int argc, char ** argv) {
 
         if (H['v'] || H['o'] || H['b'] || H['q']) {
             H.title = fmt::format("Spheroidal enumeration (s={}, d={}, i={})", s, d, nb);
-            Constellation0<double> C{M, H};
+            Constellation0<double> C{M};
             C.belyi();
             if (H['b']) cout << endl << C << endl;
             if (H['v'] || H['o']) {

@@ -16,7 +16,7 @@ namespace vb {
         using Constellation<T>::cost;
         using Constellation<T>::dim;
 
-        Constellation0(const Hypermap & M, Hub & H);
+        Constellation0(const Hypermap & M);
         template <typename U> Constellation0(const Constellation0<U> & C);
 
         cplx operator()(cplx z) const override;
@@ -48,7 +48,7 @@ namespace vb {
     TEST_CASE("vb::Constellation0") {
         // spdlog::set_level(spdlog::level::trace);
         auto                   M = HLib().at("m_dodecahedron");
-        Constellation0<double> C{M, H};
+        Constellation0<double> C(M);
         Constellation0<real_t> Cq(C);
         Cq.findn();
         Cq.belyi();

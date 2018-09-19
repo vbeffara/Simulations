@@ -22,15 +22,15 @@
 #include <vb/Hypermap.h>
 
 namespace vb {
-	class Spheroidal : public Hypermap {
-	public:
-		Spheroidal (Hypermap M, Hub & H);
+    class Spheroidal : public Hypermap {
+    public:
+        Spheroidal(Hypermap M);
 
-		void pack      	();	//< Run acpa() and then compute an embedding into a torus.
-		void output_pdf	();	//< Make a PDF of a few periods of the covering.
+        void pack();       //< Run acpa() and then compute an embedding into a torus.
+        void output_pdf(); //< Make a PDF of a few periods of the covering.
 
-		void linear   	(cpx a, cpx b = 0.0);
-		void inversion	();
-		void mobiusto0	(cpx a);
-	};
-}
+        void linear(cpx a, cpx b = 0.0);
+        void inversion();
+        void mobiusto0(cpx a);
+    };
+} // namespace vb

@@ -21,7 +21,7 @@ int main(int argc, char ** argv) {
     }
 
     cout << M << endl;
-    Constellation1<double> C{M, H};
+    Constellation1<double> C{M};
     C.findn();
 
     if (!H['q']) { cout << endl << C; }

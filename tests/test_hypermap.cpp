@@ -24,7 +24,7 @@ int main(int argc, char ** argv) {
     }
     std::cout << M;
 
-    Constellation0<double> C{M, H};
+    Constellation0<double> C{M};
     C.belyi();
     if (!H['q']) std::cout << std::endl << C;
 

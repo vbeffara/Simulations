@@ -16,7 +16,7 @@ namespace vb {
         using Constellation<T>::cost;
         using Constellation<T>::dim;
 
-        Constellation1(const Hypermap & M, Hub & H);
+        Constellation1(const Hypermap & M);
         template <typename U> Constellation1(const Constellation1<U> & C);
 
         cplx operator()(cplx z) const override;
@@ -55,7 +55,7 @@ namespace vb {
 #ifdef UNIT_TESTS
     TEST_CASE("vb::Constellation1") {
         auto                   M = HLib().at("lat_SV");
-        Constellation1<double> C{M, H};
+        Constellation1<double> C(M);
         Constellation1<real_t> Cq(C);
         Cq.findn();
         CHECK(format(*(guess(Cq.E.j(), 80))) == " z^2 + -914416 z + 590816592");
