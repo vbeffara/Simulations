@@ -1,6 +1,5 @@
 #pragma once
 #include <vb/math.h>
-#include <vb/Hub.h>
 #include <boost/multiprecision/gmp.hpp>
 #include <boost/multiprecision/mpc.hpp>
 #include <boost/multiprecision/mpfr.hpp>
@@ -18,10 +17,11 @@ namespace vb {
 
     template <> struct cpx_t<real_t> { using type = complex_t; };
 
-    template <> real_t      sum<real_t>(const std::function<real_t(int)> & f);
-    template <> complex_t   sum<complex_t>(const std::function<complex_t(int)> & f);
-    template <> std::string pretty<real_t>(const real_t & t);
-    template <> std::string pretty<complex_t>(const complex_t & t);
+    template <> real_t    sum<real_t>(const std::function<real_t(int)> & f);
+    template <> complex_t sum<complex_t>(const std::function<complex_t(int)> & f);
+
+    std::string pretty(const real_t & t);
+    std::string pretty(const complex_t & t);
 } // namespace vb
 
 namespace Eigen {

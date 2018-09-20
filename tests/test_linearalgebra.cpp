@@ -1,3 +1,4 @@
+#include <vb/Hub.h>
 #include <vb/LinearAlgebra.h>
 #include <vb/mp.h>
 #include <iomanip>

@@ -1,4 +1,5 @@
 #include <vb/mp.h>
+#include <spdlog/fmt/ostr.h>
 
 namespace vb {
     template <> real_t sum<real_t>(const std::function<real_t(int)> & f) {
@@ -21,12 +22,12 @@ namespace vb {
         return out;
     }
 
-    template <> std::string pretty<real_t>(const real_t & t) {
+    std::string pretty(const real_t & t) {
         if (mpz_int ti(round(t)); ti == t) return fmt::format("{}", ti);
         return fmt::format("{}", t);
     }
 
-    template <> std::string pretty<complex_t>(const complex_t & t) {
+    std::string pretty(const complex_t & t) {
         if (imag(t) == 0) return pretty(real(t));
         if (real(t) == 0) return fmt::format("({} I)", pretty(imag(t)));
         return fmt::format("({} + {} I)", pretty(real(t)), pretty(imag(t)));

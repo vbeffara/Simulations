@@ -1,4 +1,5 @@
 #include "gsl/gsl"
+#include <vb/Hub.h>
 #include <vb/mp.h>
 #include <FL/Fl.H>
 #include <FL/Fl_Gl_Window.H>

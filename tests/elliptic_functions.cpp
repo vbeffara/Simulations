@@ -1,4 +1,5 @@
 #include <vb/Elliptic.h>
+#include <vb/Hub.h>
 #include <vb/mp.h>
 #include <iostream>
 
