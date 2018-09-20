@@ -4,7 +4,7 @@ doctest/1.2.6@bincrafters/stable
 eigen/3.3.5@conan/stable
 gsl_microsoft/20180102@bincrafters/stable
 libpng/1.6.34@bincrafters/stable
-range-v3/0.3.6@ericniebler/stable
+range-v3/0.3.7@ericniebler/stable
 spdlog/1.1.0@bincrafters/stable
 yaml-cpp/0.6.2@bincrafters/stable
 
