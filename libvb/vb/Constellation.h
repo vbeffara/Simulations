@@ -1,5 +1,5 @@
 #pragma once
-#include <vb/Image.h>
+#include <vb/Bitmap.h>
 #include <vb/LinearAlgebra.h>
 #include <vb/mp.h>
 

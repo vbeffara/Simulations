@@ -1,5 +1,5 @@
 #pragma once
-#include <vb/Image.h>
+#include <vb/Bitmap.h>
 
 namespace vb {
 	struct QuadIndex { coo z; long d=0; };

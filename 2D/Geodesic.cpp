@@ -1,4 +1,4 @@
-#include <vb/Image.h>
+#include <vb/Bitmap.h>
 #include <vb/ProgressBar.h>
 #include <vb/Ranges.h>
 #include <fftw3.h>

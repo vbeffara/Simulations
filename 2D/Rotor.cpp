@@ -1,4 +1,4 @@
-#include <vb/Image.h>
+#include <vb/Bitmap.h>
 #include <vb/ProgressBar.h>
 
 using namespace vb;

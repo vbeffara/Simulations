@@ -1,5 +1,5 @@
 #include <vb/Coloring.h>
-#include <vb/Image.h>
+#include <vb/Bitmap.h>
 
 using namespace vb;
 using namespace std;

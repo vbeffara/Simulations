@@ -1,4 +1,4 @@
-#include <vb/Image.h>
+#include <vb/Bitmap.h>
 
 #define MAIN_BIT 1u
 #define L1_BIT 2u

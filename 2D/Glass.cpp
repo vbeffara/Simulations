@@ -1,4 +1,4 @@
-#include <vb/Image.h>
+#include <vb/Bitmap.h>
 
 using std::vector, vb::H, vb::prng, vb::BLACK, vb::WHITE;
 

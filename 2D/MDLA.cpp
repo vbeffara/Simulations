@@ -1,4 +1,4 @@
-#include <vb/Image.h>
+#include <vb/Bitmap.h>
 #include <vb/Ranges.h>
 
 #define EMPTY BLACK
