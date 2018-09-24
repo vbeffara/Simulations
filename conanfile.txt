@@ -1,7 +1,6 @@
 [requires]
 boost/1.68.0@conan/stable
 doctest/1.2.6@bincrafters/stable
-eigen/3.3.5@conan/stable
 gsl_microsoft/20180102@bincrafters/stable
 libpng/1.6.34@bincrafters/stable
 range-v3/0.3.7@ericniebler/stable

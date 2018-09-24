@@ -7,7 +7,7 @@ using namespace vb;
 using namespace std;
 using Eigen::Matrix2d;
 
-#include "cmaes.h"
+#include <cmaes.h>
 using namespace libcmaes;
 
 double lambda(const Matrix2d & A) { return abs(A(0, 0) + A(1, 1)); }
