@@ -89,7 +89,7 @@ int main(int argc, char ** argv) {
                 auto bd = C.bounds();
                 img.z1  = bd.first;
                 img.z2  = bd.second;
-                img.f   = [&](cpx z) { return HSV((imag(C(z)) > 0) ? 0 : .5, .8, .8); };
+                img.f   = [&](cpx z) { return Indexed((imag(C(z)) > 0) ? 1 : 2); };
                 img.scale(1.3);
                 img.show();
                 img.output();

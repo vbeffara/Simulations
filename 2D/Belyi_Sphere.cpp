@@ -64,7 +64,7 @@ int main(int argc, char ** argv) {
             if (H['b']) cout << endl << C << endl;
             if (H['v'] || H['o']) {
                 auto     bd = C.bounds();
-                Coloring CC(bd.first, bd.second, 800, [&](cpx z) { return HSV((imag(C(z)) > 0) ? 0 : .5, .8, .8); });
+                Coloring CC(bd.first, bd.second, 800, [&](cpx z) { return Indexed((imag(C(z)) > 0) ? 1 : 2); });
                 CC.scale(1.5);
                 CC.show();
                 if (H['o'])

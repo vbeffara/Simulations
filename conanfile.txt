@@ -9,7 +9,7 @@ yaml-cpp/0.6.2@bincrafters/stable
 
 cairo/1.14.12@vbeffara/testing
 fftw/3.3.8@vbeffara/stable
-fltk/1.3.4@vbeffara/testing
+fltk/1.4.0+HEAD@vbeffara/testing
 fplll/5.2.1@vbeffara/testing
 libcmaes/0.9.5+HEAD@vbeffara/testing
 mpc/1.1.0@vbeffara/testing
