@@ -135,7 +135,7 @@ namespace vb {
 
         if (!eee.empty()) F.add(std::make_unique<Path>(eee, Pen(BLACK, .5)));
 
-        for (auto v : V) {
+        for (const auto & v : V) {
             if (v.r < 0) continue;
             cpx z = v.z;
             if (((mode & 32u) != 0) && ((v.bone & 2u) != 0)) F.add(std::make_unique<Circle>(z, .01, Pen(BLACK, 2, BLACK, true)));

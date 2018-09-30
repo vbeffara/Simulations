@@ -18,7 +18,7 @@ class Snake : public Bitmap<site> {
 public:
     Snake(int n, double l, bool hex) : Bitmap(4 * n + 1, 2 * n + 1), lambda(l), path(1, {2 * n, 0}), hex(hex) {
         for (int x = 0; x < w(); ++x) put({x, 0}, VERTEX);
-        if (double a = H['a']) triangle(a);
+        if (double a = H['a']; a != 0) triangle(a);
         if (!H['v']) show();
     }
 

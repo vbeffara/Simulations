@@ -3,7 +3,7 @@
 namespace vb {
     Task::Task(TimePoint t, Duration d, std::function<void()> f) : std::function<void()>(std::move(f)), next(t), period(d), active(true) {}
 
-    Auto::Auto(double t) : start(now()), next(1), slice(10), n_call(0), task{add_task(t, [this] { this->update(); })} {}
+    Auto::Auto(double t) : start(now()), task{add_task(t, [this] { this->update(); })} {}
 
     Auto::~Auto() { remove_task(task); }
 
@@ -22,7 +22,8 @@ namespace vb {
                 t.next = now() + t.period;
             }
         double time = Duration(now() - start).count();
-        if (time > 1) slice = std::min(n_call / (time * 10), slice + slice / 100.0);
-        next = slice;
+        slice *= 1.01;
+        if (time > .1) slice = std::min(.1 * n_call / time, slice);
+        next = int(slice);
     }
 } // namespace vb

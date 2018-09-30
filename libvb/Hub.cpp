@@ -111,7 +111,7 @@ namespace vb {
 
         if (!empty()) {
             cs.clear();
-            for (auto i : *this) cs.push_back(std::string(1, i.first) + "=" + i.second);
+            for (const auto & [k, v] : *this) cs.push_back(std::string(1, k) + "=" + v);
             title += " (" + boost::join(cs, ", ") + ")";
         }
 

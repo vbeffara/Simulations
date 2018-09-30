@@ -39,9 +39,9 @@ namespace vb {
     private:
         void run();
 
-        int     next;
-        double  slice;
-        int64_t n_call;
+        int     next   = 1;
+        double  slice  = 10;
+        int64_t n_call = 0;
         int     task;
 
     protected:

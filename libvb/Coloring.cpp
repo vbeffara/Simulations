@@ -2,14 +2,14 @@
 
 namespace vb {
     Coloring::Coloring(cpx z1_, cpx z2_, int n, std::function<Color(cpx)> f_)
-        : Picture(n, n * imag(z2_ - z1_) / real(z2_ - z1_)), eps(real(z1_ - z2_) / n), z1(z1_), z2(z2_), f(std::move(f_)) {}
+        : Picture(n, int(n * imag(z2_ - z1_) / real(z2_ - z1_))), eps(real(z1_ - z2_) / n), z1(z1_), z2(z2_), f(std::move(f_)) {}
 
     void Coloring::show() {
         Picture::show();
         auto sd      = static_cast<Color *>(static_cast<void *>(cairo_image_surface_get_data(surface)));
         stage        = gsl::span<Color>(sd, stride * pixel_h());
         eps          = real(z2 - z1) / pixel_w();
-        pixel_detail = detail / eps;
+        pixel_detail = int(detail / eps);
         for (int i = 0; i < pixel_w(); ++i)
             for (int j = 0; j < pixel_h(); ++j) at({i, j}) = BLACK;
         run([&] { tessel({0, 0}, {pixel_w() - 1, pixel_h() - 1}); });

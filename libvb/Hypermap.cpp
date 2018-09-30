@@ -316,10 +316,10 @@ namespace vb {
         int                 n = V.size();
         std::vector<double> r(n, 0), old_r(n, 0), e(n, 1), old_e(n, 0), l(n, 0), ll(n, 0);
 
-        int    m   = pow(n, .25); // Steps between looks
-        double eps = .1;          // Dampening of the decay estimator
-        double mvm = .01;         // Threshold to trigger the jump
-        double tgt = 1e-8;        // Target per-vertex error
+        int    m   = int(pow(n, .25)); // Steps between looks
+        double eps = .1;               // Dampening of the decay estimator
+        double mvm = .01;              // Threshold to trigger the jump
+        double tgt = 1e-8;             // Target per-vertex error
 
         for (int i = 0; i < n; ++i)
             if (V[i].adj.size() > 2) { r[i] = V[i].r; }

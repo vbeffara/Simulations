@@ -80,7 +80,7 @@ namespace vb {
 
         int mdeg = 0;
         cpx mpos = 0;
-        for (auto v : V)
+        for (const auto & v : V)
             if (v.adj.size() > mdeg) {
                 mdeg = v.adj.size();
                 mpos = v.z;
@@ -134,7 +134,7 @@ namespace vb {
 
         for (int a = -2; a < 3; ++a) {
             for (int b = -1; b < 2; ++b) {
-                for (auto v : V) {
+                for (const auto & v : V) {
                     cpx z = v.z + cpx(a) + cpx(b) * m;
                     if ((imag(z) < -.6) || (imag(z) > 1.7 * std::max(1.0, imag(m))) || (real(z) < -.8) || (real(z) > 2.6)) continue;
                     if (((mode & 32u) != 0) && ((v.bone & 2u) != 0)) F.add(std::make_unique<Circle>(z, .015, Pen(BLACK, .5, BLACK, true)));
