@@ -7,7 +7,7 @@ int main(int argc, char ** argv) {
     int    n = H['n'];
     double a = H['a'];
     a        = 1 / (1 + a);
-    int L    = pow(static_cast<double>(n), .33);
+    auto L   = int(pow(n, .33));
 
     CoarseImage img(n, n, L);
     img.show();

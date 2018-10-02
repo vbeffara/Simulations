@@ -1,5 +1,6 @@
 [requires]
 boost/1.68.0@conan/stable
+cairo/1.15.14@bincrafters/stable
 doctest/1.2.6@bincrafters/stable
 gsl_microsoft/20180102@bincrafters/stable
 libpng/1.6.34@bincrafters/stable
@@ -7,7 +8,6 @@ range-v3/0.3.7@ericniebler/stable
 spdlog/1.1.0@bincrafters/stable
 yaml-cpp/0.6.2@bincrafters/stable
 
-cairo/1.14.12@vbeffara/testing
 fftw/3.3.8@vbeffara/stable
 fltk/1.4.0+HEAD@vbeffara/testing
 fplll/5.2.1@vbeffara/testing

@@ -69,7 +69,7 @@ public:
     }
 
     double vv(const std::vector<std::vector<double>> & a, double x, double y, double z) {
-        int i0 = n * x * x, j0 = n * y * y;
+        auto i0 = int(n * x * x), j0 = int(n * y * y);
         i0 -= i0 % 2;
         j0 -= j0 % 2;
         double out = 0, t = 1;

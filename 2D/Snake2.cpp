@@ -25,8 +25,8 @@ public:
     void triangle(double a) {
         double ta = tan(a * M_PI / 180);
         for (int y = 0; y < h(); ++y) {
-            int yy = y + (y % 2);
-            int s  = 2 + yy * ta;
+            int  yy = y + (y % 2);
+            auto s  = int(2 + yy * ta);
             s += (s % 2);
             for (int x = 0; x < w(); ++x)
                 if (abs(x - w() / 2) >= s) put({x, y}, VERTEX);
