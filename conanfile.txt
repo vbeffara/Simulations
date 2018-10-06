@@ -9,7 +9,7 @@ spdlog/1.1.0@bincrafters/stable
 yaml-cpp/0.6.2@bincrafters/stable
 
 fftw/3.3.8@vbeffara/stable
-fltk/1.4.0+HEAD@vbeffara/testing
+fltk/1.4.0+506b60a3f@vbeffara/testing
 fplll/5.2.1@vbeffara/testing
 libcmaes/0.9.5+HEAD@vbeffara/testing
 mpc/1.1.0@vbeffara/testing
