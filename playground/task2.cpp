@@ -3,28 +3,30 @@
 #include <functional>
 #include <vector>
 
-struct Will : public std::function<void()> {
-    using std::function<void()>::function;
+using Work = std::function<void()>;
+using BLST = boost::lockfree::stack<Work>;
+
+struct Will : public Work {
+    using Work::Work;
     ~Will() { (*this)(); }
 };
 
-struct STP : public boost::lockfree::stack<std::function<void()>> {
-    std::vector<std::thread> runners;
+void run_par(const std::function<void(BLST &, std::shared_ptr<Will>)> &f) {
+    BLST                     S;
     bool                     done = false;
-    template <typename F> STP(F &&f) {
-        f(*this, std::make_shared<Will>([=] { done = true; }));
-        for (int i = 0; i < std::max(std::thread::hardware_concurrency(), 1u); ++i)
-            runners.emplace_back([=] {
-                while (!done)
-                    if (value_type op; pop(op)) op();
-            });
-        for (auto &th : runners) th.join();
-    }
-};
+    std::vector<std::thread> ts(std::max(std::thread::hardware_concurrency(), 1u));
+    for (auto &t : ts)
+        t = std::thread([&] {
+            while (!done)
+                if (Work op; S.pop(op)) op();
+        });
+    f(S, std::make_shared<Will>([&done] { done = true; }));
+    for (auto &t : ts) t.join();
+}
 
 constexpr int fib(int n) { return n < 2 ? n : fib(n - 1) + fib(n - 2); }
 
-void fib(STP &S, std::shared_ptr<Will> parent, int n, const std::shared_ptr<int> &t) {
+void fib(BLST &S, std::shared_ptr<Will> parent, int n, const std::shared_ptr<int> &t) {
     if (n < 25) {
         *t = fib(n);
         return;
@@ -39,9 +41,9 @@ int main(int argc, char **argv) {
     vb::H.init("Trying a new task system", argc, argv, "n=41");
     int n = vb::H['n'];
 
-    vb::timing("Thread pool", [n] {
+    vb::timing("Thread pool", [=] {
         auto t = std::make_shared<int>(0);
-        STP([n, t](STP &S, std::shared_ptr<Will> post) { fib(S, post, n, t); });
+        run_par([n, t](auto &S, auto p) { fib(S, p, n, t); });
         return *t;
     });
 }
