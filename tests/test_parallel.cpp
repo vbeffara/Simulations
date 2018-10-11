@@ -10,14 +10,25 @@ using namespace ranges;
 using namespace std;
 using namespace vb;
 
-int fib(int n) { return n < 2 ? n : fib(n - 1) + fib(n - 2); }
+constexpr int fib(int n) { return n < 2 ? n : fib(n - 1) + fib(n - 2); }
+
+void fib(BLST &S, std::shared_ptr<Will> parent, int n, const std::shared_ptr<int> &t) {
+    if (n < 25) {
+        *t = fib(n);
+        return;
+    }
+    auto t1 = std::make_shared<int>(0), t2 = std::make_shared<int>(0);
+    auto post = std::make_shared<Will>([p = std::move(parent), t, t1, t2] { *t = *t1 + *t2; });
+    S.push([=, &S] { fib(S, post, n - 1, t1); });
+    S.push([=, &S] { fib(S, post, n - 2, t2); });
+}
 
 double cost(double x) {
     for (int i = 0; i < 10; ++i) x = cos(x);
     return x;
 }
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     H.init("Test of various parallel frameworks", argc, argv, "n=41,l=4000000");
     int n = H['n'], l = H['l'];
 
@@ -36,20 +47,20 @@ int main(int argc, char ** argv) {
         return fib_async()(n);
     });
 
-    function<Project(int, int *)> go = [&go](int n, int * t) -> Project {
+    function<Project(int, int *)> go = [&go](int n, int *t) -> Project {
         if (n < 25) {
             *t = fib(n);
             return {};
         }
         auto    t1 = new int;
         auto    t2 = new int;
-        Project p{[=] { return go(n - 1, t1); }, [=] { return go(n - 2, t2); },
-                  [=] {
-                      *t = *t1 + *t2;
-                      delete t1;
-                      delete t2;
-                      return Project{};
-                  }};
+        Project p {[=] { return go(n - 1, t1); }, [=] { return go(n - 2, t2); },
+                   [=] {
+                       *t = *t1 + *t2;
+                       delete t1;
+                       delete t2;
+                       return Project {};
+                   }};
         return p;
     };
 
@@ -94,6 +105,12 @@ int main(int argc, char ** argv) {
         return fib_omp()(n);
     });
 #endif
+
+    timing("Fibonacci  | New style thread pool", [=] {
+        auto t = std::make_shared<int>(0);
+        run_par([n, t](auto &S, auto p) { fib(S, p, n, t); });
+        return *t;
+    });
 
     timing("Map+reduce | Single (fill then sum)", [=] {
         vector<double> X(l);
