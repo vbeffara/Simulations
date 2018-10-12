@@ -221,6 +221,51 @@ int main(int argc, char **argv) {
         return s - int64_t(s);
     });
 
+    timing("Map+reduce | new ThreadPool (loop_par, loop=1)", [=] {
+        vector<double> X((int(H['l'])));
+        loop_par(0, X.size(), [&X](int i) { X[i] = cost(i); }, 1);
+
+        double s = 0;
+        for (auto x : X) s += x;
+        return s - int64_t(s);
+    });
+
+    timing("Map+reduce | new ThreadPool (loop_par, loop=10)", [=] {
+        vector<double> X((int(H['l'])));
+        loop_par(0, X.size(), [&X](int i) { X[i] = cost(i); }, 10);
+
+        double s = 0;
+        for (auto x : X) s += x;
+        return s - int64_t(s);
+    });
+
+    timing("Map+reduce | new ThreadPool (loop_par, loop=100)", [=] {
+        vector<double> X((int(H['l'])));
+        loop_par(0, X.size(), [&X](int i) { X[i] = cost(i); }, 100);
+
+        double s = 0;
+        for (auto x : X) s += x;
+        return s - int64_t(s);
+    });
+
+    timing("Map+reduce | new ThreadPool (loop_par, loop=1000)", [=] {
+        vector<double> X((int(H['l'])));
+        loop_par(0, X.size(), [&X](int i) { X[i] = cost(i); }, 1000);
+
+        double s = 0;
+        for (auto x : X) s += x;
+        return s - int64_t(s);
+    });
+
+    timing("Map+reduce | new ThreadPool (loop_par, loop=10000)", [=] {
+        vector<double> X((int(H['l'])));
+        loop_par(0, X.size(), [&X](int i) { X[i] = cost(i); }, 10000);
+
+        double s = 0;
+        for (auto x : X) s += x;
+        return s - int64_t(s);
+    });
+
     timing("Map+reduce | Async (std::async, split fill + sum)", [=] {
         class mr {
         public:
