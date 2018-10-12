@@ -17,7 +17,8 @@ namespace vb {
 
     void run_par(const std::function<void(BLST &, std::shared_ptr<Will>)> &f);
 
-    void loop_par(int a, int b, const std::function<void(int)> &f, int l = 100);
+    void loop_go(BLST &S, std::shared_ptr<Will> parent, int a, int b, std::function<void(int)> f, int l);
+    void loop_par(int a, int b, std::function<void(int)> f, int l = 100);
 
     struct Project {
         struct counter : public std::atomic<int> {
