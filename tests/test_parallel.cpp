@@ -47,41 +47,6 @@ int main(int argc, char **argv) {
         return fib_async()(n);
     });
 
-    function<Project(int, int *)> go = [&go](int n, int *t) -> Project {
-        if (n < 25) {
-            *t = fib(n);
-            return {};
-        }
-        auto    t1 = new int;
-        auto    t2 = new int;
-        Project p {[=] { return go(n - 1, t1); }, [=] { return go(n - 2, t2); },
-                   [=] {
-                       *t = *t1 + *t2;
-                       delete t1;
-                       delete t2;
-                       return Project {};
-                   }};
-        return p;
-    };
-
-    timing("Fibonacci  | ThreadPool (execute_seq)", [=] {
-        auto s = make_unique<int>(0);
-        execute_seq([&, n] { return go(n, s.get()); });
-        return *s;
-    });
-
-    timing("Fibonacci  | ThreadPool (execute_asy)", [=] {
-        auto s = make_unique<int>(0);
-        execute_asy([&, n] { return go(n, s.get()); });
-        return *s;
-    });
-
-    timing("Fibonacci  | ThreadPool (execute_par)", [=] {
-        auto s = make_unique<int>(0);
-        execute_par([&, n] { return go(n, s.get()); });
-        return *s;
-    });
-
 #ifdef _OPENMP
     timing("Fibonacci  | OpenMP (parallel sections)", [=] {
         class fib {
@@ -157,69 +122,6 @@ int main(int argc, char **argv) {
         return s - int64_t(s);
     });
 #endif
-
-    timing("Map+reduce | ThreadPool loop (execute_seq, loop=1000)", [=] {
-        vector<double> X((int(H['l'])));
-        execute_seq(loop(0, X.size(), [&X](int i) { X[i] = cost(i); }, 1000));
-
-        double s = 0;
-        for (auto x : X) s += x;
-        return s - int64_t(s);
-    });
-
-    timing("Map+reduce | ThreadPool loop (execute_asy, loop=1000)", [=] {
-        vector<double> X((int(H['l'])));
-        execute_asy(loop(0, X.size(), [&X](int i) { X[i] = cost(i); }, 1000));
-
-        double s = 0;
-        for (auto x : X) s += x;
-        return s - int64_t(s);
-    });
-
-    timing("Map+reduce | ThreadPool loop (execute_par, loop=1)", [=] {
-        vector<double> X((int(H['l'])));
-        execute_par(loop(0, X.size(), [&X](int i) { X[i] = cost(i); }, 1));
-
-        double s = 0;
-        for (auto x : X) s += x;
-        return s - int64_t(s);
-    });
-
-    timing("Map+reduce | ThreadPool loop (execute_par, loop=10)", [=] {
-        vector<double> X((int(H['l'])));
-        execute_par(loop(0, X.size(), [&X](int i) { X[i] = cost(i); }, 10));
-
-        double s = 0;
-        for (auto x : X) s += x;
-        return s - int64_t(s);
-    });
-
-    timing("Map+reduce | ThreadPool loop (execute_par, loop=100)", [=] {
-        vector<double> X((int(H['l'])));
-        execute_par(loop(0, X.size(), [&X](int i) { X[i] = cost(i); }, 100));
-
-        double s = 0;
-        for (auto x : X) s += x;
-        return s - int64_t(s);
-    });
-
-    timing("Map+reduce | ThreadPool loop (execute_par, loop=1000)", [=] {
-        vector<double> X((int(H['l'])));
-        execute_par(loop(0, X.size(), [&X](int i) { X[i] = cost(i); }, 1000));
-
-        double s = 0;
-        for (auto x : X) s += x;
-        return s - int64_t(s);
-    });
-
-    timing("Map+reduce | ThreadPool loop (execute_par, loop=10000)", [=] {
-        vector<double> X((int(H['l'])));
-        execute_par(loop(0, X.size(), [&X](int i) { X[i] = cost(i); }, 10000));
-
-        double s = 0;
-        for (auto x : X) s += x;
-        return s - int64_t(s);
-    });
 
     timing("Map+reduce | new ThreadPool (loop_par, loop=1)", [=] {
         vector<double> X((int(H['l'])));
