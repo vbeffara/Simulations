@@ -68,8 +68,8 @@ namespace vb {
         return Color(r / 9, g / 9, b / 9, a / 9);
     }
 
-    void Coloring::line(BLST &S, std::shared_ptr<Will> parent, coo s, coo d, int l) {
-        loop_go(S, parent, 0, l,
+    void Coloring::line(Context C, coo s, coo d, int l) {
+        loop_go(C, 0, l,
                 [=](int i) {
                     coo c = s + d * i;
                     if (!die) at(c) = f(c_to_z(c));
@@ -77,7 +77,7 @@ namespace vb {
                 100);
     }
 
-    void Coloring::tessel_go(BLST &S, std::shared_ptr<Will> parent, coo ul, coo lr) {
+    void Coloring::tessel_go(Context C, coo ul, coo lr) {
         int size = std::min(lr.x - ul.x, lr.y - ul.y);
         if (size <= 1) return;
 
@@ -100,23 +100,23 @@ namespace vb {
         coo lr_ = (lr.x - ul.x > lr.y - ul.y) ? coo {(ul.x + lr.x) / 2, lr.y} : coo {lr.x, (ul.y + lr.y) / 2};
         coo dd_ = (lr.x - ul.x > lr.y - ul.y) ? coo {0, 1} : coo {1, 0};
 
-        auto post = std::make_shared<Will>([=, &S] {
-            S.push([=, &S] { tessel_go(S, parent, ul, lr_); });
-            S.push([=, &S] { tessel_go(S, parent, ul_, lr); });
+        auto post = std::make_shared<Will>([=] {
+            C.S.push([=] { tessel_go(C, ul, lr_); });
+            C.S.push([=] { tessel_go(C, ul_, lr); });
         });
-        S.push([=, &S] { line(S, post, ul_, dd_, size); });
+        C.S.push([=] { line({C.S, post}, ul_, dd_, size); });
     }
 
-    void Coloring::tessel_start(BLST &S, std::shared_ptr<Will> parent, coo ul, coo lr) {
-        auto post = std::make_shared<Will>([p = std::move(parent), ul, lr, this, &S] { tessel_go(S, p, ul, lr); });
-        S.push([=, &S] { line(S, post, ul, {1, 0}, lr.x - ul.x); });
-        S.push([=, &S] { line(S, post, {lr.x, ul.y}, {0, 1}, lr.y - ul.y); });
-        S.push([=, &S] { line(S, post, lr, {-1, 0}, lr.x - ul.x); });
-        S.push([=, &S] { line(S, post, {ul.x, lr.y}, {0, -1}, lr.y - ul.y); });
+    void Coloring::tessel_start(Context C, coo ul, coo lr) {
+        auto post = std::make_shared<Will>([=] { tessel_go(C, ul, lr); });
+        C.S.push([=] { line({C.S, post}, ul, {1, 0}, lr.x - ul.x); });
+        C.S.push([=] { line({C.S, post}, {lr.x, ul.y}, {0, 1}, lr.y - ul.y); });
+        C.S.push([=] { line({C.S, post}, lr, {-1, 0}, lr.x - ul.x); });
+        C.S.push([=] { line({C.S, post}, {ul.x, lr.y}, {0, -1}, lr.y - ul.y); });
     }
 
     void Coloring::tessel(coo ul, coo lr) {
-        run_par([=](auto &S, auto p) { tessel_start(S, p, ul, lr); });
+        run_par([=](Context C) { tessel_start(C, ul, lr); });
     }
 
     int Coloring::handle(int event) {

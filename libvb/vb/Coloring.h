@@ -29,9 +29,9 @@ namespace vb {
     private:
         Color aa_color(coo c, bool pre = false) const;
 
-        void line(BLST &S, std::shared_ptr<Will> parent, coo s, coo d, int l);
-        void tessel_go(BLST &S, std::shared_ptr<Will> parent, coo ul, coo lr);
-        void tessel_start(BLST &S, std::shared_ptr<Will> parent, coo ul, coo lr);
+        void line(Context C, coo s, coo d, int l);
+        void tessel_go(Context C, coo ul, coo lr);
+        void tessel_start(Context C, coo ul, coo lr);
 
         void tessel(coo ul, coo lr);
         void do_aa();

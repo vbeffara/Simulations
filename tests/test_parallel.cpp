@@ -12,15 +12,15 @@ using namespace vb;
 
 constexpr int fib(int n) { return n < 2 ? n : fib(n - 1) + fib(n - 2); }
 
-void fib(BLST &S, std::shared_ptr<Will> parent, int n, const std::shared_ptr<int> &t) {
+void fib(Context C, int n, const std::shared_ptr<int> &t) {
     if (n < 25) {
         *t = fib(n);
         return;
     }
     auto t1 = std::make_shared<int>(0), t2 = std::make_shared<int>(0);
-    auto post = std::make_shared<Will>([p = std::move(parent), t, t1, t2] { *t = *t1 + *t2; });
-    S.push([=, &S] { fib(S, post, n - 1, t1); });
-    S.push([=, &S] { fib(S, post, n - 2, t2); });
+    auto post = std::make_shared<Will>([C, t, t1, t2] { *t = *t1 + *t2; });
+    C.S.push([=] { fib({C.S, post}, n - 1, t1); });
+    C.S.push([=] { fib({C.S, post}, n - 2, t2); });
 }
 
 double cost(double x) {
@@ -73,7 +73,7 @@ int main(int argc, char **argv) {
 
     timing("Fibonacci  | New style thread pool", [=] {
         auto t = std::make_shared<int>(0);
-        run_par([n, t](auto &S, auto p) { fib(S, p, n, t); });
+        run_par([n, t](Context C) { fib(C, n, t); });
         return *t;
     });
 
