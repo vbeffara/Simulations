@@ -1,9 +1,7 @@
 #pragma once
 #include <vb/Hub.h>
-#include <atomic>
 #include <boost/lockfree/stack.hpp>
 #include <functional>
-#include <optional>
 #include <vector>
 
 namespace vb {
