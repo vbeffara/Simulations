@@ -14,9 +14,6 @@ namespace vb {
 
     void Picture::show() {
         AutoWindow::show();
-        // workaround for Mojave bug, TODO remove when FLTK is fixed
-        resize(x(), y(), w() + 1, h() + 1);
-        resize(x(), y(), w() - 1, h() - 1);
         if (surface == nullptr) {
             surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, pixel_w(), pixel_h());
             cr      = cairo_create(surface);
