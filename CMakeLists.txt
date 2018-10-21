@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.0)
-project (Simulations)
+project (Simulations CXX)
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(KEEP_RPATHS)
