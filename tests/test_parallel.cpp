@@ -18,9 +18,9 @@ void fib(Context C, int n, const std::shared_ptr<int> &t) {
         return;
     }
     auto t1 = std::make_shared<int>(0), t2 = std::make_shared<int>(0);
-    auto post = std::make_shared<Will>([C, t, t1, t2] { *t = *t1 + *t2; });
-    C.S.push([=] { fib({C.S, post}, n - 1, t1); });
-    C.S.push([=] { fib({C.S, post}, n - 2, t2); });
+    C.then([=](Context C) { *t = *t1 + *t2; });
+    C.push([=](Context C) { fib(C, n - 1, t1); });
+    C.push([=](Context C) { fib(C, n - 2, t2); });
 }
 
 double cost(double x) {

@@ -100,19 +100,19 @@ namespace vb {
         coo lr_ = (lr.x - ul.x > lr.y - ul.y) ? coo {(ul.x + lr.x) / 2, lr.y} : coo {lr.x, (ul.y + lr.y) / 2};
         coo dd_ = (lr.x - ul.x > lr.y - ul.y) ? coo {0, 1} : coo {1, 0};
 
-        auto post = std::make_shared<Will>([=] {
-            C.S.push([=] { tessel_go(C, ul, lr_); });
-            C.S.push([=] { tessel_go(C, ul_, lr); });
+        C.then([=](Context C) {
+            C.push([=](Context C) { tessel_go(C, ul, lr_); });
+            C.push([=](Context C) { tessel_go(C, ul_, lr); });
         });
-        C.S.push([=] { line({C.S, post}, ul_, dd_, size); });
+        C.push([=](Context C) { line(C, ul_, dd_, size); });
     }
 
     void Coloring::tessel_start(Context C, coo ul, coo lr) {
-        auto post = std::make_shared<Will>([=] { tessel_go(C, ul, lr); });
-        C.S.push([=] { line({C.S, post}, ul, {1, 0}, lr.x - ul.x); });
-        C.S.push([=] { line({C.S, post}, {lr.x, ul.y}, {0, 1}, lr.y - ul.y); });
-        C.S.push([=] { line({C.S, post}, lr, {-1, 0}, lr.x - ul.x); });
-        C.S.push([=] { line({C.S, post}, {ul.x, lr.y}, {0, -1}, lr.y - ul.y); });
+        C.then([=](Context C) { tessel_go(C, ul, lr); });
+        C.push([=](Context C) { line(C, ul, {1, 0}, lr.x - ul.x); });
+        C.push([=](Context C) { line(C, {lr.x, ul.y}, {0, 1}, lr.y - ul.y); });
+        C.push([=](Context C) { line(C, lr, {-1, 0}, lr.x - ul.x); });
+        C.push([=](Context C) { line(C, {ul.x, lr.y}, {0, -1}, lr.y - ul.y); });
     }
 
     void Coloring::tessel(coo ul, coo lr) {
