@@ -2,7 +2,6 @@
 #include <vb/Hub.h>
 #include <boost/lockfree/stack.hpp>
 #include <functional>
-#include <vector>
 
 namespace vb {
     struct Context {
@@ -14,13 +13,8 @@ namespace vb {
         boost::lockfree::stack<std::function<void()>> &S;
         std::shared_ptr<Will>                          next;
 
-        void then(std::function<void(Context)> f) {
-            next = std::make_shared<Will>([f, C = *this] { f(C); });
-        }
-
-        void push(std::function<void(Context)> f) {
-            S.push([f, C = *this] { f(C); });
-        }
+        void then(std::function<void(Context)> f);
+        void push(std::function<void(Context)> f);
     };
 
     void run_par(const std::function<void(Context)> &f);

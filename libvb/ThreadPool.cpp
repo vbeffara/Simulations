@@ -2,6 +2,14 @@
 #include <thread>
 
 namespace vb {
+    void Context::then(std::function<void(Context)> f) {
+        next = std::make_shared<Will>([f, C = *this] { f(C); });
+    }
+
+    void Context::push(std::function<void(Context)> f) {
+        S.push([f, C = *this] { f(C); });
+    }
+
     void run_par(const std::function<void(Context)> &f) {
         boost::lockfree::stack<std::function<void()>> S;
         bool                                          done = false;
