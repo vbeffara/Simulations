@@ -4,7 +4,9 @@ project (Simulations CXX)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(KEEP_RPATHS)
 
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -g -fdiagnostics-color=always -pedantic")
+include (FindOpenMP)
+
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -g -fdiagnostics-color=always -pedantic ${OpenMP_CXX_FLAGS}")
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-unused-local-typedefs -Wno-unused-function -Wno-sign-compare")
 set (CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
@@ -14,11 +16,6 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-int-in-bool-context")
 endif()
-
-include (FindOpenMP)
-if (${OPENMP_CXX_FOUND})
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-endif ()
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG(-fcoroutines-ts COROUTINES_TS)
