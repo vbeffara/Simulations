@@ -16,7 +16,6 @@ mpc/1.1.0@vbeffara/testing
 sqlite_modern_cpp/3.2+HEAD@vbeffara/testing
 
 [options]
-spdlog:fmt_external=False
 sqlite3:shared=True
 
 [generators]

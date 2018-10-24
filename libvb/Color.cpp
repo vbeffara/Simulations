@@ -1,5 +1,5 @@
 #include <vb/Color.h>
-#include <spdlog/fmt/fmt.h>
+#include <fmt/format.h>
 
 namespace vb {
     Color Grey(uint8_t x) noexcept { return Color(x, x, x); }
@@ -22,5 +22,5 @@ namespace vb {
         return HSV(x - int(x), s, v);
     }
 
-    std::ostream & operator<<(std::ostream & o, const Color & c) { return o << fmt::format("RGBA({},{},{},{})", c.r, c.g, c.b, c.a); }
+    std::ostream &operator<<(std::ostream &o, const Color &c) { return o << fmt::format("RGBA({},{},{},{})", c.r, c.g, c.b, c.a); }
 } // namespace vb

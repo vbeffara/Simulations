@@ -4,12 +4,12 @@
 #include <cstdlib>
 #include <map>
 #undef CHAR_WIDTH
-#include <spdlog/fmt/ostr.h>
+#include <fmt/ostream.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <string>
 
 namespace vb {
-    template <typename T> std::string pretty(const T & t) { return fmt::format("{}", t); }
+    template <typename T> std::string pretty(const T &t) { return fmt::format("{}", t); }
 
     using Duration  = boost::chrono::duration<double>;
     using TimePoint = boost::chrono::time_point<boost::chrono::process_real_cpu_clock, Duration>;
@@ -17,7 +17,7 @@ namespace vb {
     class Value : public std::string {
     public:
         explicit Value(std::string s = "") : std::string(std::move(s)) {}
-        Value & operator=(const std::string & s) {
+        Value &operator=(const std::string &s) {
             std::string::operator=(s);
             return *this;
         }
@@ -44,17 +44,16 @@ namespace vb {
 
         ~Hub();
 
-        Hub & operator=(const Hub &) = delete;
-        Hub & operator=(Hub &&) = delete;
+        Hub &operator=(const Hub &) = delete;
+        Hub &operator=(Hub &&) = delete;
 
-        void init(std::string t, int argc, char ** argv, std::string c = "");
+        void init(std::string t, int argc, char **argv, std::string c = "");
 
-        const Value & operator[](char c) const { return find(c)->second; }
+        const Value &operator[](char c) const { return find(c)->second; }
 
-        void                       output_str(const std::string & l, const std::string & ls, const std::string & s, bool out = true);
-        template <typename T> void output(std::string l, std::string ls, const T & x, bool out = true) {
-            output_str(l, ls, pretty(x), out);
-        }
+        void output_str(const std::string &l, const std::string &ls, const std::string &s, bool out = true);
+
+        template <typename T> void output(std::string l, std::string ls, const T &x, bool out = true) { output_str(l, ls, pretty(x), out); }
 
         std::string title = "undefined", cmd = "undefined", prog = "undefined", version = "undefined", dir = "output/", help = "undefined";
         std::map<char, bool> has_arg;
@@ -85,10 +84,10 @@ namespace vb {
     }
 
     TEST_CASE("vb::Hub") {
-        std::vector<std::string> argv_{"cmd", "-s", "3", "-u"};
+        std::vector<std::string> argv_ {"cmd", "-s", "3", "-u"};
         std::vector<char *>      argv;
         argv.reserve(argv_.size());
-        for (auto & s : argv_) argv.push_back(&s[0]);
+        for (auto &s : argv_) argv.push_back(&s[0]);
 
         H.init("Title", 4, argv.data(), "s=5,t=7,u,v");
         CHECK(int(H['t']) == 7);
