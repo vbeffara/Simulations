@@ -22,17 +22,19 @@ namespace vb {
         std::function<Color(cpx)> f;
 
     protected:
-        Color & at(coo z) const;
-        cpx     c_to_z(coo c) const;
-        double  detail = 0;
+        Color &at(coo z) const;
+        cpx    c_to_z(coo c) const;
+        double detail = 0;
 
     private:
         Color aa_color(coo c, bool pre = false) const;
 
-        Project line(coo s, coo d, int l);
-        Project tessel_go(coo ul, coo lr);
-        void    tessel(coo ul, coo lr);
-        void    do_aa();
+        void line(Context C, coo s, coo d, int l);
+        void tessel_go(Context C, coo ul, coo lr);
+        void tessel_start(Context C, coo ul, coo lr);
+
+        void tessel(coo ul, coo lr);
+        void do_aa();
 
         gsl::span<Color> stage;
 

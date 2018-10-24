@@ -2,7 +2,7 @@
 
 namespace vb {
     Coloring::Coloring(cpx z1_, cpx z2_, int n, std::function<Color(cpx)> f_)
-        : Picture(n, int(n * imag(z2_ - z1_) / real(z2_ - z1_))), eps(real(z1_ - z2_) / n), z1(z1_), z2(z2_), f(std::move(f_)) {}
+        : Picture(n, int(n *imag(z2_ - z1_) / real(z2_ - z1_))), eps(real(z1_ - z2_) / n), z1(z1_), z2(z2_), f(std::move(f_)) {}
 
     void Coloring::show() {
         Picture::show();
@@ -19,9 +19,9 @@ namespace vb {
 
     void Coloring::do_aa() {
         int pw = pixel_w(), ph = pixel_h();
-        execute_par(loop(0, pw * ph, [=](int i) {
+        loop_par(0, pw * ph, [=](int i) {
             auto [x, y] = std::div(i, ph);
-            coo   c{x, y};
+            coo   c {x, y};
             Color cc = at(c);
             bool  u  = true;
             for (int d = 0; d < 4; ++d) {
@@ -29,7 +29,7 @@ namespace vb {
                 if ((c2.x >= 0) && (c2.x < pw) && (c2.y >= 0) && (c2.y < ph) && (at(c2) != cc)) u = false;
             }
             if (!(u || die)) at(c) = aa_color(c, true);
-        }));
+        });
     }
 
     void Coloring::scale(double s) {
@@ -44,7 +44,7 @@ namespace vb {
 
     cpx Coloring::c_to_z(coo c) const { return z1 + cpx(c) * eps; }
 
-    Color & Coloring::at(coo z) const { return stage[z.x + stride * z.y]; }
+    Color &Coloring::at(coo z) const { return stage[z.x + stride * z.y]; }
 
     Color Coloring::aa_color(coo c, bool pre) const {
         cpx z = c_to_z(c);
@@ -68,49 +68,55 @@ namespace vb {
         return Color(r / 9, g / 9, b / 9, a / 9);
     }
 
-    Project Coloring::line(coo s, coo d, int l) {
-        return loop(0, l, [=](int i) {
-            coo c = s + d * i;
-            if (!die) at(c) = f(c_to_z(c));
-        });
+    void Coloring::line(Context C, coo s, coo d, int l) {
+        loop_go(C, 0, l,
+                [=](int i) {
+                    coo c = s + d * i;
+                    if (!die) at(c) = f(c_to_z(c));
+                },
+                100);
     }
 
-    Project Coloring::tessel_go(coo ul, coo lr) {
+    void Coloring::tessel_go(Context C, coo ul, coo lr) {
         int size = std::min(lr.x - ul.x, lr.y - ul.y);
-        if (size <= 1) return {};
+        if (size <= 1) return;
 
         coo   z    = ul;
         Color tmp  = at(ul);
         bool  mono = true;
         if ((pixel_detail != 0) && (size > pixel_detail)) mono = false;
-        for (; mono && (z != coo{lr.x, ul.y}); z += {1, 0}) mono = mono && (at(z) == tmp);
-        for (; mono && (z != coo{lr.x, lr.y}); z += {0, 1}) mono = mono && (at(z) == tmp);
-        for (; mono && (z != coo{ul.x, lr.y}); z += {-1, 0}) mono = mono && (at(z) == tmp);
-        for (; mono && (z != coo{ul.x, ul.y}); z += {0, -1}) mono = mono && (at(z) == tmp);
+        for (; mono && (z != coo {lr.x, ul.y}); z += {1, 0}) mono = mono && (at(z) == tmp);
+        for (; mono && (z != coo {lr.x, lr.y}); z += {0, 1}) mono = mono && (at(z) == tmp);
+        for (; mono && (z != coo {ul.x, lr.y}); z += {-1, 0}) mono = mono && (at(z) == tmp);
+        for (; mono && (z != coo {ul.x, ul.y}); z += {0, -1}) mono = mono && (at(z) == tmp);
 
         if (mono) {
             for (int i = ul.x + 1; i < lr.x; ++i)
                 for (int j = ul.y + 1; j < lr.y; ++j) at({i, j}) = tmp;
-            return {};
+            return;
         }
 
-        coo ul_ = (lr.x - ul.x > lr.y - ul.y) ? coo{(ul.x + lr.x) / 2, ul.y} : coo{ul.x, (ul.y + lr.y) / 2};
-        coo lr_ = (lr.x - ul.x > lr.y - ul.y) ? coo{(ul.x + lr.x) / 2, lr.y} : coo{lr.x, (ul.y + lr.y) / 2};
-        coo dd_ = (lr.x - ul.x > lr.y - ul.y) ? coo{0, 1} : coo{1, 0};
+        coo ul_ = (lr.x - ul.x > lr.y - ul.y) ? coo {(ul.x + lr.x) / 2, ul.y} : coo {ul.x, (ul.y + lr.y) / 2};
+        coo lr_ = (lr.x - ul.x > lr.y - ul.y) ? coo {(ul.x + lr.x) / 2, lr.y} : coo {lr.x, (ul.y + lr.y) / 2};
+        coo dd_ = (lr.x - ul.x > lr.y - ul.y) ? coo {0, 1} : coo {1, 0};
 
-        Project p{[=] { return line(ul_, dd_, size); }, [=] { return Project{}; },
-                  [=] {
-                      return Project{[=] { return tessel_go(ul, lr_); }, [=] { return tessel_go(ul_, lr); }};
-                  }};
-        return p;
+        C.then([=](Context C) {
+            C.push([=](Context C) { tessel_go(C, ul, lr_); });
+            C.push([=](Context C) { tessel_go(C, ul_, lr); });
+        });
+        C.push([=](Context C) { line(C, ul_, dd_, size); });
+    }
+
+    void Coloring::tessel_start(Context C, coo ul, coo lr) {
+        C.then([=](Context C) { tessel_go(C, ul, lr); });
+        C.push([=](Context C) { line(C, ul, {1, 0}, lr.x - ul.x); });
+        C.push([=](Context C) { line(C, {lr.x, ul.y}, {0, 1}, lr.y - ul.y); });
+        C.push([=](Context C) { line(C, lr, {-1, 0}, lr.x - ul.x); });
+        C.push([=](Context C) { line(C, {ul.x, lr.y}, {0, -1}, lr.y - ul.y); });
     }
 
     void Coloring::tessel(coo ul, coo lr) {
-        execute_par([=] { return line(ul, {1, 0}, lr.x - ul.x); });
-        execute_par([=] { return line({lr.x, ul.y}, {0, 1}, lr.y - ul.y); });
-        execute_par([=] { return line(lr, {-1, 0}, lr.x - ul.x); });
-        execute_par([=] { return line({ul.x, lr.y}, {0, -1}, lr.y - ul.y); });
-        execute_par([=] { return tessel_go(ul, lr); });
+        run_par([=](Context C) { tessel_start(C, ul, lr); });
     }
 
     int Coloring::handle(int event) {

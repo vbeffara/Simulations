@@ -1,43 +1,24 @@
 #pragma once
 #include <vb/Hub.h>
-#include <atomic>
 #include <boost/lockfree/stack.hpp>
 #include <functional>
-#include <optional>
-#include <vector>
 
 namespace vb {
-    struct Project {
-        struct counter : public std::atomic<int> {
-            counter(int o = 0) : std::atomic<int>(o) {}
-            counter(const counter & o) : std::atomic<int>(o.load()) {}
-            counter & operator=(const counter & o) { return store(o.load()), *this; }
+    struct Context {
+        struct Will : public std::function<void()> {
+            using function::function;
+            ~Will() { (*this)(); }
         };
 
-        using ftp = std::function<Project()>;
+        boost::lockfree::stack<std::function<void()>> &S;
+        std::shared_ptr<Will>                          next;
 
-        Project()           = default;
-        Project(Project &&) = default;
-        Project(ftp && t);
-        Project(ftp && t1, ftp && t2);
-        Project(ftp && t1, ftp && t2, ftp && n);
+        void then(std::function<void(Context)> f);
+        void push(std::function<void(Context)> f);
+    };
 
-        template <typename T> Project(T && t) : Project(ftp(std::move(t))) {}
+    void run_par(const std::function<void(Context)> &f);
 
-        Project & operator=(Project && o) = default;
-
-        std::vector<Project> deps;
-        std::optional<ftp>   next;
-        Project *            par = nullptr;
-        counter              ndep;
-    }; // namespace vb
-
-    void project_runner(boost::lockfree::stack<Project *> & fringe, bool & done);
-
-    void execute_seq(Project && p);
-    void execute_asy(Project && p);
-    void execute_run(Project && p);
-    void execute_par(Project && p);
-
-    Project loop(int a, int b, const std::function<void(int)> & f, int l = 100);
+    void loop_go(Context C, int a, int b, std::function<void(int)> f, int l);
+    void loop_par(int a, int b, std::function<void(int)> f, int l = 100);
 } // namespace vb

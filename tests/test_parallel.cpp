@@ -10,14 +10,25 @@ using namespace ranges;
 using namespace std;
 using namespace vb;
 
-int fib(int n) { return n < 2 ? n : fib(n - 1) + fib(n - 2); }
+constexpr int fib(int n) { return n < 2 ? n : fib(n - 1) + fib(n - 2); }
+
+void fib(Context C, int n, const std::shared_ptr<int> &t) {
+    if (n < 25) {
+        *t = fib(n);
+        return;
+    }
+    auto t1 = std::make_shared<int>(0), t2 = std::make_shared<int>(0);
+    C.then([=](Context C) { *t = *t1 + *t2; });
+    C.push([=](Context C) { fib(C, n - 1, t1); });
+    C.push([=](Context C) { fib(C, n - 2, t2); });
+}
 
 double cost(double x) {
     for (int i = 0; i < 10; ++i) x = cos(x);
     return x;
 }
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     H.init("Test of various parallel frameworks", argc, argv, "n=41,l=4000000");
     int n = H['n'], l = H['l'];
 
@@ -34,41 +45,6 @@ int main(int argc, char ** argv) {
             }
         };
         return fib_async()(n);
-    });
-
-    function<Project(int, int *)> go = [&go](int n, int * t) -> Project {
-        if (n < 25) {
-            *t = fib(n);
-            return {};
-        }
-        auto    t1 = new int;
-        auto    t2 = new int;
-        Project p{[=] { return go(n - 1, t1); }, [=] { return go(n - 2, t2); },
-                  [=] {
-                      *t = *t1 + *t2;
-                      delete t1;
-                      delete t2;
-                      return Project{};
-                  }};
-        return p;
-    };
-
-    timing("Fibonacci  | ThreadPool (execute_seq)", [=] {
-        auto s = make_unique<int>(0);
-        execute_seq([&, n] { return go(n, s.get()); });
-        return *s;
-    });
-
-    timing("Fibonacci  | ThreadPool (execute_asy)", [=] {
-        auto s = make_unique<int>(0);
-        execute_asy([&, n] { return go(n, s.get()); });
-        return *s;
-    });
-
-    timing("Fibonacci  | ThreadPool (execute_par)", [=] {
-        auto s = make_unique<int>(0);
-        execute_par([&, n] { return go(n, s.get()); });
-        return *s;
     });
 
 #ifdef _OPENMP
@@ -94,6 +70,12 @@ int main(int argc, char ** argv) {
         return fib_omp()(n);
     });
 #endif
+
+    timing("Fibonacci  | New style thread pool", [=] {
+        auto t = std::make_shared<int>(0);
+        run_par([n, t](Context C) { fib(C, n, t); });
+        return *t;
+    });
 
     timing("Map+reduce | Single (fill then sum)", [=] {
         vector<double> X(l);
@@ -141,63 +123,45 @@ int main(int argc, char ** argv) {
     });
 #endif
 
-    timing("Map+reduce | ThreadPool loop (execute_seq, loop=1000)", [=] {
+    timing("Map+reduce | new ThreadPool (loop_par, loop=1)", [=] {
         vector<double> X((int(H['l'])));
-        execute_seq(loop(0, X.size(), [&X](int i) { X[i] = cost(i); }, 1000));
+        loop_par(0, X.size(), [&X](int i) { X[i] = cost(i); }, 1);
 
         double s = 0;
         for (auto x : X) s += x;
         return s - int64_t(s);
     });
 
-    timing("Map+reduce | ThreadPool loop (execute_asy, loop=1000)", [=] {
+    timing("Map+reduce | new ThreadPool (loop_par, loop=10)", [=] {
         vector<double> X((int(H['l'])));
-        execute_asy(loop(0, X.size(), [&X](int i) { X[i] = cost(i); }, 1000));
+        loop_par(0, X.size(), [&X](int i) { X[i] = cost(i); }, 10);
 
         double s = 0;
         for (auto x : X) s += x;
         return s - int64_t(s);
     });
 
-    timing("Map+reduce | ThreadPool loop (execute_par, loop=1)", [=] {
+    timing("Map+reduce | new ThreadPool (loop_par, loop=100)", [=] {
         vector<double> X((int(H['l'])));
-        execute_par(loop(0, X.size(), [&X](int i) { X[i] = cost(i); }, 1));
+        loop_par(0, X.size(), [&X](int i) { X[i] = cost(i); }, 100);
 
         double s = 0;
         for (auto x : X) s += x;
         return s - int64_t(s);
     });
 
-    timing("Map+reduce | ThreadPool loop (execute_par, loop=10)", [=] {
+    timing("Map+reduce | new ThreadPool (loop_par, loop=1000)", [=] {
         vector<double> X((int(H['l'])));
-        execute_par(loop(0, X.size(), [&X](int i) { X[i] = cost(i); }, 10));
+        loop_par(0, X.size(), [&X](int i) { X[i] = cost(i); }, 1000);
 
         double s = 0;
         for (auto x : X) s += x;
         return s - int64_t(s);
     });
 
-    timing("Map+reduce | ThreadPool loop (execute_par, loop=100)", [=] {
+    timing("Map+reduce | new ThreadPool (loop_par, loop=10000)", [=] {
         vector<double> X((int(H['l'])));
-        execute_par(loop(0, X.size(), [&X](int i) { X[i] = cost(i); }, 100));
-
-        double s = 0;
-        for (auto x : X) s += x;
-        return s - int64_t(s);
-    });
-
-    timing("Map+reduce | ThreadPool loop (execute_par, loop=1000)", [=] {
-        vector<double> X((int(H['l'])));
-        execute_par(loop(0, X.size(), [&X](int i) { X[i] = cost(i); }, 1000));
-
-        double s = 0;
-        for (auto x : X) s += x;
-        return s - int64_t(s);
-    });
-
-    timing("Map+reduce | ThreadPool loop (execute_par, loop=10000)", [=] {
-        vector<double> X((int(H['l'])));
-        execute_par(loop(0, X.size(), [&X](int i) { X[i] = cost(i); }, 10000));
+        loop_par(0, X.size(), [&X](int i) { X[i] = cost(i); }, 10000);
 
         double s = 0;
         for (auto x : X) s += x;
