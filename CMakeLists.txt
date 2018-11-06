@@ -1,21 +1,15 @@
 cmake_minimum_required (VERSION 3.0)
 project (Simulations CXX)
 
+set(CONAN_SYSTEM_INCLUDES ON)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(KEEP_RPATHS)
 
 include (FindOpenMP)
 
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -g -fdiagnostics-color=always -pedantic ${OpenMP_CXX_FLAGS}")
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-unused-local-typedefs -Wno-unused-function -Wno-sign-compare")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 set (CMAKE_EXPORT_COMPILE_COMMANDS 1)
-
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-mismatched-tags -Wno-undefined-var-template -Wno-nested-anon-types")
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter -Wno-unused-variable")
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-int-in-bool-context")
-endif()
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG(-fcoroutines-ts COROUTINES_TS)
