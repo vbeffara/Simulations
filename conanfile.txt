@@ -9,7 +9,7 @@ range-v3/0.4.0@ericniebler/stable
 spdlog/1.1.0@bincrafters/stable
 yaml-cpp/0.6.2@bincrafters/stable
 
-fltk/1.4.0+dd8e60a95@vbeffara/testing
+fltk/1.4.0-dd8e60a95@vbeffara/testing
 fplll/5.2.1@vbeffara/testing
 libcmaes/0.9.5+HEAD@vbeffara/testing
 mpc/1.1.0@vbeffara/testing
