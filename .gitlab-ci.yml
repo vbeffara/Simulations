@@ -2,7 +2,7 @@ image: ubuntu:cosmic
 
 before_script:
   - apt-get update -qq
-  - apt-get install -qq python3-pip cmake g++ ninja-build git lcov ruby libgl1-mesa-dev libxcb-shm0
+  - apt-get install -qq python3-pip cmake m4 g++ ninja-build git lcov ruby libgl1-mesa-dev libxcb-shm0
   - apt-get install -qq xvfb libglu1-mesa-dev xorg-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
 
 cmake:
