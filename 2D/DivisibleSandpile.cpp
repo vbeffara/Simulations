@@ -33,7 +33,7 @@ public:
 };
 
 int main(int argc, char **argv) {
-    H.init("Divisible sandpile", argc, argv, "n=500,m=1,s=1,r");
+    H.init("Divisible sandpile", argc, argv, "n=500,m=.01,s=10,r");
     Sandpile S(H['n']);
     S.show();
     while (true) { S.swipe(); }
