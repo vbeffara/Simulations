@@ -349,7 +349,7 @@ namespace vb {
                 }
             }
         }
-        for (int i = 0; i < V.size(); ++i) V[i].r = r[i];
+        for (unsigned i = 0; i < V.size(); ++i) V[i].r = r[i];
     }
 } // namespace vb
 

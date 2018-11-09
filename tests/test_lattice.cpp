@@ -17,7 +17,7 @@ Lattice G() {
     return G;
 }
 
-int main([[maybe_unused]] int argc, [[maybe_unused]] char ** argv) {
+int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv) {
     Lattice L = SV();
     L.relax(1e-14);
     L.tau = L.tau_rw();
@@ -42,7 +42,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char ** argv) {
     for (int i = 0; i < 3; ++i)
         for (int j = 0; j < 3; ++j)
             for (int k = 0; k < L.n; ++k)
-                for (int l = 0; l < L.adj[k].size(); ++l)
+                for (unsigned l = 0; l < L.adj[k].size(); ++l)
                     F.add(std::make_unique<Segment>(L({i, j}, k), L({i, j}, k) + L.shift(k, l), Pen(BLACK, .1)));
 
     F.show();

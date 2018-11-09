@@ -3,20 +3,20 @@
 
 using namespace vb;
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     H.init("Hypermap of genus 0", argc, argv, "m=228,v,q,g=m_cube,p,a,f=0,s=0,u=0,d=1,D=0,o");
 
     auto M = HLib().at(H['g']);
     if (int u = H['u']; u != 0) M = H_genus0(u);
     if (int f = H['f']; f != 0) {
         if (int s = (H['s']); s != 0) prng.seed(s);
-        int  d = H['d'], D = H['D'];
-        bool bad = true;
+        unsigned d = H['d'], D = H['D'];
+        bool     bad = true;
         while (bad) {
             for (int i = 0; i < f; ++i) M.flip(prng.uniform_int(M.sigma.size()));
             bad = false;
             f   = 1;
-            for (const auto & s : M.sigma.cycles()) {
+            for (const auto &s : M.sigma.cycles()) {
                 if (s.size() < d) bad = true;
                 if ((D > 0) && (s.size() > D)) bad = true;
             }
@@ -24,7 +24,7 @@ int main(int argc, char ** argv) {
     }
     std::cout << M;
 
-    Constellation0<double> C{M};
+    Constellation0<double> C {M};
     C.belyi();
     if (!H['q']) std::cout << std::endl << C;
 

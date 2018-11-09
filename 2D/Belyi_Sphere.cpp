@@ -8,19 +8,19 @@
 using namespace vb;
 using namespace std;
 
-Stream<Hypermap> triangulations(int n) {
+Stream<Hypermap> triangulations(unsigned n) {
     Cycles phic;
     for (unsigned i = 0; i < n / 3; ++i) phic.emplace_back(std::vector<unsigned> {i, i + n / 3, i + 2 * n / 3});
     Permutation phi(phic);
-    int         np = n / 6;
+    unsigned    np = n / 6;
     vector<int> a(n / 2 - np, 2);
 
     return Stream<Hypermap>([a, phi, n, np](Sink<Hypermap> &yield) {
         std::vector<Hypermap> hs;
         for (auto alph : permutations(a)) {
             Permutation alpha(n);
-            for (int i = 0; i < n - 2 * np; ++i) alpha[i] = alph[i];
-            for (int i = 0; i < np; ++i) {
+            for (unsigned i = 0; i + 2 * np < n; ++i) alpha[i] = alph[i];
+            for (unsigned i = 0; i < np; ++i) {
                 alpha[n - 2 * np + 2 * i]     = n - 2 * np + 2 * i + 1;
                 alpha[n - 2 * np + 2 * i + 1] = n - 2 * np + 2 * i;
             }
@@ -44,7 +44,8 @@ Stream<Hypermap> triangulations(int n) {
 
 int main(int argc, char **argv) {
     H.init("Spheroidal enumeration", argc, argv, "s=3,m=228,d=2,g=0,v,o,b,q");
-    int s = H['s'], g = 0, a = 6 * (s - 2), d = H['d'];
+    int      s = H['s'], g = 0, a = 6 * (s - 2);
+    unsigned d = H['d'];
     assert(a > 0);
 
     int nb = 0;

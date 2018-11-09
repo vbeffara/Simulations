@@ -1,28 +1,28 @@
 #include <vb/Lattice.h>
 
 namespace vb {
-    Lattice & Lattice::bond(int k1, int k2, coo dz) {
+    Lattice &Lattice::bond(int k1, int k2, coo dz) {
         adj[k1].emplace_back(dz, k2);
         adj[k2].emplace_back(-dz, k1);
         return *this;
     }
 
     cpx Lattice::shift(int k, int l) const {
-        const Lattice_place & m(adj[k][l]);
+        const Lattice_place &m(adj[k][l]);
         return (*this)(m.z, m.k) - (*this)({0, 0}, k);
     }
 
     double Lattice::energy() const {
         double t = 0;
         for (int k = 0; k < n; ++k)
-            for (int l = 0; l < adj[k].size(); ++l) t += norm(shift(k, l));
+            for (unsigned l = 0; l < adj[k].size(); ++l) t += norm(shift(k, l));
         return t;
     }
 
     cpx Lattice::shear() const {
         cpx t = 0;
         for (int k = 0; k < n; ++k)
-            for (int l = 0; l < adj[k].size(); ++l) t += shift(k, l) * shift(k, l);
+            for (unsigned l = 0; l < adj[k].size(); ++l) t += shift(k, l) * shift(k, l);
         return t;
     }
 
@@ -47,9 +47,9 @@ namespace vb {
     cpx Lattice::tau_rw() const {
         double a = 0, b = 0, c = 0;
         for (int k = 0; k < n; ++k)
-            for (int l = 0; l < adj[k].size(); ++l) {
-                const Lattice_place & m = adj[k][l];
-                cpx                   u = cpx(m.z.x, m.z.y) + z[m.k] - z[k];
+            for (unsigned l = 0; l < adj[k].size(); ++l) {
+                const Lattice_place &m = adj[k][l];
+                cpx                  u = cpx(m.z.x, m.z.y) + z[m.k] - z[k];
                 a += u.imag() * u.imag();
                 b += 2 * u.real() * u.imag();
                 c += u.real() * u.real();
@@ -59,10 +59,10 @@ namespace vb {
         return (t.imag() > 0 ? t : conj(t));
     }
 
-    double cost_cp(Lattice const & L) {
+    double cost_cp(Lattice const &L) {
         double t = 0;
         for (int k = 0; k < L.n; ++k)
-            for (int l = 0; l < L.adj[k].size(); ++l) {
+            for (unsigned l = 0; l < L.adj[k].size(); ++l) {
                 cpx    s  = L.shift(k, l);
                 double d  = sqrt(norm(s));
                 double rr = L.r[k] + L.r[L.adj[k][l].k];

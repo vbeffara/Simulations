@@ -46,16 +46,16 @@ namespace vb {
     template <typename T> T Constellation<T>::cost() const {
         T out   = vcost().squaredNorm();
         T bound = sqrt(sqrt(out));
-        for (int i = 0; i < b.size(); ++i)
-            for (int j = 0; j < b.size(); ++j)
+        for (unsigned i = 0; i < b.size(); ++i)
+            for (unsigned j = 0; j < b.size(); ++j)
                 if (i != j)
                     if (abs(reduce(b[i].z - b[j].z)) < bound) out += T(1);
-        for (int i = 0; i < w.size(); ++i)
-            for (int j = 0; j < w.size(); ++j)
+        for (unsigned i = 0; i < w.size(); ++i)
+            for (unsigned j = 0; j < w.size(); ++j)
                 if (i != j)
                     if (abs(reduce(w[i].z - w[j].z)) < bound) out += T(1);
-        for (int i = 0; i < f.size(); ++i)
-            for (int j = 0; j < f.size(); ++j)
+        for (unsigned i = 0; i < f.size(); ++i)
+            for (unsigned j = 0; j < f.size(); ++j)
                 if (i != j)
                     if (abs(reduce(f[i].z - f[j].z)) < bound) out += T(1);
         if (!isnormal(out)) out = T(123456789);

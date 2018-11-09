@@ -30,6 +30,6 @@ namespace vb {
 		Permutation rrand ();
 
 	private:
-		int n;
+		unsigned n;
 	};
 }
