@@ -15,7 +15,7 @@ namespace vb {
         E.resize(6 * nb);
         for (int i = 0; i < E.size(); ++i) E[i].i = i;
         for (int i = 0; i < V.size(); ++i) V[i].i = i;
-        for (auto & v : V) {
+        for (auto &v : V) {
             v.z    = NAN;
             v.bone = 0;
             v.adj.clear();
@@ -24,7 +24,7 @@ namespace vb {
                 E[e].src = v.i;
             }
         }
-        for (auto & v : V)
+        for (auto &v : V)
             for (int e : sc[v.i]) { v.adj.push_back(E[alpha[e]].src); }
     }
 
@@ -33,22 +33,22 @@ namespace vb {
     int Hypermap::genus() const { return 1 - euler() / 2; }
 
     bool Hypermap::is_graph() const {
-        for (const auto & v : alpha.cycles())
+        for (const auto &v : alpha.cycles())
             if (v.size() != 2) return false;
         return true;
     }
 
     bool Hypermap::is_triangulation() const {
         if (!(is_graph())) return false;
-        for (const auto & f : phi.cycles())
+        for (const auto &f : phi.cycles())
             if (f.size() != 3) return false;
         return true;
     }
 
     bool Hypermap::is_simple(int d) const {
-        for (const auto & s : sigma.cycles())
+        for (const auto &s : sigma.cycles())
             if (s.size() <= d) return false;
-        for (const auto & f : phi.cycles())
+        for (const auto &f : phi.cycles())
             if (f.size() <= d) return false;
         return true;
     }
@@ -58,16 +58,16 @@ namespace vb {
         Cycles sigma_c, alpha_c, phi_c;
         sigma_c = sigma.cycles();
 
-        for (int a = 0; a < N; ++a) {
-            int b = alpha[a], c = phi[a], f = sigma[a], x = phi[b];
+        for (unsigned a = 0; a < N; ++a) {
+            auto b = alpha[a], c = phi[a], f = sigma[a], x = phi[b];
             if (a < b) sigma_c.emplace_back(Permutation({a + N, x + 3 * N, b + 2 * N, b + N, c + 3 * N, a + 2 * N}));
             alpha_c.emplace_back(Permutation({a, a + N}));
             alpha_c.emplace_back(Permutation({a + 2 * N, a + 3 * N}));
             phi_c.emplace_back(Permutation({a, a + 2 * N, f + N}));
         }
-        for (const auto & F : phi.cycles()) {
-            std::vector<int> FF = F;
-            for (auto & i : FF) i += 3 * N;
+        for (const auto &F : phi.cycles()) {
+            std::vector<unsigned> FF = F;
+            for (auto &i : FF) i += 3 * N;
             phi_c.push_back(FF);
         }
 
@@ -102,9 +102,9 @@ namespace vb {
     }
 
     Permutation Hypermap::rebasing(int i) const {
-        int              n = alpha.size(), m = 0;
-        std::vector<int> s1(n, n), s2(n, n);
-        auto             go = [&](int i) {
+        int                   n = alpha.size(), m = 0;
+        std::vector<unsigned> s1(n, n), s2(n, n);
+        auto                  go = [&](int i) {
             while (s1[i] == n) {
                 s1[i] = m;
                 s2[m] = i;
@@ -242,7 +242,7 @@ namespace vb {
         }
     }
 
-    void Hypermap::relabel(const Permutation & p) {
+    void Hypermap::relabel(const Permutation &p) {
         sigma = sigma.conjugate(p);
         alpha = alpha.conjugate(p);
         phi   = phi.conjugate(p);
@@ -256,7 +256,7 @@ namespace vb {
         int    n = sigma.size();
         initial.resize(6 * n);
         Permutation alpha1 = alpha.inverse();
-        for (int i = 0; i < n; ++i) {
+        for (unsigned i = 0; i < n; ++i) {
             new_a.emplace_back(Permutation({i, i + n}));
             new_a.emplace_back(Permutation({i + 2 * n, i + 3 * n}));
             new_a.emplace_back(Permutation({i + 4 * n, i + 5 * n}));
@@ -274,7 +274,7 @@ namespace vb {
         sigma = (alpha * phi).inverse();
     }
 
-    std::ostream & operator<<(std::ostream & os, Hypermap & H) {
+    std::ostream &operator<<(std::ostream &os, Hypermap &H) {
         os << "Hypermap < " << H.sigma.cycles().size() << " black, " << H.alpha.cycles().size() << " white, " << H.sigma.size()
            << " half-edges, " << H.phi.cycles().size() << " faces, genus " << H.genus() << " >" << std::endl;
         os << "  sigma: " << H.sigma << std::endl;
@@ -291,15 +291,15 @@ namespace vb {
         return p[n];
     }
 
-    double acpa_step(const Hypermap & M, const std::vector<double> & in, std::vector<double> * pout, std::vector<double> * per) {
-        std::vector<double> & out{*pout};
-        std::vector<double> & er{*per};
+    double acpa_step(const Hypermap &M, const std::vector<double> &in, std::vector<double> *pout, std::vector<double> *per) {
+        std::vector<double> &out {*pout};
+        std::vector<double> &er {*per};
         out       = in;
         double se = 0;
         for (int i = 0; i < out.size(); ++i) {
             if (M.V[i].fixed) continue;
-            auto & adj = M.V[i].adj;
-            int    n   = adj.size();
+            auto &adj = M.V[i].adj;
+            int   n   = adj.size();
             if (n == 2) continue;
             double s = M.alpha_xyz(out[i], out[adj[0]], out[adj[n - 1]]);
             for (int j = 0; j < n - 1; ++j) s += M.alpha_xyz(out[i], out[adj[j]], out[adj[j + 1]]);
@@ -353,7 +353,7 @@ namespace vb {
     }
 } // namespace vb
 
-YAML::Node YAML::convert<vb::Hypermap>::encode(const vb::Hypermap & h) {
+YAML::Node YAML::convert<vb::Hypermap>::encode(const vb::Hypermap &h) {
     Node node;
     node["sigma"] = h.sigma.cycles();
     node["alpha"] = h.alpha.cycles();
@@ -361,7 +361,7 @@ YAML::Node YAML::convert<vb::Hypermap>::encode(const vb::Hypermap & h) {
     return node;
 }
 
-bool YAML::convert<vb::Hypermap>::decode(const Node & node, vb::Hypermap & h) {
+bool YAML::convert<vb::Hypermap>::decode(const Node &node, vb::Hypermap &h) {
     auto sigma = node["sigma"].as<vb::Cycles>();
     auto alpha = node["alpha"].as<vb::Cycles>();
     auto phi   = node["phi"].as<vb::Cycles>();

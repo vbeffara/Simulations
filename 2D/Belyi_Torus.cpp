@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
     if (r > 0) prng.seed(r);
 
     Cycles phi_c;
-    for (int i = 0; i < a / 3; ++i) phi_c.emplace_back(std::vector<int> {3 * i, 3 * i + 1, 3 * i + 2});
+    for (unsigned i = 0; i < a / 3; ++i) phi_c.emplace_back(std::vector<unsigned> {3 * i, 3 * i + 1, 3 * i + 2});
     Permutation phi(phi_c);
 
     vector<Hypermap> v;

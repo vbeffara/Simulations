@@ -57,12 +57,12 @@ namespace vb {
         for (cpx p : periods)
             if (abs(p) < abs(p1)) { p1 = p; }
 
-        for (auto & v : V) {
+        for (auto &v : V) {
             v.z /= p1;
             v.r /= abs(p1);
         }
-        for (auto & e : E) { e.a -= arg(p1); }
-        for (cpx & p : periods) p /= p1;
+        for (auto &e : E) { e.a -= arg(p1); }
+        for (cpx &p : periods) p /= p1;
 
         std::vector<cpx> moduli;
         for (cpx p : periods)
@@ -78,16 +78,16 @@ namespace vb {
         while (real(m) < -.499) m += 1;
         while (real(m) > .501) m -= 1;
 
-        int mdeg = 0;
-        cpx mpos = 0;
-        for (const auto & v : V)
+        unsigned mdeg = 0;
+        cpx      mpos = 0;
+        for (const auto &v : V)
             if (v.adj.size() > mdeg) {
                 mdeg = v.adj.size();
                 mpos = v.z;
             }
 
         double slope = real(m) / imag(m);
-        for (auto & v : V) {
+        for (auto &v : V) {
             v.z -= mpos;
             while (imag(v.z) < 0) v.z += m;
             while (imag(v.z) > imag(m)) v.z -= m;
@@ -97,12 +97,12 @@ namespace vb {
     }
 
     void Toroidal::flip() {
-        for (auto & e : E) e.a += M_PI;
-        for (auto & v : V) v.z = 1.0 + m - v.z;
+        for (auto &e : E) e.a += M_PI;
+        for (auto &v : V) v.z = 1.0 + m - v.z;
     }
 
     void Toroidal::output_pdf() {
-        for (int e = 0; e < sigma.size(); ++e) {
+        for (unsigned e = 0; e < sigma.size(); ++e) {
             if (initial[e] == 0) continue;
             V[E[e].src].bone = std::max(V[E[e].src].bone, initial[e]);
         }
@@ -113,7 +113,7 @@ namespace vb {
 
         for (int a = -2; a < 3; ++a) {
             for (int b = -1; b < 2; ++b) {
-                for (auto & v : V) {
+                for (auto &v : V) {
                     cpx z = v.z + cpx(a) + cpx(b) * m;
                     if ((imag(z) < -.6) || (imag(z) > 1.7 * std::max(1.0, imag(m))) || (real(z) < -.8) || (real(z) > 2.6)) continue;
                     if ((((mode & 1u) != 0) && (v.bone != 0)) || (((mode & 2u) != 0) && (v.bone == 0)))
@@ -134,7 +134,7 @@ namespace vb {
 
         for (int a = -2; a < 3; ++a) {
             for (int b = -1; b < 2; ++b) {
-                for (const auto & v : V) {
+                for (const auto &v : V) {
                     cpx z = v.z + cpx(a) + cpx(b) * m;
                     if ((imag(z) < -.6) || (imag(z) > 1.7 * std::max(1.0, imag(m))) || (real(z) < -.8) || (real(z) > 2.6)) continue;
                     if (((mode & 32u) != 0) && ((v.bone & 2u) != 0)) F.add(std::make_unique<Circle>(z, .015, Pen(BLACK, .5, BLACK, true)));
@@ -153,7 +153,7 @@ namespace vb {
             }
         }
 
-        F.add(std::make_unique<Polygon>(std::vector<cpx>{0, 1, cpx(1) + m, m}, Pen(BLACK, 0, Color(0, 0, 0, 50), true)));
+        F.add(std::make_unique<Polygon>(std::vector<cpx> {0, 1, cpx(1) + m, m}, Pen(BLACK, 0, Color(0, 0, 0, 50), true)));
         F.output_pdf();
     }
 } // namespace vb

@@ -326,13 +326,13 @@ namespace vb {
 
         T rad = mindist / 5;
 
-        std::vector<std::vector<cplx>> hands;
-        std::vector<std::vector<int>>  halfedges;
-        unsigned                       index = 0;
+        std::vector<std::vector<cplx>>     hands;
+        std::vector<std::vector<unsigned>> halfedges;
+        unsigned                           index = 0;
 
         for (Star<T> z : Z) {
-            std::vector<cplx> hs;
-            std::vector<int>  he;
+            std::vector<cplx>     hs;
+            std::vector<unsigned> he;
 
             cplx u = z.z + rad * exp(cplx(0, .001));
             T    s = imag((*this)(u));
@@ -350,10 +350,10 @@ namespace vb {
             halfedges.push_back(he);
         }
 
-        std::vector<cplx> hs;
-        std::vector<int>  he;
-        cplx              u = large * exp(cplx(0, .001));
-        T                 s = imag((*this)(u));
+        std::vector<cplx>     hs;
+        std::vector<unsigned> he;
+        cplx                  u = large * exp(cplx(0, .001));
+        T                     s = imag((*this)(u));
         for (int i = 0; i < 10 * maxdeg; ++i) {
             u    = exp(cplx(0, -2 * pi_<T>() / (10 * maxdeg))) * u;
             T ns = imag((*this)(u));
@@ -366,7 +366,7 @@ namespace vb {
         hands.push_back(hs);
         halfedges.push_back(he);
 
-        std::vector<std::vector<int>> pairs;
+        std::vector<std::vector<unsigned>> pairs;
 
         for (int i = 0; i < Z.size(); ++i) {
             for (unsigned j = 0; j < hands[i].size(); ++j) {
@@ -388,7 +388,7 @@ namespace vb {
                             }
                         }
                         if (h < 0) return std::nullopt;
-                        pairs.emplace_back(std::vector<int> {halfedges[i][j], halfedges[k][h]});
+                        pairs.emplace_back(std::vector<unsigned> {halfedges[i][j], halfedges[k][h]});
                         looking = false;
                     }
                     for (unsigned k = 0; k < Z.size(); ++k)
@@ -403,7 +403,8 @@ namespace vb {
                                 }
                             }
                             if (h < 0) return std::nullopt;
-                            if (halfedges[i][j] < halfedges[k][h]) pairs.emplace_back(std::vector<int> {halfedges[i][j], halfedges[k][h]});
+                            if (halfedges[i][j] < halfedges[k][h])
+                                pairs.emplace_back(std::vector<unsigned> {halfedges[i][j], halfedges[k][h]});
                             looking = false;
                         }
                     if (sl * imag((*this)(nz)) > 0)

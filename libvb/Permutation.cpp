@@ -2,12 +2,12 @@
 #include <algorithm>
 
 namespace vb {
-    Permutation::Permutation(Cycles & c) {
+    Permutation::Permutation(Cycles &c) {
         int sz = 0;
-        for (const auto & v : c) sz += v.size();
+        for (const auto &v : c) sz += v.size();
         resize(sz);
         for (auto v : c) {
-            for (int i = 0; i < v.size() - 1; ++i) at(v[i]) = v[i + 1];
+            for (unsigned i = 0; i + 1 < v.size(); ++i) at(v[i]) = v[i + 1];
             at(v.back()) = v[0];
         }
     }
@@ -15,9 +15,9 @@ namespace vb {
     Cycles Permutation::cycles() const {
         Cycles           c;
         std::vector<int> done(size(), 0);
-        for (int i = 0; i < size(); ++i) {
+        for (unsigned i = 0; i < size(); ++i) {
             if (done[i] != 0) continue;
-            std::vector<int> v(1, i);
+            std::vector<unsigned> v(1, i);
             done[i] = 1;
             for (int j = at(i); done[j] == 0; j = at(j)) {
                 v.push_back(j);
@@ -30,7 +30,7 @@ namespace vb {
 
     std::vector<int> Permutation::signature() const {
         vector<int> output;
-        for (const auto & c : cycles()) output.push_back(c.size());
+        for (const auto &c : cycles()) output.push_back(c.size());
         sort(output.begin(), output.end());
         return output;
     }
@@ -53,7 +53,7 @@ namespace vb {
     }
 
     bool Permutation::is_identity() const {
-        for (int i = 0; i < size(); ++i)
+        for (unsigned i = 0; i < size(); ++i)
             if (at(i) != i) return false;
         return true;
     }
@@ -61,20 +61,20 @@ namespace vb {
     Permutation Permutation::inverse() const {
         Permutation s;
         s.resize(size());
-        for (int i = 0; i < size(); ++i) s[at(i)] = i;
+        for (unsigned i = 0; i < size(); ++i) s[at(i)] = i;
         return s;
     }
 
-    Permutation Permutation::operator*(const Permutation & o) const {
+    Permutation Permutation::operator*(const Permutation &o) const {
         Permutation s;
         s.resize(size());
-        for (int i = 0; i < size(); ++i) s[i] = o[at(i)];
+        for (unsigned i = 0; i < size(); ++i) s[i] = o[at(i)];
         return s;
     }
 
-    Permutation Permutation::conjugate(const Permutation & s) const {
+    Permutation Permutation::conjugate(const Permutation &s) const {
         Permutation out(size());
-        for (int i = 0; i < size(); ++i) out[s[i]] = s[at(i)];
+        for (unsigned i = 0; i < size(); ++i) out[s[i]] = s[at(i)];
         return out;
     }
 
@@ -85,7 +85,7 @@ namespace vb {
         return p;
     }
 
-    bool connected(const Permutation & s, const Permutation & a) {
+    bool connected(const Permutation &s, const Permutation &a) {
         int              n = s.size();
         std::vector<int> l(n);
         for (int i = 0; i < n; ++i) l[i] = i;
@@ -108,10 +108,10 @@ namespace vb {
         return true;
     }
 
-    std::ostream & operator<<(std::ostream & os, const Permutation & P) {
+    std::ostream &operator<<(std::ostream &os, const Permutation &P) {
         os << "(";
         bool f = true;
-        for (const auto & cc : P.cycles()) {
+        for (const auto &cc : P.cycles()) {
             if (!f) os << " ";
             os << "(";
             bool ff = true;
@@ -126,9 +126,9 @@ namespace vb {
         return os << ")";
     }
 
-    std::ostream & operator<<(std::ostream & os, const Passport & P) {
+    std::ostream &operator<<(std::ostream &os, const Passport &P) {
         bool first = true;
-        for (const auto & c : P) {
+        for (const auto &c : P) {
             if (!first) os << " ";
             os << c.first << "(" << c.second << ")";
             first = false;

@@ -88,7 +88,7 @@ namespace vb {
             v.z *= nz / abs(v.z);
             v.r = nr;
         }
-        for (int i = 0; i < sigma.size(); ++i) {
+        for (unsigned i = 0; i < sigma.size(); ++i) {
             E[i].a = arg(V[E[alpha[i]].src].z - V[E[i].src].z);
             if (V[E[alpha[i]].src].r < 0) E[i].a += M_PI;
         }
@@ -103,14 +103,14 @@ namespace vb {
             v.z             = ((1 - norm(a)) * z1 / r1 - 1.0) / abar;
             v.r *= (1 - norm(a)) / r1;
         }
-        for (int i = 0; i < sigma.size(); ++i) {
+        for (unsigned i = 0; i < sigma.size(); ++i) {
             E[i].a = arg(V[E[alpha[i]].src].z - V[E[i].src].z);
             if (V[E[alpha[i]].src].r < 0) E[i].a += M_PI;
         }
     }
 
     void Spheroidal::output_pdf() {
-        for (int e = 0; e < sigma.size(); ++e) {
+        for (unsigned e = 0; e < sigma.size(); ++e) {
             if (initial[e] == 0) continue;
             V[E[e].src].bone = std::max(V[E[e].src].bone, initial[e]);
         }
