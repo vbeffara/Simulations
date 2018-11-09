@@ -21,7 +21,7 @@ namespace vb {
     template <typename T> Polynomial<T> derivative(const Polynomial<T> & P) {
         if (P.size() == 0) return {};
         std::vector<T> out(P.degree());
-        for (int i = 0; i < P.degree(); ++i) out[i] = T(i + 1) * P[i + 1];
+        for (unsigned i = 0; i < P.degree(); ++i) out[i] = T(i + 1) * P[i + 1];
         if (out.empty()) out.push_back(T(0));
         return Polynomial<T>(begin(out), end(out));
     }

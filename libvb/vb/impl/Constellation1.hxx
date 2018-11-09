@@ -4,7 +4,7 @@
 #include <iomanip>
 
 namespace vb {
-    template <typename T> Constellation1<T>::Constellation1(const Hypermap & M) {
+    template <typename T> Constellation1<T>::Constellation1(const Hypermap &M) {
         Hypermap M2(M);
         M2.dessin();
         p = {I_<T>(), T(0)};
@@ -16,18 +16,18 @@ namespace vb {
             int N = M.sigma.size();
             b.clear();
             for (auto c : M.sigma.cycles()) {
-                const auto & z = S.V[S.E[c[0]].src].z;
-                b.push_back({{real(z), imag(z)}, int(c.size())});
+                const auto &z = S.V[S.E[c[0]].src].z;
+                b.push_back({{real(z), imag(z)}, c.size()});
             }
             w.clear();
             for (auto c : M.alpha.cycles()) {
-                const auto & z = S.V[S.E[c[0] + N].src].z;
-                w.push_back({{real(z), imag(z)}, int(c.size())});
+                const auto &z = S.V[S.E[c[0] + N].src].z;
+                w.push_back({{real(z), imag(z)}, c.size()});
             }
             f.clear();
             for (auto c : M.phi.cycles()) {
-                const auto & z = S.V[S.E[c[0] + 3 * N].src].z;
-                f.push_back({{real(z), imag(z)}, int(c.size())});
+                const auto &z = S.V[S.E[c[0] + 3 * N].src].z;
+                f.push_back({{real(z), imag(z)}, c.size()});
             }
             dim  = b.size() + w.size() + f.size() + p.size();
             p[0] = cplx(S.m);
@@ -36,18 +36,18 @@ namespace vb {
         } while (findn() > T(1e-6));
     }
 
-    template <typename T> template <typename U> Constellation1<T>::Constellation1(const Constellation1<U> & C) : Constellation<T>(C) {
+    template <typename T> template <typename U> Constellation1<T>::Constellation1(const Constellation1<U> &C) : Constellation<T>(C) {
         from_points();
     }
 
     template <typename T> void Constellation1<T>::from_points() {
-        E = Elliptic<T>{q_<T>(p[0])};
+        E = Elliptic<T> {q_<T>(p[0])};
         cplx szp(0);
         for (auto zd : b) szp += T(zd.d) * zd.z;
         for (auto zd : f) szp -= T(zd.d) * zd.z;
         dy = int(round(T(imag(szp) / imag(p[0]))));
         dx = int(round(T(real(szp - T(dy) * p[0]))));
-        for (auto & zd : f) {
+        for (auto &zd : f) {
             int ddx = round(double(dx) / zd.d);
             if (ddx != 0) {
                 zd.z += T(ddx);
@@ -68,9 +68,9 @@ namespace vb {
             sdf += zd.d;
             sf += zd.z * T(zd.d);
         }
-        for (auto & zd : b) zd.z -= sf / T(sdf);
-        for (auto & zd : w) zd.z -= sf / T(sdf);
-        for (auto & zd : f) zd.z -= sf / T(sdf);
+        for (auto &zd : b) zd.z -= sf / T(sdf);
+        for (auto &zd : w) zd.z -= sf / T(sdf);
+        for (auto &zd : f) zd.z -= sf / T(sdf);
         p[1] = cplx(0);
         cplx avg(0);
         int  d = 0;
@@ -82,9 +82,9 @@ namespace vb {
     }
 
     template <typename T> void Constellation1<T>::shift(cplx z) {
-        for (auto & zd : b) zd.z += z;
-        for (auto & zd : w) zd.z += z;
-        for (auto & zd : f) zd.z += z;
+        for (auto &zd : b) zd.z += z;
+        for (auto &zd : w) zd.z += z;
+        for (auto &zd : f) zd.z += z;
         from_points();
     }
 
@@ -150,22 +150,22 @@ namespace vb {
         return z;
     }
 
-    template <typename T> void Constellation1<T>::readvec(const Vector<cplx> & xy) {
+    template <typename T> void Constellation1<T>::readvec(const Vector<cplx> &xy) {
         int i = 0;
-        for (auto & zd : b) zd.z = xy[i++];
-        for (auto & zd : w) zd.z = xy[i++];
-        for (auto & zd : f) zd.z = xy[i++];
-        for (auto & z : p) z = xy[i++];
+        for (auto &zd : b) zd.z = xy[i++];
+        for (auto &zd : w) zd.z = xy[i++];
+        for (auto &zd : f) zd.z = xy[i++];
+        for (auto &z : p) z = xy[i++];
         from_points();
     }
 
     template <typename T> auto Constellation1<T>::vec() const -> Vector<cplx> {
         Vector<cplx> bw(dim);
         int          i = 0;
-        for (const auto & zd : b) { bw[i++] = zd.z; }
-        for (const auto & zd : w) { bw[i++] = zd.z; }
-        for (const auto & zd : f) { bw[i++] = zd.z; }
-        for (const auto & z : p) { bw[i++] = z; }
+        for (const auto &zd : b) { bw[i++] = zd.z; }
+        for (const auto &zd : w) { bw[i++] = zd.z; }
+        for (const auto &zd : f) { bw[i++] = zd.z; }
+        for (const auto &z : p) { bw[i++] = z; }
         return bw;
     }
 
@@ -173,7 +173,7 @@ namespace vb {
         Vector<cplx> out(dim);
         int          k = 0;
         for (auto zd : w)
-            for (int j = 0; j < zd.d; ++j) out[k++] = logder(zd.z, j);
+            for (unsigned j = 0; j < zd.d; ++j) out[k++] = logder(zd.z, j);
         cplx sz(T(-dx) + cplx(T(-dy) * tau()));
         for (auto zd : b) sz += T(zd.d) * zd.z;
         for (auto zd : f) sz -= T(zd.d) * zd.z;
@@ -185,13 +185,13 @@ namespace vb {
     template <typename T> auto Constellation1<T>::jacvcost() const -> Matrix<cplx> { // m_ij = \partial_j(f_i)
         Matrix<cplx>           out = Matrix<cplx>::Zero(dim, dim);
         int                    i = 0, j = 0;
-        for (int ii = 0; ii < w.size(); ++ii)
-            for (int id = 0; id < w[ii].d; ++id) {
+        for (unsigned ii = 0; ii < w.size(); ++ii)
+            for (unsigned id = 0; id < w[ii].d; ++id) {
                 j         = 0; // f_i is logder(w[ii],id)
                 out(i, j) = -logderp_z(w[ii].z - b[0].z + T(dx) + tau() * T(dy), id);
-                for (int jj = 0; jj < b.size(); ++jj) out(i, j++) -= T(b[jj].d - (jj == 0 ? 1 : 0)) * logderp_z(w[ii].z - b[jj].z, id);
-                for (int jj = 0; jj < w.size(); ++jj) out(i, j++) = (ii == jj) ? logder_z(w[ii].z, id) : cplx(0);
-                for (int jj = 0; jj < f.size(); ++jj) out(i, j++) = T(f[jj].d) * logderp_z(w[ii].z - f[jj].z, id);
+                for (unsigned jj = 0; jj < b.size(); ++jj) out(i, j++) -= T(b[jj].d - (jj == 0 ? 1 : 0)) * logderp_z(w[ii].z - b[jj].z, id);
+                for (unsigned jj = 0; jj < w.size(); ++jj) out(i, j++) = (ii == jj) ? logder_z(w[ii].z, id) : cplx(0);
+                for (unsigned jj = 0; jj < f.size(); ++jj) out(i, j++) = T(f[jj].d) * logderp_z(w[ii].z - f[jj].z, id);
                 out(i, j++) = logder_t(w[ii].z, id);
                 out(i, j++) = cplx(id == 0 ? 1 : 0);
                 assert(j == dim);
@@ -199,9 +199,9 @@ namespace vb {
             }
         {
             j = 0; // f_i is sum(z*dz) recentered
-            for (int jj = 0; jj < b.size(); ++jj) out(i, j++) = T(b[jj].d);
-            for (int jj = 0; jj < w.size(); ++jj) out(i, j++) = 0;
-            for (int jj = 0; jj < f.size(); ++jj) out(i, j++) = -T(f[jj].d);
+            for (unsigned jj = 0; jj < b.size(); ++jj) out(i, j++) = T(b[jj].d);
+            for (unsigned jj = 0; jj < w.size(); ++jj) out(i, j++) = 0;
+            for (unsigned jj = 0; jj < f.size(); ++jj) out(i, j++) = -T(f[jj].d);
             out(i, j++) = -T(dy);
             out(i, j++) = cplx(0);
             assert(j == dim);
@@ -209,9 +209,9 @@ namespace vb {
         }
         {
             j = 0; // f_i is -sum(f*df) recentered
-            for (int jj = 0; jj < b.size(); ++jj) out(i, j++) = jj == 0 ? T(1) : T(0);
-            for (int jj = 0; jj < w.size(); ++jj) out(i, j++) = 0;
-            for (int jj = 0; jj < f.size(); ++jj) out(i, j++) = 0;
+            for (unsigned jj = 0; jj < b.size(); ++jj) out(i, j++) = jj == 0 ? T(1) : T(0);
+            for (unsigned jj = 0; jj < w.size(); ++jj) out(i, j++) = 0;
+            for (unsigned jj = 0; jj < f.size(); ++jj) out(i, j++) = 0;
             out(i, j++) = cplx(0);
             out(i, j++) = cplx(0);
             assert(j == dim);
@@ -235,7 +235,7 @@ namespace vb {
         return out;
     }
 
-    template <typename T> std::ostream & operator<<(std::ostream & os, const Constellation1<T> & C) {
+    template <typename T> std::ostream &operator<<(std::ostream &os, const Constellation1<T> &C) {
         T   err(C.cost());
         T   lerr(-log10(err));
         int nd = std::max(5, int(lerr) / 2 - 10);
@@ -251,17 +251,17 @@ namespace vb {
         os << "Keeping " << nd << " digits." << std::endl;
         os << std::endl;
         os << "Black vertices / zeros: " << std::endl;
-        for (int i = 0; i < C.b.size(); ++i) os << "| " << C.b[i].d << "\t" << C.b[i].z << std::endl;
+        for (unsigned i = 0; i < C.b.size(); ++i) os << "| " << C.b[i].d << "\t" << C.b[i].z << std::endl;
         os << std::endl;
         os << "White vertices / ones: " << std::endl;
-        for (int i = 0; i < C.w.size(); ++i) os << "| " << C.w[i].d << "\t" << C.w[i].z << std::endl;
+        for (unsigned i = 0; i < C.w.size(); ++i) os << "| " << C.w[i].d << "\t" << C.w[i].z << std::endl;
         os << std::endl;
         os << "Red vertices / poles: " << std::endl;
-        for (int i = 0; i < C.f.size(); ++i) os << "| " << C.f[i].d << "\t" << C.f[i].z << std::endl;
+        for (unsigned i = 0; i < C.f.size(); ++i) os << "| " << C.f[i].d << "\t" << C.f[i].z << std::endl;
         return os;
     }
 
-    template <> std::ostream & operator<<(std::ostream & os, const Constellation1<real_t> & C) {
+    template <> std::ostream &operator<<(std::ostream &os, const Constellation1<real_t> &C) {
         using T = real_t;
         T   err(C.cost());
         T   lerr(-log10(err));
@@ -295,21 +295,21 @@ namespace vb {
         os << "Keeping " << nd << " digits." << std::endl;
         os << std::endl;
         os << "Black vertices / zeros: " << std::endl;
-        for (auto & zd : C.b) {
+        for (auto &zd : C.b) {
             os << "| " << zd.d << "\t" << zd.z << std::endl;
             auto P = guess(zd.z, eps);
             if (P) os << "|\t\troot of " << *P << std::endl;
         }
         os << std::endl;
         os << "White vertices / ones: " << std::endl;
-        for (auto & zd : C.w) {
+        for (auto &zd : C.w) {
             os << "| " << zd.d << "\t" << zd.z << std::endl;
             auto P = guess(zd.z, eps);
             if (P) os << "|\t\troot of " << *P << std::endl;
         }
         os << std::endl;
         os << "Red vertices / poles: " << std::endl;
-        for (auto & zd : C.f) {
+        for (auto &zd : C.f) {
             os << "| " << zd.d << "\t" << zd.z << std::endl;
             auto P = guess(zd.z, eps);
             if (P) os << "|\t\troot of " << *P << std::endl;

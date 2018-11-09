@@ -5,7 +5,7 @@
 #include <iomanip>
 
 namespace vb {
-    template <typename T> Constellation0<T>::Constellation0(const Hypermap & M) {
+    template <typename T> Constellation0<T>::Constellation0(const Hypermap &M) {
         Hypermap M2(M);
         M2.dessin();
         p = {T(1)};
@@ -29,19 +29,19 @@ namespace vb {
             S.mobiusto0(S.V[S.E[0].src].z);
             b.clear();
             for (auto c : M.sigma.cycles()) {
-                const auto & z = S.V[S.E[c[0]].src].z;
-                b.push_back({cplx(real(z), imag(z)), int(c.size())});
+                const auto &z = S.V[S.E[c[0]].src].z;
+                b.push_back({cplx(real(z), imag(z)), c.size()});
             }
             w.clear();
             for (auto c : M.alpha.cycles()) {
-                const auto & z = S.V[S.E[c[0] + N].src].z;
-                w.push_back({cplx(real(z), imag(z)), int(c.size())});
+                const auto &z = S.V[S.E[c[0] + N].src].z;
+                w.push_back({cplx(real(z), imag(z)), c.size()});
             }
             f.clear();
             for (auto c : M.phi.cycles()) {
                 if (S.E[c[0] + 3 * N].src != inf) {
-                    const auto & z = S.V[S.E[c[0] + 3 * N].src].z;
-                    f.push_back({cplx(real(z), imag(z)), int(c.size())});
+                    const auto &z = S.V[S.E[c[0] + 3 * N].src].z;
+                    f.push_back({cplx(real(z), imag(z)), c.size()});
                 }
             }
             dim = b.size() + w.size() + f.size();
@@ -54,7 +54,7 @@ namespace vb {
         }
     } // namespace vb
 
-    template <typename T> template <typename U> Constellation0<T>::Constellation0(const Constellation0<U> & C) : Constellation<T>(C) {
+    template <typename T> template <typename U> Constellation0<T>::Constellation0(const Constellation0<U> &C) : Constellation<T>(C) {
         dim--;
     }
 
@@ -76,9 +76,9 @@ namespace vb {
     }
 
     template <typename T> void Constellation0<T>::linear(cplx u, cplx v) {
-        for (auto & zd : b) zd.z = u * zd.z + v;
-        for (auto & zd : f) zd.z = u * zd.z + v;
-        for (auto & zd : w) zd.z = u * zd.z + v;
+        for (auto &zd : b) zd.z = u * zd.z + v;
+        for (auto &zd : f) zd.z = u * zd.z + v;
+        for (auto &zd : w) zd.z = u * zd.z + v;
     }
 
     template <typename T> void Constellation0<T>::make_l_1() {
@@ -105,10 +105,10 @@ namespace vb {
     template <typename T> void Constellation0<T>::make_p_1() {
         T eps = real(pow(cost(), T(.5)));
         if (eps > T(.1)) eps = T(.1);
-        Polynomial<cplx> P{1}, Q{1};
+        Polynomial<cplx> P {1}, Q {1};
         for (auto zd : b) add_root(P, zd.z, zd.d);
         for (auto zd : f) add_root(Q, zd.z, zd.d);
-        int i = 0, j = 0;
+        unsigned i = 0, j = 0;
         while (norm(P[i]) < eps) ++i;
         while (norm(Q[j]) < eps) ++j;
         bool is_P;
@@ -145,11 +145,11 @@ namespace vb {
         return sum;
     }
 
-    template <typename T> void Constellation0<T>::readvec(const Vector<cplx> & xy) {
+    template <typename T> void Constellation0<T>::readvec(const Vector<cplx> &xy) {
         int i = 0;
-        for (auto & zd : b) zd.z = xy[i++];
-        for (auto & zd : w) zd.z = xy[i++];
-        for (auto & zd : f) zd.z = xy[i++];
+        for (auto &zd : b) zd.z = xy[i++];
+        for (auto &zd : w) zd.z = xy[i++];
+        for (auto &zd : f) zd.z = xy[i++];
     }
 
     template <typename T> auto Constellation0<T>::vec() const -> Vector<cplx> {
@@ -165,7 +165,7 @@ namespace vb {
         Vector<cplx> out(dim);
         int          k = 0;
         for (auto zd : w)
-            for (int j = 0; j < zd.d; ++j) out[k++] = logder(zd.z, j);
+            for (unsigned j = 0; j < zd.d; ++j) out[k++] = logder(zd.z, j);
         cplx sb(0);
         for (auto zd : b) sb += T(zd.d) * zd.z;
         out[k++] = sb;
@@ -175,22 +175,22 @@ namespace vb {
     template <typename T> auto Constellation0<T>::jacvcost() const -> Matrix<cplx> { // m_ij = \partial_j(f_i)
         Matrix<cplx>           out(dim, dim);
         int                    i = 0, j = 0;
-        for (int ii = 0; ii < w.size(); ++ii)
-            for (int id = 0; id < w[ii].d; ++id) {
+        for (unsigned ii = 0; ii < w.size(); ++ii)
+            for (unsigned id = 0; id < w[ii].d; ++id) {
                 j = 0;
-                for (int jj = 0; jj < b.size(); ++jj)
+                for (unsigned jj = 0; jj < b.size(); ++jj)
                     if (id == 0)
                         out(i, j++) = T(-T(b[jj].d)) / (w[ii].z - b[jj].z);
                     else
                         out(i, j++) = T(id * b[jj].d) / pow(w[ii].z - b[jj].z, cplx(id + 1));
-                for (int jj = 0; jj < w.size(); ++jj)
+                for (unsigned jj = 0; jj < w.size(); ++jj)
                     if (jj != ii)
                         out(i, j++) = T(0);
                     else if (id == 0)
                         out(i, j++) = logder(w[ii].z, 1);
                     else
                         out(i, j++) = T(-T(id)) * logder(w[ii].z, id + 1);
-                for (int jj = 0; jj < f.size(); ++jj)
+                for (unsigned jj = 0; jj < f.size(); ++jj)
                     if (id == 0)
                         out(i, j++) = T(f[jj].d) / (w[ii].z - f[jj].z);
                     else
@@ -198,13 +198,13 @@ namespace vb {
                 ++i;
             }
         j = 0;
-        for (int jj = 0; jj < b.size(); ++jj) out(i, j++) = T(b[jj].d);
+        for (unsigned jj = 0; jj < b.size(); ++jj) out(i, j++) = T(b[jj].d);
         while (j < dim) out(i, j++) = T(0);
         ++i;
         return out;
     }
 
-    template <typename T> std::ostream & operator<<(std::ostream & os, const Constellation0<T> & C) {
+    template <typename T> std::ostream &operator<<(std::ostream &os, const Constellation0<T> &C) {
         T   err(C.cost());
         T   lerr(-log10(err));
         int nd = std::max(5, int(lerr) / 2 - 7);
@@ -215,18 +215,18 @@ namespace vb {
 
         os << "Black vertices / zeros: "
            << "\n";
-        for (const auto & u : C.b) os << "| " << u.d << "\t" << u.z << "\n";
+        for (const auto &u : C.b) os << "| " << u.d << "\t" << u.z << "\n";
         os << "\n";
         os << "White vertices / ones: "
            << "\n";
-        for (const auto & u : C.w) os << "| " << u.d << "\t" << u.z << "\n";
+        for (const auto &u : C.w) os << "| " << u.d << "\t" << u.z << "\n";
         os << "\n";
         os << "Red vertices / poles: "
            << "\n";
-        for (const auto & u : C.f) os << "| " << u.d << "\t" << u.z << "\n";
+        for (const auto &u : C.f) os << "| " << u.d << "\t" << u.z << "\n";
         os << "\n";
         os << u8"λ     := " << C.p[0] << "\n";
-        Polynomial<typename cpx_t<T>::type> P{1}, Q{1};
+        Polynomial<typename cpx_t<T>::type> P {1}, Q {1};
         for (auto zd : C.b) add_root(P, zd.z, zd.d);
         for (auto zd : C.f) add_root(Q, zd.z, zd.d);
         os << "P[z_] := " << format(P) << "\n";
@@ -234,7 +234,7 @@ namespace vb {
         return os;
     }
 
-    template <> std::ostream & operator<<(std::ostream & os, const Constellation0<real_t> & C) {
+    template <> std::ostream &operator<<(std::ostream &os, const Constellation0<real_t> &C) {
         using T = real_t;
         T   err(C.cost());
         T   lerr(-log10(err));
@@ -247,7 +247,7 @@ namespace vb {
 
         os << "Black vertices / zeros: "
            << "\n";
-        for (auto & zd : C.b) {
+        for (auto &zd : C.b) {
             os << "| " << zd.d << "\t" << fmt::format("{:<30}", pretty(zd.z));
             if (auto P = guess(zd.z, nd)) os << "\troot of " << format(*P);
             os << "\n";
@@ -255,7 +255,7 @@ namespace vb {
         os << "\n";
         os << "White vertices / ones: "
            << "\n";
-        for (auto & zd : C.w) {
+        for (auto &zd : C.w) {
             os << "| " << zd.d << "\t" << fmt::format("{:<30}", pretty(zd.z));
             if (auto P = guess(zd.z, nd)) os << "\troot of " << format(*P);
             os << "\n";
@@ -263,7 +263,7 @@ namespace vb {
         os << "\n";
         os << "Red vertices / poles: "
            << "\n";
-        for (auto & zd : C.f) {
+        for (auto &zd : C.f) {
             os << "| " << zd.d << "\t" << fmt::format("{:<30}", pretty(zd.z));
             if (auto P = guess(zd.z, nd)) os << "\troot of " << format(*P);
             os << "\n";
@@ -271,14 +271,14 @@ namespace vb {
         os << "\n";
         os << u8"λ     := " << C.p[0] << "\n";
         if (auto L = guess(C.p[0], nd)) os << u8"Λ[z_] := " << format(*L) << "\n";
-        Polynomial<complex_t> P{1}, Q{1};
+        Polynomial<complex_t> P {1}, Q {1};
         for (auto zd : C.b) add_root(P, zd.z, zd.d);
         for (auto zd : C.f) add_root(Q, zd.z, zd.d);
-        for (auto & x : P.data()) {
+        for (auto &x : P.data()) {
             auto xx = complex_t(round(real(x)), round(imag(x)));
             if (abs(x - xx) < pow(T(.1), nd)) x = xx;
         }
-        for (auto & x : Q.data()) {
+        for (auto &x : Q.data()) {
             auto xx = complex_t(round(real(x)), round(imag(x)));
             if (abs(x - xx) < pow(T(.1), nd)) x = xx;
         }
@@ -311,11 +311,11 @@ namespace vb {
 
     template <typename T> std::optional<Hypermap> Constellation0<T>::explore() const {
         std::vector<Star<T>> Z;
-        for (const auto & z : b) Z.push_back(z);
-        for (const auto & z : f) Z.push_back(z);
-        for (const auto & z : w) Z.push_back(z);
+        for (const auto &z : b) Z.push_back(z);
+        for (const auto &z : f) Z.push_back(z);
+        for (const auto &z : w) Z.push_back(z);
 
-        int maxdeg = 0;
+        unsigned long maxdeg = 0;
         for (auto z : Z) maxdeg = std::max(maxdeg, z.d);
 
         auto bd    = bounds();
@@ -328,7 +328,7 @@ namespace vb {
 
         std::vector<std::vector<cplx>> hands;
         std::vector<std::vector<int>>  halfedges;
-        int                            index = 0;
+        unsigned                       index = 0;
 
         for (Star<T> z : Z) {
             std::vector<cplx> hs;
@@ -369,7 +369,7 @@ namespace vb {
         std::vector<std::vector<int>> pairs;
 
         for (int i = 0; i < Z.size(); ++i) {
-            for (int j = 0; j < hands[i].size(); ++j) {
+            for (unsigned j = 0; j < hands[i].size(); ++j) {
                 auto l       = hands[i][j];
                 cplx r       = Z[i].z + exp(cplx(0, -2 * pi_<T>() / (10 * Z[i].d))) * (l - Z[i].z);
                 auto sl      = imag((*this)(l));
@@ -380,7 +380,7 @@ namespace vb {
                         T   d = large;
                         int h = -1;
                         int k = hands.size() - 1;
-                        for (int kk = 0; kk < hands[k].size(); ++kk) {
+                        for (unsigned kk = 0; kk < hands[k].size(); ++kk) {
                             T nd = abs(nz - hands[k][kk]);
                             if (nd < d) {
                                 d = abs(nz - hands[k][kk]);
@@ -388,14 +388,14 @@ namespace vb {
                             }
                         }
                         if (h < 0) return std::nullopt;
-                        pairs.emplace_back(std::vector<int>{halfedges[i][j], halfedges[k][h]});
+                        pairs.emplace_back(std::vector<int> {halfedges[i][j], halfedges[k][h]});
                         looking = false;
                     }
-                    for (int k = 0; k < Z.size(); ++k)
+                    for (unsigned k = 0; k < Z.size(); ++k)
                         if (abs(nz - Z[k].z) < rad) {
                             T   d = rad;
                             int h = -1;
-                            for (int kk = 0; kk < hands[k].size(); ++kk) {
+                            for (unsigned kk = 0; kk < hands[k].size(); ++kk) {
                                 T nd = abs(nz - hands[k][kk]);
                                 if (nd < d) {
                                     d = abs(nz - hands[k][kk]);
@@ -403,7 +403,7 @@ namespace vb {
                                 }
                             }
                             if (h < 0) return std::nullopt;
-                            if (halfedges[i][j] < halfedges[k][h]) pairs.emplace_back(std::vector<int>{halfedges[i][j], halfedges[k][h]});
+                            if (halfedges[i][j] < halfedges[k][h]) pairs.emplace_back(std::vector<int> {halfedges[i][j], halfedges[k][h]});
                             looking = false;
                         }
                     if (sl * imag((*this)(nz)) > 0)
@@ -416,7 +416,7 @@ namespace vb {
 
         if (pairs.size() != index / 2) return std::nullopt;
         Permutation sigma(halfedges), alpha(pairs), phi((sigma * alpha).inverse());
-        for (auto & c : phi.cycles())
+        for (auto &c : phi.cycles())
             if (c.size() != 3) return std::nullopt;
 
         return Hypermap(sigma, alpha, phi);

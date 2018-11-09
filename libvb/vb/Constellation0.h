@@ -55,7 +55,7 @@ namespace vb {
         Cq.belyi();
         Polynomial<complex_t> Q{{1}};
         for (auto zd : Cq.f)
-            for (int j = 0; j < zd.d; ++j) add_root(Q, zd.z);
+            for (unsigned j = 0; j < zd.d; ++j) add_root(Q, zd.z);
         for (auto & x : Q.data()) {
             auto xx = complex_t(round(real(x)), round(imag(x)));
             if (abs(x - xx) < 1e-90) x = xx;

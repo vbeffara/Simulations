@@ -17,21 +17,22 @@ using namespace vb;
 using namespace std;
 
 int            ntri_[] = {0, 1, 5, 46, 669};
-gsl::span<int> ntri{ntri_};
+gsl::span<int> ntri {ntri_};
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     H.init("Toroidal enumeration", argc, argv, "s=1,m=228,r=1,o,d=0,D=0,g=1,f,n=2,q");
-    int s = H['s'], g = H['g'], a = 6 * (s + 2 * g - 2), r = H['r'], d = H['d'], D = H['D'];
+    int      s = H['s'], g = H['g'], a = 6 * (s + 2 * g - 2), r = H['r'];
+    unsigned D = H['D'], d = H['d'];
     assert(a > 0);
     if (g != 1) assert(!H['o']);
     if (r > 0) prng.seed(r);
 
     Cycles phi_c;
-    for (int i = 0; i < a / 3; ++i) phi_c.emplace_back(std::vector<int>{3 * i, 3 * i + 1, 3 * i + 2});
+    for (int i = 0; i < a / 3; ++i) phi_c.emplace_back(std::vector<int> {3 * i, 3 * i + 1, 3 * i + 2});
     Permutation phi(phi_c);
 
     vector<Hypermap> v;
-    int              target = 0;
+    unsigned         target = 0;
     if ((d == 0) && (g == 1) && (!H['f']) && (s < ntri.size())) target = ntri[s];
 
     Coloring img(cpx(-1, -1), cpx(1, 1), 500, [](cpx) { return BLACK; });
@@ -43,24 +44,24 @@ int main(int argc, char ** argv) {
         Hypermap    M(sigma, alpha, phi);
         if (M.genus() != g) continue;
         bool good = true;
-        for (auto & c : sigma.cycles())
+        for (auto &c : sigma.cycles())
             if (c.size() < d) good = false;
         if (!good) continue;
         good = true;
         if (D > 0)
-            for (auto & c : sigma.cycles())
+            for (auto &c : sigma.cycles())
                 if (c.size() > D) good = false;
         if (!good) continue;
 
         M.normalize();
         bool there = false;
-        for (Hypermap & O : v)
+        for (Hypermap &O : v)
             if (O == M) there = true;
         if (H['f']) {
             Hypermap MM = M;
             MM.mirror();
             MM.normalize();
-            for (Hypermap & O : v)
+            for (Hypermap &O : v)
                 if (O == MM) there = true;
         }
         if (!there) {

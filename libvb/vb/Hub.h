@@ -66,7 +66,7 @@ namespace vb {
         bool                                                                         initialized = false;
 
         std::vector<Output> outputs;
-        int                 max_label_width = 0;
+        unsigned            max_label_width = 0;
     };
 
     extern Hub H;

@@ -6,7 +6,7 @@
 namespace vb {
     template <typename T> struct Star {
         typename cpx_t<T>::type z;
-        int                     d;
+        unsigned long           d;
     };
 
     template <typename T> class Constellation {
@@ -16,22 +16,22 @@ namespace vb {
         std::vector<Star<T>> b, w, f;
         std::vector<cplx>    p;
 
-        int dim{0};
+        int dim {0};
 
         Constellation();
         Constellation(const Constellation &) = default;
         Constellation(Constellation &&)      = default;
-        Constellation & operator=(const Constellation &) = default;
-        Constellation & operator=(Constellation &&) = default;
+        Constellation &operator=(const Constellation &) = default;
+        Constellation &operator=(Constellation &&) = default;
 
-        template <typename U> Constellation(const Constellation<U> & C);
+        template <typename U> Constellation(const Constellation<U> &C);
 
         virtual ~Constellation() = default;
 
-        virtual Vector<cplx> vec() const                      = 0;
-        virtual void         readvec(const Vector<cplx> & xy) = 0;
-        virtual Vector<cplx> vcost() const                    = 0;
-        virtual Matrix<cplx> jacvcost() const                 = 0;
+        virtual Vector<cplx> vec() const                     = 0;
+        virtual void         readvec(const Vector<cplx> &xy) = 0;
+        virtual Vector<cplx> vcost() const                   = 0;
+        virtual Matrix<cplx> jacvcost() const                = 0;
 
         virtual cplx                  operator()(cplx z) const = 0;
         virtual cplx                  reduce(cplx z) const { return z; }
@@ -41,5 +41,5 @@ namespace vb {
         T findn();
     };
 
-    template <> template <> Constellation<real_t>::Constellation(const Constellation<double> & C);
+    template <> template <> Constellation<real_t>::Constellation(const Constellation<double> &C);
 } // namespace vb
