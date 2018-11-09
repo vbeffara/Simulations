@@ -17,10 +17,10 @@ void fib(Context C, int n, const std::shared_ptr<int> &t) {
         *t = fib(n);
         return;
     }
-    auto t1 = std::make_shared<int>(0), t2 = std::make_shared<int>(0);
-    C.then([=](Context C) { *t = *t1 + *t2; });
+    auto t1 = std::make_shared<int>(0);
+    C.then([=](Context) { *t += *t1; });
     C.push([=](Context C) { fib(C, n - 1, t1); });
-    C.push([=](Context C) { fib(C, n - 2, t2); });
+    C.push([=](Context C) { fib(C, n - 2, t); });
 }
 
 double cost(double x) {
