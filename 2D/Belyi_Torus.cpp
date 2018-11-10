@@ -21,8 +21,8 @@ gsl::span<int> ntri {ntri_};
 
 int main(int argc, char **argv) {
     H.init("Toroidal enumeration", argc, argv, "s=1,m=228,r=1,o,d=0,D=0,g=1,f,n=2,q");
-    int      s = H['s'], g = H['g'], a = 6 * (s + 2 * g - 2), r = H['r'];
-    unsigned D = H['D'], d = H['d'];
+    int      s = H['s'], g = H['g'], r = H['r'];
+    unsigned D = H['D'], d = H['d'], a = 6 * (s + 2 * g - 2);
     assert(a > 0);
     if (g != 1) assert(!H['o']);
     if (r > 0) prng.seed(r);

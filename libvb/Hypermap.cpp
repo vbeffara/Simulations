@@ -13,8 +13,8 @@ namespace vb {
         int    nb = sc.size();
         V.resize(nb);
         E.resize(6 * nb);
-        for (int i = 0; i < E.size(); ++i) E[i].i = i;
-        for (int i = 0; i < V.size(); ++i) V[i].i = i;
+        for (unsigned i = 0; i < E.size(); ++i) E[i].i = i;
+        for (unsigned i = 0; i < V.size(); ++i) V[i].i = i;
         for (auto &v : V) {
             v.z    = NAN;
             v.bone = 0;
@@ -45,7 +45,7 @@ namespace vb {
         return true;
     }
 
-    bool Hypermap::is_simple(int d) const {
+    bool Hypermap::is_simple(unsigned d) const {
         for (const auto &s : sigma.cycles())
             if (s.size() <= d) return false;
         for (const auto &f : phi.cycles())
@@ -54,8 +54,8 @@ namespace vb {
     }
 
     void Hypermap::split_edges() {
-        int    N = sigma.size();
-        Cycles sigma_c, alpha_c, phi_c;
+        unsigned N = sigma.size();
+        Cycles   sigma_c, alpha_c, phi_c;
         sigma_c = sigma.cycles();
 
         for (unsigned a = 0; a < N; ++a) {
@@ -75,14 +75,14 @@ namespace vb {
         alpha = alpha_c;
         phi   = phi_c;
         initial.resize(sigma.size(), 0);
-        for (int i = 0; i < N; ++i) {
+        for (unsigned i = 0; i < N; ++i) {
             initial[alpha[i]] = initial[i] % 2;
             if (((initial[i] & 2u) != 0) && ((initial[alpha[sigma[sigma[sigma[alpha[i]]]]]] & 2u) != 0)) initial[alpha[i]] |= 4u;
         }
     }
 
-    void Hypermap::flip(int e) {
-        int b = sigma[e], a = alpha[b], c = sigma[a], d = alpha[c], f = alpha[e], g = phi[f], h = alpha[g], i = phi[g], j = alpha[i];
+    void Hypermap::flip(unsigned e) {
+        unsigned b = sigma[e], a = alpha[b], c = sigma[a], d = alpha[c], f = alpha[e], g = phi[f], h = alpha[g], i = phi[g], j = alpha[i];
         if (alpha[phi[alpha[phi[e]]]] == e) return;
         if (phi[alpha[phi[alpha[e]]]] == e) return;
         if ((e == sigma[e]) || (f == sigma[f])) return;
@@ -102,7 +102,7 @@ namespace vb {
     }
 
     Permutation Hypermap::rebasing(int i) const {
-        int                   n = alpha.size(), m = 0;
+        unsigned              n = alpha.size(), m = 0;
         std::vector<unsigned> s1(n, n), s2(n, n);
         auto                  go = [&](int i) {
             while (s1[i] == n) {
@@ -119,7 +119,7 @@ namespace vb {
 
     Permutation Hypermap::rebasing() const {
         Permutation s = rebasing(0), a = alpha.conjugate(s), p = phi.conjugate(s);
-        for (int i = 1; i < alpha.size(); ++i) {
+        for (unsigned i = 1; i < alpha.size(); ++i) {
             Permutation s2 = rebasing(i), a2 = alpha.conjugate(s2), p2 = phi.conjugate(s2);
             if ((a2 < a) || ((a2 == a) && (p2 < p))) {
                 s = s2;
@@ -247,13 +247,13 @@ namespace vb {
         alpha = alpha.conjugate(p);
         phi   = phi.conjugate(p);
         std::vector<unsigned> b(sigma.size());
-        for (int i = 0; i < sigma.size(); ++i) b[p[i]] = initial[i];
+        for (unsigned i = 0; i < sigma.size(); ++i) b[p[i]] = initial[i];
         initial = b;
     }
 
     void Hypermap::dessin() {
-        Cycles new_a, new_f;
-        int    n = sigma.size();
+        Cycles   new_a, new_f;
+        unsigned n = sigma.size();
         initial.resize(6 * n);
         Permutation alpha1 = alpha.inverse();
         for (unsigned i = 0; i < n; ++i) {
@@ -296,7 +296,7 @@ namespace vb {
         std::vector<double> &er {*per};
         out       = in;
         double se = 0;
-        for (int i = 0; i < out.size(); ++i) {
+        for (unsigned i = 0; i < out.size(); ++i) {
             if (M.V[i].fixed) continue;
             auto &adj = M.V[i].adj;
             int   n   = adj.size();
@@ -341,7 +341,7 @@ namespace vb {
             }
             H.L->trace("In acpa(), t={}, error={}, mv={}", t, se / n, mv);
             if (mv < mvm) {
-                for (int i = 0; i < V.size(); ++i) {
+                for (unsigned i = 0; i < V.size(); ++i) {
                     if (old_e[i] != 0) {
                         double nr = (r[i] - (1 - l[i]) * old_r[i]) / l[i];
                         if (nr > 0) r[i] = nr;
