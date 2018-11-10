@@ -28,7 +28,7 @@ public:
     using vb::CoarseImage::output;
     void output(const std::string & s) override {
         vb::OldPath P(z.size() - 1);
-        for (int i = 0; i < z.size() - 1; ++i) {
+        for (unsigned i = 0; i < z.size() - 1; ++i) {
             vb::coo dz = z[i + 1] - z[i];
             int     dx = dz.x, dy = dz.y;
             if (dx > 0) { P[i] = 0; }

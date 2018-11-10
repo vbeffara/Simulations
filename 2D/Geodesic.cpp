@@ -11,7 +11,7 @@ using namespace std;
 class Info {
 public:
     Info(coo _z, coo _n, double _d, double _f) : z(_z), next(_n), d(_d), f(_f) {}
-    bool operator<(const Info & o) const { return d > o.d; }
+    bool operator<(const Info &o) const { return d > o.d; }
 
     coo    z, next;
     double d, f;
@@ -19,9 +19,8 @@ public:
 
 class QG : public Image {
 public:
-    explicit QG(const Hub & H)
+    explicit QG(const Hub &H)
         : Image(1u << unsigned(H['n']), 1u << unsigned(H['n'])), I(w(), h(), Info({0, 0}, {0, 0}, 0, 0)), g(H['g']), n(H['n']) {
-
         map<string, function<void()>> fields;
         fields["boolean"]  = [&, this] { fill_boolean(H['z']); };
         fields["dyadic"]   = [&, this] { fill_dyadic(H['z']); };
@@ -102,7 +101,7 @@ public:
         fftw_free(out);
     }
 
-    void fill_radial(const function<double(double)> & f, double l) {
+    void fill_radial(const function<double(double)> &f, double l) {
         auto d  = fftw_alloc_complex(ww * hh);
         auto p1 = fftw_plan_dft_2d(ww, hh, d, d, FFTW_FORWARD, FFTW_ESTIMATE);
         auto p2 = fftw_plan_dft_2d(ww, hh, d, d, FFTW_BACKWARD, FFTW_ESTIMATE);
@@ -126,7 +125,7 @@ public:
     }
 
     void dijkstra() {
-        coo                  mid{w() / 2, h() / 2};
+        coo                  mid {w() / 2, h() / 2};
         priority_queue<Info> Q;
         I.at(mid).d = 0;
         Q.push(I.at(mid));
@@ -180,7 +179,7 @@ public:
     int         n;
 };
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     H.init("Random 2D geometry", argc, argv, "w=free,n=9,z=0,g=1,s=0,b,i,q,c,l=10,a=1");
     if (int s = H['s']) prng.seed(s);
     unsigned n = H['n'], nn = 1u << n;
@@ -191,7 +190,7 @@ int main(int argc, char ** argv) {
     if (!H['q']) {
         img.dijkstra();
         if (H['b']) img.ball();
-        for (int i = 0; i <= nn - 1; i += 1) {
+        for (unsigned i = 0; i <= nn - 1; i += 1) {
             img.trace({0, i});
             img.trace({nn - 1, i});
             img.trace({i, 0});

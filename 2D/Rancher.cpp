@@ -18,12 +18,12 @@ using vb::cpx;
 
 class point {
 public:
-    explicit point(cpx _z, bool _k = true) : z(_z), k(_k){};
+    explicit point(cpx _z, bool _k = true) : z(_z), k(_k) {};
     cpx  z;
     bool k;
 };
 
-double angle(const point & O, const point & A, const point & B) {
+double angle(const point &O, const point &A, const point &B) {
     cpx vza = A.z;
     if (A.k) vza -= O.z;
     cpx vzb = B.z;
@@ -50,7 +50,7 @@ public:
         return point(p.z + vzp * std::polar(1.0, alpha) / sqrt(norm(vzp)));
     }
 
-    std::list<point>::iterator insere_maillon(const point & p) {
+    std::list<point>::iterator insere_maillon(const point &p) {
         std::list<point>::iterator maillonmin2, maillonmax2, i;
         double                     minpente2 = +INFINITY, maxpente2 = -INFINITY;
 
@@ -109,7 +109,7 @@ public:
         return sqrt(norm(p1.z - p2.z));
     }
 
-    void main(int argc, char ** argv) {
+    void main(int argc, char **argv) {
         vb::H.init("Rancher process", argc, argv, "p=.1,n=1000,i=1,o,r");
         double pente = vb::H['p'];
         int    nb    = vb::H['n'];
@@ -147,7 +147,7 @@ public:
             W.step();
 
             if (renew && (env.size() == 3)) {
-                int r = i - last_renewal;
+                unsigned r = i - last_renewal;
                 if (r + 1 > renewals.size()) renewals.resize(r + 1);
                 renewals[r]++;
                 last_renewal = i;
@@ -156,7 +156,7 @@ public:
 
         if (plot) {
             std::vector<cpx> path;
-            for (int i = 2; i < traj.size(); ++i) path.push_back(traj[i].z);
+            for (unsigned i = 2; i < traj.size(); ++i) path.push_back(traj[i].z);
             F.add(std::make_unique<vb::Path>(path));
             F.show();
             F.pause();
@@ -165,7 +165,7 @@ public:
 
         if (renew) {
             int n = 0, sx = 0, sxx = 0;
-            for (int i = 0; i < renewals.size(); ++i) {
+            for (unsigned i = 0; i < renewals.size(); ++i) {
                 n += renewals[i];
                 sx += i * renewals[i];
                 sxx += i * i * renewals[i];
@@ -176,7 +176,7 @@ public:
     }
 };
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     Rancher().main(argc, argv);
     return 0;
 }

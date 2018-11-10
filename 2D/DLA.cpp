@@ -7,7 +7,7 @@ using namespace std;
 
 class DLA : public CoarseImage {
 public:
-    explicit DLA(const Hub & H)
+    explicit DLA(const Hub &H)
         : CoarseImage(H['n'], H['n'], pow(double(H['n']), .33)), n(H['n']), c(H['c']), r(1), QT({-n / 2, -n / 2}, {n / 2, n / 2}, H['l']),
           prec(int(H['p'])), img(512, 512) {
         z0 = {n / 2, n / 2};
@@ -23,7 +23,7 @@ public:
                 dirty = false;
                 for (int i = 1; i < 2 * r; ++i)
                     for (int j = 1; j < 2 * r; ++j) {
-                        coo    z{i, j};
+                        coo    z {i, j};
                         double t = MM.at(z);
                         MM.at(z) = 0;
                         if (t > 1e-13) {
@@ -37,7 +37,7 @@ public:
                             if (d <= 1)
                                 for (int k = 0; k < 4; ++k) MM.at(z + dz[k]) += t / 4;
                             else {
-                                const auto & ps = prec[d];
+                                const auto &ps = prec[d];
                                 for (int k = 0; k < d; ++k) {
                                     MM.at({i - d, j + k}) += t * ps[k] / 8;
                                     MM.at({i - d, j - k}) += t * ps[k] / 8;
@@ -81,8 +81,8 @@ public:
 
     coo jump(int d) const {
         if (d <= 1) return dz[prng.uniform_int(4)];
-        if (d < prec.size()) {
-            coo w{d, prng.discrete(prec[d])};
+        if (d < int(prec.size())) {
+            coo w {d, prng.discrete(prec[d])};
             if (prng.bernoulli()) w.x = -w.x;
             if (prng.bernoulli()) w.y = -w.y;
             if (prng.bernoulli()) swap(w.x, w.y);
@@ -99,8 +99,8 @@ public:
         put({0, 0});
         while (r < n / 2 - 1) {
             double    t = prng.uniform_real(0, 2 * M_PI);
-            coo       z{int((2 * r + 20) * cos(t)), int((2 * r + 20) * sin(t))};
-            QuadIndex qi{{0, 0}, sup(z)};
+            coo       z {int((2 * r + 20) * cos(t)), int((2 * r + 20) * sin(t))};
+            QuadIndex qi {{0, 0}, sup(z)};
             while (!neighbor(z)) {
                 qi.d = sup(z - qi.z);
                 QT.nn(z, qi);
@@ -127,7 +127,7 @@ public:
     Image                  img;
 };
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     H.init("Lattice DLA", argc, argv, "n=2000,p=64,c=50,l=30,f,s=0");
     if (auto s = int(H['s'])) prng.seed(s);
     DLA dla(H);

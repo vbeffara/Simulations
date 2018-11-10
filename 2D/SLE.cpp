@@ -1,5 +1,5 @@
-#include <vb/Coloring.h>
 #include <vb/Bitmap.h>
+#include <vb/Coloring.h>
 
 using namespace vb;
 using namespace std;
@@ -26,7 +26,7 @@ public:
     }
 
     Color compute(cpx z) const {
-        for (int k = 0; k < size(); ++k) {
+        for (unsigned k = 0; k < size(); ++k) {
             if (z.imag() <= 0) return (z.real() < at(k)) ? LEFTSIDE : RIGHTSIDE;
             if (z.real() < Min[k]) return LEFTSIDE;
             if (z.real() > Max[k]) return RIGHTSIDE;
@@ -39,7 +39,7 @@ public:
     std::vector<double> Min, Max;
 };
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     H.init("Schramm-Loewner Evolution", argc, argv, "n=300,k=2.666666666667,r=0,a");
     int r = H['r'];
     if (r > 0) prng.seed(r);
