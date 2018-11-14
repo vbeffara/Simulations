@@ -1,7 +1,7 @@
 [requires]
 boost/1.68.0@conan/stable
 cairo/1.15.14@bincrafters/stable
-doctest/2.0.0@bincrafters/stable
+doctest/2.0.1@bincrafters/stable
 fftw/3.3.8@bincrafters/stable
 gsl_microsoft/2.0.0@bincrafters/stable
 range-v3/0.4.0@ericniebler/stable
