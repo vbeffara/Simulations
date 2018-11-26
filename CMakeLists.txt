@@ -31,12 +31,6 @@ endif ()
 
 link_directories ("/usr/local/lib" "/opt/X11/lib")
 
-include (TestBigEndian)
-test_big_endian (BIGENDIAN)
-if (${BIGENDIAN})
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBIGENDIAN")
-endif ()
-
 file (GLOB vb_sources ${PROJECT_SOURCE_DIR}/libvb/*.cpp)
 add_library (vb SHARED ${vb_sources})
 target_link_libraries (vb ${CONAN_LIBS})

@@ -4,19 +4,15 @@
 
 namespace vb {
     struct Color {
-#ifdef BIGENDIAN
-        uint8_t a, r, g, b;
-        Color(uint8_t R, uint8_t G, uint8_t B, uint8_t A = 255) noexcept : a(A), r(R), g(G), b(B) {}
-#else
-        uint8_t b, g, r, a;
         Color(uint8_t R, uint8_t G, uint8_t B, uint8_t A = 255) noexcept : b(B), g(G), r(R), a(A) {}
-#endif
         Color() : Color(0, 0, 0, 0) {}
 
-        bool operator==(const Color & o) const { return (r == o.r) && (g == o.g) && (b == o.b) && (a == o.a); }
-        bool operator!=(const Color & o) const { return (r != o.r) || (g != o.g) || (b != o.b) || (a != o.a); }
+        bool operator==(const Color &o) const { return (r == o.r) && (g == o.g) && (b == o.b) && (a == o.a); }
+        bool operator!=(const Color &o) const { return (r != o.r) || (g != o.g) || (b != o.b) || (a != o.a); }
 
         explicit operator int() { return (r + g + b) / 3; }
+
+        uint8_t b, g, r, a;
     };
 
     template <typename T> Color to_Color(T t) { return static_cast<Color>(t); }
