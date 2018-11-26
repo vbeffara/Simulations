@@ -19,6 +19,6 @@ namespace vb {
 
     void run_par(const std::function<void(Context)> &f);
 
-    void loop_go(Context C, int a, int b, std::function<void(int)> f, int l);
+    void loop_go(Context C, int a, int b, const std::function<void(int)> &f, int l);
     void loop_par(int a, int b, std::function<void(int)> f, int l = 100);
 } // namespace vb

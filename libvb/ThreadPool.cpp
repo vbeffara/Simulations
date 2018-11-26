@@ -3,11 +3,11 @@
 
 namespace vb {
     void Context::then(std::function<void(Context)> f) {
-        next = std::make_shared<Will>([f, C = *this] { f(C); });
+        next = std::make_shared<Will>([f = std::move(f), C = *this] { f(C); });
     }
 
     void Context::push(std::function<void(Context)> f) {
-        S.push([f, C = *this] { f(C); });
+        S.push([f = std::move(f), C = *this] { f(C); });
     }
 
     void run_par(const std::function<void(Context)> &f) {
@@ -22,7 +22,7 @@ namespace vb {
         for (auto &t : ts) t.join();
     }
 
-    void loop_go(Context C, int a, int b, std::function<void(int)> f, int l) {
+    void loop_go(Context C, int a, int b, const std::function<void(int)> &f, int l) {
         if (b - a <= l) {
             for (int i = a; i < b; ++i) f(i);
             return;
@@ -32,6 +32,6 @@ namespace vb {
     }
 
     void loop_par(int a, int b, std::function<void(int)> f, int l) {
-        run_par([=](Context C) { loop_go(C, a, b, f, l); });
+        run_par([f = std::move(f), a, b, l](Context C) { loop_go(C, a, b, f, l); });
     }
 } // namespace vb
