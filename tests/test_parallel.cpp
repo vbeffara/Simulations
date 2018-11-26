@@ -3,6 +3,10 @@
 #include <vb/util.h>
 #include <future>
 #include <numeric>
+#include <pstl/algorithm>
+#include <pstl/execution>
+#include <pstl/memory>
+#include <pstl/numeric>
 #include <range/v3/numeric/accumulate.hpp>
 #include <range/v3/view/take.hpp>
 
@@ -246,4 +250,28 @@ int main(int argc, char **argv) {
         return s - int64_t(s);
     });
 #endif
+
+    timing("Map+reduce | PSTL, execution::par", [=] {
+        vector<double> X(l);
+        std::iota(X.begin(), X.end(), 0);
+        std::transform(pstl::execution::par, X.begin(), X.end(), X.begin(), cost);
+        double s = std::accumulate(X.begin(), X.end(), 0.0);
+        return s - int64_t(s);
+    });
+
+    timing("Map+reduce | PSTL, execution::unseq", [=] {
+        vector<double> X(l);
+        std::iota(X.begin(), X.end(), 0);
+        std::transform(pstl::execution::unseq, X.begin(), X.end(), X.begin(), cost);
+        double s = std::accumulate(X.begin(), X.end(), 0.0);
+        return s - int64_t(s);
+    });
+
+    timing("Map+reduce | PSTL, execution::par_unseq", [=] {
+        vector<double> X(l);
+        std::iota(X.begin(), X.end(), 0);
+        std::transform(pstl::execution::par_unseq, X.begin(), X.end(), X.begin(), cost);
+        double s = std::accumulate(X.begin(), X.end(), 0.0);
+        return s - int64_t(s);
+    });
 }
