@@ -9,7 +9,7 @@ namespace vb {
         for (int64_t y = 0; y < 3; ++y)
             for (int64_t x = 0; x < 3; ++x) sub.emplace_back(ul + coo{x * ww, y * ww}, ww);
         if (np == w * w)
-            for (auto & c : sub) c.np = ww * ww;
+            for (auto &c : sub) c.np = ww * ww;
     }
 
     void Cluster::grow() {
@@ -20,7 +20,7 @@ namespace vb {
             ul.y -= w;
             w *= 3;
             ensure_sub();
-            Cluster & c = sub[4];
+            Cluster &c = sub[4];
             tile.swap(c.tile);
             c.np = np;
             c.sub.swap(bak);
@@ -72,7 +72,7 @@ namespace vb {
         }
         if (!sub.empty()) {
             int64_t s = 0;
-            for (auto & c : sub) {
+            for (auto &c : sub) {
                 c.validate();
                 s += c.np;
             }
@@ -80,7 +80,7 @@ namespace vb {
         }
     }
 
-    void Cluster::paint(Image & I, coo ul, coo br) {
+    void Cluster::paint(Image &I, coo ul, coo br) {
         if (ul == br) {
             ul = {0, 0};
             br = {I.w(), I.h()};

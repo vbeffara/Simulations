@@ -28,7 +28,7 @@ namespace vb {
     Color HSV(double h, double s, double v) noexcept;
     Color Indexed(int i, double s = 1, double v = 1) noexcept;
 
-    std::ostream & operator<<(std::ostream & o, const Color & c);
+    std::ostream &operator<<(std::ostream &o, const Color &c);
 
 #ifdef UNIT_TESTS
     TEST_CASE("vb::Color") {
