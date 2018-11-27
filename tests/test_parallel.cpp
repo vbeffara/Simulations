@@ -9,6 +9,7 @@
 #include <pstl/numeric>
 #include <range/v3/numeric/accumulate.hpp>
 #include <range/v3/view/take.hpp>
+#include <tbb/task_group.h>
 
 using namespace ranges;
 using namespace std;
@@ -25,6 +26,16 @@ void fib(Context C, int n, const std::shared_ptr<int> &t) {
     C.then([=](Context) { *t += *t1; });
     C.push([=](Context C) { fib(C, n - 1, t1); });
     C.push([=](Context C) { fib(C, n - 2, t); });
+}
+
+int tbb_fib(int n) {
+    if (n < 25) return fib(n);
+    int             x, y;
+    tbb::task_group g;
+    g.run([&] { x = tbb_fib(n - 1); });
+    g.run([&] { y = tbb_fib(n - 2); });
+    g.wait();
+    return x + y;
 }
 
 double cost(double x) {
@@ -80,6 +91,8 @@ int main(int argc, char **argv) {
         run_par([n, t](Context C) { fib(C, n, t); });
         return *t;
     });
+
+    timing("Fibonacci  | TBB task group", [=] { return tbb_fib(n); });
 
     timing("Map+reduce | Single (fill then sum)", [=] {
         vector<double> X(l);
@@ -273,5 +286,19 @@ int main(int argc, char **argv) {
         std::transform(pstl::execution::par_unseq, X.begin(), X.end(), X.begin(), cost);
         double s = std::accumulate(X.begin(), X.end(), 0.0);
         return s - int64_t(s);
+    });
+
+    timing("Map+reduce | TBB parallel_reduce", [=] {
+        struct sum_cost {
+            sum_cost() = default;
+            sum_cost(sum_cost &, tbb::split) {}
+            double my_sum = 0.0;
+            void   operator()(const tbb::blocked_range<size_t> &r) {
+                for (size_t i = r.begin(); i != r.end(); ++i) my_sum += cost(i);
+            }
+            void join(const sum_cost &y) { my_sum += y.my_sum; }
+        } sc;
+        tbb::parallel_reduce(tbb::blocked_range<size_t>(0, l), sc);
+        return sc.my_sum - int64_t(sc.my_sum);
     });
 }
