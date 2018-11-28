@@ -1,5 +1,4 @@
 #include <vb/Ranges.h>
-#include <vb/ThreadPool.h>
 #include <vb/util.h>
 #include <future>
 #include <numeric>
@@ -16,17 +15,6 @@ using namespace std;
 using namespace vb;
 
 constexpr int fib(int n) { return n < 2 ? n : fib(n - 1) + fib(n - 2); }
-
-void fib(Context C, int n, const std::shared_ptr<int> &t) {
-    if (n < 25) {
-        *t = fib(n);
-        return;
-    }
-    auto t1 = std::make_shared<int>(0);
-    C.then([=](Context) { *t += *t1; });
-    C.push([=](Context C) { fib(C, n - 1, t1); });
-    C.push([=](Context C) { fib(C, n - 2, t); });
-}
 
 int tbb_fib(int n) {
     if (n < 25) return fib(n);
@@ -60,12 +48,6 @@ int main(int argc, char **argv) {
             }
         };
         return fib_async()(n);
-    });
-
-    timing("Fibonacci  | New style thread pool", [=] {
-        auto t = std::make_shared<int>(0);
-        run_par([n, t](Context C) { fib(C, n, t); });
-        return *t;
     });
 
     timing("Fibonacci  | TBB task group", [=] { return tbb_fib(n); });
@@ -115,51 +97,6 @@ int main(int argc, char **argv) {
         return s - int64_t(s);
     });
 #endif
-
-    timing("Map+reduce | new ThreadPool (loop_par, loop=1)", [=] {
-        vector<double> X((int(H['l'])));
-        loop_par(0, X.size(), [&X](int i) { X[i] = cost(i); }, 1);
-
-        double s = 0;
-        for (auto x : X) s += x;
-        return s - int64_t(s);
-    });
-
-    timing("Map+reduce | new ThreadPool (loop_par, loop=10)", [=] {
-        vector<double> X((int(H['l'])));
-        loop_par(0, X.size(), [&X](int i) { X[i] = cost(i); }, 10);
-
-        double s = 0;
-        for (auto x : X) s += x;
-        return s - int64_t(s);
-    });
-
-    timing("Map+reduce | new ThreadPool (loop_par, loop=100)", [=] {
-        vector<double> X((int(H['l'])));
-        loop_par(0, X.size(), [&X](int i) { X[i] = cost(i); }, 100);
-
-        double s = 0;
-        for (auto x : X) s += x;
-        return s - int64_t(s);
-    });
-
-    timing("Map+reduce | new ThreadPool (loop_par, loop=1000)", [=] {
-        vector<double> X((int(H['l'])));
-        loop_par(0, X.size(), [&X](int i) { X[i] = cost(i); }, 1000);
-
-        double s = 0;
-        for (auto x : X) s += x;
-        return s - int64_t(s);
-    });
-
-    timing("Map+reduce | new ThreadPool (loop_par, loop=10000)", [=] {
-        vector<double> X((int(H['l'])));
-        loop_par(0, X.size(), [&X](int i) { X[i] = cost(i); }, 10000);
-
-        double s = 0;
-        for (auto x : X) s += x;
-        return s - int64_t(s);
-    });
 
     timing("Map+reduce | Async (std::async, split fill + sum)", [=] {
         class mr {

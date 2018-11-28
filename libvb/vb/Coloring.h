@@ -1,6 +1,5 @@
 #pragma once /// \file
 #include <vb/Picture.h>
-#include <vb/ThreadPool.h>
 #include <vb/coo.h>
 #include <vb/cpx.h>
 #include <gsl/gsl>
@@ -29,10 +28,8 @@ namespace vb {
     private:
         Color aa_color(coo c, bool pre = false) const;
 
-        void line(Context C, coo s, coo d, int l);
-        void tessel_go(Context C, coo ul, coo lr);
-        void tessel_start(Context C, coo ul, coo lr);
-
+        void line(coo s, coo d, int l);
+        void tessel_go(coo ul, coo lr);
         void tessel(coo ul, coo lr);
         void do_aa();
 
