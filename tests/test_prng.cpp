@@ -66,18 +66,4 @@ int main(int argc, char ** argv) {
         }
         return s / n;
     });
-
-#ifdef _OPENMP
-    timing("OpenMP based multithreaded", [n] {
-        auto go = [] {
-            static thread_local PRNG p;
-            auto                     o = p.gaussian();
-            return o * o;
-        };
-        double s = 0;
-#pragma omp parallel for reduction(+ : s)
-        for (int i = 0; i < n; ++i) s += go();
-        return s / n;
-    });
-#endif
 }

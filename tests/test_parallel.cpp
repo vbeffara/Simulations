@@ -62,30 +62,6 @@ int main(int argc, char **argv) {
         return fib_async()(n);
     });
 
-#ifdef _OPENMP
-    timing("Fibonacci  | OpenMP (parallel sections)", [=] {
-        class fib {
-        public:
-            int operator()(int n) { return n < 2 ? n : (*this)(n - 1) + (*this)(n - 2); }
-        };
-        class fib_omp {
-        public:
-            int operator()(int n) {
-                if (n < 25) return fib()(n);
-                int x, y;
-#pragma omp parallel sections
-                {
-                    x = fib_omp()(n - 1);
-#pragma omp section
-                    y = fib_omp()(n - 2);
-                }
-                return x + y;
-            }
-        };
-        return fib_omp()(n);
-    });
-#endif
-
     timing("Fibonacci  | New style thread pool", [=] {
         auto t = std::make_shared<int>(0);
         run_par([n, t](Context C) { fib(C, n, t); });
@@ -229,40 +205,6 @@ int main(int argc, char **argv) {
         };
         return mr().sum(l);
     });
-
-#ifdef _OPENMP
-    timing("Map+reduce | OpenMP (fill then sum)", [=] {
-        vector<double> X(l);
-#pragma omp parallel for
-        for (int i = 0; i < l; ++i) X[i] = cost(i); // NOLINT
-        double s = 0;
-        for (auto x : X) s += x;
-        return s - int64_t(s);
-    });
-
-    timing("Map+reduce | OpenMP (fill then sum + SIMD)", [=] {
-        vector<double> X(l);
-#pragma omp parallel for simd
-        for (int i = 0; i < l; ++i) X[i] = cost(i); // NOLINT
-        double s = 0;
-        for (auto x : X) s += x;
-        return s - int64_t(s);
-    });
-
-    timing("Map+reduce | OpenMP (direct reduction)", [=] {
-        double s = 0;
-#pragma omp parallel for reduction(+ : s)
-        for (int i = 0; i < l; ++i) s += cost(i); // NOLINT
-        return s - int64_t(s);
-    });
-
-    timing("Map+reduce | OpenMP (direct reduction + SIMD)", [=] {
-        double s = 0;
-#pragma omp parallel for simd reduction(+ : s)
-        for (int i = 0; i < l; ++i) s += cost(i); // NOLINT
-        return s - int64_t(s);
-    });
-#endif
 
     timing("Map+reduce | PSTL, execution::par", [=] {
         vector<double> X(l);
