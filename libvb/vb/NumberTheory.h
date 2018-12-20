@@ -6,9 +6,9 @@
 
 namespace vb {
     template <typename T> std::optional<Polynomial<mpz_int>> guess(const T &x, int nd) {
-        real_t m{pow(mpz_int(10), nd * 2 / 3), x.precision()};
+        real_t m{pow(real_t{10, x.precision()}, nd * 2 / 3)};
         for (int d = 1; d <= nd / 10; ++d) {
-            T             t{1};
+            T             t{1, x.precision()};
             ZZ_mat<mpz_t> M(d + 1, d + 3);
 
             for (int i = 0; i <= d; ++i) {
@@ -36,11 +36,11 @@ namespace vb {
             T xx = x, ox = x + 1, er = 2;
             while (real(abs(xx - ox)) < real(er)) {
                 er = abs(xx - ox);
-                if (real(er) < pow(real_t(10), -5 * nd)) er = 0;
+                if (real(er) < pow(real_t{10, x.precision()}, -5 * nd)) er = 0;
                 ox = xx;
                 xx -= eval(P, xx) / eval(PP, xx);
             }
-            if (abs(xx - x) < pow(real_t(10), 5 - nd)) return P;
+            if (abs(xx - x) < pow(real_t{10, x.precision()}, 5 - nd)) return P;
         }
 
         return {};
