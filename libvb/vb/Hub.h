@@ -84,7 +84,7 @@ namespace vb {
     }
 
     TEST_CASE("vb::Hub") {
-        std::vector<std::string> argv_ {"cmd", "-s", "3", "-u"};
+        std::vector<std::string> argv_{"cmd", "-s", "3", "-u"};
         std::vector<char *>      argv;
         argv.reserve(argv_.size());
         for (auto &s : argv_) argv.push_back(&s[0]);

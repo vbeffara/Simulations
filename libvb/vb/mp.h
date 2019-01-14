@@ -1,27 +1,22 @@
 #pragma once
 #include <vb/math.h>
-#include <boost/multiprecision/gmp.hpp>
 #include <boost/multiprecision/mpc.hpp>
 #include <boost/multiprecision/mpfr.hpp>
 #undef Success
 #include <Eigen/Dense>
 
 namespace vb {
-    using boost::multiprecision::mpc_complex;
-    using boost::multiprecision::mpf_float;
-    using boost::multiprecision::mpfr_float;
     using boost::multiprecision::mpz_int;
-
-    using complex_t = mpc_complex;
-    using real_t    = mpfr_float;
+    using complex_t = boost::multiprecision::mpc_complex;
+    using real_t    = boost::multiprecision::mpfr_float;
 
     template <> struct cpx_t<real_t> { using type = complex_t; };
 
-    template <> real_t    sum<real_t>(const std::function<real_t(int)> & f);
-    template <> complex_t sum<complex_t>(const std::function<complex_t(int)> & f);
+    template <> real_t    sum<real_t>(const std::function<real_t(int)> &f);
+    template <> complex_t sum<complex_t>(const std::function<complex_t(int)> &f);
 
-    std::string pretty(const real_t & t);
-    std::string pretty(const complex_t & t);
+    std::string pretty(const real_t &t);
+    std::string pretty(const complex_t &t);
 } // namespace vb
 
 namespace Eigen {

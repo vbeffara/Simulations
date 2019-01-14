@@ -5,14 +5,14 @@ using namespace vb;
 using namespace std;
 using namespace boost::multiprecision;
 
-template <typename T> void test(const string & s, int n, T z) {
+template <typename T> void test(const string &s, int n, T z) {
     timing(s, [&] {
         for (int i = 0; i < n; ++i) z = exp(-z);
         return z;
     });
 }
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     H.init("Testing numerical types", argc, argv, "n=10000");
     int n = H['n'];
 
@@ -34,4 +34,11 @@ int main(int argc, char ** argv) {
     test("Boost mpfr_float (200 digits)", n, number<mpfr_float_backend<0>>(0));
     mpfr_float::default_precision(1000);
     test("Boost mpfr_float (1000 digits)", n, number<mpfr_float_backend<0>>(0));
+
+    mpfr_float::default_precision(100);
+    test("Wrapped real_t (100 digits)", n, real_t(0));
+    mpfr_float::default_precision(200);
+    test("Wrapped real_t (200 digits)", n, real_t(0));
+    mpfr_float::default_precision(1000);
+    test("Wrapped real_t (1000 digits)", n, real_t(0));
 }
