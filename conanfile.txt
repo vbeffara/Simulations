@@ -1,7 +1,7 @@
 [requires]
 boost/1.69.0@conan/stable
 cairo/1.15.14@bincrafters/stable
-doctest/2.0.1@bincrafters/stable
+doctest/2.2.0@bincrafters/stable
 fftw/3.3.8@bincrafters/stable
 gsl_microsoft/2.0.0@bincrafters/stable
 parallelstl/20181004@conan/stable
