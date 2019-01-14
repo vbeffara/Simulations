@@ -11,7 +11,7 @@ template <> Color vb::to_Color(double t) {
 
 class Sandpile : public Bitmap<double> {
 public:
-    Sandpile(int n) : Bitmap(n, n) {
+    explicit Sandpile(int n) : Bitmap(n, n) {
         for (auto z : coos(*this)) put(z, prng.gaussian(H['m'], H['s']));
     }
 

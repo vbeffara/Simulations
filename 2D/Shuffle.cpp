@@ -7,7 +7,7 @@
 using namespace vb;
 using namespace std;
 
-auto dupe(const Array<double> & a) {
+auto dupe(const Array<double> &a) {
     Array<double> aa(2 * a.ww, 2 * a.hh);
     for (auto z : coos(aa)) aa[z] = a[z / 2];
     return aa;
@@ -61,7 +61,7 @@ struct Tiling {
         }
     }
 
-    void create(const Array<double> & p) {
+    void create(const Array<double> &p) {
         int n = state.ww;
         for (int i = 0; i < n / 2; ++i) {
             for (int j = 0; j < n / 2; ++j) {
@@ -96,7 +96,7 @@ struct Tiling {
                 A[0][z] = {1, 1};
 
         for (int k = 1; k < n; ++k) {
-            const auto & AA = A[k - 1];
+            const auto &AA = A[k - 1];
             for (auto z : coos(A[k])) {
                 int    i = z.x, j = z.y, i1 = (i + 1) % per, j1 = (j + 1) % per, ii = (i + 2 * (i % 2)) % per, jj = (j + 2 * (j % 2)) % per;
                 double a20, a21;
@@ -118,7 +118,7 @@ struct Tiling {
         pbs = vector<Array<double>>(n, {per / 2, per / 2});
 
         for (int k = 0; k < n; ++k) {
-            const auto & a0nk1 = A[n - k - 1];
+            const auto &a0nk1 = A[n - k - 1];
             for (auto z : coos(pbs[k])) {
                 int i = z.x, j = z.y;
                 if (a0nk1.atp({2 * i, 2 * j}).second + a0nk1.atp({2 * i + 1, 2 * j + 1}).second >
@@ -135,7 +135,7 @@ struct Tiling {
         }
     }
 
-    void output_pdf(const string & name, int off = 0) const {
+    void output_pdf(const string &name, int off = 0) const {
         Figure F;
         int    ddx[4] = {0, 2, 0, 2}, ddy[4] = {0, -2, -4, -6};
         int    offx = gsl::at(ddx, off % 4), offy = gsl::at(ddy, off % 4);
@@ -149,7 +149,7 @@ struct Tiling {
                     return cpx(z) + 2 * double(H['r']) * cpx(sh) - cpx(offx, offy);
                 };
                 double gr = a * TP.atp(z + coo{offx / 2, offy / 2}) + b;
-                F.add(make_unique<Segment>(s(z * 2 - edge), s(z * 2 + edge), Pen(Grey(255 * gr), 130.0 / state.ww)));
+                F.add(make_unique<Segment>(s(z * 2 - edge), s(z * 2 + edge), Pen(Grey(uint8_t(255 * gr)), 130.0 / state.ww)));
             }
         if (H['v']) F.show();
         F.output(name);
@@ -215,7 +215,7 @@ struct Tiling {
     Array<uint8_t>        state;
 };
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     H.init("Domino shuffle", argc, argv, "m=50,a=1,b=.5,c=.3,s=0,r=0,w=two,v");
     if (int seed = H['s']; seed != 0) prng.seed(seed);
 

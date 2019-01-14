@@ -66,14 +66,14 @@ int main(int argc, char **argv) {
         for (auto u : var) of << u << std::endl;
     }
     {
-        int    nclass = sqrt(double(vb::H['m']));
+        auto   nclass = int(sqrt(double(vb::H['m'])));
         double bmin = 0, bmax = 0;
         for (auto b : boltzmann) {
             bmin = std::min(bmin, b);
             bmax = std::max(bmax, b);
         }
         std::vector<int> data(nclass);
-        for (auto b : boltzmann) data[(nclass - .01) * (b - bmin) / (bmax - bmin)]++;
+        for (auto b : boltzmann) data[unsigned((nclass - .01) * (b - bmin) / (bmax - bmin))]++;
         std::ofstream of("out.boltzmann");
         for (int i = 0; i < nclass; ++i) of << bmin + i * (bmax - bmin) / nclass << " " << data[i] << std::endl;
     }

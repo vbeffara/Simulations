@@ -13,7 +13,7 @@ public:
         if (s < 0) return Color(0, 64, 0);
         if (s == 0) return BLACK;
         if (ml <= .1 * max) return Color(0, 0, 64);
-        if (ml <= .9 * max) return Color(0, 0, 64 + 128 * (ml - .1 * max) / (.8 * max));
+        if (ml <= .9 * max) return Color(0, 0, uint8_t(64 + 128 * (ml - .1 * max) / (.8 * max)));
         return Grey(64 + (s - min) * (255 - 64) / (max - min));
     }
     int        s, ml;
@@ -24,7 +24,7 @@ int Stat::min = 0, Stat::max = 1;
 
 class Stuck : public Bitmap<Stat> {
 public:
-    explicit Stuck(const Hub & H) : Bitmap<Stat>(2 * int(H['n']), 2 * int(H['n'])), alpha(H['a']), beta(H['b']) {
+    explicit Stuck(const Hub &H) : Bitmap<Stat>(2 * int(H['n']), 2 * int(H['n'])), alpha(H['a']), beta(H['b']) {
         for (int i = 0; i < w() / 2; ++i)
             for (int j = 0; j < h() / 2; ++j) at({2 * i, 2 * j}) = Stat{-1};
         z = {w() / 2, h() / 2};
@@ -46,8 +46,8 @@ public:
         c.x -= c.x % 2;
         c.y -= c.y % 2;
         if (c != coo{0, 0}) {
-            static Array<Stat> & me  = *this;
-            static Array<Stat>   tmp = me;
+            static Array<Stat> &me  = *this;
+            static Array<Stat>  tmp = me;
             for (int x = 0; x < w(); ++x)
                 for (int y = 0; y < h(); ++y) {
                     coo z{x, y};
@@ -104,7 +104,7 @@ public:
     Console C;
 };
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     H.init("Stuck walk on the square lattice", argc, argv, "n=200,a=.1432,b=5,v=0,c,o");
     Stuck S(H);
     S.show();

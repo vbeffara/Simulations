@@ -38,7 +38,7 @@ public:
         H.L->info("Renormalized field: min = {}, max = {}", minf / log(w()), maxf / log(w()));
 
         for (auto z : coos(*this)) {
-            put(z, Grey(255 * (I.at(z).f - minf) / (maxf - minf)));
+            put(z, Grey(uint8_t(255 * (I.at(z).f - minf) / (maxf - minf))));
             if (H['c']) put(z, Indexed(int(at(z)) > 128 ? 1 : 2));
             I.at(z) = Info(z, z, numeric_limits<double>::infinity(), exp(g * I.at(z).f));
         }
@@ -73,8 +73,9 @@ public:
     }
 
     void fill_free(int n0 = 0) {
-        auto      in = fftw_alloc_complex(ww * hh), out = fftw_alloc_complex(ww * hh);
-        fftw_plan p = fftw_plan_dft_2d(ww, hh, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+        auto                    in = fftw_alloc_complex(ww * hh), out = fftw_alloc_complex(ww * hh);
+        fftw_plan               p = fftw_plan_dft_2d(ww, hh, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+        gsl::span<fftw_complex> in_{in, ww * hh}, out_{out, ww * hh};
 
         vector<double> sinarrayi(ww), sinarrayj(hh);
         for (int i = 0; i < ww; ++i) sinarrayi[i] = sin(M_PI * i / ww);
@@ -82,20 +83,20 @@ public:
 
         for (const auto [i, j] : coos(*this)) {
             if ((i == 0) && (j == 0)) continue;
-            double norm       = sqrt(ww * hh * (sinarrayi[i] * sinarrayi[i] + sinarrayj[j] * sinarrayj[j]));
-            auto   fij        = cpx(prng.gaussian(), prng.gaussian()) * sqrt(M_PI / 2) / norm;
-            in[i + ww * j][0] = real(fij);
-            in[i + ww * j][1] = imag(fij);
+            double norm        = sqrt(ww * hh * (sinarrayi[i] * sinarrayi[i] + sinarrayj[j] * sinarrayj[j]));
+            auto   fij         = cpx(prng.gaussian(), prng.gaussian()) * sqrt(M_PI / 2) / norm;
+            in_[i + ww * j][0] = real(fij);
+            in_[i + ww * j][1] = imag(fij);
             if (norm > sqrt(ww * hh) * (1 - n0 / 100.0)) {
-                in[i + ww * j][0] = 0;
-                in[i + ww * j][1] = 0;
+                in_[i + ww * j][0] = 0;
+                in_[i + ww * j][1] = 0;
             }
         }
-        in[0][0] = 0;
-        in[0][1] = 0;
+        in_[0][0] = 0;
+        in_[0][1] = 0;
 
         fftw_execute(p);
-        for (auto [i, j] : coos(*this)) I.at({i, j}).f = out[i + ww * j][0];
+        for (auto [i, j] : coos(*this)) I.at({i, j}).f = out_[i + ww * j][0];
         fftw_destroy_plan(p);
         fftw_free(in);
         fftw_free(out);
@@ -103,21 +104,22 @@ public:
 
     void fill_radial(const function<double(double)> &f, double l) {
         auto d  = fftw_alloc_complex(ww * hh);
+        auto d_ = gsl::span<fftw_complex> {d,ww*hh};
         auto p1 = fftw_plan_dft_2d(ww, hh, d, d, FFTW_FORWARD, FFTW_ESTIMATE);
         auto p2 = fftw_plan_dft_2d(ww, hh, d, d, FFTW_BACKWARD, FFTW_ESTIMATE);
 
         for (const auto [i, j] : coos(*this)) {
             auto ii = min(i, ww - i), jj = min(j, hh - j);
-            d[i + ww * j][0] = d[i + ww * j][1] = f(sqrt(ii * ii + jj * jj) / l);
+            d_[i + ww * j][0] = d_[i + ww * j][1] = f(sqrt(ii * ii + jj * jj) / l);
         }
 
         fftw_execute(p1);
         for (int i = 0; i < ww * hh; ++i) {
-            d[i][0] *= prng.gaussian();
-            d[i][1] *= prng.gaussian();
+            d_[i][0] *= prng.gaussian();
+            d_[i][1] *= prng.gaussian();
         }
         fftw_execute(p2);
-        for (auto z : coos(*this)) I.at(z).f = sign(d[z.x + ww * z.y][0]);
+        for (auto z : coos(*this)) I.at(z).f = sign(d_[z.x + ww * z.y][0]);
 
         fftw_destroy_plan(p1);
         fftw_destroy_plan(p2);
@@ -125,7 +127,7 @@ public:
     }
 
     void dijkstra() {
-        coo                  mid {w() / 2, h() / 2};
+        coo                  mid{w() / 2, h() / 2};
         priority_queue<Info> Q;
         I.at(mid).d = 0;
         Q.push(I.at(mid));

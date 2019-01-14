@@ -17,7 +17,7 @@ public:
     double & yf() { return second.second; }
     double   y() const { return static_cast<double>(second.first) + second.second; }
 
-    double dist2(const pt o) const {
+    double dist2(const pt & o) const {
         double dx = x() - o.x(), dy = y() - o.y();
         return dx * dx + dy * dy;
     }

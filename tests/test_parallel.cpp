@@ -170,7 +170,7 @@ int main(int argc, char **argv) {
     timing("Map+reduce | TBB parallel_reduce", [=] {
         struct sum_cost {
             sum_cost() = default;
-            sum_cost(sum_cost &, tbb::split) {}
+            sum_cost(const sum_cost & /* unused */, tbb::split /* unused */) {}
             double my_sum = 0.0;
             void   operator()(const tbb::blocked_range<size_t> &r) {
                 for (size_t i = r.begin(); i != r.end(); ++i) my_sum += cost(i);

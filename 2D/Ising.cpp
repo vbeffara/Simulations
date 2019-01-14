@@ -37,7 +37,7 @@ public:
     void run(int nstep, bool k) {
         vector<double> p(10, 0);
         for (int i = 0; i < 10; ++i) p[i] = exp(-i * beta);
-        if (nstep == 0) nstep = 10 + n * 0.01 / fabs(beta - log(1 + sqrt(2)));
+        if (nstep == 0) nstep = 10 + int(n * 0.01 / fabs(beta - log(1 + sqrt(2))));
 
         for (int i = 0; i != nstep; i++)
             for (int j = 0; j < n * n; ++j) {
@@ -61,7 +61,7 @@ public:
     double beta;
 };
 
-int main(int argc, char * argv[]) {
+int main(int argc, char *argv[]) {
     H.init("Ising model", argc, argv, "b=.88137359,n=300,t=0,c,r=0,k,v");
     Ising I(H['n'], H['b'], H['r'], H['c']);
     I.show();

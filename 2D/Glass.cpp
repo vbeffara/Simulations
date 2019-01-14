@@ -117,10 +117,10 @@ public:
             if (ok[nb]) {
                 if (prng.bernoulli(p)) {
                     if (at({x, y}) == BLACK) {
-                        int tmp = int(at({x + 1, y}));
-                        tmp |= int(at({x - 1, y}));
-                        tmp |= int(at({x, y + 1}));
-                        tmp |= int(at({x, y - 1}));
+                        uint8_t tmp = uint8_t(at({x + 1, y}));
+                        tmp |= uint8_t(at({x - 1, y}));
+                        tmp |= uint8_t(at({x, y + 1}));
+                        tmp |= uint8_t(at({x, y - 1}));
                         if (tmp == 0) tmp = 85;
                         put({x, y}, vb::Grey(tmp));
                     }
@@ -133,7 +133,7 @@ public:
     vector<bool> ok;
 };
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     H.init("Glassy Glauber dynamics for percolation", argc, argv, "n=300,p=.5,c=none");
     Glass img(H['n']);
     img.run();

@@ -49,25 +49,25 @@ void Automaton::emit() {
 
 void Automaton::forget(double r) {
     for (int i = 0; i < size; ++i)
-        if (vb::prng.bernoulli(r)) main[i] &= 1;
+        if (vb::prng.bernoulli(r)) main[i] &= 1u;
 }
 
 void Automaton::effect(double r) {
     for (int i = 0; i < size; i++) alt[i] = main[i];
     for (int i = 0; i < size; i++) {
         if (((main[i] & 1u) == 0) && ((main[(i + size - 1) % size] & 1u) != 0) && ((main[i] & L1_BIT) != 0) && (vb::prng.bernoulli(r)))
-            alt[i] |= 1;
+            alt[i] |= 1u;
         else if (((main[i] & 1u) == 0) && ((main[(i + size - 1) % size] & 1u) != 0) && ((main[i] & R1_BIT) != 0) && (vb::prng.bernoulli(r)))
-            alt[(i + size - 1) % size] &= 30;
+            alt[(i + size - 1) % size] &= 30u;
         else if (((main[i] & 1u) != 0) && ((main[(i + size - 1) % size] & 1u) == 0) && ((main[i] & L2_BIT) != 0) && (vb::prng.bernoulli(r)))
-            alt[i] &= 30;
+            alt[i] &= 30u;
         else if (((main[i] & 1u) != 0) && ((main[(i + size - 1) % size] & 1u) == 0) && ((main[i] & R2_BIT) != 0) && (vb::prng.bernoulli(r)))
-            alt[(i + size - 1) % size] |= 1;
+            alt[(i + size - 1) % size] |= 1u;
     }
     this->swap();
 }
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     vb::H.init("1D cellular automaton", argc, argv, "n=500,e=.03,r=.05");
     const int    n = vb::H['n'];
     const double e = vb::H['e'];
