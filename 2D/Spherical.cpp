@@ -68,7 +68,7 @@ public:
         eps *= double(vb::H['e']);
     }
 
-    double vv(const std::vector<std::vector<double>> & a, double x, double y, double z) {
+    double vv(const std::vector<std::vector<double>> &a, double x, double y, double z) {
         auto i0 = int(n * x * x), j0 = int(n * y * y);
         i0 -= i0 % 2;
         j0 -= j0 % 2;
@@ -121,7 +121,7 @@ public:
     int                              n;
 };
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     vb::H.init("Random wave on the sphere", argc, argv, "n=50,p,s=0,t=wave,w=800,e=.001");
     int s = vb::H['s'];
     if (s != 0) { vb::prng.seed(s); }

@@ -1,12 +1,12 @@
-#include "gsl/gsl"
-#include <vb/Hub.h>
-#include <vb/mp.h>
 #include <FL/Fl.H>
 #include <FL/Fl_Gl_Window.H>
 #include <boost/algorithm/string.hpp>
 #include <getopt.h>
+#include <gsl/gsl>
 #include <sqlite_modern_cpp.h>
 #include <sys/stat.h>
+#include <vb/Hub.h>
+#include <vb/mp.h>
 #include <vector>
 
 namespace vb {
@@ -30,7 +30,7 @@ namespace vb {
 
         auto        format = fmt::format("{{:<{}}} : {{}}", max_label_width);
         std::string os, ls;
-        for (const auto & [k, ks, v, o] : outputs) {
+        for (const auto &[k, ks, v, o] : outputs) {
             L->info(fmt::format(format, k, v));
             if (o) {
                 os += ",?";
@@ -49,7 +49,7 @@ namespace vb {
               "  cmd_id, a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z);";
 
         std::vector<std::string> as;
-        for (const auto & [k, v] : *this) as.push_back(fmt::format("{}={}", k, std::string(v)));
+        for (const auto &[k, v] : *this) as.push_back(fmt::format("{}={}", k, std::string(v)));
         std::string args = boost::join(as, ", ");
 
         std::optional<int64_t> id;
@@ -62,11 +62,11 @@ namespace vb {
         }
 
         auto tmp = db << "insert into runs (cmd_id" + ls + ") values (?" + os + ");" << *id;
-        for (const auto & [k, ks, v, o] : outputs)
+        for (const auto &[k, ks, v, o] : outputs)
             if (o) tmp << v;
     }
 
-    void Hub::init(std::string t, int argc, char ** argv, std::string c) {
+    void Hub::init(std::string t, int argc, char **argv, std::string c) {
         title   = std::move(t);
         help    = "Syntax : " + c;
         version = GIT_SHA1;
@@ -111,7 +111,7 @@ namespace vb {
 
         if (!empty()) {
             cs.clear();
-            for (const auto & [k, v] : *this) cs.push_back(std::string(1, k) + "=" + v);
+            for (const auto &[k, v] : *this) cs.push_back(std::string(1, k) + "=" + v);
             title += " (" + boost::join(cs, ", ") + ")";
         }
 
@@ -132,7 +132,7 @@ namespace vb {
         initialized = true;
     }
 
-    void Hub::output_str(const std::string & l, const std::string & ls, const std::string & s, bool out) {
+    void Hub::output_str(const std::string &l, const std::string &ls, const std::string &s, bool out) {
         if (l.size() > max_label_width) max_label_width = l.size();
         outputs.push_back({l, ls, s, out});
     }

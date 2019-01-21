@@ -1,7 +1,7 @@
+#include <gsl/gsl>
 #include <vb/Hub.h>
 #include <vb/LinearAlgebra.h>
 #include <vb/PRNG.h>
-#include <gsl/gsl>
 
 using namespace vb;
 using namespace std;
@@ -10,7 +10,7 @@ using Eigen::Matrix2d;
 #include <cmaes.h>
 using namespace libcmaes;
 
-double lambda(const Matrix2d & A) { return abs(A(0, 0) + A(1, 1)); }
+double lambda(const Matrix2d &A) { return abs(A(0, 0) + A(1, 1)); }
 
 vector<double> random_p(int k) {
     vector<double> out;
@@ -20,13 +20,13 @@ vector<double> random_p(int k) {
         s += ss;
         out.push_back(ss);
     }
-    for (auto & v : out) v /= s;
+    for (auto &v : out) v /= s;
     return out;
 }
 
 vector<vector<double>> random_markov(int k) {
     vector<vector<double>> p(k);
-    for (auto & x : p) x = random_p(k);
+    for (auto &x : p) x = random_p(k);
     return p;
 }
 
@@ -71,7 +71,7 @@ public:
         return markov(n, {{0.25, 0.25, 0.25, 0.25}, {0.25, 0.25, 0.25, 0.25}, {0.25, 0.25, 0.25, 0.25}, {0.25, 0.25, 0.25, 0.25}});
     }
 
-    double avg(int n, int t, const vector<vector<double>> & p) {
+    double avg(int n, int t, const vector<vector<double>> &p) {
         double s = 0.0;
         for (int i = 0; i < t; ++i) s += markov(n, p);
         return s / t;
@@ -89,13 +89,13 @@ public:
                 p.back().push_back(ss);
                 s += ss;
             }
-            for (auto & v : p.back()) v /= s;
+            for (auto &v : p.back()) v /= s;
         }
         return p;
     }
 
     vector<vector<double>> explore_cmaes(int n, int t) {
-        FitFunc         f = [this, n, t](const double * x, const int /* N */) { return abs(avg(n, t, x_to_p({x, 16})) - 2.0 / 3.0); };
+        FitFunc         f = [this, n, t](const double *x, const int /* N */) { return abs(avg(n, t, x_to_p({x, 16})) - 2.0 / 3.0); };
         vector<double>  x0(16, .25);
         double          sigma = 0.1;
         CMAParameters<> cmaparams(x0, sigma);
@@ -109,7 +109,7 @@ public:
         for (int i = 0; i < 4; ++i) { H.L->info("Transition matrix: {} {} {} {}", p[i][0], p[i][1], p[i][2], p[i][3]); }
 
         vector<double> n2s(int{t});
-        for (auto & x : n2s) x = markov(n, p);
+        for (auto &x : n2s) x = markov(n, p);
         sort(begin(n2s), end(n2s));
         for (auto v : n2s) cout << v << endl;
         double s = 0.0;
@@ -120,7 +120,7 @@ public:
     vector<Matrix2d> rho, Gamma;
 };
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     H.init("Erwan's product of random matrices", argc, argv, "n=1000,t=10000");
     Erwan().run(H['n'], H['t']);
 }

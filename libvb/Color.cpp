@@ -1,5 +1,5 @@
-#include <vb/Color.h>
 #include <fmt/format.h>
+#include <vb/Color.h>
 
 namespace vb {
     Color Grey(uint8_t x) noexcept { return {x, x, x}; }

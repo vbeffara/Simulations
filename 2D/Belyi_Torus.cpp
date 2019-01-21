@@ -7,17 +7,17 @@
 // r: seed for the PRNG, set to 0 for time-based
 // s: number of vertices
 
+#include <iomanip>
 #include <vb/Coloring.h>
 #include <vb/Constellation1.h>
 #include <vb/Pairings.h>
 #include <vb/ProgressBar.h>
-#include <iomanip>
 
 using namespace vb;
 using namespace std;
 
 int            ntri_[] = {0, 1, 5, 46, 669};
-gsl::span<int> ntri {ntri_};
+gsl::span<int> ntri{ntri_};
 
 int main(int argc, char **argv) {
     H.init("Toroidal enumeration", argc, argv, "s=1,m=228,r=1,o,d=0,D=0,g=1,f,n=2,q");
@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
     if (r > 0) prng.seed(r);
 
     Cycles phi_c;
-    for (unsigned i = 0; i < a / 3; ++i) phi_c.emplace_back(std::vector<unsigned> {3 * i, 3 * i + 1, 3 * i + 2});
+    for (unsigned i = 0; i < a / 3; ++i) phi_c.emplace_back(std::vector<unsigned>{3 * i, 3 * i + 1, 3 * i + 2});
     Permutation phi(phi_c);
 
     vector<Hypermap> v;

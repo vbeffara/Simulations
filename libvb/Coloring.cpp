@@ -1,6 +1,6 @@
-#include <vb/Coloring.h>
 #include <tbb/parallel_for.h>
 #include <tbb/task_group.h>
+#include <vb/Coloring.h>
 
 namespace vb {
     Coloring::Coloring(cpx z1_, cpx z2_, int n, std::function<Color(cpx)> f_)

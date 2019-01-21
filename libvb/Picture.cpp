@@ -1,8 +1,8 @@
 #define GL_SILENCE_DEPRECATION 1
-#include <vb/Picture.h>
 #include <FL/fl_draw.H>
 #include <FL/gl.h>
 #include <iomanip>
+#include <vb/Picture.h>
 
 namespace vb {
     Picture::Picture(int wd, int ht)
@@ -35,13 +35,13 @@ namespace vb {
         glDrawPixels(pixel_w(), pixel_h(), GL_BGRA, GL_UNSIGNED_BYTE, sd);
     }
 
-    void Picture::output_png(const std::string & s) {
+    void Picture::output_png(const std::string &s) {
         paint();
         std::string os = H.dir + (s.empty() ? H.title : s) + ".png";
         cairo_surface_write_to_png(surface, os.c_str());
     }
 
-    void Picture::output(const std::string & s) { output_png(s); }
+    void Picture::output(const std::string &s) { output_png(s); }
 
     void Picture::output() { output(""); }
 
@@ -51,7 +51,7 @@ namespace vb {
         output_png(fn);
     }
 
-    void Picture::snapshot_setup(const std::string & prefix, double period) {
+    void Picture::snapshot_setup(const std::string &prefix, double period) {
         if (snapshot_task >= 0) remove_task(snapshot_task);
         snapshot_period = period;
         snapshot_prefix = prefix;

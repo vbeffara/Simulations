@@ -1,5 +1,5 @@
-#include <vb/Bitmap.h>
 #include <queue>
+#include <vb/Bitmap.h>
 
 using namespace vb;
 using namespace std;
@@ -24,7 +24,7 @@ public:
 class Particle {
 public:
     explicit Particle(coo xy = {0, 0}, int s = 0, bool z = false, double t = 0) : state(s), location(xy), type(z), next(t){};
-    bool operator<(const Particle & o) const { return next > o.next; }
+    bool operator<(const Particle &o) const { return next > o.next; }
 
     coo jump() const {
         if (type) {
@@ -78,7 +78,7 @@ public:
     priority_queue<Particle> q;
 };
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     H.init("Sagex process", argc, argv, "n=400,w=0,l=.22,p=.5,v,z");
     Sagex(int(H['w']) != 0 ? H['w'] : H['n'], H['n']).go();
 }

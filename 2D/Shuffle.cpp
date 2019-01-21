@@ -1,8 +1,8 @@
 // Initial code in Python by Sunil Chhita, ported to C++ by VB.
-#include <vb/Figure.h>
-#include <vb/Ranges.h>
 #include <fstream>
 #include <gsl/gsl>
+#include <vb/Figure.h>
+#include <vb/Ranges.h>
 
 using namespace vb;
 using namespace std;

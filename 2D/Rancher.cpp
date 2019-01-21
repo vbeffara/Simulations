@@ -8,17 +8,17 @@
  * inter (int) : inverse de la fréquence d'affichage des enveloppes
  */
 
+#include <boost/next_prior.hpp>
+#include <list>
 #include <vb/Console.h>
 #include <vb/Figure.h>
 #include <vb/PRNG.h>
-#include <boost/next_prior.hpp>
-#include <list>
 
 using vb::cpx;
 
 class point {
 public:
-    explicit point(cpx _z, bool _k = true) : z(_z), k(_k) {};
+    explicit point(cpx _z, bool _k = true) : z(_z), k(_k){};
     cpx  z;
     bool k;
 };

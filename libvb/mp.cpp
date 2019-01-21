@@ -1,5 +1,5 @@
-#include <vb/mp.h>
 #include <fmt/ostream.h>
+#include <vb/mp.h>
 
 namespace vb {
     template <> real_t sum<real_t>(const std::function<real_t(int)> &f) {

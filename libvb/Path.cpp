@@ -1,7 +1,7 @@
+#include <gsl/gsl>
 #include <vb/Figure.h>
 #include <vb/Path.h>
 #include <vb/TriMatrix.h>
-#include <gsl/gsl>
 
 namespace vb {
     OldPath::OldPath(int l, bool rel) : std::vector<char>(l), relative(rel) {}
@@ -21,9 +21,9 @@ namespace vb {
         return true;
     }
 
-    void OldPath::output(const std::string & s) const { output_pdf(s); }
+    void OldPath::output(const std::string &s) const { output_pdf(s); }
 
-    void OldPath::output_pdf(const std::string & s) const {
+    void OldPath::output_pdf(const std::string &s) const {
         static const cpx dzc[4] = {cpx(1, 0), cpx(0, 1), cpx(-1, 0), cpx(0, -1)};
         int              l      = 0;
         cpx              z(0);

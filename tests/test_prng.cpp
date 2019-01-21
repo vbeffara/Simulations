@@ -1,13 +1,13 @@
-#include <vb/Ranges.h>
-#include <vb/util.h>
 #include <range/v3/numeric/accumulate.hpp>
 #include <range/v3/view/generate.hpp>
 #include <range/v3/view/take.hpp>
+#include <vb/Ranges.h>
+#include <vb/util.h>
 
 using namespace vb;
 using namespace std;
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     H.init("Testing PRNG methods", argc, argv, "n=100000000");
     int n = H['n'];
 

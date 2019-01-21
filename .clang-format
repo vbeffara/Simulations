@@ -11,9 +11,6 @@ AllowShortIfStatementsOnASingleLine: true
 AllowShortLoopsOnASingleLine: true
 BreakBeforeBraces: Attach
 ColumnLimit:     140
-IncludeCategories:
-      - Regex:           '^<vb/'
-        Priority:        1
 BinPackArguments: true
 BinPackParameters: true
 CommentPragmas:  '^ IWYU pragma:'

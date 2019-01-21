@@ -1,5 +1,5 @@
-#include <vb/Hypermap_lib.h>
 #include <fstream>
+#include <vb/Hypermap_lib.h>
 
 namespace vb {
     HLib::HLib() {

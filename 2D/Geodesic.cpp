@@ -1,9 +1,9 @@
-#include <vb/Bitmap.h>
-#include <vb/ProgressBar.h>
-#include <vb/Ranges.h>
 #include <fftw3.h>
 #include <limits>
 #include <queue>
+#include <vb/Bitmap.h>
+#include <vb/ProgressBar.h>
+#include <vb/Ranges.h>
 
 using namespace vb;
 using namespace std;
@@ -104,7 +104,7 @@ public:
 
     void fill_radial(const function<double(double)> &f, double l) {
         auto d  = fftw_alloc_complex(ww * hh);
-        auto d_ = gsl::span<fftw_complex> {d,ww*hh};
+        auto d_ = gsl::span<fftw_complex>{d, ww * hh};
         auto p1 = fftw_plan_dft_2d(ww, hh, d, d, FFTW_FORWARD, FFTW_ESTIMATE);
         auto p2 = fftw_plan_dft_2d(ww, hh, d, d, FFTW_BACKWARD, FFTW_ESTIMATE);
 

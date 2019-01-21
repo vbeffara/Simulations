@@ -1,6 +1,6 @@
+#include <cassert>
 #include <vb/Figure.h>
 #include <vb/Spheroidal.h>
-#include <cassert>
 
 namespace vb {
     Spheroidal::Spheroidal(Hypermap M) : Hypermap(std::move(M)) {
@@ -11,7 +11,7 @@ namespace vb {
     }
 
     void Spheroidal::pack() {
-        for (auto & v : V) v.fixed = false;
+        for (auto &v : V) v.fixed = false;
         for (auto f : phi.cycles()) {
             if (f.size() != 3) continue;
             bool bad = false;
@@ -70,15 +70,15 @@ namespace vb {
     }
 
     void Spheroidal::linear(cpx a, cpx b) {
-        for (auto & v : V) {
+        for (auto &v : V) {
             v.z = a * v.z + b;
             v.r *= abs(a);
         }
-        for (auto & e : E) { e.a += arg(a); }
+        for (auto &e : E) { e.a += arg(a); }
     }
 
     void Spheroidal::inversion() {
-        for (auto & v : V) {
+        for (auto &v : V) {
             if (v.z == 0.0) {
                 v.r = -1 / v.r;
                 continue;
@@ -97,7 +97,7 @@ namespace vb {
     void Spheroidal::mobiusto0(cpx a) {
         if (a == 0.0) return;
         cpx abar = conj(a);
-        for (auto & v : V) {
+        for (auto &v : V) {
             const cpx    z1 = 1.0 - abar * v.z;
             const double r1 = norm(z1) - v.r * v.r * norm(a);
             v.z             = ((1 - norm(a)) * z1 / r1 - 1.0) / abar;
@@ -119,7 +119,7 @@ namespace vb {
         std::vector<cpx> eee;
         Cycles           sc = sigma.cycles();
 
-        for (auto & v : V) {
+        for (auto &v : V) {
             cpx z = v.z;
             if ((((mode & 1u) != 0) && (v.bone != 0)) || (((mode & 2u) != 0) && (v.bone == 0)))
                 F.add(std::make_unique<Circle>(z, fabs(v.r), Pen(BLACK, .3)));
@@ -135,7 +135,7 @@ namespace vb {
 
         if (!eee.empty()) F.add(std::make_unique<Path>(eee, Pen(BLACK, .5)));
 
-        for (const auto & v : V) {
+        for (const auto &v : V) {
             if (v.r < 0) continue;
             cpx z = v.z;
             if (((mode & 32u) != 0) && ((v.bone & 2u) != 0)) F.add(std::make_unique<Circle>(z, .01, Pen(BLACK, 2, BLACK, true)));

@@ -1,8 +1,8 @@
-#include <vb/ProgressBar.h>
 #include <cmath>
 #include <gsl/gsl>
 #include <iomanip>
 #include <iostream>
+#include <vb/ProgressBar.h>
 
 namespace vb {
     ProgressBar::ProgressBar(int length, double pow) : Auto(.05), final(length), power(pow) {}

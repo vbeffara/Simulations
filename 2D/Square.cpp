@@ -1,6 +1,6 @@
+#include <set>
 #include <vb/Hub.h>
 #include <vb/Ranges.h>
-#include <set>
 
 using cooo = std::pair<int, double>;
 using ptt  = std::pair<cooo, cooo>;
@@ -10,19 +10,19 @@ public:
     pt(int i, int j, double x, double y) : ptt(cooo(i, x), cooo(j, y)){};
     pt() : pt(-1, -1, -1, -1){};
 
-    int &    xi() { return first.first; }
-    double & xf() { return first.second; }
-    double   x() const { return static_cast<double>(first.first) + first.second; }
-    int &    yi() { return second.first; }
-    double & yf() { return second.second; }
-    double   y() const { return static_cast<double>(second.first) + second.second; }
+    int &   xi() { return first.first; }
+    double &xf() { return first.second; }
+    double  x() const { return static_cast<double>(first.first) + first.second; }
+    int &   yi() { return second.first; }
+    double &yf() { return second.second; }
+    double  y() const { return static_cast<double>(second.first) + second.second; }
 
-    double dist2(const pt & o) const {
+    double dist2(const pt &o) const {
         double dx = x() - o.x(), dy = y() - o.y();
         return dx * dx + dy * dy;
     }
 
-    void step(const vb::Array<double> & o) {
+    void step(const vb::Array<double> &o) {
         int    r  = 0;
         double oo = o.at({xi(), yi()});
 
@@ -102,7 +102,7 @@ public:
     }
 };
 
-std::ostream & operator<<(std::ostream & os, const pt p) { return os << p.x() << " " << p.y() << std::endl; }
+std::ostream &operator<<(std::ostream &os, const pt p) { return os << p.x() << " " << p.y() << std::endl; }
 
 using ptpair = std::pair<pt, pt>;
 
@@ -112,7 +112,7 @@ public:
         for (auto z : coos(*this)) { put(z, tan(vb::prng.uniform_real(0, M_PI))); }
     }
 
-    pt geodesique(pt p, std::ostream * os = nullptr) const {
+    pt geodesique(pt p, std::ostream *os = nullptr) const {
         std::set<pt> S;
         while (true) {
             if (!contains({p.xi(), p.yi()})) { break; }
@@ -135,7 +135,7 @@ public:
         return p_min;
     }
 
-    std::pair<pt, pt> leaf(pt p, std::ostream * os = nullptr) const {
+    std::pair<pt, pt> leaf(pt p, std::ostream *os = nullptr) const {
         pt p1 = geodesique(p, os);
         p.reverse();
         pt p2 = geodesique(p, os);
@@ -174,7 +174,7 @@ public:
     }
 };
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     vb::H.init("Random lamination", argc, argv, "n=20,c");
     Lamination o(vb::H['n']);
 

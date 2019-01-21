@@ -1,13 +1,13 @@
-#include <vb/CoarseImage.h>
 #include <fstream>
 #include <png.h>
+#include <vb/CoarseImage.h>
 
-static void write_data(png_struct * png, uint8_t * data, size_t length) {
+static void write_data(png_struct *png, uint8_t *data, size_t length) {
     auto stream = static_cast<std::ostream *>(png_get_io_ptr(png));
     stream->write(static_cast<char *>(static_cast<void *>(data)), length);
 }
 
-static void flush_data(png_struct * png) {
+static void flush_data(png_struct *png) {
     auto stream = static_cast<std::ostream *>(png_get_io_ptr(png));
     stream->flush();
 }
@@ -15,7 +15,7 @@ static void flush_data(png_struct * png) {
 namespace vb {
     bool CoarseImage::at(coo z) const {
         z += z0;
-        const CoarseCell & d = Bitmap<CoarseCell>::at({z.x / L, z.y / L});
+        const CoarseCell &d = Bitmap<CoarseCell>::at({z.x / L, z.y / L});
         if (d.fill == 0) return false;
         if (d.fill == LL) return true;
         return d.sub[(z.x % L) + L * (z.y % L)];
@@ -24,8 +24,8 @@ namespace vb {
     void CoarseImage::put(coo z, bool c) {
         step();
         z += z0;
-        int          cc = c ? 1 : 0;
-        CoarseCell & d  = Bitmap<CoarseCell>::at({z.x / L, z.y / L});
+        int         cc = c ? 1 : 0;
+        CoarseCell &d  = Bitmap<CoarseCell>::at({z.x / L, z.y / L});
         if (d.fill == cc * LL) return;
         if (d.fill == (1 - cc) * LL) d.sub.resize(LL, !c);
         int sub_xy = (z.x % L) + L * (z.y % L);
@@ -36,7 +36,7 @@ namespace vb {
         if ((d.fill == 0) || (d.fill == LL)) d.sub.shrink_to_fit();
     }
 
-    void CoarseImage::output_fine(const std::string & fn) const {
+    void CoarseImage::output_fine(const std::string &fn) const {
         auto stream = std::ofstream(fn, std::ios::binary);
         auto png    = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
         auto info   = png_create_info_struct(png);

@@ -1,5 +1,3 @@
-#include <vb/Ranges.h>
-#include <vb/util.h>
 #include <future>
 #include <numeric>
 #include <pstl/algorithm>
@@ -9,6 +7,8 @@
 #include <range/v3/numeric/accumulate.hpp>
 #include <range/v3/view/take.hpp>
 #include <tbb/task_group.h>
+#include <vb/Ranges.h>
+#include <vb/util.h>
 
 using namespace ranges;
 using namespace std;

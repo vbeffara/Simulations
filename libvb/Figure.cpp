@@ -1,39 +1,39 @@
-#include <vb/Figure.h>
 #include <cairo/cairo-pdf.h>
+#include <vb/Figure.h>
 
 namespace vb {
     Figure::Figure() : Picture(600, 600) {}
 
     double Figure::left() {
         double l = 0.0;
-        for (const auto & i : contents) l = std::min(l, i->left());
+        for (const auto &i : contents) l = std::min(l, i->left());
         return l - margin;
     }
 
     double Figure::right() {
         double l = 0.0;
-        for (const auto & i : contents) l = std::max(l, i->right());
+        for (const auto &i : contents) l = std::max(l, i->right());
         return l + margin;
     }
 
     double Figure::top() {
         double l = 0.0;
-        for (const auto & i : contents) l = std::max(l, i->top());
+        for (const auto &i : contents) l = std::max(l, i->top());
         return l + margin;
     }
 
     double Figure::bottom() {
         double l = 0.0;
-        for (const auto & i : contents) l = std::min(l, i->bottom());
+        for (const auto &i : contents) l = std::min(l, i->bottom());
         return l - margin;
     }
 
-    Figure & Figure::add(std::unique_ptr<Shape> && S) {
+    Figure &Figure::add(std::unique_ptr<Shape> &&S) {
         contents.push_back(std::move(S));
         return (*this);
     }
 
-    void Figure::paint(cairo_t * cr, bool fill, bool crop) {
+    void Figure::paint(cairo_t *cr, bool fill, bool crop) {
         double real_h = w() * (top() - bottom()) / (right() - left());
         double wd = right() - left(), mid_x = (right() + left()) / 2;
         double ht = top() - bottom(), mid_y = (top() + bottom()) / 2;
@@ -58,7 +58,7 @@ namespace vb {
         cairo_set_line_join(cr, CAIRO_LINE_JOIN_ROUND);
         cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND);
 
-        for (const auto & i : contents) {
+        for (const auto &i : contents) {
             cairo_save(cr);
             cairo_set_source_rgb(cr, i->p.c.r / 255.0, i->p.c.g / 255.0, i->p.c.b / 255.0);
             cairo_set_line_width(cr, basewidth * i->p.w);
@@ -77,18 +77,18 @@ namespace vb {
 
     void Figure::paint() { paint(cr); }
 
-    void Figure::output_pdf(const std::string & s) {
+    void Figure::output_pdf(const std::string &s) {
         std::string os = H.dir + (s.empty() ? H.title : s) + ".pdf";
 
         double real_h = w() * (top() - bottom()) / (right() - left());
 
-        cairo_surface_t * pdf = cairo_pdf_surface_create(os.c_str(), w(), real_h);
-        cairo_t *         pcr = cairo_create(pdf);
+        cairo_surface_t *pdf = cairo_pdf_surface_create(os.c_str(), w(), real_h);
+        cairo_t *        pcr = cairo_create(pdf);
         paint(pcr, false, true);
         cairo_show_page(pcr);
         cairo_destroy(pcr);
         cairo_surface_destroy(pdf);
     }
 
-    void Figure::output(const std::string & s) { output_pdf(s); }
+    void Figure::output(const std::string &s) { output_pdf(s); }
 } // namespace vb

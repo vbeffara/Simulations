@@ -1,6 +1,6 @@
+#include <fstream>
 #include <vb/PRNG.h>
 #include <vb/ProgressBar.h>
-#include <fstream>
 
 struct state {
     static double a, b;

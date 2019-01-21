@@ -1,6 +1,6 @@
+#include <cassert>
 #include <vb/Figure.h>
 #include <vb/Toroidal.h>
-#include <cassert>
 
 namespace vb {
     Toroidal::Toroidal(Hypermap M) : Hypermap(std::move(M)), m(I) {
@@ -153,7 +153,7 @@ namespace vb {
             }
         }
 
-        F.add(std::make_unique<Polygon>(std::vector<cpx> {0, 1, cpx(1) + m, m}, Pen(BLACK, 0, Color(0, 0, 0, 50), true)));
+        F.add(std::make_unique<Polygon>(std::vector<cpx>{0, 1, cpx(1) + m, m}, Pen(BLACK, 0, Color(0, 0, 0, 50), true)));
         F.output_pdf();
     }
 } // namespace vb
