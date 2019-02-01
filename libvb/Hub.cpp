@@ -10,16 +10,6 @@
 #include <vector>
 
 namespace vb {
-    Hub::Hub() {
-        Fl::gl_visual(FL_RGB);
-        Fl::use_high_res_GL(1);
-
-        real_t::default_precision(100);
-        complex_t::default_precision(100);
-
-        L = spdlog::stderr_color_mt("console");
-    }
-
     Hub::~Hub() {
         if (!initialized) return;
         auto     end   = boost::chrono::process_real_cpu_clock::now();
@@ -67,6 +57,14 @@ namespace vb {
     }
 
     void Hub::init(std::string t, int argc, char **argv, std::string c) {
+        Fl::gl_visual(FL_RGB);
+        Fl::use_high_res_GL(1);
+
+        real_t::default_precision(100);
+        complex_t::default_precision(100);
+
+        L = spdlog::stderr_color_mt("console");
+
         title   = std::move(t);
         help    = "Syntax : " + c;
         version = GIT_SHA1;

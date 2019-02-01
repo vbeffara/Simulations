@@ -1,5 +1,4 @@
 #include <vb/Bitmap.h>
-#include <vb/Ranges.h>
 
 using namespace vb;
 
@@ -13,7 +12,7 @@ public:
             for (int j = n0 - 10; j < n0 + 10; ++j)
                 if (contains({i, j})) put({i, j}, prey);
         put({n0, n0}, pred);
-        for (auto z : coos(*this))
+        for (auto z : coo_range(size))
             if (at(z) == prey) fringe.push_back(z);
         show();
     }
@@ -38,7 +37,7 @@ public:
     std::vector<coo> fringe;
 };
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     H.init("SIR process on the lattice", argc, argv, "n=600,l=.5,d,s=1");
 
     SIR img(H['n'], H['l']);

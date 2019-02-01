@@ -1,5 +1,4 @@
 #include <vb/Bitmap.h>
-#include <vb/Ranges.h>
 
 using namespace vb;
 using namespace std;
@@ -35,7 +34,7 @@ namespace vb {
 
 class Mirrors : public Bitmap<uint8_t> {
 public:
-    explicit Mirrors(const Hub & H) : Bitmap<uint8_t>(H['n'], H['n']), p(H['p']), q(H['q']), f(H['f']) {}
+    explicit Mirrors(const Hub &H) : Bitmap<uint8_t>(H['n'], H['n']), p(H['p']), q(H['q']), f(H['f']) {}
     void   main();
     double p, q, f;
 };
@@ -44,9 +43,9 @@ void Mirrors::main() {
     show();
 
     while (true) {
-        for (auto z : coos(*this)) {
-            auto & m = at(z);
-            m        = STATE_NONE;
+        for (auto z : coo_range(size)) {
+            auto &m = at(z);
+            m       = STATE_NONE;
             if (prng.bernoulli(1 - q)) {
                 m |= STATE_PRESENT;
                 if (prng.bernoulli(p)) m |= STATE_NE;
@@ -71,7 +70,7 @@ void Mirrors::main() {
     }
 }
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     H.init("Mirror model", argc, argv, "n=200,p=.5,q=0,f=0");
     Mirrors(H).main();
 }

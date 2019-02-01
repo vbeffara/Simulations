@@ -1,12 +1,11 @@
 #include <vb/Bitmap.h>
-#include <vb/Ranges.h>
 
 using namespace vb;
 
 class Voter : public Image {
 public:
     Voter(int n, double p, int d) : Image(n, n) {
-        for (auto z : coos(*this))
+        for (auto z : coo_range(size))
             if (d > 1)
                 put(z, Indexed(prng.uniform_int(d)));
             else

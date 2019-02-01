@@ -1,6 +1,5 @@
 #include <vb/Bitmap.h>
 #include <vb/Console.h>
-#include <vb/Ranges.h>
 
 using namespace vb;
 
@@ -88,10 +87,10 @@ public:
             for (int i = 0; i < h(); ++i) redo({0, i}, 1);
             for (int i = 0; i < w(); ++i) redo({i, 0}, 2);
             int nh = 0;
-            for (auto z : coos(*this))
+            for (auto z : coo_range(size))
                 if (at(z) == 1) ++nh;
             int nv = 0;
-            for (auto z : coos(*this))
+            for (auto z : coo_range(size))
                 if (at(z) == 2) ++nv;
             order = nh + nv > 0 ? double(nh - nv) / double(nh + nv) : 0;
             if (((t % 100) == 0) && H['l']) std::cout << order << std::endl;
@@ -103,7 +102,7 @@ public:
     std::vector<double> P;
 };
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     H.init("Nematic system on the square lattice", argc, argv, "n=500,m=0,k=7,b=2,v,l,t=0");
     Nematic(H['n'], int(H['m']) != 0 ? H['m'] : H['n'], H['k'], H['b']).go();
 }

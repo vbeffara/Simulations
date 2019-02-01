@@ -8,12 +8,10 @@ namespace vb {
     public:
         Array(coo sz, T d) : size(sz), data(sz.x * sz.y, d) {}
         Array(coo sz) : size(sz), data(sz.x * sz.y) {}
-        Array() = default;
 
         explicit Array(const std::vector<std::vector<T>> &l)
             : size({static_cast<int64_t>(l.size()), static_cast<int64_t>(l[0].size())}), data(size.x * size.y) {
-            for (int64_t i = 0; i < size.x; ++i)
-                for (int64_t j = 0; j < size.y; ++j) put({i, j}, l[i][j]);
+            for (const auto &z : coo_range(size)) put(z, l[z.x][z.y]);
         }
 
         void resize(coo sz) {
@@ -45,7 +43,7 @@ namespace vb {
 
         bool contains(const coo &z, int64_t b = 0) const { return (z.x >= b) && (z.y >= b) && (z.x < size.x - b) && (z.y < size.y - b); }
 
-        coo size = {0, 0};
+        coo size;
 
     private:
         std::vector<T> data;
@@ -53,7 +51,6 @@ namespace vb {
 } // namespace vb
 
 #ifdef UNIT_TESTS
-#include <vb/Ranges.h> // nograph
 namespace vb {
     TEST_CASE("vb::Array") {
         Array<int> A({23, 45}, 1);
@@ -70,7 +67,7 @@ namespace vb {
 
         A.at(prng.uniform_coo(A.size)) += 10;
         int s = 0;
-        for (auto z : coos(A)) s += A[z];
+        for (auto z : coo_range(A.size)) s += A[z];
         CHECK(s == 23 * 45 + 10);
     }
 } // namespace vb

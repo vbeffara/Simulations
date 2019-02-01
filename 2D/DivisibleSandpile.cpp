@@ -1,5 +1,4 @@
 #include <vb/Bitmap.h>
-#include <vb/Ranges.h>
 
 using namespace vb;
 

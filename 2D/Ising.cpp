@@ -1,5 +1,4 @@
 #include <vb/Bitmap.h>
-#include <vb/Ranges.h>
 
 using namespace vb;
 using namespace std;
@@ -8,7 +7,7 @@ class Ising : public Image {
 public:
     Ising(int nn, double bb, double rr, bool cc) : Image(nn, nn), n(nn), c(cc), beta(bb) {
         if (rr != 0.0) {
-            for (auto z : coos(*this)) put(z, prng.bernoulli(rr) ? BLACK : WHITE);
+            for (auto z : coo_range(size)) put(z, prng.bernoulli(rr) ? BLACK : WHITE);
         } else {
             for (int x = 1; x < n - 1; x++)
                 for (int y = 1; y < n - 1; y++) put({x, y}, x < (n / 2) ? BLACK : WHITE);

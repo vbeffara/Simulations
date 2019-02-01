@@ -1,6 +1,5 @@
 #include <vb/Bitmap.h>
 #include <vb/Console.h>
-#include <vb/Ranges.h>
 
 using namespace std;
 using namespace vb;
@@ -86,7 +85,7 @@ public:
     void update() override {
         if (H['c']) center();
         int m = Stat::max;
-        for (auto z : coos(*this))
+        for (auto z : coo_range(size))
             if (at(z).s > 0) m = min(m, at(z).s);
         if (m < Stat::max) Stat::min = m;
         Bitmap<Stat>::update();
@@ -94,7 +93,7 @@ public:
 
     int nsup() {
         int n = 0;
-        for (auto z : coos(*this))
+        for (auto z : coo_range(size))
             if ((at(z).s > 0) && (at(z).ml > .9 * Stat::max)) ++n;
         return n;
     }

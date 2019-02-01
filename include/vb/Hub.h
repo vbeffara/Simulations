@@ -38,10 +38,6 @@ namespace vb {
 
     class Hub : public std::map<char, Value> {
     public:
-        Hub();
-        Hub(const Hub &) = delete;
-        Hub(Hub &&)      = delete;
-
         ~Hub();
 
         Hub &operator=(const Hub &) = delete;

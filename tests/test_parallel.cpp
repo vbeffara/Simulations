@@ -5,7 +5,6 @@
 #include <pstl/memory>
 #include <pstl/numeric>
 #include <tbb/task_group.h>
-#include <vb/Ranges.h>
 #include <vb/util/misc.h>
 
 using namespace std;

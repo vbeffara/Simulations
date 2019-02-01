@@ -3,7 +3,6 @@
 #include <queue>
 #include <vb/Bitmap.h>
 #include <vb/ProgressBar.h>
-#include <vb/Ranges.h>
 
 using namespace vb;
 using namespace std;
@@ -31,13 +30,13 @@ public:
         fields[H['w']]();
 
         minf = maxf = I.at({0, 0}).f;
-        for (auto z : coos(I)) {
+        for (auto z : coo_range(I.size)) {
             minf = min(minf, I.at(z).f);
             maxf = max(maxf, I.at(z).f);
         }
         H.L->info("Renormalized field: min = {}, max = {}", minf / log(w()), maxf / log(w()));
 
-        for (auto z : coos(*this)) {
+        for (auto z : coo_range(size)) {
             put(z, Grey(uint8_t(255 * (I.at(z).f - minf) / (maxf - minf))));
             if (H['c']) put(z, Indexed(int(at(z)) > 128 ? 1 : 2));
             I.at(z) = Info(z, z, numeric_limits<double>::infinity(), exp(g * I.at(z).f));
@@ -69,7 +68,7 @@ public:
     }
 
     void fill_white() {
-        for (auto z : coos(I)) I[z].f = prng.gaussian() * sqrt(static_cast<double>(n));
+        for (auto z : coo_range(I.size)) I[z].f = prng.gaussian() * sqrt(static_cast<double>(n));
     }
 
     void fill_free(int n0 = 0) {
@@ -81,7 +80,7 @@ public:
         for (int i = 0; i < size.x; ++i) sinarrayi[i] = sin(M_PI * i / size.x);
         for (int j = 0; j < size.y; ++j) sinarrayj[j] = sin(M_PI * j / size.y);
 
-        for (const auto [i, j] : coos(*this)) {
+        for (const auto [i, j] : coo_range(size)) {
             if ((i == 0) && (j == 0)) continue;
             double norm            = sqrt(size.x * size.y * (sinarrayi[i] * sinarrayi[i] + sinarrayj[j] * sinarrayj[j]));
             auto   fij             = cpx(prng.gaussian(), prng.gaussian()) * sqrt(M_PI / 2) / norm;
@@ -96,7 +95,7 @@ public:
         in_[0][1] = 0;
 
         fftw_execute(p);
-        for (auto [i, j] : coos(*this)) I.at({i, j}).f = out_[i + size.x * j][0];
+        for (auto [i, j] : coo_range(size)) I.at({i, j}).f = out_[i + size.x * j][0];
         fftw_destroy_plan(p);
         fftw_free(in);
         fftw_free(out);
@@ -108,7 +107,7 @@ public:
         auto p1 = fftw_plan_dft_2d(size.x, size.y, d, d, FFTW_FORWARD, FFTW_ESTIMATE);
         auto p2 = fftw_plan_dft_2d(size.x, size.y, d, d, FFTW_BACKWARD, FFTW_ESTIMATE);
 
-        for (const auto [i, j] : coos(*this)) {
+        for (const auto [i, j] : coo_range(size)) {
             auto ii = min(i, size.x - i), jj = min(j, size.y - j);
             d_[i + size.x * j][0] = d_[i + size.x * j][1] = f(sqrt(ii * ii + jj * jj) / l);
         }
@@ -119,7 +118,7 @@ public:
             d_[i][1] *= prng.gaussian();
         }
         fftw_execute(p2);
-        for (auto z : coos(*this)) I.at(z).f = sign(d_[z.x + size.x * z.y][0]);
+        for (auto z : coo_range(size)) I.at(z).f = sign(d_[z.x + size.x * z.y][0]);
 
         fftw_destroy_plan(p1);
         fftw_destroy_plan(p2);
@@ -172,7 +171,7 @@ public:
 
     void ball() {
         double r = radius();
-        for (auto z : coos(*this))
+        for (auto z : coo_range(size))
             if (I.at(z).d <= r) put(z, Color(0, 0, 127 + at(z).b / 2));
     }
 

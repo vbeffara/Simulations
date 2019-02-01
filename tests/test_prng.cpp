@@ -1,4 +1,4 @@
-#include <vb/Ranges.h>
+#include <vb/util/PRNG.h>
 #include <vb/util/misc.h>
 
 using namespace vb;

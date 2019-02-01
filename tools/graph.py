@@ -44,13 +44,6 @@ for f in glob("include/vb/**/*.h", recursive=True):
 print("digraph {")
 print("  rankdir = LR")
 traverse("vb")
-for k, v in clusters.items():
-    print("  subgraph \"cluster_%s\" {" % k)
-    print('    label = "%s"' % k)
-    for l in v:
-        print('    "%s" [label=\"%s\"]' %
-              (nodes[l]["file"], nodes[l]["label"]))
-    print("  }")
 for k, v in nodes.items():
     for l in v["links"]:
         print('    "%s" -> "%s"' % (v["file"], nodes[l]["file"]))

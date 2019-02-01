@@ -1,6 +1,5 @@
 #include <vb/Bitmap.h>
 #include <vb/Figure.h>
-#include <vb/Ranges.h>
 
 using namespace vb;
 using namespace std;
@@ -12,7 +11,7 @@ namespace vb {
 class Ising : public Bitmap<int> {
 public:
     Ising(int n, double beta, int con) : Bitmap<int>(n, n), con(con), p(2 * con + 1) {
-        for (auto z : coos(*this)) put(z, prng.bernoulli(.5) ? 1 : -1);
+        for (auto z : coo_range(size)) put(z, prng.bernoulli(.5) ? 1 : -1);
         if (con == 6) {
             int m = 2 * n / 3;
             for (int i = 0; i < n; ++i)

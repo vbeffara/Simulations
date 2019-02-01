@@ -1,5 +1,4 @@
 #include <vb/Bitmap.h>
-#include <vb/Ranges.h>
 
 #define EMPTY BLACK
 #define AWAY Grey(50)
@@ -18,7 +17,7 @@ int main(int argc, char **argv) {
 
     Image img(2 * n, 2 * n);
 
-    for (auto z : coos(img))
+    for (auto z : coo_range(img.size))
         if (g)
             img.put(z, AWAY);
         else

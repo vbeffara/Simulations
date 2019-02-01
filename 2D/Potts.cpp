@@ -1,5 +1,4 @@
 #include <vb/Bitmap.h>
-#include <vb/Ranges.h>
 
 using namespace vb;
 using namespace std;
@@ -19,7 +18,7 @@ public:
         bcs["perio"] = [] {};
         bcs["free"]  = [this] {
             b = 1;
-            for (auto z : coos(*this)) put(z, -1);
+            for (auto z : coo_range(size)) put(z, -1);
         };
         bcs["wired"] = [this] {
             b = 1;

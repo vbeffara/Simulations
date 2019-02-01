@@ -2,14 +2,14 @@
 #include <fstream>
 #include <gsl/gsl>
 #include <vb/Figure.h>
-#include <vb/Ranges.h>
+#include <vb/data/Array.h>
 
 using namespace vb;
 using namespace std;
 
 auto dupe(const Array<double> &a) {
     Array<double> aa({2 * a.size.x, 2 * a.size.y});
-    for (auto z : coos(aa)) aa[z] = a[z / 2];
+    for (auto z : coo_range(aa.size)) aa[z] = a[z / 2];
     return aa;
 }
 
@@ -89,7 +89,7 @@ struct Tiling {
     void probs() {
         vector<Array<pair<double, double>>> A(n, coo{per, per});
 
-        for (auto z : coos(A[0]))
+        for (auto z : coo_range(A[0].size))
             if (double w = TP.atp(z); w != 0)
                 A[0][z] = {w, 0};
             else
@@ -97,7 +97,7 @@ struct Tiling {
 
         for (int k = 1; k < n; ++k) {
             const auto &AA = A[k - 1];
-            for (auto z : coos(A[k])) {
+            for (auto z : coo_range(A[k].size)) {
                 int    i = z.x, j = z.y, i1 = (i + 1) % per, j1 = (j + 1) % per, ii = (i + 2 * (i % 2)) % per, jj = (j + 2 * (j % 2)) % per;
                 double a20, a21;
                 auto & a1 = AA[{ii, jj}];
@@ -119,7 +119,7 @@ struct Tiling {
 
         for (int k = 0; k < n; ++k) {
             const auto &a0nk1 = A[n - k - 1];
-            for (auto z : coos(pbs[k])) {
+            for (auto z : coo_range(pbs[k].size)) {
                 int i = z.x, j = z.y;
                 if (a0nk1.atp({2 * i, 2 * j}).second + a0nk1.atp({2 * i + 1, 2 * j + 1}).second >
                     a0nk1.atp({2 * i + 1, 2 * j}).second + a0nk1.atp({2 * i, 2 * j + 1}).second)
@@ -139,7 +139,7 @@ struct Tiling {
         Figure F;
         int    ddx[4] = {0, 2, 0, 2}, ddy[4] = {0, -2, -4, -6};
         int    offx = gsl::at(ddx, off % 4), offy = gsl::at(ddy, off % 4);
-        for (auto z : coos(state))
+        for (auto z : coo_range(state.size))
             if (state[z] != 0) {
                 coo  edge{1, ((z.x + z.y) % 2) != 0 ? 1 : -1};
                 auto s = [=](coo z) {
@@ -188,7 +188,7 @@ struct Tiling {
 
         auto     H1 = height();
         ofstream dat(H.dir + name + ".dat");
-        for (auto z : coos(H1)) {
+        for (auto z : coo_range(H1.size)) {
             dat << H1[z] << " ";
             if (z.x == H1.size.x - 1) dat << "\n";
         }
@@ -196,7 +196,7 @@ struct Tiling {
 
     Tiling(Array<double> TP_, int m) : TP(move(TP_)), m(m), per(lcm(TP.size.x, TP.size.y)), n(m * per / 2) {
         probs();
-        for (auto z : coos(TP)) {
+        for (auto z : coo_range(TP.size)) {
             if (TP[z] == 0) continue;
             if (TP[z] > pmax) pmax = TP[z];
             if (TP[z] < pmin) pmin = TP[z];
@@ -212,7 +212,7 @@ struct Tiling {
     int                   m, per, n;
     double                pmin{1.0}, pmax{0.0}, a{0.0}, b{0.0};
     vector<Array<double>> pbs;
-    Array<uint8_t>        state;
+    Array<uint8_t>        state{{0, 0}};
 };
 
 int main(int argc, char **argv) {
