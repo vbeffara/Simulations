@@ -1,6 +1,3 @@
-#include <range/v3/numeric/accumulate.hpp>
-#include <range/v3/view/generate.hpp>
-#include <range/v3/view/take.hpp>
 #include <vb/Ranges.h>
 #include <vb/util/misc.h>
 
@@ -19,11 +16,6 @@ int main(int argc, char **argv) {
             s += o * o;
         }
         return s / n;
-    });
-
-    timing("vb::PRNG::gaussian through range", [n] {
-        auto os = rv::generate([] { return prng.gaussian(); }) | rv::transform([](double o) { return o * o; }) | rv::take(n);
-        return ranges::accumulate(os, 0.0) / n;
     });
 
     timing("boost::gaussian_distribution", [n] {

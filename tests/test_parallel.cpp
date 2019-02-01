@@ -4,13 +4,10 @@
 #include <pstl/execution>
 #include <pstl/memory>
 #include <pstl/numeric>
-#include <range/v3/numeric/accumulate.hpp>
-#include <range/v3/view/take.hpp>
 #include <tbb/task_group.h>
 #include <vb/Ranges.h>
 #include <vb/util/misc.h>
 
-using namespace ranges;
 using namespace std;
 using namespace vb;
 
@@ -73,30 +70,6 @@ int main(int argc, char **argv) {
         double s = std::accumulate(X.begin(), X.end(), 0.0);
         return s - int64_t(s);
     });
-
-    timing("Map+reduce | Single (Ranges)", [=] {
-        auto s = ranges::accumulate(view::ints(0, l) | view::transform(cost), 0.0);
-        return s - int64_t(s);
-    });
-
-    // timing("Map+reduce | Coroutine (Boost)", [=] {
-    //     auto   costs = take(l, fmap(cost, ints()));
-    //     double s     = 0;
-    //     for (auto x : costs) s += x;
-    //     return s - int64_t(s);
-    // });
-
-#ifdef __cpp_coroutines
-    timing("Map+reduce | Coroutine (native with ranges)", [=] {
-        auto costs = []() -> re::generator<double> {
-            int i = 0;
-            for (;;) { co_yield cost(i++); }
-        };
-
-        auto s = ranges::accumulate(costs() | view::take(l), 0.0);
-        return s - int64_t(s);
-    });
-#endif
 
     timing("Map+reduce | Async (std::async, split fill + sum)", [=] {
         class mr {

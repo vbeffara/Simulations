@@ -40,6 +40,16 @@ namespace vb {
     inline const gsl::span<const coo>  dz{dz_};
     inline const gsl::span<const coo3> dz3{dz3_};
 
+    struct coo_range {
+        coo z, r;
+        coo_range(coo r) : z({0, 0}), r(r) {}
+        const coo_range &begin() const { return *this; }
+        const coo_range &end() const { return *this; }
+        bool             operator!=(const coo_range &) const { return z.y != r.y; }
+        void             operator++() { z = (z.x == r.x - 1) ? coo{0, z.y + 1} : coo{z.x + 1, z.y}; }
+        coo              operator*() const { return z; }
+    };
+
 #ifdef UNIT_TESTS
     TEST_CASE("vb::coo") {
         coo z1{2, 3}, z2{4, -1};

@@ -12,21 +12,21 @@ template <> Color vb::to_Color(double t) {
 class Sandpile : public Bitmap<double> {
 public:
     explicit Sandpile(int n) : Bitmap(n, n) {
-        for (auto z : coos(*this)) put(z, prng.gaussian(H['m'], H['s']));
+        for (auto z : coo_range(size)) put(z, prng.gaussian(H['m'], H['s']));
     }
 
     void swipe() {
-        for (auto z : coos(*this))
+        for (auto z : coo_range(size))
             if (double excess = at(z); excess > 0) {
                 for (int i = 0; i < 4; ++i) atp(z + dz[i]) += excess / 4;
                 at(z) = 0;
             }
         if (H['r']) {
             double m = 0;
-            for (auto z : coos(*this))
+            for (auto z : coo_range(size))
                 if (double mm = abs(at(z)); mm > m) m = mm;
             if (m > 0)
-                for (auto z : coos(*this)) at(z) = at(z) * (100 / m);
+                for (auto z : coo_range(size)) at(z) = at(z) * (100 / m);
         }
         update();
     }
@@ -34,6 +34,7 @@ public:
 
 int main(int argc, char **argv) {
     H.init("Divisible sandpile", argc, argv, "n=500,m=.01,s=10,r");
+    for (auto z : coo_range({5, 3})) H.L->info("{}", z);
     Sandpile S(H['n']);
     S.show();
     while (true) { S.swipe(); }
