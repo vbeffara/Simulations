@@ -1,8 +1,7 @@
 #pragma once /// \file
 #include <vb/Picture.h>
-#include <vb/coo.h>
 #include <vb/cpx.h>
-#include <gsl/gsl>
+#include <vb/util/coo.h>
 
 namespace vb {
     class Coloring : public Picture {

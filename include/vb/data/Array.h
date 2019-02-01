@@ -1,7 +1,7 @@
 #pragma once
 #include <vb/PRNG.h>
-#include <vb/coo.h>
 #include <vb/math.h>
+#include <vb/util/coo.h>
 
 namespace vb {
     template <typename T> class Array {

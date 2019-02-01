@@ -1,12 +1,11 @@
 #pragma once
-#include <vb/Hub.h>
 #include <chrono>
-#include <iostream>
+#include <vb/Hub.h>
 
 namespace vb {
     double time();
 
-    template <typename F> void timing(const std::string & label, const F & f) {
+    template <typename F> void timing(const std::string &label, const F &f) {
         double t      = time();
         auto   result = f();
         H.output_str(label, "", fmt::format("time = {:<10} ans = {}", time() - t, result), false);
