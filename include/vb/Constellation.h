@@ -1,5 +1,4 @@
 #pragma once
-#include <vb/Bitmap.h>
 #include <vb/LinearAlgebra.h>
 #include <vb/mp.h>
 
@@ -16,7 +15,7 @@ namespace vb {
         std::vector<Star<T>> b, w, f;
         std::vector<cplx>    p;
 
-        int dim {0};
+        int dim{0};
 
         Constellation();
         Constellation(const Constellation &) = default;

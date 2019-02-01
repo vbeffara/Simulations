@@ -1,7 +1,7 @@
 #pragma once /// \file
-#include <vb/Array.h>
-#include <vb/Picture.h>
 #include <gsl/gsl>
+#include <vb/Picture.h>
+#include <vb/data/Array.h>
 
 namespace vb {
     template <typename T> class Bitmap : public Picture, public Array<T> {
@@ -12,11 +12,11 @@ namespace vb {
         using Array<T>::atp;
         using Array<T>::contains; // TODO: rename, clashes with Fl_Widget
 
-        void put(coo z, T const & c) {
+        void put(coo z, T const &c) {
             Array<T>::put(z, c);
             step();
         }
-        void putp(coo z, T const & c) {
+        void putp(coo z, T const &c) {
             Array<T>::putp(z, c);
             step();
         }

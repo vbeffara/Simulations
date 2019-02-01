@@ -1,7 +1,7 @@
 #pragma once
-#include <vb/Array.h>
 #include <vb/Hypermap.h>
 #include <vb/Stream.h>
+#include <vb/data/Array.h>
 
 namespace vb {
     Stream<std::vector<int>> partitions(int n, int m = 1); // Partitions of n with piece size at least m
@@ -11,7 +11,7 @@ namespace vb {
     Stream<Permutation> permutations(int n);
     Stream<Permutation> permutations(std::vector<int> s);
 
-    Stream<Hypermap> hypermaps(const std::vector<int> & s, const std::vector<int> & a, const std::vector<int> & p);
+    Stream<Hypermap> hypermaps(const std::vector<int> &s, const std::vector<int> &a, const std::vector<int> &p);
 
 #ifdef UNIT_TESTS
     TEST_CASE("vb::Stream lib") {
@@ -20,7 +20,7 @@ namespace vb {
         CHECK(size(hypermaps({2, 2, 2}, {2, 2, 2}, {3, 3})) == 1);
 
         int n = 0;
-        for (const auto & c : partitions(6)) n += size(permutations(c));
+        for (const auto &c : partitions(6)) n += size(permutations(c));
         CHECK(n == fact(6));
     }
 #endif

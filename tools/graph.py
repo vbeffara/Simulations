@@ -1,55 +1,57 @@
 #!/usr/bin/env python3
 
 from glob import glob
-from sys import argv, stderr, exit
-import networkx as nx
+from sys import stderr
+import re
 
-G = nx.DiGraph()
+nodes = {}
+clusters = {}
 
-full = "-f" in argv
 
-for f in glob("include/vb/*.h"):
-    f = f[8:]
-    G.add_node(f, fillcolor="lightblue")
+def parent(path):
+    m = re.compile("^(?P<p>.*)/[^/]*$").match(path)
+    if m:
+        return m['p']
+    else:
+        return ""
 
-if "-l" in argv:
-    for f in glob("libvb/*.cpp"):
-        G.add_node(f, fillcolor="yellow")
-    for f in glob("include/vb/impl/*.hxx"):
-        f = f[8:]
-        G.add_node(f, fillcolor="yellow")
 
-if "-x" in argv:
-    for f in glob("[123]*/*.cpp") + glob("tests/*.cpp") + glob("playground/*.cpp"):
-        G.add_node(f, fillcolor="pink")
+def traverse(path):
+    print("  subgraph \"cluster_%s\" {" % path)
+    print("    label = \"%s\"" % path)
+    for f in clusters[path]:
+        print('    "%s" [label=\"%s\"]' % (f, nodes[f]["label"]))
+    for c in clusters:
+        if parent(c) == path:
+            traverse(c)
+    print("  }")
 
-for f in list(G):
-    ff = f
-    if ff[:3] == "vb/":
-        ff = "include/" + f
-    for l in open(ff, encoding="utf-8"):
-        if l.startswith("#include") and not l.rstrip().endswith("nograph"):
-            h = l[10:-2]
-            if h.startswith("vb/") or full:
-                if not h in G.nodes():
-                    G.add_node(h)
-                G.add_edge(f, h)
+
+for f in glob("include/vb/**/*.h", recursive=True):
+    m = re.compile("include/(?P<path>.*)/(?P<basename>[^/]*).h").match(f)
+    node = {"label": m['basename']+".h", "file": f, "links": []}
+    if not m['path'] in clusters:
+        clusters[m['path']] = []
+    clusters[m['path']] += [f]
+
+    for l in open(f, encoding="utf-8"):
+        mm = re.compile("\\#include \\<(?P<link>vb/.*\\.h)\\>$").match(l)
+        if mm:
+            node["links"] += ["include/" + mm['link']]
+
+    nodes[f] = node
 
 print("digraph {")
 print("  rankdir = LR")
-for x in G.nodes():
-    print('  "%s" [style="filled", fillcolor="%s"]' %
-          (x, G.node[x].get('fillcolor', "white")))
-    for f in G.neighbors(x):
-        print('    "%s" -> "%s"' % (x, f))
+traverse("vb")
+for k, v in clusters.items():
+    print("  subgraph \"cluster_%s\" {" % k)
+    print('    label = "%s"' % k)
+    for l in v:
+        print('    "%s" [label=\"%s\"]' %
+              (nodes[l]["file"], nodes[l]["label"]))
+    print("  }")
+for k, v in nodes.items():
+    for l in v["links"]:
+        print('    "%s" -> "%s"' % (v["file"], nodes[l]["file"]))
 print("}")
-
-bad = 0
-for f in G.nodes():
-    for k in set(G.neighbors(f)):
-        for l in set(G.neighbors(f)):
-            if l in G.nodes() and k in nx.descendants(G, l):
-                print("Redundant include: %s -> %s (implied by %s)" %
-                      (f, k, l), file=stderr)
-                bad = 1
-exit(bad)

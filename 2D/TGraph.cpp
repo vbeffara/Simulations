@@ -1,6 +1,6 @@
-#include <vb/Array.h>
 #include <vb/Console.h>
 #include <vb/Figure.h>
+#include <vb/data/Array.h>
 
 using namespace vb;
 using namespace std;
@@ -86,7 +86,7 @@ public:
     double theta, a = 1, b = 1, c = 1, pa = 1, pb = 1, pc = 1;
 };
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     H.init("T-graph for the triangular lattice", argc, argv, "n=20,l,x=.4,y=.6,t");
     TGraph TG(H['n'], cpx{H['x'], H['y']}, H['t']);
     if (H['l'])
