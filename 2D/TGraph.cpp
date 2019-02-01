@@ -11,7 +11,9 @@ struct loc {
 
 class TGraph : public Figure, Array<loc> {
 public:
-    TGraph(int n, cpx A, double t) : Array<loc>(n, n), A(A), theta(t) {
+    using Array::size;
+
+    TGraph(int n, cpx A, double t) : Array<loc>({n, n}), A(A), theta(t) {
         compute();
         plot();
         show();
@@ -35,8 +37,8 @@ public:
         pc     = arg((B - C) / (A - C)) / M_PI;
         lambda = exp(2.0 * M_PI * I * theta);
 
-        for (int i = 0; i < ww; ++i) {
-            for (int j = 0; j < hh; ++j) {
+        for (int i = 0; i < size.x; ++i) {
+            for (int j = 0; j < size.y; ++j) {
                 if (j > 0)
                     at({i, j}).z = at({i, j - 1}).z + c * phiwb(i + 1, j - 2, i, j - 1);
                 else if (i > 0)
@@ -47,11 +49,11 @@ public:
 
     void plot() {
         contents.clear();
-        for (int i = 0; i < ww; ++i) {
-            for (int j = 0; j < hh; ++j) {
-                if (i < ww - 1) add(make_unique<Segment>(at({i, j}).z, at({i + 1, j}).z));
-                if (j < hh - 1) add(make_unique<Segment>(at({i, j}).z, at({i, j + 1}).z));
-                if ((i > 0) && (j < hh - 1)) add(make_unique<Segment>(at({i, j}).z, at({i - 1, j + 1}).z));
+        for (int i = 0; i < size.x; ++i) {
+            for (int j = 0; j < size.y; ++j) {
+                if (i < size.x - 1) add(make_unique<Segment>(at({i, j}).z, at({i + 1, j}).z));
+                if (j < size.y - 1) add(make_unique<Segment>(at({i, j}).z, at({i, j + 1}).z));
+                if ((i > 0) && (j < size.y - 1)) add(make_unique<Segment>(at({i, j}).z, at({i - 1, j + 1}).z));
             }
         }
     }

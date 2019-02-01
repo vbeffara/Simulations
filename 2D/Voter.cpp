@@ -14,12 +14,12 @@ public:
     }
 
     void up() {
-        coo z = rand();
+        coo z = prng.uniform_coo(size);
         put(z, atp(z + dz[prng.uniform_int(4)]));
     }
 };
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     H.init("Voter model", argc, argv, "n=500,p=.5,d=1");
 
     Voter V(H['n'], H['p'], H['d']);

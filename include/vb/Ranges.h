@@ -12,7 +12,7 @@ namespace vb {
 #endif
 
     template <typename T> auto coos(const Array<T> &A) {
-        return rv::cartesian_product(rv::ints(int64_t(0), A.ww), rv::ints(int64_t(0), A.hh)) |
+        return rv::cartesian_product(rv::ints(int64_t(0), A.size.x), rv::ints(int64_t(0), A.size.y)) |
                rv::transform([](std::tuple<int64_t, int64_t> xy) -> coo {
                    const auto [x, y] = xy;
                    return {x, y};

@@ -8,7 +8,7 @@
 
 using namespace vb;
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     H.init("Aggregation of exclusion walkers", argc, argv, "n=250,p=.5,g,a=1.0,t=0.0,s");
     int    n = H['n']; // Half of board size
     double p = H['p']; // Initial particle density
@@ -28,7 +28,7 @@ int main(int argc, char ** argv) {
     if (t > 0) img.snapshot_setup("MDLA", t);
 
     while (true) {
-        coo z = img.rand(), nz = z + dz[prng() % 4];
+        coo z = prng.uniform_coo(img.size), nz = z + dz[prng() % 4];
         if (!img.contains(nz)) continue;
         if (img.at(z) == img.at(nz)) continue;
 

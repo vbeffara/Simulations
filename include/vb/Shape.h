@@ -1,7 +1,7 @@
 #pragma once /// @file
-#include <vb/Color.h>
-#include <vb/cpx.h>
 #include <cairo/cairo.h>
+#include <vb/Color.h>
+#include <vb/util/cpx.h>
 #include <vector>
 
 namespace vb {
@@ -22,14 +22,14 @@ namespace vb {
         Shape(const Shape &) = default;
         Shape(Shape &&)      = default;
         virtual ~Shape()     = default;
-        Shape & operator=(const Shape &) = default;
-        Shape & operator=(Shape &&) = default;
+        Shape &operator=(const Shape &) = default;
+        Shape &operator=(Shape &&) = default;
 
-        virtual double left()             = 0;
-        virtual double right()            = 0;
-        virtual double top()              = 0;
-        virtual double bottom()           = 0;
-        virtual void   draw(cairo_t * cr) = 0;
+        virtual double left()            = 0;
+        virtual double right()           = 0;
+        virtual double top()             = 0;
+        virtual double bottom()          = 0;
+        virtual void   draw(cairo_t *cr) = 0;
 
         Pen p;
     };
@@ -42,7 +42,7 @@ namespace vb {
         double right() override { return std::max(z1.real(), z2.real()); }
         double top() override { return std::max(z1.imag(), z2.imag()); }
         double bottom() override { return std::min(z1.imag(), z2.imag()); }
-        void   draw(cairo_t * cr) override;
+        void   draw(cairo_t *cr) override;
 
         cpx z1, z2;
     };
@@ -55,7 +55,7 @@ namespace vb {
         double right() override { return z.real(); }
         double top() override { return z.imag(); }
         double bottom() override { return z.imag(); }
-        void   draw(cairo_t * cr) override;
+        void   draw(cairo_t *cr) override;
 
         cpx z;
     };
@@ -68,7 +68,7 @@ namespace vb {
         double right() override { return z.real() + r; }
         double top() override { return z.imag() + r; }
         double bottom() override { return z.imag() - r; }
-        void   draw(cairo_t * cr) override;
+        void   draw(cairo_t *cr) override;
 
         cpx    z;
         double r;
@@ -82,7 +82,7 @@ namespace vb {
         double right() override;
         double top() override;
         double bottom() override;
-        void   draw(cairo_t * cr) override;
+        void   draw(cairo_t *cr) override;
 
         std::vector<cpx> z;
     };
@@ -90,6 +90,6 @@ namespace vb {
     class Polygon : public Path {
     public:
         explicit Polygon(std::vector<cpx> z, Pen p = Pen()) : Path(std::move(z), p) {}
-        void draw(cairo_t * cr) override;
+        void draw(cairo_t *cr) override;
     };
 } // namespace vb

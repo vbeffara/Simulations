@@ -7,7 +7,7 @@ public:
     bool                k;
     double              beta;
     std::vector<double> glaub, kaw;
-    Ising3(int n, bool k_, double b_) : Cube(n, n, n), b(0), k(k_), beta(b_) {
+    Ising3(int n, bool k_, double b_) : Cube({n, n, n}), b(0), k(k_), beta(b_) {
         for (int k = 0; k <= 6; ++k) glaub.push_back(exp(k * beta) / (exp(k * beta) + exp((6 - k) * beta)));
         for (int k = 0; k <= 12; ++k) kaw.push_back(1 / (1 + exp(2 * beta * (k - 6))));
     };
@@ -33,8 +33,8 @@ public:
     }
 
     void swipe() {
-        for (int t = 0; t < sx * sy * sz; ++t) {
-            vb::coo3 c = rand(b);
+        for (int t = 0; t < size.x * size.y * size.z; ++t) {
+            vb::coo3 c = vb::prng.uniform_coo3(size, b);
             spin(c);
         }
     }
@@ -43,53 +43,54 @@ public:
 class BCs : public std::map<std::string, std::function<void(Ising3 &)>> {
 public:
     BCs() {
-        emplace("bernoulli", [](Ising3 & I) {
+        emplace("bernoulli", [](Ising3 &I) {
             I.b = 0;
             for (auto c = I.begin(); c != I.end(); ++c)
                 if (vb::prng.bernoulli(vb::H['p'])) {
-                    const vb::coo3 & cc = c;
+                    const vb::coo3 &cc = c;
                     I.put(cc, 255);
                 }
         });
-        emplace("dobrushin", [](Ising3 & I) {
+        emplace("dobrushin", [](Ising3 &I) {
             I.b = 1;
             for (auto c = I.begin(); c != I.end(); ++c)
-                if (c.y < I.sy / 2) I.put(c, 255);
+                if (c.y < I.size.y / 2) I.put(c, 255);
         });
-        emplace("step", [](Ising3 & I) {
+        emplace("step", [](Ising3 &I) {
             I.b = 1;
             for (auto c = I.begin(); c != I.end(); ++c)
-                if ((c.y < I.sy / 2) || ((c.y == I.sy / 2) && (c.z > I.sz / 2))) I.put(c, 255);
+                if ((c.y < I.size.y / 2) || ((c.y == I.size.y / 2) && (c.z > I.size.z / 2))) I.put(c, 255);
         });
-        emplace("111", [](Ising3 & I) {
+        emplace("111", [](Ising3 &I) {
             I.b = 1;
             for (auto c = I.begin(); c != I.end(); ++c)
-                if (c.x + c.y + (I.sz - c.z) < (I.sx + I.sy + I.sz) / 2) I.put(c, 255);
+                if (c.x + c.y + (I.size.z - c.z) < (I.size.x + I.size.y + I.size.z) / 2) I.put(c, 255);
         });
-        emplace("hexagon", [](Ising3 & I) {
+        emplace("hexagon", [](Ising3 &I) {
             I.b = 1;
-            for (int i = 0; i < I.sx; ++i)
-                for (int j = 0; j < I.sx; ++j) {
-                    I.put({i, j, I.sz - 1}, 255);
+            for (int i = 0; i < I.size.x; ++i)
+                for (int j = 0; j < I.size.x; ++j) {
+                    I.put({i, j, I.size.z - 1}, 255);
                     I.put({0, i, j}, 255);
                     I.put({i, 0, j}, 255);
                 }
         });
-        emplace("cube", [](Ising3 & I) {
+        emplace("cube", [](Ising3 &I) {
             I.b = 0;
-            for (int x = I.sx / 10; x < 9 * I.sx / 10; ++x)
-                for (int y = I.sy / 10; y < 9 * I.sy / 10; ++y)
-                    for (int z = I.sz / 10; z < 9 * I.sz / 10; ++z) I.put({x, y, z}, 255);
+            for (int x = I.size.x / 10; x < 9 * I.size.x / 10; ++x)
+                for (int y = I.size.y / 10; y < 9 * I.size.y / 10; ++y)
+                    for (int z = I.size.z / 10; z < 9 * I.size.z / 10; ++z) I.put({x, y, z}, 255);
         });
-        emplace("slope", [](Ising3 & I) {
+        emplace("slope", [](Ising3 &I) {
             I.b = 1;
             for (auto c = I.begin(); c != I.end(); ++c)
-                if ((c.y - I.sy * .5) - double(vb::H['p']) * (c.z - I.sz * .5) + double(vb::H['q']) * (c.x - I.sx * .5) < 0) I.put(c, 255);
+                if ((c.y - I.size.y * .5) - double(vb::H['p']) * (c.z - I.size.z * .5) + double(vb::H['q']) * (c.x - I.size.x * .5) < 0)
+                    I.put(c, 255);
         });
     }
 };
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     vb::H.init("3D Ising model", argc, argv, "n=50,b=1,t=0,p=.5,q=0,k,c=bernoulli,s=0,m,i,r=0");
     if (int r = vb::H['r']) vb::prng.seed(r);
     Ising3 C(vb::H['n'], vb::H['k'], vb::H['b']);
@@ -108,7 +109,7 @@ int main(int argc, char ** argv) {
     }
     if (vb::H['m']) C.mirrors = false;
     if (vb::H['i'])
-        for (auto c = C.begin(); c != C.end(); ++c) C.put(c, (c.y > C.sy / 2) ? C.at(c) / 2 : C.at(c));
+        for (auto c = C.begin(); c != C.end(); ++c) C.put(c, (c.y > C.size.y / 2) ? C.at(c) / 2 : C.at(c));
 
     C.output_pov();
 }

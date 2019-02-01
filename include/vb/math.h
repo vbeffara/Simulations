@@ -1,10 +1,10 @@
 #pragma once
-#include <vb/cpx.h>
 #include <boost/math/constants/constants.hpp>
 #include <functional>
+#include <vb/util/cpx.h>
 
 namespace vb {
-    template <typename T> T sum(const std::function<T(int)> & f) {
+    template <typename T> T sum(const std::function<T(int)> &f) {
         T out(0), old(1);
         for (int n = 0; out != old; ++n) {
             old  = out;
@@ -41,11 +41,11 @@ namespace vb {
 
     template <typename T> typename cpx_t<T>::type I_() { return {0, 1}; }
 
-    template <typename T> typename cpx_t<T>::type q_(const typename cpx_t<T>::type & tau) {
+    template <typename T> typename cpx_t<T>::type q_(const typename cpx_t<T>::type &tau) {
         return exp(typename cpx_t<T>::type(0, pi_<T>()) * tau);
     }
 
-    template <typename T> typename cpx_t<T>::type q_t(const typename cpx_t<T>::type & tau) {
+    template <typename T> typename cpx_t<T>::type q_t(const typename cpx_t<T>::type &tau) {
         return typename cpx_t<T>::type(0, pi_<T>()) * q_<T>(tau);
     }
 

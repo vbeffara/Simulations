@@ -24,7 +24,7 @@ public:
 
     void run() {
         while (visible()) {
-            coo z = rand();
+            coo z = prng.uniform_coo(size);
             if (at(z) == 0) continue;
             int c = 0;
             for (int d = 0; d < con; ++d) c += atp(z + dz[d]);
@@ -32,7 +32,7 @@ public:
         }
     }
 
-    void output_pdf(const std::string & s = "") {
+    void output_pdf(const std::string &s = "") {
         Figure      F;
         cpx         shift;
         vector<cpx> pattern;
@@ -73,7 +73,7 @@ public:
     vector<double> p;
 };
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     H.init("2D Ising model", argc, argv, "n=500,b=.7,c=4");
     Ising I(H['n'], H['b'], H['c']);
     I.show();

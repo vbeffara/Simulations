@@ -42,7 +42,7 @@ public:
         for (int i = 0; i != nstep; i++)
             for (int j = 0; j < n * n; ++j) {
                 step();
-                coo z = rand(static_cast<int64_t>(c));
+                coo z = prng.uniform_coo(size, static_cast<int64_t>(c));
                 if (k) {
                     coo zz = z + dz[prng.uniform_int(4)];
                     if (c && !contains(zz, static_cast<int64_t>(c))) continue;

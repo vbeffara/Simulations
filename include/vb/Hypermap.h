@@ -1,6 +1,6 @@
 #pragma once /// @file
 #include <vb/Permutation.h>
-#include <vb/cpx.h>
+#include <vb/util/cpx.h>
 #ifdef None
 #undef None
 #endif

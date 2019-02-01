@@ -5,7 +5,7 @@ using namespace std;
 
 class Configuration : public Image {
 public:
-    explicit Configuration(int n) : Image(n, n), expl(n, n), table(2 * n * n + 1) {}
+    explicit Configuration(int n) : Image(n, n), expl({n, n}), table(2 * n * n + 1) {}
 
     void compute_cpts(int r1) {
         int t = 0;
@@ -46,7 +46,7 @@ public:
         compute_cpts(r1);
         int N = w();
 
-        for (auto & t : table) t = 0;
+        for (auto &t : table) t = 0;
         for (int i = -r2; i < r2; i++) {
             if ((sides & 1u) != 0) table[N * N + expl[{N / 2 + i, N / 2 - r2}]] = 1;
             if ((sides & 2u) != 0) table[N * N + expl[{N / 2 + i, N / 2 + r2 - 1}]] = 1;
@@ -145,7 +145,7 @@ public:
         while (true) {
             coo z{0, 0};
             while (true) {
-                z     = rand();
+                z     = prng.uniform_coo(size);
                 int x = z.x, y = z.y;
                 if ((x < w() / 2 - r1) || (x >= w() / 2 + r1) || (y < h() / 2 - r1) || (y >= h() / 2 + r1)) break;
             }
@@ -171,7 +171,7 @@ public:
     Configuration c1, c2;
 };
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     H.init("Coupling percolation configurations", argc, argv, "r=20");
     Coupling C(H['r']);
     C.run();

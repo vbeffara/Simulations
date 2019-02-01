@@ -1,4 +1,4 @@
-// Initial code in Python by Sunil Chhita, ported to C++ by VB.
+// Initial code in Python by Sunil Csize.yita, ported to C++ by VB.
 #include <fstream>
 #include <gsl/gsl>
 #include <vb/Figure.h>
@@ -8,7 +8,7 @@ using namespace vb;
 using namespace std;
 
 auto dupe(const Array<double> &a) {
-    Array<double> aa(2 * a.ww, 2 * a.hh);
+    Array<double> aa({2 * a.size.x, 2 * a.size.y});
     for (auto z : coos(aa)) aa[z] = a[z / 2];
     return aa;
 }
@@ -16,7 +16,7 @@ auto dupe(const Array<double> &a) {
 auto twoperiodic(double a, double b) { return dupe(Array<double>({{a, b}, {b, a}})); }
 auto threeperiodic(double a, double b, double c) { return dupe(Array<double>({{a, b, c}, {b, c, a}, {c, a, b}})); }
 auto threebytwo(double b) {
-    Array<double> p(6, 6, 1);
+    Array<double> p({6, 6}, 1);
     p[{0, 0}] = b;
     p[{4, 2}] = b;
     p[{2, 4}] = b;
@@ -25,10 +25,10 @@ auto threebytwo(double b) {
 
 struct Tiling {
     void delslide() {
-        int n = state.ww;
-        state.resize(n + 2, n + 2, 0);
-        for (int y = state.hh - 2; y > 0; --y)
-            for (int x = state.ww - 2; x > 0; --x) swap(state[{x, y}], state[{(x - 1) + n * (y - 1), 0}]);
+        int n = state.size.x;
+        state.resize({n + 2, n + 2}, 0);
+        for (int y = state.size.y - 2; y > 0; --y)
+            for (int x = state.size.x - 2; x > 0; --x) swap(state[{x, y}], state[{(x - 1) + n * (y - 1), 0}]);
 
         for (int i = 0; i < n / 2; ++i) {
             for (int j = 0; j < n / 2; ++j) {
@@ -62,7 +62,7 @@ struct Tiling {
     }
 
     void create(const Array<double> &p) {
-        int n = state.ww;
+        int n = state.size.x;
         for (int i = 0; i < n / 2; ++i) {
             for (int j = 0; j < n / 2; ++j) {
                 if ((state[{2 * i, 2 * j}] == 0) && (state[{2 * i + 1, 2 * j}] == 0) && (state[{2 * i, 2 * j + 1}] == 0) &&
@@ -87,7 +87,7 @@ struct Tiling {
     }
 
     void probs() {
-        vector<Array<pair<double, double>>> A(n, {per, per});
+        vector<Array<pair<double, double>>> A(n, coo{per, per});
 
         for (auto z : coos(A[0]))
             if (double w = TP.atp(z); w != 0)
@@ -115,7 +115,7 @@ struct Tiling {
             }
         }
 
-        pbs = vector<Array<double>>(n, {per / 2, per / 2});
+        pbs = vector<Array<double>>(n, coo{per / 2, per / 2});
 
         for (int k = 0; k < n; ++k) {
             const auto &a0nk1 = A[n - k - 1];
@@ -149,15 +149,15 @@ struct Tiling {
                     return cpx(z) + 2 * double(H['r']) * cpx(sh) - cpx(offx, offy);
                 };
                 double gr = a * TP.atp(z + coo{offx / 2, offy / 2}) + b;
-                F.add(make_unique<Segment>(s(z * 2 - edge), s(z * 2 + edge), Pen(Grey(uint8_t(255 * gr)), 130.0 / state.ww)));
+                F.add(make_unique<Segment>(s(z * 2 - edge), s(z * 2 + edge), Pen(Grey(uint8_t(255 * gr)), 130.0 / state.size.x)));
             }
         if (H['v']) F.show();
         F.output(name);
     }
 
     auto height() const {
-        int        m = state.ww / 2;
-        Array<int> h(m + 1, m + 1, 0);
+        int        m = state.size.x / 2;
+        Array<int> h({m + 1, m + 1}, 0);
         int        z = 0;
         for (int x = 0; x < m; ++x) {
             z += 4 * state[{2 * x, 0}] + 4 * state[{2 * x + 1, 0}] - 2;
@@ -190,11 +190,11 @@ struct Tiling {
         ofstream dat(H.dir + name + ".dat");
         for (auto z : coos(H1)) {
             dat << H1[z] << " ";
-            if (z.x == H1.ww - 1) dat << "\n";
+            if (z.x == H1.size.x - 1) dat << "\n";
         }
     }
 
-    Tiling(Array<double> TP_, int m) : TP(move(TP_)), m(m), per(lcm(TP.ww, TP.hh)), n(m * per / 2) {
+    Tiling(Array<double> TP_, int m) : TP(move(TP_)), m(m), per(lcm(TP.size.x, TP.size.y)), n(m * per / 2) {
         probs();
         for (auto z : coos(TP)) {
             if (TP[z] == 0) continue;
@@ -220,7 +220,7 @@ int main(int argc, char **argv) {
     if (int seed = H['s']; seed != 0) prng.seed(seed);
 
     std::map<string, function<Array<double>()>> TPs;
-    TPs["unif"]   = [&] { return Array<double>(2, 2, 1.0); };
+    TPs["unif"]   = [&] { return Array<double>({2, 2}, 1.0); };
     TPs["two"]    = [&] { return twoperiodic(H['a'], H['b']); };
     TPs["three"]  = [&] { return threeperiodic(H['a'], H['b'], H['c']); };
     TPs["kenyon"] = [&] { return threebytwo(H['b']); };

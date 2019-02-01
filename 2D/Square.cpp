@@ -108,7 +108,7 @@ using ptpair = std::pair<pt, pt>;
 
 class Lamination : public vb::Array<double> {
 public:
-    explicit Lamination(int n) : vb::Array<double>(n, n, 0) {
+    explicit Lamination(int n) : vb::Array<double>({n, n}, 0) {
         for (auto z : coos(*this)) { put(z, tan(vb::prng.uniform_real(0, M_PI))); }
     }
 
@@ -146,8 +146,8 @@ public:
         std::set<ptpair> S;
         std::set<pt>     P;
 
-        for (int i = 0; i < ww; ++i) {
-            for (int j = 0; j < hh; ++j) {
+        for (int i = 0; i < size.x; ++i) {
+            for (int j = 0; j < size.y; ++j) {
                 for (int xx = 1; xx < 100; ++xx) {
                     double            x  = .01 * xx;
                     std::pair<pt, pt> pp = leaf(pt(i, j, x, 0), nullptr);
@@ -178,8 +178,8 @@ int main(int argc, char **argv) {
     vb::H.init("Random lamination", argc, argv, "n=20,c");
     Lamination o(vb::H['n']);
 
-    for (int i = 0; i < o.ww; ++i) {
-        for (int j = 0; j < o.hh; ++j) {
+    for (int i = 0; i < o.size.x; ++i) {
+        for (int j = 0; j < o.size.y; ++j) {
             o.geodesique(pt(i, j, 0, 0), &std::cout);
             o.geodesique(pt(i, j, 1, 0), &std::cout);
             o.geodesique(pt(i, j, 0, 1), &std::cout);

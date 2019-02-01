@@ -26,7 +26,7 @@ public:
 
         while (true) {
             if ((s > 0) && ((t++ % s) == 0)) snapshot();
-            auto z = rand();
+            auto z = prng.uniform_coo(size);
             if ((z.x + z.y) % 2 == 0) continue;
             fill(mid, IN);
             if (c)
@@ -42,7 +42,7 @@ public:
     double p;
 };
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     H.init("Percolation", argc, argv, "n=500,p=.5,c,d,s=0");
     Perco P(H['n'], H['p']);
     if (H['d'])

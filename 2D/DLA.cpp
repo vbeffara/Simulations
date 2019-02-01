@@ -17,7 +17,7 @@ public:
         H.L->info("Precomputing harmonic measures, d up to {} ...", int(H['p']));
         for (int r = 1; r < int(H['p']); ++r) {
             bool          dirty = true;
-            Array<double> MM(2 * r + 1, 2 * r + 1);
+            Array<double> MM({2 * r + 1, 2 * r + 1});
             MM.at({r, r}) = 1;
             while (dirty) {
                 dirty = false;

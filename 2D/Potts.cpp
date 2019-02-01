@@ -143,11 +143,11 @@ public:
     }
 
     int HH(int i, int j) const { return i == j ? 0 : 1; }
-    int HH(const coo & z, int i) const {
+    int HH(const coo &z, int i) const {
         return HH(i, atp(z + dz[0])) + HH(i, atp(z + dz[1])) + HH(i, atp(z + dz[2])) + HH(i, atp(z + dz[3]));
     }
 
-    void up() { up(rand()); }
+    void up() { up(prng.uniform_coo(size)); }
     void up(coo z) {
         int    i  = prng.uniform_int(q);
         double dH = HH(z, i) - HH(z, atp(z));
@@ -159,7 +159,7 @@ public:
     map<string, function<void()>> bcs;
 };
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     H.init("Potts model", argc, argv, "n=500,q=3,b=1,c=free");
     Potts P(H['n'], H['q'], H['b']);
     while (true) P.up();

@@ -124,7 +124,7 @@ int main(int argc, char **argv) {
     T.pause();
     auto f = int(T.w() * T.h() * double(H['f']));
     for (int64_t t = 1;; ++t) {
-        T.flip(T.rand());
+        T.flip(prng.uniform_coo(T.size));
         if (t == f) T.freeze({T.w() / 2, T.h() / 2});
     }
 }

@@ -16,19 +16,15 @@ namespace vb {
 
     class Cube : public Bitmap<Adder> {
     public:
-        Cube(int x, int y, int z);
+        Cube(coo3 sz);
 
-        int64_t index(coo3 c) { return c.x + sx * c.y + sx * sy * c.z; }
-        coo3    wrap(coo3 c) { return {pmod(c.x, sx), pmod(c.y, sy), pmod(c.z, sz)}; }
+        int64_t index(coo3 c) { return c.x + size.x * c.y + size.x * size.y * c.z; }
+        coo3    wrap(coo3 c) { return {pmod(c.x, size.x), pmod(c.y, size.y), pmod(c.z, size.z)}; }
 
         uint8_t &at(const coo3 &c) { return data[index(c)]; }
         uint8_t &atp(const coo3 &c) { return at(wrap(c)); }
         void     put(const coo3 &c, uint8_t t);
         void     putp(const coo3 &c, uint8_t t) { put(wrap(c), t); }
-
-        coo3 rand(int b = 0) {
-            return {b + prng.uniform_int(sx - 2 * b), b + prng.uniform_int(sy - 2 * b), b + prng.uniform_int(sz - 2 * b)};
-        }
 
         void output_pov(std::string s = "");
 
@@ -36,7 +32,7 @@ namespace vb {
         iterator begin();
         iterator end();
 
-        int64_t              sx, sy, sz;
+        coo3                 size;
         std::vector<uint8_t> data;
         bool                 mirrors = true;
     };
@@ -47,11 +43,11 @@ namespace vb {
         bool operator!=(const Cube_iterator &o) { return (c != o.c) || coo3::operator!=(o); }
         void operator++() {
             x++;
-            if (x == c->sx) {
+            if (x == c->size.x) {
                 x = 0;
                 y++;
             }
-            if (y == c->sy) {
+            if (y == c->size.y) {
                 y = 0;
                 z++;
             }
@@ -61,8 +57,8 @@ namespace vb {
 
 #ifdef UNIT_TESTS
     TEST_CASE("vb::Cube") {
-        Cube C(100, 100, 100);
-        C.putp(C.rand(), 1);
+        Cube C({100, 100, 100});
+        C.putp(prng.uniform_coo3(C.size), 1);
         int s = 0;
         for (auto v : C) s += v;
         CHECK(s == 1);
