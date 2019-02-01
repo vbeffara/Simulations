@@ -8,15 +8,15 @@ G = nx.DiGraph()
 
 full = "-f" in argv
 
-for f in glob("libvb/vb/*.h"):
-    f = f[6:]
+for f in glob("include/vb/*.h"):
+    f = f[8:]
     G.add_node(f, fillcolor="lightblue")
 
 if "-l" in argv:
     for f in glob("libvb/*.cpp"):
         G.add_node(f, fillcolor="yellow")
-    for f in glob("libvb/vb/impl/*.hxx"):
-        f = f[6:]
+    for f in glob("include/vb/impl/*.hxx"):
+        f = f[8:]
         G.add_node(f, fillcolor="yellow")
 
 if "-x" in argv:
@@ -26,7 +26,7 @@ if "-x" in argv:
 for f in list(G):
     ff = f
     if ff[:3] == "vb/":
-        ff = "libvb/" + f
+        ff = "include/" + f
     for l in open(ff, encoding="utf-8"):
         if l.startswith("#include") and not l.rstrip().endswith("nograph"):
             h = l[10:-2]

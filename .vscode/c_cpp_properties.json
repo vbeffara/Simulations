@@ -4,6 +4,7 @@
             "name": "Mac",
             "includePath": [
                 "${workspaceRoot}/libvb",
+                "${workspaceRoot}/include",
                 "${workspaceRoot}/build/libvb",
                 "/usr/local/Cellar/cairo/1.14.12/include/cairo",
                 "/usr/local/opt/llvm/include/c++/v1",

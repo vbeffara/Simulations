@@ -36,7 +36,7 @@ target_link_libraries (vb ${CONAN_LIBS})
 execute_process(COMMAND "git" describe --always --abbrev=40 WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" OUTPUT_VARIABLE GIT_SHA1 OUTPUT_STRIP_TRAILING_WHITESPACE)
 set_source_files_properties(libvb/Hub.cpp PROPERTIES COMPILE_FLAGS -DGIT_SHA1='"${GIT_SHA1}"')
 
-include_directories ("${PROJECT_SOURCE_DIR}/libvb")
+include_directories ("${PROJECT_SOURCE_DIR}/include")
 
 set (DIRS tests 1D 2D 3D)
 if (${PLAYGROUND})
