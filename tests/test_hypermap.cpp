@@ -1,6 +1,6 @@
 #include <vb/Coloring.h>
 #include <vb/Constellation0.h>
-#include <vb/PRNG.h>
+#include <vb/util/PRNG.h>
 
 using namespace vb;
 

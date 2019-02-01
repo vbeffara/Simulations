@@ -1,5 +1,5 @@
 #include <vb/Hub.h>
-#include <vb/PRNG.h>
+#include <vb/util/PRNG.h>
 
 int main(int argc, char **argv) {
     vb::H.init("Cookie random walk", argc, argv, "t=20,p=.67");

@@ -1,8 +1,8 @@
 #include <vb/Coloring.h>
 #include <vb/Constellation1.h>
 #include <vb/Hypermap_lib.h>
-#include <vb/PRNG.h>
 #include <vb/ProgressBar.h>
+#include <vb/util/PRNG.h>
 
 using namespace vb;
 using namespace std;

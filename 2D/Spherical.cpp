@@ -1,5 +1,5 @@
-#include <vb/PRNG.h>
 #include <vb/Sphere.h>
+#include <vb/util/PRNG.h>
 
 vb::Color f_to_c(double f) {
     if (isnan(f)) { return vb::RED; }

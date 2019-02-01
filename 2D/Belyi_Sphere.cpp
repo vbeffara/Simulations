@@ -1,7 +1,7 @@
-// S-E+F = 2, 3F=2E, S=2+F/2, F=2d, S=2+d
+// / data / Pairings.hE, S=2+F/2, F=2d, S=2+d
 #include <vb/Coloring.h>
 #include <vb/Constellation0.h>
-#include <vb/Pairings.h>
+#include <vb/data/Pairings.h>
 #include <vb/ProgressBar.h>
 #include <vb/Stream_lib.h>
 

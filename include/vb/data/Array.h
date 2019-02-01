@@ -1,6 +1,6 @@
 #pragma once
-#include <vb/PRNG.h>
 #include <vb/math.h>
+#include <vb/util/PRNG.h>
 #include <vb/util/coo.h>
 
 namespace vb {

@@ -1,6 +1,6 @@
 #include <fmt/ostream.h>
 #include <sstream>
-#include <vb/PRNG.h>
+#include <vb/util/PRNG.h>
 
 namespace vb {
     int PRNG::discrete(const std::vector<double> &p) {

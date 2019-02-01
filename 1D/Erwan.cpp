@@ -1,7 +1,7 @@
 #include <gsl/gsl>
 #include <vb/Hub.h>
 #include <vb/LinearAlgebra.h>
-#include <vb/PRNG.h>
+#include <vb/util/PRNG.h>
 
 using namespace vb;
 using namespace std;

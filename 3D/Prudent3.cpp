@@ -1,6 +1,6 @@
-#include <vb/PRNG.h>
 #include <vb/ProgressBar.h>
-#include <vb/TriMatrix.h>
+#include <vb/data/TriMatrix.h>
+#include <vb/util/PRNG.h>
 
 using namespace vb;
 using namespace std;
@@ -42,12 +42,12 @@ public:
     vector<TriMatrix<int>> Max, Min;
 };
 
-ostream & operator<<(ostream & o, const Walker & W) {
+ostream &operator<<(ostream &o, const Walker &W) {
     o << W.pos[0] << ' ' << W.pos[1] << ' ' << W.pos[2] << ' ' << W.norm1() << endl;
     return o;
 }
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     H.init("3D prudent walker", argc, argv, "l=1000,n=1");
     int         l = H['l'], n = H['n'];
     vector<int> ends(l, 0);

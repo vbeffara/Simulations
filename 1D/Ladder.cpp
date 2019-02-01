@@ -5,7 +5,7 @@
  */
 
 #include <vb/Hub.h>
-#include <vb/PRNG.h>
+#include <vb/util/PRNG.h>
 
 using std::cout;
 using std::endl;

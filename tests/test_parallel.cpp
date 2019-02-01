@@ -8,7 +8,7 @@
 #include <range/v3/view/take.hpp>
 #include <tbb/task_group.h>
 #include <vb/Ranges.h>
-#include <vb/util.h>
+#include <vb/util/misc.h>
 
 using namespace ranges;
 using namespace std;

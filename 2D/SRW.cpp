@@ -1,5 +1,5 @@
 #include <vb/Figure.h>
-#include <vb/PRNG.h>
+#include <vb/util/PRNG.h>
 #include <vb/util/coo.h>
 
 int main(int argc, char **argv) {

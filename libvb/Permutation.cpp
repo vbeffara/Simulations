@@ -1,5 +1,5 @@
 #include <algorithm>
-#include <vb/Permutation.h>
+#include <vb/data/Permutation.h>
 
 namespace vb {
     Permutation::Permutation(Cycles &c) {

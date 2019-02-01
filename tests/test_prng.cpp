@@ -2,7 +2,7 @@
 #include <range/v3/view/generate.hpp>
 #include <range/v3/view/take.hpp>
 #include <vb/Ranges.h>
-#include <vb/util.h>
+#include <vb/util/misc.h>
 
 using namespace vb;
 using namespace std;

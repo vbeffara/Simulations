@@ -10,9 +10,9 @@
 #include <iomanip>
 #include <vb/Coloring.h>
 #include <vb/Constellation1.h>
-#include <vb/PRNG.h>
-#include <vb/Pairings.h>
 #include <vb/ProgressBar.h>
+#include <vb/data/Pairings.h>
+#include <vb/util/PRNG.h>
 
 using namespace vb;
 using namespace std;

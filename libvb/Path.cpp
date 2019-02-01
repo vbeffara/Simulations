@@ -1,7 +1,7 @@
 #include <gsl/gsl>
 #include <vb/Figure.h>
 #include <vb/Path.h>
-#include <vb/TriMatrix.h>
+#include <vb/data/TriMatrix.h>
 
 namespace vb {
     OldPath::OldPath(int l, bool rel) : std::vector<char>(l), relative(rel) {}
