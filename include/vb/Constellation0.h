@@ -1,8 +1,8 @@
 #pragma once
+#include <optional>
 #include <vb/Constellation.h>
 #include <vb/Hypermap_lib.h>
 #include <vb/Polynomial.h>
-#include <optional>
 
 namespace vb {
     template <typename T> class Constellation0 : public Constellation<T> {
@@ -16,8 +16,8 @@ namespace vb {
         using Constellation<T>::cost;
         using Constellation<T>::dim;
 
-        Constellation0(const Hypermap & M);
-        template <typename U> Constellation0(const Constellation0<U> & C);
+        Constellation0(const Hypermap &M);
+        template <typename U> Constellation0(const Constellation0<U> &C);
 
         cplx operator()(cplx z) const override;
 
@@ -29,7 +29,7 @@ namespace vb {
 
     private:
         Vector<cplx> vec() const override;
-        void         readvec(const Vector<cplx> & xy) override;
+        void         readvec(const Vector<cplx> &xy) override;
 
         Vector<cplx> vcost() const override;
         Matrix<cplx> jacvcost() const override;
@@ -42,11 +42,13 @@ namespace vb {
         void make_p_1();                       // try to have reasonable scaling
     };
 
-    template <typename T> std::ostream & operator<<(std::ostream & os, const Constellation0<T> & C);
+    template <typename T> std::ostream &operator<<(std::ostream &os, const Constellation0<T> &C);
 
 #ifdef UNIT_TESTS
     TEST_CASE("vb::Constellation0") {
         // spdlog::set_level(spdlog::level::trace);
+        char *argv[] = {"bla", "ble"};
+        H.init("Spheroidal enumeration", 1, argv, "s=3,m=228,d=2,g=0,v,o,b,q");
         auto                   M = HLib().at("m_dodecahedron");
         Constellation0<double> C(M);
         Constellation0<real_t> Cq(C);
@@ -56,7 +58,7 @@ namespace vb {
         Polynomial<complex_t> Q{{1}};
         for (auto zd : Cq.f)
             for (unsigned j = 0; j < zd.d; ++j) add_root(Q, zd.z);
-        for (auto & x : Q.data()) {
+        for (auto &x : Q.data()) {
             auto xx = complex_t(round(real(x)), round(imag(x)));
             if (abs(x - xx) < 1e-90) x = xx;
         }

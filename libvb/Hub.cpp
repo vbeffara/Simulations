@@ -63,7 +63,7 @@ namespace vb {
         real_t::default_precision(100);
         complex_t::default_precision(100);
 
-        L = spdlog::stderr_color_mt("console");
+        if (!L) L = spdlog::stderr_color_mt("console");
 
         title   = std::move(t);
         help    = "Syntax : " + c;
