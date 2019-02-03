@@ -3,6 +3,7 @@
 #include <boost/graph/edmonds_karp_max_flow.hpp>
 #include <boost/graph/graph_utility.hpp>
 #include <iostream>
+#include <vb/Hub.h>
 #include <vb/ProgressBar.h>
 #include <vb/util/PRNG.h>
 

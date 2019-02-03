@@ -86,7 +86,8 @@
         "cfenv": "cpp",
         "typeindex": "cpp",
         "memory_resource": "cpp",
-        "shared_mutex": "cpp"
+        "shared_mutex": "cpp",
+        "__debug": "cpp"
     },
     "python.pythonPath": "/usr/local/bin/python3"
 }

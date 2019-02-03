@@ -1,9 +1,12 @@
 #pragma once /// \file
-#include <vb/Hub.h>
+#include <boost/chrono.hpp>
 #include <functional>
 #include <vector>
 
 namespace vb {
+    using Duration  = boost::chrono::duration<double>;
+    using TimePoint = boost::chrono::time_point<boost::chrono::process_real_cpu_clock, Duration>;
+
     class Task : public std::function<void()> {
     public:
         Task(TimePoint t, Duration d, std::function<void()> f);
@@ -19,8 +22,8 @@ namespace vb {
 
         Auto(const Auto &) = delete;
         Auto(Auto &&)      = delete;
-        Auto & operator=(const Auto &) = delete;
-        Auto & operator=(Auto &&) = delete;
+        Auto &operator=(const Auto &) = delete;
+        Auto &operator=(Auto &&) = delete;
 
         virtual void update() = 0;
 
