@@ -20,7 +20,8 @@ def traverse(path):
     print("  subgraph \"cluster_%s\" {" % path)
     print("    label = \"%s\"" % path)
     for f in clusters[path]:
-        print('    "%s" [label=\"%s\"]' % (f, nodes[f]["label"]))
+        print('    "%s" [label=\"%s\", style=filled, fillcolor=red]' %
+              (f, nodes[f]["label"]))
     for c in clusters:
         if parent(c) == path:
             traverse(c)
@@ -29,22 +30,23 @@ def traverse(path):
 
 for f in glob("include/vb/**/*.h", recursive=True):
     m = re.compile("include/(?P<path>.*)/(?P<basename>[^/]*).h").match(f)
-    node = {"label": m['basename']+".h", "file": f, "links": []}
+    node = {"label": m['basename']+".h", "file": f, "links": [],
+            "name": m['path'] + "/" + m['basename'] + ".h"}
     if not m['path'] in clusters:
         clusters[m['path']] = []
-    clusters[m['path']] += [f]
+    clusters[m['path']] += [node['name']]
 
     for l in open(f, encoding="utf-8"):
-        mm = re.compile("\\#include \\<(?P<link>vb/.*\\.h)\\>$").match(l)
+        mm = re.compile("\\#include \\<(?P<link>.*)\\>$").match(l)
         if mm:
-            node["links"] += ["include/" + mm['link']]
+            node["links"] += [mm['link']]
 
-    nodes[f] = node
+    nodes[node['name']] = node
 
 print("digraph {")
 print("  rankdir = LR")
 traverse("vb")
 for k, v in nodes.items():
     for l in v["links"]:
-        print('    "%s" -> "%s"' % (v["file"], nodes[l]["file"]))
+        print('    "%s" -> "%s"' % (v["name"], l))
 print("}")
