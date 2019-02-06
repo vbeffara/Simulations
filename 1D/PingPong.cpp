@@ -1,5 +1,5 @@
-#include <vb/Hub.h>
 #include <vb/ProgressBar.h>
+#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 using std::cout;

@@ -1,6 +1,6 @@
-#include <vb/Hub.h>
 #include <vb/ProgressBar.h>
 #include <vb/data/TriMatrix.h>
+#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;

@@ -3,8 +3,8 @@
 #include <boost/algorithm/string.hpp>
 #include <sqlite_modern_cpp.h>
 #include <sys/stat.h>
-#include <vb/Hub.h>
 #include <vb/mp.h>
+#include <vb/util/Hub.h>
 #include <vector>
 
 namespace vb {

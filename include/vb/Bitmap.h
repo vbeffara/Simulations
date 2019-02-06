@@ -1,5 +1,4 @@
 #pragma once /// \file
-#include <gsl/gsl>
 #include <vb/Picture.h>
 #include <vb/data/Array.h>
 

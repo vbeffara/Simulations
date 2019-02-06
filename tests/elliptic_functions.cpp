@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vb/Elliptic.h>
-#include <vb/Hub.h>
 #include <vb/mp.h>
+#include <vb/util/Hub.h>
 
 using namespace vb;
 using namespace std;

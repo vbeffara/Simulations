@@ -1,7 +1,7 @@
 #include <iomanip>
-#include <vb/Hub.h>
 #include <vb/LinearAlgebra.h>
 #include <vb/mp.h>
+#include <vb/util/Hub.h>
 
 using namespace vb;
 using namespace std;

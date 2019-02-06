@@ -1,6 +1,6 @@
 #pragma once
 #include <chrono>
-#include <vb/Hub.h>
+#include <vb/util/Hub.h>
 
 namespace vb {
     double time();

@@ -1,5 +1,5 @@
 #include <vb/data/Pairings.h>
-#include <vb/math.h>
+#include <vb/util/math.h>
 #include <vb/util/PRNG.h>
 
 namespace vb {

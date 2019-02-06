@@ -1,5 +1,5 @@
 #pragma once
-#include <vb/math.h>
+#include <vb/util/math.h>
 #include <boost/multiprecision/mpc.hpp>
 #include <boost/multiprecision/mpfr.hpp>
 #undef Success

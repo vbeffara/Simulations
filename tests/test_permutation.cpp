@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <iomanip>
-#include <vb/Hub.h>
 #include <vb/Stream_lib.h>
+#include <vb/util/Hub.h>
 
 using namespace vb;
 using namespace std;

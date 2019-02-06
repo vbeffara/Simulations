@@ -1,5 +1,5 @@
 #pragma once
-#include <vb/math.h>
+#include <vb/util/math.h>
 
 namespace vb {
     template <typename T> class Elliptic {

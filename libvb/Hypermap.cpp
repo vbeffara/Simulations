@@ -1,5 +1,5 @@
-#include <vb/Hub.h>
 #include <vb/Hypermap.h>
+#include <vb/util/Hub.h>
 
 namespace vb {
     bool Hypermap::validate() const {
@@ -292,8 +292,8 @@ namespace vb {
     }
 
     double acpa_step(const Hypermap &M, const std::vector<double> &in, std::vector<double> *pout, std::vector<double> *per) {
-        std::vector<double> &out {*pout};
-        std::vector<double> &er {*per};
+        std::vector<double> &out{*pout};
+        std::vector<double> &er{*per};
         out       = in;
         double se = 0;
         for (unsigned i = 0; i < out.size(); ++i) {

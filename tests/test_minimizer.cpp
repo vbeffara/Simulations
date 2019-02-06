@@ -1,6 +1,6 @@
 #include <cmaes.h>
 #include <gsl/gsl>
-#include <vb/Hub.h>
+#include <vb/util/Hub.h>
 
 using namespace std;
 using namespace vb;

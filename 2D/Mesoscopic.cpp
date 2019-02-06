@@ -1,11 +1,11 @@
-#include <vb/Hub.h>
 #include <vb/Hypermap_lib.h>
 #include <vb/Toroidal.h>
+#include <vb/util/Hub.h>
 
 using namespace vb;
 using namespace std;
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     H.init("Toroidal triangulation", argc, argv, "n=4,o=0,m=4,f,g=lat_C5");
     HLib     HL;
     Toroidal G(HL.at(H['g']));

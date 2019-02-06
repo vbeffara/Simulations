@@ -1,6 +1,6 @@
-#include <vb/Hub.h>
 #include <vb/Path.h>
 #include <vb/ProgressBar.h>
+#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 using namespace std;

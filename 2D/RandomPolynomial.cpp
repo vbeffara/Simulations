@@ -1,5 +1,5 @@
 #include <vb/Coloring.h>
-#include <vb/math.h>
+#include <vb/util/math.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;

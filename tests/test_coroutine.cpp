@@ -1,13 +1,13 @@
-#include <vb/Hub.h>
 #include <vb/Stream_lib.h>
+#include <vb/util/Hub.h>
 
 using namespace std;
 using namespace vb;
 
-bool good(const Permutation & p) { return p[0] == 2; }
-int  sec(const Permutation & p) { return p[2]; }
+bool good(const Permutation &p) { return p[0] == 2; }
+int  sec(const Permutation &p) { return p[2]; }
 
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
     H.init("Testing coroutines", argc, argv, "n=5");
     auto S    = permutations(int(H['n']));
     auto SS   = filter(good, S);
