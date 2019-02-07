@@ -2,8 +2,8 @@
 
 namespace vb {
     double time() {
-        static auto                   basetime = std::chrono::system_clock::now();
-        std::chrono::duration<double> dur      = std::chrono::system_clock::now() - basetime;
+        static auto                     basetime = boost::chrono::process_real_cpu_clock::now();
+        boost::chrono::duration<double> dur      = boost::chrono::process_real_cpu_clock::now() - basetime;
         return dur.count();
     }
 } // namespace vb

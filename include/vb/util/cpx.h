@@ -1,5 +1,4 @@
 #pragma once /// @file
-#include <cmath>
 #include <complex>
 
 namespace vb {

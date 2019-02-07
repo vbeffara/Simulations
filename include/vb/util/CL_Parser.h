@@ -24,7 +24,6 @@ namespace vb {
 
         const Value &operator[](char c) const { return find(c)->second; }
 
-        std::string          title = "undefined", help = "undefined", prog = "undefined", dir = "output/", cmd = "undefined";
-        std::map<char, bool> has_arg;
+        std::string title = "undefined", help = "undefined", prog = "undefined", dir = "output/", cmd = "undefined";
     };
 } // namespace vb

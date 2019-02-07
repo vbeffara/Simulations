@@ -22,6 +22,9 @@ namespace vb {
 
     class Hub : public CL_Parser {
     public:
+        Hub(std::string t, int argc, char **argv, std::string c = "") { init(t, argc, argv, c); };
+        Hub() = default;
+
         ~Hub();
 
         void init(std::string t, int argc, char **argv, std::string c = "");

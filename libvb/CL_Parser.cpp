@@ -22,6 +22,7 @@ namespace vb {
         std::string getopt_arg("h");
         insert_or_assign('h', "0");
 
+        std::map<char, bool> has_arg;
         for (auto s : cs) {
             if (s.length() == 1) {
                 getopt_arg += s.substr(0, 1);
@@ -35,13 +36,7 @@ namespace vb {
         }
 
         char ch;
-        while ((ch = getopt(argc, argv, getopt_arg.c_str())) != -1) {
-            if (has_arg[ch]) {
-                insert_or_assign(ch, optarg);
-            } else {
-                insert_or_assign(ch, "1");
-            }
-        }
+        while ((ch = getopt(argc, argv, getopt_arg.c_str())) != -1) insert_or_assign(ch, has_arg[ch] ? optarg : "1");
 
         if (!empty()) {
             cs.clear();
