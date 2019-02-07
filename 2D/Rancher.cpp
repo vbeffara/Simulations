@@ -38,8 +38,12 @@ public:
     std::vector<point>         traj;
     std::list<point>           env;
     std::list<point>::iterator cur;
+    vb::Hub                    H;
     vb::Figure                 F;
     vb::Pen                    P;
+    vb::Console                W;
+
+    Rancher(int argc, char **argv) : H("Rancher process", argc, argv, "p=.1,n=1000,i=1,o,r"), F(H), W(H) {}
 
     point rand_point() {
         point p = *cur, pp = *boost::prior(cur), ppp = *boost::next(cur);
@@ -109,17 +113,15 @@ public:
         return sqrt(norm(p1.z - p2.z));
     }
 
-    void main(int argc, char **argv) {
-        vb::H.init("Rancher process", argc, argv, "p=.1,n=1000,i=1,o,r");
-        double pente = vb::H['p'];
-        int    nb    = vb::H['n'];
-        int    inter = vb::H['i'];
-        bool   plot  = vb::H['o'];
-        bool   renew = vb::H['r'];
+    void main() {
+        double pente = H['p'];
+        int    nb    = H['n'];
+        int    inter = H['i'];
+        bool   plot  = H['o'];
+        bool   renew = H['r'];
 
         int i = 0;
 
-        vb::Console W;
         W.watch(i, "Path length");
         W.lambda<int>([this] { return env.size(); }, "Envelope size");
         W.lambda<double>([this] { return env_width(); }, "Envelope width");
@@ -160,7 +162,7 @@ public:
             F.add(std::make_unique<vb::Path>(path));
             F.show();
             F.pause();
-            F.output_pdf("Rancher");
+            F.output_pdf(H, "Rancher");
         }
 
         if (renew) {
@@ -176,7 +178,4 @@ public:
     }
 };
 
-int main(int argc, char **argv) {
-    Rancher().main(argc, argv);
-    return 0;
-}
+int main(int argc, char **argv) { Rancher(argc, argv).main(); }

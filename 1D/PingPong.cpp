@@ -5,11 +5,11 @@
 using std::cout;
 using std::endl;
 using std::max;
-using vb::H;
+using vb::Hub;
 using vb::prng;
 
 int main(int argc, char **argv) {
-    H.init("PingPong process", argc, argv, "n=1000,a=1,b=.5,f");
+    Hub    H("PingPong process", argc, argv, "n=1000,a=1,b=.5,f");
     int    n = H['n'];
     double a = H['a'], b = H['b'];
     bool   fast = H['f'];

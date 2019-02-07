@@ -8,14 +8,14 @@
 using namespace vb;
 
 int main(int argc, char **argv) {
-    H.init("Aggregation of exclusion walkers", argc, argv, "n=250,p=.5,g,a=1.0,t=0.0,s");
+    Hub    H("Aggregation of exclusion walkers", argc, argv, "n=250,p=.5,g,a=1.0,t=0.0,s");
     int    n = H['n']; // Half of board size
     double p = H['p']; // Initial particle density
     bool   g = H['g']; // Dynamic discovery of environment (ghosts)
     double t = H['t']; // Snapshot interval for movies
     double a = H['a']; // Contagion probability
 
-    Image img(2 * n, 2 * n);
+    Image img(H, 2 * n, 2 * n);
 
     for (auto z : coo_range(img.size))
         if (g)
@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
             img.put(z, prng.bernoulli(p) ? ALIVE : EMPTY);
     img.put({n, n}, DEAD);
     img.show();
-    if (t > 0) img.snapshot_setup("MDLA", t);
+    if (t > 0) img.snapshot_setup(H, "MDLA", t);
 
     while (true) {
         coo z = prng.uniform_coo(img.size), nz = z + dz[prng() % 4];

@@ -12,7 +12,7 @@ namespace vb {
 
 class Nematic : public vb::Bitmap<int> {
 public:
-    Nematic(int n_, int m_, int k_, double b_) : Bitmap<int>(n_, m_), k(k_), b(b_), P(std::max(n_, m_), 0){};
+    Nematic(const Hub &H, int n_, int m_, int k_, double b_) : Bitmap<int>(H, n_, m_), k(k_), b(b_), P(std::max(n_, m_), 0){};
 
     void prec() {
         ok = std::min(k, std::min(w(), h()));
@@ -74,14 +74,14 @@ public:
         step();
     }
 
-    void go() {
-        Console C;
+    void go(const Hub &H) {
+        Console C(H);
         C.watch(order, "order");
         C.manage(b, -5.0, 10.0, "beta");
         C.manage(k, 1, 100, "k");
         show();
         C.show();
-        if (H['v']) snapshot_setup("movie", 10);
+        if (H['v']) snapshot_setup(H, "movie", 10);
         for (int t = int(H['t']) - 1; t != 0; --t) {
             if ((k != ok) || (b != ob)) prec();
             for (int i = 0; i < h(); ++i) redo({0, i}, 1);
@@ -103,6 +103,6 @@ public:
 };
 
 int main(int argc, char **argv) {
-    H.init("Nematic system on the square lattice", argc, argv, "n=500,m=0,k=7,b=2,v,l,t=0");
-    Nematic(H['n'], int(H['m']) != 0 ? H['m'] : H['n'], H['k'], H['b']).go();
+    Hub H("Nematic system on the square lattice", argc, argv, "n=500,m=0,k=7,b=2,v,l,t=0");
+    Nematic(H, H['n'], int(H['m']) != 0 ? H['m'] : H['n'], H['k'], H['b']).go(H);
 }

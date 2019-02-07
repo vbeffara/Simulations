@@ -7,7 +7,7 @@ double cost() { return prng.exponential(); }
 
 class FPP : public CoarseImage {
 public:
-    explicit FPP(int n) : CoarseImage(n, n, int(pow(n, .33))), area(0) {
+    FPP(const Hub &H, int n) : CoarseImage(H, n, n, int(pow(n, .33))), area(0) {
         invasion = H['i'];
         twostep  = H['2'];
         trace    = H['t'];
@@ -57,9 +57,9 @@ public:
 };
 
 int main(int argc, char **argv) {
-    H.init("First-passage percolation", argc, argv, "n=5000,i,2,t");
-    FPP F(H['n']);
+    Hub H("First-passage percolation", argc, argv, "n=5000,i,2,t");
+    FPP F(H, H['n']);
     F.show();
     F.run();
-    F.output();
+    F.output(H);
 }

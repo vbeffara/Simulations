@@ -135,8 +135,8 @@ struct Tiling {
         }
     }
 
-    void output_pdf(const string &name, int off = 0) const {
-        Figure F;
+    void output_pdf(const Hub &H, const string &name, int off = 0) const {
+        Figure F{H};
         int    ddx[4] = {0, 2, 0, 2}, ddy[4] = {0, -2, -4, -6};
         int    offx = gsl::at(ddx, off % 4), offy = gsl::at(ddy, off % 4);
         for (auto z : coo_range(state.size))
@@ -152,7 +152,7 @@ struct Tiling {
                 F.add(make_unique<Segment>(s(z * 2 - edge), s(z * 2 + edge), Pen(Grey(uint8_t(255 * gr)), 130.0 / state.size.x)));
             }
         if (H['v']) F.show();
-        F.output(name);
+        F.output(H, name);
     }
 
     auto height() const {
@@ -178,13 +178,13 @@ struct Tiling {
         for (int i = 0; i < n; ++i) {
             delslide();
             create(pbs[i]);
-            if (H['v']) output_pdf("snapshots/" + fmt::format("snapshot_{:04d}", i), n - i - 1);
+            if (H['v']) output_pdf(H, "snapshots/" + fmt::format("snapshot_{:04d}", i), n - i - 1);
         }
     }
 
-    void run() {
+    void run(const Hub &H) {
         aztecgen();
-        output_pdf(name);
+        output_pdf(H, name);
 
         auto     H1 = height();
         ofstream dat(H.dir + name + ".dat");
@@ -194,7 +194,8 @@ struct Tiling {
         }
     }
 
-    Tiling(Array<double> TP_, int m) : TP(move(TP_)), m(m), per(lcm(TP.size.x, TP.size.y)), n(m * per / 2) {
+    Tiling(const Hub &H, Array<double> TP_, int m)
+        : H(H), name(H.title), TP(move(TP_)), m(m), per(lcm(TP.size.x, TP.size.y)), n(m * per / 2) {
         probs();
         for (auto z : coo_range(TP.size)) {
             if (TP[z] == 0) continue;
@@ -207,7 +208,8 @@ struct Tiling {
         }
     }
 
-    string                name = H.title;
+    const Hub &           H;
+    string                name;
     const Array<double>   TP;
     int                   m, per, n;
     double                pmin{1.0}, pmax{0.0}, a{0.0}, b{0.0};
@@ -216,7 +218,7 @@ struct Tiling {
 };
 
 int main(int argc, char **argv) {
-    H.init("Domino shuffle", argc, argv, "m=50,a=1,b=.5,c=.3,s=0,r=0,w=two,v");
+    Hub H("Domino shuffle", argc, argv, "m=50,a=1,b=.5,c=.3,s=0,r=0,w=two,v");
     if (int seed = H['s']; seed != 0) prng.seed(seed);
 
     std::map<string, function<Array<double>()>> TPs;
@@ -225,5 +227,5 @@ int main(int argc, char **argv) {
     TPs["three"]  = [&] { return threeperiodic(H['a'], H['b'], H['c']); };
     TPs["kenyon"] = [&] { return threebytwo(H['b']); };
 
-    Tiling{TPs[H['w']](), H['m']}.run();
+    Tiling{H, TPs[H['w']](), H['m']}.run(H);
 }

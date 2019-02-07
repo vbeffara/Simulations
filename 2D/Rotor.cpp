@@ -6,11 +6,11 @@ using namespace vb;
 const Color            CC[] = {RED, GREEN, BLUE, YELLOW};
 gsl::span<const Color> C{CC};
 
-int main(int argc, char ** argv) {
-    H.init("Rotor-Router Model", argc, argv, "n=500");
+int main(int argc, char **argv) {
+    Hub H("Rotor-Router Model", argc, argv, "n=500");
     int n = H['n'];
 
-    Image img(n, n);
+    Image img(H, n, n);
     img.show();
 
     coo z{n / 2, n / 2};
@@ -27,5 +27,5 @@ int main(int argc, char ** argv) {
                 }
     }
 
-    img.output_png();
+    img.output_png(H);
 }

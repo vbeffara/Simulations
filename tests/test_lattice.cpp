@@ -17,7 +17,8 @@ Lattice G() {
     return G;
 }
 
-int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv) {
+int main(int argc, char **argv) {
+    Hub     H("Testing Lattice", argc, argv);
     Lattice L = SV();
     L.relax(1e-14);
     L.tau = L.tau_rw();
@@ -26,7 +27,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv) {
 
     Pen p(Color(255, 0, 0), 1, Color(255, 255, 0));
 
-    Figure F;
+    Figure F{H};
 
     vector<cpx> fd;
     fd.push_back(L({1, 1}));
@@ -47,6 +48,5 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv) {
 
     F.show();
     F.pause();
-    F.output_pdf();
-    return 0;
+    F.output_pdf(H);
 }

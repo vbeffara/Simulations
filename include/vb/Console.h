@@ -32,7 +32,8 @@ namespace vb {
             std::function<T()> f;
         };
 
-        Console() : AutoWindow(500, 0) { label("Console"); }
+        // TODO: remove Hub ref here
+        Console(const Hub &H) : AutoWindow(H, 500, 0) { label("Console"); }
 
         void add(Fl_Widget *S) {
             size(w(), h() + S->h());

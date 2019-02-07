@@ -8,7 +8,7 @@ using namespace vb;
 using namespace std;
 
 int main(int argc, char **argv) {
-    H.init("Hypermap of genus 1", argc, argv, "m=228,v,w,q,n=0,g=lat_csquare,p,f=0,s=0,a,b,r=0");
+    Hub H("Hypermap of genus 1", argc, argv, "m=228,v,w,q,n=0,g=lat_csquare,p,f=0,s=0,a,b,r=0");
 
     auto M = HLib().at(H['g']);
     int  n = H['n'];
@@ -22,14 +22,14 @@ int main(int argc, char **argv) {
     }
 
     cout << M << endl;
-    Constellation1<double> C{M};
+    Constellation1<double> C{H, M};
     C.findn();
 
     if (!H['q']) { cout << endl << C; }
     if (H['v']) {
         // Image I (800,800); I.show(); C.draw(I,H['a'],H['b']); I.pause(); I.hide();
         auto     bd = C.bounds();
-        Coloring CC(bd.first, bd.second, 800, [&](cpx z) { return HSV((imag(C(z)) > 0) ? 0 : .5, .8, .8); });
+        Coloring CC(H, bd.first, bd.second, 800, [&](cpx z) { return HSV((imag(C(z)) > 0) ? 0 : .5, .8, .8); });
         CC.scale(1.5);
         CC.show();
         while (CC.visible()) {

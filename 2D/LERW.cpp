@@ -9,7 +9,7 @@ namespace vb {
 
 class LERW : private Bitmap<int> {
 public:
-    explicit LERW(const Hub & H) : Bitmap<int>(2 * int(H['n']), 2 * int(H['n'])) {
+    explicit LERW(const Hub &H) : Bitmap<int>(H, 2 * int(H['n']), 2 * int(H['n'])) {
         coo z{w() / 2, h() / 2};
         while (contains(z)) {
             int d = prng() & 3u;
@@ -19,7 +19,7 @@ public:
     }
 
     using Bitmap<int>::output;
-    void output(const std::string & s) override {
+    void output(const Hub &H, const std::string &s) override {
         OldPath P(0);
         coo     z{w() / 2, h() / 2};
         while (contains(z)) {
@@ -27,11 +27,11 @@ public:
             P.push_back(d);
             z += dz[d];
         }
-        P.output(s);
+        P.output(H, s);
     }
 };
 
-int main(int argc, char ** argv) {
-    H.init("Loop-erased random walk", argc, argv, "n=500");
-    LERW(H).output();
+int main(int argc, char **argv) {
+    Hub H("Loop-erased random walk", argc, argv, "n=500");
+    LERW(H).output(H);
 }

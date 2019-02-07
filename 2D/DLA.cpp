@@ -8,8 +8,8 @@ using namespace std;
 class DLA : public CoarseImage {
 public:
     explicit DLA(const Hub &H)
-        : CoarseImage(H['n'], H['n'], int(pow(double(H['n']), .33))), n(H['n']), c(H['c']), r(1),
-          QT({-n / 2, -n / 2}, {n / 2, n / 2}, H['l']), prec(int(H['p'])), img(512, 512) {
+        : CoarseImage(H, H['n'], H['n'], int(pow(double(H['n']), .33))), n(H['n']), c(H['c']), r(1), W(H),
+          QT({-n / 2, -n / 2}, {n / 2, n / 2}, H['l']), prec(int(H['p'])), img(H, 512, 512) {
         z0 = {n / 2, n / 2};
         W.watch(QT.n, "Nb of particles");
         W.watch(r, "Cluster radius");
@@ -128,12 +128,12 @@ public:
 };
 
 int main(int argc, char **argv) {
-    H.init("Lattice DLA", argc, argv, "n=2000,p=64,c=50,l=30,f,s=0");
+    Hub H("Lattice DLA", argc, argv, "n=2000,p=64,c=50,l=30,f,s=0");
     if (auto s = int(H['s'])) prng.seed(s);
     DLA dla(H);
     dla.show();
     dla.runDLA();
-    dla.output();
+    dla.output(H);
     if (H['f']) dla.output_fine("dla.png");
     H.L->info("Final cluster: {} particles, diameter = {}", dla.QT.n, dla.r);
 }

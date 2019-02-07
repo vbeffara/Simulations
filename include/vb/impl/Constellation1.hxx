@@ -1,18 +1,18 @@
 #pragma once
+#include <iomanip>
 #include <vb/Constellation1.h>
 #include <vb/Toroidal.h>
-#include <iomanip>
 
 namespace vb {
-    template <typename T> Constellation1<T>::Constellation1(const Hypermap &M) {
+    template <typename T> Constellation1<T>::Constellation1(const Hub &H, const Hypermap &M) {
         Hypermap M2(M);
         M2.dessin();
         p = {I_<T>(), T(0)};
         do {
             M2.split_edges();
-            Toroidal S(M2);
+            Toroidal S(H, M2);
             S.pack();
-            S.output_pdf();
+            S.output_pdf(H);
             int N = M.sigma.size();
             b.clear();
             for (auto c : M.sigma.cycles()) {
@@ -41,7 +41,7 @@ namespace vb {
     }
 
     template <typename T> void Constellation1<T>::from_points() {
-        E = Elliptic<T> {q_<T>(p[0])};
+        E = Elliptic<T>{q_<T>(p[0])};
         cplx szp(0);
         for (auto zd : b) szp += T(zd.d) * zd.z;
         for (auto zd : f) szp -= T(zd.d) * zd.z;

@@ -2,13 +2,13 @@
 
 using namespace vb;
 
-int main(int argc, char ** argv) {
-    H.init("Discrete-time contact process on the hexagonal lattice", argc, argv, "p=.44,n=400");
+int main(int argc, char **argv) {
+    Hub H("Discrete-time contact process on the hexagonal lattice", argc, argv, "p=.44,n=400");
 
     double p = H['p'];
     int    n = H['n'];
 
-    Image img(n, n);
+    Image img(H, n, n);
 
     for (int x = 0; x < n; ++x)
         for (int y = 0; y < n / 2; ++y) img.put({x, y}, WHITE);

@@ -7,7 +7,7 @@ public:
     bool                k;
     double              beta;
     std::vector<double> glaub, kaw;
-    Ising3(int n, bool k_, double b_) : Cube({n, n, n}), b(0), k(k_), beta(b_) {
+    Ising3(const vb::Hub &H, int n, bool k_, double b_) : Cube(H, {n, n, n}), b(0), k(k_), beta(b_) {
         for (int k = 0; k <= 6; ++k) glaub.push_back(exp(k * beta) / (exp(k * beta) + exp((6 - k) * beta)));
         for (int k = 0; k <= 12; ++k) kaw.push_back(1 / (1 + exp(2 * beta * (k - 6))));
     };
@@ -42,11 +42,11 @@ public:
 
 class BCs : public std::map<std::string, std::function<void(Ising3 &)>> {
 public:
-    BCs() {
-        emplace("bernoulli", [](Ising3 &I) {
+    BCs(const vb::Hub &H) {
+        emplace("bernoulli", [&H](Ising3 &I) {
             I.b = 0;
             for (auto c = I.begin(); c != I.end(); ++c)
-                if (vb::prng.bernoulli(vb::H['p'])) {
+                if (vb::prng.bernoulli(H['p'])) {
                     const vb::coo3 &cc = c;
                     I.put(cc, 255);
                 }
@@ -81,35 +81,35 @@ public:
                 for (int y = I.size.y / 10; y < 9 * I.size.y / 10; ++y)
                     for (int z = I.size.z / 10; z < 9 * I.size.z / 10; ++z) I.put({x, y, z}, 255);
         });
-        emplace("slope", [](Ising3 &I) {
+        emplace("slope", [&H](Ising3 &I) {
             I.b = 1;
             for (auto c = I.begin(); c != I.end(); ++c)
-                if ((c.y - I.size.y * .5) - double(vb::H['p']) * (c.z - I.size.z * .5) + double(vb::H['q']) * (c.x - I.size.x * .5) < 0)
+                if ((c.y - I.size.y * .5) - double(H['p']) * (c.z - I.size.z * .5) + double(H['q']) * (c.x - I.size.x * .5) < 0)
                     I.put(c, 255);
         });
     }
 };
 
 int main(int argc, char **argv) {
-    vb::H.init("3D Ising model", argc, argv, "n=50,b=1,t=0,p=.5,q=0,k,c=bernoulli,s=0,m,i,r=0");
-    if (int r = vb::H['r']) vb::prng.seed(r);
-    Ising3 C(vb::H['n'], vb::H['k'], vb::H['b']);
-    BCs()[vb::H['c']](C);
+    vb::Hub H("3D Ising model", argc, argv, "n=50,b=1,t=0,p=.5,q=0,k,c=bernoulli,s=0,m,i,r=0");
+    if (int r = H['r']) vb::prng.seed(r);
+    Ising3 C(H, H['n'], H['k'], H['b']);
+    BCs{H}[H['c']](C);
     C.show();
-    int T = vb::H['t'];
-    if (T == 0) T = 2 * int(vb::H['n']);
+    int T = H['t'];
+    if (T == 0) T = 2 * int(H['n']);
     {
         vb::ProgressBar P(T);
-        int             s = vb::H['s'];
+        int             s = H['s'];
         for (int t = 0; t < T; ++t) {
-            if ((s > 0) && (t % (T / s)) == 0) C.output_pov(fmt::format("snapshots/snapshot_{:04d}", t / (T / s)));
+            if ((s > 0) && (t % (T / s)) == 0) C.output_pov(H, fmt::format("snapshots/snapshot_{:04d}", t / (T / s)));
             C.swipe();
             P.set(t);
         }
     }
-    if (vb::H['m']) C.mirrors = false;
-    if (vb::H['i'])
+    if (H['m']) C.mirrors = false;
+    if (H['i'])
         for (auto c = C.begin(); c != C.end(); ++c) C.put(c, (c.y > C.size.y / 2) ? C.at(c) / 2 : C.at(c));
 
-    C.output_pov();
+    C.output_pov(H);
 }

@@ -1,16 +1,16 @@
 // / data / Pairings.hE, S=2+F/2, F=2d, S=2+d
 #include <vb/Coloring.h>
 #include <vb/Constellation0.h>
-#include <vb/data/Pairings.h>
 #include <vb/ProgressBar.h>
 #include <vb/Stream_lib.h>
+#include <vb/data/Pairings.h>
 
 using namespace vb;
 using namespace std;
 
 Stream<Hypermap> triangulations(unsigned n) {
     Cycles phic;
-    for (unsigned i = 0; i < n / 3; ++i) phic.emplace_back(std::vector<unsigned> {i, i + n / 3, i + 2 * n / 3});
+    for (unsigned i = 0; i < n / 3; ++i) phic.emplace_back(std::vector<unsigned>{i, i + n / 3, i + 2 * n / 3});
     Permutation phi(phic);
     unsigned    np = n / 6;
     vector<int> a(n / 2 - np, 2);
@@ -43,7 +43,7 @@ Stream<Hypermap> triangulations(unsigned n) {
 }
 
 int main(int argc, char **argv) {
-    H.init("Spheroidal enumeration", argc, argv, "s=3,m=228,d=2,g=0,v,o,b,q");
+    Hub      H("Spheroidal enumeration", argc, argv, "s=3,m=228,d=2,g=0,v,o,b,q");
     int      s = H['s'], g = 0, a = 6 * (s - 2);
     unsigned d = H['d'];
     assert(a > 0);
@@ -60,16 +60,16 @@ int main(int argc, char **argv) {
 
         if (H['v'] || H['o'] || H['b'] || H['q']) {
             H.title = fmt::format("Spheroidal enumeration (s={}, d={}, i={})", s, d, nb);
-            Constellation0<double> C {M};
+            Constellation0<double> C{H, M};
             C.belyi();
             if (H['b']) cout << endl << C << endl;
             if (H['v'] || H['o']) {
                 auto     bd = C.bounds();
-                Coloring CC(bd.first, bd.second, 800, [&](cpx z) { return Indexed((imag(C(z)) > 0) ? 1 : 2); });
+                Coloring CC(H, bd.first, bd.second, 800, [&](cpx z) { return Indexed((imag(C(z)) > 0) ? 1 : 2); });
                 CC.scale(1.5);
                 CC.show();
                 if (H['o'])
-                    CC.output();
+                    CC.output(H);
                 else {
                     while (CC.visible()) {
                         CC.update();

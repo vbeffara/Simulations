@@ -3,14 +3,14 @@
 using namespace vb;
 using namespace std;
 
-int main(int argc, char ** argv) {
-    H.init("Divide-and-color model", argc, argv, "n=300,p=.3,q=.4");
+int main(int argc, char **argv) {
+    Hub    H("Divide-and-color model", argc, argv, "n=300,p=.3,q=.4");
     int    n = H['n'];
     double p = H['p'], q = H['q'];
 
     // Connectivity (&1 -> to the right, &2 -> downwards)
     vector<uint8_t> connect(n * n);
-    for (auto & c : connect) c = (prng.bernoulli(p) ? 1 : 0) + (prng.bernoulli(p) ? 2 : 0);
+    for (auto &c : connect) c = (prng.bernoulli(p) ? 1 : 0) + (prng.bernoulli(p) ? 2 : 0);
 
     H.L->info("Computing connected components ...");
 
@@ -45,9 +45,9 @@ int main(int argc, char ** argv) {
     H.L->info(" ... Done.");
 
     vector<uint8_t> color(n * n);
-    for (auto & c : color) c = (prng.bernoulli(q) ? 255 : 0);
+    for (auto &c : color) c = (prng.bernoulli(q) ? 255 : 0);
 
-    Image img(n, n);
+    Image img(H, n, n);
 
     for (int64_t x = 0; x < n; ++x)
         for (int64_t y = 0; y < n; ++y) img.put({x, y}, Grey(color[cluster[x + n * y]]));

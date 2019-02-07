@@ -25,7 +25,7 @@ vb::cpx spherical_harmonic(int n, int m, double theta, double phi) { // 0<=m<=n,
 
 class Wave : public vb::Sphere {
 public:
-    Wave(int n, int w) : vb::Sphere(w, [this](double theta, double phi) { return f_to_c(v(theta, phi)); }), n(n) {
+    Wave(const vb::Hub &H, int n, int w) : vb::Sphere(H, w, [this](double theta, double phi) { return f_to_c(v(theta, phi)); }), n(n) {
         detail = 2.0 / n;
         for (int m = 0; m <= n; ++m) {
             vb::cpx am{vb::prng.gaussian(), vb::prng.gaussian()};
@@ -47,8 +47,8 @@ public:
 
 class Bargman : public vb::Sphere {
 public:
-    Bargman(int n, int w)
-        : vb::Sphere(w, [this](double x, double y, double z) { return f_to_c(v(x, y, z)); }), a(n + 1), b(n + 1), c(n + 1), sqsq(n + 1),
+    Bargman(const vb::Hub &H, int n, int w)
+        : vb::Sphere(H, w, [this](double x, double y, double z) { return f_to_c(v(x, y, z)); }), a(n + 1), b(n + 1), c(n + 1), sqsq(n + 1),
           n(n) {
         for (int i = 0; i <= n; ++i) {
             for (int j = 0; j <= n - i; ++j) { a[i].push_back(vb::prng.gaussian()); }
@@ -65,7 +65,7 @@ public:
         for (int i = 0; i <= n; ++i) {
             for (int j = 0; j <= n; ++j) { sqsq[i].push_back(sqrt(i) / sqrt(j)); }
         }
-        eps *= double(vb::H['e']);
+        eps *= double(H['e']);
     }
 
     double vv(const std::vector<std::vector<double>> &a, double x, double y, double z) {
@@ -122,27 +122,27 @@ public:
 };
 
 int main(int argc, char **argv) {
-    vb::H.init("Random wave on the sphere", argc, argv, "n=50,p,s=0,t=wave,w=800,e=.001");
-    int s = vb::H['s'];
+    vb::Hub H("Random wave on the sphere", argc, argv, "n=50,p,s=0,t=wave,w=800,e=.001");
+    int     s = H['s'];
     if (s != 0) { vb::prng.seed(s); }
-    if (vb::H['t'] == "wave") {
-        Wave F(vb::H['n'], vb::H['w']);
+    if (H['t'] == "wave") {
+        Wave F(H, H['n'], H['w']);
         F.show();
-        if (vb::H['p']) {
+        if (H['p']) {
             F.pause();
         } else {
-            F.output();
+            F.output(H);
         }
-    } else if (vb::H['t'] == "barg") {
-        Bargman F(vb::H['n'], vb::H['w']);
+    } else if (H['t'] == "barg") {
+        Bargman F(H, H['n'], H['w']);
         F.show();
-        if (vb::H['p']) {
+        if (H['p']) {
             F.pause();
         } else {
-            F.output();
+            F.output(H);
         }
     } else {
-        vb::H.L->error("Type should be 'wave' or 'barg', exiting...");
+        H.L->error("Type should be 'wave' or 'barg', exiting...");
         exit(1);
     }
 }

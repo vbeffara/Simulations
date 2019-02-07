@@ -7,7 +7,7 @@ using namespace std;
 using namespace vb;
 
 int main(int argc, char **argv) {
-    H.init("Self-avoiding walk", argc, argv, "n=500,t=5000");
+    Hub H("Self-avoiding walk", argc, argv, "n=500,t=5000");
     int n = H['n'];
     int t = H['t'];
 
@@ -26,6 +26,5 @@ int main(int argc, char **argv) {
             P[j] = l;
     }
 
-    P.output();
-    return 0;
+    P.output(H);
 }

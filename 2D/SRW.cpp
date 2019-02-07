@@ -3,15 +3,15 @@
 #include <vb/util/coo.h>
 
 int main(int argc, char **argv) {
-    vb::H.init("Simple random walk", argc, argv, "a=15,o=1");
-    unsigned adj = vb::H['a'];
+    vb::Hub  H("Simple random walk", argc, argv, "a=15,o=1");
+    unsigned adj = H['a'];
 
     auto                  C    = std::make_unique<vb::Circle>(0, .5);
     vb::cpx &             z    = C->z;
     auto                  P    = std::make_unique<vb::Path>(std::vector<vb::cpx>{0});
     std::vector<vb::cpx> &path = P->z;
-    vb::Figure            f;
-    f.ortho = vb::H['o'];
+    vb::Figure            f{H};
+    f.ortho = H['o'];
     f.add(std::move(C));
     f.add(std::move(P));
     f.margin = 1;

@@ -26,4 +26,31 @@ namespace vb {
 
         std::string title = "undefined", help = "undefined", prog = "undefined", dir = "output/", cmd = "undefined";
     };
+
+#ifdef UNIT_TESTS
+    TEST_CASE("vb::Value") {
+        Value v1("1"), v2("3.4");
+        CHECK(bool(v1));
+        CHECK(int(v1) == 1);
+        CHECK(int64_t(v1) == 1);
+        CHECK(double(v2) == 3.4);
+
+        v1 = "45";
+        CHECK(int(v1) == 45);
+    }
+
+    TEST_CASE("vb::CL_Parser") {
+        std::vector<std::string> argv_{"cmd", "-s", "3", "-u"};
+        std::vector<char *>      argv;
+        argv.reserve(argv_.size());
+        for (auto &s : argv_) argv.push_back(&s[0]);
+
+        CL_Parser CLP;
+        CLP.init("Title", 4, argv.data(), "s=5,t=7,u,v");
+        CHECK(int(CLP['t']) == 7);
+        CHECK(int(CLP['s']) == 3);
+        CHECK(CLP['u']);
+        CHECK(!CLP['v']);
+    }
+#endif
 } // namespace vb

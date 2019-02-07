@@ -1,11 +1,11 @@
 #pragma once
+#include <iomanip>
 #include <vb/Constellation0.h>
 #include <vb/NumberTheory.h>
 #include <vb/Spheroidal.h>
-#include <iomanip>
 
 namespace vb {
-    template <typename T> Constellation0<T>::Constellation0(const Hypermap &M) {
+    template <typename T> Constellation0<T>::Constellation0(const Hub &H, const Hypermap &M) {
         Hypermap M2(M);
         M2.dessin();
         p = {T(1)};
@@ -13,7 +13,7 @@ namespace vb {
         M3.normalize();
         while (true) {
             M2.split_edges();
-            Spheroidal S(M2);
+            Spheroidal S(H, M2);
             S.pack();
             int N = M.sigma.size(), inf = 0, dinf = 0;
             for (auto c : M.phi.cycles()) {
@@ -105,7 +105,7 @@ namespace vb {
     template <typename T> void Constellation0<T>::make_p_1() {
         T eps = real(pow(cost(), T(.5)));
         if (eps > T(.1)) eps = T(.1);
-        Polynomial<cplx> P {1}, Q {1};
+        Polynomial<cplx> P{1}, Q{1};
         for (auto zd : b) add_root(P, zd.z, zd.d);
         for (auto zd : f) add_root(Q, zd.z, zd.d);
         unsigned i = 0, j = 0;
@@ -226,7 +226,7 @@ namespace vb {
         for (const auto &u : C.f) os << "| " << u.d << "\t" << u.z << "\n";
         os << "\n";
         os << u8"λ     := " << C.p[0] << "\n";
-        Polynomial<typename cpx_t<T>::type> P {1}, Q {1};
+        Polynomial<typename cpx_t<T>::type> P{1}, Q{1};
         for (auto zd : C.b) add_root(P, zd.z, zd.d);
         for (auto zd : C.f) add_root(Q, zd.z, zd.d);
         os << "P[z_] := " << format(P) << "\n";
@@ -271,7 +271,7 @@ namespace vb {
         os << "\n";
         os << u8"λ     := " << C.p[0] << "\n";
         if (auto L = guess(C.p[0], nd)) os << u8"Λ[z_] := " << format(*L) << "\n";
-        Polynomial<complex_t> P {1}, Q {1};
+        Polynomial<complex_t> P{1}, Q{1};
         for (auto zd : C.b) add_root(P, zd.z, zd.d);
         for (auto zd : C.f) add_root(Q, zd.z, zd.d);
         for (auto &x : P.data()) {
@@ -388,7 +388,7 @@ namespace vb {
                             }
                         }
                         if (h < 0) return std::nullopt;
-                        pairs.emplace_back(std::vector<unsigned> {halfedges[i][j], halfedges[k][h]});
+                        pairs.emplace_back(std::vector<unsigned>{halfedges[i][j], halfedges[k][h]});
                         looking = false;
                     }
                     for (unsigned k = 0; k < Z.size(); ++k)
@@ -404,7 +404,7 @@ namespace vb {
                             }
                             if (h < 0) return std::nullopt;
                             if (halfedges[i][j] < halfedges[k][h])
-                                pairs.emplace_back(std::vector<unsigned> {halfedges[i][j], halfedges[k][h]});
+                                pairs.emplace_back(std::vector<unsigned>{halfedges[i][j], halfedges[k][h]});
                             looking = false;
                         }
                     if (sl * imag((*this)(nz)) > 0)

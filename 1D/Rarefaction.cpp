@@ -1,10 +1,10 @@
 #include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
-using vb::H;
+using vb::Hub;
 
 int main(int argc, char **argv) {
-    H.init("Rarefaction fan", argc, argv, "n=20");
+    Hub H("Rarefaction fan", argc, argv, "n=20");
     int n = H['n'];
 
     std::vector<int> field(2 * n);

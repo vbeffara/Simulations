@@ -22,7 +22,7 @@ public:
     int    c;
     double p, q;
 
-    explicit World(const vb::Hub & H) : Bitmap<uint8_t>(H['n'], H['n']), c(H['c']), p(H['p']), q(H['q']) {
+    explicit World(const vb::Hub &H) : Bitmap<uint8_t>(H, H['n'], H['n']), c(H['c']), p(H['p']), q(H['q']) {
         int mid = (w() + h()) / 2;
         for (int x = 0; x < w(); ++x) {
             for (int y = 0; y < h(); ++y) {
@@ -66,9 +66,9 @@ public:
     }
 };
 
-int main(int argc, char ** argv) {
-    vb::H.init("The Swiss Journalist", argc, argv, "n=600,c=0,p=.8,q=.35");
-    World w(vb::H);
+int main(int argc, char **argv) {
+    vb::Hub H("The Swiss Journalist", argc, argv, "n=600,c=0,p=.8,q=.35");
+    World   w(H);
     w.show();
     w.run();
 }

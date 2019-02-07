@@ -19,7 +19,7 @@ public:
 class QG : public Image {
 public:
     explicit QG(const Hub &H)
-        : Image(1u << unsigned(H['n']), 1u << unsigned(H['n'])), I({w(), h()}, Info({0, 0}, {0, 0}, 0, 0)), g(H['g']), n(H['n']) {
+        : Image(H, 1u << unsigned(H['n']), 1u << unsigned(H['n'])), I({w(), h()}, Info({0, 0}, {0, 0}, 0, 0)), g(H['g']), n(H['n']) {
         map<string, function<void()>> fields;
         fields["boolean"]  = [&, this] { fill_boolean(H['z']); };
         fields["dyadic"]   = [&, this] { fill_dyadic(H['z']); };
@@ -181,7 +181,7 @@ public:
 };
 
 int main(int argc, char **argv) {
-    H.init("Random 2D geometry", argc, argv, "w=free,n=9,z=0,g=1,s=0,b,i,q,c,l=10,a=1");
+    Hub H("Random 2D geometry", argc, argv, "w=free,n=9,z=0,g=1,s=0,b,i,q,c,l=10,a=1");
     if (int s = H['s']) prng.seed(s);
     unsigned n = H['n'], nn = 1u << n;
 
@@ -200,5 +200,5 @@ int main(int argc, char **argv) {
     }
 
     if (!H['i']) { img.pause(); }
-    img.output();
+    img.output(H);
 }

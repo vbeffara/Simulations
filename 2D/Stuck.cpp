@@ -23,7 +23,7 @@ int Stat::min = 0, Stat::max = 1;
 
 class Stuck : public Bitmap<Stat> {
 public:
-    explicit Stuck(const Hub &H) : Bitmap<Stat>(2 * int(H['n']), 2 * int(H['n'])), alpha(H['a']), beta(H['b']) {
+    explicit Stuck(const Hub &H) : Bitmap<Stat>(H, 2 * int(H['n']), 2 * int(H['n'])), alpha(H['a']), beta(H['b']), H(H), C(H) {
         for (int i = 0; i < w() / 2; ++i)
             for (int j = 0; j < h() / 2; ++j) at({2 * i, 2 * j}) = Stat{-1};
         z = {w() / 2, h() / 2};
@@ -98,15 +98,16 @@ public:
         return n;
     }
 
-    double  alpha, beta;
-    coo     z = {0, 0};
-    Console C;
+    double     alpha, beta;
+    coo        z = {0, 0};
+    const Hub &H;
+    Console    C;
 };
 
 int main(int argc, char **argv) {
-    H.init("Stuck walk on the square lattice", argc, argv, "n=200,a=.1432,b=5,v=0,c,o");
+    Hub   H("Stuck walk on the square lattice", argc, argv, "n=200,a=.1432,b=5,v=0,c,o");
     Stuck S(H);
     S.show();
-    if (double(H['v']) > 0) S.snapshot_setup("Stuck", H['v']);
+    if (double(H['v']) > 0) S.snapshot_setup(H, "Stuck", H['v']);
     S.run();
 }

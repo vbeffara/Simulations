@@ -5,8 +5,8 @@
 #include <vb/Picture.h>
 
 namespace vb {
-    Picture::Picture(int wd, int ht)
-        : AutoWindow(wd, ht), snapshot_prefix(H.title), snapshot_number(0), snapshot_period(0.0), snapshot_task(-1) {}
+    Picture::Picture(const Hub &H, int wd, int ht)
+        : AutoWindow(H, wd, ht), snapshot_prefix(H.title), snapshot_number(0), snapshot_period(0.0), snapshot_task(-1) {}
 
     Picture::~Picture() {
         if (snapshot_task >= 0) remove_task(snapshot_task);
@@ -35,32 +35,35 @@ namespace vb {
         glDrawPixels(pixel_w(), pixel_h(), GL_BGRA, GL_UNSIGNED_BYTE, sd);
     }
 
-    void Picture::output_png(const std::string &s) {
+    // TODO: remove Hub here
+    void Picture::output_png(const Hub &H, const std::string &s) {
         paint();
         std::string os = H.dir + (s.empty() ? H.title : s) + ".png";
         cairo_surface_write_to_png(surface, os.c_str());
     }
 
-    void Picture::output(const std::string &s) { output_png(s); }
+    void Picture::output(const Hub &H, const std::string &s) { output_png(H, s); }
 
-    void Picture::output() { output(""); }
+    void Picture::output(const Hub &H) { output(H, ""); }
 
-    void Picture::snapshot() {
+    // TODO: remove Hub here
+    void Picture::snapshot(const Hub &H) {
         std::string fn = fmt::format("snapshots/{}_{:04d}", snapshot_prefix, snapshot_number++);
         H.L->info("Taking a snapshot as {}.png", fn);
-        output_png(fn);
+        output_png(H, fn);
     }
 
-    void Picture::snapshot_setup(const std::string &prefix, double period) {
+    // TODO: remove Hub here
+    void Picture::snapshot_setup(const Hub &H, const std::string &prefix, double period) {
         if (snapshot_task >= 0) remove_task(snapshot_task);
         snapshot_period = period;
         snapshot_prefix = prefix;
-        snapshot();
-        if (period > 0) snapshot_task = add_task(period, [this] { this->snapshot(); });
+        snapshot(H);
+        if (period > 0) snapshot_task = add_task(period, [this, &H] { this->snapshot(H); });
     }
 
-    int Picture::handle(int event) {
-        if ((event == FL_KEYDOWN) && (Fl::event_key() == 's')) snapshot();
-        return AutoWindow::handle(event);
-    }
+    // int Picture::handle(int event) {
+    //     if ((event == FL_KEYDOWN) && (Fl::event_key() == 's')) snapshot();
+    //     return AutoWindow::handle(event);
+    // }
 } // namespace vb

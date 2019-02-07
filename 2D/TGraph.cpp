@@ -13,11 +13,11 @@ class TGraph : public Figure, Array<loc> {
 public:
     using Array::size;
 
-    TGraph(int n, cpx A, double t) : Array<loc>({n, n}), A(A), theta(t) {
+    TGraph(const Hub &H, int n, cpx A, double t) : Figure(H), Array<loc>({n, n}), A(A), theta(t) {
         compute();
         plot();
         show();
-        output();
+        output(H);
     };
 
     cpx phiwb(int mw, int nw, int mb, int nb) {
@@ -67,8 +67,8 @@ public:
         }
     }
 
-    void interact() {
-        Console C;
+    void interact(const Hub &H) {
+        Console C(H);
         C.manage(theta, 0.0, 1.0, "arg(λ) / 2π", [this] {
             compute();
             plot();
@@ -89,10 +89,10 @@ public:
 };
 
 int main(int argc, char **argv) {
-    H.init("T-graph for the triangular lattice", argc, argv, "n=20,l,x=.4,y=.6,t");
-    TGraph TG(H['n'], cpx{H['x'], H['y']}, H['t']);
+    Hub    H("T-graph for the triangular lattice", argc, argv, "n=20,l,x=.4,y=.6,t");
+    TGraph TG(H, H['n'], cpx{H['x'], H['y']}, H['t']);
     if (H['l'])
         TG.loop();
     else
-        TG.interact();
+        TG.interact(H);
 }

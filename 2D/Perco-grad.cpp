@@ -2,8 +2,8 @@
 
 using namespace vb;
 
-int main(int argc, char ** argv) {
-    H.init("Gradient percolation", argc, argv, "n=500,p=0,q=1,W=0,H=0");
+int main(int argc, char **argv) {
+    Hub    H("Gradient percolation", argc, argv, "n=500,p=0,q=1,W=0,H=0");
     int    n  = H['n'];
     int    w  = H['W'];
     int    h  = H['H'];
@@ -20,7 +20,7 @@ int main(int argc, char ** argv) {
         h = n;
     }
 
-    Image img(w, h);
+    Image img(H, w, h);
 
     for (int x = 0; x < w; ++x) {
         for (int y = 0; y < h; ++y) {
@@ -36,6 +36,6 @@ int main(int argc, char ** argv) {
     img.show();
     img.fill({0, h - 1}, Color(255, 0, 0));
     img.update();
-    img.output();
+    img.output(H);
     return 0;
 }

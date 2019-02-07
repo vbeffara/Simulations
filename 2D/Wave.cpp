@@ -2,7 +2,7 @@
 #include <vb/util/PRNG.h>
 
 using vb::cpx;
-using vb::H;
+using vb::Hub;
 using vb::prng;
 
 double f(double x) { return exp(-1 / x); }
@@ -24,7 +24,8 @@ public:
         double a, c, s, p;
     };
 
-    Wave(int n, int k, double l_, double w_, double e_) : Coloring(cpx(-n, -n), cpx(n, n), n, [&](cpx z) { return c(z); }) {
+    Wave(const vb::Hub &H, int n, int k, double l_, double w_, double e_)
+        : Coloring(H, cpx(-n, -n), cpx(n, n), n, [&](cpx z) { return c(z); }), H(H) {
         for (int i = 0; i < k; ++i) {
             double delta     = (2 * prng.uniform_real() - 1) * (1 + e_);
             double amplitude = bump(delta, e_) * prng.gaussian();
@@ -42,13 +43,14 @@ public:
     vb::Color c(cpx z) { return vb::Indexed(v(z) > 0 ? 1 : 2); }
 
     std::vector<Mode> m;
+    const vb::Hub &   H;
 };
 
 int main(int argc, char **argv) {
-    H.init("Random planar waves", argc, argv, "n=600,k=1000,l=.2,w=0,e=0,s=0,t=0");
+    Hub H("Random planar waves", argc, argv, "n=600,k=1000,l=.2,w=0,e=0,s=0,t=0");
     if (int s = H['s']) { prng.seed(s); }
-    Wave W(H['n'], H['k'], H['l'], H['w'], H['e']);
+    Wave W(H, H['n'], H['k'], H['l'], H['w'], H['e']);
     W.show();
-    W.output();
+    W.output(H);
     Fl::run();
 }

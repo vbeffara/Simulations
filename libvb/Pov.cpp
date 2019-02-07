@@ -1,5 +1,4 @@
 #include <vb/Pov.h>
-#include <vb/util/Hub.h>
 
 namespace vb {
     std::ostream &operator<<(std::ostream &os, const bunch &b) {
@@ -9,7 +8,7 @@ namespace vb {
         return os;
     }
 
-    void Pov_Scene::output_pov(const std::string &s) { std::ofstream((H.dir + s + ".pov").c_str()) << (*this); }
+    void Pov_Scene::output_pov(const Hub &H, const std::string &s) { std::ofstream((H.dir + s + ".pov").c_str()) << (*this); }
 
     std::string Box(tri a, tri b) { return fmt::format("box {{ {}, {} }}", a, b); }
     std::string Camera(tri a, tri b, double d) { return fmt::format("camera {{ location {} look_at {} angle {} }}", a, b, d); }

@@ -7,7 +7,7 @@ using namespace vb;
 using namespace libcmaes;
 
 int main(int argc, char **argv) {
-    H.init("Tests of minimization strategies", argc, argv, "d=10,s=1,l=-1,t,a=acmaes,m");
+    Hub    H("Tests of minimization strategies", argc, argv, "d=10,s=1,l=-1,t,a=acmaes,m");
     int    dim = H['d'], lambda = H['l'];
     double sigma = H['s'];
 
@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
         return grad;
     };
 
-    ProgressFunc<CMAParameters<>, CMASolutions> pf = [](const CMAParameters<> &, const CMASolutions &cmasols) {
+    ProgressFunc<CMAParameters<>, CMASolutions> pf = [&H](const CMAParameters<> &, const CMASolutions &cmasols) {
         H.L->trace("Current best : {}", cmasols.get_best_seen_candidate().get_fvalue());
         return 0;
     };

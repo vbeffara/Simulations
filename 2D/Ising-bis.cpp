@@ -10,7 +10,7 @@ namespace vb {
 
 class Ising : public Bitmap<int> {
 public:
-    Ising(int n, double beta, int con) : Bitmap<int>(n, n), con(con), p(2 * con + 1) {
+    Ising(const Hub &H, int n, double beta, int con) : Bitmap<int>(H, n, n), con(con), p(2 * con + 1) {
         for (auto z : coo_range(size)) put(z, prng.bernoulli(.5) ? 1 : -1);
         if (con == 6) {
             int m = 2 * n / 3;
@@ -31,8 +31,8 @@ public:
         }
     }
 
-    void output_pdf(const std::string &s = "") {
-        Figure      F;
+    void output_pdf(const Hub &H, const std::string &s = "") {
+        Figure      F{H};
         cpx         shift;
         vector<cpx> pattern;
         if (con == 6) {
@@ -51,7 +51,7 @@ public:
                 for (auto zz : pattern) p.push_back(cpx(i) + cpx(j) * shift + zz);
                 F.add(make_unique<Polygon>(p, Pen(BLACK, 1, c, true)));
             }
-        F.output_pdf(s);
+        F.output_pdf(H, s);
     }
 
     void explore() {
@@ -73,10 +73,10 @@ public:
 };
 
 int main(int argc, char **argv) {
-    H.init("2D Ising model", argc, argv, "n=500,b=.7,c=4");
-    Ising I(H['n'], H['b'], H['c']);
+    Hub   H("2D Ising model", argc, argv, "n=500,b=.7,c=4");
+    Ising I(H, H['n'], H['b'], H['c']);
     I.show();
     I.run();
     I.explore();
-    I.output_pdf();
+    I.output_pdf(H);
 }

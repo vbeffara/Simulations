@@ -14,7 +14,7 @@ namespace vb {
 
 class Potts : public Bitmap<int> {
 public:
-    Potts(int n, int q, double beta_) : Bitmap<int>(n, n), q(q), beta(beta_) {
+    Potts(const Hub &H, int n, int q, double beta_) : Bitmap<int>(H, n, n), q(q), beta(beta_) {
         bcs["perio"] = [] {};
         bcs["free"]  = [this] {
             b = 1;
@@ -159,7 +159,7 @@ public:
 };
 
 int main(int argc, char **argv) {
-    H.init("Potts model", argc, argv, "n=500,q=3,b=1,c=free");
-    Potts P(H['n'], H['q'], H['b']);
+    Hub   H("Potts model", argc, argv, "n=500,q=3,b=1,c=free");
+    Potts P(H, H['n'], H['q'], H['b']);
     while (true) P.up();
 }

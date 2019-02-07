@@ -90,6 +90,4 @@ namespace vb {
         if (l.size() > max_label_width) max_label_width = l.size();
         outputs.push_back({l, ls, s, out});
     }
-
-    Hub H;
 } // namespace vb

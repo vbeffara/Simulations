@@ -9,7 +9,7 @@ namespace vb {
 
 class ACP : public Bitmap<int> {
 public:
-    explicit ACP(const Hub &H) : Bitmap<int>(int(H['n']), int(H['n'])), kid(H['z']), maxage(H['m']) {
+    explicit ACP(const Hub &H) : Bitmap<int>(H, int(H['n']), int(H['n'])), kid(H['z']), maxage(H['m']) {
         put({w() / 2, h() / 2}, 1);
         P = {H['d'], H['a']};
         for (int i = 0; i < int(H['m']) - kid; ++i) P.push_back(double(H['b']) + double(H['r']) * i);
@@ -35,7 +35,7 @@ public:
 };
 
 int main(int argc, char **argv) {
-    H.init("Contact process with aging", argc, argv, "n=400,d=.01,a=.1,z=0,m=5,b=.2,r=.1");
+    Hub H("Contact process with aging", argc, argv, "n=400,d=.01,a=.1,z=0,m=5,b=.2,r=.1");
     ACP A(H);
     A.show();
     while (true) A.run();

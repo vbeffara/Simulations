@@ -1,13 +1,13 @@
-
 #include <vb/Console.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
 
-int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv) {
+int main(int argc, char **argv) {
+    Hub    H("Testing Console", argc, argv);
     double x = 1.1;
 
-    Console W;
+    Console W(H);
     W.watch(x, "x");
     W.show();
 

@@ -40,14 +40,14 @@ public:
 };
 
 int main(int argc, char **argv) {
-    H.init("Schramm-Loewner Evolution", argc, argv, "n=300,k=2.666666666667,r=0,a");
+    Hub H("Schramm-Loewner Evolution", argc, argv, "n=300,k=2.666666666667,r=0,a");
     int r = H['r'];
     if (r > 0) prng.seed(r);
 
     Loewner  L(H['n'], H['k']);
     double   w = L.Max[0] - L.Min[0];
-    Coloring C(cpx(-w, 0), cpx(w, 4.0 * w / 3.0), H['n'], [&L](cpx z) { return L.compute(z); });
+    Coloring C(H, cpx(-w, 0), cpx(w, 4.0 * w / 3.0), H['n'], [&L](cpx z) { return L.compute(z); });
     if (H['a']) C.aa = false;
     C.show();
-    C.output();
+    C.output(H);
 }

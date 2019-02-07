@@ -21,7 +21,7 @@ int            ntri_[] = {0, 1, 5, 46, 669};
 gsl::span<int> ntri{ntri_};
 
 int main(int argc, char **argv) {
-    H.init("Toroidal enumeration", argc, argv, "s=1,m=228,r=1,o,d=0,D=0,g=1,f,n=2,q");
+    Hub      H("Toroidal enumeration", argc, argv, "s=1,m=228,r=1,o,d=0,D=0,g=1,f,n=2,q");
     int      s = H['s'], g = H['g'], r = H['r'];
     unsigned D = H['D'], d = H['d'], a = 6 * (s + 2 * g - 2);
     assert(a > 0);
@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
     unsigned         target = 0;
     if ((d == 0) && (g == 1) && (!H['f']) && (s < ntri.size())) target = ntri[s];
 
-    Coloring img(cpx(-1, -1), cpx(1, 1), 500, [](cpx) { return BLACK; });
+    Coloring img(H, cpx(-1, -1), cpx(1, 1), 500, [](cpx) { return BLACK; });
 
     while ((target == 0) || (v.size() < target)) {
         Permutation alpha = Pairings(a).rrand();
@@ -75,7 +75,7 @@ int main(int argc, char **argv) {
             cout << "     Passport:        " << M.sigma.passport() << endl;
 
             H.title = fmt::format("Toroidal enumeration (s={}, pass {}, i={})", s, M.sigma.passport(), v.size());
-            Constellation1<double> C(M);
+            Constellation1<double> C(H, M);
             double                 er = C.cost();
             if (!H['q']) {
                 cout << "     Final error:     " << er << endl;
@@ -94,7 +94,7 @@ int main(int argc, char **argv) {
                 img.f   = [&](cpx z) { return Indexed((imag(C(z)) > 0) ? 1 : 2); };
                 img.scale(1.3);
                 img.show();
-                img.output();
+                img.output(H);
             }
 
             if (H['q']) {

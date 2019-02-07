@@ -1,6 +1,6 @@
 #include <vb/Coloring.h>
-#include <vb/util/math.h>
 #include <vb/util/PRNG.h>
+#include <vb/util/math.h>
 
 using namespace vb;
 using namespace std;
@@ -15,7 +15,7 @@ template <typename T> T sm3(int i, int j, int k) {
 
 template <typename T> class RPoly {
 public:
-    RPoly(int n_, bool(p_)) : n(n_), p(p_), A(n + 1) {
+    RPoly(const Hub &H, int n_, bool(p_)) : n(n_), p(p_), A(n + 1) {
         map<string, function<double()>> generators;
         generators.emplace("gaussian", [] { return prng.gaussian(0, 1); });
         generators.emplace("bernoulli", [] { return prng.bernoulli(.5) ? 1 : -1; });
@@ -56,13 +56,13 @@ public:
 };
 
 int main(int argc, char **argv) {
-    H.init("Random polynomial in 2 variables", argc, argv, "n=100,g=gaussian,s=0,p");
+    Hub H("Random polynomial in 2 variables", argc, argv, "n=100,g=gaussian,s=0,p");
     int s = H['s'];
     if (s > 0) prng.seed(s);
-    RPoly<double> P(H['n'], H['p']);
+    RPoly<double> P(H, H['n'], H['p']);
     double        l = H['p'] ? 1 : 10;
-    Coloring      C(cpx(-l, -l), cpx(l, l), 800, P);
+    Coloring      C(H, cpx(-l, -l), cpx(l, l), 800, P);
     C.show();
-    C.output();
+    C.output(H);
     Fl::run();
 }

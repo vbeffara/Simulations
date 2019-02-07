@@ -5,7 +5,7 @@
 using namespace vb;
 
 int main(int argc, char **argv) {
-    H.init("Hypermap of genus 0", argc, argv, "m=228,v,q,g=m_cube,p,a,f=0,s=0,u=0,d=1,D=0,o");
+    Hub H("Hypermap of genus 0", argc, argv, "m=228,v,q,g=m_cube,p,a,f=0,s=0,u=0,d=1,D=0,o");
 
     auto M = HLib().at(H['g']);
     if (int u = H['u']; u != 0) M = H_genus0(u);
@@ -25,16 +25,16 @@ int main(int argc, char **argv) {
     }
     std::cout << M;
 
-    Constellation0<double> C{M};
+    Constellation0<double> C{H, M};
     C.belyi();
     if (!H['q']) std::cout << std::endl << C;
 
     if (H['v']) {
         auto [ul, br] = C.bounds();
-        Coloring CC(ul, br, 800, [&](cpx z) { return Indexed(imag(C(z)) > 0 ? 1 : 2); });
+        Coloring CC(H, ul, br, 800, [&](cpx z) { return Indexed(imag(C(z)) > 0 ? 1 : 2); });
         CC.scale(1.5);
         CC.show();
-        if (H['o']) CC.output();
+        if (H['o']) CC.output(H);
         while (CC.visible()) {
             CC.update();
             Fl::wait();

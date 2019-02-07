@@ -16,7 +16,7 @@ namespace vb {
         using Constellation<T>::cost;
         using Constellation<T>::dim;
 
-        Constellation0(const Hypermap &M);
+        Constellation0(const Hub &H, const Hypermap &M);
         template <typename U> Constellation0(const Constellation0<U> &C);
 
         cplx operator()(cplx z) const override;
@@ -47,10 +47,10 @@ namespace vb {
 #ifdef UNIT_TESTS
     TEST_CASE("vb::Constellation0") {
         // spdlog::set_level(spdlog::level::trace);
-        char *argv[] = {"bla", "ble"};
-        H.init("Spheroidal enumeration", 1, argv, "s=3,m=228,d=2,g=0,v,o,b,q");
+        char *                 argv[] = {"bla", "ble"};
+        Hub                    H("Spheroidal enumeration", 1, argv, "s=3,m=228,d=2,g=0,v,o,b,q");
         auto                   M = HLib().at("m_dodecahedron");
-        Constellation0<double> C(M);
+        Constellation0<double> C(H, M);
         Constellation0<real_t> Cq(C);
         Cq.findn();
         Cq.belyi();

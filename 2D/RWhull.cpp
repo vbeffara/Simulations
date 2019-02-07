@@ -38,7 +38,7 @@ namespace vb {
 
 class Snake : public Bitmap<int> {
 public:
-    explicit Snake(int n_) : Bitmap<int>(6 * n_, 6 * n_), n(n_) {
+    explicit Snake(const Hub &H, int n_) : Bitmap<int>(H, 6 * n_, 6 * n_), n(n_) {
         p.push_back({3 * n, 3 * n});
         put(p.back(), 1);
         show();
@@ -53,15 +53,15 @@ public:
     vector<coo> p;
 };
 
-int main(int argc, char ** argv) {
-    H.init("Random walk hull", argc, argv, "n=50,i,v");
+int main(int argc, char **argv) {
+    Hub     H("Random walk hull", argc, argv, "n=50,i,v");
     int64_t n = H['n'], l = n * n * n * n;
     bool    inf = H['i'], vid = H['v'];
 
-    Snake S(n);
+    Snake S(H, n);
 
     if (inf) {
-        if (vid) S.snapshot_setup("RWSH", 1.0);
+        if (vid) S.snapshot_setup(H, "RWSH", 1.0);
         while (norm(S.p.back() - coo{3 * n, 3 * n}) < (3 * n - 1) * (3 * n - 1)) {
             if ((S.p.size() == 1) || (prng.bernoulli(.5)))
                 S.grow(prng.uniform_int(4));

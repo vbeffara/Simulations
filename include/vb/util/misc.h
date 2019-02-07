@@ -10,7 +10,7 @@ namespace vb {
         H.output_str(label, "", fmt::format("time = {:<10} ans = {}", time() - t, result), false);
     }
 
-    template <typename T> T check(T x, T y) {
+    template <typename T> T check(const Hub &H, T x, T y) {
         static double merr = -1.0;
         double        err  = abs(x - y);
         if (err > merr) {

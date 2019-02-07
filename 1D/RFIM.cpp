@@ -6,7 +6,7 @@ using namespace std;
 using namespace vb;
 
 int main(int argc, char **argv) {
-    H.init("Random field Ising model", argc, argv, "n=5,s=0");
+    Hub H("Random field Ising model", argc, argv, "n=5,s=0");
     int n = H['n'];
     prng.seed(int(H['s']));
 

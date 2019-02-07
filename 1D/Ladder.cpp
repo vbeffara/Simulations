@@ -11,9 +11,9 @@ using std::cout;
 using std::endl;
 
 int main(int argc, char **argv) {
-    vb::H.init("Ladder", argc, argv, "t=20,d");
-    int  t = vb::H['t'];
-    bool d = vb::H['d'];
+    vb::Hub H("Ladder", argc, argv, "t=20,d");
+    int     t = H['t'];
+    bool    d = H['d'];
 
     std::vector<int> env;
     int              X = 0;

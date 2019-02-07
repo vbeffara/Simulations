@@ -3,14 +3,14 @@
 using namespace vb;
 using namespace std;
 
-int main(int argc, char ** argv) {
-    H.init("Randomized Polynuclear Growth", argc, argv, "n=500,e=0.01,f,c=0");
+int main(int argc, char **argv) {
+    Hub          H("Randomized Polynuclear Growth", argc, argv, "n=500,e=0.01,f,c=0");
     const int    n = H['n'];
     const double e = H['e'];
     const bool   f = H['f'];
     const double c = H['c'];
 
-    CoarseImage img(n, n, 10);
+    CoarseImage img(H, n, n, 10);
     img.show();
 
     vector<int> height(n);

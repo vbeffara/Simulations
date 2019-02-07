@@ -4,7 +4,7 @@ using namespace vb;
 
 class Glauber : public Image {
 public:
-    explicit Glauber(int n_) : Image(n_, n_), n(n_){};
+    Glauber(const Hub &H, int n_) : Image(H, n_, n_), n(n_){};
     void fill(double p);
     void step(int i = -1, int j = -1);
 
@@ -37,12 +37,12 @@ void Glauber::step(int i, int j) {
         put({i, j}, BLACK);
 }
 
-int main(int argc, char ** argv) {
-    H.init("Glauber dynamics at zero temperature", argc, argv, "n=500,p=.51");
+int main(int argc, char **argv) {
+    Hub    H("Glauber dynamics at zero temperature", argc, argv, "n=500,p=.51");
     int    n = H['n'];
     double p = H['p'];
 
-    Glauber G(n);
+    Glauber G(H, n);
     G.fill(p);
     G.show();
 

@@ -7,7 +7,7 @@ coo rot(coo z, coo p) { return p + coo{p.y - z.y, z.x - p.x}; }
 
 class Pivot : public Image {
 public:
-    explicit Pivot(int nn_) : Image(4 * nn_, 4 * nn_), nn(nn_), n(nn * nn), z(n, {0, 0}) { show(); }
+    Pivot(const Hub &H, int nn_) : Image(H, 4 * nn_, 4 * nn_), nn(nn_), n(nn * nn), z(n, {0, 0}) { show(); }
 
     int piv() {
         for (auto z : coo_range(size)) put(z, BLACK);
@@ -26,7 +26,7 @@ public:
         return 0;
     }
 
-    void run() {
+    void run(const Hub &H) {
         int p = 0;
         while (p == 0) {
             z[0] = {2 * nn, 2 * nn};
@@ -49,8 +49,8 @@ public:
 };
 
 int main(int argc, char **argv) {
-    H.init("Pivot", argc, argv, "n=200");
-    Pivot img(H['n']);
-    img.run();
+    Hub   H("Pivot", argc, argv, "n=200");
+    Pivot img(H, H['n']);
+    img.run(H);
     img.pause();
 }

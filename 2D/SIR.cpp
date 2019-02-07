@@ -6,7 +6,7 @@ const Color none(BLACK), prey(GREEN), pred(RED);
 
 class SIR : public Image {
 public:
-    SIR(int n, double l_) : Image(n, n), l(l_) {
+    SIR(const Hub &H, int n, double l_) : Image(H, n, n), l(l_) {
         int n0 = H['d'] ? 0 : int(H['n']) / 2;
         for (int i = n0 - 10; i < n0 + 10; ++i)
             for (int j = n0 - 10; j < n0 + 10; ++j)
@@ -17,7 +17,7 @@ public:
         show();
     }
 
-    void go() {
+    void go(const Hub &H) {
         int i  = prng.uniform_int(fringe.size());
         coo z  = fringe[i];
         coo nz = z + dz[prng.uniform_int(H['d'] ? 2 : 4)];
@@ -38,12 +38,12 @@ public:
 };
 
 int main(int argc, char **argv) {
-    H.init("SIR process on the lattice", argc, argv, "n=600,l=.5,d,s=1");
+    Hub H("SIR process on the lattice", argc, argv, "n=600,l=.5,d,s=1");
 
-    SIR img(H['n'], H['l']);
+    SIR img(H, H['n'], H['l']);
     for (int t = 0; !img.fringe.empty(); ++t) {
-        img.go();
+        img.go(H);
         if (t % int(H['s']) == 1) img.update();
     }
-    img.output();
+    img.output(H);
 }

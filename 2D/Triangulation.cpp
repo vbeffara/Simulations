@@ -3,11 +3,12 @@
 #include <vb/util/PRNG.h>
 
 using vb::Edge;
+using vb::Hub;
 using vb::Map;
 
 class Triangulation : public Map {
 public:
-    explicit Triangulation(int n) : Map(n) {
+    explicit Triangulation(const Hub &H, int n) : Map(H, n) {
         for (int i = 1; i < n; ++i) (*this) << Edge(0, i);
         for (int i = n - 1; i > 1; --i) (*this) << Edge(1, i);
         (*this) << Edge(1, 0) << Edge(2, 0) << Edge(2, 1) << Edge(2, 3);
@@ -51,11 +52,11 @@ public:
 };
 
 int main(int argc, char **argv) {
-    vb::H.init("Random triangulation", argc, argv, "n=10,t=-1");
-    int t = vb::H['t'];
-    if (t == -1) t = 50 * int(vb::H['n']) * int(vb::H['n']);
+    vb::Hub H("Random triangulation", argc, argv, "n=10,t=-1");
+    int     t = H['t'];
+    if (t == -1) t = 50 * int(H['n']) * int(H['n']);
 
-    Triangulation T(vb::H['n']);
+    Triangulation T(H, H['n']);
     T.inscribe(T.face(Edge(0, 1)));
 
     {

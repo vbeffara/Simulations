@@ -1,4 +1,4 @@
-#pragma once /// \file
+#pragma once
 #include <vb/Bitmap.h>
 
 namespace vb {
@@ -16,7 +16,7 @@ namespace vb {
 
     class Cube : public Bitmap<Adder> {
     public:
-        Cube(coo3 sz);
+        Cube(const Hub &H, coo3 sz);
 
         int64_t index(coo3 c) { return c.x + size.x * c.y + size.x * size.y * c.z; }
         coo3    wrap(coo3 c) { return {pmod(c.x, size.x), pmod(c.y, size.y), pmod(c.z, size.z)}; }
@@ -26,7 +26,7 @@ namespace vb {
         void     put(const coo3 &c, uint8_t t);
         void     putp(const coo3 &c, uint8_t t) { put(wrap(c), t); }
 
-        void output_pov(std::string s = "");
+        void output_pov(const Hub &H, std::string s = "");
 
         using iterator = Cube_iterator;
         iterator begin();
@@ -57,13 +57,14 @@ namespace vb {
 
 #ifdef UNIT_TESTS
     TEST_CASE("vb::Cube") {
-        Cube C({100, 100, 100});
+        Hub  H("Testing Cube and POV", 0, 0);
+        Cube C(H, {100, 100, 100});
         C.putp(prng.uniform_coo3(C.size), 1);
         int s = 0;
         for (auto v : C) s += v;
         CHECK(s == 1);
         CHECK(Color(C.Bitmap<Adder>::at({0, 0})).a == 255);
-        C.output_pov();
+        C.output_pov(H);
     }
 #endif
 } // namespace vb

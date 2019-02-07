@@ -7,7 +7,7 @@ using namespace vb;
 using namespace std;
 
 int main(int argc, char **argv) {
-    H.init("Streams and permutations", argc, argv, "n=10");
+    Hub H("Streams and permutations", argc, argv, "n=10");
     for (int k = 1; k <= int(H['n']); ++k) {
         cout << "n: " << setw(2) << k;
         cout << "\tpermutations: " << setw(7) << size(permutations(k));

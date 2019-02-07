@@ -22,7 +22,7 @@ public:
 
 class UST : public Bitmap<Point> {
 public:
-    explicit UST(int n_) : Bitmap<Point>(2 * n_ + 1, 2 * n_ + 1), n(n_) {}
+    explicit UST(const Hub &H, int n_) : Bitmap<Point>(H, 2 * n_ + 1, 2 * n_ + 1), n(n_) {}
 
     void path(coo z, Type tgt) {
         while (at(z).t != tgt) {
@@ -43,7 +43,7 @@ public:
         path(z0, SITE);
     }
 
-    void go() {
+    void go(const Hub &H) {
         show();
         put({0, 2 * (n / 2)}, Point{SITE});
         for (int i = n; i >= 0; --i)
@@ -53,13 +53,13 @@ public:
             path({2 * n, 2 * (n / 4)}, EMPH);
         }
         pause();
-        output();
+        output(H);
     }
 
     int n;
 };
 
-int main(int argc, char ** argv) {
-    H.init("Uniform spanning tree", argc, argv, "n=200,p");
-    UST(H['n']).go();
+int main(int argc, char **argv) {
+    Hub H("Uniform spanning tree", argc, argv, "n=200,p");
+    UST(H, H['n']).go(H);
 }

@@ -1,4 +1,4 @@
-#pragma once /// \file
+#pragma once
 #include <vb/Picture.h>
 #include <vb/util/coo.h>
 #include <vb/util/cpx.h>
@@ -6,7 +6,7 @@
 namespace vb {
     class Coloring : public Picture {
     public:
-        Coloring(cpx z1_, cpx z2_, int n, std::function<Color(cpx)> f_);
+        Coloring(const Hub &H, cpx z1_, cpx z2_, int n, std::function<Color(cpx)> f_);
 
         void show() override;
         void show2();
@@ -40,7 +40,8 @@ namespace vb {
 
 #ifdef UNIT_TESTS
     TEST_CASE("vb::Coloring") {
-        Coloring C(cpx(0, 0), cpx(1, 1), 500, [](cpx z) { return Indexed(real(z) * imag(z) * 10); });
+        Hub      H("Testing Coloring", 0, 0);
+        Coloring C(H, cpx(0, 0), cpx(1, 1), 500, [](cpx z) { return Indexed(real(z) * imag(z) * 10); });
         C.scale(1.2);
         C.shift(cpx(.2, .3));
         C.show();

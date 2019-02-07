@@ -1,11 +1,11 @@
-#pragma once /// \file
+#pragma once
 #include <vb/Picture.h>
 #include <vb/data/Array.h>
 
 namespace vb {
     template <typename T> class Bitmap : public Picture, public Array<T> {
     public:
-        Bitmap(int wd, int ht, T d = T());
+        Bitmap(const Hub &H, int wd, int ht, T d = T());
 
         using Array<T>::size;
         using Array<T>::at;
@@ -44,7 +44,8 @@ namespace vb {
         }
     };
 
-    template <typename T> Bitmap<T>::Bitmap(int wd, int ht, T d) : Picture(wd, ht), Array<T>({wd, ht}, d), z0({0, 0}), dflt(d) {}
+    template <typename T>
+    Bitmap<T>::Bitmap(const Hub &H, int wd, int ht, T d) : Picture(H, wd, ht), Array<T>({wd, ht}, d), z0({0, 0}), dflt(d) {}
 
     template <typename T> void Bitmap<T>::fill(coo z, T c, int adj) {
         T in = at(z);
@@ -70,7 +71,8 @@ namespace vb {
 
 #ifdef UNIT_TESTS
     TEST_CASE("vb::Image") {
-        Image img(256, 256);
+        Hub   H("Testing Image", 0, 0);
+        Image img(H, 256, 256);
         img.show();
         for (int i = 0; i < 256; ++i)
             for (int j = 0; j < 256; ++j) img.put({i, j}, Color(i, j, (8 * (i + j)) % 256));

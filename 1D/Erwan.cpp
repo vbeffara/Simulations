@@ -103,7 +103,7 @@ public:
         return x_to_p({cmasols.get_best_seen_candidate().get_x_ptr(), 16});
     }
 
-    void run(int n, int t) {
+    void run(const Hub &H, int n, int t) {
         auto p = explore_cmaes(n, t / 1000);
 
         for (int i = 0; i < 4; ++i) { H.L->info("Transition matrix: {} {} {} {}", p[i][0], p[i][1], p[i][2], p[i][3]); }
@@ -121,6 +121,6 @@ public:
 };
 
 int main(int argc, char **argv) {
-    H.init("Erwan's product of random matrices", argc, argv, "n=1000,t=10000");
-    Erwan().run(H['n'], H['t']);
+    Hub H("Erwan's product of random matrices", argc, argv, "n=1000,t=10000");
+    Erwan().run(H, H['n'], H['t']);
 }

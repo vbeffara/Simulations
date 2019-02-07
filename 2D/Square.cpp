@@ -175,8 +175,8 @@ public:
 };
 
 int main(int argc, char **argv) {
-    vb::H.init("Random lamination", argc, argv, "n=20,c");
-    Lamination o(vb::H['n']);
+    vb::Hub    H("Random lamination", argc, argv, "n=20,c");
+    Lamination o(H['n']);
 
     for (int i = 0; i < o.size.x; ++i) {
         for (int j = 0; j < o.size.y; ++j) {
@@ -187,7 +187,7 @@ int main(int argc, char **argv) {
         }
     }
 
-    if (vb::H['c']) {
+    if (H['c']) {
         std::set<pt> P = o.connections();
         std::set<pt> E;
         for (pt i : P) {

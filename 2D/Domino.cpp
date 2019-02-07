@@ -29,7 +29,7 @@ public:
         at(c + dz[at(c).d]).type = 0;
     }
 
-    explicit Tiling(const Hub &H) : Bitmap<Half>(H['n'], H['n']), r(H['r']), rr{r, r * r, 1, r} {
+    explicit Tiling(const Hub &H) : Bitmap<Half>(H, H['n'], H['n']), r(H['r']), rr{r, r * r, 1, r} {
         for (int x = 0; x < w(); ++x)
             for (int y = 0; y < h(); ++y) { at({x, y}) = Half(2 * (x % 2), 1 + ((x + y) % 2) + 2 * (x % 2)); }
         if (H['o'] == "aztec") {
@@ -114,10 +114,10 @@ public:
 };
 
 int main(int argc, char **argv) {
-    H.init("Domino tiling", argc, argv, "n=200,o=aztec|hill|hole|flat,b=0,f=0,r=1,d");
+    Hub    H("Domino tiling", argc, argv, "n=200,o=aztec|hill|hole|flat,b=0,f=0,r=1,d");
     Tiling T(H);
     if (H['d']) halfcolors = dicolors;
-    Console C;
+    Console C(H);
     C.manage(T.r, 0.0, 1.0, "r");
     C.show();
     T.show();

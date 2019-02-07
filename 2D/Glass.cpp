@@ -1,6 +1,6 @@
 #include <vb/Bitmap.h>
 
-using std::vector, vb::H, vb::prng, vb::BLACK, vb::WHITE;
+using std::vector, vb::prng, vb::BLACK, vb::WHITE;
 
 vector<bool> init_ok_none() {
     vector<bool> ok(256, false);
@@ -84,7 +84,7 @@ vector<bool> init_ok_connect6() {
 
 class Glass : public vb::Image {
 public:
-    explicit Glass(int n) : vb::Image(n, n) {
+    Glass(const vb::Hub &H, int n) : vb::Image(H, n, n) {
         std::map<std::string, std::function<vector<bool>()>> init;
         init.emplace("none", init_ok_none);
         init.emplace("glass", init_ok_glass);
@@ -97,7 +97,7 @@ public:
         show();
     };
 
-    void run() {
+    void run(const vb::Hub &H) {
         int    n = w();
         double p = H['p'];
 
@@ -134,7 +134,7 @@ public:
 };
 
 int main(int argc, char **argv) {
-    H.init("Glassy Glauber dynamics for percolation", argc, argv, "n=300,p=.5,c=none");
-    Glass img(H['n']);
-    img.run();
+    vb::Hub H("Glassy Glauber dynamics for percolation", argc, argv, "n=300,p=.5,c=none");
+    Glass   img(H, H['n']);
+    img.run(H);
 }

@@ -2,7 +2,7 @@
 #include <vb/Figure.h>
 
 namespace vb {
-    Figure::Figure() : Picture(600, 600) {}
+    Figure::Figure(const Hub &H) : Picture(H, 600, 600) {}
 
     double Figure::left() {
         double l = 0.0;
@@ -77,7 +77,8 @@ namespace vb {
 
     void Figure::paint() { paint(cr); }
 
-    void Figure::output_pdf(const std::string &s) {
+    // TODO: remove Hub here
+    void Figure::output_pdf(const Hub &H, const std::string &s) {
         std::string os = H.dir + (s.empty() ? H.title : s) + ".pdf";
 
         double real_h = w() * (top() - bottom()) / (right() - left());
@@ -90,5 +91,5 @@ namespace vb {
         cairo_surface_destroy(pdf);
     }
 
-    void Figure::output(const std::string &s) { output_pdf(s); }
+    void Figure::output(const Hub &H, const std::string &s) { output_pdf(H, s); }
 } // namespace vb

@@ -21,16 +21,16 @@ public:
     }
 };
 
-int main(int argc, char ** argv) {
-    H.init("Once-reinforced random walk, Cluster version", argc, argv, "l=0,a=10,v,s=0");
+int main(int argc, char **argv) {
+    Hub    H("Once-reinforced random walk, Cluster version", argc, argv, "l=0,a=10,v,s=0");
     int    l = H['l'];
     double a = H['a'];
     a        = 1 / (1 + a);
     int s    = H['s'];
     if (s != 0) prng.seed(s);
-    Image I(729, 729);
+    Image I(H, 729, 729);
     I.show();
-    if (H['v']) I.snapshot_setup("ORRW_cluster", 60);
+    if (H['v']) I.snapshot_setup(H, "ORRW_cluster", 60);
 
     Cluster2 W;
     coo      z{0, 0};

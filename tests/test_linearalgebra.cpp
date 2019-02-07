@@ -6,7 +6,7 @@
 using namespace vb;
 using namespace std;
 
-template <typename T> void test(string s) {
+template <typename T> void test(const Hub &H, string s) {
     Matrix<T> m(3, 3);
     for (int i = 0; i < 3; ++i)
         for (int j = 0; j < 3; ++j) m(i, j) = int(pow(2 * i + 1, j));
@@ -19,9 +19,10 @@ template <typename T> void test(string s) {
     H.L->info("{} | Solution x = {}", s, x.transpose());
 }
 
-int main() {
-    test<double>("double   ");
-    test<cpx>("cpx      ");
-    test<real_t>("real_t   ");
-    test<complex_t>("complex_t");
+int main(int argc, char **argv) {
+    Hub H("Testing linear algebra", argc, argv);
+    test<double>(H, "double   ");
+    test<cpx>(H, "cpx      ");
+    test<real_t>(H, "real_t   ");
+    test<complex_t>(H, "complex_t");
 }

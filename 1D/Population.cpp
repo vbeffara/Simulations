@@ -8,7 +8,6 @@ using std::endl;
 using std::max;
 using std::vector;
 using vb::cpx;
-using vb::H;
 using vb::Path;
 using vb::prng;
 
@@ -69,7 +68,7 @@ double NewNu(vector<double> *nup, double K, double p, int size) {
 
 int main(int argc, char **argv) {
     // n impair ! the function rescaling maps {1, ..., size} to {-3, ..., 3}; 7+(2^k*)6 is optimal rescaling
-    H.init("Population dynamics", argc, argv, "s=4,K=100,p=.05,n=7,i=1000000");
+    vb::Hub H("Population dynamics", argc, argv, "s=4,K=100,p=.05,n=7,i=1000000");
     prng.seed(int(H['s']));
     double K = H['K'], p = H['p'];
     int    size = H['n'], shift = (size + 1) / 2, iterations = H['i'];
@@ -80,17 +79,17 @@ int main(int argc, char **argv) {
     vector<cpx> pos(size, 0);
     for (int64_t i = 0; i < size; ++i) pos[i] = cpx(i, nu[i + 1]);
 
-    vb::Console W;
+    vb::Console W(H);
     W.manage(slope, -100.0, 100.0, "slope");
     W.manage(Ac, .2, .4, "Ac");
     W.show();
 
-    vb::Figure F;
+    vb::Figure F(H);
     F.ortho = false;
     F.add(std::make_unique<Path>(pos));
     F.show();
 
-    vb::Figure G;
+    vb::Figure G(H);
     G.ortho = false;
     vector<vector<cpx>> graph(size + 1);
 

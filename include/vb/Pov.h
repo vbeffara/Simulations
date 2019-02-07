@@ -1,6 +1,7 @@
 #pragma once /// \file
 #include <fmt/format.h>
 #include <fstream>
+#include <vb/util/Hub.h>
 #include <vector>
 
 namespace vb {
@@ -31,7 +32,7 @@ namespace vb {
                     << R"(background { color White })";
         }
 
-        void output_pov(const std::string &s);
+        void output_pov(const Hub &H, const std::string &s);
     };
 
     class Pov_Union : public bunch {

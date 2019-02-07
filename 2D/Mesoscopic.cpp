@@ -6,9 +6,9 @@ using namespace vb;
 using namespace std;
 
 int main(int argc, char **argv) {
-    H.init("Toroidal triangulation", argc, argv, "n=4,o=0,m=4,f,g=lat_C5");
+    Hub      H("Toroidal triangulation", argc, argv, "n=4,o=0,m=4,f,g=lat_C5");
     HLib     HL;
-    Toroidal G(HL.at(H['g']));
+    Toroidal G(H, HL.at(H['g']));
 
     for (int i = 0; i < int(H['o']); ++i) {
         G.split_edges();
@@ -43,5 +43,5 @@ int main(int argc, char **argv) {
         }
     }
 
-    G.output_pdf();
+    G.output_pdf(H);
 }

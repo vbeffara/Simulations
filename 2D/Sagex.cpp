@@ -45,7 +45,7 @@ public:
 
 class Sagex : public Bitmap<int> {
 public:
-    Sagex(int w, int h) : Bitmap<int>(w, h) {
+    Sagex(const Hub &H, int w, int h) : Bitmap<int>(H, w, h) {
         for (int x = 0; x < w; ++x)
             for (int y = 0; y < h; ++y) {
                 if (prng.bernoulli(H['l'])) {
@@ -56,9 +56,9 @@ public:
             }
     }
 
-    void go() {
+    void go(const Hub &H) {
         show();
-        if (H['v']) snapshot_setup("Sagex", 1);
+        if (H['v']) snapshot_setup(H, "Sagex", 1);
         while (true) {
             Particle p = q.top();
             q.pop();
@@ -79,6 +79,6 @@ public:
 };
 
 int main(int argc, char **argv) {
-    H.init("Sagex process", argc, argv, "n=400,w=0,l=.22,p=.5,v,z");
-    Sagex(int(H['w']) != 0 ? H['w'] : H['n'], H['n']).go();
+    Hub H("Sagex process", argc, argv, "n=400,w=0,l=.22,p=.5,v,z");
+    Sagex(H, int(H['w']) != 0 ? H['w'] : H['n'], H['n']).go(H);
 }

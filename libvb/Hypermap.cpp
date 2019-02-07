@@ -339,7 +339,6 @@ namespace vb {
                 double v = (ll[i] - l[i] * l[i]) / (ll[i]);
                 if (v > mv) mv = v;
             }
-            H.L->trace("In acpa(), t={}, error={}, mv={}", t, se / n, mv);
             if (mv < mvm) {
                 for (unsigned i = 0; i < V.size(); ++i) {
                     if (old_e[i] != 0) {

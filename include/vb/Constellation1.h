@@ -16,8 +16,8 @@ namespace vb {
         using Constellation<T>::cost;
         using Constellation<T>::dim;
 
-        Constellation1(const Hypermap & M);
-        template <typename U> Constellation1(const Constellation1<U> & C);
+        Constellation1(const Hub &H, const Hypermap &M);
+        template <typename U> Constellation1(const Constellation1<U> &C);
 
         cplx operator()(cplx z) const override;
 
@@ -30,7 +30,7 @@ namespace vb {
 
     private:
         Vector<cplx> vec() const override;
-        void         readvec(const Vector<cplx> & xy) override;
+        void         readvec(const Vector<cplx> &xy) override;
 
         Vector<cplx> vcost() const override;
         Matrix<cplx> jacvcost() const override;
@@ -50,12 +50,13 @@ namespace vb {
         void shift(cplx z);
     };
 
-    template <typename T> std::ostream & operator<<(std::ostream & os, const Constellation1<T> & C);
+    template <typename T> std::ostream &operator<<(std::ostream &os, const Constellation1<T> &C);
 
 #ifdef UNIT_TESTS
     TEST_CASE("vb::Constellation1") {
         auto                   M = HLib().at("lat_SV");
-        Constellation1<double> C(M);
+        Hub                    H("Testing Constellation1", 0, 0);
+        Constellation1<double> C(H, M);
         Constellation1<real_t> Cq(C);
         Cq.findn();
         CHECK(format(*(guess(Cq.E.j(), 80))) == " z^2 + -914416 z + 590816592");

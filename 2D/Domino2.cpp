@@ -32,7 +32,7 @@ public:
 
 class Tiling : public Bitmap<Domino> {
 public:
-    explicit Tiling(int n) : Bitmap<Domino>(2 * n, 2 * n) {
+    explicit Tiling(const Hub &H, int n) : Bitmap<Domino>(H, 2 * n, 2 * n) {
         for (int i = 0; i < n; ++i)
             for (int j = n - 1 - i; j < n + i; j += 2) {
                 putd(Domino{{i, j}, 1});
@@ -95,10 +95,10 @@ void three_by_two(double a) {
 }
 
 int main(int argc, char **argv) {
-    H.init("Domino tiling (v2)", argc, argv, "n=100,a=.5");
+    Hub H("Domino tiling (v2)", argc, argv, "n=100,a=.5");
     two_by_two(H['a']);
     hues = W;
-    Console C;
+    Console C(H);
     C.manage(contrast, 0.0, 1.0, "contrast");
     for (auto &x : hues)
         for (auto &y : x)
@@ -106,7 +106,7 @@ int main(int argc, char **argv) {
                 z = prng.uniform_real();
                 C.manage(z, 0.0, 1.0, nullptr);
             }
-    Tiling D(H['n']);
+    Tiling D(H, H['n']);
     C.show();
     D.show();
     D.run();

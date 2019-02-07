@@ -13,7 +13,7 @@ namespace vb {
 
 class IsingCFTP : public Bitmap<int> {
 public:
-    explicit IsingCFTP(const Hub & H) : Bitmap<int>(H['n'], H['n']), b(H['b']), d(0), s(H['s']), status(w(), h()) {
+    explicit IsingCFTP(const Hub &H) : Bitmap<int>(H, H['n'], H['n']), b(H['b']), d(0), s(H['s']), status(H, w(), h()) {
         for (int i = 0; i < w(); ++i)
             for (int j = 0; j < h(); ++j) put({i, j}, 1);
         snap();
@@ -45,7 +45,7 @@ public:
         status.update();
     }
 
-    void run() {
+    void run(const Hub &H) {
         vector<string> states;
         states.push_back(prng.state());
         int n = w() * h();
@@ -59,7 +59,7 @@ public:
                 if (t == states.size() - 1) states.push_back(prng.state());
             }
             snap();
-            if (s) status.snapshot();
+            if (s) status.snapshot(H);
             n = 0;
             for (int i = 0; i < w(); ++i)
                 for (int j = 0; j < h(); ++j)
@@ -102,12 +102,12 @@ public:
     vector<double> p;
 };
 
-int main(int argc, char * argv[]) {
-    H.init("CFTP for the Ising model", argc, argv, "n=200,b=1,s");
+int main(int argc, char *argv[]) {
+    Hub       H("CFTP for the Ising model", argc, argv, "n=200,b=1,s");
     IsingCFTP I(H);
     I.bc_dobrushin();
     I.show();
     I.status.show();
-    I.run();
+    I.run(H);
     I.pause();
 }

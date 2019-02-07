@@ -2,14 +2,14 @@
 
 using namespace vb;
 
-int main(int argc, char ** argv) {
-    H.init("Once-reinforced random walk", argc, argv, "n=1000,a=2");
+int main(int argc, char **argv) {
+    Hub    H("Once-reinforced random walk", argc, argv, "n=1000,a=2");
     int    n = H['n'];
     double a = H['a'];
     a        = 1 / (1 + a);
     auto L   = int(pow(n, .33));
 
-    CoarseImage img(n, n, L);
+    CoarseImage img(H, n, n, L);
     img.show();
 
     for (coo z{n / 2, n / 2};;) {

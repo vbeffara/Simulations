@@ -16,7 +16,7 @@ namespace vb {
 
 class Snake : public Bitmap<site> {
 public:
-    Snake(int n, double l, bool hex) : Bitmap(4 * n + 1, 2 * n + 1), lambda(l), path(1, {2 * n, 0}), hex(hex) {
+    Snake(const Hub &H, int n, double l, bool hex) : Bitmap(H, 4 * n + 1, 2 * n + 1), lambda(l), path(1, {2 * n, 0}), hex(hex) {
         for (int x = 0; x < w(); ++x) put({x, 0}, VERTEX);
         if (double a = H['a']; a != 0) triangle(a);
         if (!H['v']) show();
@@ -90,15 +90,15 @@ public:
     bool             hex;
 };
 
-int main(int argc, char ** argv) {
-    H.init("Self-avoiding snake in the half plane", argc, argv, "n=200,l=1.0,v,p,x,a=0");
-    Snake S(H['n'], H['l'], H['x']);
+int main(int argc, char **argv) {
+    Hub   H("Self-avoiding snake in the half plane", argc, argv, "n=200,l=1.0,v,p,x,a=0");
+    Snake S(H, H['n'], H['l'], H['x']);
     S.run();
     S.fill({S.w() / 2 + 1, 1}, RIGHT);
     S.fill({S.w() / 2 - 1, 1}, LEFT);
     if (S.visible()) {
         if (H['p']) S.pause();
-        S.output();
+        S.output(H);
     }
     H.output("Final value of x", "x", S.path.back().x);
 }

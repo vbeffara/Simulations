@@ -26,13 +26,14 @@ public:
 
 class SF : public Bitmap<Point> {
 public:
-    SF(int n_, double a_) : Bitmap<Point>(2 * n_, 2 * n_ + 1), n(n_), a(a_), root({2 * n - 1, 2 * (n / 2)}), start({1, 2 * (n / 4)}) {
+    SF(const Hub &H, int n_, double a_)
+        : Bitmap<Point>(H, 2 * n_, 2 * n_ + 1), n(n_), a(a_), root({2 * n - 1, 2 * (n / 2)}), start({1, 2 * (n / 4)}) {
         ps = {a * a, a * a, 1, 1};
-        for (auto & p : ps) p /= 2 * (1 + a * a);
+        for (auto &p : ps) p /= 2 * (1 + a * a);
     }
 
-    void stage() {
-        if (H['s']) snapshot();
+    void stage(const Hub &H) {
+        if (H['s']) snapshot(H);
         if (H['v']) pause();
     }
 
@@ -83,7 +84,7 @@ public:
         }
     }
 
-    void special() {
+    void special(const Hub &H) {
         coo    delta{root - start};
         double lambda = double(delta.y) / double(delta.x), L = lambda * lambda;
         double tca = a + 1 / a, Delta = 1 + L * L + L * (tca * tca - 2);
@@ -93,7 +94,7 @@ public:
         vector<double> cps{exp(mu), exp(nu), exp(-mu), exp(-nu)};
         double         s = 0;
         for (auto p : cps) s += p;
-        for (auto & p : cps) p /= s;
+        for (auto &p : cps) p /= s;
 
         int nw = 0;
         coo z  = start;
@@ -106,32 +107,32 @@ public:
             if ((z.x <= start.x) || (!contains(z))) { z = start; }
             if (z.x == root.x) {
                 nw++;
-                if (nw == 1) stage();
+                if (nw == 1) stage(H);
                 z = start;
             }
         }
-        stage();
+        stage(H);
         path(start, SITE);
     }
 
-    void go() {
+    void go(const Hub &H) {
         put(root, Point{SITE});
         if (H['v']) show();
         if (a < 1)
-            special();
+            special(H);
         else
             lerw(start, false);
-        stage();
+        stage(H);
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j <= n; ++j) lerw(coo{2 * i + 1, 2 * j}, true);
         }
-        stage();
+        stage(H);
         put(root, Point{EMPH});
         path(start);
-        stage();
+        stage(H);
         dual();
-        stage();
-        output();
+        stage(H);
+        output(H);
     }
 
     int            n;
@@ -140,7 +141,7 @@ public:
     coo            root, start;
 };
 
-int main(int argc, char ** argv) {
-    H.init("Spanning forest with 2-periodic weights", argc, argv, "n=400,a=.2,v,s");
-    SF(H['n'], H['a']).go();
+int main(int argc, char **argv) {
+    Hub H("Spanning forest with 2-periodic weights", argc, argv, "n=400,a=.2,v,s");
+    SF(H, H['n'], H['a']).go(H);
 }

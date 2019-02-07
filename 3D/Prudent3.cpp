@@ -49,7 +49,7 @@ ostream &operator<<(ostream &o, const Walker &W) {
 }
 
 int main(int argc, char **argv) {
-    H.init("3D prudent walker", argc, argv, "l=1000,n=1");
+    Hub         H("3D prudent walker", argc, argv, "l=1000,n=1");
     int         l = H['l'], n = H['n'];
     vector<int> ends(l, 0);
 

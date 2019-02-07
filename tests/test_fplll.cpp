@@ -3,7 +3,8 @@
 using namespace vb;
 using namespace std;
 
-int main() {
+int main(int argc, char **argv) {
+    Hub H("Testing various MP choices", argc, argv);
     real_t::default_precision(100);
     complex_t::default_precision(100);
 
@@ -17,14 +18,14 @@ int main() {
     xs.emplace_back("0.63827397417446081629048447976042972714028217652392199657870122677085361940416547100605619666");
     xs.emplace_back("646.57075744998934067917908899466389773483433056006707491873238242675958808933605915556193840685637786");
 
-    for (const auto & x : xs) {
+    for (const auto &x : xs) {
         H.L->info("x = {}", x);
         if (auto P = guess(real_t{x.c_str()}, 80)) H.L->info("  {}", format(*P));
         H.L->info("");
     }
 
-    const char * r = "0.1722882583776278670500267959231284336682007863854856624427574750255049273322927690638923632";
-    const char * i = "0.5302487364574217190358808797265653491226567421626168710631761419479819886565504921987031543";
+    const char *r = "0.1722882583776278670500267959231284336682007863854856624427574750255049273322927690638923632";
+    const char *i = "0.5302487364574217190358808797265653491226567421626168710631761419479819886565504921987031543";
     H.L->info("x = {} + {} i", r, i);
     complex_t z{real_t(r), real_t(i)};
     if (auto P = guess(z, 80)) H.L->info("  {}", format(*P));

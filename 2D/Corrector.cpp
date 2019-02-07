@@ -8,12 +8,12 @@ int center   = 6;
 int infinity = 13;
 
 int main(int argc, char **argv) {
-    H.init("Corrector", argc, argv, "n=10,p=.9,b");
+    Hub    H("Corrector", argc, argv, "n=10,p=.9,b");
     int    n     = H['n'];
     double p     = H['p'];
     bool   batch = H['b'];
 
-    Map             m(n * n);
+    Map             m(H, n * n);
     vector<uint8_t> adj(n * n, 0);
 
     for (int i = 0; i < n; ++i) {

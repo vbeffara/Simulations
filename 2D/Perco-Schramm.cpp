@@ -13,7 +13,7 @@ using namespace std;
 
 class Perco_Schramm : public Figure {
 public:
-    explicit Perco_Schramm(const Hub &H) : w(2 * int(H['n'])), h(int(H['l']) > 0 ? H['l'] : w - 1), mask(w * h, true) {
+    explicit Perco_Schramm(const Hub &H) : Figure(H), w(2 * int(H['n'])), h(int(H['l']) > 0 ? H['l'] : w - 1), mask(w * h, true) {
         for (int i = 0; i < w / 2; ++i) cols.push_back(true);
         for (int i = 0; i < w / 2; ++i) cols.push_back(false);
         for (int i = 0; i < (w - 1) * h; ++i) cols.push_back(prng.bernoulli(H['p']));
@@ -89,7 +89,7 @@ private:
 };
 
 int main(int argc, char **argv) {
-    H.init("Percolation exploration process", argc, argv, "n=28,l=55,p=.5,t");
+    Hub           H("Percolation exploration process", argc, argv, "n=28,l=55,p=.5,t");
     Perco_Schramm RS(H);
     if (H['t'])
         RS.tri_boundary();
@@ -99,5 +99,5 @@ int main(int argc, char **argv) {
     RS.walk();
     RS.show();
     RS.pause();
-    RS.output();
+    RS.output(H);
 }

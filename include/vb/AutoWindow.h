@@ -9,7 +9,8 @@ namespace vb {
 
     template <typename T> class AutoWindow : public Auto, public T {
     public:
-        AutoWindow(int wd, int ht) : Auto(.1), T(wd, ht), paused(false) {
+        // TODO: remove Hub reference here, put string instead
+        AutoWindow(const Hub &H, int wd, int ht) : Auto(.1), T(wd, ht), paused(false) {
             T::label(H.title.c_str());
             T::callback(close_window);
         }

@@ -37,10 +37,10 @@ public:
 };
 
 int main(int argc, char **argv) {
-    vb::H.init("Deterministic Fourier law", argc, argv, "a=2,b=.2394879347,n=500,m=1000,t=100");
-    int nn = vb::H['n'], nn2 = nn / 2, mm = vb::H['m'], tt = vb::H['t'];
-    state::a = vb::H['a'];
-    state::b = vb::H['b'];
+    vb::Hub H("Deterministic Fourier law", argc, argv, "a=2,b=.2394879347,n=500,m=1000,t=100");
+    int     nn = H['n'], nn2 = nn / 2, mm = H['m'], tt = H['t'];
+    state::a = H['a'];
+    state::b = H['b'];
     std::vector<double> profile(nn, 0), boltzmann(mm, 0), var(tt, 0);
 
     vb::ProgressBar PB(mm);
@@ -67,7 +67,7 @@ int main(int argc, char **argv) {
         for (auto u : var) of << u << std::endl;
     }
     {
-        auto   nclass = int(sqrt(double(vb::H['m'])));
+        auto   nclass = int(sqrt(double(H['m'])));
         double bmin = 0, bmax = 0;
         for (auto b : boltzmann) {
             bmin = std::min(bmin, b);

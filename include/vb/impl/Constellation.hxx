@@ -33,7 +33,6 @@ namespace vb {
         T            c = cost(), old_c = c + T(1);
         auto         old_x = x;
         while (c < old_c) {
-            H.L->trace("In findn(), c={}", c);
             old_c = c;
             old_x = x;
             x -= solve(jacvcost(), vcost());

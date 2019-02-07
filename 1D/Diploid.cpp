@@ -6,7 +6,7 @@ public:
     int    K;
     double f, d, delta, GC, eta;
 
-    Diploid() : K(vb::H['K']), f(vb::H['f']), d(vb::H['d']), delta(vb::H['D']), GC(vb::H['c']), eta(vb::H['e']) {
+    Diploid(const vb::Hub &H) : K(H['K']), f(H['f']), d(H['d']), delta(H['D']), GC(H['c']), eta(H['e']) {
         double DaA = d, DAA = d, Daa = d + delta, DaB = d - delta, DAB = d - delta, DBB = d - delta;
         DR = {Daa, DaA, DAA, DaB, DAB, DBB};
         B  = {0, 0, 0, 0, 0, 0};
@@ -16,7 +16,7 @@ public:
         Comp = {{c0, c1, c2, 0, 0, 0},   {c1, c0, c1, c1, c2, c3}, {c2, c1, c0, c2, c1, c2},
                 {0, c1, c2, c0, c1, c2}, {0, c2, c1, c1, c0, c1},  {0, c3, c2, c2, c1, c0}};
 
-        nu = {int(K * double(vb::H['x'])), int(K * double(vb::H['y'])), int(K * double(vb::H['z'])), 0, int(K * double(vb::H['Z'])), 0};
+        nu = {int(K * double(H['x'])), int(K * double(H['y'])), int(K * double(H['z'])), 0, int(K * double(H['Z'])), 0};
     }
 
     void compute_B() {
@@ -74,14 +74,14 @@ public:
 };
 
 int main(int argc, char **argv) {
-    vb::H.init("Diploid model", argc, argv, "s=0,i=10000000,K=10000,f=6,d=.7,D=.1,c=1,e=.02,x=.0001,y=.01,z=5.3,Z=.0001,t=1000");
+    vb::Hub H("Diploid model", argc, argv, "s=0,i=10000000,K=10000,f=6,d=.7,D=.1,c=1,e=.02,x=.0001,y=.01,z=5.3,Z=.0001,t=1000");
 
-    if (int seed = vb::H['s']) vb::prng.seed(seed);
+    if (int seed = H['s']) vb::prng.seed(seed);
 
-    Diploid D;
+    Diploid D(H);
 
     double t          = 0;
-    int    iterations = vb::H['i'], period = vb::H['t'];
+    int    iterations = H['i'], period = H['t'];
     for (int k = 0; k < iterations; ++k) {
         t += D.NewNu();
         if ((period > 0) && (k % period == 0)) {

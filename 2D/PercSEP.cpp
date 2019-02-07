@@ -11,7 +11,7 @@ namespace vb {
 
 class PercSEP : public Bitmap<int> {
 public:
-    explicit PercSEP(const Hub & H) : Bitmap<int>(2 * int(H['n']), H['n']), flow({0, 0}), d(H['d']), tasym(H['t']) {
+    explicit PercSEP(const Hub &H) : Bitmap<int>(H, 2 * int(H['n']), H['n']), flow({0, 0}), d(H['d']), tasym(H['t']) {
         for (int i = 0; i < w(); ++i)
             for (int j = 0; j < h(); ++j)
                 if (prng.bernoulli(H['p'])) put({i, j}, prng.bernoulli(H['l']) ? 2 : 1);
@@ -61,8 +61,8 @@ public:
     bool   tasym;
 };
 
-int main(int argc, char ** argv) {
-    H.init("Exclusion on Percolation", argc, argv, "n=400,p=.8,l=.3,d=0,t");
+int main(int argc, char **argv) {
+    Hub     H("Exclusion on Percolation", argc, argv, "n=400,p=.8,l=.3,d=0,t");
     PercSEP P(H);
     P.show();
 

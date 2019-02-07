@@ -3,12 +3,12 @@
 using namespace std;
 using namespace vb;
 
-int main(int argc, char ** argv) {
-    H.init("Last-passage percolation", argc, argv, "n=500,r=.1,l=.01,d=0");
+int main(int argc, char **argv) {
+    Hub    H("Last-passage percolation", argc, argv, "n=500,r=.1,l=.01,d=0");
     int    n = H['n'];
     double r = H['r'], l = H['l'], d = H['d'];
 
-    Image img(n, n);
+    Image img(H, n, n);
     img.show();
 
     vector<int> field(n, 0);

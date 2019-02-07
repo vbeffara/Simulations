@@ -2,7 +2,8 @@
 #include <vb/Pov.h>
 
 namespace vb {
-    Cube::Cube(coo3 sz) : Bitmap<Adder>(sz.x + sz.z, sz.y + sz.z), size(sz), data(size.x * size.y * size.z, 0) {
+    // TODO: remove Hub
+    Cube::Cube(const Hub &H, coo3 sz) : Bitmap<Adder>(H, sz.x + sz.z, sz.y + sz.z), size(sz), data(size.x * size.y * size.z, 0) {
         for (int x = 0; x < size.z; ++x)
             for (int y = 0; y < size.z; ++y) Bitmap<Adder>::at({size.x + x, size.y + y}) = Adder(((x / 10 + y / 10) % 2) != 0 ? 200 : 150);
         for (int x = 0; x < size.x; ++x)
@@ -30,7 +31,8 @@ namespace vb {
     Cube_iterator Cube::begin() { return Cube_iterator(this, {0, 0, 0}); }
     Cube_iterator Cube::end() { return Cube_iterator(this, {0, 0, size.z}); }
 
-    void Cube::output_pov(std::string s) {
+    // TODO: remove Hub from there
+    void Cube::output_pov(const Hub &H, std::string s) {
         Pov_Union squares1, squares2, cube, corner, ground;
 
         for (int x = 0; x < size.x; ++x)
@@ -63,6 +65,6 @@ namespace vb {
                    << Texture("pigment { color White } finish { reflection {.1} ambient 0.2 diffuse 0.1 }");
             SS << corner << ground;
         }
-        SS.output_pov(s.empty() ? H.title : s);
+        SS.output_pov(H, s.empty() ? H.title : s);
     }
 } // namespace vb

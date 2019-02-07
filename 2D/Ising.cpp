@@ -5,7 +5,7 @@ using namespace std;
 
 class Ising : public Image {
 public:
-    Ising(int nn, double bb, double rr, bool cc) : Image(nn, nn), n(nn), c(cc), beta(bb) {
+    Ising(const Hub &H, int nn, double bb, double rr, bool cc) : Image(H, nn, nn), n(nn), c(cc), beta(bb) {
         if (rr != 0.0) {
             for (auto z : coo_range(size)) put(z, prng.bernoulli(rr) ? BLACK : WHITE);
         } else {
@@ -61,10 +61,10 @@ public:
 };
 
 int main(int argc, char *argv[]) {
-    H.init("Ising model", argc, argv, "b=.88137359,n=300,t=0,c,r=0,k,v");
-    Ising I(H['n'], H['b'], H['r'], H['c']);
+    Hub   H("Ising model", argc, argv, "b=.88137359,n=300,t=0,c,r=0,k,v");
+    Ising I(H, H['n'], H['b'], H['r'], H['c']);
     I.show();
-    if (H['v']) I.snapshot_setup("Ising", 10);
+    if (H['v']) I.snapshot_setup(H, "Ising", 10);
     I.run(H['t'], H['k']);
-    I.output();
+    I.output(H);
 }

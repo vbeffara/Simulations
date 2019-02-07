@@ -8,7 +8,7 @@ bool good(const Permutation &p) { return p[0] == 2; }
 int  sec(const Permutation &p) { return p[2]; }
 
 int main(int argc, char **argv) {
-    H.init("Testing coroutines", argc, argv, "n=5");
+    Hub  H("Testing coroutines", argc, argv, "n=5");
     auto S    = permutations(int(H['n']));
     auto SS   = filter(good, S);
     auto SSS  = fmap(sec, SS);
