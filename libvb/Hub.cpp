@@ -8,8 +8,37 @@
 #include <vector>
 
 namespace vb {
+    Hub::Hub(std::string t, int argc, char **argv, std::string c) : CL_Parser(t, argc, argv, c) {
+        L = spdlog::stderr_color_mt(prog);
+
+        if (at('h')) {
+            L->info(help);
+            exit(0);
+        };
+
+        Fl::gl_visual(FL_RGB);
+        Fl::use_high_res_GL(1);
+
+        real_t::default_precision(100);
+        complex_t::default_precision(100);
+
+        version = GIT_SHA1;
+
+        mode_t mode = 0755u;
+        mkdir("output", mode);
+        mkdir(dir.c_str(), mode);
+        mkdir((dir + "snapshots").c_str(), mode);
+
+        output("Command line", "", cmd, false);
+        output("Code version", "", version, false);
+        output("Image title", "", title, false);
+
+        start   = boost::chrono::process_real_cpu_clock::now();
+        start_u = boost::chrono::process_user_cpu_clock::now();
+        start_s = boost::chrono::process_system_cpu_clock::now();
+    }
+
     Hub::~Hub() {
-        if (!initialized) return;
         auto     end   = boost::chrono::process_real_cpu_clock::now();
         auto     end_u = boost::chrono::process_user_cpu_clock::now();
         auto     end_s = boost::chrono::process_system_cpu_clock::now();
@@ -52,38 +81,6 @@ namespace vb {
         auto tmp = db << "insert into runs (cmd_id" + ls + ") values (?" + os + ");" << *id;
         for (const auto &[k, ks, v, o] : outputs)
             if (o) tmp << v;
-    }
-
-    void Hub::init(std::string t, int argc, char **argv, std::string c) {
-        CL_Parser::init(t, argc, argv, c);
-        L = spdlog::stderr_color_mt(prog);
-
-        if (at('h')) {
-            L->info(help);
-            exit(0);
-        };
-
-        Fl::gl_visual(FL_RGB);
-        Fl::use_high_res_GL(1);
-
-        real_t::default_precision(100);
-        complex_t::default_precision(100);
-
-        version = GIT_SHA1;
-
-        mode_t mode = 0755u;
-        mkdir("output", mode);
-        mkdir(dir.c_str(), mode);
-        mkdir((dir + "snapshots").c_str(), mode);
-
-        output("Command line", "", cmd, false);
-        output("Code version", "", version, false);
-        output("Image title", "", title, false);
-
-        start       = boost::chrono::process_real_cpu_clock::now();
-        start_u     = boost::chrono::process_user_cpu_clock::now();
-        start_s     = boost::chrono::process_system_cpu_clock::now();
-        initialized = true;
     }
 
     void Hub::output_str(const std::string &l, const std::string &ls, const std::string &s, bool out) {

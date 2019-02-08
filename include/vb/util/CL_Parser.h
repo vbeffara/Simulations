@@ -20,11 +20,11 @@ namespace vb {
 
     class CL_Parser : public std::map<char, Value> {
     public:
-        void init(std::string t, int argc, char **argv, std::string c = "");
+        CL_Parser(std::string t, int argc, char **argv, std::string c = "");
 
         const Value &operator[](char c) const { return find(c)->second; }
 
-        std::string title = "undefined", help = "undefined", prog = "undefined", dir = "output/", cmd = "undefined";
+        std::string title, help, prog, dir, cmd;
     };
 
 #ifdef UNIT_TESTS
@@ -45,8 +45,7 @@ namespace vb {
         argv.reserve(argv_.size());
         for (auto &s : argv_) argv.push_back(&s[0]);
 
-        CL_Parser CLP;
-        CLP.init("Title", 4, argv.data(), "s=5,t=7,u,v");
+        CL_Parser CLP("Title", 4, argv.data(), "s=5,t=7,u,v");
         CHECK(int(CLP['t']) == 7);
         CHECK(int(CLP['s']) == 3);
         CHECK(CLP['u']);

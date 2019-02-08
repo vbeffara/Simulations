@@ -4,7 +4,7 @@
 #include <vb/util/CL_Parser.h>
 
 namespace vb {
-    void CL_Parser::init(std::string t, int argc, char **argv, std::string c) {
+    CL_Parser::CL_Parser(std::string t, int argc, char **argv, std::string c) {
         help  = "Syntax : " + c;
         title = std::move(t);
 

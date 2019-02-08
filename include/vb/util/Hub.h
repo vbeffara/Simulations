@@ -22,12 +22,8 @@ namespace vb {
 
     class Hub : public CL_Parser {
     public:
-        Hub(std::string t, int argc, char **argv, std::string c = "") { init(t, argc, argv, c); };
-        Hub() = default;
-
+        Hub(std::string t, int argc, char **argv, std::string c = "");
         ~Hub();
-
-        void init(std::string t, int argc, char **argv, std::string c = "");
 
         void output_str(const std::string &l, const std::string &ls, const std::string &s, bool out = true);
 
@@ -38,10 +34,9 @@ namespace vb {
         boost::chrono::time_point<boost::chrono::process_real_cpu_clock, Duration>   start;
         boost::chrono::time_point<boost::chrono::process_user_cpu_clock, Duration>   start_u;
         boost::chrono::time_point<boost::chrono::process_system_cpu_clock, Duration> start_s;
-        bool                                                                         initialized = false;
 
         std::vector<Output> outputs;
         unsigned            max_label_width = 0;
-        std::string         version         = "undefined";
+        std::string         version;
     };
 } // namespace vb
