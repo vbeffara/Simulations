@@ -31,7 +31,8 @@ namespace vb {
 
 #ifdef UNIT_TESTS
     TEST_CASE("vb::Figure") {
-        Hub    H("Testing Figure", 0, 0);
+        char * argv[] = {"test_figure"};
+        Hub    H("Testing Figure", 1, argv);
         Figure F{H};
         for (int i = 0; i < 10; ++i)
             F.add(std::make_unique<Segment>(cpx(prng.uniform_real(-5, 5), prng.uniform_real(-5, 5)),

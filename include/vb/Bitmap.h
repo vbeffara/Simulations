@@ -71,7 +71,8 @@ namespace vb {
 
 #ifdef UNIT_TESTS
     TEST_CASE("vb::Image") {
-        Hub   H("Testing Image", 0, 0);
+        char *argv[] = {"test_bitmap"};
+        Hub   H("Testing Image", 1, argv);
         Image img(H, 256, 256);
         img.show();
         for (int i = 0; i < 256; ++i)

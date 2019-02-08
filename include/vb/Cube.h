@@ -57,8 +57,9 @@ namespace vb {
 
 #ifdef UNIT_TESTS
     TEST_CASE("vb::Cube") {
-        Hub  H("Testing Cube and POV", 0, 0);
-        Cube C(H, {100, 100, 100});
+        char *argv[] = {"test_cube"};
+        Hub   H("Testing Cube", 1, argv);
+        Cube  C(H, {100, 100, 100});
         C.putp(prng.uniform_coo3(C.size), 1);
         int s = 0;
         for (auto v : C) s += v;
