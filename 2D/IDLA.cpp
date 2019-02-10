@@ -6,42 +6,42 @@ using namespace std;
 class Bounces : public map<string, function<coo(coo)>> {
 public:
     Bounces(const Hub &H) {
-        emplace("none", [&H](coo) { return coo{0, 0}; });
-        emplace("line", [&H](coo z) {
+        emplace("none", [&](coo) { return coo{0, 0}; });
+        emplace("line", [&](coo z) {
             double p = H['p'];
             return coo{int(-p * z.x), int(-p * z.y)};
         });
-        emplace("idla", [&H](coo z) { return -z; });
-        emplace("sign", [&H](coo z) { return coo{-sign(z.x), -sign(z.y)}; });
-        emplace("sig2", [&H](coo z) {
+        emplace("idla", [&](coo z) { return -z; });
+        emplace("sign", [&](coo z) { return coo{-sign(z.x), -sign(z.y)}; });
+        emplace("sig2", [&](coo z) {
             int64_t a = H['a'], k = sign(z.x * z.y);
             return coo{-sign(z.x), -sign(z.y)} * (1 + (a - 1) * (1 + k) / 2);
         });
-        emplace("soft", [&H](coo z) {
+        emplace("soft", [&](coo z) {
             int k = z.x > 2 * abs(z.y) ? H['a'] : 1;
             return coo{-sign(z.x), -sign(z.y)} * k;
         });
-        emplace("sqrt", [&H](coo z) {
+        emplace("sqrt", [&](coo z) {
             double l = 1 + sqrt(norm(z));
             return coo{int(-z.x / sqrt(l)), int(-z.y / sqrt(l))};
         });
 
-        emplace("maxi", [&H](coo z) { return (abs(z.x) > abs(z.y)) ? coo{-sign(z.x), 0} : coo{0, -sign(z.y)}; });
-        emplace("max2", [&H](coo z) {
+        emplace("maxi", [&](coo z) { return (abs(z.x) > abs(z.y)) ? coo{-sign(z.x), 0} : coo{0, -sign(z.y)}; });
+        emplace("max2", [&](coo z) {
             int a = H['a'];
             return (abs(z.x) > abs(z.y)) ? coo{-sign(z.x), 0} : coo{0, -a * sign(z.y)};
         });
-        emplace("maxb", [&H](coo z) {
+        emplace("maxb", [&](coo z) {
             double l = pow(norm(z), double(H['b']));
             return (abs(z.x) > abs(z.y)) ? coo{int(-l * sign(z.x)), 0} : coo{0, int(-l * sign(z.y))};
         });
 
-        emplace("dent", [&H](coo z) {
+        emplace("dent", [&](coo z) {
             if (z.x + z.y > 2 * abs(z.x - z.y)) return (z.y > z.x) ? coo{-1, 0} : coo{0, -1};
             /* else */ return (abs(z.y) > abs(z.x)) ? coo{0, -sign(z.y)} : coo{-sign(z.x), 0};
         });
 
-        emplace("octo", [&H](coo z) {
+        emplace("octo", [&](coo z) {
             double a = H['a'], b = H['b'];
             if (abs(z.x) > 2 * abs(z.y)) return coo{int(-a * sign(z.x)), 0};
             if (abs(z.y) > 2 * abs(z.x)) return coo{0, int(-a * sign(z.y))};

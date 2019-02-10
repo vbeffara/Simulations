@@ -8,7 +8,7 @@ namespace vb {
         help  = "Syntax : " + c;
         title = std::move(t);
 
-        auto argv_ = gsl::span<char *>(argv, argc);
+        auto argv_ = gsl::span(argv, argc);
 
         std::vector<std::string> fs;
         boost::split(fs, argv_[0], boost::is_any_of(R"(/\)"));
