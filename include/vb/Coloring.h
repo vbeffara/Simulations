@@ -40,7 +40,7 @@ namespace vb {
 
 #ifdef UNIT_TESTS
     TEST_CASE("vb::Coloring") {
-        char *   argv[] = {"test_coloring"};
+        char *   argv[] = {(char *)"test_coloring"};
         Hub      H("Testing Coloring", 1, argv);
         Coloring C(H, cpx(0, 0), cpx(1, 1), 500, [](cpx z) { return Indexed(real(z) * imag(z) * 10); });
         C.scale(1.2);

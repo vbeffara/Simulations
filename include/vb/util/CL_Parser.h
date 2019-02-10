@@ -40,12 +40,8 @@ namespace vb {
     }
 
     TEST_CASE("vb::CL_Parser") {
-        std::vector<std::string> argv_{"cmd", "-s", "3", "-u"};
-        std::vector<char *>      argv;
-        argv.reserve(argv_.size());
-        for (auto &s : argv_) argv.push_back(&s[0]);
-
-        CL_Parser CLP("Title", 4, argv.data(), "s=5,t=7,u,v");
+        char *    argv[] = {(char *)"test_cl_parser", (char *)"-s", (char *)"3", (char *)"-u"};
+        CL_Parser CLP("Title", 4, argv, "s=5,t=7,u,v");
         CHECK(int(CLP['t']) == 7);
         CHECK(int(CLP['s']) == 3);
         CHECK(CLP['u']);

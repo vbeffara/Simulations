@@ -31,7 +31,7 @@ namespace vb {
 
 #ifdef UNIT_TESTS
     TEST_CASE("vb::Figure") {
-        char * argv[] = {"test_figure"};
+        char * argv[] = {(char *)"test_figure"};
         Hub    H("Testing Figure", 1, argv);
         Figure F{H};
         for (int i = 0; i < 10; ++i)

@@ -47,7 +47,7 @@ namespace vb {
 #ifdef UNIT_TESTS
     TEST_CASE("vb::Constellation0") {
         // spdlog::set_level(spdlog::level::trace);
-        char *                 argv[] = {"test_constellation0"};
+        char *                 argv[] = {(char *)"test_constellation0"};
         Hub                    H("Testing Constellation0", 1, argv, "s=3,m=228,d=2,g=0,v,o,b,q");
         auto                   M = HLib().at("m_dodecahedron");
         Constellation0<double> C(H, M);
