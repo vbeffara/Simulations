@@ -1,6 +1,6 @@
 #pragma once /// @file
-#include <complex>
 #include <gsl/gsl>
+#include <iostream>
 
 namespace vb {
     struct coo {
@@ -8,8 +8,6 @@ namespace vb {
 
         void operator+=(const coo &z) { *this = {x + z.x, y + z.y}; }
         void operator-=(const coo &z) { *this = {x - z.x, y - z.y}; }
-
-        template <typename T> explicit operator std::complex<T>() const { return {T(x), T(y)}; }
     };
 
     inline bool operator==(const coo &z1, const coo &z2) { return (z1.x == z2.x) && (z1.y == z2.y); }
@@ -61,7 +59,6 @@ namespace vb {
 
         z1 += z2;
         z2 -= z1;
-        CHECK(std::complex<double>(z2) == std::complex<double>(-2, -3));
         CHECK(norm(z2) == 13);
         CHECK(sup(z2) == 3);
     }

@@ -45,7 +45,7 @@ namespace vb {
         z2 += z;
     }
 
-    cpx Coloring::c_to_z(coo c) const { return z1 + cpx(c) * eps; }
+    cpx Coloring::c_to_z(coo c) const { return z1 + cpx(c.x, c.y) * eps; }
 
     Color &Coloring::at(coo z) const { return stage[z.x + stride * z.y]; }
 

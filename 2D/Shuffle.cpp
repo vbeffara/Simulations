@@ -146,7 +146,7 @@ struct Tiling {
                     z += coo{offx, offy};
                     coo zz = (z + coo{1, 1}) / 2;
                     coo sh = dz[(zz.y + ((((zz.x + 1) % 4) / 2) != 0 ? 5 : 3)) % 4];
-                    return cpx(z) + 2 * double(H['r']) * cpx(sh) - cpx(offx, offy);
+                    return cpx(z.x, z.y) + 2 * double(H['r']) * cpx(sh.x, sh.y) - cpx(offx, offy);
                 };
                 double gr = a * TP.atp(z + coo{offx / 2, offy / 2}) + b;
                 F.add(make_unique<Segment>(s(z * 2 - edge), s(z * 2 + edge), Pen(Grey(uint8_t(255 * gr)), 130.0 / state.size.x)));

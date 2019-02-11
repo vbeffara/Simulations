@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
         for (int b = 0; b < a; ++b) {
             unsigned d = 9;
             while (((1u << d) & adj) == 0) { d = vb::prng.uniform_int(8); }
-            z += vb::cpx(vb::dz[d]);
+            z += vb::cpx(vb::dz[d].x, vb::dz[d].y);
             path.push_back(z);
         }
         f.update();
