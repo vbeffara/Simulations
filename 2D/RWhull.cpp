@@ -38,7 +38,7 @@ namespace vb {
 
 class Snake : public Bitmap<int> {
 public:
-    explicit Snake(const Hub &H, int n_) : Bitmap<int>(H, 6 * n_, 6 * n_), n(n_) {
+    explicit Snake(const Hub &H, int n_) : Bitmap<int>(H, {6 * n_, 6 * n_}), n(n_) {
         p.push_back({3 * n, 3 * n});
         put(p.back(), 1);
         show();

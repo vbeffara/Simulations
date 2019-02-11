@@ -14,8 +14,7 @@ namespace vb {
     class Picture : public AutoWindow<Fl_Gl_Window> {
     public:
         // TODO: remove Hub here
-        // TODO: convert to coo
-        Picture(const Hub &H, int wd, int ht);
+        Picture(const Hub &H, coo size);
         ~Picture() override;
 
         Picture(const Picture &) = delete;

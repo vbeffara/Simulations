@@ -8,8 +8,8 @@ using namespace std;
 class DLA : public CoarseImage {
 public:
     explicit DLA(const Hub &H)
-        : CoarseImage(H, H['n'], H['n'], int(pow(double(H['n']), .33))), n(H['n']), c(H['c']), r(1), W(H),
-          QT({-n / 2, -n / 2}, {n / 2, n / 2}, H['l']), prec(int(H['p'])), img(H, 512, 512) {
+        : CoarseImage(H, {H['n'], H['n']}, int(pow(double(H['n']), .33))), n(H['n']), c(H['c']), r(1), W(H),
+          QT({-n / 2, -n / 2}, {n / 2, n / 2}, H['l']), prec(int(H['p'])), img(H, {512, 512}) {
         z0 = {n / 2, n / 2};
         W.watch(QT.n, "Nb of particles");
         W.watch(r, "Cluster radius");

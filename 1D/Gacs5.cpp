@@ -73,7 +73,7 @@ int main(int argc, char **argv) {
     const double e = H['e'];
     const double r = H['r'];
 
-    vb::Image img(H, n, n);
+    vb::Image img(H, {n, n});
     img.show();
 
     Automaton a(n);

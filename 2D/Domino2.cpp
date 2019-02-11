@@ -32,7 +32,7 @@ public:
 
 class Tiling : public Bitmap<Domino> {
 public:
-    explicit Tiling(const Hub &H, int n) : Bitmap<Domino>(H, 2 * n, 2 * n) {
+    explicit Tiling(const Hub &H, int n) : Bitmap<Domino>(H, {2 * n, 2 * n}) {
         for (int i = 0; i < n; ++i)
             for (int j = n - 1 - i; j < n + i; j += 2) {
                 putd(Domino{{i, j}, 1});

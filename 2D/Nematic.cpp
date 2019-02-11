@@ -12,7 +12,7 @@ namespace vb {
 
 class Nematic : public vb::Bitmap<int> {
 public:
-    Nematic(const Hub &H, int n_, int m_, int k_, double b_) : Bitmap<int>(H, n_, m_), k(k_), b(b_), P(std::max(n_, m_), 0){};
+    Nematic(const Hub &H, int n_, int m_, int k_, double b_) : Bitmap<int>(H, {n_, m_}), k(k_), b(b_), P(std::max(n_, m_), 0){};
 
     void prec() {
         ok = std::min(k, std::min(w(), h()));

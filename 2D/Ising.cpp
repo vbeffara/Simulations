@@ -5,7 +5,7 @@ using namespace std;
 
 class Ising : public Image {
 public:
-    Ising(const Hub &H, int nn, double bb, double rr, bool cc) : Image(H, nn, nn), n(nn), c(cc), beta(bb) {
+    Ising(const Hub &H, int nn, double bb, double rr, bool cc) : Image(H, {nn, nn}), n(nn), c(cc), beta(bb) {
         if (rr != 0.0) {
             for (auto z : coo_range(size)) put(z, prng.bernoulli(rr) ? BLACK : WHITE);
         } else {

@@ -5,8 +5,8 @@
 #include <vb/Picture.h>
 
 namespace vb {
-    Picture::Picture(const Hub &H, int wd, int ht)
-        : AutoWindow(H, wd, ht), snapshot_prefix(H.title), snapshot_number(0), snapshot_period(0.0), snapshot_task(-1) {}
+    Picture::Picture(const Hub &H, coo size)
+        : AutoWindow(H, size), snapshot_prefix(H.title), snapshot_number(0), snapshot_period(0.0), snapshot_task(-1) {}
 
     Picture::~Picture() {
         if (snapshot_task >= 0) remove_task(snapshot_task);

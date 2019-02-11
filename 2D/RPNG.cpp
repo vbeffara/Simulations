@@ -10,7 +10,7 @@ int main(int argc, char **argv) {
     const bool   f = H['f'];
     const double c = H['c'];
 
-    CoarseImage img(H, n, n, 10);
+    CoarseImage img(H, {n, n}, 10);
     img.show();
 
     vector<int> height(n);

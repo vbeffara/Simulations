@@ -5,7 +5,7 @@
 namespace vb {
     // TODO: remove Hub here
     Coloring::Coloring(const Hub &H, cpx z1_, cpx z2_, int n, std::function<Color(cpx)> f_)
-        : Picture(H, n, int(n *imag(z2_ - z1_) / real(z2_ - z1_))), eps(real(z1_ - z2_) / n), z1(z1_), z2(z2_), f(std::move(f_)) {}
+        : Picture(H, {n, int(n * imag(z2_ - z1_) / real(z2_ - z1_))}), eps(real(z1_ - z2_) / n), z1(z1_), z2(z2_), f(std::move(f_)) {}
 
     void Coloring::show() {
         Picture::show();

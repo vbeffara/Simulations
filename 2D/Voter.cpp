@@ -4,7 +4,7 @@ using namespace vb;
 
 class Voter : public Image {
 public:
-    Voter(const Hub &H, int n, double p, int d) : Image(H, n, n) {
+    Voter(const Hub &H, int n, double p, int d) : Image(H, {n, n}) {
         for (auto z : coo_range(size))
             if (d > 1)
                 put(z, Indexed(prng.uniform_int(d)));

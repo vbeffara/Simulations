@@ -27,7 +27,7 @@ namespace vb {
     template <class T> class Automaton : public std::vector<T> {
     public:
         // TODO: remove Hub here
-        Automaton(const Hub &H, int n_, T s, bool p = true) : std::vector<T>(n_, s), n(n_), y(0), lt(0), pause(p), I(H, n, 500) {}
+        Automaton(const Hub &H, int n_, T s, bool p = true) : std::vector<T>(n_, s), n(n_), y(0), lt(0), pause(p), I(H, {n, 500}) {}
 
         T &atp(int i) {
             int j = i % n;

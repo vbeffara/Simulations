@@ -4,7 +4,7 @@ using namespace vb;
 
 class Glauber : public Image {
 public:
-    Glauber(const Hub &H, int n_) : Image(H, n_, n_), n(n_){};
+    Glauber(const Hub &H, int n_) : Image(H, {n_, n_}), n(n_){};
     void fill(double p);
     void step(int i = -1, int j = -1);
 

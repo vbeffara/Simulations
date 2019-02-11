@@ -6,7 +6,7 @@ const Color none(BLACK), prey(GREEN), pred(RED);
 
 class SIR : public Image {
 public:
-    SIR(const Hub &H, int n, double l_) : Image(H, n, n), l(l_) {
+    SIR(const Hub &H, int n, double l_) : Image(H, {n, n}), l(l_) {
         int n0 = H['d'] ? 0 : int(H['n']) / 2;
         for (int i = n0 - 10; i < n0 + 10; ++i)
             for (int j = n0 - 10; j < n0 + 10; ++j)

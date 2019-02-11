@@ -2,7 +2,7 @@
 #include <vb/Figure.h>
 
 namespace vb {
-    Figure::Figure(const Hub &H) : Picture(H, 600, 600) {}
+    Figure::Figure(const Hub &H) : Picture(H, {600, 600}) {}
 
     double Figure::left() {
         double l = 0.0;

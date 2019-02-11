@@ -13,7 +13,7 @@ namespace vb {
 
 class IsingCFTP : public Bitmap<int> {
 public:
-    explicit IsingCFTP(const Hub &H) : Bitmap<int>(H, H['n'], H['n']), b(H['b']), d(0), s(H['s']), status(H, w(), h()) {
+    explicit IsingCFTP(const Hub &H) : Bitmap<int>(H, {H['n'], H['n']}), b(H['b']), d(0), s(H['s']), status(H, {w(), h()}) {
         for (int i = 0; i < w(); ++i)
             for (int j = 0; j < h(); ++j) put({i, j}, 1);
         snap();

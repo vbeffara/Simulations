@@ -3,7 +3,7 @@
 
 namespace vb {
     // TODO: remove Hub
-    Cube::Cube(const Hub &H, coo3 sz) : Bitmap<Adder>(H, sz.x + sz.z, sz.y + sz.z), size(sz), data(size.x * size.y * size.z, 0) {
+    Cube::Cube(const Hub &H, coo3 sz) : Bitmap<Adder>(H, {sz.x + sz.z, sz.y + sz.z}), size(sz), data(size.x * size.y * size.z, 0) {
         for (int x = 0; x < size.z; ++x)
             for (int y = 0; y < size.z; ++y) Bitmap<Adder>::at({size.x + x, size.y + y}) = Adder(((x / 10 + y / 10) % 2) != 0 ? 200 : 150);
         for (int x = 0; x < size.x; ++x)

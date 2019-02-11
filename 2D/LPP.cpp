@@ -8,7 +8,7 @@ int main(int argc, char **argv) {
     int    n = H['n'];
     double r = H['r'], l = H['l'], d = H['d'];
 
-    Image img(H, n, n);
+    Image img(H, {n, n});
     img.show();
 
     vector<int> field(n, 0);

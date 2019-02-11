@@ -3,6 +3,7 @@
 #include <future>
 #include <vb/Auto.h>
 #include <vb/util/Hub.h>
+#include <vb/util/coo.h>
 
 namespace vb {
     static inline void close_window(Fl_Widget *) { exit(1); }
@@ -10,7 +11,7 @@ namespace vb {
     template <typename T> class AutoWindow : public Auto, public T {
     public:
         // TODO: remove Hub reference here, put string instead
-        AutoWindow(const Hub &H, int wd, int ht) : Auto(.1), T(wd, ht), paused(false) {
+        AutoWindow(const Hub &H, coo size) : Auto(.1), T(size.x, size.y), paused(false) {
             T::label(H.title.c_str());
             T::callback(close_window);
         }

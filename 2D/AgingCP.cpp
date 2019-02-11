@@ -9,7 +9,7 @@ namespace vb {
 
 class ACP : public Bitmap<int> {
 public:
-    explicit ACP(const Hub &H) : Bitmap<int>(H, int(H['n']), int(H['n'])), kid(H['z']), maxage(H['m']) {
+    explicit ACP(const Hub &H) : Bitmap<int>(H, {int(H['n']), int(H['n'])}), kid(H['z']), maxage(H['m']) {
         put({w() / 2, h() / 2}, 1);
         P = {H['d'], H['a']};
         for (int i = 0; i < int(H['m']) - kid; ++i) P.push_back(double(H['b']) + double(H['r']) * i);

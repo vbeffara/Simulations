@@ -28,7 +28,7 @@ public:
         at(c + dz[at(c).d]).type = 0;
     }
 
-    explicit Tiling(const Hub &H) : Bitmap<Half>(H, H['n'], H['n']), r(H['r']), rr{r, r * r, 1, r} {
+    explicit Tiling(const Hub &H) : Bitmap<Half>(H, {H['n'], H['n']}), r(H['r']), rr{r, r * r, 1, r} {
         for (int x = 0; x < w(); ++x)
             for (int y = 0; y < h(); ++y) { at({x, y}) = Half(2 * (x % 2), 1 + ((x + y) % 2) + 2 * (x % 2)); }
         if (H['o'] == "aztec") {

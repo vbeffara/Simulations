@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
     double t = H['t']; // Snapshot interval for movies
     double a = H['a']; // Contagion probability
 
-    Image img(H, 2 * n, 2 * n);
+    Image img(H, {2 * n, 2 * n});
 
     for (auto z : coo_range(img.size))
         if (g)

@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
     a        = 1 / (1 + a);
     int s    = H['s'];
     if (s != 0) prng.seed(s);
-    Image I(H, 729, 729);
+    Image I(H, {729, 729});
     I.show();
     if (H['v']) I.snapshot_setup(H, "ORRW_cluster", 60);
 

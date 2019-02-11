@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
         h = n;
     }
 
-    Image img(H, w, h);
+    Image img(H, {w, h});
 
     for (int x = 0; x < w; ++x) {
         for (int y = 0; y < h; ++y) {

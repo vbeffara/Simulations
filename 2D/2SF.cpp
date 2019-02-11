@@ -27,7 +27,7 @@ public:
 class SF : public Bitmap<Point> {
 public:
     SF(const Hub &H, int n_, double a_)
-        : Bitmap<Point>(H, 2 * n_, 2 * n_ + 1), n(n_), a(a_), root({2 * n - 1, 2 * (n / 2)}), start({1, 2 * (n / 4)}) {
+        : Bitmap<Point>(H, {2 * n_, 2 * n_ + 1}), n(n_), a(a_), root({2 * n - 1, 2 * (n / 2)}), start({1, 2 * (n / 4)}) {
         ps = {a * a, a * a, 1, 1};
         for (auto &p : ps) p /= 2 * (1 + a * a);
     }

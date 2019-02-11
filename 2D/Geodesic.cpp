@@ -19,7 +19,7 @@ public:
 class QG : public Image {
 public:
     explicit QG(const Hub &H)
-        : Image(H, 1u << unsigned(H['n']), 1u << unsigned(H['n'])), I({w(), h()}, Info({0, 0}, {0, 0}, 0, 0)), g(H['g']), n(H['n']) {
+        : Image(H, {1u << unsigned(H['n']), 1u << unsigned(H['n'])}), I({w(), h()}, Info({0, 0}, {0, 0}, 0, 0)), g(H['g']), n(H['n']) {
         map<string, function<void()>> fields;
         fields["boolean"]  = [&, this] { fill_boolean(H['z']); };
         fields["dyadic"]   = [&, this] { fill_dyadic(H['z']); };

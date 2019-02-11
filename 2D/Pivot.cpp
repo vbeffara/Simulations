@@ -7,7 +7,7 @@ coo rot(coo z, coo p) { return p + coo{p.y - z.y, z.x - p.x}; }
 
 class Pivot : public Image {
 public:
-    Pivot(const Hub &H, int nn_) : Image(H, 4 * nn_, 4 * nn_), nn(nn_), n(nn * nn), z(n, {0, 0}) { show(); }
+    Pivot(const Hub &H, int nn_) : Image(H, {4 * nn_, 4 * nn_}), nn(nn_), n(nn * nn), z(n, {0, 0}) { show(); }
 
     int piv() {
         for (auto z : coo_range(size)) put(z, BLACK);

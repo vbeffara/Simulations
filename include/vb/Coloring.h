@@ -1,6 +1,5 @@
 #pragma once
 #include <vb/Picture.h>
-#include <vb/util/coo.h>
 #include <vb/util/cpx.h>
 
 namespace vb {

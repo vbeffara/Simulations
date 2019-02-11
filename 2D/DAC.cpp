@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
     vector<uint8_t> color(n * n);
     for (auto &c : color) c = (prng.bernoulli(q) ? 255 : 0);
 
-    Image img(H, n, n);
+    Image img(H, {n, n});
 
     for (int64_t x = 0; x < n; ++x)
         for (int64_t y = 0; y < n; ++y) img.put({x, y}, Grey(color[cluster[x + n * y]]));
