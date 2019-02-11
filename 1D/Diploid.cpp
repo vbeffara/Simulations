@@ -6,7 +6,7 @@ public:
     int    K;
     double f, d, delta, GC, eta;
 
-    Diploid(const vb::Hub &H) : K(H['K']), f(H['f']), d(H['d']), delta(H['D']), GC(H['c']), eta(H['e']) {
+    explicit Diploid(const vb::Hub &H) : K(H['K']), f(H['f']), d(H['d']), delta(H['D']), GC(H['c']), eta(H['e']) {
         double DaA = d, DAA = d, Daa = d + delta, DaB = d - delta, DAB = d - delta, DBB = d - delta;
         DR = {Daa, DaA, DAA, DaB, DAB, DBB};
         B  = {0, 0, 0, 0, 0, 0};

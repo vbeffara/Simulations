@@ -4,8 +4,8 @@
 
 namespace vb {
     struct Color {
-        Color(uint8_t R, uint8_t G, uint8_t B, uint8_t A = 255) noexcept : b(B), g(G), r(R), a(A) {}
-        Color() : Color(0, 0, 0, 0) {}
+        constexpr Color(uint8_t R, uint8_t G, uint8_t B, uint8_t A = 255) noexcept : b(B), g(G), r(R), a(A) {}
+        constexpr Color() : Color(0, 0, 0, 0) {}
 
         bool operator==(const Color &o) const { return (r == o.r) && (g == o.g) && (b == o.b) && (a == o.a); }
         bool operator!=(const Color &o) const { return (r != o.r) || (g != o.g) || (b != o.b) || (a != o.a); }

@@ -42,7 +42,7 @@ public:
 
 class BCs : public std::map<std::string, std::function<void(Ising3 &)>> {
 public:
-    BCs(const vb::Hub &H) {
+    explicit BCs(const vb::Hub &H) {
         emplace("bernoulli", [&H](Ising3 &I) {
             I.b = 0;
             for (auto c = I.begin(); c != I.end(); ++c)

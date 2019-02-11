@@ -5,7 +5,7 @@ using namespace std;
 
 class Bounces : public map<string, function<coo(coo)>> {
 public:
-    Bounces(const Hub &H) {
+    explicit Bounces(const Hub &H) {
         emplace("none", [&](coo) { return coo{0, 0}; });
         emplace("line", [&](coo z) {
             double p = H['p'];

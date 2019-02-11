@@ -3,10 +3,12 @@
 using namespace vb;
 using namespace std;
 
-const vector<Color> C = {BLACK, Grey(90), GREEN, Color(128, 0, 0)};
-
 namespace vb {
-    template <> Color to_Color(int t) { return C[t]; }
+    template <> Color to_Color(int t) {
+        static const Color     C[] = {BLACK, Grey(90), GREEN, Color(128, 0, 0)};
+        static const gsl::span CC{C};
+        return CC[t];
+    }
 } // namespace vb
 
 class PercSEP : public Bitmap<int> {

@@ -8,7 +8,7 @@
 #include <vector>
 
 namespace vb {
-    Hub::Hub(std::string t, int argc, char **argv, std::string c) : CL_Parser(t, argc, argv, c) {
+    Hub::Hub(std::string t, int argc, char **argv, std::string c) : CL_Parser(std::move(t), argc, argv, std::move(c)) {
         L = spdlog::stderr_color_mt(prog);
 
         if (at('h')) {

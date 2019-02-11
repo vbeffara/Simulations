@@ -19,16 +19,14 @@ using namespace std;
 #define MIRROR_FLIP_NE_VISITED Color(0, 0, 128)
 #define MIRROR_FLIP_NW_VISITED Color(0, 128, 0)
 
-const vector<Color> colors = {MIRROR_NW,         MIRROR_NE,         MIRROR_FLIP_NW,         MIRROR_FLIP_NE,
-                              MIRROR_NW_VISITED, MIRROR_NE_VISITED, MIRROR_FLIP_NW_VISITED, MIRROR_FLIP_NE_VISITED};
-
-const vector<int> flip_ne = {1, 0, 3, 2}, flip_nw = {3, 2, 1, 0};
-
 namespace vb {
     template <> Color to_Color(uint8_t t) {
         if (t == 0) return BLACK;
         if (t == STATE_VISITED) return Grey(128);
-        return colors[t % 8];
+        static const Color     colors[] = {MIRROR_NW,         MIRROR_NE,         MIRROR_FLIP_NW,         MIRROR_FLIP_NE,
+                                       MIRROR_NW_VISITED, MIRROR_NE_VISITED, MIRROR_FLIP_NW_VISITED, MIRROR_FLIP_NE_VISITED};
+        static const gsl::span ccolors{colors};
+        return ccolors[t % 8];
     }
 } // namespace vb
 
@@ -56,10 +54,12 @@ void Mirrors::main() {
         coo z{w() / 2, h() / 2};
         for (int t = 0, d = 0; (t < 8 * w() * h()) && contains(z); ++t) {
             if ((at(z) & STATE_PRESENT) != 0) {
+                static const int       flip_ne[] = {1, 0, 3, 2}, flip_nw[] = {3, 2, 1, 0};
+                static const gsl::span fne{flip_ne}, fnw{flip_nw};
                 if ((at(z) & STATE_NE) != 0)
-                    d = flip_ne[d];
+                    d = fne[d];
                 else
-                    d = flip_nw[d];
+                    d = fnw[d];
                 if ((at(z) & STATE_FLIP) != 0) at(z) ^= STATE_NE;
             }
             at(z) |= STATE_VISITED;

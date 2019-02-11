@@ -4,17 +4,16 @@
 using namespace vb;
 using namespace std;
 
-Color V1(100, 255, 100), V2(0, 0, 100), V3(0, 100, 0), V4(150, 150, 255), H1(255, 100, 100), H2(100, 100, 0), H3(255, 255, 0),
-    H4(100, 0, 0);
-vector<Color> dicolors{BLACK, BLACK, BLACK, BLACK, H1, V1, H2, V2, H3, V2, H4, V1, H4, V3, H3, V4, H2, V4, H1, V3};
-vector<Color> halfcolors{BLACK, BLACK, BLACK, BLACK, RED,    GREEN, YELLOW, BLUE, YELLOW, BLUE,
-                         RED,   GREEN, RED,   GREEN, YELLOW, BLUE,  YELLOW, BLUE, RED,    GREEN};
-
 class Half {
 public:
     uint8_t d, type;
     explicit Half(uint8_t _d = 0, uint8_t _t = 0) : d(_d), type(_t) {}
-    explicit operator Color() { return halfcolors[d + 4 * type]; }
+    explicit operator Color() {
+        static const Color     C[] = {BLACK, BLACK, BLACK, BLACK, RED,    GREEN, YELLOW, BLUE, YELLOW, BLUE,
+                                  RED,   GREEN, RED,   GREEN, YELLOW, BLUE,  YELLOW, BLUE, RED,    GREEN};
+        static const gsl::span CC{C};
+        return CC[d + 4 * type];
+    }
 };
 
 class Tiling : public Bitmap<Half> {
@@ -114,9 +113,8 @@ public:
 };
 
 int main(int argc, char **argv) {
-    Hub    H("Domino tiling", argc, argv, "n=200,o=aztec|hill|hole|flat,b=0,f=0,r=1,d");
-    Tiling T(H);
-    if (H['d']) halfcolors = dicolors;
+    Hub     H("Domino tiling", argc, argv, "n=200,o=aztec|hill|hole|flat,b=0,f=0,r=1");
+    Tiling  T(H);
     Console C(H);
     C.manage(T.r, 0.0, 1.0, "r");
     C.show();
