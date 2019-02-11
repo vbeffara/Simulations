@@ -1,4 +1,5 @@
 #include <vb/NumberTheory.h>
+#include <vb/util/Hub.h>
 
 using namespace vb;
 using namespace std;

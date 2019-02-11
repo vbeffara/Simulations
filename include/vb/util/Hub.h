@@ -3,13 +3,11 @@
 #include <boost/chrono.hpp>
 #include <cstdlib>
 #undef CHAR_WIDTH
-#include <fmt/ostream.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <vb/util/CL_Parser.h>
+#include <vb/util/format.h>
 
 namespace vb {
-    template <typename T> std::string pretty(const T &t) { return fmt::format("{}", t); }
-
     using Duration  = boost::chrono::duration<double>;
     using TimePoint = boost::chrono::time_point<boost::chrono::process_real_cpu_clock, Duration>;
 

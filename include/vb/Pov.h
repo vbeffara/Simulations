@@ -1,5 +1,4 @@
 #pragma once /// \file
-#include <fmt/format.h>
 #include <fstream>
 #include <vb/util/Hub.h>
 #include <vector>

@@ -3,6 +3,7 @@
 #include <vb/Elliptic.h>
 #include <vb/Hypermap.h>
 #include <vb/NumberTheory.h>
+#include <vb/util/Hub.h>
 
 namespace vb {
     template <typename T> class Constellation1 : public Constellation<T> {

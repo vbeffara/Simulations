@@ -3,6 +3,7 @@
 #include <vb/Constellation.h>
 #include <vb/Hypermap_lib.h>
 #include <vb/Polynomial.h>
+#include <vb/util/Hub.h>
 
 namespace vb {
     template <typename T> class Constellation0 : public Constellation<T> {
