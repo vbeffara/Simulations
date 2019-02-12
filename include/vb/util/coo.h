@@ -1,6 +1,6 @@
 #pragma once /// @file
+#include <fmt/format.h>
 #include <gsl/gsl>
-#include <iostream>
 
 namespace vb {
     struct coo {
@@ -20,8 +20,6 @@ namespace vb {
 
     inline int64_t norm(coo z) { return z.x * z.x + z.y * z.y; }
     inline int64_t sup(coo z) { return std::max(std::abs(z.x), std::abs(z.y)); }
-
-    inline std::ostream &operator<<(std::ostream &os, const coo z) { return os << "(" << z.x << "," << z.y << ")"; }
 
     class coo3 {
     public:
@@ -64,3 +62,11 @@ namespace vb {
     }
 #endif
 } // namespace vb
+
+template <> struct fmt::formatter<vb::coo> {
+    template <typename ParseContext> constexpr auto parse(ParseContext &ctx) { return ctx.begin(); }
+
+    template <typename FormatContext> auto format(const vb::coo &z, FormatContext &ctx) {
+        return format_to(ctx.out(), "({},{})", z.x, z.y);
+    }
+};

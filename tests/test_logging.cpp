@@ -1,6 +1,5 @@
 #define SPDLOG_DEBUG_ON
 #define SPDLOG_TRACE_ON
-#include <iostream>
 #include <vb/util/Hub.h>
 
 using namespace vb;
