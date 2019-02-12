@@ -3,9 +3,9 @@
 #include <boost/chrono.hpp>
 #include <cstdlib>
 #undef CHAR_WIDTH
+#include <fmt/ostream.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <vb/util/CL_Parser.h>
-#include <vb/util/format.h>
 
 namespace vb {
     using Duration  = boost::chrono::duration<double>;
@@ -23,9 +23,10 @@ namespace vb {
         Hub(std::string t, int argc, char **argv, std::string c = "");
         ~Hub();
 
-        void output_str(const std::string &l, const std::string &ls, const std::string &s, bool out = true);
-
-        template <typename T> void output(std::string l, std::string ls, const T &x, bool out = true) { output_str(l, ls, pretty(x), out); }
+        template <typename T> void output(std::string l, std::string ls, const T &x, bool out = true) {
+            if (l.size() > max_label_width) max_label_width = l.size();
+            outputs.push_back({l, ls, fmt::format("{}", x), out});
+        }
 
         std::shared_ptr<spdlog::logger> L;
 

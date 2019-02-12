@@ -82,9 +82,4 @@ namespace vb {
         for (const auto &[k, ks, v, o] : outputs)
             if (o) tmp << v;
     }
-
-    void Hub::output_str(const std::string &l, const std::string &ls, const std::string &s, bool out) {
-        if (l.size() > max_label_width) max_label_width = l.size();
-        outputs.push_back({l, ls, s, out});
-    }
 } // namespace vb

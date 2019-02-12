@@ -1,4 +1,3 @@
-#include <fmt/ostream.h>
 #include <vb/mp.h>
 
 namespace vb {
@@ -20,16 +19,5 @@ namespace vb {
             if (real(abs(dd)) < eps) break;
         }
         return out;
-    }
-
-    std::string pretty(const real_t &t) {
-        if (mpz_int ti(round(t)); ti == t) return fmt::format("{}", ti);
-        return fmt::format("{}", t);
-    }
-
-    std::string pretty(const complex_t &t) {
-        if (imag(t) == 0) return pretty(real(t));
-        if (real(t) == 0) return fmt::format("({} I)", pretty(imag(t)));
-        return fmt::format("({} + {} I)", pretty(real(t)), pretty(imag(t)));
     }
 } // namespace vb

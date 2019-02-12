@@ -1,7 +1,6 @@
 #pragma once
 #define BOOST_NO_CXX11_LAMBDAS // missing T(0) in boost::math::tools::polynomial::normalize()
 #include <boost/math/tools/polynomial.hpp>
-#include <vb/util/format.h>
 #include <vector>
 
 namespace vb {
@@ -33,7 +32,7 @@ namespace vb {
             int i = j - 1;
             if (P[i] == T(0)) continue;
             os << (first ? "" : " + ");
-            if ((i == 0) || (P[i] != T(1))) os << pretty(P[i]);
+            if ((i == 0) || (P[i] != T(1))) os << P[i];
             if (i > 0) os << " " << v;
             if (i > 1) os << "^" << i;
             first = false;

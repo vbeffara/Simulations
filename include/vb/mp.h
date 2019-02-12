@@ -1,7 +1,7 @@
 #pragma once
-#include <vb/util/math.h>
 #include <boost/multiprecision/mpc.hpp>
 #include <boost/multiprecision/mpfr.hpp>
+#include <vb/util/math.h>
 #undef Success
 #include <Eigen/Dense>
 
@@ -14,9 +14,6 @@ namespace vb {
 
     template <> real_t    sum<real_t>(const std::function<real_t(int)> &f);
     template <> complex_t sum<complex_t>(const std::function<complex_t(int)> &f);
-
-    std::string pretty(const real_t &t);
-    std::string pretty(const complex_t &t);
 } // namespace vb
 
 namespace Eigen {
