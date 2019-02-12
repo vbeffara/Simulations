@@ -1,3 +1,4 @@
+#include <iostream>
 #include <vb/Hypermap_lib.h>
 #include <vb/Toroidal.h>
 #include <vb/util/Hub.h>

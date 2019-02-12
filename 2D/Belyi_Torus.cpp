@@ -72,7 +72,7 @@ int main(int argc, char **argv) {
             cout << "Phi:   " << M.phi << endl;
             cout << endl;
             cout << "     Order number:    " << v.size() << endl;
-            cout << "     Passport:        " << M.sigma.passport() << endl;
+            cout << "     Passport:        " << fmt::format("{}", M.sigma.passport()) << endl;
 
             H.title = fmt::format("Toroidal enumeration (s={}, pass {}, i={})", s, M.sigma.passport(), v.size());
             Constellation1<double> C(H, M);

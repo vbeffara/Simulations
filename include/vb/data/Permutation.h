@@ -1,5 +1,5 @@
 #pragma once /// @file
-#include <iostream>
+#include <fmt/ostream.h>
 #include <vector>
 
 namespace vb {
@@ -30,9 +30,6 @@ namespace vb {
 
     bool connected(const Permutation &s, const Permutation &a);
 
-    std::ostream &operator<<(std::ostream &os, const Passport &P);
-    std::ostream &operator<<(std::ostream &os, const Permutation &P);
-
 #ifdef UNIT_TESTS
     TEST_CASE("vb::Permutation") {
         Permutation P1 = Transposition(4, 0, 1), P2 = Transposition(4, 0, 2), P = P1 * P2;
@@ -41,3 +38,23 @@ namespace vb {
     }
 #endif
 } // namespace vb
+
+template <> struct fmt::formatter<vb::Permutation> {
+    template <typename ParseContext> constexpr auto parse(ParseContext &ctx) { return ctx.begin(); }
+
+    template <typename FormatContext> auto format(const vb::Permutation &P, FormatContext &ctx) {
+        std::vector<std::string> tmp;
+        for (const auto &cc : P.cycles()) tmp.push_back(fmt::format("({})", fmt::join(cc, " ")));
+        return format_to(ctx.out(), "({})", fmt::join(tmp, " "));
+    }
+};
+
+template <> struct fmt::formatter<vb::Passport> {
+    template <typename ParseContext> constexpr auto parse(ParseContext &ctx) { return ctx.begin(); }
+
+    template <typename FormatContext> auto format(const vb::Passport &P, FormatContext &ctx) {
+        std::vector<std::string> tmp;
+        for (const auto &c : P) tmp.push_back(fmt::format("{}({})", c.first, c.second));
+        return format_to(ctx.out(), "{}", fmt::join(tmp, " "));
+    }
+};

@@ -107,32 +107,4 @@ namespace vb {
             if (l[i] > 0) return false;
         return true;
     }
-
-    std::ostream &operator<<(std::ostream &os, const Permutation &P) {
-        os << "(";
-        bool f = true;
-        for (const auto &cc : P.cycles()) {
-            if (!f) os << " ";
-            os << "(";
-            bool ff = true;
-            for (int i : cc) {
-                if (!ff) os << " ";
-                os << i;
-                ff = false;
-            }
-            os << ")";
-            f = false;
-        }
-        return os << ")";
-    }
-
-    std::ostream &operator<<(std::ostream &os, const Passport &P) {
-        bool first = true;
-        for (const auto &c : P) {
-            if (!first) os << " ";
-            os << c.first << "(" << c.second << ")";
-            first = false;
-        }
-        return os;
-    }
 } // namespace vb
