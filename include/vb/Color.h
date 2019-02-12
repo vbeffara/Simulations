@@ -1,6 +1,5 @@
 #pragma once /// @file
 #include <cstdint>
-#include <iostream>
 
 namespace vb {
     struct Color {
@@ -24,8 +23,6 @@ namespace vb {
     Color Grey(uint8_t x) noexcept;
     Color HSV(double h, double s, double v) noexcept;
     Color Indexed(int i, double s = 1, double v = 1) noexcept;
-
-    std::ostream &operator<<(std::ostream &o, const Color &c);
 
 #ifdef UNIT_TESTS
     TEST_CASE("vb::Color") {
