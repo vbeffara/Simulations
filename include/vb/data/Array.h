@@ -1,5 +1,5 @@
 #pragma once
-#include <vb/util/PRNG.h>
+#include <vb/util/coo.h>
 #include <vb/util/math.h>
 
 namespace vb {
@@ -50,6 +50,7 @@ namespace vb {
 } // namespace vb
 
 #ifdef UNIT_TESTS
+#include <vb/util/PRNG.h> // nograph
 namespace vb {
     TEST_CASE("vb::Array") {
         Array<int> A({23, 45}, 1);

@@ -1,5 +1,6 @@
 #include <vb/Bitmap.h>
 #include <vb/ProgressBar.h>
+#include <vb/util/PRNG.h>
 
 using namespace std;
 using namespace vb;
@@ -38,7 +39,7 @@ namespace vb {
 
 class Snake : public Bitmap<int> {
 public:
-    explicit Snake(const Hub &H, int n_) : Bitmap<int>(H, {6 * n_, 6 * n_}), n(n_) {
+    Snake(const Hub &H, int n_) : Bitmap<int>(H.title, {6 * n_, 6 * n_}), n(n_) {
         p.push_back({3 * n, 3 * n});
         put(p.back(), 1);
         show();

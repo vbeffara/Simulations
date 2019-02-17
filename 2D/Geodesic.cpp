@@ -3,6 +3,7 @@
 #include <queue>
 #include <vb/Bitmap.h>
 #include <vb/ProgressBar.h>
+#include <vb/util/PRNG.h>
 
 using namespace vb;
 using namespace std;
@@ -19,7 +20,8 @@ public:
 class QG : public Image {
 public:
     explicit QG(const Hub &H)
-        : Image(H, {1u << unsigned(H['n']), 1u << unsigned(H['n'])}), I({w(), h()}, Info({0, 0}, {0, 0}, 0, 0)), g(H['g']), n(H['n']) {
+        : Image(H.title, {1u << unsigned(H['n']), 1u << unsigned(H['n'])}), I({w(), h()}, Info({0, 0}, {0, 0}, 0, 0)), g(H['g']),
+          n(H['n']) {
         map<string, function<void()>> fields;
         fields["boolean"]  = [&, this] { fill_boolean(H['z']); };
         fields["dyadic"]   = [&, this] { fill_dyadic(H['z']); };

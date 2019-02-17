@@ -1,4 +1,5 @@
 #include <vb/Bitmap.h>
+#include <vb/util/PRNG.h>
 
 #define MAIN_BIT 1u
 #define L1_BIT 2u
@@ -73,7 +74,7 @@ int main(int argc, char **argv) {
     const double e = H['e'];
     const double r = H['r'];
 
-    vb::Image img(H, {n, n});
+    vb::Image img(H.title, {n, n});
     img.show();
 
     Automaton a(n);

@@ -1,5 +1,6 @@
 #include <vb/CoarseImage.h>
 #include <vb/Path.h>
+#include <vb/util/PRNG.h>
 
 class Snake : public vb::CoarseImage {
 public:

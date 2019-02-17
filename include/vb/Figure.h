@@ -5,7 +5,7 @@
 namespace vb {
     class Figure : public Picture {
     public:
-        Figure(const Hub &H);
+        Figure(const std::string &s);
 
         double  left();
         double  right();
@@ -33,7 +33,7 @@ namespace vb {
     TEST_CASE("vb::Figure") {
         char * argv[] = {(char *)"test_figure"};
         Hub    H("Testing Figure", 1, argv);
-        Figure F{H};
+        Figure F(H.title);
         for (int i = 0; i < 10; ++i)
             F.add(std::make_unique<Segment>(cpx(prng.uniform_real(-5, 5), prng.uniform_real(-5, 5)),
                                             cpx(prng.uniform_real(-5, 5), prng.uniform_real(-5, 5)), Pen(Indexed(i, .6, .9))));

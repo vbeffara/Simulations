@@ -10,7 +10,7 @@ int main(int argc, char **argv) {
     Hub H("Rotor-Router Model", argc, argv, "n=500");
     int n = H['n'];
 
-    Image img(H, {n, n});
+    Image img(H.title, {n, n});
     img.show();
 
     coo z{n / 2, n / 2};

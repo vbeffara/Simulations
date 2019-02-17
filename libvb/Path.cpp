@@ -33,7 +33,7 @@ namespace vb {
             z += gsl::at(dzc, l);
             p.push_back(z);
         }
-        Figure F{H};
+        Figure F{H.title};
         F.add(std::make_unique<Path>(p, Pen(BLACK, .2)));
         F.output_pdf(H, s);
     }

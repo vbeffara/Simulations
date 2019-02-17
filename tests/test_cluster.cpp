@@ -1,4 +1,5 @@
 #include <vb/Cluster.h>
+#include <vb/util/PRNG.h>
 
 using namespace vb;
 using namespace std;
@@ -28,7 +29,7 @@ int main(int argc, char **argv) {
     a        = 1 / (1 + a);
     int s    = H['s'];
     if (s != 0) prng.seed(s);
-    Image I(H, {729, 729});
+    Image I(H.title, {729, 729});
     I.show();
     if (H['v']) I.snapshot_setup(H, "ORRW_cluster", 60);
 

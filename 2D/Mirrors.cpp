@@ -1,4 +1,5 @@
 #include <vb/Bitmap.h>
+#include <vb/util/PRNG.h>
 
 using namespace vb;
 using namespace std;
@@ -32,7 +33,7 @@ namespace vb {
 
 class Mirrors : public Bitmap<uint8_t> {
 public:
-    explicit Mirrors(const Hub &H) : Bitmap<uint8_t>(H, {H['n'], H['n']}), p(H['p']), q(H['q']), f(H['f']) {}
+    explicit Mirrors(const Hub &H) : Bitmap<uint8_t>(H.title, {H['n'], H['n']}), p(H['p']), q(H['q']), f(H['f']) {}
     void   main();
     double p, q, f;
 };

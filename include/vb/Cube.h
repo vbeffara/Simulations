@@ -16,7 +16,7 @@ namespace vb {
 
     class Cube : public Bitmap<Adder> {
     public:
-        Cube(const Hub &H, coo3 sz);
+        Cube(const std::string &s, coo3 sz);
 
         int64_t index(coo3 c) { return c.x + size.x * c.y + size.x * size.y * c.z; }
         coo3    wrap(coo3 c) { return {pmod(c.x, size.x), pmod(c.y, size.y), pmod(c.z, size.z)}; }
@@ -59,7 +59,7 @@ namespace vb {
     TEST_CASE("vb::Cube") {
         char *argv[] = {(char *)"test_cube"};
         Hub   H("Testing Cube", 1, argv);
-        Cube  C(H, {100, 100, 100});
+        Cube  C(H.title, {100, 100, 100});
         C.putp(prng.uniform_coo3(C.size), 1);
         int s = 0;
         for (auto v : C) s += v;

@@ -1,5 +1,7 @@
+#include <iostream>
 #include <vb/Bitmap.h>
 #include <vb/Console.h>
+#include <vb/util/PRNG.h>
 
 using namespace std;
 using namespace vb;
@@ -23,7 +25,7 @@ int Stat::min = 0, Stat::max = 1;
 
 class Stuck : public Bitmap<Stat> {
 public:
-    explicit Stuck(const Hub &H) : Bitmap<Stat>(H, {2 * int(H['n']), 2 * int(H['n'])}), alpha(H['a']), beta(H['b']), H(H), C(H) {
+    explicit Stuck(const Hub &H) : Bitmap<Stat>(H.title, {2 * int(H['n']), 2 * int(H['n'])}), alpha(H['a']), beta(H['b']), H(H) {
         for (int i = 0; i < w() / 2; ++i)
             for (int j = 0; j < h() / 2; ++j) at({2 * i, 2 * j}) = Stat{-1};
         z = {w() / 2, h() / 2};

@@ -5,7 +5,7 @@
 namespace vb {
     template <typename T> class Bitmap : public Picture, public Array<T> {
     public:
-        Bitmap(const Hub &H, coo size, T d = T());
+        Bitmap(const std::string &s, coo size, T d = T());
 
         using Array<T>::size;
         using Array<T>::at;
@@ -44,7 +44,8 @@ namespace vb {
         }
     };
 
-    template <typename T> Bitmap<T>::Bitmap(const Hub &H, coo size, T d) : Picture(H, size), Array<T>(size, d), z0({0, 0}), dflt(d) {}
+    template <typename T>
+    Bitmap<T>::Bitmap(const std::string &s, coo size, T d) : Picture(s, size), Array<T>(size, d), z0({0, 0}), dflt(d) {}
 
     template <typename T> void Bitmap<T>::fill(coo z, T c, int adj) {
         T in = at(z);
@@ -72,7 +73,7 @@ namespace vb {
     TEST_CASE("vb::Image") {
         char *argv[] = {(char *)"test_bitmap"};
         Hub   H("Testing Image", 1, argv);
-        Image img(H, {256, 256});
+        Image img(H.title, {256, 256});
         img.show();
         for (int i = 0; i < 256; ++i)
             for (int j = 0; j < 256; ++j) img.put({i, j}, Color(i, j, (8 * (i + j)) % 256));

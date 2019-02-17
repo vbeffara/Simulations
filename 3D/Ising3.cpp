@@ -1,5 +1,6 @@
 #include <vb/Cube.h>
 #include <vb/ProgressBar.h>
+#include <vb/util/PRNG.h>
 
 class Ising3 : public vb::Cube {
 public:
@@ -7,7 +8,7 @@ public:
     bool                k;
     double              beta;
     std::vector<double> glaub, kaw;
-    Ising3(const vb::Hub &H, int n, bool k_, double b_) : Cube(H, {n, n, n}), b(0), k(k_), beta(b_) {
+    Ising3(const vb::Hub &H, int n, bool k_, double b_) : Cube(H.title, {n, n, n}), b(0), k(k_), beta(b_) {
         for (int k = 0; k <= 6; ++k) glaub.push_back(exp(k * beta) / (exp(k * beta) + exp((6 - k) * beta)));
         for (int k = 0; k <= 12; ++k) kaw.push_back(1 / (1 + exp(2 * beta * (k - 6))));
     };

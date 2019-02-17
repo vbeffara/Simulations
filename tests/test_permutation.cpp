@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <iomanip>
+#include <iostream>
 #include <vb/Stream_lib.h>
 #include <vb/util/Hub.h>
 

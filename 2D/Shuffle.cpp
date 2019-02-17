@@ -3,6 +3,7 @@
 #include <gsl/gsl>
 #include <vb/Figure.h>
 #include <vb/data/Array.h>
+#include <vb/util/PRNG.h>
 
 using namespace vb;
 using namespace std;
@@ -135,8 +136,8 @@ struct Tiling {
         }
     }
 
-    void output_pdf(const Hub &H, const string &name, int off = 0) const {
-        Figure F{H};
+    void output_pdf(const std::string &s, const string &name, int off = 0) const {
+        Figure F(s);
         int    ddx[4] = {0, 2, 0, 2}, ddy[4] = {0, -2, -4, -6};
         int    offx = gsl::at(ddx, off % 4), offy = gsl::at(ddy, off % 4);
         for (auto z : coo_range(state.size))
@@ -178,13 +179,13 @@ struct Tiling {
         for (int i = 0; i < n; ++i) {
             delslide();
             create(pbs[i]);
-            if (H['v']) output_pdf(H, "snapshots/" + fmt::format("snapshot_{:04d}", i), n - i - 1);
+            if (H['v']) output_pdf(H.title, "snapshots/" + fmt::format("snapshot_{:04d}", i), n - i - 1);
         }
     }
 
     void run(const Hub &H) {
         aztecgen();
-        output_pdf(H, name);
+        output_pdf(H.title, name);
 
         auto     H1 = height();
         ofstream dat(H.dir + name + ".dat");

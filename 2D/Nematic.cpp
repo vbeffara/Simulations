@@ -1,5 +1,6 @@
 #include <vb/Bitmap.h>
 #include <vb/Console.h>
+#include <vb/util/PRNG.h>
 
 using namespace vb;
 
@@ -12,7 +13,7 @@ namespace vb {
 
 class Nematic : public vb::Bitmap<int> {
 public:
-    Nematic(const Hub &H, int n_, int m_, int k_, double b_) : Bitmap<int>(H, {n_, m_}), k(k_), b(b_), P(std::max(n_, m_), 0){};
+    Nematic(const Hub &H, int n_, int m_, int k_, double b_) : Bitmap<int>(H.title, {n_, m_}), k(k_), b(b_), P(std::max(n_, m_), 0){};
 
     void prec() {
         ok = std::min(k, std::min(w(), h()));
@@ -75,7 +76,7 @@ public:
     }
 
     void go(const Hub &H) {
-        Console C(H);
+        Console C;
         C.watch(order, "order");
         C.manage(b, -5.0, 10.0, "beta");
         C.manage(k, 1, 100, "k");

@@ -1,4 +1,5 @@
 #include <vb/Bitmap.h>
+#include <vb/util/PRNG.h>
 
 using namespace vb;
 using namespace std;
@@ -22,7 +23,7 @@ public:
 
 class UST : public Bitmap<Point> {
 public:
-    explicit UST(const Hub &H, int n_) : Bitmap<Point>(H, {2 * n_ + 1, 2 * n_ + 1}), n(n_) {}
+    explicit UST(const Hub &H, int n_) : Bitmap<Point>(H.title, {2 * n_ + 1, 2 * n_ + 1}), n(n_) {}
 
     void path(coo z, Type tgt) {
         while (at(z).t != tgt) {

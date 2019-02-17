@@ -1,11 +1,12 @@
 #include <vb/Bitmap.h>
+#include <vb/util/PRNG.h>
 
 using namespace vb;
 using namespace std;
 
 class Configuration : public Image {
 public:
-    explicit Configuration(const Hub &H, int n) : Image(H, {n, n}), expl({n, n}), table(2 * n * n + 1) {}
+    explicit Configuration(const Hub &H, int n) : Image(H.title, {n, n}), expl({n, n}), table(2 * n * n + 1) {}
 
     void compute_cpts(int r1) {
         int t = 0;
@@ -111,7 +112,7 @@ public:
 
 class Coupling : public Image {
 public:
-    Coupling(const Hub &H, int r) : Image(H, {2 * r, 2 * r}), r1(r / 4), r2(r / 2), r3(r), c1(H, 2 * r), c2(H, 2 * r) {
+    Coupling(const Hub &H, int r) : Image(H.title, {2 * r, 2 * r}), r1(r / 4), r2(r / 2), r3(r), c1(H, 2 * r), c2(H, 2 * r) {
         c1.pick(r1, r2, r3);
         for (int i = 0; i < w(); ++i)
             for (int j = 0; j < h(); ++j) c2[{i, j}] = c1[{i, j}];

@@ -101,13 +101,14 @@ namespace vb {
         for (auto &v : V) v.z = 1.0 + m - v.z;
     }
 
+    // TODO: remove Hub here
     void Toroidal::output_pdf(const Hub &H) {
         for (unsigned e = 0; e < sigma.size(); ++e) {
             if (initial[e] == 0) continue;
             V[E[e].src].bone = std::max(V[E[e].src].bone, initial[e]);
         }
 
-        Figure           F{H};
+        Figure           F{H.title};
         std::vector<cpx> eee;
         Cycles           sc = sigma.cycles();
 

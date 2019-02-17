@@ -1,5 +1,6 @@
 #include <vb/Bitmap.h>
 #include <vb/Figure.h>
+#include <vb/util/PRNG.h>
 
 using namespace vb;
 using namespace std;
@@ -10,7 +11,7 @@ namespace vb {
 
 class Ising : public Bitmap<int> {
 public:
-    Ising(const Hub &H, int n, double beta, int con) : Bitmap<int>(H, {n, n}), con(con), p(2 * con + 1) {
+    Ising(const Hub &H, int n, double beta, int con) : Bitmap<int>(H.title, {n, n}), con(con), p(2 * con + 1) {
         for (auto z : coo_range(size)) put(z, prng.bernoulli(.5) ? 1 : -1);
         if (con == 6) {
             int m = 2 * n / 3;
@@ -32,7 +33,7 @@ public:
     }
 
     void output_pdf(const Hub &H, const std::string &s = "") {
-        Figure      F{H};
+        Figure      F{H.title};
         cpx         shift;
         vector<cpx> pattern;
         if (con == 6) {

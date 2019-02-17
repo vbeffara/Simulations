@@ -1,4 +1,5 @@
 #include <vb/Bitmap.h>
+#include <vb/util/PRNG.h>
 
 using namespace vb;
 using namespace std;
@@ -14,7 +15,7 @@ namespace vb {
 
 class Potts : public Bitmap<int> {
 public:
-    Potts(const Hub &H, int n, int q, double beta_) : Bitmap<int>(H, {n, n}), q(q), beta(beta_) {
+    Potts(const Hub &H, int n, int q, double beta_) : Bitmap<int>(H.title, {n, n}), q(q), beta(beta_) {
         bcs["perio"] = [] {};
         bcs["free"]  = [this] {
             b = 1;

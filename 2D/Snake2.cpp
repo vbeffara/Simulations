@@ -1,4 +1,5 @@
 #include <vb/Bitmap.h>
+#include <vb/util/PRNG.h>
 
 using namespace vb;
 
@@ -16,7 +17,7 @@ namespace vb {
 
 class Snake : public Bitmap<site> {
 public:
-    Snake(const Hub &H, int n, double l, bool hex) : Bitmap(H, {4 * n + 1, 2 * n + 1}), lambda(l), path(1, {2 * n, 0}), hex(hex) {
+    Snake(const Hub &H, int n, double l, bool hex) : Bitmap(H.title, {4 * n + 1, 2 * n + 1}), lambda(l), path(1, {2 * n, 0}), hex(hex) {
         for (int x = 0; x < w(); ++x) put({x, 0}, VERTEX);
         if (double a = H['a']; a != 0) triangle(a);
         if (!H['v']) show();

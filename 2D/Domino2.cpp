@@ -1,5 +1,6 @@
 #include <vb/Bitmap.h>
 #include <vb/Console.h>
+#include <vb/util/PRNG.h>
 
 using namespace vb;
 using namespace std;
@@ -32,7 +33,7 @@ public:
 
 class Tiling : public Bitmap<Domino> {
 public:
-    explicit Tiling(const Hub &H, int n) : Bitmap<Domino>(H, {2 * n, 2 * n}) {
+    explicit Tiling(const Hub &H, int n) : Bitmap<Domino>(H.title, {2 * n, 2 * n}) {
         for (int i = 0; i < n; ++i)
             for (int j = n - 1 - i; j < n + i; j += 2) {
                 putd(Domino{{i, j}, 1});
@@ -98,7 +99,7 @@ int main(int argc, char **argv) {
     Hub H("Domino tiling (v2)", argc, argv, "n=100,a=.5");
     two_by_two(H['a']);
     hues = W;
-    Console C(H);
+    Console C;
     C.manage(contrast, 0.0, 1.0, "contrast");
     for (auto &x : hues)
         for (auto &y : x)

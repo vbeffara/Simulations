@@ -110,13 +110,14 @@ namespace vb {
         }
     }
 
+    // TODO: remove Hub here
     void Spheroidal::output_pdf(const Hub &H) {
         for (unsigned e = 0; e < sigma.size(); ++e) {
             if (initial[e] == 0) continue;
             V[E[e].src].bone = std::max(V[E[e].src].bone, initial[e]);
         }
 
-        Figure           F(H);
+        Figure           F(H.title);
         std::vector<cpx> eee;
         Cycles           sc = sigma.cycles();
 

@@ -1,5 +1,6 @@
 #include <vb/Bitmap.h>
 #include <vb/Path.h>
+#include <vb/util/PRNG.h>
 
 using namespace vb;
 
@@ -9,7 +10,7 @@ namespace vb {
 
 class LERW : private Bitmap<int> {
 public:
-    explicit LERW(const Hub &H) : Bitmap<int>(H, {2 * int(H['n']), 2 * int(H['n'])}) {
+    explicit LERW(const Hub &H) : Bitmap<int>(H.title, {2 * int(H['n']), 2 * int(H['n'])}) {
         coo z{w() / 2, h() / 2};
         while (contains(z)) {
             int d = prng() & 3u;

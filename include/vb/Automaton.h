@@ -1,5 +1,6 @@
 #pragma once /// \file
 #include <vb/Bitmap.h>
+#include <vb/util/PRNG.h>
 
 namespace vb {
     template <class T> class Automaton;
@@ -27,7 +28,7 @@ namespace vb {
     template <class T> class Automaton : public std::vector<T> {
     public:
         // TODO: remove Hub here
-        Automaton(const Hub &H, int n_, T s, bool p = true) : std::vector<T>(n_, s), n(n_), y(0), lt(0), pause(p), I(H, {n, 500}) {}
+        Automaton(const Hub &H, int n_, T s, bool p = true) : std::vector<T>(n_, s), n(n_), y(0), lt(0), pause(p), I(H.title, {n, 500}) {}
 
         T &atp(int i) {
             int j = i % n;
@@ -38,6 +39,7 @@ namespace vb {
         void show() { I.show(); }
 
         void step() {
+            // TODO: is that reimplementing prng::discrete ?
             double U = prng.uniform_real(0, lt);
             int    j = 0;
             while (U > rates[j]) U -= rates[j++];

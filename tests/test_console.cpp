@@ -1,4 +1,5 @@
 #include <vb/Console.h>
+#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -7,7 +8,7 @@ int main(int argc, char **argv) {
     Hub    H("Testing Console", argc, argv);
     double x = 1.1;
 
-    Console W(H);
+    Console W;
     W.watch(x, "x");
     W.show();
 

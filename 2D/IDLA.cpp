@@ -1,4 +1,5 @@
 #include <vb/CoarseImage.h>
+#include <vb/util/PRNG.h>
 
 using namespace vb;
 using namespace std;
@@ -55,7 +56,7 @@ public:
     Bouncy(const Hub &H, int n, const string &j) : CoarseImage(H, {n, n}, int(pow(n, .25))), jump(Bounces(H).at(j)) {
         z0 = {n / 2, n / 2};
         if (H['g']) {
-            tree = make_unique<Image>(H, coo{2 * n - 1, 2 * n - 1});
+            tree = make_unique<Image>(H.title, coo{2 * n - 1, 2 * n - 1});
             tree->put(z0 * 2, WHITE);
             tree->show();
         } else {

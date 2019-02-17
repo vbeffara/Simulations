@@ -2,7 +2,8 @@
 #include <vb/Minimizer.h>
 
 namespace vb {
-    Map::Map(const Hub &H, int nn) : Picture(H, {600, 600}), n(nn), zero(-1), one(-1), infinity(-1) {
+    // TODO: remove Hub here
+    Map::Map(const Hub &H, int nn) : Picture(H.title, {600, 600}), n(nn), zero(-1), one(-1), infinity(-1) {
         for (int i = 0; i < n; ++i) {
             v.push_back(std::make_unique<Vertex>(0.0));
             bd.push_back(false);

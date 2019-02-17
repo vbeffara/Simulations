@@ -2,7 +2,6 @@
 #include <FL/Fl.H>
 #include <future>
 #include <vb/Auto.h>
-#include <vb/util/Hub.h>
 #include <vb/util/coo.h>
 
 namespace vb {
@@ -10,9 +9,8 @@ namespace vb {
 
     template <typename T> class AutoWindow : public Auto, public T {
     public:
-        // TODO: remove Hub reference here, put string instead
-        AutoWindow(const Hub &H, coo size) : Auto(.1), T(size.x, size.y), paused(false) {
-            T::label(H.title.c_str());
+        AutoWindow(const std::string &s, coo size) : Auto(.1), T(size.x, size.y), paused(false) {
+            T::label(s.c_str());
             T::callback(close_window);
         }
 

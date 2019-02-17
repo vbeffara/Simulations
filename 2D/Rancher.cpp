@@ -43,7 +43,7 @@ public:
     vb::Pen                    P;
     vb::Console                W;
 
-    Rancher(int argc, char **argv) : H("Rancher process", argc, argv, "p=.1,n=1000,i=1,o,r"), F(H), W(H) {}
+    Rancher(int argc, char **argv) : H("Rancher process", argc, argv, "p=.1,n=1000,i=1,o,r"), F(H.title) {}
 
     point rand_point() {
         point p = *cur, pp = *boost::prior(cur), ppp = *boost::next(cur);

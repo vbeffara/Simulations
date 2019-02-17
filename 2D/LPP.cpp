@@ -1,4 +1,5 @@
 #include <vb/Bitmap.h>
+#include <vb/util/PRNG.h>
 
 using namespace std;
 using namespace vb;
@@ -8,7 +9,7 @@ int main(int argc, char **argv) {
     int    n = H['n'];
     double r = H['r'], l = H['l'], d = H['d'];
 
-    Image img(H, {n, n});
+    Image img(H.title, {n, n});
     img.show();
 
     vector<int> field(n, 0);

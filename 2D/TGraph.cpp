@@ -13,7 +13,7 @@ class TGraph : public Figure, Array<loc> {
 public:
     using Array::size;
 
-    TGraph(const Hub &H, int n, cpx A, double t) : Figure(H), Array<loc>({n, n}), A(A), theta(t) {
+    TGraph(const Hub &H, int n, cpx A, double t) : Figure(H.title), Array<loc>({n, n}), A(A), theta(t) {
         compute();
         plot();
         show();
@@ -67,8 +67,8 @@ public:
         }
     }
 
-    void interact(const Hub &H) {
-        Console C(H);
+    void interact() {
+        Console C;
         C.manage(theta, 0.0, 1.0, "arg(λ) / 2π", [this] {
             compute();
             plot();
@@ -94,5 +94,5 @@ int main(int argc, char **argv) {
     if (H['l'])
         TG.loop();
     else
-        TG.interact(H);
+        TG.interact();
 }

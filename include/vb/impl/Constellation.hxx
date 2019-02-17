@@ -1,7 +1,6 @@
 #pragma once
 #include <iomanip>
 #include <vb/Constellation.h>
-#include <vb/util/Hub.h>
 
 namespace vb {
     template <typename T> Constellation<T>::Constellation() = default;

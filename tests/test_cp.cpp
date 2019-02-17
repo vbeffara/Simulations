@@ -46,7 +46,7 @@ int main(int argc, char **argv) {
         m.v[i]->r = x[3 * i + 2];
     }
 
-    Figure f{H};
+    Figure f{H.title};
     m.plot_circles(&f);
     f.add(std::make_unique<Circle>(cpx(0.0, 0.0), 1.0));
     f.show();

@@ -1,5 +1,6 @@
 #include <queue>
 #include <vb/Bitmap.h>
+#include <vb/util/PRNG.h>
 
 using namespace vb;
 using namespace std;
@@ -45,7 +46,7 @@ public:
 
 class Sagex : public Bitmap<int> {
 public:
-    Sagex(const Hub &H, int w, int h) : Bitmap<int>(H, {w, h}) {
+    Sagex(const Hub &H, int w, int h) : Bitmap<int>(H.title, {w, h}) {
         for (int x = 0; x < w; ++x)
             for (int y = 0; y < h; ++y) {
                 if (prng.bernoulli(H['l'])) {

@@ -10,7 +10,7 @@ int main(int argc, char **argv) {
     vb::cpx &             z    = C->z;
     auto                  P    = std::make_unique<vb::Path>(std::vector<vb::cpx>{0});
     std::vector<vb::cpx> &path = P->z;
-    vb::Figure            f{H};
+    vb::Figure            f(H.title);
     f.ortho = H['o'];
     f.add(std::move(C));
     f.add(std::move(P));

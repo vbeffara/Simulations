@@ -1,4 +1,5 @@
 #include <vb/Bitmap.h>
+#include <vb/util/PRNG.h>
 
 using std::vector, vb::prng, vb::BLACK, vb::WHITE;
 
@@ -84,7 +85,7 @@ vector<bool> init_ok_connect6() {
 
 class Glass : public vb::Image {
 public:
-    Glass(const vb::Hub &H, int n) : vb::Image(H, {n, n}) {
+    Glass(const vb::Hub &H, int n) : vb::Image(H.title, {n, n}) {
         std::map<std::string, std::function<vector<bool>()>> init;
         init.emplace("none", init_ok_none);
         init.emplace("glass", init_ok_glass);

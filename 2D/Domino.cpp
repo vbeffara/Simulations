@@ -1,5 +1,6 @@
 #include <vb/Bitmap.h>
 #include <vb/Console.h>
+#include <vb/util/PRNG.h>
 
 using namespace vb;
 using namespace std;
@@ -28,7 +29,7 @@ public:
         at(c + dz[at(c).d]).type = 0;
     }
 
-    explicit Tiling(const Hub &H) : Bitmap<Half>(H, {H['n'], H['n']}), r(H['r']), rr{r, r * r, 1, r} {
+    explicit Tiling(const Hub &H) : Bitmap<Half>(H.title, {H['n'], H['n']}), r(H['r']), rr{r, r * r, 1, r} {
         for (int x = 0; x < w(); ++x)
             for (int y = 0; y < h(); ++y) { at({x, y}) = Half(2 * (x % 2), 1 + ((x + y) % 2) + 2 * (x % 2)); }
         if (H['o'] == "aztec") {
@@ -115,7 +116,7 @@ public:
 int main(int argc, char **argv) {
     Hub     H("Domino tiling", argc, argv, "n=200,o=aztec|hill|hole|flat,b=0,f=0,r=1");
     Tiling  T(H);
-    Console C(H);
+    Console C;
     C.manage(T.r, 0.0, 1.0, "r");
     C.show();
     T.show();

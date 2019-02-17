@@ -13,7 +13,7 @@ using namespace std;
 
 class Perco_Schramm : public Figure {
 public:
-    explicit Perco_Schramm(const Hub &H) : Figure(H), w(2 * int(H['n'])), h(int(H['l']) > 0 ? H['l'] : w - 1), mask(w * h, true) {
+    explicit Perco_Schramm(const Hub &H) : Figure(H.title), w(2 * int(H['n'])), h(int(H['l']) > 0 ? H['l'] : w - 1), mask(w * h, true) {
         for (int i = 0; i < w / 2; ++i) cols.push_back(true);
         for (int i = 0; i < w / 2; ++i) cols.push_back(false);
         for (int i = 0; i < (w - 1) * h; ++i) cols.push_back(prng.bernoulli(H['p']));

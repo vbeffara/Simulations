@@ -1,4 +1,5 @@
 #include <vb/Bitmap.h>
+#include <vb/util/PRNG.h>
 
 using namespace vb;
 
@@ -8,7 +9,7 @@ int main(int argc, char **argv) {
     double p = H['p'];
     int    n = H['n'];
 
-    Image img(H, {n, n});
+    Image img(H.title, {n, n});
 
     for (int x = 0; x < n; ++x)
         for (int y = 0; y < n / 2; ++y) img.put({x, y}, WHITE);

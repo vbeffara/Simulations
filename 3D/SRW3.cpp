@@ -1,12 +1,13 @@
 #include <vb/Cube.h>
 #include <vb/ProgressBar.h>
+#include <vb/util/PRNG.h>
 
 using namespace vb;
 using namespace std;
 
 class SRW3 : public Cube {
 public:
-    explicit SRW3(const Hub &H, int n_) : Cube(H, {n_, n_, n_}), n(n_), pos({n / 2, n / 2, n / 2}) {}
+    explicit SRW3(const Hub &H, int n_) : Cube(H.title, {n_, n_, n_}), n(n_), pos({n / 2, n / 2, n / 2}) {}
     void step() {
         pos = pos + dz3[prng.uniform_int(6)];
         putp(pos, 255);

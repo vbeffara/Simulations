@@ -1,6 +1,7 @@
 #include <set>
 #include <vb/data/Array.h>
 #include <vb/util/Hub.h>
+#include <vb/util/PRNG.h>
 
 using cooo = std::pair<int, double>;
 using ptt  = std::pair<cooo, cooo>;

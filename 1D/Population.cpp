@@ -79,17 +79,17 @@ int main(int argc, char **argv) {
     vector<cpx> pos(size, 0);
     for (int64_t i = 0; i < size; ++i) pos[i] = cpx(i, nu[i + 1]);
 
-    vb::Console W(H);
+    vb::Console W;
     W.manage(slope, -100.0, 100.0, "slope");
     W.manage(Ac, .2, .4, "Ac");
     W.show();
 
-    vb::Figure F(H);
+    vb::Figure F(H.title);
     F.ortho = false;
     F.add(std::make_unique<Path>(pos));
     F.show();
 
-    vb::Figure G(H);
+    vb::Figure G(H.title);
     G.ortho = false;
     vector<vector<cpx>> graph(size + 1);
 

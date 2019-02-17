@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
 
     Pen p(Color(255, 0, 0), 1, Color(255, 255, 0));
 
-    Figure F{H};
+    Figure F{H.title};
 
     vector<cpx> fd;
     fd.push_back(L({1, 1}));

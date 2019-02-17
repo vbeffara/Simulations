@@ -1,5 +1,6 @@
 #include <vb/CoarseImage.h>
 #include <vb/Point.h>
+#include <vb/util/PRNG.h>
 
 using namespace vb;
 

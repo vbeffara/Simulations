@@ -3,6 +3,7 @@
 #include <cairo/cairo.h>
 #include <vb/AutoWindow.h>
 #include <vb/Color.h>
+#include <vb/util/Hub.h>
 
 namespace vb {
     /** A nice helper class for simulations.
@@ -13,8 +14,7 @@ namespace vb {
 
     class Picture : public AutoWindow<Fl_Gl_Window> {
     public:
-        // TODO: remove Hub here
-        Picture(const Hub &H, coo size);
+        Picture(const std::string &s, coo size);
         ~Picture() override;
 
         Picture(const Picture &) = delete;
