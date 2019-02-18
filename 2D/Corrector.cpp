@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
     double p     = H['p'];
     bool   batch = H['b'];
 
-    Map             m(H, n * n);
+    Map             m(H.title, n * n);
     vector<uint8_t> adj(n * n, 0);
 
     for (int i = 0; i < n; ++i) {

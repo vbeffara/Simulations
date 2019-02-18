@@ -23,7 +23,7 @@ namespace vb {
         int    infinity;
         double scale = 1;
 
-        Map(const Hub &H, int nn);
+        Map(const std::string &s, int nn);
 
         adj_list::iterator find_edge(const Edge &e) const;
 

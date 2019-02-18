@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
 
     if (H['v']) {
         auto [ul, br] = C.bounds();
-        Coloring CC(H, ul, br, 800, [&](cpx z) { return Indexed(imag(C(z)) > 0 ? 1 : 2); });
+        Coloring CC(H.title, ul, br, 800, [&](cpx z) { return Indexed(imag(C(z)) > 0 ? 1 : 2); });
         CC.scale(1.5);
         CC.show();
         if (H['o']) CC.output(H);

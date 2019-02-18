@@ -5,7 +5,7 @@
 namespace vb {
     class Coloring : public Picture {
     public:
-        Coloring(const Hub &H, cpx z1_, cpx z2_, int n, std::function<Color(cpx)> f_);
+        Coloring(const std::string &s, cpx z1_, cpx z2_, int n, std::function<Color(cpx)> f_);
 
         void show() override;
         void show2();
@@ -41,7 +41,7 @@ namespace vb {
     TEST_CASE("vb::Coloring") {
         char *   argv[] = {(char *)"test_coloring"};
         Hub      H("Testing Coloring", 1, argv);
-        Coloring C(H, cpx(0, 0), cpx(1, 1), 500, [](cpx z) { return Indexed(real(z) * imag(z) * 10); });
+        Coloring C(H.title, cpx(0, 0), cpx(1, 1), 500, [](cpx z) { return Indexed(real(z) * imag(z) * 10); });
         C.scale(1.2);
         C.shift(cpx(.2, .3));
         C.show();

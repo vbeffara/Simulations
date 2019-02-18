@@ -14,10 +14,9 @@ namespace vb {
 
     class CoarseImage : public Bitmap<CoarseCell> {
     public:
-        // TODO: remove Hub here
-        CoarseImage(const Hub &H, coo size, int l)
-            : Bitmap<CoarseCell>(H.title, {1 + (size.x - 1) / l, 1 + (size.y - 1) / l}, CoarseCell(l)), true_width(size.x),
-              true_height(size.y), L(l), LL(l * l) {}
+        CoarseImage(const std::string &s, coo size, int l)
+            : Bitmap<CoarseCell>(s, {1 + (size.x - 1) / l, 1 + (size.y - 1) / l}, CoarseCell(l)), true_width(size.x), true_height(size.y),
+              L(l), LL(l * l) {}
 
         bool contains(coo z) const {
             z += z0;

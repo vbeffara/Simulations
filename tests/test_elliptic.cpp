@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
     if (H['v']) {
         // Image I (800,800); I.show(); C.draw(I,H['a'],H['b']); I.pause(); I.hide();
         auto     bd = C.bounds();
-        Coloring CC(H, bd.first, bd.second, 800, [&](cpx z) { return HSV((imag(C(z)) > 0) ? 0 : .5, .8, .8); });
+        Coloring CC(H.title, bd.first, bd.second, 800, [&](cpx z) { return HSV((imag(C(z)) > 0) ? 0 : .5, .8, .8); });
         CC.scale(1.5);
         CC.show();
         while (CC.visible()) {

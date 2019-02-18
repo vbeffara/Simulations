@@ -10,7 +10,7 @@ int main(int argc, char **argv) {
     a        = 1 / (1 + a);
     auto L   = int(pow(n, .33));
 
-    CoarseImage img(H, {n, n}, L);
+    CoarseImage img(H.title, {n, n}, L);
     img.show();
 
     for (coo z{n / 2, n / 2};;) {

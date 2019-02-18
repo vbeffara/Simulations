@@ -7,7 +7,8 @@ using namespace std;
 
 class DDLA : public CoarseImage {
 public:
-    explicit DDLA(const Hub &H, int n_) : CoarseImage(H, {n_, n_}, H['f'] ? int(pow(n_, .33)) : 1), f(H['f']), n(n_), cursum(0), p(H['p']) {
+    explicit DDLA(const Hub &H, int n_)
+        : CoarseImage(H.title, {n_, n_}, H['f'] ? int(pow(n_, .33)) : 1), f(H['f']), n(n_), cursum(0), p(H['p']) {
         put({0, 0}, true);
         pq.push({{1, 0}, prng.exponential() / p});
         pq.push({{0, 1}, prng.exponential() / (1 - p)});

@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
     unsigned         target = 0;
     if ((d == 0) && (g == 1) && (!H['f']) && (s < ntri.size())) target = ntri[s];
 
-    Coloring img(H, cpx(-1, -1), cpx(1, 1), 500, [](cpx) { return BLACK; });
+    Coloring img(H.title, cpx(-1, -1), cpx(1, 1), 500, [](cpx) { return BLACK; });
 
     while ((target == 0) || (v.size() < target)) {
         Permutation alpha = Pairings(a).rrand();

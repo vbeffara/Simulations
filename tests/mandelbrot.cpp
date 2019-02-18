@@ -16,7 +16,7 @@ Color M(cpx c) {
 int main(int argc, char **argv) {
     Hub H("Mandelbrot set", argc, argv, "n=800,t=1000");
     t = H['t'];
-    Coloring C(H, cpx(-2.2, -1.5), cpx(1.2, 1.5), H['n'], M);
+    Coloring C(H.title, cpx(-2.2, -1.5), cpx(1.2, 1.5), H['n'], M);
     C.show();
     return Fl::run();
 }

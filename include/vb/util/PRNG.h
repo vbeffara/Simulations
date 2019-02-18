@@ -1,10 +1,5 @@
 #pragma once
 #define BOOST_DISABLE_ASSERTS 1
-namespace std {
-    template <typename T1, typename T2> auto bind2nd(T1 t1, T2 t2) {
-        return [t1, t2](auto t3) { return t1(t3, t2); };
-    }
-} // namespace std
 #include <boost/random.hpp>
 #include <random>
 #include <vb/util/coo.h>

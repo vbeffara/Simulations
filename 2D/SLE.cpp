@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
 
     Loewner  L(H['n'], H['k']);
     double   w = L.Max[0] - L.Min[0];
-    Coloring C(H, cpx(-w, 0), cpx(w, 4.0 * w / 3.0), H['n'], [&L](cpx z) { return L.compute(z); });
+    Coloring C(H.title, cpx(-w, 0), cpx(w, 4.0 * w / 3.0), H['n'], [&L](cpx z) { return L.compute(z); });
     if (H['a']) C.aa = false;
     C.show();
     C.output(H);

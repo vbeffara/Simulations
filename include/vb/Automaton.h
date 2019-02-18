@@ -27,8 +27,7 @@ namespace vb {
 
     template <class T> class Automaton : public std::vector<T> {
     public:
-        // TODO: remove Hub here
-        Automaton(const Hub &H, int n_, T s, bool p = true) : std::vector<T>(n_, s), n(n_), y(0), lt(0), pause(p), I(H.title, {n, 500}) {}
+        Automaton(const std::string &title, int n_, T s, bool p = true) : std::vector<T>(n_, s), n(n_), pause(p), I(title, {n, 500}) {}
 
         T &atp(int i) {
             int j = i % n;
@@ -65,8 +64,8 @@ namespace vb {
     private:
         std::vector<double>  rates;
         std::vector<Rule<T>> rules;
-        int                  n, y;
-        double               lt;
+        int                  n, y{0};
+        double               lt{0};
         bool                 pause;
         Bitmap<T>            I;
     };

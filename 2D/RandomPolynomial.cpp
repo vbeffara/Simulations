@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
     if (s > 0) prng.seed(s);
     RPoly<double> P(H, H['n'], H['p']);
     double        l = H['p'] ? 1 : 10;
-    Coloring      C(H, cpx(-l, -l), cpx(l, l), 800, P);
+    Coloring      C(H.title, cpx(-l, -l), cpx(l, l), 800, P);
     C.show();
     C.output(H);
     Fl::run();

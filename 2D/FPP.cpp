@@ -8,7 +8,7 @@ double cost() { return prng.exponential(); }
 
 class FPP : public CoarseImage {
 public:
-    FPP(const Hub &H, int n) : CoarseImage(H, {n, n}, int(pow(n, .33))), area(0) {
+    FPP(const Hub &H, int n) : CoarseImage(H.title, {n, n}, int(pow(n, .33))), area(0) {
         invasion = H['i'];
         twostep  = H['2'];
         trace    = H['t'];

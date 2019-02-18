@@ -6,7 +6,7 @@ using namespace vb;
 int main(int argc, char **argv) {
     Hub H("Test: circle packing", argc, argv, "s=4,v");
 
-    Map m(H, 13);
+    Map m(H.title, 13);
     m << Edge(0, 1) << Edge(0, 3) << Edge(0, 5) << Edge(1, 2) << Edge(1, 4) << Edge(1, 6) << Edge(1, 3) << Edge(1, 0) << Edge(2, 7)
       << Edge(2, 4) << Edge(2, 1) << Edge(3, 0) << Edge(3, 1) << Edge(3, 6) << Edge(3, 5) << Edge(4, 1) << Edge(4, 2) << Edge(4, 7)
       << Edge(4, 6) << Edge(5, 0) << Edge(5, 3) << Edge(5, 6) << Edge(5, 8) << Edge(5, 10) << Edge(6, 1) << Edge(6, 4) << Edge(6, 7)

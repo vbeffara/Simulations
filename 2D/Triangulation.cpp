@@ -8,7 +8,7 @@ using vb::Map;
 
 class Triangulation : public Map {
 public:
-    explicit Triangulation(const Hub &H, int n) : Map(H, n) {
+    Triangulation(const Hub &H, int n) : Map(H.title, n) {
         for (int i = 1; i < n; ++i) (*this) << Edge(0, i);
         for (int i = n - 1; i > 1; --i) (*this) << Edge(1, i);
         (*this) << Edge(1, 0) << Edge(2, 0) << Edge(2, 1) << Edge(2, 3);

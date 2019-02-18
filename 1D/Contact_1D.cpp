@@ -6,7 +6,7 @@ namespace vb {
 
 class Contact : public vb::Automaton<int> {
 public:
-    explicit Contact(const vb::Hub &H) : Automaton<int>(H, H['n'], 1, H['p']) {
+    explicit Contact(const vb::Hub &H) : Automaton<int>(H.title, H['n'], 1, H['p']) {
         for (auto &s : (*this))
             if (vb::prng.bernoulli(H['e'])) s = 2;
 
