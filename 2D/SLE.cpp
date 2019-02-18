@@ -50,5 +50,5 @@ int main(int argc, char **argv) {
     Coloring C(H.title, cpx(-w, 0), cpx(w, 4.0 * w / 3.0), H['n'], [&L](cpx z) { return L.compute(z); });
     if (H['a']) C.aa = false;
     C.show();
-    C.output(H);
+    C.output(H.title);
 }

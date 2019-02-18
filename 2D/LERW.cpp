@@ -20,7 +20,7 @@ public:
     }
 
     using Bitmap<int>::output;
-    void output(const Hub &H, const std::string &s) override {
+    void output(const std::string &s) override {
         OldPath P(0);
         coo     z{w() / 2, h() / 2};
         while (contains(z)) {
@@ -28,11 +28,11 @@ public:
             P.push_back(d);
             z += dz[d];
         }
-        P.output(H, s);
+        P.output(s);
     }
 };
 
 int main(int argc, char **argv) {
     Hub H("Loop-erased random walk", argc, argv, "n=500");
-    LERW(H).output(H);
+    LERW(H).output(H.title);
 }

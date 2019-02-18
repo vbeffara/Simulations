@@ -26,7 +26,7 @@ namespace vb {
         void     put(const coo3 &c, uint8_t t);
         void     putp(const coo3 &c, uint8_t t) { put(wrap(c), t); }
 
-        void output_pov(const Hub &H, std::string s = "");
+        void output_pov(const std::string &s);
 
         using iterator = Cube_iterator;
         iterator begin();
@@ -65,7 +65,7 @@ namespace vb {
         for (auto v : C) s += v;
         CHECK(s == 1);
         CHECK(Color(C.Bitmap<Adder>::at({0, 0})).a == 255);
-        C.output_pov(H);
+        C.output_pov(H.title);
     }
 #endif
 } // namespace vb

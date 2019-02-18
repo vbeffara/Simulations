@@ -15,5 +15,5 @@ int main(int argc, char **argv) {
         img.put(z, BLACK);
         z += dz[prng() % 4];
     }
-    img.output(H);
+    img.output(H.title);
 }

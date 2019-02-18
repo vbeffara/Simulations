@@ -54,7 +54,7 @@ public:
             path({2 * n, 2 * (n / 4)}, EMPH);
         }
         pause();
-        output(H);
+        output(H.title);
     }
 
     int n;

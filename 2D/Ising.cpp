@@ -67,5 +67,5 @@ int main(int argc, char *argv[]) {
     I.show();
     if (H['v']) I.snapshot_setup(H, "Ising", 10);
     I.run(H['t'], H['k']);
-    I.output(H);
+    I.output(H.title);
 }

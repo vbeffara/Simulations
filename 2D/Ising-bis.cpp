@@ -52,7 +52,7 @@ public:
                 for (auto zz : pattern) p.push_back(cpx(i) + cpx(j) * shift + zz);
                 F.add(make_unique<Polygon>(p, Pen(BLACK, 1, c, true)));
             }
-        F.output_pdf(H, s);
+        F.output_pdf(s);
     }
 
     void explore() {

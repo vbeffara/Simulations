@@ -153,7 +153,7 @@ struct Tiling {
                 F.add(make_unique<Segment>(s(z * 2 - edge), s(z * 2 + edge), Pen(Grey(uint8_t(255 * gr)), 130.0 / state.size.x)));
             }
         if (H['v']) F.show();
-        F.output(H, name);
+        F.output(name);
     }
 
     auto height() const {
@@ -188,7 +188,7 @@ struct Tiling {
         output_pdf(H.title, name);
 
         auto     H1 = height();
-        ofstream dat(H.dir + name + ".dat");
+        ofstream dat(name + ".dat");
         for (auto z : coo_range(H1.size)) {
             dat << H1[z] << " ";
             if (z.x == H1.size.x - 1) dat << "\n";

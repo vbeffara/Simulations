@@ -99,5 +99,5 @@ int main(int argc, char **argv) {
     RS.walk();
     RS.show();
     RS.pause();
-    RS.output(H);
+    RS.output(H.title);
 }

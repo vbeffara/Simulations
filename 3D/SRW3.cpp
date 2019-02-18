@@ -21,5 +21,5 @@ int main(int argc, char **argv) {
     Hub  H("Simple random walk in dimension 3", argc, argv, "n=100");
     SRW3 C(H, H['n']);
     for (int t = 0; t < C.n * C.n; ++t) C.step();
-    C.output_pov(H);
+    C.output_pov(H.title);
 }

@@ -27,5 +27,5 @@ int main(int argc, char **argv) {
                 }
     }
 
-    img.output_png(H);
+    img.output_png(H.title);
 }

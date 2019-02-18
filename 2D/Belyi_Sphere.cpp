@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
                 CC.scale(1.5);
                 CC.show();
                 if (H['o'])
-                    CC.output(H);
+                    CC.output(H.title);
                 else {
                     while (CC.visible()) {
                         CC.update();

@@ -103,7 +103,7 @@ int main(int argc, char **argv) {
         vb::ProgressBar P(T);
         int             s = H['s'];
         for (int t = 0; t < T; ++t) {
-            if ((s > 0) && (t % (T / s)) == 0) C.output_pov(H, fmt::format("snapshots/snapshot_{:04d}", t / (T / s)));
+            if ((s > 0) && (t % (T / s)) == 0) C.output_pov(fmt::format("snapshots/snapshot_{:04d}", t / (T / s)));
             C.swipe();
             P.set(t);
         }
@@ -112,5 +112,5 @@ int main(int argc, char **argv) {
     if (H['i'])
         for (auto c = C.begin(); c != C.end(); ++c) C.put(c, (c.y > C.size.y / 2) ? C.at(c) / 2 : C.at(c));
 
-    C.output_pov(H);
+    C.output_pov(H.title);
 }

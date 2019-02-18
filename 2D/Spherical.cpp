@@ -132,7 +132,7 @@ int main(int argc, char **argv) {
         if (H['p']) {
             F.pause();
         } else {
-            F.output(H);
+            F.output(H.title);
         }
     } else if (H['t'] == "barg") {
         Bargman F(H, H['n'], H['w']);
@@ -140,7 +140,7 @@ int main(int argc, char **argv) {
         if (H['p']) {
             F.pause();
         } else {
-            F.output(H);
+            F.output(H.title);
         }
     } else {
         H.L->error("Type should be 'wave' or 'barg', exiting...");

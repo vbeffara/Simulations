@@ -55,9 +55,9 @@ namespace vb {
 
 #ifdef UNIT_TESTS
     TEST_CASE("vb::Constellation1") {
-        auto                   M      = HLib().at("lat_SV");
         char *                 argv[] = {(char *)"test_constellation1"};
         Hub                    H("Testing Constellation1", 1, argv);
+        auto                   M = HLib().at("lat_SV");
         Constellation1<double> C(H, M);
         Constellation1<real_t> Cq(C);
         Cq.findn();

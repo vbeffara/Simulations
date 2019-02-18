@@ -51,6 +51,6 @@ int main(int argc, char **argv) {
     if (int s = H['s']) { prng.seed(s); }
     Wave W(H, H['n'], H['k'], H['l'], H['w'], H['e']);
     W.show();
-    W.output(H);
+    W.output(H.title);
     Fl::run();
 }

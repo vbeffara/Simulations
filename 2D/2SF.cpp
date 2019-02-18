@@ -133,7 +133,7 @@ public:
         stage(H);
         dual();
         stage(H);
-        output(H);
+        output(H.title);
     }
 
     int            n;

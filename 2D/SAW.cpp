@@ -26,5 +26,5 @@ int main(int argc, char **argv) {
             P[j] = l;
     }
 
-    P.output(H);
+    P.output(H.title);
 }

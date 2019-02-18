@@ -35,22 +35,19 @@ namespace vb {
         glDrawPixels(pixel_w(), pixel_h(), GL_BGRA, GL_UNSIGNED_BYTE, sd);
     }
 
-    // TODO: remove Hub here
-    void Picture::output_png(const Hub &H, const std::string &s) {
+    void Picture::output_png(const std::string &s) {
         paint();
-        std::string os = H.dir + (s.empty() ? H.title : s) + ".png";
+        std::string os = s + ".png";
         cairo_surface_write_to_png(surface, os.c_str());
     }
 
-    void Picture::output(const Hub &H, const std::string &s) { output_png(H, s); }
-
-    void Picture::output(const Hub &H) { output(H, ""); }
+    void Picture::output(const std::string &s) { output_png(s); }
 
     // TODO: remove Hub here
     void Picture::snapshot(const Hub &H) {
         std::string fn = fmt::format("snapshots/{}_{:04d}", snapshot_prefix, snapshot_number++);
         H.L->info("Taking a snapshot as {}.png", fn);
-        output_png(H, fn);
+        output_png(fn);
     }
 
     // TODO: remove Hub here

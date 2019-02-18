@@ -23,9 +23,8 @@ namespace vb {
         Picture &operator=(Picture &&) = delete;
 
         /// Output the image in the preferred format (PNG by default).
-        virtual void output(const Hub &H, const std::string &s);
-        virtual void output(const Hub &H);
-        void         output_png(const Hub &H, const std::string &s = "");
+        virtual void output(const std::string &s);
+        void         output_png(const std::string &s);
 
         void snapshot_setup(const Hub &H, const std::string &prefix, double period = 0.0);
         void snapshot(const Hub &H);

@@ -65,5 +65,5 @@ int main(int argc, char **argv) {
     DDLA img(H, H['n']);
     img.show();
     img.run();
-    img.output(H);
+    img.output(H.title);
 }

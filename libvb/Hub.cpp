@@ -28,6 +28,7 @@ namespace vb {
         mkdir("output", mode);
         mkdir(dir.c_str(), mode);
         mkdir((dir + "snapshots").c_str(), mode);
+        chdir(dir.c_str());
 
         output("Command line", "", cmd, false);
         output("Code version", "", version, false);
@@ -81,5 +82,7 @@ namespace vb {
         auto tmp = db << "insert into runs (cmd_id" + ls + ") values (?" + os + ");" << *id;
         for (const auto &[k, ks, v, o] : outputs)
             if (o) tmp << v;
+
+        chdir("../..");
     }
 } // namespace vb

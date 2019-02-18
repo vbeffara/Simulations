@@ -29,7 +29,7 @@ public:
     }
 
     using vb::CoarseImage::output;
-    void output(const vb::Hub &H, const std::string &s) override {
+    void output(const std::string &s) override {
         vb::OldPath P(z.size() - 1);
         for (unsigned i = 0; i < z.size() - 1; ++i) {
             vb::coo dz = z[i + 1] - z[i];
@@ -39,7 +39,7 @@ public:
             if (dy > 0) { P[i] = 1; }
             if (dy < 0) { P[i] = 3; }
         }
-        P.output(H, s);
+        P.output(s);
     }
 
     std::vector<vb::coo> z;
@@ -59,6 +59,6 @@ int main(int argc, char **argv) {
             S.step(vb::dz[vb::prng.uniform_int(4)]);
         }
     }
-    S.output(H);
+    S.output(H.title);
     return 0;
 }

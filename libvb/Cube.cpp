@@ -30,8 +30,7 @@ namespace vb {
     Cube_iterator Cube::begin() { return Cube_iterator(this, {0, 0, 0}); }
     Cube_iterator Cube::end() { return Cube_iterator(this, {0, 0, size.z}); }
 
-    // TODO: remove Hub from there
-    void Cube::output_pov(const Hub &H, std::string s) {
+    void Cube::output_pov(const std::string &s) {
         Pov_Union squares1, squares2, cube, corner, ground;
 
         for (int x = 0; x < size.x; ++x)
@@ -64,6 +63,6 @@ namespace vb {
                    << Texture("pigment { color White } finish { reflection {.1} ambient 0.2 diffuse 0.1 }");
             SS << corner << ground;
         }
-        SS.output_pov(H, s.empty() ? H.title : s);
+        SS.output_pov(s);
     }
 } // namespace vb

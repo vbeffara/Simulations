@@ -202,5 +202,5 @@ int main(int argc, char **argv) {
     }
 
     if (!H['i']) { img.pause(); }
-    img.output(H);
+    img.output(H.title);
 }

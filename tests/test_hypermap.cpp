@@ -34,7 +34,7 @@ int main(int argc, char **argv) {
         Coloring CC(H.title, ul, br, 800, [&](cpx z) { return Indexed(imag(C(z)) > 0 ? 1 : 2); });
         CC.scale(1.5);
         CC.show();
-        if (H['o']) CC.output(H);
+        if (H['o']) CC.output(H.title);
         while (CC.visible()) {
             CC.update();
             Fl::wait();

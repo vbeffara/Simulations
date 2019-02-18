@@ -96,7 +96,7 @@ int main(int argc, char **argv) {
     Bouncy B(H, H['n'], H['j']);
     B.run(H);
     if (H['g'])
-        B.tree->output(H);
+        B.tree->output(H.title);
     else
-        B.output(H);
+        B.output(H.title);
 }

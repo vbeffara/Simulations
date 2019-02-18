@@ -46,5 +46,5 @@ int main(int argc, char **argv) {
         img.go(H);
         if (t % int(H['s']) == 1) img.update();
     }
-    img.output(H);
+    img.output(H.title);
 }

@@ -162,7 +162,7 @@ public:
             F.add(std::make_unique<vb::Path>(path));
             F.show();
             F.pause();
-            F.output_pdf(H, "Rancher");
+            F.output_pdf("Rancher");
         }
 
         if (renew) {

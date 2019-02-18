@@ -63,6 +63,6 @@ int main(int argc, char **argv) {
     double        l = H['p'] ? 1 : 10;
     Coloring      C(H.title, cpx(-l, -l), cpx(l, l), 800, P);
     C.show();
-    C.output(H);
+    C.output(H.title);
     Fl::run();
 }

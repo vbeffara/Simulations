@@ -62,5 +62,5 @@ int main(int argc, char **argv) {
     FPP F(H, H['n']);
     F.show();
     F.run();
-    F.output(H);
+    F.output(H.title);
 }

@@ -99,7 +99,7 @@ int main(int argc, char **argv) {
     S.fill({S.w() / 2 - 1, 1}, LEFT);
     if (S.visible()) {
         if (H['p']) S.pause();
-        S.output(H);
+        S.output(H.title);
     }
     H.output("Final value of x", "x", S.path.back().x);
 }

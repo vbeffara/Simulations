@@ -48,5 +48,5 @@ int main(int argc, char **argv) {
 
     F.show();
     F.pause();
-    F.output_pdf(H);
+    F.output_pdf(H.title);
 }

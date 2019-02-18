@@ -16,8 +16,8 @@ namespace vb {
         std::vector<std::unique_ptr<Shape>> contents;
 
         using Picture::output;
-        void output(const Hub &H, const std::string &s) override;
-        void output_pdf(const Hub &H, const std::string &s = "");
+        void output(const std::string &s) override;
+        void output_pdf(const std::string &s);
 
         double margin = 0;
         bool   ortho  = true;

@@ -134,7 +134,7 @@ int main(int argc, char **argv) {
     DLA dla(H);
     dla.show();
     dla.runDLA();
-    dla.output(H);
+    dla.output(H.title);
     if (H['f']) dla.output_fine("dla.png");
     H.L->info("Final cluster: {} particles, diameter = {}", dla.QT.n, dla.r);
 }

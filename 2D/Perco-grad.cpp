@@ -37,6 +37,6 @@ int main(int argc, char **argv) {
     img.show();
     img.fill({0, h - 1}, Color(255, 0, 0));
     img.update();
-    img.output(H);
+    img.output(H.title);
     return 0;
 }

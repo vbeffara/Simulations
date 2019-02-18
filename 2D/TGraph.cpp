@@ -17,7 +17,7 @@ public:
         compute();
         plot();
         show();
-        output(H);
+        output(H.title);
     };
 
     cpx phiwb(int mw, int nw, int mb, int nb) {

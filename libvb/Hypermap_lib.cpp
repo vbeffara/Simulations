@@ -4,7 +4,7 @@
 namespace vb {
     HLib::HLib() {
         using msh    = map<std::string, Hypermap>;
-        msh::operator=(YAML::LoadFile("hypermaps.yaml").as<msh>());
+        msh::operator=(YAML::LoadFile("../../hypermaps.yaml").as<msh>());
 
         {
             Hypermap M = at("house");

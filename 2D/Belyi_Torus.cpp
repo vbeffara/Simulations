@@ -94,7 +94,7 @@ int main(int argc, char **argv) {
                 img.f   = [&](cpx z) { return Indexed((imag(C(z)) > 0) ? 1 : 2); };
                 img.scale(1.3);
                 img.show();
-                img.output(H);
+                img.output(H.title);
             }
 
             if (H['q']) {

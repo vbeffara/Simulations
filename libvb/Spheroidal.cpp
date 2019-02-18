@@ -154,6 +154,6 @@ namespace vb {
             }
         }
 
-        F.output_pdf(H);
+        F.output_pdf(H.title);
     }
 } // namespace vb

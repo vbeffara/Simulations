@@ -77,9 +77,8 @@ namespace vb {
 
     void Figure::paint() { paint(cr); }
 
-    // TODO: remove Hub here
-    void Figure::output_pdf(const Hub &H, const std::string &s) {
-        std::string os = H.dir + (s.empty() ? H.title : s) + ".pdf";
+    void Figure::output_pdf(const std::string &s) {
+        std::string os = s + ".pdf";
 
         double real_h = w() * (top() - bottom()) / (right() - left());
 
@@ -91,5 +90,5 @@ namespace vb {
         cairo_surface_destroy(pdf);
     }
 
-    void Figure::output(const Hub &H, const std::string &s) { output_pdf(H, s); }
+    void Figure::output(const std::string &s) { output_pdf(s); }
 } // namespace vb

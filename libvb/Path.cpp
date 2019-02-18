@@ -21,9 +21,9 @@ namespace vb {
         return true;
     }
 
-    void OldPath::output(const Hub &H, const std::string &s) const { output_pdf(H, s); }
+    void OldPath::output(const std::string &s) const { output_pdf(s); }
 
-    void OldPath::output_pdf(const Hub &H, const std::string &s) const {
+    void OldPath::output_pdf(const std::string &s) const {
         static const cpx dzc[4] = {cpx(1, 0), cpx(0, 1), cpx(-1, 0), cpx(0, -1)};
         int              l      = 0;
         cpx              z(0);
@@ -33,8 +33,8 @@ namespace vb {
             z += gsl::at(dzc, l);
             p.push_back(z);
         }
-        Figure F{H.title};
+        Figure F{s};
         F.add(std::make_unique<Path>(p, Pen(BLACK, .2)));
-        F.output_pdf(H, s);
+        F.output_pdf(s);
     }
 } // namespace vb

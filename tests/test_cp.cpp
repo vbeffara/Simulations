@@ -51,5 +51,5 @@ int main(int argc, char **argv) {
     f.add(std::make_unique<Circle>(cpx(0.0, 0.0), 1.0));
     f.show();
     f.pause();
-    f.output(H);
+    f.output(H.title);
 }

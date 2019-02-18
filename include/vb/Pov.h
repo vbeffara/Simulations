@@ -31,7 +31,7 @@ namespace vb {
                     << R"(background { color White })";
         }
 
-        void output_pov(const Hub &H, const std::string &s);
+        void output_pov(const std::string &s);
     };
 
     class Pov_Union : public bunch {
