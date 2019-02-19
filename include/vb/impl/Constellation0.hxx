@@ -5,6 +5,7 @@
 #include <vb/Spheroidal.h>
 
 namespace vb {
+    // TODO: remove Hub here
     template <typename T> Constellation0<T>::Constellation0(const Hub &H, const Hypermap &M) {
         Hypermap M2(M);
         M2.dessin();
@@ -13,7 +14,7 @@ namespace vb {
         M3.normalize();
         while (true) {
             M2.split_edges();
-            Spheroidal S(H, M2);
+            Spheroidal S(M2, H['m']);
             S.pack();
             int N = M.sigma.size(), inf = 0, dinf = 0;
             for (auto c : M.phi.cycles()) {

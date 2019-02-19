@@ -9,7 +9,7 @@ using namespace std;
 int main(int argc, char **argv) {
     Hub      H("Toroidal triangulation", argc, argv, "n=4,o=0,m=4,f,g=lat_C5");
     HLib     HL;
-    Toroidal G(H, HL.at(H['g']));
+    Toroidal G(HL.at(H['g']), H['m']);
 
     for (int i = 0; i < int(H['o']); ++i) {
         G.split_edges();
@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
     }
 
     for (int i = H['o']; i <= int(H['n']); ++i) {
-        cerr << "Step " << i << ": " << G;
+        cerr << "Step " << i << "\n";
         G.pack();
         if (H['f']) G.flip();
 
@@ -44,5 +44,5 @@ int main(int argc, char **argv) {
         }
     }
 
-    G.output_pdf(H);
+    G.output_pdf(H.title);
 }

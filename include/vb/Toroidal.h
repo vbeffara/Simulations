@@ -1,6 +1,5 @@
 #pragma once
 #include <vb/Hypermap.h>
-#include <vb/util/Hub.h>
 
 // Toroidal: Hypermap-based triangulation of genus 1
 //
@@ -26,10 +25,11 @@
 namespace vb {
     class Toroidal : public Hypermap {
     public:
-        Toroidal(const Hub &H, Hypermap M);
+        Toroidal(Hypermap M, unsigned m);
 
-        void pack();                   //< Run acpa() and then compute an embedding into a torus.
-        void output_pdf(const Hub &H); //< Make a PDF of a few periods of the covering.
+        void pack();                           //< Run acpa() and then compute an embedding into a torus.
+                                               // TODO: remove Hub here
+        void output_pdf(const std::string &s); //< Make a PDF of a few periods of the covering.
 
         void flip();
 

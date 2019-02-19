@@ -3,12 +3,10 @@
 #include <vb/Spheroidal.h>
 
 namespace vb {
-    // TODO: remove Hub
-    Spheroidal::Spheroidal(const Hub &H, Hypermap M) : Hypermap(std::move(M)) {
+    Spheroidal::Spheroidal(Hypermap M, unsigned m) : Hypermap(std::move(M)) {
         assert(genus() == 0);
         from_hypermap();
-        mode  = H['m'];
-        title = H.title;
+        mode = m;
     }
 
     void Spheroidal::pack() {
@@ -110,14 +108,13 @@ namespace vb {
         }
     }
 
-    // TODO: remove Hub here
-    void Spheroidal::output_pdf(const Hub &H) {
+    void Spheroidal::output_pdf(const std::string &s) {
         for (unsigned e = 0; e < sigma.size(); ++e) {
             if (initial[e] == 0) continue;
             V[E[e].src].bone = std::max(V[E[e].src].bone, initial[e]);
         }
 
-        Figure           F(H.title);
+        Figure           F(s);
         std::vector<cpx> eee;
         Cycles           sc = sigma.cycles();
 
@@ -154,6 +151,6 @@ namespace vb {
             }
         }
 
-        F.output_pdf(H.title);
+        F.output_pdf(s);
     }
 } // namespace vb

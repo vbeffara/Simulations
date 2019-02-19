@@ -4,15 +4,16 @@
 #include <vb/Toroidal.h>
 
 namespace vb {
+    // TODO: remove Hub here
     template <typename T> Constellation1<T>::Constellation1(const Hub &H, const Hypermap &M) {
         Hypermap M2(M);
         M2.dessin();
         p = {I_<T>(), T(0)};
         do {
             M2.split_edges();
-            Toroidal S(H, M2);
+            Toroidal S(M2, H['m']);
             S.pack();
-            S.output_pdf(H);
+            S.output_pdf(H.title);
             int N = M.sigma.size();
             b.clear();
             for (auto c : M.sigma.cycles()) {

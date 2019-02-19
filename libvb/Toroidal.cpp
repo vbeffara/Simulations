@@ -3,11 +3,10 @@
 #include <vb/Toroidal.h>
 
 namespace vb {
-    Toroidal::Toroidal(const Hub &H, Hypermap M) : Hypermap(std::move(M)), m(I) {
+    Toroidal::Toroidal(Hypermap M, unsigned m) : Hypermap(std::move(M)), m(I) {
         assert(genus() == 1);
         from_hypermap();
-        mode  = H['m'];
-        title = H.title;
+        mode = m;
     }
 
     void Toroidal::pack() {
@@ -101,14 +100,13 @@ namespace vb {
         for (auto &v : V) v.z = 1.0 + m - v.z;
     }
 
-    // TODO: remove Hub here
-    void Toroidal::output_pdf(const Hub &H) {
+    void Toroidal::output_pdf(const std::string &s) {
         for (unsigned e = 0; e < sigma.size(); ++e) {
             if (initial[e] == 0) continue;
             V[E[e].src].bone = std::max(V[E[e].src].bone, initial[e]);
         }
 
-        Figure           F{H.title};
+        Figure           F{s};
         std::vector<cpx> eee;
         Cycles           sc = sigma.cycles();
 
@@ -155,6 +153,6 @@ namespace vb {
         }
 
         F.add(std::make_unique<Polygon>(std::vector<cpx>{0, 1, cpx(1) + m, m}, Pen(BLACK, 0, Color(0, 0, 0, 50), true)));
-        F.output_pdf(H.title);
+        F.output_pdf(s);
     }
 } // namespace vb

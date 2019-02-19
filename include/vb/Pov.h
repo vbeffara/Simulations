@@ -1,6 +1,6 @@
 #pragma once /// \file
+#include <fmt/ostream.h>
 #include <fstream>
-#include <vb/util/Hub.h>
 #include <vector>
 
 namespace vb {
