@@ -1,6 +1,7 @@
 #include <vb/Console.h>
 #include <vb/Figure.h>
 #include <vb/data/Array.h>
+#include <vb/util/Hub.h>
 
 using namespace vb;
 using namespace std;

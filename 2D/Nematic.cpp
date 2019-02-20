@@ -1,5 +1,6 @@
 #include <vb/Bitmap.h>
 #include <vb/Console.h>
+#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -82,7 +83,7 @@ public:
         C.manage(k, 1, 100, "k");
         show();
         C.show();
-        if (H['v']) snapshot_setup(H, "movie", 10);
+        if (H['v']) snapshot_setup("movie", 10);
         for (int t = int(H['t']) - 1; t != 0; --t) {
             if ((k != ok) || (b != ob)) prec();
             for (int i = 0; i < h(); ++i) redo({0, i}, 1);

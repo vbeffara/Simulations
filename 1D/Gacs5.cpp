@@ -1,4 +1,5 @@
 #include <vb/Bitmap.h>
+#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 #define MAIN_BIT 1u

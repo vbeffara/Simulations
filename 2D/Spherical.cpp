@@ -1,4 +1,5 @@
 #include <vb/Sphere.h>
+#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 vb::Color f_to_c(double f) {

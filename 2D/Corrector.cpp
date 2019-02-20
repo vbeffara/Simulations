@@ -1,4 +1,5 @@
 #include <vb/Map.h>
+#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;

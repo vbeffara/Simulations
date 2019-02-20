@@ -28,7 +28,6 @@ namespace vb {
         Toroidal(Hypermap M, unsigned m);
 
         void pack();                           //< Run acpa() and then compute an embedding into a torus.
-                                               // TODO: remove Hub here
         void output_pdf(const std::string &s); //< Make a PDF of a few periods of the covering.
 
         void flip();

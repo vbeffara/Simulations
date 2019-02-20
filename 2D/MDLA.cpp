@@ -1,4 +1,5 @@
 #include <vb/Bitmap.h>
+#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 #define EMPTY BLACK
@@ -25,7 +26,7 @@ int main(int argc, char **argv) {
             img.put(z, prng.bernoulli(p) ? ALIVE : EMPTY);
     img.put({n, n}, DEAD);
     img.show();
-    if (t > 0) img.snapshot_setup(H, "MDLA", t);
+    if (t > 0) img.snapshot_setup("MDLA", t);
 
     while (true) {
         coo z = prng.uniform_coo(img.size), nz = z + dz[prng() % 4];

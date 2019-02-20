@@ -1,5 +1,6 @@
 #include <vb/Bitmap.h>
 #include <vb/ProgressBar.h>
+#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 using namespace std;
@@ -62,7 +63,7 @@ int main(int argc, char **argv) {
     Snake S(H, n);
 
     if (inf) {
-        if (vid) S.snapshot_setup(H, "RWSH", 1.0);
+        if (vid) S.snapshot_setup("RWSH", 1.0);
         while (norm(S.p.back() - coo{3 * n, 3 * n}) < (3 * n - 1) * (3 * n - 1)) {
             if ((S.p.size() == 1) || (prng.bernoulli(.5)))
                 S.grow(prng.uniform_int(4));

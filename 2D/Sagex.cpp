@@ -1,5 +1,6 @@
 #include <queue>
 #include <vb/Bitmap.h>
+#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -59,7 +60,7 @@ public:
 
     void go(const Hub &H) {
         show();
-        if (H['v']) snapshot_setup(H, "Sagex", 1);
+        if (H['v']) snapshot_setup("Sagex", 1);
         while (true) {
             Particle p = q.top();
             q.pop();

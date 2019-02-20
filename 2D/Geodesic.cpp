@@ -3,6 +3,7 @@
 #include <queue>
 #include <vb/Bitmap.h>
 #include <vb/ProgressBar.h>
+#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;

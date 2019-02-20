@@ -1,4 +1,5 @@
 #include <vb/Cluster.h>
+#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -31,7 +32,7 @@ int main(int argc, char **argv) {
     if (s != 0) prng.seed(s);
     Image I(H.title, {729, 729});
     I.show();
-    if (H['v']) I.snapshot_setup(H, "ORRW_cluster", 60);
+    if (H['v']) I.snapshot_setup("ORRW_cluster", 60);
 
     Cluster2 W;
     coo      z{0, 0};

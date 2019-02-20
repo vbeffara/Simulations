@@ -50,7 +50,6 @@ namespace vb {
 } // namespace vb
 
 #ifdef UNIT_TESTS
-#include <vb/util/PRNG.h> // nograph
 namespace vb {
     TEST_CASE("vb::Array") {
         Array<int> A({23, 45}, 1);

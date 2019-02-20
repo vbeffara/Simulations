@@ -1,4 +1,5 @@
 #include <vb/Bitmap.h>
+#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -26,7 +27,7 @@ public:
         bool c = H['c'];
 
         while (true) {
-            if ((s > 0) && ((t++ % s) == 0)) snapshot(H);
+            if ((s > 0) && ((t++ % s) == 0)) snapshot();
             auto z = prng.uniform_coo(size);
             if ((z.x + z.y) % 2 == 0) continue;
             fill(mid, IN);

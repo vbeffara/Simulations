@@ -43,20 +43,17 @@ namespace vb {
 
     void Picture::output(const std::string &s) { output_png(s); }
 
-    // TODO: remove Hub here
-    void Picture::snapshot(const Hub &H) {
+    void Picture::snapshot() {
         std::string fn = fmt::format("snapshots/{}_{:04d}", snapshot_prefix, snapshot_number++);
-        H.L->info("Taking a snapshot as {}.png", fn);
         output_png(fn);
     }
 
-    // TODO: remove Hub here
-    void Picture::snapshot_setup(const Hub &H, const std::string &prefix, double period) {
+    void Picture::snapshot_setup(const std::string &prefix, double period) {
         if (snapshot_task >= 0) remove_task(snapshot_task);
         snapshot_period = period;
         snapshot_prefix = prefix;
-        snapshot(H);
-        if (period > 0) snapshot_task = add_task(period, [this, &H] { this->snapshot(H); });
+        snapshot();
+        if (period > 0) snapshot_task = add_task(period, [this] { this->snapshot(); });
     }
 
     // int Picture::handle(int event) {

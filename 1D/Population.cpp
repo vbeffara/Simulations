@@ -1,6 +1,7 @@
 #include <vb/Console.h>
 #include <vb/Figure.h>
 #include <vb/ProgressBar.h>
+#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 using std::cout;

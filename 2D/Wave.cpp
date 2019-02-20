@@ -1,4 +1,5 @@
 #include <vb/Coloring.h>
+#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 using vb::cpx;

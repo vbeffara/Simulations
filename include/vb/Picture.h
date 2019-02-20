@@ -3,7 +3,6 @@
 #include <cairo/cairo.h>
 #include <vb/AutoWindow.h>
 #include <vb/Color.h>
-#include <vb/util/Hub.h>
 
 namespace vb {
     /** A nice helper class for simulations.
@@ -26,8 +25,8 @@ namespace vb {
         virtual void output(const std::string &s);
         void         output_png(const std::string &s);
 
-        void snapshot_setup(const Hub &H, const std::string &prefix, double period = 0.0);
-        void snapshot(const Hub &H);
+        void snapshot_setup(const std::string &prefix, double period = 0.0);
+        void snapshot();
 
         void show() override;
         // TODO: revive

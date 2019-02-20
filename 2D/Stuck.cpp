@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vb/Bitmap.h>
 #include <vb/Console.h>
+#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 using namespace std;
@@ -110,6 +111,6 @@ int main(int argc, char **argv) {
     Hub   H("Stuck walk on the square lattice", argc, argv, "n=200,a=.1432,b=5,v=0,c,o");
     Stuck S(H);
     S.show();
-    if (double(H['v']) > 0) S.snapshot_setup(H, "Stuck", H['v']);
+    if (double(H['v']) > 0) S.snapshot_setup("Stuck", H['v']);
     S.run();
 }

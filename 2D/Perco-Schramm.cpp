@@ -1,4 +1,3 @@
-
 /** Exploration of hexagon percolation in the half-plane.
  *
  * Initially written in postscript by Oded Schramm, and ported to C++
@@ -6,6 +5,7 @@
  */
 
 #include <vb/Figure.h>
+#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;

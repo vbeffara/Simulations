@@ -1,4 +1,5 @@
 #include <vb/Bitmap.h>
+#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -34,7 +35,7 @@ public:
     }
 
     void stage(const Hub &H) {
-        if (H['s']) snapshot(H);
+        if (H['s']) snapshot();
         if (H['v']) pause();
     }
 

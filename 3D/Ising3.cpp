@@ -1,5 +1,6 @@
 #include <vb/Cube.h>
 #include <vb/ProgressBar.h>
+#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 class Ising3 : public vb::Cube {

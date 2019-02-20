@@ -1,4 +1,5 @@
 #include <vb/Bitmap.h>
+#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 using namespace std;

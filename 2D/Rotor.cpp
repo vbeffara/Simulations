@@ -1,5 +1,6 @@
 #include <vb/Bitmap.h>
 #include <vb/ProgressBar.h>
+#include <vb/util/Hub.h>
 
 using namespace vb;
 

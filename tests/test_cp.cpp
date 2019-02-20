@@ -1,5 +1,6 @@
 #include <vb/Map.h>
 #include <vb/Minimizer.h>
+#include <vb/util/Hub.h>
 
 using namespace vb;
 

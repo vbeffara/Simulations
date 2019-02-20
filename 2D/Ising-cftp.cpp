@@ -1,4 +1,5 @@
 #include <vb/Bitmap.h>
+#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -46,7 +47,7 @@ public:
         status.update();
     }
 
-    void run(const Hub &H) {
+    void run() {
         vector<string> states;
         states.push_back(prng.state());
         int n = w() * h();
@@ -60,7 +61,7 @@ public:
                 if (t == states.size() - 1) states.push_back(prng.state());
             }
             snap();
-            if (s) status.snapshot(H);
+            if (s) status.snapshot();
             n = 0;
             for (int i = 0; i < w(); ++i)
                 for (int j = 0; j < h(); ++j)
@@ -109,6 +110,6 @@ int main(int argc, char *argv[]) {
     I.bc_dobrushin();
     I.show();
     I.status.show();
-    I.run(H);
+    I.run();
     I.pause();
 }

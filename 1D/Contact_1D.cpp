@@ -1,4 +1,5 @@
 #include <vb/Automaton.h>
+#include <vb/util/Hub.h>
 
 namespace vb {
     template <> Color to_Color(int t) { return Indexed(t + 1); }

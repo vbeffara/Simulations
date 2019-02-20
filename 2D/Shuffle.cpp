@@ -3,6 +3,7 @@
 #include <gsl/gsl>
 #include <vb/Figure.h>
 #include <vb/data/Array.h>
+#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;

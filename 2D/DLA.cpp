@@ -1,6 +1,7 @@
 #include <vb/CoarseImage.h>
 #include <vb/Console.h>
 #include <vb/QuadTree.h>
+#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;

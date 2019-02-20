@@ -1,4 +1,5 @@
 #include <vb/Figure.h>
+#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 #include <vb/util/coo.h>
 

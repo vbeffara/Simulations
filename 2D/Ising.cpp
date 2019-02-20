@@ -1,4 +1,5 @@
 #include <vb/Bitmap.h>
+#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -65,7 +66,7 @@ int main(int argc, char *argv[]) {
     Hub   H("Ising model", argc, argv, "b=.88137359,n=300,t=0,c,r=0,k,v");
     Ising I(H, H['n'], H['b'], H['r'], H['c']);
     I.show();
-    if (H['v']) I.snapshot_setup(H, "Ising", 10);
+    if (H['v']) I.snapshot_setup("Ising", 10);
     I.run(H['t'], H['k']);
     I.output(H.title);
 }
