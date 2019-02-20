@@ -3,7 +3,6 @@
 #include <vb/Constellation.h>
 #include <vb/Hypermap_lib.h>
 #include <vb/Polynomial.h>
-#include <vb/util/Hub.h>
 
 namespace vb {
     template <typename T> class Constellation0 : public Constellation<T> {
@@ -17,7 +16,7 @@ namespace vb {
         using Constellation<T>::cost;
         using Constellation<T>::dim;
 
-        Constellation0(const Hub &H, const Hypermap &M);
+        Constellation0(const Hypermap &M, unsigned m);
         template <typename U> Constellation0(const Constellation0<U> &C);
 
         cplx operator()(cplx z) const override;
@@ -51,7 +50,7 @@ namespace vb {
         char *                 argv[] = {(char *)"test_constellation0"};
         Hub                    H("Testing Constellation0", 1, argv, "s=3,m=228,d=2,g=0,v,o,b,q");
         auto                   M = HLib().at("m_dodecahedron");
-        Constellation0<double> C(H, M);
+        Constellation0<double> C(M, H['m']);
         Constellation0<real_t> Cq(C);
         Cq.findn();
         Cq.belyi();

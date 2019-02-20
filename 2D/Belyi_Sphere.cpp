@@ -5,6 +5,7 @@
 #include <vb/ProgressBar.h>
 #include <vb/Stream_lib.h>
 #include <vb/data/Pairings.h>
+#include <vb/util/Hub.h>
 
 using namespace vb;
 using namespace std;
@@ -61,7 +62,7 @@ int main(int argc, char **argv) {
 
         if (H['v'] || H['o'] || H['b'] || H['q']) {
             H.title = fmt::format("Spheroidal enumeration (s={}, d={}, i={})", s, d, nb);
-            Constellation0<double> C{H, M};
+            Constellation0<double> C{M, H['m']};
             C.belyi();
             if (H['b']) cout << endl << C << endl;
             if (H['v'] || H['o']) {

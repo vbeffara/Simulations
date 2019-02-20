@@ -1,5 +1,6 @@
 #include <vb/Coloring.h>
 #include <vb/Constellation0.h>
+#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -25,7 +26,7 @@ int main(int argc, char **argv) {
     }
     std::cout << M;
 
-    Constellation0<double> C{H, M};
+    Constellation0<double> C{M, H['m']};
     C.belyi();
     if (!H['q']) std::cout << std::endl << C;
 
