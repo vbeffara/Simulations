@@ -24,10 +24,10 @@
 namespace vb {
     class Spheroidal : public Hypermap {
     public:
-        Spheroidal(Hypermap M, unsigned m);
+        explicit Spheroidal(Hypermap M);
 
-        void pack();                           //< Run acpa() and then compute an embedding into a torus.
-        void output_pdf(const std::string &s); //< Make a PDF of a few periods of the covering.
+        void pack();
+        void output_pdf(const std::string &s, unsigned mode);
 
         void linear(cpx a, cpx b = 0.0);
         void inversion();

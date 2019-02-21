@@ -10,7 +10,7 @@ namespace vb {
         p = {I_<T>(), T(0)};
         do {
             M2.split_edges();
-            Toroidal S(M2, m);
+            Toroidal S(M2);
             S.pack();
             int N = M.sigma.size();
             b.clear();

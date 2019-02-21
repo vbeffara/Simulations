@@ -13,7 +13,7 @@ namespace vb {
         M3.normalize();
         while (true) {
             M2.split_edges();
-            Spheroidal S(M2, m);
+            Spheroidal S(M2);
             S.pack();
             int N = M.sigma.size(), inf = 0, dinf = 0;
             for (auto c : M.phi.cycles()) {

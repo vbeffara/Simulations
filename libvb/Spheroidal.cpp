@@ -3,10 +3,9 @@
 #include <vb/Spheroidal.h>
 
 namespace vb {
-    Spheroidal::Spheroidal(Hypermap M, unsigned m) : Hypermap(std::move(M)) {
+    Spheroidal::Spheroidal(Hypermap M) : Hypermap(std::move(M)) {
         assert(genus() == 0);
         from_hypermap();
-        mode = m;
     }
 
     void Spheroidal::pack() {
@@ -108,7 +107,7 @@ namespace vb {
         }
     }
 
-    void Spheroidal::output_pdf(const std::string &s) {
+    void Spheroidal::output_pdf(const std::string &s, unsigned mode) {
         for (unsigned e = 0; e < sigma.size(); ++e) {
             if (initial[e] == 0) continue;
             V[E[e].src].bone = std::max(V[E[e].src].bone, initial[e]);

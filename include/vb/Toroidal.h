@@ -25,10 +25,10 @@
 namespace vb {
     class Toroidal : public Hypermap {
     public:
-        Toroidal(Hypermap M, unsigned m);
+        explicit Toroidal(Hypermap M);
 
-        void pack();                           //< Run acpa() and then compute an embedding into a torus.
-        void output_pdf(const std::string &s); //< Make a PDF of a few periods of the covering.
+        void pack();
+        void output_pdf(const std::string &s, unsigned mode);
 
         void flip();
 

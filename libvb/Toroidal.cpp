@@ -3,10 +3,9 @@
 #include <vb/Toroidal.h>
 
 namespace vb {
-    Toroidal::Toroidal(Hypermap M, unsigned m) : Hypermap(std::move(M)), m(I) {
+    Toroidal::Toroidal(Hypermap M) : Hypermap(std::move(M)), m(I) {
         assert(genus() == 1);
         from_hypermap();
-        mode = m;
     }
 
     void Toroidal::pack() {
@@ -100,7 +99,7 @@ namespace vb {
         for (auto &v : V) v.z = 1.0 + m - v.z;
     }
 
-    void Toroidal::output_pdf(const std::string &s) {
+    void Toroidal::output_pdf(const std::string &s, unsigned mode) {
         for (unsigned e = 0; e < sigma.size(); ++e) {
             if (initial[e] == 0) continue;
             V[E[e].src].bone = std::max(V[E[e].src].bone, initial[e]);
