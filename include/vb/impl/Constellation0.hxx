@@ -5,7 +5,6 @@
 #include <vb/Spheroidal.h>
 
 namespace vb {
-    // TODO: remove Hub here
     template <typename T> Constellation0<T>::Constellation0(const Hypermap &M, unsigned m) {
         Hypermap M2(M);
         M2.dessin();

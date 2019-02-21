@@ -1,5 +1,4 @@
 #include <vb/Hypermap.h>
-#include <vb/util/Hub.h>
 
 namespace vb {
     bool Hypermap::validate() const {

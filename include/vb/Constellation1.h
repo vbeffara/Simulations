@@ -3,7 +3,6 @@
 #include <vb/Elliptic.h>
 #include <vb/Hypermap.h>
 #include <vb/NumberTheory.h>
-#include <vb/util/Hub.h>
 
 namespace vb {
     template <typename T> class Constellation1 : public Constellation<T> {
@@ -17,7 +16,7 @@ namespace vb {
         using Constellation<T>::cost;
         using Constellation<T>::dim;
 
-        Constellation1(const Hub &H, const Hypermap &M);
+        Constellation1(const Hypermap &M, unsigned m);
         template <typename U> Constellation1(const Constellation1<U> &C);
 
         cplx operator()(cplx z) const override;
@@ -58,7 +57,7 @@ namespace vb {
         char *                 argv[] = {(char *)"test_constellation1"};
         Hub                    H("Testing Constellation1", 1, argv);
         auto                   M = HLib().at("lat_SV");
-        Constellation1<double> C(H, M);
+        Constellation1<double> C(M, 228);
         Constellation1<real_t> Cq(C);
         Cq.findn();
         CHECK(format(*(guess(Cq.E.j(), 80))) == " z^2 + -914416 z + 590816592");

@@ -12,6 +12,7 @@
 #include <vb/Constellation1.h>
 #include <vb/ProgressBar.h>
 #include <vb/data/Pairings.h>
+#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -75,7 +76,7 @@ int main(int argc, char **argv) {
             cout << "     Passport:        " << fmt::format("{}", M.sigma.passport()) << endl;
 
             H.title = fmt::format("Toroidal enumeration (s={}, pass {}, i={})", s, M.sigma.passport(), v.size());
-            Constellation1<double> C(H, M);
+            Constellation1<double> C(M, H['m']);
             double                 er = C.cost();
             if (!H['q']) {
                 cout << "     Final error:     " << er << endl;

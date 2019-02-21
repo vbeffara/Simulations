@@ -2,6 +2,7 @@
 #include <vb/Constellation1.h>
 #include <vb/Hypermap_lib.h>
 #include <vb/ProgressBar.h>
+#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -22,7 +23,7 @@ int main(int argc, char **argv) {
     }
 
     cout << M << endl;
-    Constellation1<double> C{H, M};
+    Constellation1<double> C{M, H['m']};
     C.findn();
 
     if (!H['q']) { cout << endl << C; }
