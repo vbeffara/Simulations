@@ -1,3 +1,4 @@
+#include <iostream>
 #include <vb/Hypermap.h>
 
 namespace vb {
@@ -271,15 +272,6 @@ namespace vb {
         alpha = new_a;
         phi   = new_f;
         sigma = (alpha * phi).inverse();
-    }
-
-    std::ostream &operator<<(std::ostream &os, Hypermap &H) {
-        os << "Hypermap < " << H.sigma.cycles().size() << " black, " << H.alpha.cycles().size() << " white, " << H.sigma.size()
-           << " half-edges, " << H.phi.cycles().size() << " faces, genus " << H.genus() << " >" << std::endl;
-        os << "  sigma: " << fmt::format("{}", H.sigma) << std::endl;
-        os << "  alpha: " << fmt::format("{}", H.alpha) << std::endl;
-        os << "    phi: " << fmt::format("{}", H.phi) << std::endl;
-        return os;
     }
 
     double Hypermap::alpha_xyz(double x, double y, double z) const { return acos((x * (x + y + z) - y * z) / ((x + y) * (x + z))); }

@@ -22,8 +22,8 @@ int main(int argc, char **argv) {
         for (int i = 0; i < f; ++i) M.flip(prng.uniform_int(M.sigma.size()));
     }
 
-    cout << M << endl;
-    Constellation1<double> C{M, H['m']};
+    H.L->info("{}", M);
+    Constellation1<double> C{M};
     C.findn();
 
     if (!H['q']) { cout << endl << C; }

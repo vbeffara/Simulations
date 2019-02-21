@@ -5,7 +5,7 @@
 #include <vb/Spheroidal.h>
 
 namespace vb {
-    template <typename T> Constellation0<T>::Constellation0(const Hypermap &M, unsigned m) {
+    template <typename T> Constellation0<T>::Constellation0(const Hypermap &M) {
         Hypermap M2(M);
         M2.dessin();
         p = {T(1)};

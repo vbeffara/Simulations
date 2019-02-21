@@ -4,7 +4,7 @@
 #include <vb/Toroidal.h>
 
 namespace vb {
-    template <typename T> Constellation1<T>::Constellation1(const Hypermap &M, unsigned m) {
+    template <typename T> Constellation1<T>::Constellation1(const Hypermap &M) {
         Hypermap M2(M);
         M2.dessin();
         p = {I_<T>(), T(0)};

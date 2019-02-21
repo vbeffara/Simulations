@@ -76,7 +76,7 @@ int main(int argc, char **argv) {
             cout << "     Passport:        " << fmt::format("{}", M.sigma.passport()) << endl;
 
             H.title = fmt::format("Toroidal enumeration (s={}, pass {}, i={})", s, M.sigma.passport(), v.size());
-            Constellation1<double> C(M, H['m']);
+            Constellation1<double> C(M);
             double                 er = C.cost();
             if (!H['q']) {
                 cout << "     Final error:     " << er << endl;

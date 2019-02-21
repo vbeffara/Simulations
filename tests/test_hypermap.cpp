@@ -24,9 +24,9 @@ int main(int argc, char **argv) {
             }
         }
     }
-    std::cout << M;
+    H.L->info("{}", M);
 
-    Constellation0<double> C{M, H['m']};
+    Constellation0<double> C{M};
     C.belyi();
     if (!H['q']) std::cout << std::endl << C;
 
