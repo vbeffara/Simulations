@@ -1,12 +1,13 @@
-#include <iostream>
+#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 using namespace std;
 using namespace vb;
 
-static int T = 100000, N = 10000;
+int main(int argc, char **argv) {
+    Hub H("Prudent random walk", argc, argv, "t=100000,n=10000");
+    int T = H['t'], N = H['n'];
 
-int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv) {
     int laststep = 0;
 
     double sd = 0.0, sd2 = 0.0;
@@ -49,13 +50,11 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv) {
         }
 
         double dev = (double(x + y) - double(t) * 3.0 / 7.0) / sqrt(double(t));
-        cout << dev << endl;
+        H.L->info("dev = {}", dev);
         sd += dev;
         sd2 += dev * dev;
     }
 
-    cerr << "Avg : " << sd / N << endl;
-    cerr << "Var : " << sd2 / N << endl;
-
-    return 0;
+    H.output("Average", "a", sd / N);
+    H.output("Variance", "v", sd2 / N);
 }

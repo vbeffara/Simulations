@@ -2,7 +2,6 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/edmonds_karp_max_flow.hpp>
 #include <boost/graph/graph_utility.hpp>
-#include <iostream>
 #include <vb/ProgressBar.h>
 #include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
@@ -30,18 +29,12 @@ void add_one(Graph *gg, int i, int j) {
 }
 
 int main(int argc, char **argv) {
-    Hub H("Percolation arm exponents", argc, argv, "n=100,t=1,p=.5");
-    int64_t n = H['n'];
-    if (n <= 0) n = 100;
-    int    n_iter = H['t'];
-    double p      = H['p'];
-
-    vector<int> stats(5, 0);
-
-    // Create the graph once and for all
+    Hub     H("Percolation arm exponents", argc, argv, "n=100,t=1,p=.5");
+    int64_t n      = H['n'];
+    int     n_iter = H['t'];
+    double  p      = H['p'];
 
     Graph g(n * n + 1);
-
     for (int x = 0; x < n; ++x) {
         for (int y = 0; y < n; ++y) {
             int i = x + n * y;
@@ -51,7 +44,6 @@ int main(int argc, char **argv) {
     }
 
     // Wired boundary conditions
-
     for (int i = 0; i < n; ++i) {
         add_one(&g, i, n * n);
         add_one(&g, n * i, n * n);
@@ -60,7 +52,6 @@ int main(int argc, char **argv) {
     }
 
     // Prepare for quick edge access
-
     property_map<Graph, edge_capacity_t>::type cap = get(edge_capacity, g);
     Graph::edge_iterator                       e, e_final;
 
@@ -85,8 +76,7 @@ int main(int argc, char **argv) {
         }
     }
 
-    // Then simulate
-
+    vector<int> stats2(5, 0);
     {
         ProgressBar PB(n_iter);
         for (int iter = 1; iter <= n_iter; ++iter) {
@@ -97,17 +87,13 @@ int main(int argc, char **argv) {
             }
 
             int64_t flow = edmonds_karp_max_flow(g, (n / 2) * (n + 1), n * n);
-            stats[flow]++;
+            for (int i = 0; i <= flow; ++i) ++stats2[i];
 
             PB.set(iter);
         }
     }
 
-    cout << n << " | " << n_iter;
-    for (int i = 1; i <= 4; ++i) {
-        double bla = 0;
-        for (int j = i; j <= 4; ++j) bla += stats[j];
-        cout << " | " << bla << " " << bla / n_iter;
-    }
-    cout << endl;
+    vector<string> out2;
+    for (int i = 1; i <= 4; ++i) out2.push_back(fmt::format("{} {}", stats2[i], double(stats2[i]) / n_iter));
+    H.L->info("{} | {} | {}", n, n_iter, fmt::join(out2, " | "));
 }

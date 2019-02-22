@@ -1,5 +1,4 @@
 // / data / Pairings.hE, S=2+F/2, F=2d, S=2+d
-#include <iostream>
 #include <vb/Coloring.h>
 #include <vb/Constellation0.h>
 #include <vb/ProgressBar.h>
@@ -64,7 +63,7 @@ int main(int argc, char **argv) {
             H.title = fmt::format("Spheroidal enumeration (s={}, d={}, i={})", s, d, nb);
             Constellation0<double> C{M};
             C.belyi();
-            if (H['b']) cout << endl << C << endl;
+            if (H['b']) H.L->info("{}", C);
             if (H['v'] || H['o']) {
                 auto     bd = C.bounds();
                 Coloring CC(H.title, bd.first, bd.second, 800, [&](cpx z) { return Indexed((imag(C(z)) > 0) ? 1 : 2); });
@@ -84,7 +83,7 @@ int main(int argc, char **argv) {
                 Constellation0<real_t> Cq(C);
                 Cq.findn();
                 Cq.belyi();
-                std::cout << std::endl << Cq;
+                H.L->info("{}", Cq);
             }
         }
     }

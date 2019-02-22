@@ -1,4 +1,3 @@
-#include <iostream>
 #include <vb/Hypermap.h>
 
 namespace vb {

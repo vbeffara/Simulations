@@ -1,5 +1,5 @@
 #pragma once /// @file
-#include <fmt/format.h>
+#include <fmt/ostream.h>
 #include <gsl/gsl>
 
 namespace vb {

@@ -1,4 +1,3 @@
-#include <iostream>
 #include <vb/Bitmap.h>
 #include <vb/Console.h>
 #include <vb/util/Hub.h>
