@@ -56,8 +56,8 @@ namespace vb {
         if (period > 0) snapshot_task = add_task(period, [this] { this->snapshot(); });
     }
 
-    // int Picture::handle(int event) {
-    //     if ((event == FL_KEYDOWN) && (Fl::event_key() == 's')) snapshot();
-    //     return AutoWindow::handle(event);
-    // }
+    int Picture::handle(int event) {
+        if ((event == FL_KEYDOWN) && (Fl::event_key() == 's')) snapshot();
+        return AutoWindow::handle(event);
+    }
 } // namespace vb

@@ -29,8 +29,7 @@ namespace vb {
         void snapshot();
 
         void show() override;
-        // TODO: revive
-        // int  handle(int event) override; ///< Handle the events, in particular 'q' and 'x'.
+        int  handle(int event) override; ///< Handle the events, in particular 'q' and 'x'.
 
     protected:
         cairo_surface_t *surface = nullptr; ///< Cairo version of the surface.
