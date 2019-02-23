@@ -55,10 +55,11 @@ namespace vb {
         Cq.findn();
         Cq.belyi();
         Cq.belyi();
-        Polynomial<complex_t> Q{{1}};
+        Polynomial<complex_t> Q{1};
         for (auto zd : Cq.f)
             for (unsigned j = 0; j < zd.d; ++j) add_root(Q, zd.z);
-        for (auto &x : Q.data()) {
+        // TODO: fix access through P
+        for (auto &x : Q.P.data()) {
             auto xx = complex_t(round(real(x)), round(imag(x)));
             if (abs(x - xx) < 1e-90) x = xx;
         }

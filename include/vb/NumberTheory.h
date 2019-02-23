@@ -27,9 +27,10 @@ namespace vb {
                 for (int i = 0; i <= d; ++i) V[i] += ai * M[j][i + 2].get_data();
             }
 
-            Polynomial<mpz_int> P(begin(V), end(V));
+            // TODO: fix construction
+            Polynomial<mpz_int> P(boost::math::tools::polynomial<mpz_int>(begin(V), end(V)));
             if (P.degree() == 0) continue;
-            if (V[d] < 0) P = -P;
+            if (V[d] < 0) P.P = -P.P;
             auto PP = derivative(P);
 
             T xx = x, ox = x + 1, er = 2;

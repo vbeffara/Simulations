@@ -87,7 +87,16 @@
         "typeindex": "cpp",
         "memory_resource": "cpp",
         "shared_mutex": "cpp",
-        "__debug": "cpp"
+        "__debug": "cpp",
+        "__errc": "cpp",
+        "__functional_base": "cpp",
+        "__mutex_base": "cpp",
+        "__node_handle": "cpp",
+        "__string": "cpp",
+        "__threading_support": "cpp",
+        "__tuple": "cpp",
+        "locale": "cpp",
+        "numeric": "cpp"
     },
     "python.pythonPath": "/usr/local/opt/python/bin/python3.7"
 }
