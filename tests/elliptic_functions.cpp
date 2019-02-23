@@ -1,4 +1,3 @@
-#include <iostream>
 #include <vb/Elliptic.h>
 #include <vb/mp.h>
 #include <vb/util/Hub.h>
@@ -6,12 +5,10 @@
 using namespace vb;
 using namespace std;
 
-void out(real_t x) { std::cerr << setprecision(x.backend().precision()) << x << "[" << x.backend().precision() << "]\n"; }
-
 void out2(const Hub &H, const std::string &s, cpx z, const complex_t &zz) {
     H.L->info("{} : {} and {}", s, z, zz);
-    out(real(zz));
-    out(imag(zz));
+    H.L->info("  {}", real(zz));
+    H.L->info("  {}", imag(zz));
 }
 
 int main(int argc, char **argv) {

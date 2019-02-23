@@ -1,6 +1,7 @@
 #pragma once
 #define BOOST_NO_CXX11_LAMBDAS // missing T(0) in boost::math::tools::polynomial::normalize()
 #include <boost/math/tools/polynomial.hpp>
+#include <vb/mp.h>
 #include <vector>
 
 namespace vb {
@@ -41,3 +42,13 @@ namespace vb {
         return os.str();
     }
 } // namespace vb
+
+// TODO: extend that to general coefficient types (maybe needs to change the Polynomial class)
+template <> struct fmt::formatter<vb::Polynomial<vb::mpz_int>> {
+    template <typename ParseContext> constexpr auto parse(ParseContext &ctx) { return ctx.begin(); }
+
+    template <typename FormatContext> auto format(const vb::Polynomial<vb::mpz_int> &P, FormatContext &ctx) {
+        // TODO: transfer the format code here
+        return format_to(ctx.out(), "{}", vb::format(P));
+    }
+};

@@ -4,6 +4,7 @@
 #include <vb/util/math.h>
 #undef Success
 #include <Eigen/Dense>
+#include <fmt/ostream.h>
 
 namespace vb {
     using boost::multiprecision::mpz_int;
@@ -34,3 +35,19 @@ namespace Eigen {
         };
     };
 } // namespace Eigen
+
+template <> struct fmt::formatter<vb::real_t> {
+    template <typename ParseContext> constexpr auto parse(ParseContext &ctx) { return ctx.begin(); }
+
+    template <typename FormatContext> auto format(const vb::real_t &x, FormatContext &ctx) {
+        return format_to(ctx.out(), "{}[{}]", x.str(x.precision()), x.precision());
+    }
+};
+
+template <> struct fmt::formatter<vb::complex_t> {
+    template <typename ParseContext> constexpr auto parse(ParseContext &ctx) { return ctx.begin(); }
+
+    template <typename FormatContext> auto format(const vb::complex_t &z, FormatContext &ctx) {
+        return format_to(ctx.out(), "({} + {} I)", real(z), imag(z));
+    }
+};
