@@ -40,7 +40,7 @@ template <> struct fmt::formatter<vb::real_t> {
     template <typename ParseContext> constexpr auto parse(ParseContext &ctx) { return ctx.begin(); }
 
     template <typename FormatContext> auto format(const vb::real_t &x, FormatContext &ctx) {
-        return format_to(ctx.out(), "{}[{}]", x.str(x.precision()), x.precision());
+        return format_to(ctx.out(), "{}", x.str(x.precision()));
     }
 };
 
@@ -48,6 +48,7 @@ template <> struct fmt::formatter<vb::complex_t> {
     template <typename ParseContext> constexpr auto parse(ParseContext &ctx) { return ctx.begin(); }
 
     template <typename FormatContext> auto format(const vb::complex_t &z, FormatContext &ctx) {
+        if (imag(z) == 0) return format_to(ctx.out(), "{}", real(z));
         return format_to(ctx.out(), "({} + {} I)", real(z), imag(z));
     }
 };

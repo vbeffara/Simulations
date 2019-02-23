@@ -40,18 +40,19 @@ template <typename T> struct fmt::formatter<vb::Polynomial<T>> {
     template <typename ParseContext> constexpr auto parse(ParseContext &ctx) { return ctx.begin(); }
 
     template <typename FormatContext> auto format(const vb::Polynomial<T> &P, FormatContext &ctx) {
-        bool               first = true;
-        const std::string &v     = "z";
-        for (int j = P.degree() + 1; j > 0; --j) {
-            int i = j - 1;
+        std::vector<std::string> monomials;
+        for (int i = P.degree(); i >= 0; --i) {
             if (P.P[i] == T(0)) continue;
-            format_to(ctx.out(), "{}", first ? "" : " + "); // TODO: fmt::join
-            if ((i == 0) || (P.P[i] != T(1))) format_to(ctx.out(), "{}", P.P[i]);
-            if (i > 0) format_to(ctx.out(), " {}", v);
-            if (i > 1) format_to(ctx.out(), "^{}", i);
-            first = false;
+            if (i == 0)
+                monomials.push_back(fmt::format("{}", P.P[i]));
+            else {
+                std::string s = "z";
+                if (P.P[i] != T(1)) s = fmt::format("{} ", P.P[i]) + s;
+                if (i > 1) s = s + fmt::format("^{}", i);
+                monomials.push_back(s);
+            }
         }
-        if (first) format_to(ctx.out(), "{}", 0);
-        return format_to(ctx.out(), "");
+        if (monomials.empty()) return format_to(ctx.out(), "{}", 0);
+        return format_to(ctx.out(), "{}", fmt::join(monomials, " + "));
     }
 };
