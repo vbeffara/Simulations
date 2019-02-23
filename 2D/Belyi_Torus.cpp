@@ -108,22 +108,22 @@ int main(int argc, char **argv) {
                 cout << "     Modulus:         " << CC.tau() << endl;
                 if (nd > 30) {
                     auto P = guess(CC.tau(), nd);
-                    if (P) cout << "        root of " << P->P << std::endl;
+                    if (P) cout << fmt::format("        root of {}", *P) << std::endl;
                 }
                 cout << "     Klein invariant: " << CC.E.j() << endl;
                 if (nd > 30) {
                     auto P = guess(CC.E.j(), nd);
-                    if (P) cout << "        root of " << P->P << std::endl;
+                    if (P) cout << fmt::format("        root of {}", *P) << std::endl;
                 }
                 cout << "     g2 coefficient:  " << CC.E.g2() << endl;
                 if (nd > 30) {
                     auto P = guess(CC.E.g2(), nd);
-                    if (P) cout << "        root of " << P->P << std::endl;
+                    if (P) cout << fmt::format("        root of {}", *P) << std::endl;
                 }
                 cout << "     g3 coefficient:  " << CC.E.g3() << endl;
                 if (nd > 30) {
                     auto P = guess(CC.E.g3(), nd);
-                    if (P) cout << "        root of " << P->P << std::endl;
+                    if (P) cout << fmt::format("        root of {}", *P) << std::endl;
                 }
                 cout << endl << scientific << setprecision(6);
             }

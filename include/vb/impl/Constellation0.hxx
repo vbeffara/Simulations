@@ -109,20 +109,20 @@ namespace vb {
         for (auto zd : b) P.add_root(zd.z, zd.d);
         for (auto zd : f) Q.add_root(zd.z, zd.d);
         unsigned i = 0, j = 0;
-        while (norm(P.P[i]) < eps) ++i;
-        while (norm(Q.P[j]) < eps) ++j;
+        while (norm(P[i]) < eps) ++i;
+        while (norm(Q[j]) < eps) ++j;
         bool is_P;
 
         if (Q.degree() == 0)
             is_P = true;
         else if (i == j)
-            is_P = (norm(P.P[i]) > norm(Q.P[i]));
+            is_P = (norm(P[i]) > norm(Q[i]));
         else
             is_P = (i < j);
 
         cplx l(1);
-        if ((is_P) && (i < P.degree())) l = pow(P.P[i], cplx(T(1) / T(P.degree() - i)));
-        if ((!is_P) && (j < Q.degree())) l = pow(Q.P[j], cplx(T(1) / T(Q.degree() - j)));
+        if ((is_P) && (i < P.degree())) l = pow(P[i], cplx(T(1) / T(P.degree() - i)));
+        if ((!is_P) && (j < Q.degree())) l = pow(Q[j], cplx(T(1) / T(Q.degree() - j)));
         if ((l != cplx(0)) && (norm(l) > eps)) {
             linear(T(1) / l);
             normalize();
@@ -274,12 +274,14 @@ namespace vb {
         Polynomial<complex_t> P{1}, Q{1};
         for (auto zd : C.b) P.add_root(zd.z, zd.d);
         for (auto zd : C.f) Q.add_root(zd.z, zd.d);
-        for (auto &x : P.P.data()) {
-            auto xx = complex_t(round(real(x)), round(imag(x)));
+        for (unsigned i = 0; i < P.size(); ++i) {
+            auto &x  = P[i];
+            auto  xx = complex_t(round(real(x)), round(imag(x)));
             if (abs(x - xx) < pow(T(.1), nd)) x = xx;
         }
-        for (auto &x : Q.P.data()) {
-            auto xx = complex_t(round(real(x)), round(imag(x)));
+        for (unsigned i = 0; i < Q.size(); ++i) {
+            auto &x  = Q[i];
+            auto  xx = complex_t(round(real(x)), round(imag(x)));
             if (abs(x - xx) < pow(T(.1), nd)) x = xx;
         }
         os << "P[z_] := " << fmt::format("{}", P) << "\nQ[z_] := " << fmt::format("{}", Q) << "\n";

@@ -30,7 +30,7 @@ namespace vb {
             // TODO: fix construction
             Polynomial<mpz_int> P(boost::math::tools::polynomial<mpz_int>(begin(V), end(V)));
             if (P.degree() == 0) continue;
-            if (V[d] < 0) P.P = -P.P;
+            if (V[d] < 0) P *= -1;
             auto PP = P.derivative();
 
             T xx = x, ox = x + 1, er = 2;

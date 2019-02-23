@@ -11,6 +11,10 @@ namespace vb {
         Polynomial(const T &t) : P({t}) {}
 
         auto degree() const { return P.degree(); }
+        auto size() const { return P.size(); }
+
+        T  operator[](int i) const { return P[i]; }
+        T &operator[](int i) { return P[i]; }
 
         template <typename V> V operator()(const V &x) const {
             if (P.size() == 0) return 0;
@@ -26,10 +30,13 @@ namespace vb {
             return boost::math::tools::polynomial<T>(begin(out), end(out));
         }
 
+        void operator*=(const T &x) { P *= x; }
+
         void add_root(const T &x, int d = 1) {
             for (int i = 0; i < d; ++i) P *= boost::math::tools::polynomial<T>{-x, 1};
         }
 
+    private:
         boost::math::tools::polynomial<T> P;
     };
 } // namespace vb
@@ -40,12 +47,12 @@ template <typename T> struct fmt::formatter<vb::Polynomial<T>> {
     template <typename FormatContext> auto format(const vb::Polynomial<T> &P, FormatContext &ctx) {
         std::vector<std::string> monomials;
         for (int i = P.degree(); i >= 0; --i) {
-            if (P.P[i] == T(0)) continue;
+            if (P[i] == T(0)) continue;
             if (i == 0)
-                monomials.push_back(fmt::format("{}", P.P[i]));
+                monomials.push_back(fmt::format("{}", P[i]));
             else {
                 std::string s = "z";
-                if (P.P[i] != T(1)) s = fmt::format("{} ", P.P[i]) + s;
+                if (P[i] != T(1)) s = fmt::format("{} ", P[i]) + s;
                 if (i > 1) s = s + fmt::format("^{}", i);
                 monomials.push_back(s);
             }

@@ -273,22 +273,22 @@ namespace vb {
         os << "tau          = " << C.p[0] << std::endl;
         {
             auto P = guess(C.p[0], eps);
-            if (P) os << "\t\troot of " << P->P << std::endl;
+            if (P) os << fmt::format("\t\troot of {}", *P) << std::endl;
         }
         os << "invariant j  = " << C.E.j() << std::endl;
         {
             auto P = guess(C.E.j(), eps);
-            if (P) os << "\t\troot of " << P->P << std::endl;
+            if (P) os << fmt::format("\t\troot of {}", *P) << std::endl;
         }
         os << "invariant g2 = " << C.E.g2() << std::endl;
         {
             auto P = guess(C.E.g2(), eps);
-            if (P) os << "\t\troot of " << P->P << std::endl;
+            if (P) os << fmt::format("\t\troot of {}", *P) << std::endl;
         }
         os << "invariant g3 = " << C.E.g3() << std::endl;
         {
             auto P = guess(C.E.g3(), eps);
-            if (P) os << "\t\troot of " << P->P << std::endl;
+            if (P) os << fmt::format("\t\troot of {}", *P) << std::endl;
         }
         os << std::endl;
         os << "Keeping " << nd << " digits." << std::endl;
@@ -297,21 +297,21 @@ namespace vb {
         for (auto &zd : C.b) {
             os << "| " << zd.d << "\t" << zd.z << std::endl;
             auto P = guess(zd.z, eps);
-            if (P) os << "|\t\troot of " << P->P << std::endl;
+            if (P) os << fmt::format("|\t\troot of {}", *P) << std::endl;
         }
         os << std::endl;
         os << "White vertices / ones: " << std::endl;
         for (auto &zd : C.w) {
             os << "| " << zd.d << "\t" << zd.z << std::endl;
             auto P = guess(zd.z, eps);
-            if (P) os << "|\t\troot of " << P->P << std::endl;
+            if (P) os << fmt::format("|\t\troot of {}", *P) << std::endl;
         }
         os << std::endl;
         os << "Red vertices / poles: " << std::endl;
         for (auto &zd : C.f) {
             os << "| " << zd.d << "\t" << zd.z << std::endl;
             auto P = guess(zd.z, eps);
-            if (P) os << "|\t\troot of " << P->P << std::endl;
+            if (P) os << fmt::format("|\t\troot of {}", *P) << std::endl;
         }
         return os;
     }
