@@ -12,12 +12,12 @@ namespace vb {
 
         auto degree() const { return P.degree(); }
 
+        void add_root(const T &x, int d = 1) {
+            for (int i = 0; i < d; ++i) P *= boost::math::tools::polynomial<T>{-x, 1};
+        }
+
         boost::math::tools::polynomial<T> P;
     };
-
-    template <typename T> void add_root(Polynomial<T> &P, const T &x, int d = 1) {
-        for (int i = 0; i < d; ++i) P.P *= boost::math::tools::polynomial<T>{-x, 1};
-    }
 
     template <typename T, typename V> V eval(const Polynomial<T> &P, const V &x) {
         if (P.P.size() == 0) return 0;
@@ -34,30 +34,24 @@ namespace vb {
         // TODO: fix
         return Polynomial<T>(boost::math::tools::polynomial<T>(begin(out), end(out)));
     }
+} // namespace vb
 
-    template <typename T> std::string format(const Polynomial<T> &P, const std::string &v = "z") {
-        std::ostringstream os;
+template <typename T> struct fmt::formatter<vb::Polynomial<T>> {
+    template <typename ParseContext> constexpr auto parse(ParseContext &ctx) { return ctx.begin(); }
+
+    template <typename FormatContext> auto format(const vb::Polynomial<T> &P, FormatContext &ctx) {
         bool               first = true;
+        const std::string &v     = "z";
         for (int j = P.degree() + 1; j > 0; --j) {
             int i = j - 1;
             if (P.P[i] == T(0)) continue;
-            os << (first ? "" : " + ");
-            if ((i == 0) || (P.P[i] != T(1))) os << P.P[i];
-            if (i > 0) os << " " << v;
-            if (i > 1) os << "^" << i;
+            format_to(ctx.out(), "{}", first ? "" : " + "); // TODO: fmt::join
+            if ((i == 0) || (P.P[i] != T(1))) format_to(ctx.out(), "{}", P.P[i]);
+            if (i > 0) format_to(ctx.out(), " {}", v);
+            if (i > 1) format_to(ctx.out(), "^{}", i);
             first = false;
         }
-        if (first) os << 0;
-        return os.str();
-    }
-} // namespace vb
-
-// TODO: extend that to general coefficient types (maybe needs to change the Polynomial class)
-template <> struct fmt::formatter<vb::Polynomial<vb::mpz_int>> {
-    template <typename ParseContext> constexpr auto parse(ParseContext &ctx) { return ctx.begin(); }
-
-    template <typename FormatContext> auto format(const vb::Polynomial<vb::mpz_int> &P, FormatContext &ctx) {
-        // TODO: transfer the format code here
-        return format_to(ctx.out(), "{}", vb::format(P));
+        if (first) format_to(ctx.out(), "{}", 0);
+        return format_to(ctx.out(), "");
     }
 };

@@ -106,8 +106,8 @@ namespace vb {
         T eps = real(pow(cost(), T(.5)));
         if (eps > T(.1)) eps = T(.1);
         Polynomial<cplx> P{1}, Q{1};
-        for (auto zd : b) add_root(P, zd.z, zd.d);
-        for (auto zd : f) add_root(Q, zd.z, zd.d);
+        for (auto zd : b) P.add_root(zd.z, zd.d);
+        for (auto zd : f) Q.add_root(zd.z, zd.d);
         unsigned i = 0, j = 0;
         while (norm(P.P[i]) < eps) ++i;
         while (norm(Q.P[j]) < eps) ++j;
@@ -227,10 +227,10 @@ namespace vb {
         os << "\n";
         os << u8"λ     := " << C.p[0] << "\n";
         Polynomial<typename cpx_t<T>::type> P{1}, Q{1};
-        for (auto zd : C.b) add_root(P, zd.z, zd.d);
-        for (auto zd : C.f) add_root(Q, zd.z, zd.d);
-        os << "P[z_] := " << format(P) << "\n";
-        os << "Q[z_] := " << format(Q) << "\n";
+        for (auto zd : C.b) P.add_root(zd.z, zd.d);
+        for (auto zd : C.f) Q.add_root(zd.z, zd.d);
+        os << "P[z_] := " << fmt::format("{}", P) << "\n";
+        os << "Q[z_] := " << fmt::format("{}", Q) << "\n";
         return os;
     }
 
@@ -249,7 +249,7 @@ namespace vb {
            << "\n";
         for (auto &zd : C.b) {
             os << "| " << zd.d << "\t" << fmt::format("{:<30}", zd.z);
-            if (auto P = guess(zd.z, nd)) os << "\troot of " << format(*P);
+            if (auto P = guess(zd.z, nd)) os << "\troot of " << fmt::format("{}", *P);
             os << "\n";
         }
         os << "\n";
@@ -257,7 +257,7 @@ namespace vb {
            << "\n";
         for (auto &zd : C.w) {
             os << "| " << zd.d << "\t" << fmt::format("{:<30}", zd.z);
-            if (auto P = guess(zd.z, nd)) os << "\troot of " << format(*P);
+            if (auto P = guess(zd.z, nd)) os << "\troot of " << fmt::format("{}", *P);
             os << "\n";
         }
         os << "\n";
@@ -265,15 +265,15 @@ namespace vb {
            << "\n";
         for (auto &zd : C.f) {
             os << "| " << zd.d << "\t" << fmt::format("{:<30}", zd.z);
-            if (auto P = guess(zd.z, nd)) os << "\troot of " << format(*P);
+            if (auto P = guess(zd.z, nd)) os << "\troot of " << fmt::format("{}", *P);
             os << "\n";
         }
         os << "\n";
         os << u8"λ     := " << C.p[0] << "\n";
-        if (auto L = guess(C.p[0], nd)) os << u8"Λ[z_] := " << format(*L) << "\n";
+        if (auto L = guess(C.p[0], nd)) os << u8"Λ[z_] := " << fmt::format("{}", *L) << "\n";
         Polynomial<complex_t> P{1}, Q{1};
-        for (auto zd : C.b) add_root(P, zd.z, zd.d);
-        for (auto zd : C.f) add_root(Q, zd.z, zd.d);
+        for (auto zd : C.b) P.add_root(zd.z, zd.d);
+        for (auto zd : C.f) Q.add_root(zd.z, zd.d);
         for (auto &x : P.P.data()) {
             auto xx = complex_t(round(real(x)), round(imag(x)));
             if (abs(x - xx) < pow(T(.1), nd)) x = xx;
@@ -282,7 +282,7 @@ namespace vb {
             auto xx = complex_t(round(real(x)), round(imag(x)));
             if (abs(x - xx) < pow(T(.1), nd)) x = xx;
         }
-        os << "P[z_] := " << format(P) << "\nQ[z_] := " << format(Q) << "\n";
+        os << "P[z_] := " << fmt::format("{}", P) << "\nQ[z_] := " << fmt::format("{}", Q) << "\n";
         return os;
     }
 

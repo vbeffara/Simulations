@@ -60,7 +60,7 @@ namespace vb {
         Constellation1<double> C(M);
         Constellation1<real_t> Cq(C);
         Cq.findn();
-        CHECK(format(*(guess(Cq.E.j(), 80))) == " z^2 + -914416 z + 590816592");
+        CHECK(fmt::format("{}", *(guess(Cq.E.j(), 80))) == " z^2 + -914416 z + 590816592");
     }
 #endif
 } // namespace vb
