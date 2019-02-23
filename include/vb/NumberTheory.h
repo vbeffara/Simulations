@@ -31,14 +31,14 @@ namespace vb {
             Polynomial<mpz_int> P(boost::math::tools::polynomial<mpz_int>(begin(V), end(V)));
             if (P.degree() == 0) continue;
             if (V[d] < 0) P.P = -P.P;
-            auto PP = derivative(P);
+            auto PP = P.derivative();
 
             T xx = x, ox = x + 1, er = 2;
             while (real(abs(xx - ox)) < real(er)) {
                 er = abs(xx - ox);
                 if (real(er) < pow(real_t{10, x.precision()}, -5 * nd)) er = 0;
                 ox = xx;
-                xx -= eval(P, xx) / eval(PP, xx);
+                xx -= P(xx) / PP(xx);
             }
             if (abs(xx - x) < pow(real_t{10, x.precision()}, 5 - nd)) return P;
         }

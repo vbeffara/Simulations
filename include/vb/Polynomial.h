@@ -12,28 +12,26 @@ namespace vb {
 
         auto degree() const { return P.degree(); }
 
+        template <typename V> V operator()(const V &x) const {
+            if (P.size() == 0) return 0;
+            V out = P[degree()];
+            for (int i = degree() - 1; i >= 0; --i) out = out * x + V{P[i]};
+            return out;
+        }
+
+        Polynomial<T> derivative() const {
+            if (P.size() <= 1) return T{0};
+            std::vector<T> out(P.degree());
+            for (unsigned i = 0; i < P.degree(); ++i) out[i] = T(i + 1) * P[i + 1];
+            return boost::math::tools::polynomial<T>(begin(out), end(out));
+        }
+
         void add_root(const T &x, int d = 1) {
             for (int i = 0; i < d; ++i) P *= boost::math::tools::polynomial<T>{-x, 1};
         }
 
         boost::math::tools::polynomial<T> P;
     };
-
-    template <typename T, typename V> V eval(const Polynomial<T> &P, const V &x) {
-        if (P.P.size() == 0) return 0;
-        V out = P.P[P.degree()];
-        for (int i = P.degree() - 1; i >= 0; --i) out = out * x + V{P.P[i]};
-        return out;
-    }
-
-    template <typename T> Polynomial<T> derivative(const Polynomial<T> &P) {
-        if (P.P.size() == 0) return boost::math::tools::polynomial<T>{};
-        std::vector<T> out(P.degree());
-        for (unsigned i = 0; i < P.degree(); ++i) out[i] = T(i + 1) * P.P[i + 1];
-        if (out.empty()) out.push_back(T(0));
-        // TODO: fix
-        return Polynomial<T>(boost::math::tools::polynomial<T>(begin(out), end(out)));
-    }
 } // namespace vb
 
 template <typename T> struct fmt::formatter<vb::Polynomial<T>> {
