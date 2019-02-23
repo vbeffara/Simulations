@@ -58,7 +58,6 @@ namespace vb {
         Polynomial<complex_t> Q{1};
         for (auto zd : Cq.f)
             for (unsigned j = 0; j < zd.d; ++j) Q.add_root(zd.z);
-        // TODO: fix access through P
         for (unsigned i = 0; i < Q.size(); ++i) {
             auto &x  = Q[i];
             auto  xx = complex_t(round(real(x)), round(imag(x)));

@@ -2,6 +2,7 @@
 #include <fplll.h>
 #include <optional>
 #include <vb/Polynomial.h>
+#include <vb/mp.h>
 
 namespace vb {
     template <typename T> std::optional<Polynomial<mpz_int>> guess(const T &x, int nd) {

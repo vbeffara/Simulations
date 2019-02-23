@@ -1,8 +1,7 @@
 #pragma once
 #define BOOST_NO_CXX11_LAMBDAS // missing T(0) in boost::math::tools::polynomial::normalize()
 #include <boost/math/tools/polynomial.hpp>
-#include <vb/mp.h>
-#include <vector>
+#include <fmt/ostream.h>
 
 namespace vb {
     template <typename T> class Polynomial {
