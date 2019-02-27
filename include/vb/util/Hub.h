@@ -4,8 +4,8 @@
 #include <cstdlib>
 #undef CHAR_WIDTH
 #include <fmt/ostream.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
 #include <vb/util/CL_Parser.h>
+#include <vector>
 
 namespace vb {
     using Duration  = boost::chrono::duration<double>;

@@ -1,3 +1,4 @@
+#include <spdlog/spdlog.h>
 #include <vb/Elliptic.h>
 #include <vb/mp.h>
 #include <vb/util/Hub.h>

@@ -1,6 +1,7 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Gl_Window.H>
 #include <boost/algorithm/string.hpp>
+#include <spdlog/spdlog.h>
 #include <sqlite_modern_cpp.h>
 #include <sys/stat.h>
 #include <vb/mp.h>

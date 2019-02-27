@@ -1,3 +1,4 @@
+#include <spdlog/spdlog.h>
 #include <vb/Stream_lib.h>
 #include <vb/util/Hub.h>
 

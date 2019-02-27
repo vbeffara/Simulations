@@ -1,5 +1,6 @@
 #include <cmaes.h>
 #include <gsl/gsl>
+#include <spdlog/spdlog.h>
 #include <vb/util/Hub.h>
 
 using namespace std;

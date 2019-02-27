@@ -1,3 +1,4 @@
+#include <spdlog/spdlog.h>
 #include <vb/Sphere.h>
 #include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>

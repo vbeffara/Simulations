@@ -1,3 +1,4 @@
+#include <spdlog/spdlog.h>
 #include <vb/Coloring.h>
 #include <vb/Constellation0.h>
 #include <vb/util/Hub.h>

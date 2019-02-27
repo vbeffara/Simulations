@@ -1,3 +1,4 @@
+#include <spdlog/spdlog.h>
 #include <vb/Map.h>
 #include <vb/Minimizer.h>
 #include <vb/util/Hub.h>

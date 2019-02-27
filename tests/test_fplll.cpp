@@ -1,3 +1,4 @@
+#include <spdlog/spdlog.h>
 #include <vb/NumberTheory.h>
 #include <vb/util/Hub.h>
 

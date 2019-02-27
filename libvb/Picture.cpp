@@ -1,6 +1,7 @@
 #define GL_SILENCE_DEPRECATION 1
 #include <FL/fl_draw.H>
 #include <FL/gl.h>
+// TODO: remove iomanip (everywhere)
 #include <iomanip>
 #include <vb/Picture.h>
 

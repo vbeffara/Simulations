@@ -1,3 +1,4 @@
+#include <spdlog/spdlog.h>
 #include <vb/Coloring.h>
 #include <vb/Constellation1.h>
 #include <vb/Hypermap_lib.h>

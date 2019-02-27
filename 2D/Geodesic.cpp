@@ -1,6 +1,7 @@
 #include <fftw3.h>
 #include <limits>
 #include <queue>
+#include <spdlog/spdlog.h>
 #include <vb/Bitmap.h>
 #include <vb/ProgressBar.h>
 #include <vb/util/Hub.h>

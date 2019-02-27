@@ -2,6 +2,7 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/edmonds_karp_max_flow.hpp>
 #include <boost/graph/graph_utility.hpp>
+#include <spdlog/spdlog.h>
 #include <vb/ProgressBar.h>
 #include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>

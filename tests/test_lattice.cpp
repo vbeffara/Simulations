@@ -1,4 +1,5 @@
 #include <iomanip>
+#include <spdlog/spdlog.h>
 #include <vb/Figure.h>
 #include <vb/Lattice.h>
 #include <vb/util/Hub.h>
