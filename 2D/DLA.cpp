@@ -16,7 +16,7 @@ public:
         W.watch(QT.n, "Nb of particles");
         W.watch(r, "Cluster radius");
 
-        H.L->info("Precomputing harmonic measures, d up to {} ...", int(H['p']));
+        spdlog::info("Precomputing harmonic measures, d up to {} ...", int(H['p']));
         for (int r = 1; r < int(H['p']); ++r) {
             bool          dirty = true;
             Array<double> MM({2 * r + 1, 2 * r + 1});
@@ -137,5 +137,5 @@ int main(int argc, char **argv) {
     dla.runDLA();
     dla.output(H.title);
     if (H['f']) dla.output_fine("dla.png");
-    H.L->info("Final cluster: {} particles, diameter = {}", dla.QT.n, dla.r);
+    spdlog::info("Final cluster: {} particles, diameter = {}", dla.QT.n, dla.r);
 }

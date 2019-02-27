@@ -28,8 +28,6 @@ namespace vb {
             outputs.push_back({l, ls, fmt::format("{}", x), out});
         }
 
-        std::shared_ptr<spdlog::logger> L;
-
         boost::chrono::time_point<boost::chrono::process_real_cpu_clock, Duration>   start;
         boost::chrono::time_point<boost::chrono::process_user_cpu_clock, Duration>   start_u;
         boost::chrono::time_point<boost::chrono::process_system_cpu_clock, Duration> start_s;

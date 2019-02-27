@@ -31,8 +31,8 @@ int main(int argc, char **argv) {
         return grad;
     };
 
-    ProgressFunc<CMAParameters<>, CMASolutions> pf = [&H](const CMAParameters<> &, const CMASolutions &cmasols) {
-        H.L->trace("Current best : {}", cmasols.get_best_seen_candidate().get_fvalue());
+    ProgressFunc<CMAParameters<>, CMASolutions> pf = [](const CMAParameters<> &, const CMASolutions &cmasols) {
+        spdlog::trace("Current best : {}", cmasols.get_best_seen_candidate().get_fvalue());
         return 0;
     };
 
@@ -44,6 +44,6 @@ int main(int argc, char **argv) {
     if (H['t']) spdlog::set_level(spdlog::level::trace);
     auto cmasols = cmaes<>(f, cmaparams, pf, df);
 
-    H.L->info("Final value : {}", cmasols.get_best_seen_candidate().get_fvalue());
+    spdlog::info("Final value : {}", cmasols.get_best_seen_candidate().get_fvalue());
     std::cout << cmasols << std::endl;
 }

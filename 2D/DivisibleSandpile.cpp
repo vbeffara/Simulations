@@ -35,7 +35,7 @@ public:
 
 int main(int argc, char **argv) {
     Hub H("Divisible sandpile", argc, argv, "n=500,m=.01,s=10,r");
-    for (auto z : coo_range({5, 3})) H.L->info("{}", z);
+    for (auto z : coo_range({5, 3})) spdlog::info("{}", z);
     Sandpile S(H, H['n']);
     S.show();
     while (true) { S.swipe(H); }

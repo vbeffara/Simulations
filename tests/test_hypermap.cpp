@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
             }
         }
     }
-    H.L->info("{}", M);
+    spdlog::info("{}", M);
 
     Constellation0<double> C{M};
     C.belyi();

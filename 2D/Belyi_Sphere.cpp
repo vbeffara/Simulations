@@ -57,13 +57,13 @@ int main(int argc, char **argv) {
             if (c.size() < d) good = false;
         if (!good) continue;
 
-        H.L->info("{}: {}", ++nb, M);
+        spdlog::info("{}: {}", ++nb, M);
 
         if (H['v'] || H['o'] || H['b'] || H['q']) {
             H.title = fmt::format("Spheroidal enumeration (s={}, d={}, i={})", s, d, nb);
             Constellation0<double> C{M};
             C.belyi();
-            if (H['b']) H.L->info("{}", C);
+            if (H['b']) spdlog::info("{}", C);
             if (H['v'] || H['o']) {
                 auto     bd = C.bounds();
                 Coloring CC(H.title, bd.first, bd.second, 800, [&](cpx z) { return Indexed((imag(C(z)) > 0) ? 1 : 2); });
@@ -83,7 +83,7 @@ int main(int argc, char **argv) {
                 Constellation0<real_t> Cq(C);
                 Cq.findn();
                 Cq.belyi();
-                H.L->info("{}", Cq);
+                spdlog::info("{}", Cq);
             }
         }
     }

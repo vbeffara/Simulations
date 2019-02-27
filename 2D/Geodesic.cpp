@@ -37,7 +37,7 @@ public:
             minf = min(minf, I.at(z).f);
             maxf = max(maxf, I.at(z).f);
         }
-        H.L->info("Renormalized field: min = {}, max = {}", minf / log(w()), maxf / log(w()));
+        spdlog::info("Renormalized field: min = {}, max = {}", minf / log(w()), maxf / log(w()));
 
         for (auto z : coo_range(size)) {
             put(z, Grey(uint8_t(255 * (I.at(z).f - minf) / (maxf - minf))));

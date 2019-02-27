@@ -144,7 +144,7 @@ int main(int argc, char **argv) {
             F.output(H.title);
         }
     } else {
-        H.L->error("Type should be 'wave' or 'barg', exiting...");
+        spdlog::error("Type should be 'wave' or 'barg', exiting...");
         exit(1);
     }
 }

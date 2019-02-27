@@ -95,5 +95,5 @@ int main(int argc, char **argv) {
 
     vector<string> out2;
     for (int i = 1; i <= 4; ++i) out2.push_back(fmt::format("{} {}", stats2[i], double(stats2[i]) / n_iter));
-    H.L->info("{} | {} | {}", n, n_iter, fmt::join(out2, " | "));
+    spdlog::info("{} | {} | {}", n, n_iter, fmt::join(out2, " | "));
 }

@@ -106,7 +106,7 @@ public:
     void run(const Hub &H, int n, int t) {
         auto p = explore_cmaes(n, t / 1000);
 
-        for (int i = 0; i < 4; ++i) { H.L->info("Transition matrix: {} {} {} {}", p[i][0], p[i][1], p[i][2], p[i][3]); }
+        for (int i = 0; i < 4; ++i) { spdlog::info("Transition matrix: {} {} {} {}", p[i][0], p[i][1], p[i][2], p[i][3]); }
 
         vector<double> n2s(int{t});
         for (auto &x : n2s) x = markov(n, p);
@@ -114,7 +114,7 @@ public:
         for (auto v : n2s) cout << v << endl;
         double s = 0.0;
         for (auto v : n2s) s += v;
-        H.L->info("Average value: {}", s / int(H['t']));
+        spdlog::info("Average value: {}", s / int(H['t']));
     }
 
     vector<Matrix2d> rho, Gamma;

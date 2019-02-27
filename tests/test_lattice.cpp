@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
     L.relax(1e-14);
     L.tau = L.tau_rw();
     L.optimize(cost_cp);
-    H.L->info("Modulus: tau = {}", L.tau);
+    spdlog::info("Modulus: tau = {}", L.tau);
 
     Pen p(Color(255, 0, 0), 1, Color(255, 255, 0));
 

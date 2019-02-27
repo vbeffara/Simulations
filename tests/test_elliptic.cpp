@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
         for (int i = 0; i < f; ++i) M.flip(prng.uniform_int(M.sigma.size()));
     }
 
-    H.L->info("{}", M);
+    spdlog::info("{}", M);
     Constellation1<double> C{M};
     C.findn();
 

@@ -50,7 +50,7 @@ int main(int argc, char **argv) {
         }
 
         double dev = (double(x + y) - double(t) * 3.0 / 7.0) / sqrt(double(t));
-        H.L->info("dev = {}", dev);
+        spdlog::info("dev = {}", dev);
         sd += dev;
         sd2 += dev * dev;
     }

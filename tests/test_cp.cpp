@@ -32,15 +32,15 @@ int main(int argc, char **argv) {
 
     Minimizer<double> MM(3 * m.n, [&m](const Vector<double> &x, Vector<double> *g) { return m.fg_circle_disk(x, g); });
     if (H['v']) {
-        MM.cb = [&H]([[maybe_unused]] const Vector<double> &x, double fx) { H.L->trace("Current : {}", fx); };
+        MM.cb = [](const Vector<double> &, double fx) { spdlog::trace("Current : {}", fx); };
         spdlog::set_level(spdlog::level::trace);
     }
     MM.minimize_qn(x);
     x = MM.x;
 
-    H.L->info("Number of vertices:    {}", m.n);
-    H.L->info("Final value of f:      {}", MM.fx);
-    H.L->info("Final square gradient: {}", MM.gx.squaredNorm());
+    spdlog::info("Number of vertices:    {}", m.n);
+    spdlog::info("Final value of f:      {}", MM.fx);
+    spdlog::info("Final square gradient: {}", MM.gx.squaredNorm());
 
     for (int i = 0; i < m.n; ++i) {
         m.v[i]->z = cpx(x[3 * i], x[3 * i + 1]);

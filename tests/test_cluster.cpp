@@ -51,7 +51,7 @@ int main(int argc, char **argv) {
                 sup_ = max(sup_, ns);
                 t_   = t;
                 W.paint(I);
-                H.L->info("time = {:<15} radius = {:>5} {:>9} particles", double(t), sup_, W.np);
+                spdlog::info("time = {:<15} radius = {:>5} {:>9} particles", double(t), sup_, W.np);
                 if ((l != 0) && (sup_ >= l)) break;
             }
         }

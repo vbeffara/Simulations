@@ -9,10 +9,8 @@
 
 namespace vb {
     Hub::Hub(std::string t, int argc, char **argv, std::string c) : CL_Parser(std::move(t), argc, argv, std::move(c)) {
-        L = spdlog::stderr_color_mt(prog);
-
         if (at('h')) {
-            L->info(help);
+            spdlog::info(help);
             exit(0);
         };
 
@@ -49,7 +47,7 @@ namespace vb {
         auto        format = fmt::format("{{:<{}}} : {{}}", max_label_width);
         std::string os, ls;
         for (const auto &[k, ks, v, o] : outputs) {
-            L->info(fmt::format(format, k, v));
+            spdlog::info(fmt::format(format, k, v));
             if (o) {
                 os += ",?";
                 ls += "," + ks;

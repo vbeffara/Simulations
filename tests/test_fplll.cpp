@@ -20,13 +20,13 @@ int main(int argc, char **argv) {
     xs.emplace_back("646.57075744998934067917908899466389773483433056006707491873238242675958808933605915556193840685637786");
 
     for (const auto &x : xs) {
-        H.L->info("x = {}", x);
-        if (auto P = guess(real_t{x}, 80)) H.L->info("    P(z) = {}", *P);
+        spdlog::info("x = {}", x);
+        if (auto P = guess(real_t{x}, 80)) spdlog::info("    P(z) = {}", *P);
     }
 
     real_t    r("0.1722882583776278670500267959231284336682007863854856624427574750255049273322927690638923632");
     real_t    i("0.5302487364574217190358808797265653491226567421626168710631761419479819886565504921987031543");
     complex_t z{r, i};
-    H.L->info("x = {}", z);
-    if (auto P = guess(z, 80)) H.L->info("    P(z) = {}", *P);
+    spdlog::info("x = {}", z);
+    if (auto P = guess(z, 80)) spdlog::info("    P(z) = {}", *P);
 }

@@ -28,7 +28,7 @@ public:
         return 0;
     }
 
-    void run(const Hub &H) {
+    void run() {
         int p = 0;
         while (p == 0) {
             z[0] = {2 * nn, 2 * nn};
@@ -36,7 +36,7 @@ public:
             p = piv();
         }
 
-        H.L->info("Pivot found at time {} and location {}.", p, z[p]);
+        spdlog::info("Pivot found at time {} and location {}.", p, z[p]);
 
         for (auto z : coo_range(size)) put(z, BLACK);
         for (int k = 0; k < n; k++) putp(z[k] - z[p] + coo{2 * nn, 2 * nn}, WHITE);
@@ -53,6 +53,6 @@ public:
 int main(int argc, char **argv) {
     Hub   H("Pivot", argc, argv, "n=200");
     Pivot img(H, H['n']);
-    img.run(H);
+    img.run();
     img.pause();
 }

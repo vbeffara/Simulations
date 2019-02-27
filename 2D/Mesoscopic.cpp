@@ -16,12 +16,12 @@ int main(int argc, char **argv) {
     }
 
     for (int i = H['o']; i <= int(H['n']); ++i) {
-        H.L->info("Step {}", i);
+        spdlog::info("Step {}", i);
         G.pack();
         if (H['f']) G.flip();
 
-        H.L->info("  tau = {}", G.m);
-        H.L->info("  j   = {}", Elliptic<double>(exp(I * M_PI * G.m)).j());
+        spdlog::info("  tau = {}", G.m);
+        spdlog::info("  j   = {}", Elliptic<double>(exp(I * M_PI * G.m)).j());
 
         if (i < int(H['n'])) {
             G.split_edges();

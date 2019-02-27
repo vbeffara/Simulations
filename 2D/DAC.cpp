@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
     vector<uint8_t> connect(n * n);
     for (auto &c : connect) c = (prng.bernoulli(p) ? 1 : 0) + (prng.bernoulli(p) ? 2 : 0);
 
-    H.L->info("Computing connected components ...");
+    spdlog::info("Computing connected components ...");
 
     vector<int64_t> cluster(n * n);
     for (int i = 0; i < n * n; ++i) cluster[i] = i;
@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
         }
     }
 
-    H.L->info(" ... Done.");
+    spdlog::info(" ... Done.");
 
     vector<uint8_t> color(n * n);
     for (auto &c : color) c = (prng.bernoulli(q) ? 255 : 0);

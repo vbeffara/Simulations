@@ -13,5 +13,5 @@ int main(int argc, char **argv) {
     auto SS   = filter(good, S);
     auto SSS  = fmap(sec, SS);
     auto SSSS = take(8, SSS);
-    for (auto p : SSSS) H.L->info("{}", p);
+    for (auto p : SSSS) spdlog::info("{}", p);
 }
