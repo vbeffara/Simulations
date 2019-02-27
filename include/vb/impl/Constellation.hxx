@@ -1,5 +1,4 @@
 #pragma once
-#include <iomanip>
 #include <vb/Constellation.h>
 
 namespace vb {
@@ -57,6 +56,7 @@ namespace vb {
             for (unsigned j = 0; j < f.size(); ++j)
                 if (i != j)
                     if (abs(reduce(f[i].z - f[j].z)) < bound) out += T(1);
+        // TODO: perhaps optional rather than a special value?
         if (!isnormal(out)) out = T(123456789);
         return out;
     }

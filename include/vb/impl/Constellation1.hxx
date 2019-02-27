@@ -1,5 +1,4 @@
 #pragma once
-#include <iomanip>
 #include <vb/Constellation1.h>
 #include <vb/Toroidal.h>
 

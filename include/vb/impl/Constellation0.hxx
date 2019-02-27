@@ -1,5 +1,4 @@
 #pragma once
-#include <iomanip>
 #include <vb/Constellation0.h>
 #include <vb/NumberTheory.h>
 #include <vb/Spheroidal.h>

@@ -7,6 +7,7 @@ namespace vb {
     template <typename T> class Polynomial {
     public:
         Polynomial(const boost::math::tools::polynomial<T> &p) : P(p) {}
+        Polynomial(const std::vector<T> &V) : P(begin(V), end(V)) {}
         Polynomial(const T &t) : P({t}) {}
 
         auto degree() const { return P.degree(); }
@@ -26,7 +27,7 @@ namespace vb {
             if (P.size() <= 1) return T{0};
             std::vector<T> out(P.degree());
             for (unsigned i = 0; i < P.degree(); ++i) out[i] = T(i + 1) * P[i + 1];
-            return boost::math::tools::polynomial<T>(begin(out), end(out));
+            return out;
         }
 
         void operator*=(const T &x) { P *= x; }
