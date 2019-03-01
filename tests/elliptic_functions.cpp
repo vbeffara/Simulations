@@ -1,7 +1,7 @@
 #include <spdlog/spdlog.h>
 #include <vb/Elliptic.h>
-#include <vb/mp.h>
 #include <vb/util/Hub.h>
+#include <vb/util/mp.h>
 
 using namespace vb;
 using namespace std;

@@ -2,9 +2,9 @@
 #include <vb/Coloring.h>
 #include <vb/Constellation0.h>
 #include <vb/ProgressBar.h>
-#include <vb/Stream_lib.h>
 #include <vb/math/Pairings.h>
 #include <vb/util/Hub.h>
+#include <vb/util/Stream_lib.h>
 
 using namespace vb;
 using namespace std;

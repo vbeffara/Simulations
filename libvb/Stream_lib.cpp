@@ -1,4 +1,4 @@
-#include <vb/Stream_lib.h>
+#include <vb/util/Stream_lib.h>
 
 namespace vb {
     Stream<std::vector<int>> partitions(int n, int m) {

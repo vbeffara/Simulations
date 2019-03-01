@@ -4,8 +4,8 @@
 #include <spdlog/spdlog.h>
 #include <sqlite_modern_cpp.h>
 #include <sys/stat.h>
-#include <vb/mp.h>
 #include <vb/util/Hub.h>
+#include <vb/util/mp.h>
 #include <vector>
 
 namespace vb {

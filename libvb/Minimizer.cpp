@@ -1,5 +1,5 @@
 #include <vb/impl/Minimizer.hxx>
-#include <vb/mp.h>
+#include <vb/util/mp.h>
 
 namespace vb {
     template class Minimizer<double>;

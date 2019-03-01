@@ -1,4 +1,4 @@
-#include <vb/mp.h>
+#include <vb/util/mp.h>
 
 namespace vb {
     template <> real_t sum<real_t>(const std::function<real_t(int)> &f) {

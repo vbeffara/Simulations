@@ -10,7 +10,7 @@ namespace vb {
 } // namespace vb
 
 #ifdef UNIT_TESTS
-#include <vb/mp.h> // nograph
+#include <vb/util/mp.h> // nograph
 using namespace vb;
 TEST_CASE("Linear Algebra wrapper") {
     Matrix<real_t> m(3, 3);

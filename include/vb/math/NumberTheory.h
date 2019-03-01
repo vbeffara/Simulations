@@ -1,8 +1,8 @@
 #pragma once
 #include <fplll.h>
 #include <optional>
-#include <vb/Polynomial.h>
-#include <vb/mp.h>
+#include <vb/math/Polynomial.h>
+#include <vb/util/mp.h>
 
 namespace vb {
     template <typename T> std::optional<Polynomial<mpz_int>> guess(const T &x, int nd) {

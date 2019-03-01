@@ -1,6 +1,6 @@
 #pragma once
 #include <vb/math/LinearAlgebra.h>
-#include <vb/mp.h>
+#include <vb/util/mp.h>
 
 namespace vb {
     template <typename T> struct Star {
