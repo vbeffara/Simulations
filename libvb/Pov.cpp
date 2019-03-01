@@ -1,14 +1,7 @@
 #include <vb/Pov.h>
 
 namespace vb {
-    std::ostream &operator<<(std::ostream &os, const bunch &b) {
-        if (!b.before.empty()) os << b.before << '\n';
-        for (const auto &s : b) os << s << '\n';
-        if (!b.after.empty()) os << b.after;
-        return os;
-    }
-
-    void Pov_Scene::output_pov(const std::string &s) { std::ofstream((s + ".pov").c_str()) << (*this); }
+    void Pov_Scene::output_pov(const std::string &s) { std::ofstream((s + ".pov").c_str()) << fmt::format("{}", (bunch)(*this)); }
 
     std::string Box(tri a, tri b) { return fmt::format("box {{ {}, {} }}", a, b); }
     std::string Camera(tri a, tri b, double d) { return fmt::format("camera {{ location {} look_at {} angle {} }}", a, b, d); }

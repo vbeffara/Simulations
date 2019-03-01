@@ -17,8 +17,6 @@ namespace vb {
         std::string before, after;
     };
 
-    std::ostream &operator<<(std::ostream &os, const bunch &b);
-
     class Pov_Scene : public bunch {
     public:
         Pov_Scene() {
@@ -52,5 +50,16 @@ template <> struct fmt::formatter<vb::tri> {
 
     template <typename FormatContext> auto format(const vb::tri &c, FormatContext &ctx) {
         return format_to(ctx.out(), "<{},{},{}>", c.x, c.y, c.z);
+    }
+};
+
+template <> struct fmt::formatter<vb::bunch> {
+    template <typename ParseContext> constexpr auto parse(ParseContext &ctx) { return ctx.begin(); }
+
+    template <typename FormatContext> auto format(const vb::bunch &b, FormatContext &ctx) {
+        if (!b.before.empty()) format_to(ctx.out(), "{}", b.before + '\n');
+        for (const auto &s : b) format_to(ctx.out(), "{}", s + '\n');
+        if (!b.after.empty()) format_to(ctx.out(), "{}", b.after + '\n');
+        return ctx.out();
     }
 };
