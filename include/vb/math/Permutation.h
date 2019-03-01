@@ -1,5 +1,6 @@
 #pragma once /// @file
 #include <fmt/ostream.h>
+#include <vb/util/Stream.h>
 #include <vector>
 
 namespace vb {
@@ -29,6 +30,9 @@ namespace vb {
     Permutation Transposition(int n, int i, int j);
 
     bool connected(const Permutation &s, const Permutation &a);
+
+    Stream<Permutation> permutations(int n);
+    Stream<Permutation> permutations(std::vector<int> s);
 
 #ifdef UNIT_TESTS
     TEST_CASE("vb::Permutation") {

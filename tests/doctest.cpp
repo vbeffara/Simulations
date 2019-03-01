@@ -16,4 +16,4 @@
 #include <vb/Pov.h>
 #include <vb/ProgressBar.h>
 #include <vb/data/TriMatrix.h>
-#include <vb/util/Stream_lib.h>
+#include <vb/util/Stream.h>

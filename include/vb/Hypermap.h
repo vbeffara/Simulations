@@ -67,6 +67,8 @@ namespace vb {
         Permutation rebasing(int i) const;
         Permutation rebasing() const;
     };
+
+    Stream<Hypermap> hypermaps(const std::vector<int> &s, const std::vector<int> &a, const std::vector<int> &p);
 } // namespace vb
 
 namespace YAML {

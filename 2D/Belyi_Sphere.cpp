@@ -1,10 +1,8 @@
 #include <spdlog/spdlog.h>
 #include <vb/Coloring.h>
 #include <vb/Constellation0.h>
-#include <vb/ProgressBar.h>
-#include <vb/math/Pairings.h>
+#include <vb/math/Permutation.h>
 #include <vb/util/Hub.h>
-#include <vb/util/Stream_lib.h>
 
 using namespace vb;
 using namespace std;

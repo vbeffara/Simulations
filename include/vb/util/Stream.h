@@ -6,6 +6,10 @@ namespace vb {
     template <typename T> using Stream = boost::coroutines2::detail::pull_coroutine<T>;
     template <typename T> using Sink   = boost::coroutines2::detail::push_coroutine<T>;
 
+    Stream<std::vector<int>> partitions(int n, int m = 1); // Partitions of n with piece size at least m
+    Stream<std::vector<int>> tuples(int k, int n);         // Ordered, distinct k-tuples in [0,n-1]
+    Stream<std::vector<int>> cycles(int k, int n);         // k-tuples up to cyclic permutation
+
     template <typename T> int size(Stream<T> &&S) {
         int out = 0;
         for (const auto &i : S) {

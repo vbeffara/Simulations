@@ -1,6 +1,6 @@
 #include <spdlog/spdlog.h>
+#include <vb/math/Permutation.h>
 #include <vb/util/Hub.h>
-#include <vb/util/Stream_lib.h>
 
 using namespace std;
 using namespace vb;
