@@ -8,8 +8,6 @@ namespace vb {
         double x, y, z;
     };
 
-    inline std::ostream &operator<<(std::ostream &os, const tri &c) { return os << "<" << c.x << "," << c.y << "," << c.z << ">"; }
-
     struct bunch : public std::vector<std::string> {
         bunch(std::string bef = "", std::string aft = "") : before(bef), after(aft) {}
         template <typename T> bunch &operator<<(const T &t) {
@@ -48,3 +46,11 @@ namespace vb {
     std::string Texture(const std::string &t);
     Pov_Union   Frame(tri a, tri b, const std::string &t);
 } // namespace vb
+
+template <> struct fmt::formatter<vb::tri> {
+    template <typename ParseContext> constexpr auto parse(ParseContext &ctx) { return ctx.begin(); }
+
+    template <typename FormatContext> auto format(const vb::tri &c, FormatContext &ctx) {
+        return format_to(ctx.out(), "<{},{},{}>", c.x, c.y, c.z);
+    }
+};

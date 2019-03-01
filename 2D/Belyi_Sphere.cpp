@@ -1,10 +1,9 @@
-// / data / Pairings.hE, S=2+F/2, F=2d, S=2+d
 #include <spdlog/spdlog.h>
 #include <vb/Coloring.h>
 #include <vb/Constellation0.h>
 #include <vb/ProgressBar.h>
 #include <vb/Stream_lib.h>
-#include <vb/data/Pairings.h>
+#include <vb/math/Pairings.h>
 #include <vb/util/Hub.h>
 
 using namespace vb;

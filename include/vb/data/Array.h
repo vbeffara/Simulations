@@ -1,6 +1,6 @@
 #pragma once
+#include <vb/math/math.h>
 #include <vb/util/coo.h>
-#include <vb/util/math.h>
 
 namespace vb {
     template <typename T> class Array {

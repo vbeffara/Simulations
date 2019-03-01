@@ -1,7 +1,7 @@
 #pragma once
 #include <vb/Constellation0.h>
-#include <vb/NumberTheory.h>
 #include <vb/Spheroidal.h>
+#include <vb/math/NumberTheory.h>
 
 namespace vb {
     template <typename T> Constellation0<T>::Constellation0(const Hypermap &M) {

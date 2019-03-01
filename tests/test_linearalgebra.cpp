@@ -1,5 +1,5 @@
 #include <spdlog/spdlog.h>
-#include <vb/LinearAlgebra.h>
+#include <vb/math/LinearAlgebra.h>
 #include <vb/mp.h>
 #include <vb/util/Hub.h>
 

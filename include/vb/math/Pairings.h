@@ -1,5 +1,5 @@
 #pragma once
-#include <vb/data/Permutation.h>
+#include <vb/math/Permutation.h>
 
 namespace vb {
     class Pairings_Iterator {

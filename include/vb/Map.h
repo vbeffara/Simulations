@@ -1,6 +1,6 @@
 #pragma once
 #include <vb/Figure.h>
-#include <vb/LinearAlgebra.h>
+#include <vb/math/LinearAlgebra.h>
 
 namespace vb {
     using Edge     = std::pair<int, int>;

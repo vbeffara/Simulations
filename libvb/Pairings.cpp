@@ -1,6 +1,6 @@
-#include <vb/data/Pairings.h>
+#include <vb/math/Pairings.h>
+#include <vb/math/math.h>
 #include <vb/util/PRNG.h>
-#include <vb/util/math.h>
 
 namespace vb {
     void Pairings_Iterator::next() {

@@ -10,7 +10,7 @@
 #include <vb/Coloring.h>
 #include <vb/Constellation1.h>
 #include <vb/ProgressBar.h>
-#include <vb/data/Pairings.h>
+#include <vb/math/Pairings.h>
 #include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 

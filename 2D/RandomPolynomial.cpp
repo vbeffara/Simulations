@@ -1,7 +1,7 @@
 #include <vb/Coloring.h>
+#include <vb/math/math.h>
 #include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
-#include <vb/util/math.h>
 
 using namespace vb;
 using namespace std;

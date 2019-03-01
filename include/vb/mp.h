@@ -1,7 +1,7 @@
 #pragma once
 #include <boost/multiprecision/mpc.hpp>
 #include <boost/multiprecision/mpfr.hpp>
-#include <vb/util/math.h>
+#include <vb/math/math.h>
 #undef Success
 #include <Eigen/Dense>
 #include <fmt/ostream.h>

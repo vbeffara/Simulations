@@ -1,5 +1,5 @@
 #pragma once
-#include <vb/LinearAlgebra.h>
+#include <vb/math/LinearAlgebra.h>
 #include <vb/mp.h>
 
 namespace vb {
