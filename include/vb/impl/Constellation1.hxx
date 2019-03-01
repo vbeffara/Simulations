@@ -239,23 +239,23 @@ namespace vb {
         int nd = std::max(5, int(lerr) / 2 - 10);
         if (err == T(0)) nd = 10;
         os << std::setprecision(nd) << std::fixed;
-        os << "Modulus tau  = " << C.tau() << std::endl;
-        os << "Invariant j  = " << C.E.j() << std::endl;
-        os << "Invariant g2 = " << C.E.g2() << std::endl;
-        os << "Invariant g3 = " << C.E.g3() << std::endl;
-        os << "log(lambda)  = " << C.p[1] << std::endl;
-        os << "Corr. shift  = " << C.dx << " " << C.dy << std::endl;
-        os << std::endl;
-        os << "Keeping " << nd << " digits." << std::endl;
-        os << std::endl;
-        os << "Black vertices / zeros: " << std::endl;
-        for (unsigned i = 0; i < C.b.size(); ++i) os << "| " << C.b[i].d << "\t" << C.b[i].z << std::endl;
-        os << std::endl;
-        os << "White vertices / ones: " << std::endl;
-        for (unsigned i = 0; i < C.w.size(); ++i) os << "| " << C.w[i].d << "\t" << C.w[i].z << std::endl;
-        os << std::endl;
-        os << "Red vertices / poles: " << std::endl;
-        for (unsigned i = 0; i < C.f.size(); ++i) os << "| " << C.f[i].d << "\t" << C.f[i].z << std::endl;
+        os << "Modulus tau  = " << C.tau() << '\n';
+        os << "Invariant j  = " << C.E.j() << '\n';
+        os << "Invariant g2 = " << C.E.g2() << '\n';
+        os << "Invariant g3 = " << C.E.g3() << '\n';
+        os << "log(lambda)  = " << C.p[1] << '\n';
+        os << "Corr. shift  = " << C.dx << " " << C.dy << '\n';
+        os << '\n';
+        os << "Keeping " << nd << " digits.\n";
+        os << '\n';
+        os << "Black vertices / zeros:\n";
+        for (unsigned i = 0; i < C.b.size(); ++i) os << "| " << C.b[i].d << "\t" << C.b[i].z << '\n';
+        os << '\n';
+        os << "White vertices / ones:\n";
+        for (unsigned i = 0; i < C.w.size(); ++i) os << "| " << C.w[i].d << "\t" << C.w[i].z << '\n';
+        os << '\n';
+        os << "Red vertices / poles:\n";
+        for (unsigned i = 0; i < C.f.size(); ++i) os << "| " << C.f[i].d << "\t" << C.f[i].z << '\n';
         return os;
     }
 
@@ -268,49 +268,49 @@ namespace vb {
         os << std::setprecision(nd) << std::fixed;
         int eps = nd - 5;
 
-        os << "log(lambda)  = " << C.p[1] << std::endl;
-        os << "tau          = " << C.p[0] << std::endl;
+        os << "log(lambda)  = " << C.p[1] << '\n';
+        os << "tau          = " << C.p[0] << '\n';
         {
             auto P = guess(C.p[0], eps);
-            if (P) os << fmt::format("\t\troot of {}", *P) << std::endl;
+            if (P) os << fmt::format("\t\troot of {}", *P) << '\n';
         }
-        os << "invariant j  = " << C.E.j() << std::endl;
+        os << "invariant j  = " << C.E.j() << '\n';
         {
             auto P = guess(C.E.j(), eps);
-            if (P) os << fmt::format("\t\troot of {}", *P) << std::endl;
+            if (P) os << fmt::format("\t\troot of {}", *P) << '\n';
         }
-        os << "invariant g2 = " << C.E.g2() << std::endl;
+        os << "invariant g2 = " << C.E.g2() << '\n';
         {
             auto P = guess(C.E.g2(), eps);
-            if (P) os << fmt::format("\t\troot of {}", *P) << std::endl;
+            if (P) os << fmt::format("\t\troot of {}", *P) << '\n';
         }
-        os << "invariant g3 = " << C.E.g3() << std::endl;
+        os << "invariant g3 = " << C.E.g3() << '\n';
         {
             auto P = guess(C.E.g3(), eps);
-            if (P) os << fmt::format("\t\troot of {}", *P) << std::endl;
+            if (P) os << fmt::format("\t\troot of {}", *P) << '\n';
         }
-        os << std::endl;
-        os << "Keeping " << nd << " digits." << std::endl;
-        os << std::endl;
-        os << "Black vertices / zeros: " << std::endl;
+        os << '\n';
+        os << "Keeping " << nd << " digits.\n";
+        os << '\n';
+        os << "Black vertices / zeros:\n";
         for (auto &zd : C.b) {
-            os << "| " << zd.d << "\t" << zd.z << std::endl;
+            os << "| " << zd.d << "\t" << zd.z << '\n';
             auto P = guess(zd.z, eps);
-            if (P) os << fmt::format("|\t\troot of {}", *P) << std::endl;
+            if (P) os << fmt::format("|\t\troot of {}", *P) << '\n';
         }
-        os << std::endl;
-        os << "White vertices / ones: " << std::endl;
+        os << '\n';
+        os << "White vertices / ones:\n";
         for (auto &zd : C.w) {
-            os << "| " << zd.d << "\t" << zd.z << std::endl;
+            os << "| " << zd.d << "\t" << zd.z << '\n';
             auto P = guess(zd.z, eps);
-            if (P) os << fmt::format("|\t\troot of {}", *P) << std::endl;
+            if (P) os << fmt::format("|\t\troot of {}", *P) << '\n';
         }
-        os << std::endl;
-        os << "Red vertices / poles: " << std::endl;
+        os << '\n';
+        os << "Red vertices / poles:\n";
         for (auto &zd : C.f) {
-            os << "| " << zd.d << "\t" << zd.z << std::endl;
+            os << "| " << zd.d << "\t" << zd.z << '\n';
             auto P = guess(zd.z, eps);
-            if (P) os << fmt::format("|\t\troot of {}", *P) << std::endl;
+            if (P) os << fmt::format("|\t\troot of {}", *P) << '\n';
         }
         return os;
     }

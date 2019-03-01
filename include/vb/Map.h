@@ -45,8 +45,6 @@ namespace vb {
         void hex_to_triangle(const std::vector<int> &f);
         void barycentric();
 
-        void print_as_dot(std::ostream &os);
-
         void plot_vertices(Figure *F);
         void plot_edges(Figure *F);
         void plot_circles(Figure *F);
@@ -79,7 +77,16 @@ namespace vb {
         void paint() override;
     };
 
-    std::ostream &operator<<(std::ostream &os, const Map &m);
-
     Map &operator<<(Map &m, const Edge &e);
 } // namespace vb
+
+template <> struct fmt::formatter<vb::Map> {
+    template <typename ParseContext> constexpr auto parse(ParseContext &ctx) { return ctx.begin(); }
+
+    template <typename FormatContext> auto format(const vb::Map &m, FormatContext &ctx) {
+        std::vector<std::string> edges;
+        for (int i = 0; i < m.n; ++i) { edges.push_back(fmt::format("{} -> {}", i, fmt::join(m.v[i]->adj, " "))); }
+        format_to(ctx.out(), "{} vertices: {}", m.n, fmt::join(edges, ", "));
+        return ctx.out();
+    }
+};

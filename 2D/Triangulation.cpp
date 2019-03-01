@@ -1,3 +1,4 @@
+#include <spdlog/spdlog.h>
 #include <vb/Map.h>
 #include <vb/ProgressBar.h>
 #include <vb/util/Hub.h>
@@ -72,5 +73,5 @@ int main(int argc, char **argv) {
     T.inscribe(T.face(Edge(0, *(T.v[0]->adj.begin()))));
     T.balance_old();
     T.pause();
-    std::cout << T;
+    spdlog::info("{}", static_cast<Map &>(T));
 }

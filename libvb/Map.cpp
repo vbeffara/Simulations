@@ -230,18 +230,6 @@ namespace vb {
         }
     }
 
-    void Map::print_as_dot(std::ostream &os) {
-        os << "digraph G {" << std::endl;
-        for (int i = 0; i < n; ++i)
-            for (int j : v[i]->adj) {
-                if (find_edge(Edge(j, i)) == v[0]->adj.end())
-                    os << "  " << i << " -> " << j << ";" << std::endl;
-                else if (i <= j)
-                    os << "  " << i << " -> " << j << " [arrowhead = none]" << std::endl;
-            }
-        os << "}" << std::endl;
-    }
-
     void Map::plot_vertices(Figure *F) {
         for (int i = 0; i < n; ++i) { F->add(std::make_unique<Dot>(v[i]->z)); }
     }
@@ -354,16 +342,6 @@ namespace vb {
             v[i]->z = scale * conj(-B / A);
             v[i]->r = scale * sqrt(abs(norm(v[i]->z / scale) - C / A));
         }
-    }
-
-    std::ostream &operator<<(std::ostream &os, const Map &m) {
-        os << m.n << " vertices:" << std::endl;
-        for (int i = 0; i < m.n; ++i) {
-            os << "  " << i << " ->";
-            for (int j : m.v[i]->adj) os << " " << j;
-            os << std::endl;
-        }
-        return os;
     }
 
     Map &operator<<(Map &m, const Edge &e) {
