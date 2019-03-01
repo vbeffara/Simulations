@@ -1,4 +1,3 @@
-#include <gsl/gsl>
 #include <spdlog/spdlog.h>
 #include <vb/LinearAlgebra.h>
 #include <vb/util/Hub.h>

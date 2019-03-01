@@ -1,7 +1,6 @@
 #pragma once /// \file
 #undef False
 #include <boost/chrono.hpp>
-#include <cstdlib>
 #undef CHAR_WIDTH
 #include <fmt/ostream.h>
 #include <vb/util/CL_Parser.h>

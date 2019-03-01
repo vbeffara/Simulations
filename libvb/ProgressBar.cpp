@@ -1,17 +1,8 @@
-#include <cmath>
-#include <gsl/gsl>
-#include <iomanip>
-#include <iostream>
+#include <spdlog/spdlog.h>
 #include <vb/ProgressBar.h>
 
 namespace vb {
-    ProgressBar::ProgressBar(int length, double pow) : Auto(.05), final(length), power(pow) {}
-
-    ProgressBar::~ProgressBar() {
-        set(final);
-        ProgressBar::update();
-        std::cerr << "\n";
-    }
+    ProgressBar::ProgressBar(int length, double pow) : Auto(1), final(length), power(pow) {}
 
     void ProgressBar::set(int pos) {
         if (pos < 0) pos = 0;
@@ -21,33 +12,19 @@ namespace vb {
     }
 
     void ProgressBar::update() {
-        static const std::string symbols[] = {u8" ", u8"▏", u8"▎", u8"▍", u8"▌", u8"▋", u8"▊", u8"▉", u8"█"};
+        static const std::vector<std::string> symbols{u8" ", u8"▏", u8"▎", u8"▍", u8"▌", u8"▋", u8"▊", u8"▉", u8"█"};
+        std::string                           bar, days, rest;
 
-        std::cerr << "\r[";
-        auto nchar = int((current * 50.0) / final);
-        auto prop  = int(8 * ((current * 50.0) / final - nchar));
-        for (int i = 0; i < nchar; ++i) std::cerr << symbols[8];
-        if (nchar < 50) std::cerr << gsl::at(symbols, prop);
-        for (int i = nchar + 1; i < 50; ++i) std::cerr << " ";
-        std::cerr << "]";
+        int n = current * 400 / final;
+        for (int i = 0; i < n / 8; ++i) bar += symbols[8];
+        if (n < 400) bar += symbols[n % 8] + std::string(49 - n / 8, ' ');
 
         if (current > 0) {
-            double   done = pow(current, power), todo = pow(final, power);
-            Duration etd = (now() - start) * (todo / done - 1.0);
-            auto     eta = int(etd.count());
-            bool     big = false;
-
-            std::cerr << " (";
-            if (eta >= 3600 * 24) {
-                std::cerr << eta / 3600 / 24 << "d ";
-                eta = eta % 3600 * 24;
-                big = true;
-            }
-            if (big || (eta >= 3600)) {
-                std::cerr << eta / 3600 << ":" << std::setw(2) << std::setfill('0');
-                eta = eta % 3600;
-            }
-            std::cerr << eta / 60 << ":" << std::setw(2) << std::setfill('0') << eta % 60 << ")   ";
+            int eta = Duration((now() - start) * (pow(double(final) / current, power) - 1)).count();
+            if (eta >= 3600 * 24) days = fmt::format("{}d ", eta / 3600 / 24);
+            rest = fmt::format("{}:{:02}:{:02}       ", (eta / 3600) % 24, (eta / 60) % 60, eta % 60);
         }
+
+        spdlog::info("[{}] {}{}", bar, days, rest);
     }
 } // namespace vb

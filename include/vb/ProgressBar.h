@@ -5,34 +5,27 @@
 namespace vb {
     class ProgressBar : public Auto {
     public:
-        explicit ProgressBar (int length=100, double pow=1.0);
-        ProgressBar (const ProgressBar &) = default;
-        ProgressBar (ProgressBar &&) = default;
+        ProgressBar(int length = 100, double pow = 1.0);
 
-        ~ProgressBar () override;
-
-        ProgressBar & operator= (const ProgressBar &) = default;
-        ProgressBar & operator= (ProgressBar &&) = default;
-
-        void set (int pos);
+        void set(int pos);
 
         void update() override;
 
     private:
-        int final, current=0;
+        int    final, current = 0;
         double power;
     };
 
-    #ifdef UNIT_TESTS
-    TEST_CASE ("vb::ProgressBar") {
+#ifdef UNIT_TESTS
+    TEST_CASE("vb::ProgressBar") {
         auto l = Auto::tasks.size();
         {
-            ProgressBar P (1e7);
-            CHECK (Auto::tasks.size() == l+1);
-            CHECK (Auto::tasks.back().active);
-            for (int i=0; i<1e7; ++i) P.set(i);
+            ProgressBar P(1e7);
+            CHECK(Auto::tasks.size() == l + 1);
+            CHECK(Auto::tasks.back().active);
+            for (int i = 0; i < 1e7; ++i) P.set(i);
         }
-        CHECK (!Auto::tasks.back().active);
+        CHECK(!Auto::tasks.back().active);
     }
-    #endif
+#endif
 } // namespace vb
