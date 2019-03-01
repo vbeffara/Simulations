@@ -11,8 +11,8 @@ int  sec(const Permutation &p) { return p[2]; }
 int main(int argc, char **argv) {
     Hub  H("Testing coroutines", argc, argv, "n=5");
     auto S    = permutations(int(H['n']));
-    auto SS   = filter(good, S);
-    auto SSS  = fmap(sec, SS);
-    auto SSSS = take(8, SSS);
-    for (auto p : SSSS) spdlog::info("{}", p);
+    auto SS   = filter(good, move(S));
+    auto SSS  = fmap(sec, move(SS));
+    auto SSSS = take(8, move(SSS));
+    for (const auto &p : SSSS) spdlog::info("{}", p);
 }
