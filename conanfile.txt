@@ -10,9 +10,9 @@ yaml-cpp/0.6.2@bincrafters/stable
 
 fltk/1.4.0-d31228409@vbeffara/testing
 fplll/5.2.1@vbeffara/testing
-libcmaes/0.9.5-HEAD@vbeffara/testing
+libcmaes/0.9.5-7514782ebe@vbeffara/testing
 mpc/1.1.0@vbeffara/testing
-sqlite_modern_cpp/3.2-HEAD@vbeffara/testing
+sqlite_modern_cpp/3.2-936cd0c@vbeffara/testing
 
 [options]
 sqlite3:shared=True
