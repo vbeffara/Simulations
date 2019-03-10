@@ -16,6 +16,7 @@ namespace vb {
     inline coo  operator-(const coo &z1, const coo &z2) { return {z1.x - z2.x, z1.y - z2.y}; }
     inline coo  operator-(const coo &z) { return {-z.x, -z.y}; }
     inline coo  operator*(const coo &z, int64_t d) { return {z.x * d, z.y * d}; }
+    inline coo  operator*(int64_t d, const coo &z) { return {z.x * d, z.y * d}; }
     inline coo  operator/(const coo &z, int64_t d) { return {z.x / d, z.y / d}; }
 
     inline int64_t norm(coo z) { return z.x * z.x + z.y * z.y; }
