@@ -21,8 +21,6 @@ namespace vb {
         real_t::default_precision(100);
         complex_t::default_precision(100);
 
-        version = GIT_SHA1;
-
         mode_t mode = 0755u;
         mkdir("output", mode);
         mkdir(dir.c_str(), mode);
@@ -30,7 +28,7 @@ namespace vb {
         chdir(dir.c_str());
 
         output("Command line", "", cmd, false);
-        output("Code version", "", version, false);
+        output("Code version", "", version(), false);
         output("Image title", "", title, false);
 
         start   = boost::chrono::process_real_cpu_clock::now();
@@ -70,11 +68,11 @@ namespace vb {
         std::string args = boost::join(as, ", ");
 
         std::optional<int64_t> id;
-        db << "select cmd_id from cmds where prog = ? and version = ? and args = ?;" << prog << version << args >>
+        db << "select cmd_id from cmds where prog = ? and version = ? and args = ?;" << prog << version() << args >>
             [&](int64_t i) { id = i; };
 
         if (!id) {
-            db << "insert into cmds (prog,version,args) values (?,?,?);" << prog << version << args;
+            db << "insert into cmds (prog,version,args) values (?,?,?);" << prog << version() << args;
             id = db.last_insert_rowid();
         }
 

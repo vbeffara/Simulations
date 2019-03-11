@@ -33,6 +33,7 @@ namespace vb {
 
         std::vector<Output> outputs;
         unsigned            max_label_width = 0;
-        std::string         version;
     };
+
+    std::string version();
 } // namespace vb
