@@ -5,16 +5,16 @@
 #include <vb/util/mp.h>
 
 namespace vb {
-    template <typename T> std::optional<Polynomial<mpz_int>> guess(const T &x, int nd) {
+    template <typename T> std::optional<Polynomial<mpz_int>> guess(const T &x, unsigned nd) {
         real_t m{pow(real_t{10, x.precision()}, nd * 2 / 3)};
-        for (int d = 1; d <= nd / 10; ++d) {
+        for (unsigned d = 1; d <= nd / 10; ++d) {
             T             t{1, x.precision()};
-            ZZ_mat<mpz_t> M(d + 1, d + 3);
+            ZZ_mat<mpz_t> M(int(d + 1), int(d + 3));
 
-            for (int i = 0; i <= d; ++i) {
-                M[i][0]     = mpz_int(real(t) * m).backend().data();
-                M[i][1]     = mpz_int(imag(t) * m).backend().data();
-                M[i][i + 2] = 1;
+            for (unsigned i = 0; i <= d; ++i) {
+                M[int(i)][0]          = mpz_int(real(t) * m).backend().data();
+                M[int(i)][1]          = mpz_int(imag(t) * m).backend().data();
+                M[int(i)][int(i + 2)] = 1;
                 t *= x;
             }
 
@@ -23,9 +23,9 @@ namespace vb {
             shortest_vector(M, o);
 
             vector<mpz_int> V(d + 1, 0);
-            for (int j = 0; j < d + 1; ++j) {
+            for (unsigned j = 0; j < d + 1; ++j) {
                 mpz_int ai = o[j].get_data();
-                for (int i = 0; i <= d; ++i) V[i] += ai * M[j][i + 2].get_data();
+                for (unsigned i = 0; i <= d; ++i) V[i] += ai * M[int(j)][int(i + 2)].get_data();
             }
 
             Polynomial<mpz_int> P(V);
@@ -36,11 +36,11 @@ namespace vb {
             T xx = x, ox = x + 1, er = 2;
             while (real(abs(xx - ox)) < real(er)) {
                 er = abs(xx - ox);
-                if (real(er) < pow(real_t{10, x.precision()}, -5 * nd)) er = 0;
+                if (real(er) < pow(real_t{10, x.precision()}, -5 * int(nd))) er = 0;
                 ox = xx;
                 xx -= P(xx) / PP(xx);
             }
-            if (abs(xx - x) < pow(real_t{10, x.precision()}, 5 - nd)) return P;
+            if (abs(xx - x) < pow(real_t{10, x.precision()}, 5 - int(nd))) return P;
         }
 
         return {};

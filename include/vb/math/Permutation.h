@@ -10,8 +10,8 @@ namespace vb {
 
     class Permutation : public std::vector<unsigned> {
     public:
-        Permutation(int n = 0) : std::vector<unsigned>(n) {
-            for (int i = 0; i < n; ++i) at(i) = i;
+        Permutation(unsigned n = 0) : std::vector<unsigned>(n) {
+            for (unsigned i = 0; i < n; ++i) at(i) = i;
         }
         Permutation(std::vector<unsigned> s) : std::vector<unsigned>(std::move(s)) {}
         Permutation(Cycles &c);

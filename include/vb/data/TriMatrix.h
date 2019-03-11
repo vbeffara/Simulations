@@ -9,10 +9,10 @@ namespace vb {
         TriMatrix(T e = 0) : empty(e) {}
 
         T at(coo z) const {
-            int target = std::max(std::abs(z.x), std::abs(z.y));
+            auto target = std::max(std::abs(z.x), std::abs(z.y));
             if (target >= size) return empty;
-            if (size == BSIZE) return tile[(2 * BSIZE + 1) * BSIZE + z.x + 2 * BSIZE * z.y];
-            int index = 4;
+            if (size == BSIZE) return tile[(unsigned long)((2 * BSIZE + 1) * BSIZE + z.x + 2 * BSIZE * z.y)];
+            auto index = 4u;
             if (z.x >= sub_size) {
                 index += 1;
                 z.x -= sub_shift;
@@ -35,12 +35,12 @@ namespace vb {
                 tile.resize(2 * BSIZE * 2 * BSIZE, empty);
                 size = BSIZE;
             }
-            int target = std::max(std::abs(z.x), std::abs(z.y));
+            auto target = std::max(std::abs(z.x), std::abs(z.y));
             while (size <= target) triple();
             if (size == BSIZE)
-                tile[(2 * BSIZE + 1) * BSIZE + z.x + 2 * BSIZE * z.y] = t;
+                tile[(unsigned long)((2 * BSIZE + 1) * BSIZE + z.x + 2 * BSIZE * z.y)] = t;
             else {
-                int index = 4;
+                unsigned index = 4;
                 if (z.x >= sub_size) {
                     index += 1;
                     z.x -= sub_shift;

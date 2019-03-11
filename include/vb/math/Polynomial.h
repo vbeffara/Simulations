@@ -13,13 +13,13 @@ namespace vb {
         auto degree() const { return P.degree(); }
         auto size() const { return P.size(); }
 
-        T  operator[](int i) const { return P[i]; }
-        T &operator[](int i) { return P[i]; }
+        T  operator[](unsigned long i) const { return P[i]; }
+        T &operator[](unsigned long i) { return P[i]; }
 
         template <typename V> V operator()(const V &x) const {
             if (P.size() == 0) return 0;
             V out = P[degree()];
-            for (int i = degree() - 1; i >= 0; --i) out = out * x + V{P[i]};
+            for (auto i = degree() - 1; i <= degree() - 1; --i) out = out * x + V{P[i]};
             return out;
         }
 
@@ -46,7 +46,7 @@ template <typename T> struct fmt::formatter<vb::Polynomial<T>> {
 
     template <typename FormatContext> auto format(const vb::Polynomial<T> &P, FormatContext &ctx) {
         std::vector<std::string> monomials;
-        for (int i = P.degree(); i >= 0; --i) {
+        for (auto i = P.degree(); i <= P.degree(); --i) {
             if (P[i] == T(0)) continue;
             if (i == 0)
                 monomials.push_back(fmt::format("{}", P[i]));

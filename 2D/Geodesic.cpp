@@ -49,24 +49,24 @@ public:
 
     void fill_dyadic(int n0) {
         for (int l = n - 1; l >= n0; --l) {
-            int ll = 1u << unsigned(l);
-            for (int i = 0; i < size.x / ll; ++i)
-                for (int j = 0; j < size.y / ll; ++j) {
+            unsigned ll = 1u << unsigned(l);
+            for (unsigned i = 0; i < size.x / ll; ++i)
+                for (unsigned j = 0; j < size.y / ll; ++j) {
                     double g = prng.gaussian();
-                    for (int x = i * ll; x < (i + 1) * ll; ++x)
-                        for (int y = j * ll; y < (j + 1) * ll; ++y) I.at({x, y}).f += g;
+                    for (unsigned x = i * ll; x < (i + 1) * ll; ++x)
+                        for (unsigned y = j * ll; y < (j + 1) * ll; ++y) I.at({x, y}).f += g;
                 }
         }
     }
 
     void fill_boolean(int n0) {
         for (int l = n - 1; l >= n0; --l) {
-            int ll = 1u << unsigned(l);
-            for (int i = 0; i < size.x / ll; ++i)
-                for (int j = 0; j < size.y / ll; ++j) {
+            unsigned ll = 1u << unsigned(l);
+            for (unsigned i = 0; i < size.x / ll; ++i)
+                for (unsigned j = 0; j < size.y / ll; ++j) {
                     double g = prng.uniform_real(-1, 1);
-                    for (int x = i * ll; x < (i + 1) * ll; ++x)
-                        for (int y = j * ll; y < (j + 1) * ll; ++y) I.at({x, y}).f += g;
+                    for (unsigned x = i * ll; x < (i + 1) * ll; ++x)
+                        for (unsigned y = j * ll; y < (j + 1) * ll; ++y) I.at({x, y}).f += g;
                 }
         }
     }
@@ -76,23 +76,25 @@ public:
     }
 
     void fill_free(int n0 = 0) {
-        auto                    in = fftw_alloc_complex(size.x * size.y), out = fftw_alloc_complex(size.x * size.y);
-        fftw_plan               p = fftw_plan_dft_2d(size.x, size.y, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+        auto                    in = fftw_alloc_complex(size_t(size.x * size.y)), out = fftw_alloc_complex(size_t(size.x * size.y));
+        fftw_plan               p = fftw_plan_dft_2d(int(size.x), int(size.y), in, out, FFTW_FORWARD, FFTW_ESTIMATE);
         gsl::span<fftw_complex> in_{in, size.x * size.y}, out_{out, size.x * size.y};
 
-        vector<double> sinarrayi(size.x), sinarrayj(size.y);
-        for (int i = 0; i < size.x; ++i) sinarrayi[i] = sin(M_PI * i / size.x);
-        for (int j = 0; j < size.y; ++j) sinarrayj[j] = sin(M_PI * j / size.y);
+        vector<double> sinarrayi(size_t(size.x)), sinarrayj(size_t(size.y));
+        for (unsigned i = 0; i < size.x; ++i) sinarrayi[i] = sin(M_PI * i / size.x);
+        for (unsigned j = 0; j < size.y; ++j) sinarrayj[j] = sin(M_PI * j / size.y);
 
         for (const auto [i, j] : coo_range(size)) {
             if ((i == 0) && (j == 0)) continue;
-            double norm            = sqrt(size.x * size.y * (sinarrayi[i] * sinarrayi[i] + sinarrayj[j] * sinarrayj[j]));
-            auto   fij             = cpx(prng.gaussian(), prng.gaussian()) * sqrt(M_PI / 2) / norm;
-            in_[i + size.x * j][0] = real(fij);
-            in_[i + size.x * j][1] = imag(fij);
+            auto   ii = unsigned(i), jj = unsigned(j);
+            long   ij   = i + int(size.x) * j;
+            double norm = sqrt(size.x * size.y * (sinarrayi[ii] * sinarrayi[ii] + sinarrayj[jj] * sinarrayj[jj]));
+            auto   fij  = cpx(prng.gaussian(), prng.gaussian()) * sqrt(M_PI / 2) / norm;
+            in_[ij][0]  = real(fij);
+            in_[ij][1]  = imag(fij);
             if (norm > sqrt(size.x * size.y) * (1 - n0 / 100.0)) {
-                in_[i + size.x * j][0] = 0;
-                in_[i + size.x * j][1] = 0;
+                in_[ij][0] = 0;
+                in_[ij][1] = 0;
             }
         }
         in_[0][0] = 0;
@@ -106,10 +108,10 @@ public:
     }
 
     void fill_radial(const function<double(double)> &f, double l) {
-        auto d  = fftw_alloc_complex(size.x * size.y);
+        auto d  = fftw_alloc_complex(size_t(size.x * size.y));
         auto d_ = gsl::span<fftw_complex>{d, size.x * size.y};
-        auto p1 = fftw_plan_dft_2d(size.x, size.y, d, d, FFTW_FORWARD, FFTW_ESTIMATE);
-        auto p2 = fftw_plan_dft_2d(size.x, size.y, d, d, FFTW_BACKWARD, FFTW_ESTIMATE);
+        auto p1 = fftw_plan_dft_2d(int(size.x), int(size.y), d, d, FFTW_FORWARD, FFTW_ESTIMATE);
+        auto p2 = fftw_plan_dft_2d(int(size.x), int(size.y), d, d, FFTW_BACKWARD, FFTW_ESTIMATE);
 
         for (const auto [i, j] : coo_range(size)) {
             auto ii = min(i, size.x - i), jj = min(j, size.y - j);
@@ -186,7 +188,7 @@ public:
 
 int main(int argc, char **argv) {
     Hub H("Random 2D geometry", argc, argv, "w=free,n=9,z=0,g=1,s=0,b,i,q,c,l=10,a=1");
-    if (int s = H['s']) prng.seed(s);
+    if (unsigned s = H['s']) prng.seed(s);
     unsigned n = H['n'], nn = 1u << n;
 
     QG img(H);

@@ -4,7 +4,7 @@
 namespace vb {
     ProgressBar::ProgressBar(int length, double pow) : Auto(1), final(length), power(pow) {}
 
-    void ProgressBar::set(int pos) {
+    void ProgressBar::set(int64_t pos) {
         if (pos < 0) pos = 0;
         if (pos > final) pos = final;
         current = pos;

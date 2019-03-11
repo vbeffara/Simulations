@@ -7,7 +7,7 @@ namespace vb {
     public:
         ProgressBar(int length = 100, double pow = 1.0);
 
-        void set(int pos);
+        void set(int64_t pos);
 
         void update() override;
 

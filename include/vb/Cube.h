@@ -7,7 +7,7 @@ namespace vb {
         void     dim(int _n) { n = _n; }
         int      operator+=(int t) { return (s += t); }
         int      operator-=(int t) { return (s -= t); }
-        explicit operator Color() { return Grey(s / n); }
+        explicit operator Color() { return Grey(uint8_t(s / n)); }
 
         int s, n = 1;
     };
@@ -18,8 +18,8 @@ namespace vb {
     public:
         Cube(const std::string &s, coo3 sz);
 
-        int64_t index(coo3 c) { return c.x + size.x * c.y + size.x * size.y * c.z; }
-        coo3    wrap(coo3 c) { return {pmod(c.x, size.x), pmod(c.y, size.y), pmod(c.z, size.z)}; }
+        unsigned long index(coo3 c) { return (unsigned long)(c.x + size.x * c.y + size.x * size.y * c.z); }
+        coo3          wrap(coo3 c) { return {pmod(c.x, size.x), pmod(c.y, size.y), pmod(c.z, size.z)}; }
 
         uint8_t &at(const coo3 &c) { return data[index(c)]; }
         uint8_t &atp(const coo3 &c) { return at(wrap(c)); }

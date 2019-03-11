@@ -9,8 +9,9 @@ using namespace libcmaes;
 
 int main(int argc, char **argv) {
     Hub    H("Tests of minimization strategies", argc, argv, "d=10,s=1,l=-1,t,a=acmaes,m");
-    int    dim = H['d'], lambda = H['l'];
-    double sigma = H['s'];
+    size_t dim    = H['d'];
+    int    lambda = H['l'];
+    double sigma  = H['s'];
 
     FitFunc f = [](const double *xx, const int N) {
         gsl::span<const double> x(xx, N);

@@ -10,7 +10,7 @@ namespace vb {
     class Hypermap {
     public:
         struct Vertex {
-            int              i = 0;
+            unsigned         i = 0;
             cpx              z;
             double           r    = 1.0;
             unsigned         bone = 0;

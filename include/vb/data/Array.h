@@ -5,8 +5,8 @@
 namespace vb {
     template <typename T> class Array {
     public:
-        Array(coo sz, T d) : size(sz), data(sz.x * sz.y, d) {}
-        Array(coo sz) : size(sz), data(sz.x * sz.y) {}
+        Array(coo sz, T d) : size(sz), data((unsigned long)(sz.x * sz.y), d) {}
+        Array(coo sz) : size(sz), data((unsigned long)(sz.x * sz.y)) {}
 
         explicit Array(const std::vector<std::vector<T>> &l)
             : size({static_cast<int64_t>(l.size()), static_cast<int64_t>(l[0].size())}), data(size.x * size.y) {
@@ -22,7 +22,7 @@ namespace vb {
             data.resize(size.x * size.y, t);
         }
 
-        T &      at(const coo &z) { return data[z.x + size.x * z.y]; }
+        T &      at(const coo &z) { return data[(unsigned long)(z.x + size.x * z.y)]; }
         T const &at(const coo &z) const { return data[z.x + size.x * z.y]; }
 
         T &      operator[](const coo &z) { return at(z); }

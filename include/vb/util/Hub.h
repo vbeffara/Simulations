@@ -32,7 +32,7 @@ namespace vb {
         boost::chrono::time_point<boost::chrono::process_system_cpu_clock, Duration> start_s;
 
         std::vector<Output> outputs;
-        unsigned            max_label_width = 0;
+        size_t              max_label_width = 0;
     };
 
     std::string version();
