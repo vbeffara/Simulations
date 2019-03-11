@@ -10,32 +10,35 @@ namespace vb {
         void operator-=(const coo &z) { *this = {x - z.x, y - z.y}; }
     };
 
-    inline bool operator==(const coo &z1, const coo &z2) { return (z1.x == z2.x) && (z1.y == z2.y); }
-    inline bool operator!=(const coo &z1, const coo &z2) { return (z1.x != z2.x) || (z1.y != z2.y); }
-    inline coo  operator+(const coo &z1, const coo &z2) { return {z1.x + z2.x, z1.y + z2.y}; }
-    inline coo  operator-(const coo &z1, const coo &z2) { return {z1.x - z2.x, z1.y - z2.y}; }
-    inline coo  operator-(const coo &z) { return {-z.x, -z.y}; }
-    inline coo  operator*(const coo &z, int64_t d) { return {z.x * d, z.y * d}; }
-    inline coo  operator*(int64_t d, const coo &z) { return {z.x * d, z.y * d}; }
-    inline coo  operator/(const coo &z, int64_t d) { return {z.x / d, z.y / d}; }
+    constexpr bool operator==(const coo &z1, const coo &z2) { return (z1.x == z2.x) && (z1.y == z2.y); }
+    constexpr bool operator!=(const coo &z1, const coo &z2) { return (z1.x != z2.x) || (z1.y != z2.y); }
+    constexpr coo  operator+(const coo &z1, const coo &z2) { return {z1.x + z2.x, z1.y + z2.y}; }
+    constexpr coo  operator-(const coo &z1, const coo &z2) { return {z1.x - z2.x, z1.y - z2.y}; }
+    constexpr coo  operator-(const coo &z) { return {-z.x, -z.y}; }
+    constexpr coo  operator*(const coo &z, int64_t d) { return {z.x * d, z.y * d}; }
+    constexpr coo  operator*(int64_t d, const coo &z) { return {z.x * d, z.y * d}; }
+    constexpr coo  operator/(const coo &z, int64_t d) { return {z.x / d, z.y / d}; }
 
-    inline int64_t norm(coo z) { return z.x * z.x + z.y * z.y; }
-    inline int64_t sup(coo z) { return std::max(std::abs(z.x), std::abs(z.y)); }
+    constexpr int64_t norm(const coo &z) { return z.x * z.x + z.y * z.y; }
+    constexpr int64_t sup(const coo &z) {
+        auto xx = (z.x > 0 ? z.x : -z.x), yy = (z.y > 0 ? z.y : -z.y);
+        return (xx > yy ? xx : yy);
+    }
 
     class coo3 {
     public:
+        int64_t x, y, z;
+
         bool operator==(const coo3 &c) const { return (x == c.x) && (y == c.y) && (z == c.z); }
         bool operator!=(const coo3 &c) const { return (x != c.x) || (y != c.y) || (z != c.z); }
         coo3 operator+(const coo3 &c) const { return {x + c.x, y + c.y, z + c.z}; }
-
-        int64_t x, y, z;
     };
 
-    inline const coo  dz_[]  = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}, {1, 1}, {-1, -1}, {-1, 1}, {1, -1}};
-    inline const coo3 dz3_[] = {{1, 0, 0}, {-1, 0, 0}, {0, 1, 0}, {0, -1, 0}, {0, 0, 1}, {0, 0, -1}};
+    constexpr std::array<coo, 8>  dz_  = {{{1, 0}, {0, 1}, {-1, 0}, {0, -1}, {1, 1}, {-1, -1}, {-1, 1}, {1, -1}}};
+    constexpr std::array<coo3, 6> dz3_ = {{{1, 0, 0}, {-1, 0, 0}, {0, 1, 0}, {0, -1, 0}, {0, 0, 1}, {0, 0, -1}}};
 
-    inline const gsl::span<const coo>  dz{dz_};
-    inline const gsl::span<const coo3> dz3{dz3_};
+    constexpr gsl::span<const coo>  dz{dz_};
+    constexpr gsl::span<const coo3> dz3{dz3_};
 
     struct coo_range {
         coo z, r;
