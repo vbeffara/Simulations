@@ -2,6 +2,7 @@
 #define BOOST_NO_CXX11_LAMBDAS // missing T(0) in boost::math::tools::polynomial::normalize()
 #include <boost/math/tools/polynomial.hpp>
 #include <fmt/ostream.h>
+#include <iostream>
 
 namespace vb {
     template <typename T> class Polynomial {
@@ -10,15 +11,16 @@ namespace vb {
         Polynomial(const std::vector<T> &V) : P(begin(V), end(V)) {}
         Polynomial(const T &t) : P({t}) {}
 
-        auto degree() const { return P.degree(); }
-        auto size() const { return P.size(); }
+        size_t degree() const { return P.degree(); }
+        size_t size() const { return P.size(); }
 
-        T  operator[](unsigned long i) const { return P[i]; }
-        T &operator[](unsigned long i) { return P[i]; }
+        T  operator[](size_t i) const { return P[i]; }
+        T &operator[](size_t i) { return P[i]; }
 
         template <typename V> V operator()(const V &x) const {
             if (P.size() == 0) return 0;
             V out = P[degree()];
+            if (degree() == 0) return out;
             for (auto i = degree() - 1; i <= degree() - 1; --i) out = out * x + V{P[i]};
             return out;
         }
