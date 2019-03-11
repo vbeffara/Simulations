@@ -13,7 +13,7 @@ namespace vb {
         for (auto f : phi.cycles()) {
             if (f.size() != 3) continue;
             bool bad = false;
-            for (int i = 0; i < 3; ++i) {
+            for (unsigned i = 0; i < 3; ++i) {
                 if (V[E[f[i]].src].adj.size() == 2) bad = true;
             }
             if (bad && (phi.cycles().size() > 2)) continue;
@@ -32,11 +32,11 @@ namespace vb {
 
         acpa();
 
-        int  ne   = sigma.size();
+        auto ne   = sigma.size();
         bool flag = true;
         while (flag) {
             flag = false;
-            for (int i = 0; i < ne; ++i) {
+            for (size_t i = 0; i < ne; ++i) {
                 if (std::isnan(E[i].a)) continue;
                 if (std::isnan(E[alpha[i]].a)) {
                     E[alpha[i]].a = E[i].a + M_PI;
@@ -53,10 +53,10 @@ namespace vb {
         flag = true;
         while (flag) {
             flag = false;
-            for (int e = 0; e < ne; ++e) {
-                int i = E[e].src;
+            for (size_t e = 0; e < ne; ++e) {
+                auto i = E[e].src;
                 if (std::isnan(real(V[i].z))) continue;
-                int    j = E[alpha[e]].src;
+                auto   j = E[alpha[e]].src;
                 double l = V[i].r + V[j].r;
                 cpx    z = V[i].z + std::polar(l, E[e].a);
                 if (std::isnan(real(V[j].z))) {
@@ -121,7 +121,7 @@ namespace vb {
             cpx z = v.z;
             if ((((mode & 1u) != 0) && (v.bone != 0)) || (((mode & 2u) != 0) && (v.bone == 0)))
                 F.add(std::make_unique<Circle>(z, fabs(v.r), Pen(BLACK, .3)));
-            for (int e : sc[v.i]) {
+            for (auto e : sc[v.i]) {
                 if ((((mode & 4u) != 0) && ((initial[e] & 1u) != 0)) || (((mode & 8u) != 0) && ((v.bone & 1u) != 0)) ||
                     (((mode & 16u) != 0) && ((v.bone & 1u) == 0))) {
                     eee.emplace_back(z);

@@ -5,11 +5,11 @@ namespace vb {
     class CoarseCell {
     public:
         explicit CoarseCell(int l = 1) : LL(l * l) {}
-        explicit operator Color() { return Grey(fill * 255 / LL); }
+        explicit operator Color() { return Grey(uint8_t(fill * 255 / LL)); }
 
-        int               fill = 0; ///< The number of pixels with value 1 in the cell.
+        int64_t           fill = 0; ///< The number of pixels with value 1 in the cell.
         std::vector<bool> sub;      ///< The actual contents of the cell, if not constant.
-        int               LL;       ///< The number of vertices in the cell.
+        int64_t           LL;       ///< The number of vertices in the cell.
     };
 
     class CoarseImage : public Bitmap<CoarseCell> {
@@ -28,10 +28,10 @@ namespace vb {
 
         void output_fine(const std::string &fn) const;
 
-        int true_width;  ///< The true width of the image, in pixels.
-        int true_height; ///< The true height of the image, in pixels.
-        int L;           ///< The size of a block, in pixels.
-        int LL;          ///< The square of L
-        coo z0 = {0, 0}; ///< The coordinates of the origin (hides that of vb::Bitmap).
+        int64_t true_width;  ///< The true width of the image, in pixels.
+        int64_t true_height; ///< The true height of the image, in pixels.
+        int64_t L;           ///< The size of a block, in pixels.
+        int64_t LL;          ///< The square of L
+        coo     z0 = {0, 0}; ///< The coordinates of the origin (hides that of vb::Bitmap).
     };
 } // namespace vb

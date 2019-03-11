@@ -406,7 +406,7 @@ namespace vb {
     double Map::fg_circle_disk(const Vector<double> &x, Vector<double> *g) {
         double c = fg_circle_base(x, g);
 
-        for (int i = 0; i < n; ++i) {
+        for (size_t i = 0; i < n; ++i) {
             double l2 = x[3 * i] * x[3 * i] + x[3 * i + 1] * x[3 * i + 1];
             double l  = sqrt(l2);
             double r  = x[3 * i + 2];

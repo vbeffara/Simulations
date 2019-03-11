@@ -19,14 +19,14 @@ public:
     }
 
     Edge random_edge() const {
-        int                    i = vb::prng.uniform_int(n), j = vb::prng.uniform_int(v[i]->adj.size());
+        auto                   i = vb::prng.uniform_int(n), j = vb::prng.uniform_int(v[i]->adj.size());
         vb::adj_list::iterator k;
         for (k = v[i]->adj.begin(); j > 0; ++k, --j) {};
         return Edge(i, *k);
     }
 
     bool flip(Edge e) {
-        int i = e.first, j = e.second;
+        auto i = e.first, j = e.second;
 
         auto e1 = find_edge(Edge(i, j));
         if (e1 == v[i]->adj.begin()) e1 = v[i]->adj.end();

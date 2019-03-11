@@ -12,7 +12,7 @@ class DLA : public CoarseImage {
 public:
     explicit DLA(const Hub &H)
         : CoarseImage(H.title, {H['n'], H['n']}, int(pow(double(H['n']), .33))), n(H['n']), c(H['c']), r(1),
-          QT({-n / 2, -n / 2}, {n / 2, n / 2}, H['l']), prec(int(H['p'])), img(H.title, {512, 512}) {
+          QT({-n / 2, -n / 2}, {n / 2, n / 2}, H['l']), prec(unsigned(H['p'])), img(H.title, {512, 512}) {
         z0 = {n / 2, n / 2};
         W.watch(QT.n, "Nb of particles");
         W.watch(r, "Cluster radius");
@@ -40,24 +40,24 @@ public:
                             if (d <= 1)
                                 for (int k = 0; k < 4; ++k) MM.at(z + dz[k]) += t / 4;
                             else {
-                                const auto &ps = prec[d];
-                                for (int k = 0; k < d; ++k) {
-                                    MM.at({i - d, j + k}) += t * ps[k] / 8;
-                                    MM.at({i - d, j - k}) += t * ps[k] / 8;
-                                    MM.at({i + d, j + k}) += t * ps[k] / 8;
-                                    MM.at({i + d, j - k}) += t * ps[k] / 8;
-                                    MM.at({i + k, j - d}) += t * ps[k] / 8;
-                                    MM.at({i - k, j - d}) += t * ps[k] / 8;
-                                    MM.at({i + k, j + d}) += t * ps[k] / 8;
-                                    MM.at({i - k, j + d}) += t * ps[k] / 8;
+                                const auto &ps = prec[size_t(d)];
+                                for (size_t k = 0; k < size_t(d); ++k) {
+                                    MM.at({i - d, j + long(k)}) += t * ps[k] / 8;
+                                    MM.at({i - d, j - long(k)}) += t * ps[k] / 8;
+                                    MM.at({i + d, j + long(k)}) += t * ps[k] / 8;
+                                    MM.at({i + d, j - long(k)}) += t * ps[k] / 8;
+                                    MM.at({i + long(k), j - d}) += t * ps[k] / 8;
+                                    MM.at({i - long(k), j - d}) += t * ps[k] / 8;
+                                    MM.at({i + long(k), j + d}) += t * ps[k] / 8;
+                                    MM.at({i - long(k), j + d}) += t * ps[k] / 8;
                                 }
                             }
                         }
                     }
             }
 
-            prec[r].push_back(4 * MM.at({0, r}));
-            for (int i = 1; i < r; ++i) prec[r].push_back(8 * MM.at({0, r + i}));
+            prec[size_t(r)].push_back(4 * MM.at({0, r}));
+            for (int i = 1; i < r; ++i) prec[size_t(r)].push_back(8 * MM.at({0, r + i}));
         }
         start = now();
     };
@@ -82,17 +82,17 @@ public:
         return false;
     }
 
-    coo jump(int d) const {
+    coo jump(long d) const {
         if (d <= 1) return dz[prng.uniform_int(4)];
         if (d < int(prec.size())) {
-            coo w{d, prng.discrete(prec[d])};
+            coo w{d, prng.discrete(prec[size_t(d)])};
             if (prng.bernoulli()) w.x = -w.x;
             if (prng.bernoulli()) w.y = -w.y;
             if (prng.bernoulli()) swap(w.x, w.y);
             return w;
         }
-        if (d < c) return jump(prec.size() - 1);
-        int    l     = d - c / 2;
+        if (d < c) return jump(long(prec.size()) - 1);
+        auto   l     = d - c / 2;
         double theta = prng.uniform_real(0, 2 * M_PI);
         auto   x = int(l * cos(theta)), y = int(l * sin(theta));
         return {x, y};
@@ -132,7 +132,7 @@ public:
 
 int main(int argc, char **argv) {
     Hub H("Lattice DLA", argc, argv, "n=2000,p=64,c=50,l=30,f,s=0");
-    if (auto s = int(H['s'])) prng.seed(s);
+    if (auto s = unsigned(H['s'])) prng.seed(s);
     DLA dla(H);
     dla.show();
     dla.runDLA();

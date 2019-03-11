@@ -3,7 +3,7 @@
 #include <vb/math/LinearAlgebra.h>
 
 namespace vb {
-    using Edge     = std::pair<int, int>;
+    using Edge     = std::pair<size_t, size_t>;
     using adj_list = std::vector<int>;
 
     class Vertex : public Circle {
@@ -14,7 +14,7 @@ namespace vb {
 
     class Map : public Picture {
     public:
-        int                                  n;
+        size_t                               n;
         std::vector<std::unique_ptr<Vertex>> v;
         std::vector<bool>                    bd;
 
@@ -49,11 +49,11 @@ namespace vb {
         void plot_edges(Figure *F);
         void plot_circles(Figure *F);
 
-        int nb_sommets() { return n; }
-        int nb_aretes();
-        int nb_faces();
-        int euler();
-        int genre();
+        auto nb_sommets() { return n; }
+        int  nb_aretes();
+        int  nb_faces();
+        int  euler();
+        int  genre();
 
         void mobius(cpx w, const double &theta);
 
@@ -85,7 +85,7 @@ template <> struct fmt::formatter<vb::Map> {
 
     template <typename FormatContext> auto format(const vb::Map &m, FormatContext &ctx) {
         std::vector<std::string> edges;
-        for (int i = 0; i < m.n; ++i) { edges.push_back(fmt::format("{} -> {}", i, fmt::join(m.v[i]->adj, " "))); }
+        for (size_t i = 0; i < m.n; ++i) { edges.push_back(fmt::format("{} -> {}", i, fmt::join(m.v[i]->adj, " "))); }
         format_to(ctx.out(), "{} vertices: {}", m.n, fmt::join(edges, ", "));
         return ctx.out();
     }
