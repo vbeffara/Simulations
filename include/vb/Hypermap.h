@@ -18,9 +18,9 @@ namespace vb {
             bool             fixed = false;
         };
         struct Edge {
-            int    i   = 0;
-            int    src = 0;
-            double a   = NAN;
+            int      i   = 0;
+            unsigned src = 0;
+            double   a   = NAN;
         };
 
         Hypermap(Permutation s, Permutation a, Permutation p)

@@ -5,7 +5,7 @@
 namespace vb {
     template <typename T> struct Star {
         typename cpx_t<T>::type z;
-        unsigned long           d;
+        size_t                  d;
     };
 
     template <typename T> class Constellation {
@@ -15,7 +15,7 @@ namespace vb {
         std::vector<Star<T>> b, w, f;
         std::vector<cplx>    p;
 
-        int dim{0};
+        size_t dim = 0;
 
         Constellation();
         Constellation(const Constellation &) = default;

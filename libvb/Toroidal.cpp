@@ -11,12 +11,12 @@ namespace vb {
     void Toroidal::pack() {
         acpa();
 
-        E[0].a    = 0;
-        int  ne   = sigma.size();
-        bool flag = true;
+        E[0].a      = 0;
+        size_t ne   = sigma.size();
+        bool   flag = true;
         while (flag) {
             flag = false;
-            for (int i = 0; i < ne; ++i) {
+            for (unsigned i = 0; i < ne; ++i) {
                 if (std::isnan(E[i].a)) continue;
                 if (std::isnan(E[alpha[i]].a)) {
                     E[alpha[i]].a = E[i].a + M_PI;
@@ -36,10 +36,10 @@ namespace vb {
         while (flag) {
             flag = false;
             periods.clear();
-            for (int e = 0; e < ne; ++e) {
-                int i = E[e].src;
+            for (unsigned e = 0; e < ne; ++e) {
+                auto i = E[e].src;
                 if (std::isnan(real(V[i].z))) continue;
-                int    j = E[alpha[e]].src;
+                auto   j = E[alpha[e]].src;
                 double l = V[i].r + V[j].r;
                 cpx    z = V[i].z + std::polar(l, E[e].a);
                 if (std::isnan(real(V[j].z))) {
@@ -76,8 +76,8 @@ namespace vb {
         while (real(m) < -.499) m += 1;
         while (real(m) > .501) m -= 1;
 
-        unsigned mdeg = 0;
-        cpx      mpos = 0;
+        size_t mdeg = 0;
+        cpx    mpos = 0;
         for (const auto &v : V)
             if (v.adj.size() > mdeg) {
                 mdeg = v.adj.size();

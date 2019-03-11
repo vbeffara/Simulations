@@ -32,8 +32,8 @@ namespace vb {
 
         void operator*=(const T &x) { P *= x; }
 
-        void add_root(const T &x, int d = 1) {
-            for (int i = 0; i < d; ++i) P *= boost::math::tools::polynomial<T>{-x, 1};
+        void add_root(const T &x, size_t d = 1) {
+            for (size_t i = 0; i < d; ++i) P *= boost::math::tools::polynomial<T>{-x, 1};
         }
 
     private:

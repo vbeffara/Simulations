@@ -14,9 +14,9 @@ namespace vb {
             M2.split_edges();
             Spheroidal S(M2);
             S.pack();
-            int N = M.sigma.size(), inf = 0, dinf = 0;
+            size_t N = M.sigma.size(), inf = 0, dinf = 0;
             for (auto c : M.phi.cycles()) {
-                int i = S.E[c[0] + 3 * N].src, d = S.V[i].adj.size();
+                size_t i = S.E[c[0] + 3 * N].src, d = S.V[i].adj.size();
                 if (d > dinf) {
                     inf  = i;
                     dinf = d;
@@ -136,7 +136,7 @@ namespace vb {
         make_p_1();
     }
 
-    template <typename T> auto Constellation0<T>::logder(cplx z, int k) const -> cplx {
+    template <typename T> auto Constellation0<T>::logder(cplx z, unsigned k) const -> cplx {
         if (k == 0) return log((*this)(z));
         cplx sum(0);
         for (auto zd : b) sum += cplx(zd.d) / pow(z - zd.z, k);
@@ -173,7 +173,7 @@ namespace vb {
 
     template <typename T> auto Constellation0<T>::jacvcost() const -> Matrix<cplx> { // m_ij = \partial_j(f_i)
         Matrix<cplx>           out(dim, dim);
-        int                    i = 0, j = 0;
+        unsigned               i = 0, j = 0;
         for (unsigned ii = 0; ii < w.size(); ++ii)
             for (unsigned id = 0; id < w[ii].d; ++id) {
                 j = 0;
@@ -235,9 +235,9 @@ namespace vb {
 
     template <> std::ostream &operator<<(std::ostream &os, const Constellation0<real_t> &C) {
         using T = real_t;
-        T   err(C.cost());
-        T   lerr(-log10(err));
-        int nd = std::max(5, int(lerr) / 2 - 10);
+        T    err(C.cost());
+        T    lerr(-log10(err));
+        auto nd = unsigned(std::max(5, int(lerr) / 2 - 10));
         if (err == T(0)) nd = 10;
         os << std::setprecision(10) << std::fixed;
         os << "Keeping " << nd << " digits."
@@ -316,7 +316,7 @@ namespace vb {
         for (const auto &z : f) Z.push_back(z);
         for (const auto &z : w) Z.push_back(z);
 
-        unsigned long maxdeg = 0;
+        size_t maxdeg = 0;
         for (auto z : Z) maxdeg = std::max(maxdeg, z.d);
 
         auto bd    = bounds();
@@ -378,9 +378,9 @@ namespace vb {
                 while (looking) {
                     cplx nz = l + exp(cplx(0, pi_<T>() / 3)) * (r - l);
                     if (abs(nz) > large) {
-                        T   d = large;
-                        int h = -1;
-                        int k = hands.size() - 1;
+                        T                     d = large;
+                        std::optional<size_t> h;
+                        auto                  k = hands.size() - 1;
                         for (unsigned kk = 0; kk < hands[k].size(); ++kk) {
                             T nd = abs(nz - hands[k][kk]);
                             if (nd < d) {
@@ -388,14 +388,14 @@ namespace vb {
                                 h = kk;
                             }
                         }
-                        if (h < 0) return std::nullopt;
-                        pairs.emplace_back(std::vector<unsigned>{halfedges[i][j], halfedges[k][h]});
+                        if (!h) return std::nullopt;
+                        pairs.emplace_back(std::vector<unsigned>{halfedges[i][j], halfedges[k][*h]});
                         looking = false;
                     }
                     for (unsigned k = 0; k < Z.size(); ++k)
                         if (abs(nz - Z[k].z) < rad) {
-                            T   d = rad;
-                            int h = -1;
+                            T                     d = rad;
+                            std::optional<size_t> h;
                             for (unsigned kk = 0; kk < hands[k].size(); ++kk) {
                                 T nd = abs(nz - hands[k][kk]);
                                 if (nd < d) {
@@ -403,9 +403,9 @@ namespace vb {
                                     h = kk;
                                 }
                             }
-                            if (h < 0) return std::nullopt;
-                            if (halfedges[i][j] < halfedges[k][h])
-                                pairs.emplace_back(std::vector<unsigned>{halfedges[i][j], halfedges[k][h]});
+                            if (!h) return std::nullopt;
+                            if (halfedges[i][j] < halfedges[k][*h])
+                                pairs.emplace_back(std::vector<unsigned>{halfedges[i][j], halfedges[k][*h]});
                             looking = false;
                         }
                     if (sl * imag((*this)(nz)) > 0)
