@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
     if (r != 0) M = H_artem(r);
     int f = H['f'];
     if (f != 0) {
-        if (int(H['s']) != 0) prng.seed(int(H['s']));
+        if (unsigned s = (H['s']); s != 0) prng.seed(s);
         for (int i = 0; i < f; ++i) M.flip(prng.uniform_int(M.sigma.size()));
     }
 

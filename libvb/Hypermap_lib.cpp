@@ -18,9 +18,9 @@ namespace vb {
         }
     }
 
-    Hypermap H_artem(int n) {
-        std::vector<unsigned> sigma(6 * n), alpha(6 * n), phi(6 * n);
-        for (int i = 0; i < n; ++i) {
+    Hypermap H_artem(size_t n) {
+        Permutation sigma(6 * n), alpha(6 * n), phi(6 * n);
+        for (size_t i = 0; i < n; ++i) {
             sigma[i]         = 2 * n + i;
             sigma[n + i]     = 5 * n + i + 1;
             sigma[2 * n + i] = n + i - 1;
@@ -52,10 +52,10 @@ namespace vb {
         return Hypermap(sigma, alpha, phi);
     }
 
-    Hypermap H_genus0(int n) {
-        std::vector<unsigned> sigma(6 * n), alpha(6 * n), phi(6 * n);
-        for (int i = 0; i < n; ++i) {
-            int j = (i + 1) % n, k = (i + n - 1) % n;
+    Hypermap H_genus0(size_t n) {
+        Permutation sigma(6 * n), alpha(6 * n), phi(6 * n);
+        for (size_t i = 0; i < n; ++i) {
+            size_t j = (i + 1) % n, k = (i + n - 1) % n;
             sigma[i]         = j;
             sigma[n + i]     = 3 * n + k;
             sigma[2 * n + i] = n + i;
@@ -78,10 +78,10 @@ namespace vb {
         return Hypermap(sigma, alpha, phi);
     }
 
-    Hypermap H_genus1(int n) {
-        std::vector<unsigned> sigma(6 * n), alpha(6 * n), phi(6 * n);
-        for (int i = 0; i < n; ++i) {
-            int j = (i + 1) % n, k = (i + n - 1) % n;
+    Hypermap H_genus1(size_t n) {
+        Permutation sigma(6 * n), alpha(6 * n), phi(6 * n);
+        for (size_t i = 0; i < n; ++i) {
+            size_t j = (i + 1) % n, k = (i + n - 1) % n;
             sigma[6 * i]     = 6 * i + 1;
             sigma[6 * i + 1] = 6 * i + 2;
             sigma[6 * i + 2] = 6 * i + 3;

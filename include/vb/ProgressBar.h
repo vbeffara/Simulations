@@ -12,8 +12,8 @@ namespace vb {
         void update() override;
 
     private:
-        int    final, current = 0;
-        double power;
+        int64_t final, current = 0;
+        double  power;
     };
 
 #ifdef UNIT_TESTS

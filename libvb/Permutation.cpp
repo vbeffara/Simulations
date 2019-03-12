@@ -18,7 +18,7 @@ namespace vb {
         std::vector<int> done(size(), 0);
         for (unsigned i = 0; i < size(); ++i) {
             if (done[i] != 0) continue;
-            std::vector<unsigned> v(1, i);
+            std::vector<size_t> v(1, i);
             done[i] = 1;
             for (int j = at(i); done[j] == 0; j = at(j)) {
                 v.push_back(j);
@@ -133,9 +133,9 @@ namespace vb {
                     std::vector<int> ns = s;
                     ns[i]               = 0;
                     for (const auto &c : tuples(L - 1, n - 1)) {
-                        std::vector<unsigned> cc({0});
+                        std::vector<size_t> cc({0});
                         for (auto i : c) cc.push_back(i + 1);
-                        std::vector<int> missed(n);
+                        std::vector<size_t> missed(n);
                         for (int i = 0; i < n; ++i) missed[i] = i;
                         for (auto i : cc) missed[i] = 0;
                         for (int i = 0, j = 0; j < n; ++j)

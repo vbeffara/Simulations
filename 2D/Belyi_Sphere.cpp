@@ -9,7 +9,7 @@ using namespace std;
 
 Stream<Hypermap> triangulations(unsigned n) {
     Cycles phic;
-    for (unsigned i = 0; i < n / 3; ++i) phic.emplace_back(std::vector<unsigned>{i, i + n / 3, i + 2 * n / 3});
+    for (unsigned i = 0; i < n / 3; ++i) phic.emplace_back(std::vector<size_t>{i, i + n / 3, i + 2 * n / 3});
     Permutation phi(phic);
     unsigned    np = n / 6;
     vector<int> a(n / 2 - np, 2);

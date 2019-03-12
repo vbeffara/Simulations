@@ -9,7 +9,7 @@ namespace vb {
 
     class QuadTree {
     public:
-        QuadTree(coo UL, coo BR, int M);
+        QuadTree(coo UL, coo BR, size_t M);
 
         void insert(coo z);
 
@@ -22,9 +22,9 @@ namespace vb {
     private:
         static std::vector<std::unique_ptr<QuadTree>> store;
 
-        int index(coo z) const;
-        int idist(coo z) const;
-        int odist(coo z) const;
+        unsigned index(coo z) const;
+        int64_t  idist(coo z) const;
+        int64_t  odist(coo z) const;
 
         void split();
 

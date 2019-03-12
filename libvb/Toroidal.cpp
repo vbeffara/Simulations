@@ -116,7 +116,7 @@ namespace vb {
                     if ((imag(z) < -.6) || (imag(z) > 1.7 * std::max(1.0, imag(m))) || (real(z) < -.8) || (real(z) > 2.6)) continue;
                     if ((((mode & 1u) != 0) && (v.bone != 0)) || (((mode & 2u) != 0) && (v.bone == 0)))
                         F.add(std::make_unique<Circle>(z, v.r, Pen(BLACK, .3)));
-                    for (unsigned e : sc[v.i]) {
+                    for (auto e : sc[v.i]) {
                         if ((((mode & 4u) != 0) && ((initial[e] & 1u) != 0)) || (((mode & 8u) != 0) && ((v.bone & 1u) != 0)) ||
                             (((mode & 16u) != 0) && ((v.bone & 1u) == 0))) {
                             eee.emplace_back(z);

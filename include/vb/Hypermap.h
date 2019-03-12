@@ -39,7 +39,7 @@ namespace vb {
         int  euler() const;
         int  genus() const;
 
-        void flip(unsigned e);
+        void flip(size_t e);
 
         void acpa();
 

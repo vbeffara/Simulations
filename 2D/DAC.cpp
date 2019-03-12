@@ -1,4 +1,3 @@
-#include <spdlog/spdlog.h>
 #include <vb/Bitmap.h>
 #include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
@@ -12,48 +11,40 @@ int main(int argc, char **argv) {
     double p = H['p'], q = H['q'];
 
     // Connectivity (&1 -> to the right, &2 -> downwards)
-    vector<uint8_t> connect(n * n);
-    for (auto &c : connect) c = (prng.bernoulli(p) ? 1 : 0) + (prng.bernoulli(p) ? 2 : 0);
+    Array<uint8_t> connect({n, n});
+    for (auto z : coo_range(connect.size)) connect[z] = (prng.bernoulli(p) ? 1 : 0) + (prng.bernoulli(p) ? 2 : 0);
 
-    spdlog::info("Computing connected components ...");
-
-    vector<int64_t> cluster(n * n);
-    for (int i = 0; i < n * n; ++i) cluster[i] = i;
+    Array<size_t> cluster({n, n});
+    for (auto z : coo_range(cluster.size)) cluster[z] = size_t(z.x + n * z.y);
 
     bool dirty = true;
     while (dirty) {
         dirty = false;
-        for (int64_t x = 0; x < n; ++x) {
-            for (int64_t y = 0; y < n; ++y) {
-                if ((x > 0) && ((connect[(x - 1) + n * y] & 1u) != 0) && (cluster[x + n * y] > cluster[(x - 1) + n * y])) {
-                    dirty              = true;
-                    cluster[x + n * y] = cluster[(x - 1) + n * y];
-                }
-                if ((x < n - 1) && ((connect[x + n * y] & 1u) != 0) && (cluster[x + n * y] > cluster[(x + 1) + n * y])) {
-                    dirty              = true;
-                    cluster[x + n * y] = cluster[(x + 1) + n * y];
-                }
-                if ((y > 0) && ((connect[x + n * (y - 1)] & 2u) != 0) && (cluster[x + n * y] > cluster[x + n * (y - 1)])) {
-                    dirty              = true;
-                    cluster[x + n * y] = cluster[x + n * (y - 1)];
-                }
-                if ((y < n - 1) && ((connect[x + n * y] & 2u) != 0) && (cluster[x + n * y] > cluster[x + n * (y + 1)])) {
-                    dirty              = true;
-                    cluster[x + n * y] = cluster[x + n * (y + 1)];
-                }
+        for (auto z : coo_range(cluster.size)) {
+            if ((z.x < n - 1) && ((connect[z] & 1u) != 0) && (cluster[z] > cluster[z + dz[0]])) {
+                dirty      = true;
+                cluster[z] = cluster[z + dz[0]];
+            }
+            if ((z.y < n - 1) && ((connect[z] & 2u) != 0) && (cluster[z] > cluster[z + dz[1]])) {
+                dirty      = true;
+                cluster[z] = cluster[z + dz[1]];
+            }
+            if ((z.x > 0) && ((connect[z + dz[2]] & 1u) != 0) && (cluster[z] > cluster[z + dz[2]])) {
+                dirty      = true;
+                cluster[z] = cluster[z + dz[2]];
+            }
+            if ((z.y > 0) && ((connect[z + dz[3]] & 2u) != 0) && (cluster[z] > cluster[z + dz[3]])) {
+                dirty      = true;
+                cluster[z] = cluster[z + dz[3]];
             }
         }
     }
 
-    spdlog::info(" ... Done.");
-
-    vector<uint8_t> color(n * n);
+    vector<uint8_t> color(size_t(n * n));
     for (auto &c : color) c = (prng.bernoulli(q) ? 255 : 0);
 
     Image img(H.title, {n, n});
-
-    for (int64_t x = 0; x < n; ++x)
-        for (int64_t y = 0; y < n; ++y) img.put({x, y}, Grey(color[cluster[x + n * y]]));
+    for (auto z : coo_range(img.size)) img.put(z, Grey(color[cluster[z]]));
     img.show();
     img.pause();
 }

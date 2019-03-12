@@ -12,7 +12,7 @@ int main(int argc, char **argv) {
     auto M = HLib().at(H['g']);
     if (int u = H['u']; u != 0) M = H_genus0(u);
     if (int f = H['f']; f != 0) {
-        if (int s = (H['s']); s != 0) prng.seed(s);
+        if (unsigned s = (H['s']); s != 0) prng.seed(s);
         unsigned d = H['d'], D = H['D'];
         bool     bad = true;
         while (bad) {

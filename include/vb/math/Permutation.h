@@ -4,16 +4,17 @@
 #include <vector>
 
 namespace vb {
-    using Cycles = std::vector<std::vector<unsigned>>;
+    using Cycle  = std::vector<size_t>;
+    using Cycles = std::vector<Cycle>;
 
     class Passport : public std::vector<std::pair<int, int>> {};
 
-    class Permutation : public std::vector<unsigned> {
+    class Permutation : public std::vector<size_t> {
     public:
-        Permutation(unsigned n = 0) : std::vector<unsigned>(n) {
-            for (unsigned i = 0; i < n; ++i) at(i) = i;
+        Permutation(size_t n = 0) : std::vector<size_t>(n) {
+            for (size_t i = 0; i < n; ++i) at(i) = i;
         }
-        Permutation(std::vector<unsigned> s) : std::vector<unsigned>(std::move(s)) {}
+        Permutation(std::vector<size_t> s) : std::vector<size_t>(std::move(s)) {}
         Permutation(Cycles &c);
 
         bool is_identity() const;

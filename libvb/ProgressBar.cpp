@@ -15,9 +15,9 @@ namespace vb {
         static const std::vector<std::string> symbols{u8" ", u8"▏", u8"▎", u8"▍", u8"▌", u8"▋", u8"▊", u8"▉", u8"█"};
         std::string                           bar, days, rest;
 
-        int n = current * 400 / final;
+        auto n = current * 400 / final;
         for (int i = 0; i < n / 8; ++i) bar += symbols[8];
-        if (n < 400) bar += symbols[n % 8] + std::string(49 - n / 8, ' ');
+        if (n < 400) bar += symbols[n % 8] + std::string(size_t(49 - n / 8), ' ');
 
         if (current > 0) {
             auto eta = int(Duration((now() - start) * (pow(double(final) / current, power) - 1)).count());

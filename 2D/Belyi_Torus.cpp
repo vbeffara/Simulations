@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
     if (r > 0) prng.seed(r);
 
     Cycles phi_c;
-    for (unsigned i = 0; i < a / 3; ++i) phi_c.emplace_back(std::vector<unsigned>{3 * i, 3 * i + 1, 3 * i + 2});
+    for (unsigned i = 0; i < a / 3; ++i) phi_c.emplace_back(std::vector<size_t>{3 * i, 3 * i + 1, 3 * i + 2});
     Permutation phi(phi_c);
 
     vector<Hypermap> v;
@@ -101,9 +101,9 @@ int main(int argc, char **argv) {
                 Constellation1<real_t> CC(C);
                 real_t                 c   = CC.findn();
                 int                    lc  = -int(log10(c));
-                int                    nd  = std::max(10, lc / 2 - 15);
+                unsigned               nd  = unsigned(std::max(10, lc / 2 - 15));
                 real_t                 eps = pow(real_t(.1), nd);
-                cout << fixed << setprecision(std::min(nd, 80));
+                cout << fixed << setprecision(std::min(nd, 80u));
                 cout << "     Modulus:         " << CC.tau() << endl;
                 if (nd > 30) {
                     auto P = guess(CC.tau(), nd);

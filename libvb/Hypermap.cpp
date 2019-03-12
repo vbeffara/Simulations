@@ -65,7 +65,7 @@ namespace vb {
             phi_c.emplace_back(Permutation({a, a + 2 * N, f + N}));
         }
         for (const auto &F : phi.cycles()) {
-            std::vector<unsigned> FF = F;
+            std::vector<size_t> FF = F;
             for (auto &i : FF) i += 3 * N;
             phi_c.push_back(FF);
         }
@@ -80,7 +80,7 @@ namespace vb {
         }
     }
 
-    void Hypermap::flip(unsigned e) {
+    void Hypermap::flip(size_t e) {
         unsigned b = sigma[e], a = alpha[b], c = sigma[a], d = alpha[c], f = alpha[e], g = phi[f], h = alpha[g], i = phi[g], j = alpha[i];
         if (alpha[phi[alpha[phi[e]]]] == e) return;
         if (phi[alpha[phi[alpha[e]]]] == e) return;
@@ -101,9 +101,9 @@ namespace vb {
     }
 
     Permutation Hypermap::rebasing(int i) const {
-        unsigned              n = alpha.size(), m = 0;
-        std::vector<unsigned> s1(n, n), s2(n, n);
-        auto                  go = [&](int i) {
+        unsigned            n = alpha.size(), m = 0;
+        std::vector<size_t> s1(n, n), s2(n, n);
+        auto                go = [&](int i) {
             while (s1[i] == n) {
                 s1[i] = m;
                 s2[m] = i;
@@ -345,7 +345,7 @@ namespace vb {
         Cycles cs;
         int    i = 0;
         for (int l : s) {
-            std::vector<unsigned> c;
+            std::vector<size_t> c;
             c.reserve(l);
             for (int j = 0; j < l; ++j) c.push_back(i++);
             cs.push_back(c);

@@ -10,11 +10,11 @@ using vb::Map;
 
 class Triangulation : public Map {
 public:
-    Triangulation(const Hub &H, int n) : Map(H.title, n) {
-        for (int i = 1; i < n; ++i) (*this) << Edge(0, i);
-        for (int i = n - 1; i > 1; --i) (*this) << Edge(1, i);
+    Triangulation(const std::string &s, size_t n) : Map(s, n) {
+        for (size_t i = 1; i < n; ++i) (*this) << Edge(0, i);
+        for (size_t i = n - 1; i > 1; --i) (*this) << Edge(1, i);
         (*this) << Edge(1, 0) << Edge(2, 0) << Edge(2, 1) << Edge(2, 3);
-        for (int i = 3; i < n - 1; ++i) (*this) << Edge(i, 0) << Edge(i, i - 1) << Edge(i, 1) << Edge(i, i + 1);
+        for (size_t i = 3; i < n - 1; ++i) (*this) << Edge(i, 0) << Edge(i, i - 1) << Edge(i, 1) << Edge(i, i + 1);
         (*this) << Edge(n - 1, 0) << Edge(n - 1, n - 2) << Edge(n - 1, 1);
     }
 
@@ -31,11 +31,11 @@ public:
         auto e1 = find_edge(Edge(i, j));
         if (e1 == v[i]->adj.begin()) e1 = v[i]->adj.end();
         --e1;
-        int  k  = *e1;
+        auto k  = *e1;
         auto e2 = find_edge(Edge(j, i));
         if (e2 == v[j]->adj.begin()) e2 = v[j]->adj.end();
         --e2;
-        int l = *e2;
+        auto l = *e2;
 
         if (k == l) return false;
         if (find_edge(Edge(k, l)) != v[0]->adj.end()) return false;
@@ -58,7 +58,7 @@ int main(int argc, char **argv) {
     int     t = H['t'];
     if (t == -1) t = 50 * int(H['n']) * int(H['n']);
 
-    Triangulation T(H, H['n']);
+    Triangulation T(H.title, H['n']);
     T.inscribe(T.face(Edge(0, 1)));
 
     {
