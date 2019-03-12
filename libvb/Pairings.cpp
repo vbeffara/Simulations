@@ -5,25 +5,25 @@
 namespace vb {
     void Pairings_Iterator::next() {
         while (!todo_c.empty()) {
-            std::vector<int> c = todo_c.back();
+            auto c = todo_c.back();
             todo_c.pop_back();
-            std::vector<int> p = todo_p.back();
+            auto p = todo_p.back();
             todo_p.pop_back();
             if (p.empty()) {
-                for (int i = 0; i < n / 2; ++i) {
+                for (size_t i = 0; i < n / 2; ++i) {
                     current[c[2 * i]]     = c[2 * i + 1];
                     current[c[2 * i + 1]] = c[2 * i];
                 }
                 return;
             }
-            int i = p[0];
+            auto i = p[0];
             for (unsigned k = 1; k < p.size(); ++k) {
-                int              o  = p[k];
-                std::vector<int> cc = c;
+                auto o  = p[k];
+                auto cc = c;
                 cc.push_back(i);
                 cc.push_back(o);
-                std::vector<int> pp;
-                for (int j : p)
+                std::vector<size_t> pp;
+                for (auto j : p)
                     if ((j != i) && (j != o)) pp.push_back(j);
                 todo_c.push_back(cc);
                 todo_p.push_back(pp);
@@ -31,12 +31,12 @@ namespace vb {
         }
     }
 
-    Pairings_Iterator::Pairings_Iterator(int n, int i, bool d) : current(n), n(n), i(i) {
+    Pairings_Iterator::Pairings_Iterator(size_t n, size_t i, bool d) : current(n), n(n), i(i) {
         if (d) {
-            std::vector<int> all;
+            std::vector<size_t> all;
             all.reserve(n);
-            for (int i = 0; i < n; ++i) all.push_back(i);
-            std::vector<int> c;
+            for (size_t i = 0; i < n; ++i) all.push_back(i);
+            std::vector<size_t> c;
             todo_c.push_back(c);
             todo_p.push_back(all);
             next();
@@ -52,11 +52,11 @@ namespace vb {
 
     Permutation &Pairings_Iterator::operator*() { return current; }
 
-    Pairings::Pairings(int n) : n(n) {}
+    Pairings::Pairings(size_t n) : n(n) {}
 
-    int64_t Pairings::size() const {
-        int64_t nn = n;
-        return fact(nn) / fact(nn / 2) / (uint64_t(1) << unsigned(n / 2));
+    size_t Pairings::size() const {
+        size_t nn = n;
+        return fact(nn) / fact(nn / 2) / (size_t(1) << (n / 2));
     }
 
     Pairings_Iterator Pairings::begin() const { return Pairings_Iterator(n, 0, true); }

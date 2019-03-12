@@ -4,7 +4,7 @@
 namespace vb {
     class Pairings_Iterator {
     public:
-        Pairings_Iterator(int n, int i, bool d);
+        Pairings_Iterator(size_t n, size_t i, bool d);
 
         bool         operator!=(const Pairings_Iterator &o) const;
         void         operator++();
@@ -13,16 +13,16 @@ namespace vb {
     private:
         void next();
 
-        std::vector<std::vector<int>> todo_c, todo_p;
-        Permutation                   current;
-        int                           n, i;
+        std::vector<std::vector<size_t>> todo_c, todo_p;
+        Permutation                      current;
+        size_t                           n, i;
     };
 
     class Pairings {
     public:
-        Pairings(int n);
+        Pairings(size_t n);
 
-        int64_t size() const;
+        size_t size() const;
 
         Pairings_Iterator begin() const;
         Pairings_Iterator end() const;
@@ -30,6 +30,6 @@ namespace vb {
         Permutation rrand();
 
     private:
-        unsigned n;
+        size_t n;
     };
 } // namespace vb

@@ -10,17 +10,16 @@ namespace vb {
     class Hypermap {
     public:
         struct Vertex {
-            unsigned         i = 0;
-            cpx              z;
-            double           r    = 1.0;
-            unsigned         bone = 0;
-            std::vector<int> adj;
-            bool             fixed = false;
+            size_t              i = 0;
+            cpx                 z;
+            double              r    = 1.0;
+            unsigned            bone = 0;
+            std::vector<size_t> adj;
+            bool                fixed = false;
         };
         struct Edge {
-            int      i   = 0;
-            unsigned src = 0;
-            double   a   = NAN;
+            size_t i = 0, src = 0;
+            double a = NAN;
         };
 
         Hypermap(Permutation s, Permutation a, Permutation p)
@@ -35,7 +34,7 @@ namespace vb {
         bool validate() const;
         bool is_graph() const;
         bool is_triangulation() const;
-        bool is_simple(unsigned d = 2) const; // ! parallel but non-consecutive edges (like an eye) are not detected
+        bool is_simple(size_t d = 2) const; // ! parallel but non-consecutive edges (like an eye) are not detected
         int  euler() const;
         int  genus() const;
 
@@ -50,7 +49,7 @@ namespace vb {
         void dual();
         void simplify1();
         void simplify2();
-        void simplify(int d = 2);
+        void simplify(size_t d = 2);
         void split_edges();
         void dessin();
 
@@ -61,14 +60,14 @@ namespace vb {
         std::vector<Edge>     E;
 
         double alpha_xyz(double x, double y, double z) const;
-        double ccn(int n) const;
+        double ccn(size_t n) const;
 
     private:
-        Permutation rebasing(int i) const;
+        Permutation rebasing(size_t i) const;
         Permutation rebasing() const;
     };
 
-    Stream<Hypermap> hypermaps(const std::vector<int> &s, const std::vector<int> &a, const std::vector<int> &p);
+    Stream<Hypermap> hypermaps(const Permutation &s, const Permutation &a, const Permutation &p);
 } // namespace vb
 
 namespace YAML {

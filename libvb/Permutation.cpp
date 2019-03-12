@@ -4,7 +4,7 @@
 
 namespace vb {
     Permutation::Permutation(Cycles &c) {
-        int sz = 0;
+        size_t sz = 0;
         for (const auto &v : c) sz += v.size();
         resize(sz);
         for (auto v : c) {
@@ -20,7 +20,7 @@ namespace vb {
             if (done[i] != 0) continue;
             std::vector<size_t> v(1, i);
             done[i] = 1;
-            for (int j = at(i); done[j] == 0; j = at(j)) {
+            for (auto j = at(i); done[j] == 0; j = at(j)) {
                 v.push_back(j);
                 done[j] = 1;
             }
@@ -29,26 +29,27 @@ namespace vb {
         return c;
     }
 
-    std::vector<int> Permutation::signature() const {
-        vector<int> output;
+    std::vector<size_t> Permutation::signature() const {
+        vector<size_t> output;
         for (const auto &c : cycles()) output.push_back(c.size());
         sort(output.begin(), output.end());
         return output;
     }
 
     Passport Permutation::passport() const {
-        std::vector<int> s = signature();
-        Passport         out;
-        int              l = 0, c = 0;
-        for (int i = s.size() - 1; i >= 0; --i) {
-            if (s[i] == l)
-                ++c;
-            else {
-                if (c > 0) out.push_back({l, c});
-                l = s[i];
-                c = 1;
+        auto     s = signature();
+        Passport out;
+        size_t   l = 0, c = 0;
+        if (s.size() > 0)
+            for (auto i = s.size() - 1; i <= s.size(); --i) {
+                if (s[i] == l)
+                    ++c;
+                else {
+                    if (c > 0) out.push_back({l, c});
+                    l = s[i];
+                    c = 1;
+                }
             }
-        }
         out.push_back({l, c});
         return out;
     }
@@ -79,7 +80,7 @@ namespace vb {
         return out;
     }
 
-    Permutation Transposition(int n, int i, int j) {
+    Permutation Transposition(size_t n, size_t i, size_t j) {
         Permutation p(n);
         p[i] = j;
         p[j] = i;
@@ -87,29 +88,27 @@ namespace vb {
     }
 
     bool connected(const Permutation &s, const Permutation &a) {
-        int              n = s.size();
-        std::vector<int> l(n);
-        for (int i = 0; i < n; ++i) l[i] = i;
+        auto                n = s.size();
+        std::vector<size_t> l(n);
+        for (size_t i = 0; i < n; ++i) l[i] = i;
         bool dirty = true;
         while (dirty) {
             dirty = false;
-            for (int i = 0; i < n; ++i)
+            for (size_t i = 0; i < n; ++i)
                 if (l[s[i]] < l[i]) {
                     l[i]  = l[s[i]];
                     dirty = true;
                 }
-            for (int i = 0; i < n; ++i)
+            for (size_t i = 0; i < n; ++i)
                 if (l[a[i]] < l[i]) {
                     l[i]  = l[a[i]];
                     dirty = true;
                 }
         }
-        for (int i = 0; i < n; ++i)
-            if (l[i] > 0) return false;
-        return true;
+        return std::all_of(begin(l), end(l), [](auto v) { return v == 0; });
     }
 
-    Stream<Permutation> permutations(int n) {
+    Stream<Permutation> permutations(size_t n) {
         return Stream<Permutation>([n](Sink<Permutation> &yield) {
             Permutation p(n);
             do
@@ -118,27 +117,27 @@ namespace vb {
         });
     }
 
-    Stream<Permutation> permutations(std::vector<int> s) {
+    Stream<Permutation> permutations(std::vector<size_t> s) {
         return Stream<Permutation>([s](Sink<Permutation> &yield) {
-            int n = 0;
+            size_t n = 0;
             for (auto i : s) n += i;
             if (n == 0) {
                 yield({{}});
                 return;
             }
-            int L = 0;
+            size_t L = 0;
             for (unsigned i = 0; i < s.size(); ++i)
                 if (s[i] > L) {
-                    L                   = s[i];
-                    std::vector<int> ns = s;
-                    ns[i]               = 0;
+                    L       = s[i];
+                    auto ns = s;
+                    ns[i]   = 0;
                     for (const auto &c : tuples(L - 1, n - 1)) {
                         std::vector<size_t> cc({0});
                         for (auto i : c) cc.push_back(i + 1);
                         std::vector<size_t> missed(n);
-                        for (int i = 0; i < n; ++i) missed[i] = i;
+                        for (size_t i = 0; i < n; ++i) missed[i] = i;
                         for (auto i : cc) missed[i] = 0;
-                        for (int i = 0, j = 0; j < n; ++j)
+                        for (size_t i = 0, j = 0; j < n; ++j)
                             if (missed[j] != 0) missed[i++] = missed[j];
                         for (auto &p : permutations(ns)) {
                             auto out = p.cycles();

@@ -17,7 +17,7 @@ namespace vb {
             surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, pixel_w(), pixel_h());
             cr      = cairo_create(surface);
             cairo_scale(cr, 1.0 * pixel_w() / w(), 1.0 * pixel_h() / h());
-            stride = cairo_image_surface_get_stride(surface) / sizeof(Color);
+            stride = size_t(cairo_image_surface_get_stride(surface)) / sizeof(Color);
         }
     }
 
@@ -26,11 +26,11 @@ namespace vb {
             surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, pixel_w(), pixel_h());
             cr      = cairo_create(surface);
             cairo_scale(cr, 1.0 * pixel_w() / w(), 1.0 * pixel_h() / h());
-            stride = cairo_image_surface_get_stride(surface) / sizeof(Color);
+            stride = size_t(cairo_image_surface_get_stride(surface)) / sizeof(Color);
         }
         paint();
         auto sd = static_cast<const ulong *>(static_cast<void *>(cairo_image_surface_get_data(surface)));
-        glPixelStorei(GL_UNPACK_ROW_LENGTH, stride);
+        glPixelStorei(GL_UNPACK_ROW_LENGTH, GLint(stride));
         glDrawPixels(pixel_w(), pixel_h(), GL_BGRA, GL_UNSIGNED_BYTE, sd);
     }
 

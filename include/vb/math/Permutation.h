@@ -23,17 +23,17 @@ namespace vb {
         Permutation operator*(const Permutation &o) const; // this then o i.e. $this * o = o \circ this$.
         Permutation conjugate(const Permutation &s) const;
 
-        Cycles           cycles() const;
-        std::vector<int> signature() const;
-        Passport         passport() const;
+        Cycles              cycles() const;
+        std::vector<size_t> signature() const;
+        Passport            passport() const;
     };
 
-    Permutation Transposition(int n, int i, int j);
+    Permutation Transposition(size_t n, size_t i, size_t j);
 
     bool connected(const Permutation &s, const Permutation &a);
 
-    Stream<Permutation> permutations(int n);
-    Stream<Permutation> permutations(std::vector<int> s);
+    Stream<Permutation> permutations(size_t n);
+    Stream<Permutation> permutations(std::vector<size_t> s);
 
 #ifdef UNIT_TESTS
     TEST_CASE("vb::Permutation") {
