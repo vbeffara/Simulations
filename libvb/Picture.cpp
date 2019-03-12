@@ -4,11 +4,10 @@
 #include <vb/Picture.h>
 
 namespace vb {
-    Picture::Picture(const std::string &s, coo size)
-        : AutoWindow(s, size), snapshot_prefix(s), snapshot_number(0), snapshot_period(0.0), snapshot_task(-1) {}
+    Picture::Picture(const std::string &s, coo size) : AutoWindow(s, size), snapshot_prefix(s), snapshot_number(0), snapshot_period(0.0) {}
 
     Picture::~Picture() {
-        if (snapshot_task >= 0) remove_task(snapshot_task);
+        if (snapshot_task) remove_task(*snapshot_task);
     }
 
     void Picture::show() {
@@ -48,7 +47,7 @@ namespace vb {
     }
 
     void Picture::snapshot_setup(const std::string &prefix, double period) {
-        if (snapshot_task >= 0) remove_task(snapshot_task);
+        if (snapshot_task) remove_task(*snapshot_task);
         snapshot_period = period;
         snapshot_prefix = prefix;
         snapshot();

@@ -33,8 +33,8 @@ namespace vb {
             if (next == 0) run();
         }
 
-        static int  add_task(double period, std::function<void()> task);
-        static void remove_task(int i);
+        static size_t add_task(double period, std::function<void()> task);
+        static void   remove_task(size_t i);
 
         static inline std::vector<Task> tasks;
         TimePoint                       start;
@@ -45,7 +45,7 @@ namespace vb {
         int     next   = 1;
         double  slice  = 10;
         int64_t n_call = 0;
-        int     task;
+        size_t  task;
 
     protected:
         bool die = false, hold = false;

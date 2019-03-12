@@ -15,7 +15,7 @@ namespace vb {
          * @param rel    Whether the path is stored as relative or absolute jumps.
          */
 
-        explicit OldPath(int l, bool rel = false);
+        explicit OldPath(size_t l, bool rel = false);
 
         /** Output the path as an image.
          *

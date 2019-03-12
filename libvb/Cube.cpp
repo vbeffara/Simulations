@@ -3,15 +3,16 @@
 #include <vb/Pov.h>
 
 namespace vb {
-    Cube::Cube(const std::string &s, coo3 sz) : Bitmap<Adder>(s, {sz.x + sz.z, sz.y + sz.z}), size(sz), data(size.x * size.y * size.z, 0) {
+    Cube::Cube(const std::string &s, coo3 sz)
+        : Bitmap<Adder>(s, {sz.x + sz.z, sz.y + sz.z}), size(sz), data(size_t(size.x * size.y * size.z), 0) {
         for (int x = 0; x < size.z; ++x)
             for (int y = 0; y < size.z; ++y) Bitmap<Adder>::at({size.x + x, size.y + y}) = Adder(((x / 10 + y / 10) % 2) != 0 ? 200 : 150);
         for (int x = 0; x < size.x; ++x)
-            for (int y = 0; y < size.y; ++y) Bitmap<Adder>::at({x, y}).dim(size.z);
+            for (int y = 0; y < size.y; ++y) Bitmap<Adder>::at({x, y}).dim(size_t(size.z));
         for (int x = 0; x < size.x; ++x)
-            for (int z = 0; z < size.z; ++z) Bitmap<Adder>::at({x, z + size.y}).dim(size.y);
+            for (int z = 0; z < size.z; ++z) Bitmap<Adder>::at({x, z + size.y}).dim(size_t(size.y));
         for (int y = 0; y < size.y; ++y)
-            for (int z = 0; z < size.z; ++z) Bitmap<Adder>::at({z + size.x, y}).dim(size.x);
+            for (int z = 0; z < size.z; ++z) Bitmap<Adder>::at({z + size.x, y}).dim(size_t(size.x));
     }
 
     void Cube::put(const coo3 &c, uint8_t t) {

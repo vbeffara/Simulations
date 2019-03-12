@@ -1,6 +1,7 @@
 #pragma once /// \file
 #include <FL/Fl_Gl_Window.H>
 #include <cairo/cairo.h>
+#include <optional>
 #include <vb/AutoWindow.h>
 #include <vb/Color.h>
 
@@ -38,10 +39,10 @@ namespace vb {
         void             draw() override;   ///< Draw the contents of the window (called by FLTK).
 
     private:
-        std::string snapshot_prefix; ///< The filename prefix for PNG snapshots.
-        int         snapshot_number; ///< The number of the current snapshot.
-        double      snapshot_period; ///< The time interval between automatic snapshots, in seconds.
-        int         snapshot_task;
+        std::string           snapshot_prefix; ///< The filename prefix for PNG snapshots.
+        int                   snapshot_number; ///< The number of the current snapshot.
+        double                snapshot_period; ///< The time interval between automatic snapshots, in seconds.
+        std::optional<size_t> snapshot_task;
 
         virtual void paint(){}; /// Update the contents of surface from a derived class data.
     };

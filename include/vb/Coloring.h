@@ -26,7 +26,7 @@ namespace vb {
     private:
         Color aa_color(coo c, bool pre = false) const;
 
-        void line(coo s, coo d, int l);
+        void line(coo s, coo d, int64_t l);
         void tessel_go(coo ul, coo lr);
         void tessel(coo ul, coo lr);
         void do_aa();

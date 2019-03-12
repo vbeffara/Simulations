@@ -11,7 +11,7 @@ using namespace std;
 class DLA : public CoarseImage {
 public:
     explicit DLA(const Hub &H)
-        : CoarseImage(H.title, {H['n'], H['n']}, int(pow(double(H['n']), .33))), n(H['n']), c(H['c']), r(1),
+        : CoarseImage(H.title, {H['n'], H['n']}, unsigned(pow(double(H['n']), .33))), n(H['n']), c(H['c']), r(1),
           QT({-n / 2, -n / 2}, {n / 2, n / 2}, H['l']), prec(unsigned(H['p'])), img(H.title, {512, 512}) {
         z0 = {n / 2, n / 2};
         W.watch(QT.n, "Nb of particles");

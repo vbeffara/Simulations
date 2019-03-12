@@ -4,7 +4,7 @@
 #include <vb/data/TriMatrix.h>
 
 namespace vb {
-    OldPath::OldPath(int l, bool rel) : std::vector<char>(l), relative(rel) {}
+    OldPath::OldPath(size_t l, bool rel) : std::vector<char>(l), relative(rel) {}
 
     bool OldPath::self_avoiding() {
         TriMatrix<char> T;

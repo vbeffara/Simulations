@@ -15,7 +15,7 @@ public:
         if (s == 0) return BLACK;
         if (ml <= .1 * max) return Color(0, 0, 64);
         if (ml <= .9 * max) return Color(0, 0, uint8_t(64 + 128 * (ml - .1 * max) / (.8 * max)));
-        return Grey(64 + (s - min) * (255 - 64) / (max - min));
+        return Grey(uint8_t(64 + (s - min) * (255 - 64) / (max - min)));
     }
     int        s, ml;
     static int min, max;
@@ -62,17 +62,17 @@ public:
     void run() {
         vector<double> l(4);
         while (visible()) {
-            for (int i = 0; i < 4; ++i) {
+            for (unsigned i = 0; i < 4; ++i) {
                 coo d = dz[i], dl = dz[(i + 1) % 4], dr = dz[(i + 3) % 4];
                 l[i] = alpha * (atp(z + d + d + d).s + atp(z + d + d + dl).s + atp(z + d + d + dr).s) - atp(z + d).s;
             }
             double ml = l[0], sl = 0;
-            for (int i = 1; i < 4; ++i) { ml = max(ml, l[i]); }
-            for (int i = 0; i < 4; ++i) {
+            for (unsigned i = 1; i < 4; ++i) { ml = max(ml, l[i]); }
+            for (unsigned i = 0; i < 4; ++i) {
                 l[i] = exp(beta * (l[i] - ml));
                 sl += l[i];
             }
-            for (int i = 0; i < 4; ++i) { l[i] /= sl; }
+            for (unsigned i = 0; i < 4; ++i) { l[i] /= sl; }
             coo d = dz[prng.discrete(l)];
             putp(z + d, Stat{atp(z + d).s + 1});
             z += d + d;

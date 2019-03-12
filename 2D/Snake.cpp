@@ -24,8 +24,8 @@ public:
     }
 
     bool alive() const {
-        vb::coo lz = z.back();
-        int     lx = lz.x, ly = lz.y;
+        auto lz = z.back();
+        auto lx = lz.x, ly = lz.y;
         return ((lx > 0) && (lx < true_width - 1) && (ly > 0) && (ly < true_height - 1));
     }
 
@@ -33,8 +33,8 @@ public:
     void output(const std::string &s) override {
         vb::OldPath P(z.size() - 1);
         for (unsigned i = 0; i < z.size() - 1; ++i) {
-            vb::coo dz = z[i + 1] - z[i];
-            int     dx = dz.x, dy = dz.y;
+            auto dz = z[i + 1] - z[i];
+            auto dx = dz.x, dy = dz.y;
             if (dx > 0) { P[i] = 0; }
             if (dx < 0) { P[i] = 2; }
             if (dy > 0) { P[i] = 1; }

@@ -9,7 +9,7 @@ namespace vb {
     void Coloring::show() {
         Picture::show();
         auto sd      = static_cast<Color *>(static_cast<void *>(cairo_image_surface_get_data(surface)));
-        stage        = gsl::span<Color>(sd, stride * pixel_h());
+        stage        = gsl::span<Color>(sd, int(stride) * pixel_h());
         eps          = real(z2 - z1) / pixel_w();
         pixel_detail = int(detail / eps);
         for (int i = 0; i < pixel_w(); ++i)
@@ -46,7 +46,7 @@ namespace vb {
 
     cpx Coloring::c_to_z(coo c) const { return z1 + cpx(c.x, c.y) * eps; }
 
-    Color &Coloring::at(coo z) const { return stage[z.x + stride * z.y]; }
+    Color &Coloring::at(coo z) const { return stage[z.x + int64_t(stride) * z.y]; }
 
     Color Coloring::aa_color(coo c, bool pre) const {
         cpx z = c_to_z(c);
@@ -67,18 +67,18 @@ namespace vb {
                     b += c.b;
                     a += c.a;
                 }
-        return Color(r / 9, g / 9, b / 9, a / 9);
+        return Color(uint8_t(r / 9), uint8_t(g / 9), uint8_t(b / 9), uint8_t(a / 9));
     }
 
-    void Coloring::line(coo s, coo d, int l) {
-        tbb::parallel_for(0, l, [=](int i) {
+    void Coloring::line(coo s, coo d, int64_t l) {
+        tbb::parallel_for(int64_t(0), l, [=](int64_t i) {
             coo c = s + d * i;
             if (!die) at(c) = f(c_to_z(c));
         });
     }
 
     void Coloring::tessel_go(coo ul, coo lr) {
-        int size = std::min(lr.x - ul.x, lr.y - ul.y);
+        auto size = std::min(lr.x - ul.x, lr.y - ul.y);
         if (size <= 1) return;
 
         coo   z    = ul;
@@ -91,8 +91,8 @@ namespace vb {
         for (; mono && (z != coo{ul.x, ul.y}); z += {0, -1}) mono = mono && (at(z) == tmp);
 
         if (mono) {
-            for (int i = ul.x + 1; i < lr.x; ++i)
-                for (int j = ul.y + 1; j < lr.y; ++j) at({i, j}) = tmp;
+            for (auto i = ul.x + 1; i < lr.x; ++i)
+                for (auto j = ul.y + 1; j < lr.y; ++j) at({i, j}) = tmp;
             return;
         }
 

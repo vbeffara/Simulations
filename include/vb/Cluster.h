@@ -4,7 +4,7 @@
 namespace vb {
     class Cluster {
     public:
-        Cluster(coo ul_ = {-bs / 2, -bs / 2}, int64_t w_ = bs) : ul(ul_), w(w_){};
+        Cluster(coo ul_ = {-int64_t(bs) / 2, -int64_t(bs) / 2}, size_t w_ = bs) : ul(ul_), w(w_){};
 
         void ensure_sub();
         void grow();
@@ -17,15 +17,15 @@ namespace vb {
         void remove(coo z);
 
         void validate();
-        void paint(Image & I, coo ul = {0, 0}, coo br = {0, 0});
+        void paint(Image &I, coo ul = {0, 0}, coo br = {0, 0});
 
-        int64_t sub_index(coo z) const;
+        size_t sub_index(coo z) const;
 
         coo                  ul;
-        int64_t              w, np = 0;
+        size_t               w, np = 0;
         std::vector<bool>    tile;
         std::vector<Cluster> sub;
-        static int64_t       bs;
+        static size_t        bs;
     };
 
 #ifdef UNIT_TESTS

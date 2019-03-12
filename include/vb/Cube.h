@@ -3,13 +3,13 @@
 
 namespace vb {
     struct Adder {
-        explicit Adder(int _s = 0) : s(_s) {}
-        void     dim(int _n) { n = _n; }
-        int      operator+=(int t) { return (s += t); }
-        int      operator-=(int t) { return (s -= t); }
+        explicit Adder(size_t s = 0) : s(s) {}
+        void     dim(size_t _n) { n = _n; }
+        size_t   operator+=(size_t t) { return (s += t); }
+        size_t   operator-=(size_t t) { return (s -= t); }
         explicit operator Color() { return Grey(uint8_t(s / n)); }
 
-        int s, n = 1;
+        size_t s, n = 1;
     };
 
     struct Cube_iterator;

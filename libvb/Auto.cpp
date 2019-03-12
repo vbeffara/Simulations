@@ -7,16 +7,16 @@ namespace vb {
 
     Auto::~Auto() { remove_task(task); }
 
-    int Auto::add_task(double period, std::function<void()> task) {
+    size_t Auto::add_task(double period, std::function<void()> task) {
         tasks.emplace_back(now(), Duration(period), task);
         return tasks.size() - 1;
     }
 
-    void Auto::remove_task(int i) { tasks[i].active = false; }
+    void Auto::remove_task(size_t i) { tasks[i].active = false; }
 
     void Auto::run() {
         if (die && (!hold)) exit(0);
-        for (Task & t : tasks)
+        for (Task &t : tasks)
             if (t.active && (now() >= t.next)) {
                 t();
                 t.next = now() + t.period;

@@ -15,7 +15,7 @@ public:
         trace    = H['t'];
 
         pq.push({{n / 2, n / 2}, cost()});
-        if (twostep) pq.push({{(true_width / 2) + 1, true_height / 2}, cost()});
+        if (twostep) pq.push({{int64_t(true_width / 2) + 1, int64_t(true_height) / 2}, cost()});
     };
 
     void spread(double t, const coo &z) {

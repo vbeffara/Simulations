@@ -3,9 +3,9 @@
 #include <vb/util/PRNG.h>
 
 namespace vb {
-    int PRNG::discrete(const std::vector<double> &p) {
-        double U = uniform_real();
-        int    i = 0;
+    unsigned PRNG::discrete(const std::vector<double> &p) {
+        double   U = uniform_real();
+        unsigned i = 0;
         while (U > p[i]) {
             U -= p[i];
             ++i;

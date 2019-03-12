@@ -22,7 +22,7 @@ namespace vb {
             return {b + uniform_int(r.x - 2 * b), b + uniform_int(r.y - 2 * b), b + uniform_int(r.z - 2 * b)};
         }
 
-        int discrete(const std::vector<double> &p);
+        unsigned discrete(const std::vector<double> &p);
 
         std::string state();
         void        state(const std::string &s);

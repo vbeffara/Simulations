@@ -22,8 +22,10 @@ namespace vb {
             data.resize(size.x * size.y, t);
         }
 
-        T &      at(const coo &z) { return data[(unsigned long)(z.x + size.x * z.y)]; }
-        T const &at(const coo &z) const { return data[z.x + size.x * z.y]; }
+        size_t index(const coo &z) const { return size_t(z.x + size.x * z.y); }
+
+        T &      at(const coo &z) { return data[index(z)]; }
+        T const &at(const coo &z) const { return data[index(z)]; }
 
         T &      operator[](const coo &z) { return at(z); }
         T const &operator[](const coo &z) const { return at(z); }

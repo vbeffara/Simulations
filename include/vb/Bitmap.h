@@ -35,12 +35,12 @@ namespace vb {
     protected:
         void paint() override {
             int64_t          ppp = pixel_w() / w();
-            gsl::span<Color> stage((Color *)cairo_image_surface_get_data(surface), ppp * w() + stride * (ppp * h() - 1));
+            gsl::span<Color> stage((Color *)cairo_image_surface_get_data(surface), ppp * w() + int(stride) * (ppp * h() - 1));
 
             for (int x = 0; x < w(); ++x)
                 for (int y = 0; y < h(); ++y)
                     for (int dx = 0; dx < ppp; ++dx)
-                        for (int dy = 0; dy < ppp; ++dy) stage[ppp * x + dx + stride * (ppp * y + dy)] = to_Color(at({x, y}));
+                        for (int dy = 0; dy < ppp; ++dy) stage[ppp * x + dx + int(stride) * (ppp * y + dy)] = to_Color(at({x, y}));
         }
     };
 

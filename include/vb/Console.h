@@ -75,7 +75,7 @@ namespace vb {
 
     template <typename T> void runinput(Fl_Widget *W) {
         auto M = static_cast<Console::Input<T> *>(W);
-        M->f(M->value());
+        M->f(T(M->value()));
         M->c->redraw();
     }
 } // namespace vb
