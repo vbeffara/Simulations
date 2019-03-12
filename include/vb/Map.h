@@ -4,7 +4,7 @@
 
 namespace vb {
     using Edge     = std::pair<size_t, size_t>;
-    using adj_list = std::vector<int>;
+    using adj_list = std::vector<size_t>;
 
     class Vertex : public Circle {
     public:
@@ -18,46 +18,43 @@ namespace vb {
         std::vector<std::unique_ptr<Vertex>> v;
         std::vector<bool>                    bd;
 
-        int    zero;
-        int    one;
-        int    infinity;
         double scale = 1;
 
-        Map(const std::string &s, int nn);
+        Map(const std::string &s, size_t n);
 
         adj_list::iterator find_edge(const Edge &e) const;
 
         Edge turn_left(const Edge &e) const;
         Edge turn_right(const Edge &e) const;
 
-        void add_before(const Edge &e, int vv);
-        void add_after(const Edge &e, int vv);
+        void add_before(const Edge &e, size_t vv);
+        void add_after(const Edge &e, size_t vv);
 
-        std::vector<int> face(Edge e);
+        std::vector<size_t> face(Edge e);
 
-        void inscribe(const std::vector<int> &face_ext, const double &radius = 1.0, bool reverse = false);
+        void inscribe(const std::vector<size_t> &face_ext, const double &radius = 1.0, bool reverse = false);
 
         double balance();
         void   balance_old();
 
-        std::vector<int> split_edges();
+        std::vector<size_t> split_edges();
 
-        void hex_to_triangle(const std::vector<int> &f);
+        void hex_to_triangle(const std::vector<size_t> &f);
         void barycentric();
 
         void plot_vertices(Figure *F);
         void plot_edges(Figure *F);
         void plot_circles(Figure *F);
 
-        auto nb_sommets() { return n; }
-        int  nb_aretes();
-        int  nb_faces();
-        int  euler();
-        int  genre();
+        size_t nb_sommets() { return n; }
+        size_t nb_aretes();
+        size_t nb_faces();
+        int    euler();
+        int    genre();
 
         void mobius(cpx w, const double &theta);
 
-        void rad_to_pos(int _zero, int _one);
+        void rad_to_pos(size_t _zero, size_t _one);
 
         void rotate(const double &theta);
 

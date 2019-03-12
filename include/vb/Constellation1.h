@@ -37,13 +37,13 @@ namespace vb {
         Matrix<cplx> jacnum();
 
         cplx reduce(cplx z) const override;
-        cplx logderp(cplx z, int k) const;
-        cplx logderp_z(cplx z, int k) const;
-        cplx logderp_q(cplx z, int k) const;
-        cplx logderp_t(cplx z, int k) const;
-        cplx logder(cplx z, int k) const;
-        cplx logder_z(cplx z, int k) const;
-        cplx logder_t(cplx z, int k) const;
+        cplx logderp(cplx z, unsigned k) const;
+        cplx logderp_z(cplx z, unsigned k) const;
+        cplx logderp_q(cplx z, unsigned k) const;
+        cplx logderp_t(cplx z, unsigned k) const;
+        cplx logder(cplx z, unsigned k) const;
+        cplx logder_z(cplx z, unsigned k) const;
+        cplx logder_t(cplx z, unsigned k) const;
 
         void from_points();
         void normalize();

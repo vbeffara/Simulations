@@ -33,9 +33,9 @@ namespace vb {
                     f         = .1 + .9 * f * f;
                 }
                 f   = f * c.a / 255;
-                c.r = int(f * c.r) + 255 - c.a;
-                c.g = int(f * c.g) + 255 - c.a;
-                c.b = int(f * c.b) + 255 - c.a;
+                c.r = uint8_t(int(f * c.r) + 255 - c.a);
+                c.g = uint8_t(int(f * c.g) + 255 - c.a);
+                c.b = uint8_t(int(f * c.b) + 255 - c.a);
                 c.a = 255;
             }
         update();

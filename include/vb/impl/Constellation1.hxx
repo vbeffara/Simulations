@@ -11,7 +11,7 @@ namespace vb {
             M2.split_edges();
             Toroidal S(M2);
             S.pack();
-            int N = M.sigma.size();
+            auto N = M.sigma.size();
             b.clear();
             for (auto c : M.sigma.cycles()) {
                 const auto &z = S.V[S.E[c[0]].src].z;
@@ -46,12 +46,12 @@ namespace vb {
         dy = int(round(T(imag(szp) / imag(p[0]))));
         dx = int(round(T(real(szp - T(dy) * p[0]))));
         for (auto &zd : f) {
-            int ddx = round(double(dx) / zd.d);
+            auto ddx = int(double(dx) / zd.d);
             if (ddx != 0) {
                 zd.z += T(ddx);
                 dx -= int(zd.d) * ddx;
             }
-            int ddy = round(double(dy) / zd.d);
+            auto ddy = int(double(dy) / zd.d);
             if (ddy != 0) {
                 zd.z += T(ddy) * p[0];
                 dy -= int(zd.d) * ddy;
@@ -86,7 +86,7 @@ namespace vb {
         from_points();
     }
 
-    template <typename T> auto Constellation1<T>::logderp(cplx z, int k) const -> cplx {
+    template <typename T> auto Constellation1<T>::logderp(cplx z, unsigned k) const -> cplx {
         if (k == 0) return log(E.sigma(z));
         if (k == 1) return E.zeta(z);
         if (k == 2) return E.wp(z);
@@ -94,25 +94,25 @@ namespace vb {
         throw std::invalid_argument("Derivatives of higher order not implemented!");
     }
 
-    template <typename T> auto Constellation1<T>::logderp_z(cplx z, int k) const -> cplx {
+    template <typename T> auto Constellation1<T>::logderp_z(cplx z, unsigned k) const -> cplx {
         if (k == 0) return E.zeta(z);
         if (k == 1) return -E.wp(z);
         if (k == 2) return E.wp_z(z);
         throw std::invalid_argument("Derivatives of higher order not implemented!");
     }
 
-    template <typename T> auto Constellation1<T>::logderp_q(cplx z, int k) const -> cplx {
+    template <typename T> auto Constellation1<T>::logderp_q(cplx z, unsigned k) const -> cplx {
         if (k == 0) return E.sigma_q(z) / E.sigma(z);
         if (k == 1) return E.zeta_q(z);
         if (k == 2) return E.wp_q(z);
         throw std::invalid_argument("Derivatives of higher order not implemented!");
     }
 
-    template <typename T> auto Constellation1<T>::logderp_t(cplx z, int k) const -> cplx {
+    template <typename T> auto Constellation1<T>::logderp_t(cplx z, unsigned k) const -> cplx {
         return cplx(0, pi_<T>()) * E.q * logderp_q(z, k);
     }
 
-    template <typename T> auto Constellation1<T>::logder(cplx z, int k) const -> cplx {
+    template <typename T> auto Constellation1<T>::logder(cplx z, unsigned k) const -> cplx {
         cplx out(logderp(z - b[0].z + T(dx) + tau() * T(dy), k) - logderp(z - b[0].z, k));
         for (auto zd : b) out += logderp(z - zd.z, k) * T(zd.d);
         for (auto zd : f) out -= logderp(z - zd.z, k) * T(zd.d);
@@ -123,14 +123,14 @@ namespace vb {
         return out;
     }
 
-    template <typename T> auto Constellation1<T>::logder_z(cplx z, int k) const -> cplx {
+    template <typename T> auto Constellation1<T>::logder_z(cplx z, unsigned k) const -> cplx {
         cplx out(logderp_z(z - b[0].z + T(dx) + tau() * T(dy), k) - logderp_z(z - b[0].z, k));
         for (auto zd : b) out += logderp_z(z - zd.z, k) * T(zd.d);
         for (auto zd : f) out -= logderp_z(z - zd.z, k) * T(zd.d);
         return out;
     }
 
-    template <typename T> auto Constellation1<T>::logder_t(cplx z, int k) const -> cplx {
+    template <typename T> auto Constellation1<T>::logder_t(cplx z, unsigned k) const -> cplx {
         cplx out(logderp_t(z - b[0].z + T(dx) + tau() * T(dy), k) + T(dy) * logderp_z(z - b[0].z + T(dx) + tau() * T(dy), k) -
                  logderp_t(z - b[0].z, k));
         for (auto zd : b) out += logderp_t(z - zd.z, k) * T(zd.d);
@@ -181,7 +181,7 @@ namespace vb {
     }
 
     template <typename T> auto Constellation1<T>::jacvcost() const -> Matrix<cplx> { // m_ij = \partial_j(f_i)
-        Matrix<cplx>           out = Matrix<cplx>::Zero(dim, dim);
+        Matrix<cplx>           out = Matrix<cplx>::Zero(int(dim), int(dim));
         int                    i = 0, j = 0;
         for (unsigned ii = 0; ii < w.size(); ++ii)
             for (unsigned id = 0; id < w[ii].d; ++id) {
@@ -266,7 +266,7 @@ namespace vb {
         int nd = std::max(5, int(lerr) / 2 - 12);
         if (err == T(0)) nd = 10;
         os << std::setprecision(nd) << std::fixed;
-        int eps = nd - 5;
+        auto eps = unsigned(nd - 5);
 
         os << "log(lambda)  = " << C.p[1] << '\n';
         os << "tau          = " << C.p[0] << '\n';
