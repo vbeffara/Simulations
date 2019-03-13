@@ -11,7 +11,7 @@ using namespace vb;
 
 int main(int argc, char **argv) {
     Hub    H("Aggregation of exclusion walkers", argc, argv, "n=250,p=.5,g,a=1.0,t=0.0,s");
-    int    n = H['n']; // Half of board size
+    size_t n = H['n']; // Half of board size
     double p = H['p']; // Initial particle density
     bool   g = H['g']; // Dynamic discovery of environment (ghosts)
     double t = H['t']; // Snapshot interval for movies
@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
             img.put(z, AWAY);
         else
             img.put(z, prng.bernoulli(p) ? ALIVE : EMPTY);
-    img.put({n, n}, DEAD);
+    img.put({int(n), int(n)}, DEAD);
     img.show();
     if (t > 0) img.snapshot_setup("MDLA", t);
 

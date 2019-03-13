@@ -71,7 +71,7 @@ void Automaton::effect(double r) {
 
 int main(int argc, char **argv) {
     vb::Hub      H("1D cellular automaton", argc, argv, "n=500,e=.03,r=.05");
-    const int    n = H['n'];
+    const size_t n = H['n'];
     const double e = H['e'];
     const double r = H['r'];
 
@@ -85,7 +85,7 @@ int main(int argc, char **argv) {
     for (int i = 0;; ++i) {
         int nb = 0;
         for (int x = 0; x < n; ++x) {
-            img.put({x, i % n}, vb::Grey(255 * (a.main[x] & 1u)));
+            img.put({x, i % int(n)}, vb::Grey(255 * (a.main[x] & 1u)));
             nb += a.main[x] & 1u;
         }
         //    img.update();

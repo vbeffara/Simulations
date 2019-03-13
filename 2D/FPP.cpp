@@ -9,12 +9,12 @@ double cost() { return prng.exponential(); }
 
 class FPP : public CoarseImage {
 public:
-    FPP(const Hub &H, int n) : CoarseImage(H.title, {n, n}, size_t(pow(n, .33))), area(0) {
+    FPP(const Hub &H, size_t n) : CoarseImage(H.title, {n, n}, size_t(pow(n, .33))), area(0) {
         invasion = H['i'];
         twostep  = H['2'];
         trace    = H['t'];
 
-        pq.push({{n / 2, n / 2}, cost()});
+        pq.push({{int(n) / 2, int(n) / 2}, cost()});
         if (twostep) pq.push({{int64_t(true_width / 2) + 1, int64_t(true_height) / 2}, cost()});
     };
 

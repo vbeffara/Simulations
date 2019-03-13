@@ -5,7 +5,7 @@
 namespace vb {
     template <typename T> class Bitmap : public Picture, public Array<T> {
     public:
-        Bitmap(const std::string &s, coo size, T d = T());
+        Bitmap(const std::string &s, ucoo size, T d = T());
 
         using Array<T>::size;
         using Array<T>::at;
@@ -45,7 +45,7 @@ namespace vb {
     };
 
     template <typename T>
-    Bitmap<T>::Bitmap(const std::string &s, coo size, T d) : Picture(s, size), Array<T>(size, d), z0({0, 0}), dflt(d) {}
+    Bitmap<T>::Bitmap(const std::string &s, ucoo size, T d) : Picture(s, size), Array<T>(size, d), z0({0, 0}), dflt(d) {}
 
     template <typename T> void Bitmap<T>::fill(coo z, T c, int adj) {
         T in = at(z);

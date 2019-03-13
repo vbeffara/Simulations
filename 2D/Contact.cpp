@@ -8,7 +8,7 @@ int main(int argc, char **argv) {
     Hub H("Discrete-time contact process on Z^2", argc, argv, "p=.4,n=400");
 
     double p = H['p'];
-    int    n = H['n'];
+    size_t n = H['n'];
 
     Image img(H.title, {n, n});
 

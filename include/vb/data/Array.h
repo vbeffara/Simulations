@@ -5,24 +5,23 @@
 namespace vb {
     template <typename T> class Array {
     public:
-        Array(coo sz, T d) : size(sz), data((unsigned long)(sz.x * sz.y), d) {}
-        Array(coo sz) : size(sz), data((unsigned long)(sz.x * sz.y)) {}
+        Array(ucoo sz, T d) : size(sz), data((unsigned long)(sz.x * sz.y), d) {}
+        Array(ucoo sz) : size(sz), data((unsigned long)(sz.x * sz.y)) {}
 
-        explicit Array(const std::vector<std::vector<T>> &l)
-            : size({static_cast<int64_t>(l.size()), static_cast<int64_t>(l[0].size())}), data(size.x * size.y) {
+        explicit Array(const std::vector<std::vector<T>> &l) : size({l.size(), l[0].size()}), data(size.x * size.y) {
             for (const auto &z : coo_range(size)) put(z, l[z.x][z.y]);
         }
 
-        void resize(coo sz) {
+        void resize(ucoo sz) {
             size = sz;
             data.resize(size.x * size.y);
         }
-        void resize(coo sz, T t) {
+        void resize(ucoo sz, T t) {
             size = sz;
             data.resize(size.x * size.y, t);
         }
 
-        size_t index(const coo &z) const { return size_t(z.x + size.x * z.y); }
+        size_t index(const coo &z) const { return size_t(z.x) + size.x * size_t(z.y); }
 
         T &      at(const coo &z) { return data[index(z)]; }
         T const &at(const coo &z) const { return data[index(z)]; }
@@ -31,11 +30,11 @@ namespace vb {
         T const &operator[](const coo &z) const { return at(z); }
 
         T &atp(const coo &z) {
-            int64_t x = pmod(z.x, size.x), y = pmod(z.y, size.y);
+            int64_t x = pmod(z.x, int64_t(size.x)), y = pmod(z.y, int64_t(size.y));
             return at({x, y});
         }
         T const &atp(const coo &z) const {
-            int64_t x = pmod(z.x, size.x), y = pmod(z.y, size.y);
+            int64_t x = pmod(z.x, int64_t(size.x)), y = pmod(z.y, int64_t(size.y));
             return at({x, y});
         }
 
@@ -44,7 +43,7 @@ namespace vb {
 
         bool contains(const coo &z, int64_t b = 0) const { return (z.x >= b) && (z.y >= b) && (z.x < size.x - b) && (z.y < size.y - b); }
 
-        coo size;
+        ucoo size;
 
     private:
         std::vector<T> data;

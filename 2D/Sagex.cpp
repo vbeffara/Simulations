@@ -47,7 +47,7 @@ public:
 
 class Sagex : public Bitmap<int> {
 public:
-    Sagex(const Hub &H, int w, int h) : Bitmap<int>(H.title, {w, h}) {
+    Sagex(const Hub &H, size_t w, size_t h) : Bitmap<int>(H.title, {w, h}) {
         for (int x = 0; x < w; ++x)
             for (int y = 0; y < h; ++y) {
                 if (prng.bernoulli(H['l'])) {

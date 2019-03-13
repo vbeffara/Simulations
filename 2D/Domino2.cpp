@@ -34,11 +34,11 @@ public:
 
 class Tiling : public Bitmap<Domino> {
 public:
-    explicit Tiling(const Hub &H, int n) : Bitmap<Domino>(H.title, {2 * n, 2 * n}) {
+    explicit Tiling(const Hub &H, size_t n) : Bitmap<Domino>(H.title, {2 * n, 2 * n}) {
         for (int i = 0; i < n; ++i)
             for (int j = n - 1 - i; j < n + i; j += 2) {
                 putd(Domino{{i, j}, 1});
-                putd(Domino{{2 * n - 1 - i, j}, 1});
+                putd(Domino{{2 * int(n) - 1 - i, j}, 1});
             }
     };
 

@@ -14,7 +14,7 @@ class TGraph : public Figure, Array<loc> {
 public:
     using Array::size;
 
-    TGraph(const Hub &H, int n, cpx A, double t) : Figure(H.title), Array<loc>({n, n}), A(A), theta(t) {
+    TGraph(const Hub &H, size_t n, cpx A, double t) : Figure(H.title), Array<loc>({n, n}), A(A), theta(t) {
         compute();
         plot();
         show();

@@ -24,7 +24,7 @@ public:
 
 class UST : public Bitmap<Point> {
 public:
-    explicit UST(const Hub &H, int n_) : Bitmap<Point>(H.title, {2 * n_ + 1, 2 * n_ + 1}), n(n_) {}
+    explicit UST(const Hub &H, size_t n_) : Bitmap<Point>(H.title, {2 * n_ + 1, 2 * n_ + 1}), n(n_) {}
 
     void path(coo z, Type tgt) {
         while (at(z).t != tgt) {

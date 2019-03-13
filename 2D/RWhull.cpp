@@ -40,7 +40,7 @@ namespace vb {
 
 class Snake : public Bitmap<int> {
 public:
-    Snake(const Hub &H, size_t n_) : Bitmap<int>(H.title, {6 * int(n_), 6 * int(n_)}), n(n_) {
+    Snake(const Hub &H, size_t n_) : Bitmap<int>(H.title, {6 * n_, 6 * n_}), n(n_) {
         p.push_back({3 * n, 3 * n});
         put(p.back(), 1);
         show();

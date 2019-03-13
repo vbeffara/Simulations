@@ -18,10 +18,10 @@ public:
         W.watch(r, "Cluster radius");
 
         spdlog::info("Precomputing harmonic measures, d up to {} ...", int(H['p']));
-        for (int r = 1; r < int(H['p']); ++r) {
+        for (size_t r = 1; r < int(H['p']); ++r) {
             bool          dirty = true;
             Array<double> MM({2 * r + 1, 2 * r + 1});
-            MM.at({r, r}) = 1;
+            MM.at({int(r), int(r)}) = 1;
             while (dirty) {
                 dirty = false;
                 for (int i = 1; i < 2 * r; ++i)
@@ -56,8 +56,8 @@ public:
                     }
             }
 
-            prec[size_t(r)].push_back(4 * MM.at({0, r}));
-            for (int i = 1; i < r; ++i) prec[size_t(r)].push_back(8 * MM.at({0, r + i}));
+            prec[size_t(r)].push_back(4 * MM.at({0, int(r)}));
+            for (int i = 1; i < r; ++i) prec[r].push_back(8 * MM.at({0, int(r) + i}));
         }
         start = now();
     };

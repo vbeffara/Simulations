@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
     Hub H("TASEP", argc, argv, "n=1280,r=.4,e=0,d=0");
 
     TASEP T(H);
-    Image I(H.title, {static_cast<int64_t>(T.size()), 700});
+    Image I(H.title, {T.size(), 700});
     I.show();
     for (int t = 0, u = 0;; ++t, ++u) {
         for (int j = 0; j < u; ++j)

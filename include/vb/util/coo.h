@@ -25,6 +25,13 @@ namespace vb {
         return (xx > yy ? xx : yy);
     }
 
+    struct ucoo {
+        size_t x, y;
+
+        // TODO: remove conversion
+        operator coo() { return {int64_t(x), int64_t(y)}; }
+    };
+
     class coo3 {
     public:
         int64_t x, y, z;
@@ -42,7 +49,7 @@ namespace vb {
 
     struct coo_range {
         coo z, r;
-        coo_range(coo r) : z({0, 0}), r(r) {}
+        coo_range(ucoo r) : z({0, 0}), r(r) {}
         const coo_range &begin() const { return *this; }
         const coo_range &end() const { return *this; }
         bool             operator!=(const coo_range &) const { return z.y != r.y; }

@@ -7,7 +7,7 @@ using namespace std;
 
 class Configuration : public Image {
 public:
-    explicit Configuration(const Hub &H, int n) : Image(H.title, {n, n}), expl({n, n}), table(2 * n * n + 1) {}
+    explicit Configuration(const Hub &H, size_t n) : Image(H.title, {n, n}), expl({n, n}), table(2 * n * n + 1) {}
 
     void compute_cpts(int r1) {
         int t = 0;
@@ -46,37 +46,37 @@ public:
 
     int nbarms(int r1, int r2, unsigned sides) {
         compute_cpts(r1);
-        int N = w();
+        auto N = size_t(w());
 
         for (auto &t : table) t = 0;
         for (int i = -r2; i < r2; i++) {
-            if ((sides & 1u) != 0) table[N * N + expl[{N / 2 + i, N / 2 - r2}]] = 1;
-            if ((sides & 2u) != 0) table[N * N + expl[{N / 2 + i, N / 2 + r2 - 1}]] = 1;
-            if ((sides & 4u) != 0) table[N * N + expl[{N / 2 - r2, N / 2 + i}]] = 1;
-            if ((sides & 8u) != 0) table[N * N + expl[{N / 2 + r2 - 1, N / 2 + i}]] = 1;
+            if ((sides & 1u) != 0) table[size_t(int64_t(N * N) + expl[{int(N) / 2 + i, int(N) / 2 - r2}])] = 1;
+            if ((sides & 2u) != 0) table[size_t(int64_t(N * N) + expl[{int(N) / 2 + i, int(N) / 2 + r2 - 1}])] = 1;
+            if ((sides & 4u) != 0) table[size_t(int64_t(N * N) + expl[{int(N) / 2 - r2, int(N) / 2 + i}])] = 1;
+            if ((sides & 8u) != 0) table[size_t(int64_t(N * N) + expl[{int(N) / 2 + r2 - 1, int(N) / 2 + i}])] = 1;
         }
 
-        int n = 0;
-        int k;
+        int     n = 0;
+        int64_t k;
         for (int i = -r1; i < r1; i++) {
-            k = expl[{N / 2 + i, N / 2 - r1}];
-            if (table[N * N + k] == 1) {
-                table[N * N + k] = 0;
+            k = expl[{int(N) / 2 + i, int(N) / 2 - r1}];
+            if (table[size_t(int64_t(N * N) + k)] == 1) {
+                table[size_t(int64_t(N * N) + k)] = 0;
                 n++;
             }
-            k = expl[{N / 2 + i, N / 2 + r1 - 1}];
-            if (table[N * N + k] == 1) {
-                table[N * N + k] = 0;
+            k = expl[{int(N) / 2 + i, int(N) / 2 + r1 - 1}];
+            if (table[size_t(int64_t(N * N) + k)] == 1) {
+                table[size_t(int64_t(N * N) + k)] = 0;
                 n++;
             }
-            k = expl[{N / 2 - r1, N / 2 + i}];
-            if (table[N * N + k] == 1) {
-                table[N * N + k] = 0;
+            k = expl[{int(N) / 2 - r1, int(N) / 2 + i}];
+            if (table[size_t(int64_t(N * N) + k)] == 1) {
+                table[size_t(int64_t(N * N) + k)] = 0;
                 n++;
             }
-            k = expl[{N / 2 + r1 - 1, N / 2 + i}];
-            if (table[N * N + k] == 1) {
-                table[N * N + k] = 0;
+            k = expl[{int(N) / 2 + r1 - 1, int(N) / 2 + i}];
+            if (table[size_t(int64_t(N * N) + k)] == 1) {
+                table[size_t(int64_t(N * N) + k)] = 0;
                 n++;
             }
         }
@@ -107,13 +107,13 @@ public:
         cerr << endl;
     }
 
-    Array<int>   expl;
-    vector<char> table;
+    Array<int64_t> expl;
+    vector<char>   table;
 };
 
 class Coupling : public Image {
 public:
-    Coupling(const Hub &H, int r) : Image(H.title, {2 * r, 2 * r}), r1(r / 4), r2(r / 2), r3(r), c1(H, 2 * r), c2(H, 2 * r) {
+    Coupling(const Hub &H, size_t r) : Image(H.title, {2 * r, 2 * r}), r1(r / 4), r2(r / 2), r3(r), c1(H, 2 * r), c2(H, 2 * r) {
         c1.pick(r1, r2, r3);
         for (int i = 0; i < w(); ++i)
             for (int j = 0; j < h(); ++j) c2[{i, j}] = c1[{i, j}];
@@ -147,8 +147,8 @@ public:
         while (true) {
             coo z{0, 0};
             while (true) {
-                z     = prng.uniform_coo(size);
-                int x = z.x, y = z.y;
+                z      = prng.uniform_coo(size);
+                auto x = z.x, y = z.y;
                 if ((x < w() / 2 - r1) || (x >= w() / 2 + r1) || (y < h() / 2 - r1) || (y >= h() / 2 + r1)) break;
             }
 

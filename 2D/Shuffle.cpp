@@ -27,10 +27,10 @@ auto threebytwo(double b) {
 
 struct Tiling {
     void delslide() {
-        int n = state.size.x;
+        auto n = state.size.x;
         state.resize({n + 2, n + 2}, 0);
         for (int y = state.size.y - 2; y > 0; --y)
-            for (int x = state.size.x - 2; x > 0; --x) swap(state[{x, y}], state[{(x - 1) + n * (y - 1), 0}]);
+            for (int x = state.size.x - 2; x > 0; --x) swap(state[{x, y}], state[{(x - 1) + int(n) * (y - 1), 0}]);
 
         for (int i = 0; i < n / 2; ++i) {
             for (int j = 0; j < n / 2; ++j) {
@@ -89,7 +89,7 @@ struct Tiling {
     }
 
     void probs() {
-        vector<Array<pair<double, double>>> A(n, coo{per, per});
+        vector<Array<pair<double, double>>> A(n, ucoo{per, per});
 
         for (auto z : coo_range(A[0].size))
             if (double w = TP.atp(z); w != 0)
@@ -117,7 +117,7 @@ struct Tiling {
             }
         }
 
-        pbs = vector<Array<double>>(n, coo{per / 2, per / 2});
+        pbs = vector<Array<double>>(n, ucoo{per / 2, per / 2});
 
         for (int k = 0; k < n; ++k) {
             const auto &a0nk1 = A[n - k - 1];
@@ -158,7 +158,7 @@ struct Tiling {
     }
 
     auto height() const {
-        int        m = state.size.x / 2;
+        auto       m = state.size.x / 2;
         Array<int> h({m + 1, m + 1}, 0);
         int        z = 0;
         for (int x = 0; x < m; ++x) {
@@ -213,7 +213,7 @@ struct Tiling {
     const Hub &           H;
     string                name;
     const Array<double>   TP;
-    int                   m, per, n;
+    size_t                m, per, n;
     double                pmin{1.0}, pmax{0.0}, a{0.0}, b{0.0};
     vector<Array<double>> pbs;
     Array<uint8_t>        state{{0, 0}};

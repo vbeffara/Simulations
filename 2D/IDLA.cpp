@@ -54,10 +54,10 @@ public:
 
 class Bouncy : public CoarseImage {
 public:
-    Bouncy(const Hub &H, int n, const string &j) : CoarseImage(H.title, {n, n}, unsigned(pow(n, .25))), jump(Bounces(H).at(j)) {
-        z0 = {n / 2, n / 2};
+    Bouncy(const Hub &H, size_t n, const string &j) : CoarseImage(H.title, {n, n}, size_t(pow(n, .25))), jump(Bounces(H).at(j)) {
+        z0 = {int(n) / 2, int(n) / 2};
         if (H['g']) {
-            tree = make_unique<Image>(H.title, coo{2 * n - 1, 2 * n - 1});
+            tree = make_unique<Image>(H.title, ucoo{2 * n - 1, 2 * n - 1});
             tree->put(z0 * 2, WHITE);
             tree->show();
         } else {

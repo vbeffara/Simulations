@@ -4,7 +4,8 @@
 
 namespace vb {
     Cube::Cube(const std::string &s, coo3 sz)
-        : Bitmap<Adder>(s, {sz.x + sz.z, sz.y + sz.z}), size(sz), data(size_t(size.x * size.y * size.z), 0) {
+        // TODO: ucoo3
+        : Bitmap<Adder>(s, {size_t(sz.x + sz.z), size_t(sz.y + sz.z)}), size(sz), data(size_t(size.x * size.y * size.z), 0) {
         for (int x = 0; x < size.z; ++x)
             for (int y = 0; y < size.z; ++y) Bitmap<Adder>::at({size.x + x, size.y + y}) = Adder(((x / 10 + y / 10) % 2) != 0 ? 200 : 150);
         for (int x = 0; x < size.x; ++x)

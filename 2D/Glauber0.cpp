@@ -6,12 +6,12 @@ using namespace vb;
 
 class Glauber : public Image {
 public:
-    Glauber(const Hub &H, int n_) : Image(H.title, {n_, n_}), n(n_){};
+    Glauber(const Hub &H, size_t n_) : Image(H.title, {n_, n_}), n(n_){};
     void fill(double p);
     void step(int i = -1, int j = -1);
 
 private:
-    int n;
+    size_t n;
 };
 
 void Glauber::fill(double p) {
@@ -28,10 +28,10 @@ void Glauber::step(int i, int j) {
     if (j == -1) j = prng.uniform_int(n);
 
     int c = 0;
-    if (at({(i + 1) % n, j}) == WHITE) ++c;
-    if (at({(i + n - 1) % n, j}) == WHITE) ++c;
-    if (at({i, (j + 1) % n}) == WHITE) ++c;
-    if (at({i, (j + n - 1) % n}) == WHITE) ++c;
+    if (at({(i + 1) % int(n), j}) == WHITE) ++c;
+    if (at({(i + int(n) - 1) % int(n), j}) == WHITE) ++c;
+    if (at({i, (j + 1) % int(n)}) == WHITE) ++c;
+    if (at({i, (j + int(n) - 1) % int(n)}) == WHITE) ++c;
 
     if ((c > 2) || ((c == 2) && prng.bernoulli(.5)))
         put({i, j}, WHITE);

@@ -109,7 +109,7 @@ using ptpair = std::pair<pt, pt>;
 
 class Lamination : public vb::Array<double> {
 public:
-    explicit Lamination(int n) : vb::Array<double>({n, n}, 0) {
+    explicit Lamination(size_t n) : vb::Array<double>({n, n}, 0) {
         for (auto z : vb::coo_range(size)) { put(z, tan(vb::prng.uniform_real(0, M_PI))); }
     }
 

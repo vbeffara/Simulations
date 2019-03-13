@@ -9,7 +9,7 @@ const Color IN{128, 128, 128};
 
 class Perco : public Image {
 public:
-    Perco(const Hub &H, int n, double p) : Image(H.title, {n, n}), mid({n / 2, n / 2}), p(p) {
+    Perco(const Hub &H, size_t n, double p) : Image(H.title, {n, n}), mid({int(n) / 2, int(n) / 2}), p(p) {
         for (int x = 0; x < n; ++x) {
             for (int y = 0; y < n; ++y) {
                 if ((x % 2 == 0) && (y % 2 == 0))

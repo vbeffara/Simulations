@@ -6,9 +6,9 @@ using namespace vb;
 
 int main(int argc, char **argv) {
     Hub    H("Gradient percolation", argc, argv, "n=500,p=0,q=1,W=0,H=0");
-    int    n  = H['n'];
-    int    w  = H['W'];
-    int    h  = H['H'];
+    size_t n  = H['n'];
+    size_t w  = H['W'];
+    size_t h  = H['H'];
     double p1 = H['p'];
     double p2 = H['q'];
 
@@ -33,10 +33,10 @@ int main(int argc, char **argv) {
         }
     }
 
-    for (int i = 0; i < w; ++i) img.put({i, h - 1}, Grey(200));
+    for (int i = 0; i < w; ++i) img.put({i, int(h) - 1}, Grey(200));
 
     img.show();
-    img.fill({0, h - 1}, Color(255, 0, 0));
+    img.fill({0, int(h) - 1}, Color(255, 0, 0));
     img.update();
     img.output(H.title);
     return 0;

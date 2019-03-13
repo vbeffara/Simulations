@@ -22,8 +22,8 @@ public:
 class QG : public Image {
 public:
     explicit QG(const Hub &H)
-        : Image(H.title, {1u << unsigned(H['n']), 1u << unsigned(H['n'])}), I({w(), h()}, Info({0, 0}, {0, 0}, 0, 0)), g(H['g']),
-          n(H['n']) {
+        : Image(H.title, {1u << unsigned(H['n']), 1u << unsigned(H['n'])}), I({size_t(w()), size_t(h())}, Info({0, 0}, {0, 0}, 0, 0)),
+          g(H['g']), n(H['n']) {
         map<string, function<void()>> fields;
         fields["boolean"]  = [&, this] { fill_boolean(H['z']); };
         fields["dyadic"]   = [&, this] { fill_dyadic(H['z']); };
@@ -78,7 +78,7 @@ public:
     void fill_free(int n0 = 0) {
         auto                    in = fftw_alloc_complex(size_t(size.x * size.y)), out = fftw_alloc_complex(size_t(size.x * size.y));
         fftw_plan               p = fftw_plan_dft_2d(int(size.x), int(size.y), in, out, FFTW_FORWARD, FFTW_ESTIMATE);
-        gsl::span<fftw_complex> in_{in, size.x * size.y}, out_{out, size.x * size.y};
+        gsl::span<fftw_complex> in_{in, int64_t(size.x * size.y)}, out_{out, int64_t(size.x * size.y)};
 
         vector<double> sinarrayi(size_t(size.x)), sinarrayj(size_t(size.y));
         for (unsigned i = 0; i < size.x; ++i) sinarrayi[i] = sin(M_PI * i / size.x);
@@ -108,13 +108,13 @@ public:
     }
 
     void fill_radial(const function<double(double)> &f, double l) {
-        auto d  = fftw_alloc_complex(size_t(size.x * size.y));
-        auto d_ = gsl::span<fftw_complex>{d, size.x * size.y};
+        auto d  = fftw_alloc_complex(size.x * size.y);
+        auto d_ = gsl::span<fftw_complex>{d, int64_t(size.x * size.y)};
         auto p1 = fftw_plan_dft_2d(int(size.x), int(size.y), d, d, FFTW_FORWARD, FFTW_ESTIMATE);
         auto p2 = fftw_plan_dft_2d(int(size.x), int(size.y), d, d, FFTW_BACKWARD, FFTW_ESTIMATE);
 
         for (const auto [i, j] : coo_range(size)) {
-            auto ii = min(i, size.x - i), jj = min(j, size.y - j);
+            auto ii = min(i, int(size.x) - i), jj = min(j, int(size.y) - j);
             d_[i + size.x * j][0] = d_[i + size.x * j][1] = f(sqrt(ii * ii + jj * jj) / l);
         }
 

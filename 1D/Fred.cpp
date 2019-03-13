@@ -16,16 +16,16 @@ double state::a, state::b;
 
 class Model : public std::vector<state> {
 public:
-    explicit Model(int n) : std::vector<state>(n, {0, 0}) {
+    explicit Model(size_t n) : std::vector<state>(n, {0, 0}) {
         for (auto &s : *this) s.x = vb::prng.uniform_real();
     }
 
-    void rotate(int k, double a) {
+    void rotate(size_t k, double a) {
         double c = cos(a), s = sin(a), &x = at(k).v, &y = at((k + 1) % size()).v;
         std::tie(x, y) = std::make_tuple(c * x - s * y, s * x + c * y);
     }
 
-    void step(int k) {
+    void step(size_t k) {
         rotate(k, at(k).x * 2 * M_PI);
         at(k).step();
     }
@@ -38,23 +38,23 @@ public:
 
 int main(int argc, char **argv) {
     vb::Hub H("Deterministic Fourier law", argc, argv, "a=2,b=.2394879347,n=500,m=1000,t=100");
-    int     nn = H['n'], nn2 = nn / 2, mm = H['m'], tt = H['t'];
+    size_t  nn = H['n'], nn2 = nn / 2, mm = H['m'], tt = H['t'];
     state::a = H['a'];
     state::b = H['b'];
     std::vector<double> profile(nn, 0), boltzmann(mm, 0), var(tt, 0);
 
     vb::ProgressBar PB(mm);
-    for (int i = 0; i < mm; ++i) {
+    for (size_t i = 0; i < mm; ++i) {
         Model M(nn);
         M[nn2].v = 1;
-        for (int t = 0; t < tt; ++t) {
+        for (size_t t = 0; t < tt; ++t) {
             PB.set(i);
             M.swipe();
             double v = 0;
-            for (int k = 0; k < nn; ++k) v += (k - nn2) * (k - nn2) * M[k].v * M[k].v;
+            for (size_t k = 0; k < nn; ++k) v += (k - nn2) * (k - nn2) * M[k].v * M[k].v;
             var[t] += v;
         }
-        for (int k = 0; k < nn; ++k) profile[k] += M[k].v * M[k].v;
+        for (size_t k = 0; k < nn; ++k) profile[k] += M[k].v * M[k].v;
         boltzmann[i] = M[nn / 2].v;
     }
 
@@ -67,7 +67,7 @@ int main(int argc, char **argv) {
         for (auto u : var) of << u << std::endl;
     }
     {
-        auto   nclass = int(sqrt(double(H['m'])));
+        auto   nclass = size_t(sqrt(double(H['m'])));
         double bmin = 0, bmax = 0;
         for (auto b : boltzmann) {
             bmin = std::min(bmin, b);
@@ -76,6 +76,6 @@ int main(int argc, char **argv) {
         std::vector<int> data(nclass);
         for (auto b : boltzmann) data[unsigned((nclass - .01) * (b - bmin) / (bmax - bmin))]++;
         std::ofstream of("out.boltzmann");
-        for (int i = 0; i < nclass; ++i) of << bmin + i * (bmax - bmin) / nclass << " " << data[i] << std::endl;
+        for (size_t i = 0; i < nclass; ++i) of << bmin + i * (bmax - bmin) / nclass << " " << data[i] << std::endl;
     }
 }

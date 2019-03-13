@@ -14,8 +14,8 @@ namespace vb {
 
     class CoarseImage : public Bitmap<CoarseCell> {
     public:
-        CoarseImage(const std::string &s, coo size, size_t l)
-            : Bitmap<CoarseCell>(s, {1 + (size.x - 1) / int(l), 1 + (size.y - 1) / int(l)}, CoarseCell(l)), true_width(size_t(size.x)),
+        CoarseImage(const std::string &s, ucoo size, size_t l)
+            : Bitmap<CoarseCell>(s, {1 + (size.x - 1) / l, 1 + (size.y - 1) / l}, CoarseCell(l)), true_width(size_t(size.x)),
               true_height(size_t(size.y)), L(l), LL(l * l) {}
 
         bool contains(coo z) const {

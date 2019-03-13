@@ -86,7 +86,7 @@ vector<bool> init_ok_connect6() {
 
 class Glass : public vb::Image {
 public:
-    Glass(const vb::Hub &H, int n) : vb::Image(H.title, {n, n}) {
+    Glass(const vb::Hub &H, size_t n) : vb::Image(H.title, {n, n}) {
         std::map<std::string, std::function<vector<bool>()>> init;
         init.emplace("none", init_ok_none);
         init.emplace("glass", init_ok_glass);
@@ -95,7 +95,7 @@ public:
         ok = init[H['c']]();
 
         fill({0, 0}, BLACK);
-        for (int i = 0; i < n; i++) put({i, n / 2}, WHITE);
+        for (int i = 0; i < n; i++) put({i, int(n) / 2}, WHITE);
         show();
     };
 

@@ -7,7 +7,7 @@ using namespace std;
 
 int main(int argc, char **argv) {
     Hub          H("Randomized Polynuclear Growth", argc, argv, "n=500,e=0.01,f,c=0");
-    const int    n = H['n'];
+    const size_t n = H['n'];
     const double e = H['e'];
     const bool   f = H['f'];
     const double c = H['c'];
@@ -45,8 +45,8 @@ int main(int argc, char **argv) {
             img.put({0, height[0] + 1}, false);
 
             height[n - 1] = height[n - 2];
-            img.put({n - 1, height[n - 1]}, true);
-            img.put({n - 1, height[n - 1] + 1}, false);
+            img.put({int(n) - 1, height[n - 1]}, true);
+            img.put({int(n) - 1, height[n - 1] + 1}, false);
         }
     }
 }
