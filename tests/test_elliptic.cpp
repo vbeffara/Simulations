@@ -9,17 +9,14 @@ using namespace vb;
 using namespace std;
 
 int main(int argc, char **argv) {
-    Hub H("Hypermap of genus 1", argc, argv, "m=228,v,w,q,n=0,g=lat_csquare,p,f=0,s=0,a,b,r=0");
-
+    Hub  H("Hypermap of genus 1", argc, argv, "m=228,v,w,q,n=0,g=lat_csquare,p,f=0,s=0,a,b,r=0");
     auto M = HLib().at(H['g']);
-    int  n = H['n'];
-    if (n != 0) M = H_genus1(n);
-    int r = H['r'];
-    if (r != 0) M = H_artem(r);
-    int f = H['f'];
-    if (f != 0) {
+
+    if (unsigned n = H['n']; n != 0) M = H_genus1(n);
+    if (unsigned r = H['r']; r != 0) M = H_artem(r);
+    if (unsigned f = H['f']; f != 0) {
         if (unsigned s = (H['s']); s != 0) prng.seed(s);
-        for (int i = 0; i < f; ++i) M.flip(prng.uniform_int(M.sigma.size()));
+        for (unsigned i = 0; i < f; ++i) M.flip(prng.uniform_int(M.sigma.size()));
     }
 
     spdlog::info("{}", M);

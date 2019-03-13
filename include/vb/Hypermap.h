@@ -31,12 +31,12 @@ namespace vb {
 
         bool operator==(const Hypermap &o) const { return (sigma == o.sigma) && (alpha == o.alpha); }
 
-        bool validate() const;
-        bool is_graph() const;
-        bool is_triangulation() const;
-        bool is_simple(size_t d = 2) const; // ! parallel but non-consecutive edges (like an eye) are not detected
-        int  euler() const;
-        int  genus() const;
+        bool     validate() const;
+        bool     is_graph() const;
+        bool     is_triangulation() const;
+        bool     is_simple(size_t d = 2) const; // ! parallel but non-consecutive edges (like an eye) are not detected
+        int      euler() const;
+        unsigned genus() const;
 
         void flip(size_t e);
 

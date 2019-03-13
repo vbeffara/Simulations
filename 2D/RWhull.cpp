@@ -6,7 +6,7 @@
 using namespace std;
 using namespace vb;
 
-vector<int> bridge(int n, bool p = false) {
+vector<int> bridge(size_t n, bool p = false) {
     vector<int> v(n, -1);
     for (int i = 0; i < n / 2; ++i) v[i] = 1;
     for (int i = n - 1; i >= 0; --i) swap(v[i], v[prng.uniform_int(i + 1)]);
@@ -40,7 +40,7 @@ namespace vb {
 
 class Snake : public Bitmap<int> {
 public:
-    Snake(const Hub &H, int n_) : Bitmap<int>(H.title, {6 * n_, 6 * n_}), n(n_) {
+    Snake(const Hub &H, size_t n_) : Bitmap<int>(H.title, {6 * int(n_), 6 * int(n_)}), n(n_) {
         p.push_back({3 * n, 3 * n});
         put(p.back(), 1);
         show();
@@ -56,23 +56,23 @@ public:
 };
 
 int main(int argc, char **argv) {
-    Hub     H("Random walk hull", argc, argv, "n=50,i,v");
-    int64_t n = H['n'], l = n * n * n * n;
-    bool    inf = H['i'], vid = H['v'];
+    Hub    H("Random walk hull", argc, argv, "n=50,i,v");
+    size_t n = H['n'], l = n * n * n * n;
+    bool   inf = H['i'], vid = H['v'];
 
     Snake S(H, n);
 
     if (inf) {
         if (vid) S.snapshot_setup("RWSH", 1.0);
-        while (norm(S.p.back() - coo{3 * n, 3 * n}) < (3 * n - 1) * (3 * n - 1)) {
+        while (size_t(norm(S.p.back() - coo{3 * int(n), 3 * int(n)})) < (3 * n - 1) * (3 * n - 1)) {
             if ((S.p.size() == 1) || (prng.bernoulli(.5)))
                 S.grow(prng.uniform_int(4));
             else
                 S.shrink();
         }
     } else {
-        vector<int> b = bridge(l, true);
-        for (int i = 0; i < l; ++i) {
+        auto b = bridge(l, true);
+        for (size_t i = 0; i < l; ++i) {
             if (b[i] == 1)
                 S.grow(prng.uniform_int(4));
             else

@@ -31,7 +31,7 @@ namespace vb {
         return int(sigma.cycles().size()) + int(alpha.cycles().size()) - int(sigma.size()) + int(phi.cycles().size());
     }
 
-    int Hypermap::genus() const { return 1 - euler() / 2; }
+    unsigned Hypermap::genus() const { return unsigned(1 - euler() / 2); }
 
     bool Hypermap::is_graph() const {
         for (const auto &v : alpha.cycles())

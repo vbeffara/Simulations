@@ -24,9 +24,9 @@ public:
     };
 
     void up(coo z) {
-        double U  = prng.uniform_real();
-        int    n1 = 0, n2 = 0;
-        for (int i = 0; i < 4; ++i) {
+        double   U  = prng.uniform_real();
+        unsigned n1 = 0, n2 = 0;
+        for (unsigned i = 0; i < 4; ++i) {
             if (atp(z + dz[i]) >= 1) ++n1;
             if (atp(z + dz[i]) >= 2) ++n2;
         }
@@ -55,7 +55,7 @@ public:
             cerr << n << endl;
             for (int i = d; i < w() - 2 * d; ++i)
                 for (int j = d; j < h() - 2 * d; ++j) put({i, j}, 1);
-            for (unsigned t = states.size(); t-- > 0;) {
+            for (auto t = states.size(); t-- > 0;) {
                 prng.state(states[t]);
                 for (unsigned i = 0; i < (1u << t); ++i) up();
                 if (t == states.size() - 1) states.push_back(prng.state());

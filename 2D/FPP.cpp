@@ -9,7 +9,7 @@ double cost() { return prng.exponential(); }
 
 class FPP : public CoarseImage {
 public:
-    FPP(const Hub &H, int n) : CoarseImage(H.title, {n, n}, int(pow(n, .33))), area(0) {
+    FPP(const Hub &H, int n) : CoarseImage(H.title, {n, n}, size_t(pow(n, .33))), area(0) {
         invasion = H['i'];
         twostep  = H['2'];
         trace    = H['t'];
@@ -48,7 +48,7 @@ public:
                         if (at(zz)) spread(curtime, zz);
                     }
 
-                if ((z.x == 1) || (z.y == 1) || (z.x == true_width - 2) || (z.y == true_height - 2)) break;
+                if ((z.x == 1) || (z.y == 1) || (z.x == int64_t(true_width) - 2) || (z.y == int64_t(true_height) - 2)) break;
             }
         }
     }

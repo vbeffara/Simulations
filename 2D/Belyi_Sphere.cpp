@@ -43,9 +43,7 @@ Stream<Hypermap> triangulations(unsigned n) {
 
 int main(int argc, char **argv) {
     Hub      H("Spheroidal enumeration", argc, argv, "s=3,m=228,d=2,g=0,v,o,b,q");
-    int      s = H['s'], g = 0, a = 6 * (s - 2);
-    unsigned d = H['d'];
-    assert(a > 0);
+    unsigned s = H['s'], g = 0, a = 6 * (s - 2), d = H['d'];
 
     int nb = 0;
     for (Hypermap &M : triangulations(a)) {
