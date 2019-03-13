@@ -54,16 +54,16 @@ public:
 };
 
 int main(int argc, char **argv) {
-    vb::Hub H("Random triangulation", argc, argv, "n=10,t=-1");
-    int     t = H['t'];
-    if (t == -1) t = 50 * int(H['n']) * int(H['n']);
+    vb::Hub H("Random triangulation", argc, argv, "n=10,t=0");
+    size_t  n = H['n'], t = H['t'];
+    if (t == 0) t = 50 * n * n;
 
     Triangulation T(H.title, H['n']);
     T.inscribe(T.face(Edge(0, 1)));
 
     {
         vb::ProgressBar P(t);
-        for (int i = 0; i < t; ++i) {
+        for (size_t i = 0; i < t; ++i) {
             T.flip(T.random_edge());
             P.set(i);
         }

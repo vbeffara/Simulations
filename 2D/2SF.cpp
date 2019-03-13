@@ -51,8 +51,8 @@ public:
     void lerw(coo z0, bool killed = false) {
         coo z = z0;
         while (at(z).t != SITE) {
-            int d   = prng.discrete(ps);
-            at(z).d = d;
+            auto d  = prng.discrete(ps);
+            at(z).d = int(d);
             step();
             if (contains(z + dz[d] * 2)) {
                 z += dz[d] * 2;
@@ -101,8 +101,8 @@ public:
         int nw = 0;
         coo z  = start;
         while (true) {
-            int d   = prng.discrete(cps);
-            at(z).d = d;
+            auto d  = prng.discrete(cps);
+            at(z).d = int(d);
             z += dz[d] * 2;
             step();
             if (z == root) break;

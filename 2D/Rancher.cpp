@@ -85,7 +85,8 @@ public:
     void dessine_enveloppe() {
         std::vector<cpx> V;
 
-        P = vb::Pen(vb::Color(128 + vb::prng.uniform_int(128), 128 + vb::prng.uniform_int(128), 128 + vb::prng.uniform_int(128)));
+        P = vb::Pen(vb::Color(uint8_t(128 + vb::prng.uniform_int(128)), uint8_t(128 + vb::prng.uniform_int(128)),
+                              uint8_t(128 + vb::prng.uniform_int(128))));
 
         for (auto i = env.begin(); i != env.end(); ++i) {
             if (i == env.begin()) {
@@ -116,12 +117,10 @@ public:
 
     void main() {
         double pente = H['p'];
-        int    nb    = H['n'];
-        int    inter = H['i'];
-        bool   plot  = H['o'];
-        bool   renew = H['r'];
+        size_t nb = H['n'], inter = H['i'];
+        bool   plot = H['o'], renew = H['r'];
 
-        int i = 0;
+        size_t i = 0;
 
         W.watch(i, "Path length");
         W.lambda<int>([this] { return env.size(); }, "Envelope size");
@@ -139,8 +138,8 @@ public:
         cur = env.begin();
         ++cur;
 
-        int              last_renewal = 3;
-        std::vector<int> renewals;
+        size_t              last_renewal = 3;
+        std::vector<size_t> renewals;
 
         for (i = 3; i < nb; i++) {
             point p = rand_point();
@@ -150,7 +149,7 @@ public:
             W.step();
 
             if (renew && (env.size() == 3)) {
-                unsigned r = i - last_renewal;
+                auto r = i - last_renewal;
                 if (r + 1 > renewals.size()) renewals.resize(r + 1);
                 renewals[r]++;
                 last_renewal = i;

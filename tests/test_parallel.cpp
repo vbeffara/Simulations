@@ -10,11 +10,11 @@
 using namespace std;
 using namespace vb;
 
-constexpr int fib(int n) { return n < 2 ? n : fib(n - 1) + fib(n - 2); }
+constexpr size_t fib(size_t n) { return n < 2 ? n : fib(n - 1) + fib(n - 2); }
 
-int tbb_fib(int n) {
+size_t tbb_fib(size_t n) {
     if (n < 25) return fib(n);
-    int             x, y;
+    size_t          x, y;
     tbb::task_group g;
     g.run([&] { x = tbb_fib(n - 1); });
     g.run([&] { y = tbb_fib(n - 2); });
@@ -28,15 +28,15 @@ double cost(double x) {
 }
 
 int main(int argc, char **argv) {
-    Hub H("Test of various parallel frameworks", argc, argv, "n=41,l=4000000");
-    int n = H['n'], l = H['l'];
+    Hub    H("Test of various parallel frameworks", argc, argv, "n=41,l=4000000");
+    size_t n = H['n'], l = H['l'];
 
     timing(H, "Fibonacci  | Single (recursive)", [=] { return fib(n); });
 
     timing(H, "Fibonacci  | Async (recursive)", [=] {
         class fib_async {
         public:
-            int operator()(int n) {
+            size_t operator()(size_t n) {
                 if (n < 25) return fib(n);
                 auto res1 = async([=]() { return (*this)(n - 1); });
                 auto res2 = async([=]() { return (*this)(n - 2); });
@@ -50,7 +50,7 @@ int main(int argc, char **argv) {
 
     timing(H, "Map+reduce | Single (fill then sum)", [=] {
         vector<double> X(l);
-        for (int i = 0; i < l; ++i) X[i] = cost(i);
+        for (size_t i = 0; i < l; ++i) X[i] = cost(i);
         double s = 0;
         for (auto x : X) s += x;
         return s - int64_t(s);
@@ -58,7 +58,7 @@ int main(int argc, char **argv) {
 
     timing(H, "Map+reduce | Single (direct sum)", [=] {
         double s = 0;
-        for (int i = 0; i < l; ++i) s += cost(i);
+        for (size_t i = 0; i < l; ++i) s += cost(i);
         return s - int64_t(s);
     });
 
@@ -74,13 +74,13 @@ int main(int argc, char **argv) {
         class mr {
         public:
             vector<double> X;
-            explicit mr(int l) : X(l) { run(0, l); }
-            void run(int l1, int l2) {
+            explicit mr(size_t l) : X(l) { run(0, l); }
+            void run(size_t l1, size_t l2) {
                 if (l2 - l1 <= 1000) {
-                    for (int i = l1; i < l2; ++i) X[i] = cost(i);
+                    for (auto i = l1; i < l2; ++i) X[i] = cost(i);
                     return;
                 }
-                int  l3  = (l1 + l2) / 2;
+                auto l3  = (l1 + l2) / 2;
                 auto one = async([=] { run(l1, l3); }), two = async([=] { run(l3, l2); });
                 one.get();
                 two.get();
@@ -97,17 +97,17 @@ int main(int argc, char **argv) {
     timing(H, "Map+reduce | Async (std::async, split direct sum)", [=] {
         class mr {
         public:
-            double run(int l1, int l2) {
+            double run(size_t l1, size_t l2) {
                 if (l2 - l1 <= 1000) {
                     double s = 0;
-                    for (int i = l1; i < l2; ++i) s += cost(i);
+                    for (auto i = l1; i < l2; ++i) s += cost(i);
                     return s;
                 }
-                int  l3  = (l1 + l2) / 2;
+                auto l3  = (l1 + l2) / 2;
                 auto one = async([=] { return run(l1, l3); }), two = async([=] { return run(l3, l2); });
                 return one.get() + two.get();
             }
-            double sum(int l) {
+            double sum(size_t l) {
                 double s = run(0, l);
                 return s - int64_t(s);
             }

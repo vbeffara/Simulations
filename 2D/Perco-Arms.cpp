@@ -17,7 +17,7 @@ using Graph           = adjacency_list<
     listS, vecS, directedS, no_property,
     property<edge_capacity_t, int64_t, property<edge_residual_capacity_t, int64_t, property<edge_reverse_t, edge_descriptor>>>>;
 
-void add_one(Graph *gg, int i, int j) {
+void add_one(Graph *gg, int64_t i, int64_t j) {
     Graph &         g{*gg};
     edge_descriptor e1, e2;
     bool            t;
@@ -30,15 +30,14 @@ void add_one(Graph *gg, int i, int j) {
 }
 
 int main(int argc, char **argv) {
-    Hub     H("Percolation arm exponents", argc, argv, "n=100,t=1,p=.5");
-    int64_t n      = H['n'];
-    int     n_iter = H['t'];
-    double  p      = H['p'];
+    Hub    H("Percolation arm exponents", argc, argv, "n=100,t=1,p=.5");
+    size_t n = H['n'], n_iter = H['t'];
+    double p = H['p'];
 
     Graph g(n * n + 1);
     for (int x = 0; x < n; ++x) {
         for (int y = 0; y < n; ++y) {
-            int i = x + n * y;
+            auto i = x + n * y;
             if (x < n - 1) add_one(&g, i, i + 1);
             if (y < n - 1) add_one(&g, i, i + n);
         }
@@ -80,21 +79,21 @@ int main(int argc, char **argv) {
     vector<int> stats2(5, 0);
     {
         ProgressBar PB(n_iter);
-        for (int iter = 1; iter <= n_iter; ++iter) {
-            for (int i = 0; i < 2 * n * (n + 1); ++i) {
+        for (size_t iter = 1; iter <= n_iter; ++iter) {
+            for (size_t i = 0; i < 2 * n * (n + 1); ++i) {
                 auto o            = prng.bernoulli(p) ? 1 : 0;
                 cap[all_edges[i]] = o;
                 cap[rev_edges[i]] = o;
             }
 
-            int64_t flow = edmonds_karp_max_flow(g, (n / 2) * (n + 1), n * n);
-            for (int i = 0; i <= flow; ++i) ++stats2[i];
+            auto flow = edmonds_karp_max_flow(g, (n / 2) * (n + 1), n * n);
+            for (unsigned i = 0; i <= flow; ++i) ++stats2[i];
 
             PB.set(iter);
         }
     }
 
     vector<string> out2;
-    for (int i = 1; i <= 4; ++i) out2.push_back(fmt::format("{} {}", stats2[i], double(stats2[i]) / n_iter));
+    for (unsigned i = 1; i <= 4; ++i) out2.push_back(fmt::format("{} {}", stats2[i], double(stats2[i]) / n_iter));
     spdlog::info("{} | {} | {}", n, n_iter, fmt::join(out2, " | "));
 }

@@ -2,10 +2,9 @@
 #include <vb/ProgressBar.h>
 
 namespace vb {
-    ProgressBar::ProgressBar(int length, double pow) : Auto(1), final(length), power(pow) {}
+    ProgressBar::ProgressBar(size_t length, double pow) : Auto(1), final(length), power(pow) {}
 
-    void ProgressBar::set(int64_t pos) {
-        if (pos < 0) pos = 0;
+    void ProgressBar::set(size_t pos) {
         if (pos > final) pos = final;
         current = pos;
         step();
@@ -16,7 +15,7 @@ namespace vb {
         std::string                           bar, days, rest;
 
         auto n = current * 400 / final;
-        for (int i = 0; i < n / 8; ++i) bar += symbols[8];
+        for (size_t i = 0; i < n / 8; ++i) bar += symbols[8];
         if (n < 400) bar += symbols[n % 8] + std::string(size_t(49 - n / 8), ' ');
 
         if (current > 0) {

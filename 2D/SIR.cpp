@@ -20,9 +20,9 @@ public:
     }
 
     void go(const Hub &H) {
-        int i  = prng.uniform_int(fringe.size());
-        coo z  = fringe[i];
-        coo nz = z + dz[prng.uniform_int(H['d'] ? 2 : 4)];
+        auto i  = prng.uniform_int(fringe.size());
+        coo  z  = fringe[i];
+        coo  nz = z + dz[prng.uniform_int(H['d'] ? 2 : 4)];
         if (!contains(nz)) return;
         if ((at(nz) == none) && ((l > 1) || prng.bernoulli(l))) {
             put(nz, prey);

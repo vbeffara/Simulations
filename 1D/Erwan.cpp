@@ -12,10 +12,10 @@ using namespace libcmaes;
 
 double lambda(const Matrix2d &A) { return abs(A(0, 0) + A(1, 1)); }
 
-vector<double> random_p(int k) {
+vector<double> random_p(size_t k) {
     vector<double> out;
     double         s = 0.0;
-    for (int i = 0; i < k; ++i) {
+    for (size_t i = 0; i < k; ++i) {
         double ss = prng.uniform_real();
         s += ss;
         out.push_back(ss);
@@ -24,7 +24,7 @@ vector<double> random_p(int k) {
     return out;
 }
 
-vector<vector<double>> random_markov(int k) {
+vector<vector<double>> random_markov(size_t k) {
     vector<vector<double>> p(k);
     for (auto &x : p) x = random_p(k);
     return p;
@@ -54,12 +54,12 @@ public:
         Gamma.push_back(A);
     }
 
-    double markov(int n, vector<vector<double>> p) {
+    double markov(size_t n, vector<vector<double>> p) {
         Matrix2d A, B;
         A << 1, 0, 0, 1;
-        B     = A;
-        int d = 0;
-        for (int i = 0; i < n; ++i) {
+        B        = A;
+        size_t d = 0;
+        for (size_t i = 0; i < n; ++i) {
             d = prng.discrete(p[d]);
             A *= rho[d];
             B *= Gamma[d];
@@ -67,13 +67,13 @@ public:
         return log(lambda(A)) / log(lambda(B));
     }
 
-    double n2(int n) {
+    double n2(size_t n) {
         return markov(n, {{0.25, 0.25, 0.25, 0.25}, {0.25, 0.25, 0.25, 0.25}, {0.25, 0.25, 0.25, 0.25}, {0.25, 0.25, 0.25, 0.25}});
     }
 
-    double avg(int n, int t, const vector<vector<double>> &p) {
+    double avg(size_t n, size_t t, const vector<vector<double>> &p) {
         double s = 0.0;
-        for (int i = 0; i < t; ++i) s += markov(n, p);
+        for (size_t i = 0; i < t; ++i) s += markov(n, p);
         return s / t;
     }
 
@@ -94,7 +94,7 @@ public:
         return p;
     }
 
-    vector<vector<double>> explore_cmaes(int n, int t) {
+    vector<vector<double>> explore_cmaes(size_t n, size_t t) {
         FitFunc         f = [this, n, t](const double *x, const int /* N */) { return abs(avg(n, t, x_to_p({x, 16})) - 2.0 / 3.0); };
         vector<double>  x0(16, .25);
         double          sigma = 0.1;
@@ -103,12 +103,12 @@ public:
         return x_to_p({cmasols.get_best_seen_candidate().get_x_ptr(), 16});
     }
 
-    void run(const Hub &H, int n, int t) {
+    void run(const Hub &H, size_t n, size_t t) {
         auto p = explore_cmaes(n, t / 1000);
 
-        for (int i = 0; i < 4; ++i) { spdlog::info("Transition matrix: {} {} {} {}", p[i][0], p[i][1], p[i][2], p[i][3]); }
+        for (size_t i = 0; i < 4; ++i) { spdlog::info("Transition matrix: {} {} {} {}", p[i][0], p[i][1], p[i][2], p[i][3]); }
 
-        vector<double> n2s(int{t});
+        vector<double> n2s(t);
         for (auto &x : n2s) x = markov(n, p);
         sort(begin(n2s), end(n2s));
         for (auto v : n2s) cout << v << endl;

@@ -5,15 +5,15 @@
 namespace vb {
     class ProgressBar : public Auto {
     public:
-        ProgressBar(int length = 100, double pow = 1.0);
+        ProgressBar(size_t length = 100, double pow = 1.0);
 
-        void set(int64_t pos);
+        void set(size_t pos);
 
         void update() override;
 
     private:
-        int64_t final, current = 0;
-        double  power;
+        size_t final, current = 0;
+        double power;
     };
 
 #ifdef UNIT_TESTS
@@ -23,7 +23,7 @@ namespace vb {
             ProgressBar P(1e7);
             CHECK(Auto::tasks.size() == l + 1);
             CHECK(Auto::tasks.back().active);
-            for (int i = 0; i < 1e7; ++i) P.set(i);
+            for (size_t i = 0; i < 1e7; ++i) P.set(i);
         }
         CHECK(!Auto::tasks.back().active);
     }

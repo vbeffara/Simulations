@@ -10,7 +10,7 @@ int main(int argc, char **argv) {
     Hub H("Hypermap of genus 0", argc, argv, "m=228,v,q,g=m_cube,p,a,f=0,s=0,u=0,d=1,D=0,o");
 
     auto M = HLib().at(H['g']);
-    if (int u = H['u']; u != 0) M = H_genus0(u);
+    if (size_t u = H['u']; u != 0) M = H_genus0(u);
     if (int f = H['f']; f != 0) {
         if (unsigned s = (H['s']); s != 0) prng.seed(s);
         unsigned d = H['d'], D = H['D'];
