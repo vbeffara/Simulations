@@ -32,14 +32,14 @@ public:
 
     explicit Tiling(const Hub &H) : Bitmap<Half>(H.title, {H['n'], H['n']}), r(H['r']), rr{r, r * r, 1, r} {
         for (int x = 0; x < w(); ++x)
-            for (int y = 0; y < h(); ++y) { at({x, y}) = Half(2 * (x % 2), 1 + ((x + y) % 2) + 2 * (x % 2)); }
+            for (int y = 0; y < h(); ++y) { at(coo{x, y}) = Half(2 * (x % 2), 1 + ((x + y) % 2) + 2 * (x % 2)); }
         if (H['o'] == "aztec") {
             for (int i = 0; i < h() / 2; ++i) {
                 for (int j = 0; j < w() / 2 - i - 1; ++j) {
-                    at({i, j}).type                     = 0;
-                    at({w() - 1 - i, j}).type           = 0;
-                    at({i, h() - 1 - j}).type           = 0;
-                    at({w() - 1 - i, h() - 1 - j}).type = 0;
+                    at(coo{i, j}).type                     = 0;
+                    at(coo{w() - 1 - i, j}).type           = 0;
+                    at(coo{i, h() - 1 - j}).type           = 0;
+                    at(coo{w() - 1 - i, h() - 1 - j}).type = 0;
                 }
                 for (int j = 0; j < w(); ++j) {
                     putd({i, j}, 1 + 2 * ((i + j + h() / 2 + 1) % 2));
@@ -89,9 +89,9 @@ public:
                 for (int y = 0; y < h(); ++y) putd({x, y}, 0);
             int b = H['b'];
             if (b > 0) {
-                for (int x = w() / 2 - b; x < w() / 2 + b; ++x) putd({x, h() / 2}, (2 + at({x, h() / 2}).d) % 4);
-                at({w() / 2 - b, h() / 2}).type = 0;
-                at({w() / 2 + b, h() / 2}).type = 0;
+                for (int x = w() / 2 - b; x < w() / 2 + b; ++x) putd(coo{x, h() / 2}, (2 + at(coo{x, h() / 2}).d) % 4);
+                at(coo{w() / 2 - b, h() / 2}).type = 0;
+                at(coo{w() / 2 + b, h() / 2}).type = 0;
             }
         }
     }

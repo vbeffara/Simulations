@@ -22,9 +22,9 @@ int main(int argc, char **argv) {
             for (int y = 1; y < n - 1; y++) {
                 if ((x + y + i) % 3 == 0) {
                     bool nb = false;
-                    nb |= (img.at({x - 1, y - 1}) == WHITE);
-                    nb |= (img.at({x, y + 1}) == WHITE);
-                    nb |= (img.at({x + 1, y}) == WHITE);
+                    nb |= (img.at(coo{x - 1, y - 1}) == WHITE);
+                    nb |= (img.at(coo{x, y + 1}) == WHITE);
+                    nb |= (img.at(coo{x + 1, y}) == WHITE);
                     if (nb && prng.bernoulli(p)) {
                         img.put({x, y}, WHITE);
                         total++;

@@ -8,8 +8,8 @@ namespace vb {
         Array(ucoo sz, T d) : size(sz), data((unsigned long)(sz.x * sz.y), d) {}
         Array(ucoo sz) : size(sz), data((unsigned long)(sz.x * sz.y)) {}
 
-        explicit Array(const std::vector<std::vector<T>> &l) : size({l.size(), l[0].size()}), data(size.x * size.y) {
-            for (const auto &z : coo_range(size)) put(z, l[z.x][z.y]);
+        explicit Array(const std::vector<std::vector<T>> &l) : size(ucoo{l.size(), l[0].size()}), data(size.x * size.y) {
+            for (const auto &z : coo_range(size)) put(z, l[size_t(z.x)][size_t(z.y)]);
         }
 
         void resize(ucoo sz) {
@@ -21,24 +21,24 @@ namespace vb {
             data.resize(size.x * size.y, t);
         }
 
-        size_t index(const coo &z) const { return size_t(z.x) + size.x * size_t(z.y); }
+        size_t index(const ucoo &z) const { return z.x + size.x * z.y; }
 
-        T &      at(const coo &z) { return data[index(z)]; }
-        T const &at(const coo &z) const { return data[index(z)]; }
+        T &      at(const ucoo &z) { return data[index(z)]; }
+        T const &at(const ucoo &z) const { return data[index(z)]; }
 
-        T &      operator[](const coo &z) { return at(z); }
-        T const &operator[](const coo &z) const { return at(z); }
+        T &      operator[](const ucoo &z) { return at(z); }
+        T const &operator[](const ucoo &z) const { return at(z); }
 
         T &atp(const coo &z) {
-            int64_t x = pmod(z.x, int64_t(size.x)), y = pmod(z.y, int64_t(size.y));
+            auto x = pmod(z.x, size.x), y = pmod(z.y, size.y);
             return at({x, y});
         }
         T const &atp(const coo &z) const {
-            int64_t x = pmod(z.x, int64_t(size.x)), y = pmod(z.y, int64_t(size.y));
+            auto x = pmod(z.x, size.x), y = pmod(z.y, size.y);
             return at({x, y});
         }
 
-        void put(const coo &z, T const &c) { at(z) = c; }
+        void put(const ucoo &z, T const &c) { at(z) = c; }
         void putp(const coo &z, T const &c) { atp(z) = c; }
 
         bool contains(const coo &z, int64_t b = 0) const {

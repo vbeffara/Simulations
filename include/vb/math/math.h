@@ -17,16 +17,17 @@ namespace vb {
     template <typename T> T sign(T x) { return (T(0) < x) - (x < T(0)); }
     template <typename T> T gcd(T a, T b) {
         while (b) {
-            int c = a % b;
-            a     = b;
-            b     = c;
+            auto c = a % b;
+            a      = b;
+            b      = c;
         }
         return a;
     }
     template <typename T> T lcm(T a, T b) { return a * b / gcd(a, b); }
-    template <typename T> T pmod(T k, T n) {
-        T tmp(k % n);
-        return tmp < T(0) ? tmp + n : tmp;
+
+    template <typename T, typename U> U pmod(T k, U n) {
+        T tmp(k % T(n));
+        return tmp < T(0) ? U(tmp) + n : U(tmp);
     }
     template <typename T> T fact(T n) {
         T out(1);

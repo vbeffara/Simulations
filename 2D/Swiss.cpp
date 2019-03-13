@@ -30,21 +30,21 @@ public:
             for (int y = 0; y < h(); ++y) {
                 if (y > x) {
                     if (x + y < mid)
-                        at({x, y}) = EAST;
+                        at(vb::coo{x, y}) = EAST;
                     else
-                        at({x, y}) = SOUTH;
+                        at(vb::coo{x, y}) = SOUTH;
                 } else {
                     if (x + y < mid)
-                        at({x, y}) = NORTH;
+                        at(vb::coo{x, y}) = NORTH;
                     else
-                        at({x, y}) = WEST;
+                        at(vb::coo{x, y}) = WEST;
                 }
-                if (vb::prng.bernoulli(p)) at({x, y}) = vb::prng.uniform_int(4);
+                if (vb::prng.bernoulli(p)) at(vb::coo{x, y}) = vb::prng.uniform_int(4);
             }
         }
 
         for (int x = c; x < w() - c; ++x)
-            for (int y = c; y < h() - c; ++y) at({x, y}) = vb::prng.uniform_int(4);
+            for (int y = c; y < h() - c; ++y) at(vb::coo{x, y}) = vb::prng.uniform_int(4);
     }
 
     void run() {

@@ -46,7 +46,7 @@ public:
         }
         for (int i = 0; i < w(); ++i)
             for (int j = 0; j < h(); ++j) {
-                Color c = to_Color(at({i, j}));
+                Color c = to_Color(at(coo{i, j}));
                 if (c == to_Color(0)) continue;
                 vector<cpx> p;
                 p.reserve(pattern.size());

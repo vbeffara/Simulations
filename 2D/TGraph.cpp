@@ -41,9 +41,9 @@ public:
         for (int i = 0; i < size.x; ++i) {
             for (int j = 0; j < size.y; ++j) {
                 if (j > 0)
-                    at({i, j}).z = at({i, j - 1}).z + c * phiwb(i + 1, j - 2, i, j - 1);
+                    at(coo{i, j}).z = at(coo{i, j - 1}).z + c * phiwb(i + 1, j - 2, i, j - 1);
                 else if (i > 0)
-                    at({i, j}).z = at({i - 1, j}).z - a * phiwb(i, j - 1, i, j - 1);
+                    at(coo{i, j}).z = at(coo{i - 1, j}).z - a * phiwb(i, j - 1, i, j - 1);
             }
         }
     }
@@ -52,9 +52,9 @@ public:
         contents.clear();
         for (int i = 0; i < size.x; ++i) {
             for (int j = 0; j < size.y; ++j) {
-                if (i < size.x - 1) add(make_unique<Segment>(at({i, j}).z, at({i + 1, j}).z));
-                if (j < size.y - 1) add(make_unique<Segment>(at({i, j}).z, at({i, j + 1}).z));
-                if ((i > 0) && (j < size.y - 1)) add(make_unique<Segment>(at({i, j}).z, at({i - 1, j + 1}).z));
+                if (i < size.x - 1) add(make_unique<Segment>(at(coo{i, j}).z, at(coo{i + 1, j}).z));
+                if (j < size.y - 1) add(make_unique<Segment>(at(coo{i, j}).z, at(coo{i, j + 1}).z));
+                if ((i > 0) && (j < size.y - 1)) add(make_unique<Segment>(at(coo{i, j}).z, at(coo{i - 1, j + 1}).z));
             }
         }
     }

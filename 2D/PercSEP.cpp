@@ -23,19 +23,19 @@ public:
     void clean() {
         for (int x = 0; x < w(); ++x)
             for (int y = 0; y < h(); ++y)
-                if (at({x, y}) > 0) at({x, y}) = at({x, y}) + 100;
+                if (at(coo{x, y}) > 0) at(coo{x, y}) = at(coo{x, y}) + 100;
         bool dirty = true;
         while (dirty) {
             dirty = false;
             for (int x = 0; x < w(); ++x)
                 for (int y = 0; y < h(); ++y) {
-                    if (at({x, y}) == 102) {
+                    if (at(coo{x, y}) == 102) {
                         if (atp({x + 1, y}) == 1 || atp({x + 1, y}) == 2 || atp({x, y + 1}) == 1 || atp({x, y + 1}) == 2 ||
                             atp({x, y - 1}) == 1 || atp({x, y - 1}) == 2) {
                             atp({x, y}) = 2;
                             dirty       = true;
                         }
-                    } else if (at({x, y}) == 101) {
+                    } else if (at(coo{x, y}) == 101) {
                         if (atp({x + 1, y}) == 1 || atp({x + 1, y}) == 2 || atp({x + 1, y}) == 101 || atp({x, y + 1}) == 1 ||
                             atp({x, y + 1}) == 2 || atp({x, y - 1}) == 1 || atp({x, y - 1}) == 2) {
                             atp({x, y}) = 1;
@@ -46,8 +46,8 @@ public:
         }
         for (int x = 0; x < w(); ++x)
             for (int y = 0; y < h(); ++y) {
-                if (at({x, y}) >= 102) at({x, y}) = 3;
-                if (at({x, y}) == 101) at({x, y}) = 1;
+                if (at(coo{x, y}) >= 102) at(coo{x, y}) = 3;
+                if (at(coo{x, y}) == 101) at(coo{x, y}) = 1;
             }
     }
     void move() {
@@ -76,7 +76,7 @@ int main(int argc, char **argv) {
             int na = 0;
             for (int x = 0; x < P.w(); ++x)
                 for (int y = 0; y < P.h(); ++y)
-                    if (P.at({x, y}) == 2) ++na;
+                    if (P.at(coo{x, y}) == 2) ++na;
             if (na == 0) exit(0);
             cout << t / (P.w() * P.h()) << " " << na << " " << P.flow.x << " " << double(P.flow.x) / na << endl;
             P.flow = {0, 0};

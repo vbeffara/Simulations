@@ -17,18 +17,18 @@ public:
 
     bool ok(coo z) {
         while (true) {
-            if ((z.x >= n) || (z.y >= n) || (z.x + z.y > cursum)) return true;
+            if ((z.x >= int(n)) || (z.y >= int(n)) || (z.x + z.y > cursum)) return true;
             if (at(z)) return false;
             z += dz[prng.bernoulli(p) ? 1 : 0];
         }
     }
 
     void fill(coo z) {
-        if ((z.x > 0) && (z.y < n - 1) && at(z + coo{-1, 1}) && !at(z - coo{1, 0})) {
+        if ((z.x > 0) && (z.y < int(n) - 1) && at(z + coo{-1, 1}) && !at(z - coo{1, 0})) {
             put(z - coo{1, 0}, true);
             fill(z - coo{1, 0});
         }
-        if ((z.y > 0) && (z.x < n - 1) && at(z + coo{1, -1}) && !at(z - coo{0, 1})) {
+        if ((z.y > 0) && (z.x < int(n) - 1) && at(z + coo{1, -1}) && !at(z - coo{0, 1})) {
             put(z - coo{0, 1}, true);
             fill(z - coo{0, 1});
         }
@@ -39,15 +39,15 @@ public:
             const Point pt = pq.get();
             const coo & z  = pt;
 
-            if ((z.x == n - 1) || (z.y == n - 1)) return;
+            if ((z.x == int(n) - 1) || (z.y == int(n) - 1)) return;
             if (!at(z)) {
                 double curtime = pt.t;
                 if (ok(z)) {
                     put(z, true);
                     cursum = max(cursum, z.x + z.y);
                     if (f) fill(z);
-                    if ((z.x < n - 1) && !at(z + coo{1, 0})) pq.push({z + coo{1, 0}, curtime + prng.exponential() / p});
-                    if ((z.y < n - 1) && !at(z + coo{0, 1})) pq.push({z + coo{0, 1}, curtime + prng.exponential() / (1 - p)});
+                    if ((z.x < int(n) - 1) && !at(z + coo{1, 0})) pq.push({z + coo{1, 0}, curtime + prng.exponential() / p});
+                    if ((z.y < int(n) - 1) && !at(z + coo{0, 1})) pq.push({z + coo{0, 1}, curtime + prng.exponential() / (1 - p)});
                 } else {
                     pq.push({z, curtime + prng.exponential()});
                 }
@@ -56,7 +56,8 @@ public:
     }
 
     bool       f;
-    int64_t    n, cursum;
+    size_t     n;
+    int64_t    cursum;
     double     p;
     PointQueue pq;
 };

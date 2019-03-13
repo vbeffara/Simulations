@@ -101,7 +101,7 @@ public:
         in_[0][1] = 0;
 
         fftw_execute(p);
-        for (auto [i, j] : coo_range(size)) I.at({i, j}).f = out_[i + size.x * j][0];
+        for (auto [i, j] : coo_range(size)) I.at(coo{i, j}).f = out_[i + size.x * j][0];
         fftw_destroy_plan(p);
         fftw_free(in);
         fftw_free(out);
@@ -160,10 +160,10 @@ public:
     double radius() {
         double r = I.at({0, 0}).d;
         for (int i = 0; i < w(); ++i) {
-            r = min(r, I.at({i, 0}).d);
-            r = min(r, I.at({0, i}).d);
-            r = min(r, I.at({i, h() - 1}).d);
-            r = min(r, I.at({w() - 1, i}).d);
+            r = min(r, I.at(coo{i, 0}).d);
+            r = min(r, I.at(coo{0, i}).d);
+            r = min(r, I.at(coo{i, h() - 1}).d);
+            r = min(r, I.at(coo{w() - 1, i}).d);
         }
         return r;
     }

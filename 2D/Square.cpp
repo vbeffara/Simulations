@@ -25,7 +25,7 @@ public:
 
     void step(const vb::Array<double> &o) {
         int    r  = 0;
-        double oo = o.at({xi(), yi()});
+        double oo = o.at(vb::coo{xi(), yi()});
 
         if (yf() == 1) {
             r    = 1;
@@ -147,16 +147,16 @@ public:
         std::set<ptpair> S;
         std::set<pt>     P;
 
-        for (int i = 0; i < size.x; ++i) {
-            for (int j = 0; j < size.y; ++j) {
+        for (size_t i = 0; i < size.x; ++i) {
+            for (size_t j = 0; j < size.y; ++j) {
                 for (int xx = 1; xx < 100; ++xx) {
                     double            x  = .01 * xx;
-                    std::pair<pt, pt> pp = leaf(pt(i, j, x, 0), nullptr);
+                    std::pair<pt, pt> pp = leaf(pt(int(i), int(j), x, 0), nullptr);
 
                     if ((pp.first != pt()) && (pp.second != pt())) {
                         if (S.count(pp) == 0) {
                             S.insert(pp);
-                            P.insert(pt(i, j, x, 0));
+                            P.insert(pt(int(i), int(j), x, 0));
                         }
                     }
 
@@ -165,7 +165,7 @@ public:
                     if ((pp.first != pt()) && (pp.second != pt())) {
                         if (S.count(pp) == 0) {
                             S.insert(pp);
-                            P.insert(pt(i, j, 0, x));
+                            P.insert(pt(int(i), int(j), 0, x));
                         }
                     }
                 }
@@ -179,8 +179,8 @@ int main(int argc, char **argv) {
     vb::Hub    H("Random lamination", argc, argv, "n=20,c");
     Lamination o(H['n']);
 
-    for (int i = 0; i < o.size.x; ++i) {
-        for (int j = 0; j < o.size.y; ++j) {
+    for (size_t i = 0; i < o.size.x; ++i) {
+        for (size_t j = 0; j < o.size.y; ++j) {
             o.geodesique(pt(i, j, 0, 0), &std::cout);
             o.geodesique(pt(i, j, 1, 0), &std::cout);
             o.geodesique(pt(i, j, 0, 1), &std::cout);

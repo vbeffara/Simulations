@@ -42,6 +42,8 @@ namespace vb {
 
     struct ucoo {
         size_t x, y;
+        ucoo(size_t x, size_t y) : x(x), y(y) {}
+        ucoo(const coo &z) : x(size_t(z.x)), y(size_t(z.y)) {}
     };
 
     struct coo_range {

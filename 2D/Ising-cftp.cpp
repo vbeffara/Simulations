@@ -44,7 +44,7 @@ public:
     }
     void snap() {
         for (int i = 0; i < w(); ++i)
-            for (int j = 0; j < h(); ++j) status.put({i, j}, at({i, j}));
+            for (int j = 0; j < h(); ++j) status.put(coo{i, j}, at(coo{i, j}));
         status.update();
     }
 
@@ -66,7 +66,7 @@ public:
             n = 0;
             for (int i = 0; i < w(); ++i)
                 for (int j = 0; j < h(); ++j)
-                    if (at({i, j}) == 1) ++n;
+                    if (at(coo{i, j}) == 1) ++n;
         }
     }
 

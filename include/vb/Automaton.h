@@ -11,14 +11,14 @@ namespace vb {
 
         Rule(Pattern in, Pattern out) : cond(std::move(in)), move(std::move(out)) {}
 
-        bool check(Automaton<T> &A, int i) {
+        bool check(Automaton<T> &A, size_t i) {
             for (auto &c : cond)
-                if (!(A.atp(i + c.first) == c.second)) return false;
+                if (!(A.atp(int(i) + c.first) == c.second)) return false;
             return true;
         }
-        void trigger(Automaton<T> &A, int i) {
+        void trigger(Automaton<T> &A, size_t i) {
             if (check(A, i))
-                for (auto &m : move) A.atp(i + m.first) = m.second;
+                for (auto &m : move) A.atp(int(i) + m.first) = m.second;
         }
 
     private:
@@ -30,24 +30,24 @@ namespace vb {
         Automaton(const std::string &title, size_t n_, T s, bool p = true) : std::vector<T>(n_, s), n(n_), pause(p), I(title, {n, 500}) {}
 
         T &atp(int i) {
-            int j = i % n;
+            int j = i % int(n);
             if (j < 0) j += n;
-            return (*this)[j];
+            return (*this)[size_t(j)];
         }
 
         void show() { I.show(); }
 
         void step() {
             // TODO: is that reimplementing prng::discrete ?
-            double U = prng.uniform_real(0, lt);
-            int    j = 0;
+            auto   U = prng.uniform_real(0, lt);
+            size_t j = 0;
             while (U > rates[j]) U -= rates[j++];
             rules[j].trigger(*this, prng.uniform_int(n));
         }
 
         void swipe() {
-            for (int i = 0; i < n * lt; ++i) step();
-            for (int i = 0; i < n; ++i) I.put({i, y}, (*this)[i]);
+            for (size_t i = 0; i < n * lt; ++i) step();
+            for (size_t i = 0; i < n; ++i) I.put({int(i), y}, (*this)[i]);
             ++y;
             if (y == 500) {
                 y = 0;

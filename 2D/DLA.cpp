@@ -21,7 +21,7 @@ public:
         for (size_t r = 1; r < int(H['p']); ++r) {
             bool          dirty = true;
             Array<double> MM({2 * r + 1, 2 * r + 1});
-            MM.at({int(r), int(r)}) = 1;
+            MM.at({r, r}) = 1;
             while (dirty) {
                 dirty = false;
                 for (int i = 1; i < 2 * r; ++i)
@@ -42,22 +42,22 @@ public:
                             else {
                                 const auto &ps = prec[size_t(d)];
                                 for (size_t k = 0; k < size_t(d); ++k) {
-                                    MM.at({i - d, j + long(k)}) += t * ps[k] / 8;
-                                    MM.at({i - d, j - long(k)}) += t * ps[k] / 8;
-                                    MM.at({i + d, j + long(k)}) += t * ps[k] / 8;
-                                    MM.at({i + d, j - long(k)}) += t * ps[k] / 8;
-                                    MM.at({i + long(k), j - d}) += t * ps[k] / 8;
-                                    MM.at({i - long(k), j - d}) += t * ps[k] / 8;
-                                    MM.at({i + long(k), j + d}) += t * ps[k] / 8;
-                                    MM.at({i - long(k), j + d}) += t * ps[k] / 8;
+                                    MM.at(coo{i - d, j + long(k)}) += t * ps[k] / 8;
+                                    MM.at(coo{i - d, j - long(k)}) += t * ps[k] / 8;
+                                    MM.at(coo{i + d, j + long(k)}) += t * ps[k] / 8;
+                                    MM.at(coo{i + d, j - long(k)}) += t * ps[k] / 8;
+                                    MM.at(coo{i + long(k), j - d}) += t * ps[k] / 8;
+                                    MM.at(coo{i - long(k), j - d}) += t * ps[k] / 8;
+                                    MM.at(coo{i + long(k), j + d}) += t * ps[k] / 8;
+                                    MM.at(coo{i - long(k), j + d}) += t * ps[k] / 8;
                                 }
                             }
                         }
                     }
             }
 
-            prec[size_t(r)].push_back(4 * MM.at({0, int(r)}));
-            for (int i = 1; i < r; ++i) prec[r].push_back(8 * MM.at({0, int(r) + i}));
+            prec[size_t(r)].push_back(4 * MM.at({0, r}));
+            for (size_t i = 1; i < r; ++i) prec[r].push_back(8 * MM.at({0, r + i}));
         }
         start = now();
     };

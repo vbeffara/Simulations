@@ -28,15 +28,15 @@ void Glauber::step(int i, int j) {
     if (j == -1) j = prng.uniform_int(n);
 
     int c = 0;
-    if (at({(i + 1) % int(n), j}) == WHITE) ++c;
-    if (at({(i + int(n) - 1) % int(n), j}) == WHITE) ++c;
-    if (at({i, (j + 1) % int(n)}) == WHITE) ++c;
-    if (at({i, (j + int(n) - 1) % int(n)}) == WHITE) ++c;
+    if (at(coo{(i + 1) % int(n), j}) == WHITE) ++c;
+    if (at(coo{(i + int(n) - 1) % int(n), j}) == WHITE) ++c;
+    if (at(coo{i, (j + 1) % int(n)}) == WHITE) ++c;
+    if (at(coo{i, (j + int(n) - 1) % int(n)}) == WHITE) ++c;
 
     if ((c > 2) || ((c == 2) && prng.bernoulli(.5)))
-        put({i, j}, WHITE);
+        put(coo{i, j}, WHITE);
     else
-        put({i, j}, BLACK);
+        put(coo{i, j}, BLACK);
 }
 
 int main(int argc, char **argv) {

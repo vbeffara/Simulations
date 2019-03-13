@@ -2,7 +2,7 @@
 #include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
-using std::vector, vb::prng, vb::BLACK, vb::WHITE;
+using std::vector, vb::prng, vb::BLACK, vb::WHITE, vb::coo;
 
 vector<bool> init_ok_none() {
     vector<bool> ok(256, false);
@@ -107,22 +107,22 @@ public:
             int x  = 1 + (prng() % (n - 2));
             int y  = 1 + (prng() % (n - 2));
             int nb = 0;
-            if (at({x + 1, y}) != BLACK) nb += 1;
-            if (at({x + 1, y + 1}) != BLACK) nb += 2;
-            if (at({x, y + 1}) != BLACK) nb += 4;
-            if (at({x - 1, y + 1}) != BLACK) nb += 8;
-            if (at({x - 1, y}) != BLACK) nb += 16;
-            if (at({x - 1, y - 1}) != BLACK) nb += 32;
-            if (at({x, y - 1}) != BLACK) nb += 64;
-            if (at({x + 1, y - 1}) != BLACK) nb += 128;
+            if (at(coo{x + 1, y}) != BLACK) nb += 1;
+            if (at(coo{x + 1, y + 1}) != BLACK) nb += 2;
+            if (at(coo{x, y + 1}) != BLACK) nb += 4;
+            if (at(coo{x - 1, y + 1}) != BLACK) nb += 8;
+            if (at(coo{x - 1, y}) != BLACK) nb += 16;
+            if (at(coo{x - 1, y - 1}) != BLACK) nb += 32;
+            if (at(coo{x, y - 1}) != BLACK) nb += 64;
+            if (at(coo{x + 1, y - 1}) != BLACK) nb += 128;
 
             if (ok[nb]) {
                 if (prng.bernoulli(p)) {
-                    if (at({x, y}) == BLACK) {
-                        uint8_t tmp = uint8_t(at({x + 1, y}));
-                        tmp |= uint8_t(at({x - 1, y}));
-                        tmp |= uint8_t(at({x, y + 1}));
-                        tmp |= uint8_t(at({x, y - 1}));
+                    if (at(coo{x, y}) == BLACK) {
+                        uint8_t tmp = uint8_t(at(coo{x + 1, y}));
+                        tmp |= uint8_t(at(coo{x - 1, y}));
+                        tmp |= uint8_t(at(coo{x, y + 1}));
+                        tmp |= uint8_t(at(coo{x, y - 1}));
                         if (tmp == 0) tmp = 85;
                         put({x, y}, vb::Grey(tmp));
                     }

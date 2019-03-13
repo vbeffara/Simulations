@@ -19,7 +19,7 @@ public:
         }
 
         for (int x = -r1 + 1; x < r1 - 1; x++)
-            for (int y = -r1 + 1; y < r1 - 1; y++) expl[{x + w() / 2, y + h() / 2}] = 0;
+            for (int y = -r1 + 1; y < r1 - 1; y++) expl[coo{x + w() / 2, y + h() / 2}] = 0;
 
         bool dirty = true;
         while (dirty) {
@@ -50,31 +50,31 @@ public:
 
         for (auto &t : table) t = 0;
         for (int i = -r2; i < r2; i++) {
-            if ((sides & 1u) != 0) table[size_t(int64_t(N * N) + expl[{int(N) / 2 + i, int(N) / 2 - r2}])] = 1;
-            if ((sides & 2u) != 0) table[size_t(int64_t(N * N) + expl[{int(N) / 2 + i, int(N) / 2 + r2 - 1}])] = 1;
-            if ((sides & 4u) != 0) table[size_t(int64_t(N * N) + expl[{int(N) / 2 - r2, int(N) / 2 + i}])] = 1;
-            if ((sides & 8u) != 0) table[size_t(int64_t(N * N) + expl[{int(N) / 2 + r2 - 1, int(N) / 2 + i}])] = 1;
+            if ((sides & 1u) != 0) table[size_t(int64_t(N * N) + expl[coo{int(N) / 2 + i, int(N) / 2 - r2}])] = 1;
+            if ((sides & 2u) != 0) table[size_t(int64_t(N * N) + expl[coo{int(N) / 2 + i, int(N) / 2 + r2 - 1}])] = 1;
+            if ((sides & 4u) != 0) table[size_t(int64_t(N * N) + expl[coo{int(N) / 2 - r2, int(N) / 2 + i}])] = 1;
+            if ((sides & 8u) != 0) table[size_t(int64_t(N * N) + expl[coo{int(N) / 2 + r2 - 1, int(N) / 2 + i}])] = 1;
         }
 
         int     n = 0;
         int64_t k;
         for (int i = -r1; i < r1; i++) {
-            k = expl[{int(N) / 2 + i, int(N) / 2 - r1}];
+            k = expl[coo{int(N) / 2 + i, int(N) / 2 - r1}];
             if (table[size_t(int64_t(N * N) + k)] == 1) {
                 table[size_t(int64_t(N * N) + k)] = 0;
                 n++;
             }
-            k = expl[{int(N) / 2 + i, int(N) / 2 + r1 - 1}];
+            k = expl[coo{int(N) / 2 + i, int(N) / 2 + r1 - 1}];
             if (table[size_t(int64_t(N * N) + k)] == 1) {
                 table[size_t(int64_t(N * N) + k)] = 0;
                 n++;
             }
-            k = expl[{int(N) / 2 - r1, int(N) / 2 + i}];
+            k = expl[coo{int(N) / 2 - r1, int(N) / 2 + i}];
             if (table[size_t(int64_t(N * N) + k)] == 1) {
                 table[size_t(int64_t(N * N) + k)] = 0;
                 n++;
             }
-            k = expl[{int(N) / 2 + r1 - 1, int(N) / 2 + i}];
+            k = expl[coo{int(N) / 2 + r1 - 1, int(N) / 2 + i}];
             if (table[size_t(int64_t(N * N) + k)] == 1) {
                 table[size_t(int64_t(N * N) + k)] = 0;
                 n++;
@@ -116,7 +116,7 @@ public:
     Coupling(const Hub &H, size_t r) : Image(H.title, {2 * r, 2 * r}), r1(r / 4), r2(r / 2), r3(r), c1(H, 2 * r), c2(H, 2 * r) {
         c1.pick(r1, r2, r3);
         for (int i = 0; i < w(); ++i)
-            for (int j = 0; j < h(); ++j) c2[{i, j}] = c1[{i, j}];
+            for (int j = 0; j < h(); ++j) c2[coo{i, j}] = c1[coo{i, j}];
         c1.show();
         c2.show();
         show();

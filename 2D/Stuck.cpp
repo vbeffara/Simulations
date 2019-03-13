@@ -27,7 +27,7 @@ class Stuck : public Bitmap<Stat> {
 public:
     explicit Stuck(const Hub &H) : Bitmap<Stat>(H.title, {2 * size_t(H['n']), 2 * size_t(H['n'])}), alpha(H['a']), beta(H['b']), H(H) {
         for (int i = 0; i < w() / 2; ++i)
-            for (int j = 0; j < h() / 2; ++j) at({2 * i, 2 * j}) = Stat{-1};
+            for (int j = 0; j < h() / 2; ++j) at(coo{2 * i, 2 * j}) = Stat{-1};
         z = {w() / 2, h() / 2};
         C.manage(alpha, 0.142, 0.35, "alpha");
         C.lambda<int>([this]() { return nsup(); }, "Support");
@@ -43,7 +43,7 @@ public:
         coo c{0, 0};
         for (int x = 0; x < w(); ++x)
             for (int y = 0; y < h(); ++y)
-                if (at({x, y}).s == Stat::max) c = {x - w() / 2, y - h() / 2};
+                if (at(coo{x, y}).s == Stat::max) c = {x - w() / 2, y - h() / 2};
         c.x -= c.x % 2;
         c.y -= c.y % 2;
         if (c != coo{0, 0}) {
@@ -79,7 +79,7 @@ public:
         }
         if (H['o'])
             for (int x = 0; x < w(); x += 2) {
-                for (int y = 1; y < h(); y += 2) cout << x << " " << y << " " << at({x, y}).s << endl;
+                for (int y = 1; y < h(); y += 2) cout << x << " " << y << " " << at(coo{x, y}).s << endl;
                 cout << endl;
             }
     }

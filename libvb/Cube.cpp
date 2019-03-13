@@ -7,24 +7,25 @@ namespace vb {
         // TODO: ucoo3
         : Bitmap<Adder>(s, {size_t(sz.x + sz.z), size_t(sz.y + sz.z)}), size(sz), data(size_t(size.x * size.y * size.z), 0) {
         for (int x = 0; x < size.z; ++x)
-            for (int y = 0; y < size.z; ++y) Bitmap<Adder>::at({size.x + x, size.y + y}) = Adder(((x / 10 + y / 10) % 2) != 0 ? 200 : 150);
+            for (int y = 0; y < size.z; ++y)
+                Bitmap<Adder>::at(coo{size.x + x, size.y + y}) = Adder(((x / 10 + y / 10) % 2) != 0 ? 200 : 150);
         for (int x = 0; x < size.x; ++x)
-            for (int y = 0; y < size.y; ++y) Bitmap<Adder>::at({x, y}).dim(size_t(size.z));
+            for (int y = 0; y < size.y; ++y) Bitmap<Adder>::at(coo{x, y}).dim(size_t(size.z));
         for (int x = 0; x < size.x; ++x)
-            for (int z = 0; z < size.z; ++z) Bitmap<Adder>::at({x, z + size.y}).dim(size_t(size.y));
+            for (int z = 0; z < size.z; ++z) Bitmap<Adder>::at(coo{x, z + size.y}).dim(size_t(size.y));
         for (int y = 0; y < size.y; ++y)
-            for (int z = 0; z < size.z; ++z) Bitmap<Adder>::at({z + size.x, y}).dim(size_t(size.x));
+            for (int z = 0; z < size.z; ++z) Bitmap<Adder>::at(coo{z + size.x, y}).dim(size_t(size.x));
     }
 
     void Cube::put(const coo3 &c, uint8_t t) {
         uint8_t d = data[index(c)];
         if (t != d) {
-            Bitmap<Adder>::at({c.x, c.y}) -= d;
-            Bitmap<Adder>::at({c.x, c.z + size.y}) -= d;
-            Bitmap<Adder>::at({c.z + size.x, c.y}) -= d;
-            Bitmap<Adder>::at({c.x, c.y}) += t;
-            Bitmap<Adder>::at({c.x, c.z + size.y}) += t;
-            Bitmap<Adder>::at({c.z + size.x, c.y}) += t;
+            Bitmap<Adder>::at(coo{c.x, c.y}) -= d;
+            Bitmap<Adder>::at(coo{c.x, c.z + size.y}) -= d;
+            Bitmap<Adder>::at(coo{c.z + size.x, c.y}) -= d;
+            Bitmap<Adder>::at(coo{c.x, c.y}) += t;
+            Bitmap<Adder>::at(coo{c.x, c.z + size.y}) += t;
+            Bitmap<Adder>::at(coo{c.z + size.x, c.y}) += t;
             data[index(c)] = t;
         }
         step();

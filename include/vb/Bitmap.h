@@ -12,6 +12,7 @@ namespace vb {
         using Array<T>::atp;
         using Array<T>::contains; // TODO: rename, clashes with Fl_Widget
 
+        // TODO: use ucoo
         void put(coo z, T const &c) {
             Array<T>::put(z, c);
             step();
@@ -37,10 +38,10 @@ namespace vb {
             int64_t          ppp = pixel_w() / w();
             gsl::span<Color> stage((Color *)cairo_image_surface_get_data(surface), ppp * w() + int(stride) * (ppp * h() - 1));
 
-            for (int x = 0; x < w(); ++x)
-                for (int y = 0; y < h(); ++y)
-                    for (int dx = 0; dx < ppp; ++dx)
-                        for (int dy = 0; dy < ppp; ++dy) stage[ppp * x + dx + int(stride) * (ppp * y + dy)] = to_Color(at({x, y}));
+            for (size_t x = 0; x < w(); ++x)
+                for (size_t y = 0; y < h(); ++y)
+                    for (size_t dx = 0; dx < ppp; ++dx)
+                        for (size_t dy = 0; dy < ppp; ++dy) stage[ppp * x + dx + stride * (ppp * y + dy)] = to_Color(at({x, y}));
         }
     };
 

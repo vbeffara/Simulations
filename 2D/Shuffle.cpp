@@ -30,7 +30,7 @@ struct Tiling {
         auto n = state.size.x;
         state.resize({n + 2, n + 2}, 0);
         for (int y = state.size.y - 2; y > 0; --y)
-            for (int x = state.size.x - 2; x > 0; --x) swap(state[{x, y}], state[{(x - 1) + int(n) * (y - 1), 0}]);
+            for (int x = state.size.x - 2; x > 0; --x) swap(state[coo{x, y}], state[coo{(x - 1) + int(n) * (y - 1), 0}]);
 
         for (int i = 0; i < n / 2; ++i) {
             for (int j = 0; j < n / 2; ++j) {
@@ -44,8 +44,8 @@ struct Tiling {
                 }
             }
         }
-        for (int i = 0; i <= n; i += 2) {
-            for (int j = 0; j <= n; j += 2) {
+        for (size_t i = 0; i <= n; i += 2) {
+            for (size_t j = 0; j <= n; j += 2) {
                 if (state[{i + 1, j + 1}] == 1) {
                     state[{i, j}]         = 1;
                     state[{i + 1, j + 1}] = 0;
@@ -64,9 +64,9 @@ struct Tiling {
     }
 
     void create(const Array<double> &p) {
-        int n = state.size.x;
-        for (int i = 0; i < n / 2; ++i) {
-            for (int j = 0; j < n / 2; ++j) {
+        auto n = state.size.x;
+        for (size_t i = 0; i < n / 2; ++i) {
+            for (size_t j = 0; j < n / 2; ++j) {
                 if ((state[{2 * i, 2 * j}] == 0) && (state[{2 * i + 1, 2 * j}] == 0) && (state[{2 * i, 2 * j + 1}] == 0) &&
                     (state[{2 * i + 1, 2 * j + 1}] == 0)) {
                     bool a1 = true, a2 = true, a3 = true, a4 = true;
@@ -75,7 +75,7 @@ struct Tiling {
                     if (i > 0) a3 = (state[{2 * i - 1, 2 * j}] == 0) && (state[{2 * i - 1, 2 * j + 1}] == 0);
                     if (i < n / 2 - 1) a4 = (state[{2 * i + 2, 2 * j}] == 0) && (state[{2 * i + 2, 2 * j + 1}] == 0);
                     if (a1 && a2 && a3 && a4) {
-                        if (prng.bernoulli(p.atp({i, j}))) {
+                        if (prng.bernoulli(p.atp({int(i), int(j)}))) {
                             state[{2 * i, 2 * j}]         = 1;
                             state[{2 * i + 1, 2 * j + 1}] = 1;
                         } else {
@@ -100,7 +100,7 @@ struct Tiling {
         for (int k = 1; k < n; ++k) {
             const auto &AA = A[k - 1];
             for (auto z : coo_range(A[k].size)) {
-                int    i = z.x, j = z.y, i1 = (i + 1) % per, j1 = (j + 1) % per, ii = (i + 2 * (i % 2)) % per, jj = (j + 2 * (j % 2)) % per;
+                size_t i = z.x, j = z.y, i1 = (i + 1) % per, j1 = (j + 1) % per, ii = (i + 2 * (i % 2)) % per, jj = (j + 2 * (j % 2)) % per;
                 double a20, a21;
                 auto & a1 = AA[{ii, jj}];
                 if (a1.second + AA[{i1, j1}].second == AA[{ii, j1}].second + AA[{i1, jj}].second) {
@@ -162,15 +162,15 @@ struct Tiling {
         Array<int> h({m + 1, m + 1}, 0);
         int        z = 0;
         for (int x = 0; x < m; ++x) {
-            z += 4 * state[{2 * x, 0}] + 4 * state[{2 * x + 1, 0}] - 2;
-            h[{x + 1, 0}] = z;
+            z += 4 * state[coo{2 * x, 0}] + 4 * state[coo{2 * x + 1, 0}] - 2;
+            h[coo{x + 1, 0}] = z;
         }
         for (int y = 0; y < m; ++y) {
-            int z         = h[{0, y}] + 4 * state[{0, 2 * y}] + 4 * state[{0, 2 * y + 1}] - 2;
-            h[{0, y + 1}] = z;
+            int z            = h[coo{0, y}] + 4 * state[coo{0, 2 * y}] + 4 * state[coo{0, 2 * y + 1}] - 2;
+            h[coo{0, y + 1}] = z;
             for (int x = 0; x < m; ++x) {
-                z -= 4 * state[{2 * x, 2 * y + 1}] + 4 * state[{2 * x + 1, 2 * y + 1}] - 2;
-                h[{x + 1, y + 1}] = z;
+                z -= 4 * state[coo{2 * x, 2 * y + 1}] + 4 * state[coo{2 * x + 1, 2 * y + 1}] - 2;
+                h[coo{x + 1, y + 1}] = z;
             }
         }
         return h;
