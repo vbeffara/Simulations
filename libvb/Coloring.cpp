@@ -3,8 +3,8 @@
 #include <vb/Coloring.h>
 
 namespace vb {
-    Coloring::Coloring(const std::string &s, cpx z1_, cpx z2_, int n, std::function<Color(cpx)> f_)
-        : Picture(s, {n, int(n * imag(z2_ - z1_) / real(z2_ - z1_))}), eps(real(z1_ - z2_) / n), z1(z1_), z2(z2_), f(std::move(f_)) {}
+    Coloring::Coloring(const std::string &s, cpx z1_, cpx z2_, size_t n, std::function<Color(cpx)> f_)
+        : Picture(s, {n, size_t(n * imag(z2_ - z1_) / real(z2_ - z1_))}), eps(real(z1_ - z2_) / n), z1(z1_), z2(z2_), f(std::move(f_)) {}
 
     void Coloring::show() {
         Picture::show();

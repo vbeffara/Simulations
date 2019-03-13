@@ -5,7 +5,7 @@
 namespace vb {
     class Coloring : public Picture {
     public:
-        Coloring(const std::string &s, cpx z1_, cpx z2_, int n, std::function<Color(cpx)> f_);
+        Coloring(const std::string &s, cpx z1_, cpx z2_, size_t n, std::function<Color(cpx)> f_);
 
         void show() override;
         void show2();

@@ -1,9 +1,9 @@
 #include <vb/Sphere.h>
 
 namespace vb {
-    Sphere::Sphere(const std::string &s, int w, std::function<Color(cpx)> f) : Coloring(s, {-1.0, -1.0}, {1.0, 1.0}, w, std::move(f)) {}
+    Sphere::Sphere(const std::string &s, size_t w, std::function<Color(cpx)> f) : Coloring(s, {-1.0, -1.0}, {1.0, 1.0}, w, std::move(f)) {}
 
-    Sphere::Sphere(const std::string &s, int w, const std::function<Color(double, double, double)> &f)
+    Sphere::Sphere(const std::string &s, size_t w, const std::function<Color(double, double, double)> &f)
         : Sphere(s, w, [f](cpx z) {
               double x1 = real(z), x2 = imag(z), n = x1 * x1 + x2 * x2;
               if (n > 1) return NOCOLOR;
@@ -11,7 +11,7 @@ namespace vb {
               return f(x1, x2, x3);
           }) {}
 
-    Sphere::Sphere(const std::string &s, int w, const std::function<Color(double, double)> &f)
+    Sphere::Sphere(const std::string &s, size_t w, const std::function<Color(double, double)> &f)
         : Sphere(s, w, [f](cpx z) {
               double x1 = real(z), x2 = imag(z), n = x1 * x1 + x2 * x2;
               if (n > 1) return NOCOLOR;

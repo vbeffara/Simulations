@@ -17,8 +17,11 @@ namespace vb {
         double                  uniform_real(double min = 0, double max = 1) { return (boost::uniform_real<>(min, max))(*this); }
         double                  exponential(double lambda = 1) { return (boost::exponential_distribution<>(lambda))(*this); }
         double                  gaussian(double m = 0, double sigma = 1) { return (boost::normal_distribution<>(m, sigma))(*this); }
-        coo                     uniform_coo(coo r, int64_t b = 0) { return {b + uniform_int(r.x - 2 * b), b + uniform_int(r.y - 2 * b)}; }
-        coo3                    uniform_coo3(coo3 r, int64_t b = 0) {
+
+        coo uniform_coo(ucoo r, int64_t b = 0) { return {b + uniform_int(int64_t(r.x) - 2 * b), b + uniform_int(int64_t(r.y) - 2 * b)}; }
+
+        // TODO: ucoo3
+        coo3 uniform_coo3(coo3 r, int64_t b = 0) {
             return {b + uniform_int(r.x - 2 * b), b + uniform_int(r.y - 2 * b), b + uniform_int(r.z - 2 * b)};
         }
 

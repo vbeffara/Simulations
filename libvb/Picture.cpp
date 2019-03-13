@@ -4,7 +4,7 @@
 #include <vb/Picture.h>
 
 namespace vb {
-    Picture::Picture(const std::string &s, coo size) : AutoWindow(s, size), snapshot_prefix(s), snapshot_number(0), snapshot_period(0.0) {}
+    Picture::Picture(const std::string &s, ucoo size) : AutoWindow(s, size), snapshot_prefix(s), snapshot_number(0), snapshot_period(0.0) {}
 
     Picture::~Picture() {
         if (snapshot_task) remove_task(*snapshot_task);

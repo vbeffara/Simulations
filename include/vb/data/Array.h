@@ -41,7 +41,9 @@ namespace vb {
         void put(const coo &z, T const &c) { at(z) = c; }
         void putp(const coo &z, T const &c) { atp(z) = c; }
 
-        bool contains(const coo &z, int64_t b = 0) const { return (z.x >= b) && (z.y >= b) && (z.x < size.x - b) && (z.y < size.y - b); }
+        bool contains(const coo &z, int64_t b = 0) const {
+            return (z.x >= b) && (z.y >= b) && (z.x < int64_t(size.x) - b) && (z.y < int64_t(size.y) - b);
+        }
 
         ucoo size;
 

@@ -49,7 +49,7 @@ public:
     }
 
     coo    mid;
-    int    n;
+    size_t n;
     double p;
 };
 

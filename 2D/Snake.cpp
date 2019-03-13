@@ -6,7 +6,7 @@
 class Snake : public vb::CoarseImage {
 public:
     explicit Snake(const vb::Hub &H, size_t n) : vb::CoarseImage(H.title, {2 * n, 2 * n}, int(pow(n, .333))), z(1, {int(n), int(n)}) {
-        put(vb::ucoo{n, n}, true);
+        put({int(n), int(n)}, true);
     }
 
     void step(vb::coo dz) {

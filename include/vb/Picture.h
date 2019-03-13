@@ -14,7 +14,7 @@ namespace vb {
 
     class Picture : public AutoWindow<Fl_Gl_Window> {
     public:
-        Picture(const std::string &s, coo size);
+        Picture(const std::string &s, ucoo size);
         ~Picture() override;
 
         Picture(const Picture &) = delete;
