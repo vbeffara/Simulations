@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
 
     for (size_t x = 0; x < n; ++x) {
         if (prng.bernoulli(r)) {
-            img.put({int(x), 0}, WHITE);
+            img.put({x, 0}, WHITE);
             field[x] = 1;
         }
     }
@@ -27,18 +27,18 @@ int main(int argc, char **argv) {
     for (size_t y = 1; y < n; ++y) {
         for (size_t x = 0; x < n; ++x)
             if ((prng.bernoulli(l)) || ((x == y) && (prng.bernoulli(d)))) {
-                img.put({int(x), int(y)}, WHITE);
+                img.put({x, y}, WHITE);
                 field[x]++;
                 auto xx = (x + 1) % n;
                 while (field[xx] == 0) {
-                    img.put({int(xx), int(y)}, WHITE);
+                    img.put({xx, y}, WHITE);
                     xx = (xx + 1) % n;
                 }
                 field[xx]--;
-                img.put({int(xx), int(y)}, WHITE);
+                img.put({xx, y}, WHITE);
             }
         for (unsigned x = 0; x < n; ++x)
-            if (field[x] != 0) img.put({int(x), int(y)}, WHITE);
+            if (field[x] != 0) img.put({x, y}, WHITE);
 
         if (y % 100 == 0) img.update();
     }

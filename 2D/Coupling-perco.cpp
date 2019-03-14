@@ -92,13 +92,13 @@ public:
         int n = 0;
         while (true) {
             cerr << ++n << " \r";
-            for (int x = 0; x < w(); x++)
-                for (int y = 0; y < h(); y++) put({x, y}, prng.bernoulli(.5) ? WHITE : BLACK);
+            for (size_t x = 0; x < w(); x++)
+                for (size_t y = 0; y < h(); y++) put({x, y}, prng.bernoulli(.5) ? WHITE : BLACK);
 
             for (int x = -r1 + 1; x < r1 - 1; x++) {
                 for (int y = -r1 + 1; y < r1 - 1; y++) {
-                    put({x + w() / 2, y + h() / 2}, BLACK);
-                    put({x + w() / 2, y + h() / 2}, BLACK);
+                    put(coo{x + w() / 2, y + h() / 2}, BLACK);
+                    put(coo{x + w() / 2, y + h() / 2}, BLACK);
                 }
             }
 

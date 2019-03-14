@@ -25,35 +25,35 @@ public:
         bcs["wired"] = [this] {
             b = 1;
             for (int i = 0; i < w(); ++i) {
-                put({i, 0}, 1);
-                put({i, h() - 1}, 1);
+                put(coo{i, 0}, 1);
+                put(coo{i, h() - 1}, 1);
             }
             for (int i = 0; i < h(); ++i) {
-                put({0, i}, 1);
-                put({w() - 1, i}, 1);
+                put(coo{0, i}, 1);
+                put(coo{w() - 1, i}, 1);
             }
         };
         bcs["tripod"] = [this] {
             b = 1;
             for (int j = 0; j < h() - w() / 2; ++j) {
-                for (int i = 0; i < w() / 2; ++i) put({i, j}, 0);
-                for (int i = w() / 2; i < w(); ++i) put({i, j}, 2);
+                for (int i = 0; i < w() / 2; ++i) put(coo{i, j}, 0);
+                for (int i = w() / 2; i < w(); ++i) put(coo{i, j}, 2);
             }
             for (int j = h() - w() / 2; j < h(); ++j) {
-                for (int i = 0; i < h() - j; ++i) put({i, j}, 0);
-                for (int i = h() - j; i < w() - h() + j; ++i) put({i, j}, 1);
-                for (int i = w() - h() + j; i < w(); ++i) put({i, j}, 2);
+                for (int i = 0; i < h() - j; ++i) put(coo{i, j}, 0);
+                for (int i = h() - j; i < w() - h() + j; ++i) put(coo{i, j}, 1);
+                for (int i = w() - h() + j; i < w(); ++i) put(coo{i, j}, 2);
             }
         };
         bcs["quadripod"] = [this] {
             b = 1;
             for (int j = 0; j < h() / 2; ++j) {
-                for (int i = 0; i < w() / 2; ++i) put({i, j}, 0);
-                for (int i = w() / 2; i < w(); ++i) put({i, j}, 1);
+                for (int i = 0; i < w() / 2; ++i) put(coo{i, j}, 0);
+                for (int i = w() / 2; i < w(); ++i) put(coo{i, j}, 1);
             }
             for (int j = h() / 2; j < h(); ++j) {
-                for (int i = 0; i < w() / 2; ++i) put({i, j}, 2);
-                for (int i = w() / 2; i < w(); ++i) put({i, j}, 3);
+                for (int i = 0; i < w() / 2; ++i) put(coo{i, j}, 2);
+                for (int i = w() / 2; i < w(); ++i) put(coo{i, j}, 3);
             }
         };
         bcs["quadripod2"] = [this] {
@@ -62,82 +62,82 @@ public:
                 for (int j = 0; j < h(); ++j) {
                     if (i > j) {
                         if (i + j < w())
-                            put({i, j}, 0);
+                            put(coo{i, j}, 0);
                         else
-                            put({i, j}, 1);
+                            put(coo{i, j}, 1);
                     } else {
                         if (i + j < w())
-                            put({i, j}, 2);
+                            put(coo{i, j}, 2);
                         else
-                            put({i, j}, 3);
+                            put(coo{i, j}, 3);
                     }
                 }
         };
         bcs["dobrushin"] = [this] {
             b = 1;
             for (int i = 0; i < w(); ++i)
-                for (int j = 0; j < h() / 2; ++j) put({i, j}, 0);
+                for (int j = 0; j < h() / 2; ++j) put(coo{i, j}, 0);
             for (int i = 0; i < w(); ++i)
-                for (int j = h() / 2; j < h(); ++j) put({i, j}, 1);
+                for (int j = h() / 2; j < h(); ++j) put(coo{i, j}, 1);
         };
         bcs["loren"] = [this, q] {
             b = 1;
             for (int i = 0; i < w(); ++i)
                 for (int j = 0; j < h(); ++j)
-                    if ((i == 0) || (j == 0) || (i == w() - 1) || (j == h() - 1)) put({i, j}, (q * (i + j) / w()) % q);
+                    if ((i == 0) || (j == 0) || (i == w() - 1) || (j == h() - 1)) put(coo{i, j}, (q * (i + j) / w()) % q);
         };
         bcs["loren2"] = [this] {
             assert(int(H['q']) >= 6);
             b = 1;
-            for (int i = 0; i < w() / 4; ++i) put({i, 0}, 0);
-            for (int i = w() / 4; i < 3 * w() / 4; ++i) put({i, 0}, 1);
-            for (int i = 3 * w() / 4; i < w(); ++i) put({i, 0}, 2);
-            for (int i = 0; i < h() / 2; ++i) put({0, i}, 0);
-            for (int i = h() / 2; i < h(); ++i) put({0, i}, 5);
-            for (int i = 0; i < h() / 2; ++i) put({w() - 1, i}, 2);
-            for (int i = h() / 2; i < h(); ++i) put({w() - 1, i}, 3);
-            for (int i = 0; i < w() / 4; ++i) put({i, h() - 1}, 5);
-            for (int i = w() / 4; i < 3 * w() / 4; ++i) put({i, h() - 1}, 4);
-            for (int i = 3 * w() / 4; i < w(); ++i) put({i, h() - 1}, 3);
+            for (int i = 0; i < w() / 4; ++i) put(coo{i, 0}, 0);
+            for (int i = w() / 4; i < 3 * w() / 4; ++i) put(coo{i, 0}, 1);
+            for (int i = 3 * w() / 4; i < w(); ++i) put(coo{i, 0}, 2);
+            for (int i = 0; i < h() / 2; ++i) put(coo{0, i}, 0);
+            for (int i = h() / 2; i < h(); ++i) put(coo{0, i}, 5);
+            for (int i = 0; i < h() / 2; ++i) put(coo{w() - 1, i}, 2);
+            for (int i = h() / 2; i < h(); ++i) put(coo{w() - 1, i}, 3);
+            for (int i = 0; i < w() / 4; ++i) put(coo{i, h() - 1}, 5);
+            for (int i = w() / 4; i < 3 * w() / 4; ++i) put(coo{i, h() - 1}, 4);
+            for (int i = 3 * w() / 4; i < w(); ++i) put(coo{i, h() - 1}, 3);
         };
         bcs["123"] = [this, q] {
             b     = 1;
             int c = 0;
             for (int i = 0; i < w() - 1; ++i) {
-                put({i, 0}, c);
+                put(coo{i, 0}, c);
                 c = (c + 1) % q;
             }
             for (int i = 0; i < h() - 1; ++i) {
-                put({w() - 1, i}, c);
+                put(coo{w() - 1, i}, c);
                 c = (c + 1) % q;
             }
             for (int i = 0; i < w() - 1; ++i) {
-                put({w() - 1 - i, h() - 1}, c);
+                put(coo{w() - 1 - i, h() - 1}, c);
                 c = (c + 1) % q;
             }
             for (int i = 0; i < h() - 1; ++i) {
-                put({0, h() - 1 - i}, c);
+                put(coo{0, h() - 1 - i}, c);
                 c = (c + 1) % q;
             }
         };
         bcs["12123333"] = [this] {
             b = 1;
             for (int i = 0; i < w(); ++i)
-                for (int j = 0; j < h(); ++j) put({i, j}, (j > h() / 2) ? ((i + j) % 2) : 2);
+                for (int j = 0; j < h(); ++j) put(coo{i, j}, (j > h() / 2) ? ((i + j) % 2) : 2);
         };
         bcs["1231234444"] = [this] {
             b = 1;
             for (int i = 0; i < w(); ++i)
-                for (int j = 0; j < h(); ++j) put({i, j}, (j > h() / 2) ? ((i + j) % 3) : 3);
+                for (int j = 0; j < h(); ++j) put(coo{i, j}, (j > h() / 2) ? ((i + j) % 3) : 3);
         };
         bcs["mostlyfree"] = [this, q] {
             b = 1;
             for (int i = 0; i < w(); ++i)
-                for (int j = 0; j < h(); ++j) put({i, j}, q);
+                for (int j = 0; j < h(); ++j) put(coo{i, j}, q);
         };
 
         for (int i = 0; i < w(); ++i)
-            for (int j = 0; j < h(); ++j) put({i, j}, prng.uniform_int(q));
+            for (int j = 0; j < h(); ++j) put(coo{i, j}, prng.uniform_int(q));
         beta *= log(1 + sqrt(double(q)));
         bcs[H['c']]();
         show();

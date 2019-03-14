@@ -48,10 +48,10 @@ public:
 class Sagex : public Bitmap<int> {
 public:
     Sagex(const Hub &H, size_t w, size_t h) : Bitmap<int>(H.title, {w, h}) {
-        for (int x = 0; x < w; ++x)
-            for (int y = 0; y < h; ++y) {
+        for (size_t x = 0; x < w; ++x)
+            for (size_t y = 0; y < h; ++y) {
                 if (prng.bernoulli(H['l'])) {
-                    Particle p({x, y}, prng.bernoulli(H['p']) ? 1 : 2, H['z'], prng.exponential());
+                    Particle p({int(x), int(y)}, prng.bernoulli(H['p']) ? 1 : 2, H['z'], prng.exponential());
                     put({x, y}, p.state);
                     q.push(p);
                 }

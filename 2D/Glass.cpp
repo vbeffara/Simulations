@@ -95,7 +95,7 @@ public:
         ok = init[H['c']]();
 
         fill({0, 0}, BLACK);
-        for (int i = 0; i < n; i++) put({i, int(n) / 2}, WHITE);
+        for (size_t i = 0; i < n; i++) put({i, n / 2}, WHITE);
         show();
     };
 
@@ -104,25 +104,26 @@ public:
         double p = H['p'];
 
         for (int i = 0; i < 2000 * n * n; i++) {
-            int x  = 1 + (prng() % (n - 2));
-            int y  = 1 + (prng() % (n - 2));
-            int nb = 0;
-            if (at(coo{x + 1, y}) != BLACK) nb += 1;
-            if (at(coo{x + 1, y + 1}) != BLACK) nb += 2;
-            if (at(coo{x, y + 1}) != BLACK) nb += 4;
-            if (at(coo{x - 1, y + 1}) != BLACK) nb += 8;
-            if (at(coo{x - 1, y}) != BLACK) nb += 16;
-            if (at(coo{x - 1, y - 1}) != BLACK) nb += 32;
-            if (at(coo{x, y - 1}) != BLACK) nb += 64;
-            if (at(coo{x + 1, y - 1}) != BLACK) nb += 128;
+            // TODO: uniform_int
+            size_t x  = 1 + (prng() % (n - 2));
+            size_t y  = 1 + (prng() % (n - 2));
+            int    nb = 0;
+            if (at({x + 1, y}) != BLACK) nb += 1;
+            if (at({x + 1, y + 1}) != BLACK) nb += 2;
+            if (at({x, y + 1}) != BLACK) nb += 4;
+            if (at({x - 1, y + 1}) != BLACK) nb += 8;
+            if (at({x - 1, y}) != BLACK) nb += 16;
+            if (at({x - 1, y - 1}) != BLACK) nb += 32;
+            if (at({x, y - 1}) != BLACK) nb += 64;
+            if (at({x + 1, y - 1}) != BLACK) nb += 128;
 
             if (ok[nb]) {
                 if (prng.bernoulli(p)) {
-                    if (at(coo{x, y}) == BLACK) {
-                        uint8_t tmp = uint8_t(at(coo{x + 1, y}));
-                        tmp |= uint8_t(at(coo{x - 1, y}));
-                        tmp |= uint8_t(at(coo{x, y + 1}));
-                        tmp |= uint8_t(at(coo{x, y - 1}));
+                    if (at({x, y}) == BLACK) {
+                        uint8_t tmp = uint8_t(at({x + 1, y}));
+                        tmp |= uint8_t(at({x - 1, y}));
+                        tmp |= uint8_t(at({x, y + 1}));
+                        tmp |= uint8_t(at({x, y - 1}));
                         if (tmp == 0) tmp = 85;
                         put({x, y}, vb::Grey(tmp));
                     }

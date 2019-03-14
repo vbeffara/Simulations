@@ -24,8 +24,8 @@ int main(int argc, char **argv) {
 
     Image img(H.title, {w, h});
 
-    for (int x = 0; x < w; ++x) {
-        for (int y = 0; y < h; ++y) {
+    for (size_t x = 0; x < w; ++x) {
+        for (size_t y = 0; y < h; ++y) {
             if (prng.bernoulli(p1 + (p2 - p1) * y / h))
                 img.put({x, y}, Grey(200));
             else
@@ -33,7 +33,7 @@ int main(int argc, char **argv) {
         }
     }
 
-    for (int i = 0; i < w; ++i) img.put({i, int(h) - 1}, Grey(200));
+    for (size_t i = 0; i < w; ++i) img.put({i, h - 1}, Grey(200));
 
     img.show();
     img.fill({0, int(h) - 1}, Color(255, 0, 0));

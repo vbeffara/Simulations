@@ -17,24 +17,23 @@
 using namespace vb;
 using namespace std;
 
-int            ntri_[] = {0, 1, 5, 46, 669};
-gsl::span<int> ntri{ntri_};
+size_t            ntri_[] = {0, 1, 5, 46, 669};
+gsl::span<size_t> ntri{ntri_};
 
 int main(int argc, char **argv) {
-    Hub      H("Toroidal enumeration", argc, argv, "s=1,m=228,r=1,o,d=0,D=0,g=1,f,n=2,q");
-    int      s = H['s'], g = H['g'], r = H['r'];
-    unsigned D = H['D'], d = H['d'], a = 6 * (s + 2 * g - 2);
-    assert(a > 0);
+    Hub    H("Toroidal enumeration", argc, argv, "s=1,m=228,r=1,o,d=0,D=0,g=1,f,n=2,q");
+    size_t s = H['s'], g = H['g'], D = H['D'], d = H['d'], a = 6 * (s + 2 * g - 2);
+    assert(s + 2 * g > 2);
     if (g != 1) assert(!H['o']);
-    if (r > 0) prng.seed(r);
+    if (size_t r = H['r']; r > 0) prng.seed(r);
 
     Cycles phi_c;
     for (unsigned i = 0; i < a / 3; ++i) phi_c.emplace_back(std::vector<size_t>{3 * i, 3 * i + 1, 3 * i + 2});
     Permutation phi(phi_c);
 
     vector<Hypermap> v;
-    unsigned         target = 0;
-    if ((d == 0) && (g == 1) && (!H['f']) && (s < ntri.size())) target = ntri[s];
+    size_t           target = 0;
+    if ((d == 0) && (g == 1) && (!H['f']) && (int(s) < ntri.size())) target = ntri[gsl::index(s)];
 
     Coloring img(H.title, cpx(-1, -1), cpx(1, 1), 500, [](cpx) { return BLACK; });
 
@@ -103,7 +102,7 @@ int main(int argc, char **argv) {
                 int                    lc  = -int(log10(c));
                 unsigned               nd  = unsigned(std::max(10, lc / 2 - 15));
                 real_t                 eps = pow(real_t(.1), nd);
-                cout << fixed << setprecision(std::min(nd, 80u));
+                cout << fixed << setprecision(std::min(int(nd), 80));
                 cout << "     Modulus:         " << CC.tau() << endl;
                 if (nd > 30) {
                     auto P = guess(CC.tau(), nd);

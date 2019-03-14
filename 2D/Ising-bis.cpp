@@ -15,9 +15,9 @@ public:
     Ising(const Hub &H, size_t n, double beta, int con) : Bitmap<int>(H.title, {n, n}), con(con), p(2 * con + 1) {
         for (auto z : coo_range(size)) put(z, prng.bernoulli(.5) ? 1 : -1);
         if (con == 6) {
-            int m = 2 * n / 3;
-            for (int i = 0; i < n; ++i)
-                for (int j = 0; j < n; ++j)
+            size_t m = 2 * n / 3;
+            for (size_t i = 0; i < n; ++i)
+                for (size_t j = 0; j < n; ++j)
                     if ((j > m) || (i < j / 2) || (i > m + j / 2)) put({i, j}, 0);
         }
         for (int c = -con; c <= con; ++c) p[c + con] = 1 / (1 + exp(-beta * c));

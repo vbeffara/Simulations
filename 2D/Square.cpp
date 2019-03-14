@@ -8,13 +8,13 @@ using ptt  = std::pair<cooo, cooo>;
 
 class pt : public ptt {
 public:
-    pt(int i, int j, double x, double y) : ptt(cooo(i, x), cooo(j, y)){};
-    pt() : pt(-1, -1, -1, -1){};
+    pt(size_t i, size_t j, double x, double y) : ptt(cooo(i, x), cooo(j, y)){};
+    pt() : pt(SIZE_T_MAX, SIZE_T_MAX, 0, 0){};
 
-    int &   xi() { return first.first; }
+    auto &  xi() { return first.first; }
     double &xf() { return first.second; }
     double  x() const { return static_cast<double>(first.first) + first.second; }
-    int &   yi() { return second.first; }
+    auto &  yi() { return second.first; }
     double &yf() { return second.second; }
     double  y() const { return static_cast<double>(second.first) + second.second; }
 
@@ -151,12 +151,12 @@ public:
             for (size_t j = 0; j < size.y; ++j) {
                 for (int xx = 1; xx < 100; ++xx) {
                     double            x  = .01 * xx;
-                    std::pair<pt, pt> pp = leaf(pt(int(i), int(j), x, 0), nullptr);
+                    std::pair<pt, pt> pp = leaf(pt(i, j, x, 0), nullptr);
 
                     if ((pp.first != pt()) && (pp.second != pt())) {
                         if (S.count(pp) == 0) {
                             S.insert(pp);
-                            P.insert(pt(int(i), int(j), x, 0));
+                            P.insert(pt(i, j, x, 0));
                         }
                     }
 
@@ -165,7 +165,7 @@ public:
                     if ((pp.first != pt()) && (pp.second != pt())) {
                         if (S.count(pp) == 0) {
                             S.insert(pp);
-                            P.insert(pt(int(i), int(j), 0, x));
+                            P.insert(pt(i, j, 0, x));
                         }
                     }
                 }

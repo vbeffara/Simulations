@@ -47,7 +47,7 @@ namespace vb {
 
         void swipe() {
             for (size_t i = 0; i < n * lt; ++i) step();
-            for (size_t i = 0; i < n; ++i) I.put({int(i), y}, (*this)[i]);
+            for (size_t i = 0; i < n; ++i) I.put({i, y}, (*this)[i]);
             ++y;
             if (y == 500) {
                 y = 0;
@@ -65,7 +65,7 @@ namespace vb {
         std::vector<double>  rates;
         std::vector<Rule<T>> rules;
         size_t               n;
-        int                  y{0};
+        size_t               y{0};
         double               lt{0};
         bool                 pause;
         Bitmap<T>            I;

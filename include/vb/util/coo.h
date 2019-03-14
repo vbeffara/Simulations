@@ -1,6 +1,7 @@
 #pragma once /// @file
 #include <fmt/ostream.h>
 #include <gsl/gsl>
+#include <vb/math/math.h>
 
 namespace vb {
     struct coo {
@@ -42,9 +43,11 @@ namespace vb {
 
     struct ucoo {
         size_t x, y;
-        ucoo(size_t x, size_t y) : x(x), y(y) {}
-        ucoo(const coo &z) : x(size_t(z.x)), y(size_t(z.y)) {}
+        constexpr ucoo(size_t x, size_t y) : x(x), y(y) {}
+        constexpr ucoo(const coo &z) : x(size_t(z.x)), y(size_t(z.y)) {}
     };
+
+    constexpr ucoo wrap(const coo &z, const ucoo &p) { return {pmod(z.x, p.x), pmod(z.y, p.y)}; }
 
     struct coo_range {
         coo z, r;

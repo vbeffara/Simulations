@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
     Image img(H.title, {n, n});
 
     for (size_t x = 0; x < n; ++x)
-        for (size_t y = 0; y < n / 2; ++y) img.put({int(x), int(y)}, WHITE);
+        for (size_t y = 0; y < n / 2; ++y) img.put({x, y}, WHITE);
     img.show();
 
     for (size_t i = 0; i < 3 * n; i++) {
@@ -27,10 +27,10 @@ int main(int argc, char **argv) {
                     nb |= (img.at({x, y - 1}) == WHITE);
                     nb |= (img.at({x, y + 1}) == WHITE);
                     if (nb && prng.bernoulli(p)) {
-                        img.put({int(x), int(y)}, WHITE);
+                        img.put({x, y}, WHITE);
                         total++;
                     } else {
-                        img.put({int(x), int(y)}, BLACK);
+                        img.put({x, y}, BLACK);
                     }
                 }
             }

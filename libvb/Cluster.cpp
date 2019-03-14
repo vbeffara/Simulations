@@ -97,11 +97,11 @@ namespace vb {
             br = ul + coo{int64_t(w), int64_t(w)};
         }
         if (np == 0) {
-            for (int64_t x = ul.x; x < br.x; ++x)
-                for (int64_t y = ul.y; y < br.y; ++y) I.put({x, y}, BLACK);
+            for (size_t x = ul.x; x < br.x; ++x)
+                for (size_t y = ul.y; y < br.y; ++y) I.put({x, y}, BLACK);
         } else if (np == w * w) {
-            for (int64_t x = ul.x; x < br.x; ++x)
-                for (int64_t y = ul.y; y < br.y; ++y)
+            for (size_t x = ul.x; x < br.x; ++x)
+                for (size_t y = ul.y; y < br.y; ++y)
                     I.put({x, y}, (x == ul.x) || (x == br.x - 1) || (y == ul.y) || (y == br.y - 1) ? RED : BLUE);
         } else if (br == ul + coo{1, 1}) {
             I.put(ul, Grey(uint8_t((255 * np) / (w * w))));

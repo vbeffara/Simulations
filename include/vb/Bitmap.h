@@ -12,12 +12,11 @@ namespace vb {
         using Array<T>::atp;
         using Array<T>::contains; // TODO: rename, clashes with Fl_Widget
 
-        // TODO: use ucoo
-        void put(coo z, T const &c) {
+        void put(const ucoo &z, const T &c) {
             Array<T>::put(z, c);
             step();
         }
-        void putp(coo z, T const &c) {
+        void putp(const coo &z, const T &c) {
             Array<T>::putp(z, c);
             step();
         }
@@ -35,13 +34,15 @@ namespace vb {
 
     protected:
         void paint() override {
-            int64_t          ppp = pixel_w() / w();
-            gsl::span<Color> stage((Color *)cairo_image_surface_get_data(surface), ppp * w() + int(stride) * (ppp * h() - 1));
+            auto             ppp = size_t(pixel_w() / w());
+            gsl::span<Color> stage((Color *)cairo_image_surface_get_data(surface),
+                                   gsl::index(ppp * size_t(w()) + stride * (ppp * size_t(h()) - 1)));
 
-            for (size_t x = 0; x < w(); ++x)
-                for (size_t y = 0; y < h(); ++y)
+            for (size_t x = 0; x < size_t(w()); ++x)
+                for (size_t y = 0; y < size_t(h()); ++y)
                     for (size_t dx = 0; dx < ppp; ++dx)
-                        for (size_t dy = 0; dy < ppp; ++dy) stage[ppp * x + dx + stride * (ppp * y + dy)] = to_Color(at({x, y}));
+                        for (size_t dy = 0; dy < ppp; ++dy)
+                            stage[gsl::index(ppp * x + dx + stride * (ppp * y + dy))] = to_Color(at({x, y}));
         }
     };
 
@@ -76,8 +77,8 @@ namespace vb {
         Hub   H("Testing Image", 1, argv);
         Image img(H.title, {256, 256});
         img.show();
-        for (int i = 0; i < 256; ++i)
-            for (int j = 0; j < 256; ++j) img.put({i, j}, Color(uint8_t(i), uint8_t(j), uint8_t((8 * (i + j)) % 256)));
+        for (size_t i = 0; i < 256; ++i)
+            for (size_t j = 0; j < 256; ++j) img.put({i, j}, Color(uint8_t(i), uint8_t(j), uint8_t((8 * (i + j)) % 256)));
         img.hide();
     }
 #endif

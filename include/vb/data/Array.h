@@ -1,5 +1,4 @@
 #pragma once
-#include <vb/math/math.h>
 #include <vb/util/coo.h>
 
 namespace vb {
@@ -9,7 +8,7 @@ namespace vb {
         Array(ucoo sz) : size(sz), data((unsigned long)(sz.x * sz.y)) {}
 
         explicit Array(const std::vector<std::vector<T>> &l) : size(ucoo{l.size(), l[0].size()}), data(size.x * size.y) {
-            for (const auto &z : coo_range(size)) put(z, l[size_t(z.x)][size_t(z.y)]);
+            for (const ucoo z : coo_range(size)) put(z, l[z.x][z.y]);
         }
 
         void resize(ucoo sz) {
@@ -29,14 +28,8 @@ namespace vb {
         T &      operator[](const ucoo &z) { return at(z); }
         T const &operator[](const ucoo &z) const { return at(z); }
 
-        T &atp(const coo &z) {
-            auto x = pmod(z.x, size.x), y = pmod(z.y, size.y);
-            return at({x, y});
-        }
-        T const &atp(const coo &z) const {
-            auto x = pmod(z.x, size.x), y = pmod(z.y, size.y);
-            return at({x, y});
-        }
+        T &      atp(const coo &z) { return at(wrap(z, size)); }
+        T const &atp(const coo &z) const { return at(wrap(z, size)); }
 
         void put(const ucoo &z, T const &c) { at(z) = c; }
         void putp(const coo &z, T const &c) { atp(z) = c; }

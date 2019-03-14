@@ -15,8 +15,8 @@ private:
 };
 
 void Glauber::fill(double p) {
-    for (int i = 0; i < n; ++i)
-        for (int j = 0; j < n; ++j)
+    for (size_t i = 0; i < n; ++i)
+        for (size_t j = 0; j < n; ++j)
             if (prng.bernoulli(p))
                 put({i, j}, WHITE);
             else

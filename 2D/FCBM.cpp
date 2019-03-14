@@ -8,8 +8,8 @@ using namespace std;
 class FCBM : public Image {
 public:
     FCBM(const std::string &s, size_t n, double p) : Image(s, {2 * n, 2 * n}), mid({int(n - (n % 2)), int(n - (n % 2))}), n(n), p(p) {
-        for (int x = 0; x < 2 * n; ++x)
-            for (int y = 0; y < 2 * n; ++y)
+        for (size_t x = 0; x < 2 * n; ++x)
+            for (size_t y = 0; y < 2 * n; ++y)
                 if ((x % 2 == 0) && (y % 2 == 0)) put({x, y}, WHITE);
     }
 

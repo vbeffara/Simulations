@@ -9,10 +9,11 @@ const Color none(BLACK), prey(GREEN), pred(RED);
 class SIR : public Image {
 public:
     SIR(const Hub &H, size_t n, double l_) : Image(H.title, {n, n}), l(l_) {
-        int n0 = H['d'] ? 0 : int(H['n']) / 2;
-        for (int i = n0 - 10; i < n0 + 10; ++i)
-            for (int j = n0 - 10; j < n0 + 10; ++j)
-                if (contains({i, j})) put({i, j}, prey);
+        size_t n0 = H['d'] ? 0 : int(H['n']) / 2;
+        for (size_t i = n0 - 10; i < n0 + 10; ++i)
+            for (size_t j = n0 - 10; j < n0 + 10; ++j)
+                // TODO: allow for better usage
+                if (contains({int(i), int(j)})) put({i, j}, prey);
         put({n0, n0}, pred);
         for (auto z : coo_range(size))
             if (at(z) == prey) fringe.push_back(z);

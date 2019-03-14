@@ -26,11 +26,12 @@ class UST : public Bitmap<Point> {
 public:
     explicit UST(const Hub &H, size_t n_) : Bitmap<Point>(H.title, {2 * n_ + 1, 2 * n_ + 1}), n(n_) {}
 
-    void path(coo z, Type tgt) {
+    void path(ucoo z, Type tgt) {
         while (at(z).t != tgt) {
-            coo d   = dz[at(z).d];
-            at(z).t = at(z + d).t = tgt;
-            z += d * 2;
+            coo d = dz[at(z).d];
+            // TODO: make this less ugly
+            at(z).t = at(coo{int(z.x), int(z.y)} + d).t = tgt;
+            z                                           = coo{int(z.x), int(z.y)} + d * 2;
         }
     }
 
@@ -58,7 +59,7 @@ public:
         output(H.title);
     }
 
-    int n;
+    size_t n;
 };
 
 int main(int argc, char **argv) {

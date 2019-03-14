@@ -32,10 +32,10 @@ int main(int argc, char **argv) {
     TASEP T(H);
     Image I(H.title, {T.size(), 700});
     I.show();
-    for (int t = 0, u = 0;; ++t, ++u) {
-        for (int j = 0; j < u; ++j)
+    for (size_t t = 0, u = 0;; ++t, ++u) {
+        for (size_t j = 0; j < u; ++j)
             for (unsigned i = 0; i < T.size(); ++i) T.step();
-        for (unsigned i = 0; i < T.size(); ++i) I.put({i, t % I.h()}, C[T[i]]);
+        for (unsigned i = 0; i < T.size(); ++i) I.put({i, t % size_t(I.h())}, C[T[i]]);
         if (t == I.h() - 1) I.pause();
     }
 }

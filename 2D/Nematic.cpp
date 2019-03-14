@@ -6,71 +6,73 @@
 using namespace vb;
 
 namespace vb {
-    template <> Color to_Color(int t) {
+    template <> Color to_Color(size_t t) {
         static const std::vector<Color> key = {BLACK, RED, GREEN};
         return key[t];
     }
 } // namespace vb
 
-class Nematic : public vb::Bitmap<int> {
+class Nematic : public vb::Bitmap<size_t> {
 public:
-    Nematic(const Hub &H, size_t n_, size_t m_, int k_, double b_) : Bitmap<int>(H.title, {n_, m_}), k(k_), b(b_), P(std::max(n_, m_), 0){};
+    Nematic(const Hub &H, size_t n, size_t m, size_t k, double b) : Bitmap<size_t>(H.title, {n, m}), k(k), b(b), P(std::max(n, m), 0){};
 
     void prec() {
-        ok = std::min(k, std::min(w(), h()));
+        // TODO: make w() and h() return unsigned values
+        ok = std::min(k, size_t(std::min(w(), h())));
         ob = b;
         std::vector<double> Z(P.size());
         double              zz = exp(2 * ob / double(ok));
-        for (int i = 0; i < ok; ++i) Z[i] = pow(zz, -i);
-        for (unsigned i = ok; i < Z.size(); ++i) Z[i] = Z[i - 1] / zz + Z[i - ok];
-        for (unsigned i = ok; i < P.size(); ++i) P[i] = Z[i - ok] / Z[i];
+        for (unsigned i = 0; i < ok; ++i) Z[i] = pow(zz, -i);
+        for (auto i = ok; i < Z.size(); ++i) Z[i] = Z[i - 1] / zz + Z[i - ok];
+        for (auto i = ok; i < P.size(); ++i) P[i] = Z[i - ok] / Z[i];
         dd = ok * Z[Z.size() - ok] / (Z[Z.size() - 1] / zz + ok * Z[Z.size() - ok]);
     }
 
-    void add(coo z, int d) {
-        for (int i = 0; i < ok; ++i) {
+    void add(coo z, size_t d) {
+        for (size_t i = 0; i < ok; ++i) {
             atp(z) = d;
-            z += dz[d - 1];
+            z += dz[gsl::index(d - 1)];
         }
     }
 
-    void fill(coo z, int d, int l) {
+    void fill(coo z, size_t d, size_t l) {
         while (l >= ok) {
             if (prng.bernoulli(P[l])) {
                 add(z, d);
-                z += dz[d - 1] * ok;
+                // TODO: somehow get rid of gsl::index
+                z += dz[gsl::index(d - 1)] * int(ok);
                 l -= ok;
             } else {
-                z += dz[d - 1];
+                z += dz[gsl::index(d - 1)];
                 l--;
             }
         }
     }
 
-    void redo(coo z, int d) {
-        bool empty = true;
-        int  hw    = (d == 1 ? w() : h());
-        for (int x = 0; x < hw; z += dz[d - 1], ++x) {
+    void redo(coo z, size_t d) {
+        bool   empty = true;
+        size_t hw    = (d == 1 ? size_t(w()) : size_t(h()));
+        for (size_t x = 0; x < hw; z += dz[gsl::index(d - 1)], ++x) {
             if (at(z) == 3 - d) empty = false;
             if (at(z) == d) at(z) = 0;
         }
         if (empty) {
             if (prng.bernoulli(dd)) {
-                z -= dz[d - 1] * prng.uniform_int(ok);
+                z -= dz[gsl::index(d - 1)] * int(prng.uniform_int(ok));
                 add(z, d);
-                fill(z + dz[d - 1] * ok, d, hw - ok);
+                fill(z + dz[gsl::index(d - 1)] * int(ok), d, hw - ok);
             } else
-                fill(z + dz[d - 1], d, hw - 1);
+                fill(z + dz[gsl::index(d - 1)], d, hw - 1);
         } else {
-            while (atp(z) != 3 - d) { z += dz[d - 1]; }
-            z += dz[d - 1];
-            for (coo zz = z - dz[d - 1] * hw; zz != z; zz += dz[d - 1]) {
-                int l = 0;
+            while (atp(z) != 3 - d) { z += dz[gsl::index(d - 1)]; }
+            z += dz[gsl::index(d - 1)];
+            for (coo zz = z - dz[gsl::index(d - 1)] * int(hw); zz != z; zz += dz[gsl::index(d - 1)]) {
+                size_t l = 0;
                 while (atp(zz) == 0) {
                     ++l;
-                    zz += dz[d - 1];
+                    zz += dz[gsl::index(d - 1)];
                 }
-                if (l > 0) fill(zz - dz[d - 1] * l, d, l);
+                if (l > 0) fill(zz - dz[gsl::index(d - 1)] * int(l), d, l);
             }
         }
         step();
@@ -80,7 +82,7 @@ public:
         Console C;
         C.watch(order, "order");
         C.manage(b, -5.0, 10.0, "beta");
-        C.manage(k, 1, 100, "k");
+        C.manage(k, size_t(1), size_t(100), "k");
         show();
         C.show();
         if (H['v']) snapshot_setup("movie", 10);
@@ -99,7 +101,7 @@ public:
         }
     };
 
-    int                 k, ok = 0;
+    size_t              k, ok = 0;
     double              b, ob = 0, order = 0, dd = 0;
     std::vector<double> P;
 };

@@ -11,11 +11,11 @@ public:
         if (rr != 0.0) {
             for (auto z : coo_range(size)) put(z, prng.bernoulli(rr) ? BLACK : WHITE);
         } else {
-            for (int x = 1; x < n - 1; x++)
-                for (int y = 1; y < n - 1; y++) put({x, y}, x < (n / 2) ? BLACK : WHITE);
+            for (size_t x = 1; x < n - 1; x++)
+                for (size_t y = 1; y < n - 1; y++) put({x, y}, x < (n / 2) ? BLACK : WHITE);
         }
         if (c)
-            for (int i = 0; i < n; i++) {
+            for (size_t i = 0; i < n; i++) {
                 put({i, 0}, i < n / 2 ? BLACK : WHITE);
                 put({i, n - 1}, i < n / 2 ? BLACK : WHITE);
                 put({0, i}, BLACK);
@@ -57,7 +57,7 @@ public:
             }
     }
 
-    int    n;
+    size_t    n;
     bool   c = false;
     double beta;
 };

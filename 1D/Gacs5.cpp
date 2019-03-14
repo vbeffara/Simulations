@@ -82,10 +82,10 @@ int main(int argc, char **argv) {
 
     for (int x = 0; x < n; ++x) a.main[x] = vb::prng() & 31u;
 
-    for (int i = 0;; ++i) {
+    for (size_t i = 0;; ++i) {
         int nb = 0;
-        for (int x = 0; x < n; ++x) {
-            img.put({x, i % int(n)}, vb::Grey(255 * (a.main[x] & 1u)));
+        for (size_t x = 0; x < n; ++x) {
+            img.put({x, i % n}, vb::Grey(255 * (a.main[x] & 1u)));
             nb += a.main[x] & 1u;
         }
         //    img.update();

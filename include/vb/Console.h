@@ -3,7 +3,6 @@
 #include <FL/Fl_Output.H>
 #include <FL/Fl_Window.H>
 #include <vb/AutoWindow.h>
-#include <vb/util/cpx.h>
 
 namespace vb {
     template <typename T> void runinput(Fl_Widget *W);
