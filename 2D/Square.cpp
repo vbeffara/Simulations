@@ -9,7 +9,7 @@ using ptt  = std::pair<cooo, cooo>;
 class pt : public ptt {
 public:
     pt(size_t i, size_t j, double x, double y) : ptt(cooo(i, x), cooo(j, y)){};
-    pt() : pt(SIZE_T_MAX, SIZE_T_MAX, 0, 0){};
+    pt() : pt(SIZE_MAX, SIZE_MAX, 0, 0){};
 
     auto &  xi() { return first.first; }
     double &xf() { return first.second; }
