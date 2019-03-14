@@ -11,7 +11,7 @@
 
 class Automaton {
 public:
-    explicit Automaton(int /*n*/);
+    explicit Automaton(size_t n);
 
     void swap() { main.swap(alt); };
 
@@ -21,27 +21,27 @@ public:
     void forget(double r);
     void effect(double r);
 
-    int                  size;
+    size_t               size;
     std::vector<uint8_t> main;
     std::vector<uint8_t> alt;
 };
 
-Automaton::Automaton(int n) : size(n), main(n, 0), alt(n) {}
+Automaton::Automaton(size_t n) : size(n), main(n, 0), alt(n) {}
 
 void Automaton::randomize(double e) {
-    for (int i = 0; i < size; ++i)
+    for (size_t i = 0; i < size; ++i)
         if (vb::prng.bernoulli(e)) main[i] = vb::prng() & ALL_BITS;
 }
 
 void Automaton::shift() {
-    for (int i = 0; i < size; ++i)
+    for (size_t i = 0; i < size; ++i)
         alt[i] = (main[i] & MAIN_BIT) + (main[(i + size - 1) % size] & R1_BIT) + (main[(i + size - 1) % size] & R2_BIT) +
                  (main[(i + 1) % size] & L1_BIT) + (main[(i + 1) % size] & L2_BIT);
     this->swap();
 }
 
 void Automaton::emit() {
-    for (int i = 0; i < size; i++) {
+    for (size_t i = 0; i < size; i++) {
         alt[i] = main[i];
         if (((main[i] & 1u) != 0) && ((main[(i + size - 1) % size] & 1u) == 0)) alt[i] |= L1_BIT | R1_BIT;
         if (((main[i] & 1u) == 0) && ((main[(i + size - 1) % size] & 1u) != 0)) alt[i] |= L2_BIT | R2_BIT;
@@ -50,13 +50,13 @@ void Automaton::emit() {
 }
 
 void Automaton::forget(double r) {
-    for (int i = 0; i < size; ++i)
+    for (size_t i = 0; i < size; ++i)
         if (vb::prng.bernoulli(r)) main[i] &= 1u;
 }
 
 void Automaton::effect(double r) {
-    for (int i = 0; i < size; i++) alt[i] = main[i];
-    for (int i = 0; i < size; i++) {
+    for (size_t i = 0; i < size; i++) alt[i] = main[i];
+    for (size_t i = 0; i < size; i++) {
         if (((main[i] & 1u) == 0) && ((main[(i + size - 1) % size] & 1u) != 0) && ((main[i] & L1_BIT) != 0) && (vb::prng.bernoulli(r)))
             alt[i] |= 1u;
         else if (((main[i] & 1u) == 0) && ((main[(i + size - 1) % size] & 1u) != 0) && ((main[i] & R1_BIT) != 0) && (vb::prng.bernoulli(r)))
@@ -80,7 +80,7 @@ int main(int argc, char **argv) {
 
     Automaton a(n);
 
-    for (int x = 0; x < n; ++x) a.main[x] = vb::prng() & 31u;
+    for (size_t x = 0; x < n; ++x) a.main[x] = vb::prng() & 31u;
 
     for (size_t i = 0;; ++i) {
         int nb = 0;

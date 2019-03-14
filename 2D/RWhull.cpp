@@ -8,13 +8,14 @@ using namespace vb;
 
 vector<int> bridge(size_t n, bool p = false) {
     vector<int> v(n, -1);
-    for (int i = 0; i < n / 2; ++i) v[i] = 1;
-    for (int i = n - 1; i >= 0; --i) swap(v[i], v[prng.uniform_int(i + 1)]);
+    for (size_t i = 0; i < n / 2; ++i) v[i] = 1;
+    for (size_t i = n; i-- > 0;) swap(v[i], v[prng.uniform_int(i + 1)]);
 
     if (!p) return v;
 
-    int s = 0, ms = 0, mi = 0;
-    for (int i = 0; i < n; ++i) {
+    int    s = 0, ms = 0;
+    size_t mi = 0;
+    for (size_t i = 0; i < n; ++i) {
         s += v[i];
         if (s < ms) {
             ms = s;
@@ -23,8 +24,8 @@ vector<int> bridge(size_t n, bool p = false) {
     }
 
     vector<int> w;
-    for (int i = mi + 1; i < n; ++i) w.push_back(v[i]);
-    for (int i = 0; i <= mi; ++i) w.push_back(v[i]);
+    for (size_t i = mi + 1; i < n; ++i) w.push_back(v[i]);
+    for (size_t i = 0; i <= mi; ++i) w.push_back(v[i]);
     return w;
 }
 
@@ -34,14 +35,14 @@ namespace vb {
     template <> Color to_Color(int t) {
         if (t == 0) return WHITE;
         if (t == 1) return RED;
-        return Grey(215 - (t * 215) / m);
+        return Grey(uint8_t(215 - (t * 215) / m));
     }
 } // namespace vb
 
 class Snake : public Bitmap<int> {
 public:
     Snake(const Hub &H, size_t n_) : Bitmap<int>(H.title, {6 * n_, 6 * n_}), n(n_) {
-        p.push_back({3 * n, 3 * n});
+        p.push_back({3 * int(n), 3 * int(n)});
         put(p.back(), 1);
         show();
     };
@@ -51,7 +52,7 @@ public:
     }
     void shrink() { p.pop_back(); }
 
-    int         n;
+    size_t      n;
     vector<coo> p;
 };
 

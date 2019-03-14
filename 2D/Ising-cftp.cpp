@@ -17,8 +17,8 @@ class IsingCFTP : public Bitmap<int> {
 public:
     explicit IsingCFTP(const Hub &H)
         : Bitmap<int>(H.title, {H['n'], H['n']}), b(H['b']), d(0), s(H['s']), status(H.title, {size_t(w()), size_t(h())}) {
-        for (size_t i = 0; i < w(); ++i)
-            for (size_t j = 0; j < h(); ++j) put({i, j}, 1);
+        for (size_t i = 0; i < size_t(w()); ++i)
+            for (size_t j = 0; j < size_t(h()); ++j) put({i, j}, 1);
         snap();
         b *= log(1 + sqrt(double(2)));
         for (int i = 0; i <= 4; ++i) p.push_back(exp(b * i) / (exp(b * i) + exp(b * (4 - i))));
@@ -40,7 +40,8 @@ public:
     }
 
     void up() {
-        for (int i = 0; i < w() * h(); ++i) up({d + prng.uniform_int(w() - 2 * d), d + prng.uniform_int(h() - 2 * d)});
+        for (size_t i = 0; i < size_t(w() * h()); ++i)
+            up({int(d) + prng.uniform_int(w() - 2 * int(d)), int(d) + prng.uniform_int(h() - 2 * int(d))});
     }
     void snap() {
         for (int i = 0; i < w(); ++i)
@@ -54,8 +55,8 @@ public:
         int n = w() * h();
         while (n > 0) {
             cerr << n << endl;
-            for (size_t i = d; i < w() - 2 * d; ++i)
-                for (size_t j = d; j < h() - 2 * d; ++j) put({i, j}, 1);
+            for (size_t i = d; i < size_t(w()) - 2 * d; ++i)
+                for (size_t j = d; j < size_t(h()) - 2 * d; ++j) put({i, j}, 1);
             for (auto t = states.size(); t-- > 0;) {
                 prng.state(states[t]);
                 for (unsigned i = 0; i < (1u << t); ++i) up();
@@ -72,11 +73,11 @@ public:
 
     void bc_0() {
         d = 1;
-        for (size_t i = 0; i < w(); ++i) {
+        for (size_t i = 0; i < size_t(w()); ++i) {
             put({i, 0}, 0);
             put({i, size_t(h()) - 1}, 0);
         }
-        for (size_t j = 0; j < h(); ++j) {
+        for (size_t j = 0; j < size_t(h()); ++j) {
             put({0, j}, 0);
             put({size_t(w()) - 1, j}, 0);
         }
@@ -84,22 +85,22 @@ public:
 
     void bc_dobrushin() {
         d = 1;
-        for (size_t i = 0; i < w(); ++i) {
+        for (size_t i = 0; i < size_t(w()); ++i) {
             put({i, 0}, 0);
             put({i, size_t(h()) - 1}, 2);
         }
-        for (size_t j = 0; j < h() / 2; ++j) {
+        for (size_t j = 0; j < size_t(h()) / 2; ++j) {
             put({0, j}, 0);
             put({size_t(w()) - 1, j}, 0);
         }
-        for (size_t j = h() / 2; j < h(); ++j) {
+        for (size_t j = size_t(h()) / 2; j < size_t(h()); ++j) {
             put({0, j}, 2);
             put({size_t(w()) - 1, j}, 2);
         }
     }
 
     double         b;
-    int            d;
+    size_t         d;
     bool           s;
     Bitmap<int>    status;
     vector<double> p;

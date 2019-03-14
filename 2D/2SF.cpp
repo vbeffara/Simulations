@@ -29,7 +29,8 @@ public:
 class SF : public Bitmap<Point> {
 public:
     SF(const Hub &H, size_t n_, double a_)
-        : Bitmap<Point>(H.title, {2 * n_, 2 * n_ + 1}), n(n_), a(a_), root({2 * n - 1, 2 * (n / 2)}), start({1, 2 * (n / 4)}) {
+        : Bitmap<Point>(H.title, {2 * n_, 2 * n_ + 1}), n(n_), a(a_), root({2 * int(n) - 1, 2 * (int(n) / 2)}),
+          start({1, 2 * (int(n) / 4)}) {
         ps = {a * a, a * a, 1, 1};
         for (auto &p : ps) p /= 2 * (1 + a * a);
     }
@@ -68,9 +69,9 @@ public:
         bool dirty = true;
         while (dirty) {
             dirty = false;
-            for (int i = 0; i < n; ++i)
-                for (int j = 0; j < n; ++j) {
-                    coo z{2 * i, 1 + 2 * j};
+            for (size_t i = 0; i < n; ++i)
+                for (size_t j = 0; j < n; ++j) {
+                    coo z{2 * int(i), 1 + 2 * int(j)};
                     int s = 0, dd = -1;
                     for (int d = 0; d < 4; ++d)
                         if (at(z + dz[d]).t == VOID) {
@@ -125,8 +126,8 @@ public:
         else
             lerw(start, false);
         stage(H);
-        for (int i = 0; i < n; ++i) {
-            for (int j = 0; j <= n; ++j) lerw(coo{2 * i + 1, 2 * j}, true);
+        for (size_t i = 0; i < n; ++i) {
+            for (size_t j = 0; j <= n; ++j) lerw({2 * int(i) + 1, 2 * int(j)}, true);
         }
         stage(H);
         put(root, Point{EMPH});
@@ -137,7 +138,7 @@ public:
         output(H.title);
     }
 
-    int            n;
+    size_t         n;
     double         a;
     vector<double> ps;
     coo            root, start;

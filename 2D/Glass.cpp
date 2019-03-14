@@ -6,7 +6,7 @@ using std::vector, vb::prng, vb::BLACK, vb::WHITE, vb::coo;
 
 vector<bool> init_ok_none() {
     vector<bool> ok(256, false);
-    for (int i = 0; i < 256; i++) ok[i] = true;
+    for (size_t i = 0; i < 256; i++) ok[i] = true;
     return ok;
 }
 
@@ -100,14 +100,12 @@ public:
     };
 
     void run(const vb::Hub &H) {
-        int    n = w();
+        auto   n = size_t(w());
         double p = H['p'];
 
-        for (int i = 0; i < 2000 * n * n; i++) {
-            // TODO: uniform_int
-            size_t x  = 1 + (prng() % (n - 2));
-            size_t y  = 1 + (prng() % (n - 2));
-            int    nb = 0;
+        for (size_t i = 0; i < 2000 * n * n; i++) {
+            // TODO: uniform_coo
+            size_t x = 1 + prng.uniform_int(n - 2), y = 1 + prng.uniform_int(n - 2), nb = 0;
             if (at({x + 1, y}) != BLACK) nb += 1;
             if (at({x + 1, y + 1}) != BLACK) nb += 2;
             if (at({x, y + 1}) != BLACK) nb += 4;

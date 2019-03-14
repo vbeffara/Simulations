@@ -16,7 +16,7 @@ int main(int argc, char **argv) {
         for (size_t y = 0; y < n / 2; ++y) img.put({x, y}, WHITE);
     img.show();
 
-    for (int i = 0; i < 3 * n; i++) {
+    for (size_t i = 0; i < 3 * n; i++) {
         int total = 0;
         for (size_t x = 1; x < n - 1; x++) {
             for (size_t y = 1; y < n - 1; y++) {

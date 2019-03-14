@@ -9,7 +9,7 @@ const Color none(BLACK), prey(GREEN), pred(RED);
 class SIR : public Image {
 public:
     SIR(const Hub &H, size_t n, double l_) : Image(H.title, {n, n}), l(l_) {
-        size_t n0 = H['d'] ? 0 : int(H['n']) / 2;
+        size_t n0 = H['d'] ? 0 : size_t(H['n']) / 2;
         for (size_t i = n0 - 10; i < n0 + 10; ++i)
             for (size_t j = n0 - 10; j < n0 + 10; ++j)
                 // TODO: allow for better usage
