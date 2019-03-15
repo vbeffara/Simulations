@@ -7,19 +7,18 @@ using namespace std;
 using namespace vb;
 
 int main(int argc, char **argv) {
-    Hub H("Self-avoiding walk", argc, argv, "n=500,t=5000");
-    int n = H['n'];
-    int t = H['t'];
+    Hub    H("Self-avoiding walk", argc, argv, "n=500,t=5000");
+    size_t n = H['n'], t = H['t'];
 
     OldPath     P(n, true);
     ProgressBar PB(t);
 
-    for (int i = 0; i < t;) {
+    for (size_t i = 0; i < t;) {
         PB.set(i);
-        int j = prng() % n;
-        int k = 1 + (prng() % 3);
-        int l = P[j];
-        P[j]  = (P[j] + k) % 4;
+        auto j = prng.uniform_int(n);
+        auto k = uint8_t(1) + prng.uniform_int(uint8_t(3));
+        auto l = P[j];
+        P[j]   = (P[j] + k) % 4;
         if (P.self_avoiding())
             i++;
         else

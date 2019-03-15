@@ -6,7 +6,7 @@ namespace vb {
     /** A class to describe a path in Z^2.
      */
 
-    class OldPath : public std::vector<char> {
+    class OldPath : public std::vector<uint8_t> {
     public:
         /** Create a vb::Path of a given length.
          *

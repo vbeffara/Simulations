@@ -11,34 +11,33 @@ double                         minw, maxw, contrast = .2;
 
 class Domino {
 public:
-    explicit Domino(coo z_ = {0, 0}, int d_ = 0, bool active_ = false) : z(z_), d(d_), active(active_) {
+    explicit Domino(coo z_ = {0, 0}, unsigned d_ = 0, bool active_ = false) : z(z_), d(d_), active(active_) {
         if (d >= 2) {
             z += dz[d];
             d -= 2;
         }
     }
-    explicit Domino(int /*unused*/) : Domino() {}
 
-    double weight() const { return W[z.x % W.size()][z.y % W[0].size()][d]; }
+    double weight() const { return W[pmod(z.x, W.size())][pmod(z.y, W[0].size())][d]; }
 
     explicit operator Color() const {
         if (!active) return BLACK;
-        double hh = hues[z.x % W.size()][z.y % W[0].size()][d];
+        double hh = hues[pmod(z.x, W.size())][pmod(z.y, W[0].size())][d];
         return HSV(hh, 1, contrast + (1 - contrast) * (weight() - minw) / (maxw - minw));
     }
 
-    coo  z;
-    int  d;
-    bool active;
+    coo      z;
+    unsigned d;
+    bool     active;
 };
 
 class Tiling : public Bitmap<Domino> {
 public:
     explicit Tiling(const Hub &H, size_t n) : Bitmap<Domino>(H.title, {2 * n, 2 * n}) {
-        for (int i = 0; i < n; ++i)
-            for (int j = n - 1 - i; j < n + i; j += 2) {
-                putd(Domino{{i, j}, 1});
-                putd(Domino{{2 * int(n) - 1 - i, j}, 1});
+        for (size_t i = 0; i < n; ++i)
+            for (size_t j = n - 1 - i; j < n + i; j += 2) {
+                putd(Domino{ucoo{i, j}, 1});
+                putd(Domino{ucoo{2 * n - 1 - i, j}, 1});
             }
     };
 
@@ -52,7 +51,7 @@ public:
         Domino d1 = atp(z);
         if (!d1.active) return;
         z         = d1.z;
-        int    d  = d1.d;
+        auto   d  = d1.d;
         coo    zz = z + dz[(d + 1) % 4];
         Domino d2 = atp(zz);
         if ((!d2.active) || (d2.z != zz) || (d2.d != d)) return;

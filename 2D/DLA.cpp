@@ -18,38 +18,38 @@ public:
         W.watch(r, "Cluster radius");
 
         spdlog::info("Precomputing harmonic measures, d up to {} ...", int(H['p']));
-        for (size_t r = 1; r < int(H['p']); ++r) {
+        for (size_t r = 1; r < size_t(H['p']); ++r) {
             bool          dirty = true;
             Array<double> MM({2 * r + 1, 2 * r + 1});
             MM.at({r, r}) = 1;
             while (dirty) {
                 dirty = false;
-                for (int i = 1; i < 2 * r; ++i)
-                    for (int j = 1; j < 2 * r; ++j) {
-                        coo    z{i, j};
+                for (size_t i = 1; i < 2 * r; ++i)
+                    for (size_t j = 1; j < 2 * r; ++j) {
+                        ucoo   z{i, j};
                         double t = MM.at(z);
                         MM.at(z) = 0;
                         if (t > 1e-13) {
                             dirty = true;
 
-                            int ii = (i <= r) ? i : 2 * r - i;
-                            int jj = (j <= r) ? j : 2 * r - j;
-                            int d  = min(ii, jj);
+                            auto ii = (i <= r) ? i : 2 * r - i;
+                            auto jj = (j <= r) ? j : 2 * r - j;
+                            auto d  = min(ii, jj);
                             if (d == r) --d;
 
                             if (d <= 1)
-                                for (int k = 0; k < 4; ++k) MM.at(z + dz[k]) += t / 4;
+                                for (gsl::index k = 0; k < 4; ++k) MM.at(coo(z) + dz[k]) += t / 4;
                             else {
-                                const auto &ps = prec[size_t(d)];
+                                const auto &ps = prec[d];
                                 for (size_t k = 0; k < size_t(d); ++k) {
-                                    MM.at(coo{i - d, j + long(k)}) += t * ps[k] / 8;
-                                    MM.at(coo{i - d, j - long(k)}) += t * ps[k] / 8;
-                                    MM.at(coo{i + d, j + long(k)}) += t * ps[k] / 8;
-                                    MM.at(coo{i + d, j - long(k)}) += t * ps[k] / 8;
-                                    MM.at(coo{i + long(k), j - d}) += t * ps[k] / 8;
-                                    MM.at(coo{i - long(k), j - d}) += t * ps[k] / 8;
-                                    MM.at(coo{i + long(k), j + d}) += t * ps[k] / 8;
-                                    MM.at(coo{i - long(k), j + d}) += t * ps[k] / 8;
+                                    MM.at({i - d, j + k}) += t * ps[k] / 8;
+                                    MM.at({i - d, j - k}) += t * ps[k] / 8;
+                                    MM.at({i + d, j + k}) += t * ps[k] / 8;
+                                    MM.at({i + d, j - k}) += t * ps[k] / 8;
+                                    MM.at({i + k, j - d}) += t * ps[k] / 8;
+                                    MM.at({i - k, j - d}) += t * ps[k] / 8;
+                                    MM.at({i + k, j + d}) += t * ps[k] / 8;
+                                    MM.at({i - k, j + d}) += t * ps[k] / 8;
                                 }
                             }
                         }

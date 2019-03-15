@@ -24,8 +24,8 @@ void Glauber::fill(double p) {
 }
 
 void Glauber::step(int i, int j) {
-    if (i == -1) i = prng.uniform_int(n);
-    if (j == -1) j = prng.uniform_int(n);
+    if (i == -1) i = prng.uniform_int(int(n));
+    if (j == -1) j = prng.uniform_int(int(n));
 
     int c = 0;
     if (at(coo{(i + 1) % int(n), j}) == WHITE) ++c;
@@ -41,10 +41,9 @@ void Glauber::step(int i, int j) {
 
 int main(int argc, char **argv) {
     Hub    H("Glauber dynamics at zero temperature", argc, argv, "n=500,p=.51");
-    int    n = H['n'];
     double p = H['p'];
 
-    Glauber G(H, n);
+    Glauber G(H, H['n']);
     G.fill(p);
     G.show();
 

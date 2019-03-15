@@ -45,6 +45,7 @@ namespace vb {
         size_t x, y;
         constexpr ucoo(size_t x, size_t y) : x(x), y(y) {}
         constexpr ucoo(const coo &z) : x(size_t(z.x)), y(size_t(z.y)) {}
+        operator coo() { return {int64_t(x), int64_t(y)}; }
     };
 
     constexpr ucoo wrap(const coo &z, const ucoo &p) { return {pmod(z.x, p.x), pmod(z.y, p.y)}; }

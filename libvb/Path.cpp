@@ -4,15 +4,15 @@
 #include <vb/data/TriMatrix.h>
 
 namespace vb {
-    OldPath::OldPath(size_t l, bool rel) : std::vector<char>(l), relative(rel) {}
+    OldPath::OldPath(size_t l, bool rel) : std::vector<uint8_t>(l), relative(rel) {}
 
     bool OldPath::self_avoiding() {
-        TriMatrix<char> T;
-        int             l = 0;
-        coo             z{0, 0};
+        TriMatrix<uint8_t> T;
+        int                l = 0;
+        coo                z{0, 0};
 
         T.put(z, 1);
-        for (char i : *this) {
+        for (auto i : *this) {
             l = (relative ? l + i : i) % 4;
             z += dz[l];
             if (T.at(z) != 0) return false;
@@ -28,7 +28,7 @@ namespace vb {
         int              l      = 0;
         cpx              z(0);
         std::vector<cpx> p(1);
-        for (char i : *this) {
+        for (auto i : *this) {
             l = (relative ? l + i : i) % 4;
             z += gsl::at(dzc, l);
             p.push_back(z);
