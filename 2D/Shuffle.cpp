@@ -29,18 +29,19 @@ struct Tiling {
     void delslide() {
         auto n = state.size.x;
         state.resize({n + 2, n + 2}, 0);
-        for (int y = state.size.y - 2; y > 0; --y)
-            for (int x = state.size.x - 2; x > 0; --x) swap(state[coo{x, y}], state[coo{(x - 1) + int(n) * (y - 1), 0}]);
+        for (auto y = state.size.y - 2; y > 0; --y)
+            for (auto x = state.size.x - 2; x > 0; --x) swap(state[{x, y}], state[{(x - 1) + n * (y - 1), 0}]);
 
-        for (int i = 0; i < n / 2; ++i) {
-            for (int j = 0; j < n / 2; ++j) {
-                coo z{2 * i, 2 * j};
+        for (size_t i = 0; i < n / 2; ++i) {
+            for (size_t j = 0; j < n / 2; ++j) {
+                ucoo z{2 * i, 2 * j};
                 if ((state[z] == 1) && (state[z + coo{1, 1}] == 1)) {
-                    state[z]             = 0;
-                    state[z + coo{1, 1}] = 0;
+                    state[z] = 0;
+                    // TODO: arithmetic for ucoo
+                    state[coo(z) + coo{1, 1}] = 0;
                 } else if ((state[z + coo{0, 1}] == 1) && (state[z + coo{1, 0}] == 1)) {
-                    state[z + coo{1, 0}] = 0;
-                    state[z + coo{0, 1}] = 0;
+                    state[coo(z) + coo{1, 0}] = 0;
+                    state[coo(z) + coo{0, 1}] = 0;
                 }
             }
         }
@@ -97,9 +98,9 @@ struct Tiling {
             else
                 A[0][z] = {1, 1};
 
-        for (int k = 1; k < n; ++k) {
+        for (size_t k = 1; k < n; ++k) {
             const auto &AA = A[k - 1];
-            for (auto z : coo_range(A[k].size)) {
+            for (ucoo z : coo_range(A[k].size)) {
                 size_t i = z.x, j = z.y, i1 = (i + 1) % per, j1 = (j + 1) % per, ii = (i + 2 * (i % 2)) % per, jj = (j + 2 * (j % 2)) % per;
                 double a20, a21;
                 auto & a1 = AA[{ii, jj}];
@@ -119,10 +120,10 @@ struct Tiling {
 
         pbs = vector<Array<double>>(n, ucoo{per / 2, per / 2});
 
-        for (int k = 0; k < n; ++k) {
+        for (size_t k = 0; k < n; ++k) {
             const auto &a0nk1 = A[n - k - 1];
             for (auto z : coo_range(pbs[k].size)) {
-                int i = z.x, j = z.y;
+                auto i = z.x, j = z.y;
                 if (a0nk1.atp({2 * i, 2 * j}).second + a0nk1.atp({2 * i + 1, 2 * j + 1}).second >
                     a0nk1.atp({2 * i + 1, 2 * j}).second + a0nk1.atp({2 * i, 2 * j + 1}).second)
                     pbs[k][z] = 0;
@@ -137,7 +138,7 @@ struct Tiling {
         }
     }
 
-    void output_pdf(const std::string &s, const string &name, int off = 0) const {
+    void output_pdf(const std::string &s, const string &name, size_t off = 0) const {
         Figure F(s);
         int    ddx[4] = {0, 2, 0, 2}, ddy[4] = {0, -2, -4, -6};
         int    offx = gsl::at(ddx, off % 4), offy = gsl::at(ddy, off % 4);
@@ -161,23 +162,23 @@ struct Tiling {
         auto       m = state.size.x / 2;
         Array<int> h({m + 1, m + 1}, 0);
         int        z = 0;
-        for (int x = 0; x < m; ++x) {
-            z += 4 * state[coo{2 * x, 0}] + 4 * state[coo{2 * x + 1, 0}] - 2;
-            h[coo{x + 1, 0}] = z;
+        for (size_t x = 0; x < m; ++x) {
+            z += 4 * state[{2 * x, 0}] + 4 * state[{2 * x + 1, 0}] - 2;
+            h[{x + 1, 0}] = z;
         }
-        for (int y = 0; y < m; ++y) {
-            int z            = h[coo{0, y}] + 4 * state[coo{0, 2 * y}] + 4 * state[coo{0, 2 * y + 1}] - 2;
-            h[coo{0, y + 1}] = z;
-            for (int x = 0; x < m; ++x) {
-                z -= 4 * state[coo{2 * x, 2 * y + 1}] + 4 * state[coo{2 * x + 1, 2 * y + 1}] - 2;
-                h[coo{x + 1, y + 1}] = z;
+        for (size_t y = 0; y < m; ++y) {
+            int z         = h[{0, y}] + 4 * state[{0, 2 * y}] + 4 * state[{0, 2 * y + 1}] - 2;
+            h[{0, y + 1}] = z;
+            for (size_t x = 0; x < m; ++x) {
+                z -= 4 * state[{2 * x, 2 * y + 1}] + 4 * state[{2 * x + 1, 2 * y + 1}] - 2;
+                h[{x + 1, y + 1}] = z;
             }
         }
         return h;
     }
 
     auto aztecgen() {
-        for (int i = 0; i < n; ++i) {
+        for (size_t i = 0; i < n; ++i) {
             delslide();
             create(pbs[i]);
             if (H['v']) output_pdf(H.title, "snapshots/" + fmt::format("snapshot_{:04d}", i), n - i - 1);
@@ -190,13 +191,13 @@ struct Tiling {
 
         auto     H1 = height();
         ofstream dat(name + ".dat");
-        for (auto z : coo_range(H1.size)) {
+        for (ucoo z : coo_range(H1.size)) {
             dat << H1[z] << " ";
             if (z.x == H1.size.x - 1) dat << "\n";
         }
     }
 
-    Tiling(const Hub &H, Array<double> TP_, int m)
+    Tiling(const Hub &H, Array<double> TP_, size_t m)
         : H(H), name(H.title), TP(move(TP_)), m(m), per(lcm(TP.size.x, TP.size.y)), n(m * per / 2) {
         probs();
         for (auto z : coo_range(TP.size)) {
@@ -221,7 +222,7 @@ struct Tiling {
 
 int main(int argc, char **argv) {
     Hub H("Domino shuffle", argc, argv, "m=50,a=1,b=.5,c=.3,s=0,r=0,w=two,v");
-    if (int seed = H['s']; seed != 0) prng.seed(seed);
+    if (size_t seed = H['s']; seed != 0) prng.seed(seed);
 
     std::map<string, function<Array<double>()>> TPs;
     TPs["unif"]   = [&] { return Array<double>({2, 2}, 1.0); };
