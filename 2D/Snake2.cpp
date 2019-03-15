@@ -27,11 +27,11 @@ public:
 
     void triangle(double a) {
         double ta = tan(a * M_PI / 180);
-        for (size_t y = 0; y < h(); ++y) {
-            int  yy = y + (y % 2);
+        for (size_t y = 0; y < size_t(h()); ++y) {
+            auto yy = y + (y % 2);
             auto s  = int(2 + yy * ta);
             s += (s % 2);
-            for (size_t x = 0; x < w(); ++x)
+            for (size_t x = 0; x < size_t(w()); ++x)
                 if (abs(int(x) - w() / 2) >= s) put({x, y}, VERTEX);
         }
     }

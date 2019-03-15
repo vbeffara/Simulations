@@ -25,12 +25,12 @@ public:
             int      d  = vb::prng.uniform_int(6);
             vb::coo3 z2 = c + vb::dz3[d];
             if (at(c) == atp(z2)) return;
-            if (vb::prng.bernoulli(kaw[nbsum(z2) - nbsum(c) + 6]))
+            if (vb::prng.bernoulli(kaw[size_t(nbsum(z2) - nbsum(c) + 6)]))
                 put(c, 255), putp(z2, 0);
             else
                 put(c, 0), putp(z2, 255);
         } else {
-            put(c, vb::prng.bernoulli(glaub[nbsum(c)]) ? 255 : 0);
+            put(c, vb::prng.bernoulli(glaub[size_t(nbsum(c))]) ? 255 : 0);
         }
     }
 
@@ -79,9 +79,9 @@ public:
         });
         emplace("cube", [](Ising3 &I) {
             I.b = 0;
-            for (int x = I.size.x / 10; x < 9 * I.size.x / 10; ++x)
-                for (int y = I.size.y / 10; y < 9 * I.size.y / 10; ++y)
-                    for (int z = I.size.z / 10; z < 9 * I.size.z / 10; ++z) I.put({x, y, z}, 255);
+            for (int64_t x = I.size.x / 10; x < 9 * I.size.x / 10; ++x)
+                for (int64_t y = I.size.y / 10; y < 9 * I.size.y / 10; ++y)
+                    for (int64_t z = I.size.z / 10; z < 9 * I.size.z / 10; ++z) I.put({x, y, z}, 255);
         });
         emplace("slope", [&H](Ising3 &I) {
             I.b = 1;
@@ -94,16 +94,16 @@ public:
 
 int main(int argc, char **argv) {
     vb::Hub H("3D Ising model", argc, argv, "n=50,b=1,t=0,p=.5,q=0,k,c=bernoulli,s=0,m,i,r=0");
-    if (int r = H['r']) vb::prng.seed(r);
+    if (size_t r = H['r']) vb::prng.seed(r);
     Ising3 C(H, H['n'], H['k'], H['b']);
     BCs{H}[H['c']](C);
     C.show();
-    int T = H['t'];
-    if (T == 0) T = 2 * int(H['n']);
+    size_t T = H['t'];
+    if (T == 0) T = 2 * size_t(H['n']);
     {
         vb::ProgressBar P(T);
-        int             s = H['s'];
-        for (int t = 0; t < T; ++t) {
+        size_t          s = H['s'];
+        for (size_t t = 0; t < T; ++t) {
             if ((s > 0) && (t % (T / s)) == 0) C.output_pov(fmt::format("snapshots/snapshot_{:04d}", t / (T / s)));
             C.swipe();
             P.set(t);

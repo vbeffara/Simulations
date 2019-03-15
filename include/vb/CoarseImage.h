@@ -23,6 +23,7 @@ namespace vb {
             return (z.x >= 0) && (z.y >= 0) && (z.x < int64_t(true_width)) && (z.y < int64_t(true_height));
         }
 
+        // TODO: use ucoo here (get rid of z0)
         bool at(coo z) const;
         void put(coo z, bool c);
 

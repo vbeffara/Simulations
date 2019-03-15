@@ -5,7 +5,7 @@
 
 class Snake : public vb::CoarseImage {
 public:
-    explicit Snake(const vb::Hub &H, size_t n) : vb::CoarseImage(H.title, {2 * n, 2 * n}, int(pow(n, .333))), z(1, {int(n), int(n)}) {
+    explicit Snake(const vb::Hub &H, size_t n) : vb::CoarseImage(H.title, {2 * n, 2 * n}, size_t(pow(n, .333))), z(1, {n, n}) {
         put({int(n), int(n)}, true);
     }
 
@@ -43,7 +43,7 @@ public:
         P.output(s);
     }
 
-    std::vector<vb::coo> z;
+    std::vector<vb::ucoo> z;
 };
 
 int main(int argc, char **argv) {

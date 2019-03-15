@@ -35,13 +35,13 @@ public:
         return out;
     }
 
-    void run(int nstep, bool k) {
+    void run(size_t nstep, bool k) {
         vector<double> p(10, 0);
-        for (int i = 0; i < 10; ++i) p[i] = exp(-i * beta);
-        if (nstep == 0) nstep = 10 + int(n * 0.01 / fabs(beta - log(1 + sqrt(2))));
+        for (size_t i = 0; i < 10; ++i) p[i] = exp(-(i * beta));
+        if (nstep == 0) nstep = 10 + size_t(n * 0.01 / fabs(beta - log(1 + sqrt(2))));
 
-        for (int i = 0; i != nstep; i++)
-            for (int j = 0; j < n * n; ++j) {
+        for (size_t i = 0; i != nstep; i++)
+            for (size_t j = 0; j < n * n; ++j) {
                 step();
                 coo z = prng.uniform_coo(size, static_cast<int64_t>(c));
                 if (k) {
@@ -49,15 +49,15 @@ public:
                     if (c && !contains(zz, static_cast<int64_t>(c))) continue;
                     if (atp(z) == atp(zz)) continue;
                     int s = nnb(z) + nnb(zz) + 2;
-                    if ((s <= 0) || (prng.bernoulli(p[s]))) { swap(atp(z), atp(zz)); }
+                    if ((s <= 0) || (prng.bernoulli(p[size_t(s)]))) { swap(atp(z), atp(zz)); }
                 } else {
                     int s = nnb(z);
-                    if ((s <= 0) || (prng.bernoulli(p[s]))) put(z, Grey(255 - int(at(z))));
+                    if ((s <= 0) || (prng.bernoulli(p[size_t(s)]))) put(z, Grey(uint8_t(255 - int(at(z)))));
                 }
             }
     }
 
-    size_t    n;
+    size_t n;
     bool   c = false;
     double beta;
 };

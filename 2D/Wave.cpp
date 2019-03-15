@@ -25,7 +25,7 @@ public:
         double a, c, s, p;
     };
 
-    Wave(const vb::Hub &H, int n, int k, double l_, double w_, double e_)
+    Wave(const vb::Hub &H, size_t n, int k, double l_, double w_, double e_)
         : Coloring(H.title, cpx(-n, -n), cpx(n, n), n, [&](cpx z) { return c(z); }), H(H) {
         for (int i = 0; i < k; ++i) {
             double delta     = (2 * prng.uniform_real() - 1) * (1 + e_);
@@ -49,7 +49,7 @@ public:
 
 int main(int argc, char **argv) {
     Hub H("Random planar waves", argc, argv, "n=600,k=1000,l=.2,w=0,e=0,s=0,t=0");
-    if (int s = H['s']) { prng.seed(s); }
+    if (size_t s = H['s']) { prng.seed(s); }
     Wave W(H, H['n'], H['k'], H['l'], H['w'], H['e']);
     W.show();
     W.output(H.title);

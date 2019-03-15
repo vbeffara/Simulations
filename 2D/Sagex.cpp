@@ -7,25 +7,15 @@ using namespace vb;
 using namespace std;
 
 namespace vb {
-    template <> Color to_Color(int t) {
+    template <> Color to_Color(unsigned t) {
         static const vector<Color> C = {BLACK, RED, GREEN};
         return C[t];
     }
 } // namespace vb
 
-class Site {
-public:
-    explicit Site(int i = 0) : state(i){};
-    explicit operator Color() const {
-        static const vector<Color> C = {BLACK, RED, GREEN};
-        return C[state];
-    }
-    int state;
-};
-
 class Particle {
 public:
-    explicit Particle(coo xy = {0, 0}, int s = 0, bool z = false, double t = 0) : state(s), location(xy), type(z), next(t){};
+    explicit Particle(coo xy = {0, 0}, unsigned s = 0, bool z = false, double t = 0) : state(s), location(xy), type(z), next(t){};
     bool operator<(const Particle &o) const { return next > o.next; }
 
     coo jump() const {
@@ -35,19 +25,19 @@ public:
             return dz[out];
         }
         int out = prng.uniform_int(4);
-        if (out + 2 * state == 4) out = 2 - out;
+        if (out + 2 * int(state) == 4) out = 2 - out;
         return dz[out];
     }
 
-    int    state;
-    coo    location;
-    bool   type;
-    double next;
+    unsigned state;
+    coo      location;
+    bool     type;
+    double   next;
 };
 
-class Sagex : public Bitmap<int> {
+class Sagex : public Bitmap<unsigned> {
 public:
-    Sagex(const Hub &H, size_t w, size_t h) : Bitmap<int>(H.title, {w, h}) {
+    Sagex(const Hub &H, size_t w, size_t h) : Bitmap<unsigned>(H.title, {w, h}) {
         for (size_t x = 0; x < w; ++x)
             for (size_t y = 0; y < h; ++y) {
                 if (prng.bernoulli(H['l'])) {

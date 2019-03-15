@@ -15,17 +15,17 @@ int main(int argc, char **argv) {
     CoarseImage img(H.title, {n, n}, 10);
     img.show();
 
-    vector<int> height(n);
-    for (int i = 0; i < n; ++i) {
+    vector<size_t> height(n);
+    for (size_t i = 0; i < n; ++i) {
         height[i] = 0;
-        img.put({i, 0}, true);
+        img.put(ucoo{i, 0}, true);
     }
 
     bool running = true;
     while (running) {
-        int64_t x = 1 + prng.uniform_int(n - 2);
-        int     h = height[x];
-        int     d = prng.uniform_int(1u << 14u);
+        auto x = 1 + prng.uniform_int(n - 2);
+        auto h = height[x];
+        auto d = prng.uniform_int(1u << 14u);
 
         if (d != 0) { // If trying to grow
             if ((height[x - 1] > h) || (height[x + 1] > h) || (prng.bernoulli(e)) || ((c > 0) && (x == n / 2) && (prng.bernoulli(c))))
@@ -36,17 +36,17 @@ int main(int argc, char **argv) {
 
         if (height[x] >= n) break;
 
-        if (height[x] < h) img.put({x, h}, false);
-        if (height[x] > h) img.put({x, h + 1}, true);
+        if (height[x] < h) img.put(ucoo{x, h}, false);
+        if (height[x] > h) img.put(ucoo{x, h + 1}, true);
 
         if (f) {
             height[0] = height[1];
-            img.put({0, height[0]}, true);
-            img.put({0, height[0] + 1}, false);
+            img.put(ucoo{0, height[0]}, true);
+            img.put(ucoo{0, height[0] + 1}, false);
 
             height[n - 1] = height[n - 2];
-            img.put({int(n) - 1, height[n - 1]}, true);
-            img.put({int(n) - 1, height[n - 1] + 1}, false);
+            img.put(ucoo{n - 1, height[n - 1]}, true);
+            img.put(ucoo{n - 1, height[n - 1] + 1}, false);
         }
     }
 }

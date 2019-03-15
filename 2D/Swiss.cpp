@@ -39,12 +39,12 @@ public:
                     else
                         at(vb::coo{x, y}) = WEST;
                 }
-                if (vb::prng.bernoulli(p)) at(vb::coo{x, y}) = vb::prng.uniform_int(4);
+                if (vb::prng.bernoulli(p)) at(vb::coo{x, y}) = vb::prng.uniform_int(uint8_t(4));
             }
         }
 
         for (int x = c; x < w() - c; ++x)
-            for (int y = c; y < h() - c; ++y) at(vb::coo{x, y}) = vb::prng.uniform_int(4);
+            for (int y = c; y < h() - c; ++y) at(vb::coo{x, y}) = vb::prng.uniform_int(uint8_t(4));
     }
 
     void run() {
@@ -58,9 +58,9 @@ public:
             for (int i : nb)
                 if (i > max) max = i;
 
-            int d = vb::prng.uniform_int(4);
+            auto d = vb::prng.uniform_int(uint8_t(4));
             if (vb::prng.bernoulli(1 - q))
-                while (nb[d] < max) d = vb::prng.uniform_int(4);
+                while (nb[d] < max) d = vb::prng.uniform_int(uint8_t(4));
 
             putp(z, d);
             z += vb::dz[d];

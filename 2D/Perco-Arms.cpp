@@ -17,7 +17,7 @@ using Graph           = adjacency_list<
     listS, vecS, directedS, no_property,
     property<edge_capacity_t, int64_t, property<edge_residual_capacity_t, int64_t, property<edge_reverse_t, edge_descriptor>>>>;
 
-void add_one(Graph *gg, int64_t i, int64_t j) {
+void add_one(Graph *gg, size_t i, size_t j) {
     Graph &         g{*gg};
     edge_descriptor e1, e2;
     bool            t;
@@ -35,8 +35,8 @@ int main(int argc, char **argv) {
     double p = H['p'];
 
     Graph g(n * n + 1);
-    for (int x = 0; x < n; ++x) {
-        for (int y = 0; y < n; ++y) {
+    for (size_t x = 0; x < n; ++x) {
+        for (size_t y = 0; y < n; ++y) {
             auto i = x + n * y;
             if (x < n - 1) add_one(&g, i, i + 1);
             if (y < n - 1) add_one(&g, i, i + n);
@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
     }
 
     // Wired boundary conditions
-    for (int i = 0; i < n; ++i) {
+    for (size_t i = 0; i < n; ++i) {
         add_one(&g, i, n * n);
         add_one(&g, n * i, n * n);
         add_one(&g, (n - 1) + n * i, n * n);
@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
     vector<edge_descriptor> all_edges(2 * (n + 1) * n);
     vector<edge_descriptor> rev_edges(2 * (n + 1) * n);
 
-    int i = 0;
+    size_t i = 0;
     for (tie(e, e_final) = edges(g); e != e_final; ++e) {
         if (cap[*e] == 0) {
             all_edges[i]      = *e;
