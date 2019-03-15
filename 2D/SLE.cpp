@@ -10,18 +10,18 @@ const Color LEFTSIDE(Indexed(1)), RIGHTSIDE(Indexed(2));
 
 class Loewner : public std::vector<double> {
 public:
-    Loewner(int64_t n, double k) {
+    Loewner(size_t n, double k) {
         dt = 1.0 / (n * n);
         reserve(n * n);
         push_back(0);
-        for (int i = 1; i < n * n; i++) push_back(back() + sqrt(k * dt) * prng.gaussian());
+        for (size_t i = 1; i < n * n; i++) push_back(back() + sqrt(k * dt) * prng.gaussian());
         bound();
     }
 
     void bound() {
         Max.operator=(*this);
         Min.operator=(*this);
-        for (int64_t i = size() - 2; i >= 0; i--) {
+        for (size_t i = size() - 1; i-- > 0;) {
             Min[i] = min(at(i), Min[i + 1]);
             Max[i] = max(at(i), Max[i + 1]);
         }
@@ -43,8 +43,7 @@ public:
 
 int main(int argc, char **argv) {
     Hub H("Schramm-Loewner Evolution", argc, argv, "n=300,k=2.666666666667,r=0,a");
-    int r = H['r'];
-    if (r > 0) prng.seed(r);
+    if (size_t r = H['r']; r > 0) prng.seed(r);
 
     Loewner  L(H['n'], H['k']);
     double   w = L.Max[0] - L.Min[0];

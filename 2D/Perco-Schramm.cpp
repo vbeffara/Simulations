@@ -13,29 +13,30 @@ using namespace std;
 
 class Perco_Schramm : public Figure {
 public:
-    explicit Perco_Schramm(const Hub &H) : Figure(H.title), w(2 * int(H['n'])), h(int(H['l']) > 0 ? H['l'] : w - 1), mask(w * h, true) {
-        for (int i = 0; i < w / 2; ++i) cols.push_back(true);
-        for (int i = 0; i < w / 2; ++i) cols.push_back(false);
-        for (int i = 0; i < (w - 1) * h; ++i) cols.push_back(prng.bernoulli(H['p']));
+    explicit Perco_Schramm(const Hub &H)
+        : Figure(H.title), w(2 * size_t(H['n'])), h(size_t(H['l']) > 0 ? H['l'] : w - 1), mask(w * h, true) {
+        for (size_t i = 0; i < w / 2; ++i) cols.push_back(true);
+        for (size_t i = 0; i < w / 2; ++i) cols.push_back(false);
+        for (size_t i = 0; i < (w - 1) * h; ++i) cols.push_back(prng.bernoulli(H['p']));
     }
 
     void tri_boundary() {
-        for (int j = 0; j < h; ++j) {
-            for (int i = 0; i < w; ++i) mask[i + w * j] = (i <= (w + j) / 2) && (i >= (w - j) / 2 - 1) && (j < h);
+        for (size_t j = 0; j < h; ++j) {
+            for (size_t i = 0; i < w; ++i) mask[i + w * j] = (i <= (w + j) / 2) && (i >= (w - j) / 2 - 1) && (j < h);
             cols[(w - j) / 2 + w * j - 1] = true;
             cols[(w + j) / 2 + w * j]     = false;
         }
     }
 
     void rect_boundary() {
-        for (int j = 0; j < h - 1; ++j) {
+        for (size_t j = 0; j < h - 1; ++j) {
             cols[w * j]     = true;
             cols[w * j + h] = false;
         }
     }
 
     void perc() {
-        for (int i = 0; i < w * h; ++i)
+        for (size_t i = 0; i < w * h; ++i)
             if (mask[i]) {
                 cpx         xy = thepos(i);
                 vector<cpx> coo;
@@ -50,12 +51,12 @@ public:
     }
 
     void walk() {
-        int  base = w / 2 - 1, dir = 0;
-        auto p = make_unique<Path>(vector<cpx>(0), Pen(BLUE, 4));
+        size_t base = w / 2 - 1, dir = 0;
+        auto   p = make_unique<Path>(vector<cpx>(0), Pen(BLUE, 4));
         p->z.push_back(thepos(base) + cpx(omx, -1));
         while (((base + 1) % w >= 0) && (base / w < h - 1)) {
             seg(p.get(), base, dir, 1);
-            int thenext = follow(base, (dir + 1) % 6);
+            auto thenext = follow(base, (dir + 1) % 6);
             if (cols[thenext]) {
                 base = thenext;
                 dir  = (dir + 5) % 6;
@@ -68,19 +69,19 @@ public:
     }
 
 private:
-    int          w, h;
+    size_t       w, h;
     vector<bool> cols, mask;
     const double omx{sqrt(3.0)};
 
-    cpx thepos(int i) { return cpx(omx * (((i / w) % 2) + 2 * (i % w)), 3 * int(i / w)); }
+    cpx thepos(size_t i) { return cpx(omx * (((i / w) % 2) + 2 * (i % w)), 3 * (i / w)); }
 
-    int follow(int base, int dir) {
-        static const vector<int> fola = {1, w, w - 1, -1, -w - 1, -w};
-        static const vector<int> folb = {1, w + 1, w, -1, -w, -w + 1};
-        return (((base / w) % 2) != 0 ? folb : fola)[dir] + base;
+    size_t follow(size_t base, size_t dir) {
+        static const vector<int> fola = {1, int(w), int(w) - 1, -1, -int(w) - 1, -int(w)};
+        static const vector<int> folb = {1, int(w) + 1, int(w), -1, -int(w), -int(w) + 1};
+        return size_t((((base / w) % 2) != 0 ? folb : fola)[dir] + int(base));
     }
 
-    void seg(Path *p, int base, int dir, int rot) {
+    void seg(Path *p, size_t base, size_t dir, size_t rot) {
         cpx x1y1 = thepos(base);
         cpx x2y2 = thepos(follow(base, dir));
         cpx x3y3 = thepos(follow(base, (dir + rot) % 6));

@@ -3,18 +3,18 @@
 
 int main(int argc, char **argv) {
     vb::Hub H("Cookie random walk", argc, argv, "t=20,p=.67");
-    int     t = H['t'];
+    size_t  t = H['t'];
     double  p = H['p'];
 
     std::vector<int> env;
-    int              X = 0;
+    int64_t          X = 0;
     env.push_back(1);
 
-    for (int i = 0; i < t; ++i) {
+    for (size_t i = 0; i < t; ++i) {
         std::cout << X << std::endl;
-        if (env[X] > 0) --env[X];
+        if (env[size_t(X)] > 0) --env[size_t(X)];
 
-        X += vb::prng.bernoulli(env[X] > 0 ? p : .5) ? 1 : -1;
+        X += vb::prng.bernoulli(env[size_t(X)] > 0 ? p : .5) ? 1 : -1;
 
         if (X == -1) X = 1;
         if (X == int(env.size())) env.push_back(1);

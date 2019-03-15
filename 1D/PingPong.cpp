@@ -10,14 +10,14 @@ using vb::prng;
 
 int main(int argc, char **argv) {
     Hub    H("PingPong process", argc, argv, "n=1000,a=1,b=.5,f");
-    int    n = H['n'];
+    size_t n = H['n'];
     double a = H['a'], b = H['b'];
     bool   fast = H['f'];
 
     int             x = 0, xmin = -1, xmax = 1;
     vb::ProgressBar PB(n, fast ? 1 : 3);
 
-    while (abs(x) < n) {
+    while (size_t(abs(x)) < n) {
         if (fast)
             x = prng.bernoulli(double(x - xmin) / (xmax - xmin)) ? xmax : xmin;
         else
@@ -32,6 +32,6 @@ int main(int argc, char **argv) {
             xmax = x + 1;
             x -= int64_t(1 * pow(+x, b));
         }
-        PB.set(max(xmax, -xmin));
+        PB.set(size_t(max(xmax, -xmin)));
     }
 }

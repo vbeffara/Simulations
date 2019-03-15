@@ -101,7 +101,7 @@ public:
         in_[0][1] = 0;
 
         fftw_execute(p);
-        for (auto [i, j] : coo_range(size)) I.at(coo{i, j}).f = out_[i + size.x * j][0];
+        for (auto [i, j] : coo_range(size)) I.at(coo{i, j}).f = out_[i + gsl::index(size.x) * j][0];
         fftw_destroy_plan(p);
         fftw_free(in);
         fftw_free(out);
@@ -115,16 +115,16 @@ public:
 
         for (const auto [i, j] : coo_range(size)) {
             auto ii = min(i, int(size.x) - i), jj = min(j, int(size.y) - j);
-            d_[i + size.x * j][0] = d_[i + size.x * j][1] = f(sqrt(ii * ii + jj * jj) / l);
+            d_[i + gsl::index(size.x) * j][0] = d_[i + gsl::index(size.x) * j][1] = f(sqrt(ii * ii + jj * jj) / l);
         }
 
         fftw_execute(p1);
-        for (int i = 0; i < size.x * size.y; ++i) {
-            d_[i][0] *= prng.gaussian();
-            d_[i][1] *= prng.gaussian();
+        for (size_t i = 0; i < size.x * size.y; ++i) {
+            d_[gsl::index(i)][0] *= prng.gaussian();
+            d_[gsl::index(i)][1] *= prng.gaussian();
         }
         fftw_execute(p2);
-        for (auto z : coo_range(size)) I.at(z).f = sign(d_[z.x + size.x * z.y][0]);
+        for (auto z : coo_range(size)) I.at(z).f = sign(d_[z.x + gsl::index(size.x) * z.y][0]);
 
         fftw_destroy_plan(p1);
         fftw_destroy_plan(p2);
@@ -136,9 +136,9 @@ public:
         priority_queue<Info> Q;
         I.at(mid).d = 0;
         Q.push(I.at(mid));
-        ProgressBar PB(w() * h());
+        ProgressBar PB(size_t(w() * h()));
 
-        for (int t = 0; t < w() * h(); ++t) {
+        for (size_t t = 0; t < size_t(w() * h()); ++t) {
             PB.set(t);
             while (I.at(Q.top().z).d < Q.top().d) Q.pop();
             Info im = Q.top();

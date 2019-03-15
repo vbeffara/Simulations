@@ -92,8 +92,8 @@ public:
         int n = 0;
         while (true) {
             cerr << ++n << " \r";
-            for (size_t x = 0; x < w(); x++)
-                for (size_t y = 0; y < h(); y++) put({x, y}, prng.bernoulli(.5) ? WHITE : BLACK);
+            for (size_t x = 0; x < size_t(w()); x++)
+                for (size_t y = 0; y < size_t(h()); y++) put({x, y}, prng.bernoulli(.5) ? WHITE : BLACK);
 
             for (int x = -r1 + 1; x < r1 - 1; x++) {
                 for (int y = -r1 + 1; y < r1 - 1; y++) {
@@ -113,7 +113,8 @@ public:
 
 class Coupling : public Image {
 public:
-    Coupling(const Hub &H, size_t r) : Image(H.title, {2 * r, 2 * r}), r1(r / 4), r2(r / 2), r3(r), c1(H, 2 * r), c2(H, 2 * r) {
+    Coupling(const Hub &H, size_t r)
+        : Image(H.title, {2 * r, 2 * r}), r1(int(r) / 4), r2(int(r) / 2), r3(int(r)), c1(H, 2 * r), c2(H, 2 * r) {
         c1.pick(r1, r2, r3);
         for (int i = 0; i < w(); ++i)
             for (int j = 0; j < h(); ++j) c2[coo{i, j}] = c1[coo{i, j}];

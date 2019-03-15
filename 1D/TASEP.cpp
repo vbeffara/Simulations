@@ -10,7 +10,7 @@ gsl::span<Color>     C{CC};
 
 class TASEP : public vector<int> {
 public:
-    explicit TASEP(const Hub &H) : vector<int>(int(H['n']), 0), p(size(), 1) {
+    explicit TASEP(const Hub &H) : vector<int>(H['n'], 0), p(size(), 1) {
         for (int &e : *this) {
             e = prng.bernoulli(H['r']) ? 2 : 0;
             if (prng.bernoulli(H['d']) && (e == 2)) e = 1;
@@ -18,7 +18,7 @@ public:
         for (double &q : p) q = prng.uniform_real(H['e'], 1.0);
     }
     void step() {
-        int i = prng.uniform_int(size());
+        auto i = prng.uniform_int(size());
         if (prng.bernoulli(1 - p[i])) return;
         if (at(i) > at((i + 1) % size())) { std::swap(at(i), at((i + 1) % size())); }
     }
@@ -36,6 +36,6 @@ int main(int argc, char **argv) {
         for (size_t j = 0; j < u; ++j)
             for (unsigned i = 0; i < T.size(); ++i) T.step();
         for (unsigned i = 0; i < T.size(); ++i) I.put({i, t % size_t(I.h())}, C[T[i]]);
-        if (t == I.h() - 1) I.pause();
+        if (t == size_t(I.h()) - 1) I.pause();
     }
 }

@@ -4,17 +4,17 @@
 using vb::Hub;
 
 int main(int argc, char **argv) {
-    Hub H("Rarefaction fan", argc, argv, "n=20");
-    int n = H['n'];
+    Hub    H("Rarefaction fan", argc, argv, "n=20");
+    size_t n = H['n'];
 
     std::vector<int> field(2 * n);
-    for (int i = 0; i < 2 * n; i++) field[i] = n - i;
+    for (size_t i = 0; i < 2 * n; i++) field[i] = int(n) - int(i);
 
     while (true) {
-        int i = vb::prng.uniform_int(2 * n - 1);
+        auto i = vb::prng.uniform_int(2 * n - 1);
         if (field[i] > field[i + 1]) std::swap(field[i], field[i + 1]);
         if ((field[0] < 0) || (field[2 * n - 1] > 0)) break;
     }
 
-    for (int i = 0; i < 2 * n; i++) std::cout << i << " " << field[i] << std::endl;
+    for (size_t i = 0; i < 2 * n; i++) std::cout << i << " " << field[i] << std::endl;
 }
