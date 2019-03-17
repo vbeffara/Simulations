@@ -29,8 +29,7 @@ namespace vb {
         void fill(coo z, T c, int adj = 4);
 
     private:
-        coo z0;   ///< The coordinates of the origin (at(0) is there on screen).
-        T   dflt; ///< The default value.
+        T dflt; ///< The default value.
 
     protected:
         void paint() override {
@@ -46,8 +45,7 @@ namespace vb {
         }
     };
 
-    template <typename T>
-    Bitmap<T>::Bitmap(const std::string &s, ucoo size, T d) : Picture(s, size), Array<T>(size, d), z0({0, 0}), dflt(d) {}
+    template <typename T> Bitmap<T>::Bitmap(const std::string &s, ucoo size, T d) : Picture(s, size), Array<T>(size, d), dflt(d) {}
 
     template <typename T> void Bitmap<T>::fill(coo z, T c, int adj) {
         T in = at(z);

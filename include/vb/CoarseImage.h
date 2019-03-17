@@ -33,6 +33,7 @@ namespace vb {
         size_t true_height; ///< The true height of the image, in pixels.
         size_t L;           ///< The size of a block, in pixels.
         size_t LL;          ///< The square of L
-        coo    z0 = {0, 0}; ///< The coordinates of the origin (hides that of vb::Bitmap).
+        // TODO: get rid of this
+        coo z0 = {0, 0}; ///< The coordinates of the origin (hides that of vb::Bitmap).
     };
 } // namespace vb
