@@ -4,6 +4,7 @@
 #include <spdlog/spdlog.h>
 #include <vb/Bitmap.h>
 #include <vb/ProgressBar.h>
+#include <vb/math/math.h>
 #include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 

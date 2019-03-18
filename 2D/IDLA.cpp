@@ -1,4 +1,5 @@
 #include <vb/CoarseImage.h>
+#include <vb/math/math.h>
 #include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 

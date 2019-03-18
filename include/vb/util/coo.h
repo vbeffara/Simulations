@@ -1,7 +1,6 @@
 #pragma once /// @file
 #include <fmt/ostream.h>
 #include <gsl/gsl>
-#include <vb/math/math.h>
 
 namespace vb {
     struct coo {
@@ -47,6 +46,8 @@ namespace vb {
         constexpr ucoo(const coo &z) : x(size_t(z.x)), y(size_t(z.y)) {}
         operator coo() { return {int64_t(x), int64_t(y)}; }
     };
+
+    template <typename T, typename U> constexpr U pmod(T k, U n) { return (k %= T(n)) < T(0) ? U(k + T(n)) : U(k); }
 
     constexpr ucoo wrap(const coo &z, const ucoo &p) { return {pmod(z.x, p.x), pmod(z.y, p.y)}; }
 

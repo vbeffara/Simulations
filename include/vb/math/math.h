@@ -25,10 +25,6 @@ namespace vb {
     }
     template <typename T> T lcm(T a, T b) { return a * b / gcd(a, b); }
 
-    template <typename T, typename U> constexpr U pmod(T k, U n) {
-        T tmp(k % T(n));
-        return tmp < T(0) ? U(tmp + T(n)) : U(tmp);
-    }
     template <typename T> T fact(T n) {
         T out(1);
         for (T i(2); i <= n; ++i) out *= i;
