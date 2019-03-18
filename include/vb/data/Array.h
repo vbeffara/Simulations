@@ -1,5 +1,5 @@
 #pragma once
-#include <vb/util/coo.h>
+#include <vb/util/PRNG.h>
 
 namespace vb {
     template <typename T> class Array {

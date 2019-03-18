@@ -1,6 +1,5 @@
 #pragma once /// \file
 #include <vb/Bitmap.h>
-#include <vb/util/PRNG.h>
 
 namespace vb {
     template <class T> class Automaton;

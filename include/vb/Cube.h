@@ -57,15 +57,13 @@ namespace vb {
 
 #ifdef UNIT_TESTS
     TEST_CASE("vb::Cube") {
-        char *argv[] = {(char *)"test_cube"};
-        Hub   H("Testing Cube", 1, argv);
-        Cube  C(H.title, {100, 100, 100});
+        Cube C("Testing Cube", {100, 100, 100});
         C.putp(prng.uniform_coo3(C.size), 1);
         int s = 0;
         for (auto v : C) s += v;
         CHECK(s == 1);
         CHECK(Color(C.Bitmap<Adder>::at({0, 0})).a == 255);
-        C.output_pov(H.title);
+        C.output_pov("Testing Cube");
     }
 #endif
 } // namespace vb

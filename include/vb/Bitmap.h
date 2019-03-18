@@ -71,9 +71,7 @@ namespace vb {
 
 #ifdef UNIT_TESTS
     TEST_CASE("vb::Image") {
-        char *argv[] = {(char *)"test_bitmap"};
-        Hub   H("Testing Image", 1, argv);
-        Image img(H.title, {256, 256});
+        Image img("Testing Image", {256, 256});
         img.show();
         for (size_t i = 0; i < 256; ++i)
             for (size_t j = 0; j < 256; ++j) img.put({i, j}, Color(uint8_t(i), uint8_t(j), uint8_t((8 * (i + j)) % 256)));

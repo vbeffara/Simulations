@@ -1,5 +1,6 @@
 #pragma once
 #include <vb/Hypermap.h>
+#include <vb/util/Hub.h>
 
 /*
  * Naming: m_* are genus 0 "true" maps, lat_* are genus 1 maps, rest are genus 0 hypermaps
