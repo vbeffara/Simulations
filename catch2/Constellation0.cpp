@@ -11,6 +11,7 @@ TEST_CASE("vb::Constellation0") {
     Constellation0<real_t> Cq(C);
     Cq.findn();
     Cq.belyi();
+    Cq.belyi();
     Polynomial<complex_t> Q{1};
     for (auto zd : Cq.f)
         for (unsigned j = 0; j < zd.d; ++j) Q.add_root(zd.z);

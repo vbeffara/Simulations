@@ -34,14 +34,6 @@ namespace vb {
 
     Stream<Permutation> permutations(size_t n);
     Stream<Permutation> permutations(std::vector<size_t> s);
-
-#ifdef UNIT_TESTS
-    TEST_CASE("vb::Permutation") {
-        Permutation P1 = Transposition(4, 0, 1), P2 = Transposition(4, 0, 2), P = P1 * P2;
-        Passport    PP = P.passport();
-        CHECK(PP[0].first == 3);
-    }
-#endif
 } // namespace vb
 
 template <> struct fmt::formatter<vb::Permutation> {

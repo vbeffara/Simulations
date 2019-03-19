@@ -29,7 +29,6 @@ unittests:
     - export DISPLAY=:4
     - lcov -z -d build
     - export LD_LIBRARY_PATH=./build/lib
-    - ./build/tests/doctest
     - ./build/catch2
     - lcov -c -d build -d libvb -o build/cov/cov.info --no-external -q
     - codecov -t $CODECOV_TOKEN

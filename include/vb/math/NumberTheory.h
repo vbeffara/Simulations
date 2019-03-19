@@ -45,8 +45,4 @@ namespace vb {
 
         return {};
     }
-
-#ifdef UNIT_TESTS
-    TEST_CASE("NumberTheory guess functions") {}
-#endif
 } // namespace vb
