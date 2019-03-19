@@ -54,16 +54,4 @@ namespace vb {
         }
         const uint8_t &operator*() { return c->at(*this); }
     };
-
-#ifdef UNIT_TESTS
-    TEST_CASE("vb::Cube") {
-        Cube C("Testing Cube", {100, 100, 100});
-        C.putp(prng.uniform_coo3(C.size), 1);
-        int s = 0;
-        for (auto v : C) s += v;
-        CHECK(s == 1);
-        CHECK(Color(C.Bitmap<Adder>::at({0, 0})).a == 255);
-        C.output_pov("Testing Cube");
-    }
-#endif
 } // namespace vb

@@ -23,12 +23,4 @@ namespace vb {
     Color Grey(uint8_t x) noexcept;
     Color HSV(double h, double s, double v) noexcept;
     Color Indexed(int i, double s = 1, double v = 1) noexcept;
-
-#ifdef UNIT_TESTS
-    TEST_CASE("vb::Color") {
-        Color c = Grey(123);
-        CHECK(c == Color(123, 123, 123));
-        CHECK(c != Color(122, 123, 123));
-    }
-#endif
 } // namespace vb
