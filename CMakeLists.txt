@@ -51,3 +51,7 @@ foreach (dir ${DIRS})
 		target_link_libraries (${e} vb)
 	endforeach (f)
 endforeach (dir)
+
+file (GLOB tests_sources ${PROJECT_SOURCE_DIR}/catch2/*.cpp)
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+add_executable(catch2 ${tests_sources})
