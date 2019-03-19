@@ -4,17 +4,25 @@
 using namespace vb;
 
 TEST_CASE("vb::Constellation0") {
-    char *                 argv[] = {(char *)"test_constellation0"};
-    Hub                    H("Testing Constellation0", 1, argv, "s=3,m=228,d=2,g=0,v,o,b,q");
-    auto                   M = HLib().at("m_dodecahedron");
+    INFO("Setting up Hub and HLib");
+    char *argv[] = {(char *)"test_constellation0"};
+    Hub   H("Testing Constellation0", 1, argv, "s=3,m=228,d=2,g=0,v,o,b,q");
+    auto  M = HLib().at("m_dodecahedron");
+
+    INFO("Creating Constellation0<double>");
     Constellation0<double> C(M);
+
+    INFO("Creating Constellation0<real_t>");
     Constellation0<real_t> Cq(C);
+
+    INFO("Belyi embedding");
     Cq.findn();
     Cq.belyi();
     Cq.belyi();
+
+    INFO("Computing polynomial Q");
     Polynomial<complex_t> Q{1};
-    for (auto zd : Cq.f)
-        for (unsigned j = 0; j < zd.d; ++j) Q.add_root(zd.z);
+    for (auto zd : Cq.f) Q.add_root(zd.z, zd.d);
     for (unsigned i = 0; i < Q.size(); ++i) {
         auto &x  = Q[i];
         auto  xx = complex_t(round(real(x)), round(imag(x)));

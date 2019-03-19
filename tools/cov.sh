@@ -7,7 +7,7 @@ mkdir -p build/cov
 
 lcov -z -d build
 ./build/catch2
-lcov -c -d build -d libvb -o build/cov/cov.info --gcov-tool gcov-6 --no-external -q
+lcov -c -d build -d libvb -o build/cov/cov.info --gcov-tool gcov --no-external -q
 
 genhtml -q -o build/cov build/cov/cov.info
 
