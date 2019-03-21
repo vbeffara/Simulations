@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
     for (size_t i = 0; i < w; ++i) img.put({i, h - 1}, Grey(200));
 
     img.show();
-    img.fill({0, int(h) - 1}, Color(255, 0, 0));
+    img.fill({0, h - 1}, Color(255, 0, 0));
     img.update();
     img.output(H.title);
     return 0;

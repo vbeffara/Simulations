@@ -44,18 +44,18 @@ public:
         if (border(z)) return false;
         bool surrounded = true;
         for (int i = 0; i < 4; ++i)
-            if ((at(z + dz[i] * 2) == EMPTY) && (!hex || edge(z, i))) surrounded = false;
+            if ((at(ucoo(z + dz[i] * 2)) == EMPTY) && (!hex || edge(z, i))) surrounded = false;
         if (surrounded) return true;
 
         d = (d + 1) % 4;
-        while ((at(z + dz[d] * 2) == VERTEX) || (hex && !edge(z, d))) d = (d + 3) % 4;
+        while ((at(ucoo(z + dz[d] * 2)) == VERTEX) || (hex && !edge(z, d))) d = (d + 3) % 4;
         coo zz = z;
         int dd = d;
         while (true) {
             zz += dz[d] * 2;
             if (border(zz)) return false;
             d = (d + 1) % 4;
-            while ((at(zz + dz[d] * 2) == VERTEX) || (hex && !edge(zz, d))) d = (d + 3) % 4;
+            while ((at(ucoo(zz + dz[d] * 2)) == VERTEX) || (hex && !edge(zz, d))) d = (d + 3) % 4;
             if ((zz == z) && (dd == d)) return true;
         }
     }
@@ -63,7 +63,7 @@ public:
     bool allowed(coo z, int d) {
         if (hex && !edge(z, d)) return false;
         coo nz = z + dz[d] * 2;
-        return (at(nz) != VERTEX) && (nz.y >= 0) && !trapped(nz, d);
+        return (at(ucoo(nz)) != VERTEX) && (nz.y >= 0) && !trapped(nz, d);
     }
 
     void run() {
@@ -72,8 +72,8 @@ public:
                 if (path.size() > 1) {
                     coo z = path.back();
                     path.pop_back();
-                    put(z, EMPTY);
-                    put((z + path.back()) / 2, EMPTY);
+                    put(ucoo(z), EMPTY);
+                    put(ucoo((z + path.back()) / 2), EMPTY);
                 }
                 continue;
             }
@@ -81,8 +81,8 @@ public:
             int d = prng.uniform_int(4);
             if (!allowed(z, d)) continue;
             coo nz = z + dz[d] * 2;
-            put(z + dz[d], EDGE);
-            put(nz, VERTEX);
+            put(ucoo(z + dz[d]), EDGE);
+            put(ucoo(nz), VERTEX);
             if (border(nz)) break;
             path.push_back(nz);
         }
@@ -97,8 +97,8 @@ int main(int argc, char **argv) {
     Hub   H("Self-avoiding snake in the half plane", argc, argv, "n=200,l=1.0,v,p,x,a=0");
     Snake S(H, H['n'], H['l'], H['x']);
     S.run();
-    S.fill({S.w() / 2 + 1, 1}, RIGHT);
-    S.fill({S.w() / 2 - 1, 1}, LEFT);
+    S.fill({size_t(S.w() / 2 + 1), 1}, RIGHT);
+    S.fill({size_t(S.w() / 2 - 1), 1}, LEFT);
     if (S.visible()) {
         if (H['p']) S.pause();
         S.output(H.title);

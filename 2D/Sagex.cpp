@@ -54,13 +54,11 @@ public:
         while (true) {
             Particle p = q.top();
             q.pop();
-            coo nz = p.location + p.jump();
-            nz.x   = (nz.x + w()) % w();
-            nz.y   = (nz.y + h()) % h();
+            auto nz = wrap(p.location + p.jump(), size);
             if (at(nz) == 0) {
-                swap(at(p.location), at(nz));
+                swap(at(ucoo(p.location)), at(nz));
                 step();
-                p.location = nz;
+                p.location = coo(nz);
             }
             p.next += prng.exponential();
             q.push(p);

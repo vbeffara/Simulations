@@ -44,7 +44,7 @@ public:
         for (auto z : coo_range(size)) {
             put(z, Grey(uint8_t(255 * (I.at(z).f - minf) / (maxf - minf))));
             if (H['c']) put(z, Indexed(int(at(z)) > 128 ? 1 : 2));
-            I.at(z) = Info(z, z, numeric_limits<double>::infinity(), exp(g * I.at(z).f));
+            I.at(z) = Info(coo(z), coo(z), numeric_limits<double>::infinity(), exp(g * I.at(z).f));
         }
     };
 

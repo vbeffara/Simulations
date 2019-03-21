@@ -92,7 +92,7 @@ struct Tiling {
         vector<Array<pair<double, double>>> A(n, ucoo{per, per});
 
         for (auto z : coo_range(A[0].size))
-            if (double w = TP.atp(z); w != 0)
+            if (double w = TP.atp(coo(z)); w != 0)
                 A[0][z] = {w, 0};
             else
                 A[0][z] = {1, 1};

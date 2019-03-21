@@ -53,8 +53,8 @@ public:
         bool   empty = true;
         size_t hw    = (d == 1 ? size_t(w()) : size_t(h()));
         for (size_t x = 0; x < hw; z += dz[gsl::index(d - 1)], ++x) {
-            if (at(z) == 3 - d) empty = false;
-            if (at(z) == d) at(z) = 0;
+            if (at(ucoo(z)) == 3 - d) empty = false;
+            if (at(ucoo(z)) == d) at(ucoo(z)) = 0;
         }
         if (empty) {
             if (prng.bernoulli(dd)) {

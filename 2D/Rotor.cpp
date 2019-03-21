@@ -14,17 +14,17 @@ int main(int argc, char **argv) {
     Image img(H.title, {n, n});
     img.show();
 
-    coo z{int(n) / 2, int(n) / 2};
+    ucoo z{n / 2, n / 2};
     while (img.contains(z)) {
         Color c = img.at(z);
         if (c == BLACK) {
             img.put(z, C[0]);
-            z = {int(n) / 2, int(n) / 2};
+            z = {n / 2, n / 2};
         } else
             for (int i = 0; i < 4; ++i)
                 if (c == C[i]) {
                     img.put(z, C[(i + 1) % 4]);
-                    z += dz[i];
+                    z = ucoo(coo(z) + dz[i]);
                 }
     }
 

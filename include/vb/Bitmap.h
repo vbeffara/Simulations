@@ -26,7 +26,7 @@ namespace vb {
             return at(z);
         }
 
-        void fill(coo z, T c, int adj = 4);
+        void fill(ucoo z, T c, int adj = 4);
 
     private:
         T dflt; ///< The default value.
@@ -47,21 +47,21 @@ namespace vb {
 
     template <typename T> Bitmap<T>::Bitmap(const std::string &s, ucoo size, T d) : Picture(s, size), Array<T>(size, d), dflt(d) {}
 
-    template <typename T> void Bitmap<T>::fill(coo z, T c, int adj) {
+    template <typename T> void Bitmap<T>::fill(ucoo z, T c, int adj) {
         T in = at(z);
         if (in == c) return;
-        std::vector<coo> xy;
+        std::vector<ucoo> xy;
         xy.push_back(z);
         at(z) = c;
 
-        while (xy.size()) {
-            coo ij = xy.back();
+        while (!xy.empty()) {
+            auto ij = xy.back();
             xy.pop_back();
             for (int d = 0; d < adj; ++d) {
-                coo nij = ij + dz[d];
-                if (contains(nij) && (at(nij) == in)) {
-                    xy.push_back(nij);
-                    at(nij) = c;
+                auto nij = coo(ij) + dz[d];
+                if (contains(nij) && (at(ucoo(nij)) == in)) {
+                    xy.push_back(ucoo(nij));
+                    at(ucoo(nij)) = c;
                 }
             }
         }
