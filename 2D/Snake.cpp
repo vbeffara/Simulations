@@ -5,12 +5,13 @@
 
 class Snake : public vb::CoarseImage {
 public:
-    explicit Snake(const vb::Hub &H, size_t n) : vb::CoarseImage(H.title, {2 * n, 2 * n}, size_t(pow(n, .333))), z(1, {n, n}) {
+    explicit Snake(const vb::Hub &H, size_t n)
+        : vb::CoarseImage(H.title, {2 * n, 2 * n}, size_t(pow(n, .333))), z(1, vb::coo(vb::ucoo{n, n})) {
         put({int(n), int(n)}, true);
     }
 
     void step(vb::coo dz) {
-        vb::ucoo nz = vb::coo(z.back()) + dz;
+        auto nz = vb::coo(z.back()) + dz;
         if (at(nz)) return;
         z.push_back(nz);
         put(nz, true);
@@ -18,7 +19,7 @@ public:
 
     void shrink() {
         if (z.size() > 1) {
-            put(z.back(), false);
+            put(vb::ucoo(z.back()), false);
             z.pop_back();
         }
     }
@@ -43,7 +44,7 @@ public:
         P.output(s);
     }
 
-    std::vector<vb::ucoo> z;
+    std::vector<vb::coo> z;
 };
 
 int main(int argc, char **argv) {

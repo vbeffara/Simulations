@@ -18,7 +18,9 @@ namespace vb {
         double                  exponential(double lambda = 1) { return (boost::exponential_distribution<>(lambda))(*this); }
         double                  gaussian(double m = 0, double sigma = 1) { return (boost::normal_distribution<>(m, sigma))(*this); }
 
-        coo uniform_coo(ucoo r, int64_t b = 0) { return {b + uniform_int(int64_t(r.x) - 2 * b), b + uniform_int(int64_t(r.y) - 2 * b)}; }
+        template <typename T> coo_2d<T> uniform_coo(coo_2d<T> r, T b = 0) {
+            return {b + uniform_int(r.x - 2 * b), b + uniform_int(r.y - 2 * b)};
+        }
 
         // TODO: ucoo3
         coo3 uniform_coo3(coo3 r, int64_t b = 0) {

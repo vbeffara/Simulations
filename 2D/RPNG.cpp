@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
     vector<size_t> height(n);
     for (size_t i = 0; i < n; ++i) {
         height[i] = 0;
-        img.put(ucoo{i, 0}, true);
+        img.put(coo(ucoo({i, 0})), true);
     }
 
     bool running = true;
@@ -36,17 +36,17 @@ int main(int argc, char **argv) {
 
         if (height[x] >= n) break;
 
-        if (height[x] < h) img.put(ucoo{x, h}, false);
-        if (height[x] > h) img.put(ucoo{x, h + 1}, true);
+        if (height[x] < h) img.put(coo(ucoo{x, h}), false);
+        if (height[x] > h) img.put(coo(ucoo{x, h + 1}), true);
 
         if (f) {
             height[0] = height[1];
-            img.put(ucoo{0, height[0]}, true);
-            img.put(ucoo{0, height[0] + 1}, false);
+            img.put(coo(ucoo{0, height[0]}), true);
+            img.put(coo(ucoo{0, height[0] + 1}), false);
 
             height[n - 1] = height[n - 2];
-            img.put(ucoo{n - 1, height[n - 1]}, true);
-            img.put(ucoo{n - 1, height[n - 1] + 1}, false);
+            img.put(coo(ucoo{n - 1, height[n - 1]}), true);
+            img.put(coo(ucoo{n - 1, height[n - 1] + 1}), false);
         }
     }
 }

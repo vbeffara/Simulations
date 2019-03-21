@@ -59,7 +59,7 @@ public:
         z0 = {int(n) / 2, int(n) / 2};
         if (H['g']) {
             tree = make_unique<Image>(H.title, ucoo{2 * n - 1, 2 * n - 1});
-            tree->put(z0 * 2, WHITE);
+            tree->put(ucoo(z0) * 2, WHITE);
             tree->show();
         } else {
             show();
@@ -76,11 +76,11 @@ public:
             }
             if (!at(nz)) {
                 if (H['g']) {
-                    Color c = tree->at((z + z0) * 2);
+                    Color c = tree->at(ucoo(z + z0) * 2);
                     if ((c == BLACK) || (prng.bernoulli(H['u']))) c = HSV(prng.uniform_real(), 1, 1);
                     if (H['i'] && (norm(nz) < 10)) c = nz.y > 0 ? Indexed(0) : Indexed(1);
-                    tree->put((nz + z0) * 2, c);
-                    tree->put(z + nz + z0 * 2, c);
+                    tree->put(ucoo(nz + z0) * 2, c);
+                    tree->put(ucoo(z + nz + z0 * 2), c);
                 }
                 put(nz, true);
                 nz += jump(nz);

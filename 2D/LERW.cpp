@@ -15,7 +15,7 @@ public:
         coo z{w() / 2, h() / 2};
         while (contains(z)) {
             auto d = prng.uniform_int(uint8_t(4));
-            put(z, d);
+            put(ucoo(z), d);
             z += dz[d];
         }
     }
@@ -24,7 +24,7 @@ public:
         OldPath P(0);
         coo     z{w() / 2, h() / 2};
         while (contains(z)) {
-            auto d = at(z);
+            auto d = at(ucoo(z));
             P.push_back(d);
             z += dz[d];
         }

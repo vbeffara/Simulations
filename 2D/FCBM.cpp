@@ -38,11 +38,11 @@ public:
 
     void run() {
         while (true) {
-            coo    z  = prng.uniform_coo({n, n}) * 2;
+            auto   z  = prng.uniform_coo(ucoo{n, n}) * 2;
             coo    d  = dz[prng.uniform_int(4)];
-            double pp = dlr(z, d);
+            double pp = dlr(coo(z), d);
             fill(mid, WHITE);
-            atp(z + d) = prng.bernoulli(pp) ? WHITE : BLACK;
+            atp(coo(z) + d) = prng.bernoulli(pp) ? WHITE : BLACK;
             fill(mid, RED);
             step();
         }

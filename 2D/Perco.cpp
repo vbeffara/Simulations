@@ -9,7 +9,7 @@ const Color IN{128, 128, 128};
 
 class Perco : public Image {
 public:
-    Perco(const Hub &H, size_t n, double p) : Image(H.title, {n, n}), mid({int(n) / 2, int(n) / 2}), p(p) {
+    Perco(const Hub &H, size_t n, double p) : Image(H.title, {n, n}), mid({n / 2, n / 2}), p(p) {
         for (size_t x = 0; x < n; ++x) {
             for (size_t y = 0; y < n; ++y) {
                 if ((x % 2 == 0) && (y % 2 == 0))
@@ -32,7 +32,7 @@ public:
             if ((z.x + z.y) % 2 == 0) continue;
             fill(mid, IN);
             if (c)
-                swap(at(z), atp(z + dz[4 + prng.uniform_int(4)]));
+                swap(at(z), atp(coo(z) + dz[4 + prng.uniform_int(4)]));
             else
                 at(z) = prng.bernoulli(p) ? IN : BLACK;
             fill(mid, RED);
@@ -40,7 +40,7 @@ public:
         }
     }
 
-    coo    mid;
+    ucoo   mid;
     double p;
 };
 

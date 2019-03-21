@@ -21,9 +21,9 @@ public:
                 if (prng.bernoulli(H['p'])) put({i, j}, prng.bernoulli(H['l']) ? 2 : 1);
     }
     void clean() {
-        for (int x = 0; x < w(); ++x)
-            for (int y = 0; y < h(); ++y)
-                if (at(coo{x, y}) > 0) at(coo{x, y}) = at(coo{x, y}) + 100;
+        for (size_t x = 0; x < w(); ++x)
+            for (size_t y = 0; y < h(); ++y)
+                if (at({x, y}) > 0) at({x, y}) = at({x, y}) + 100;
         bool dirty = true;
         while (dirty) {
             dirty = false;

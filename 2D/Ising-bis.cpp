@@ -25,10 +25,10 @@ public:
 
     void run() {
         while (visible()) {
-            coo z = prng.uniform_coo(size);
+            auto z = prng.uniform_coo(size);
             if (at(z) == 0) continue;
             int c = 0;
-            for (int d = 0; d < con; ++d) c += atp(z + dz[d]);
+            for (int d = 0; d < con; ++d) c += atp(coo(z) + dz[d]);
             put(z, prng.bernoulli(p[size_t(c + con)]) ? 1 : -1);
         }
     }
@@ -44,9 +44,9 @@ public:
             shift   = I;
             pattern = {{.5, .5}, {-.5, .5}, {-.5, -.5}, {.5, -.5}};
         }
-        for (int i = 0; i < w(); ++i)
-            for (int j = 0; j < h(); ++j) {
-                Color c = to_Color(at(coo{i, j}));
+        for (size_t i = 0; i < w(); ++i)
+            for (size_t j = 0; j < h(); ++j) {
+                Color c = to_Color(at({i, j}));
                 if (c == to_Color(0)) continue;
                 vector<cpx> p;
                 p.reserve(pattern.size());
@@ -59,7 +59,7 @@ public:
     void explore() {
         coo         z0 = {w() / 2, (con == 6) ? h() / 3 : h() / 2};
         vector<coo> list{z0};
-        auto        s = at(list.back());
+        auto        s = at(ucoo(list.back()));
         while (!list.empty()) {
             auto z = list.back();
             list.pop_back();

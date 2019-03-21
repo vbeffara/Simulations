@@ -26,25 +26,25 @@ public:
 
     explicit World(const vb::Hub &H) : Bitmap<uint8_t>(H.title, {H['n'], H['n']}), c(H['c']), p(H['p']), q(H['q']) {
         int mid = (w() + h()) / 2;
-        for (int x = 0; x < w(); ++x) {
-            for (int y = 0; y < h(); ++y) {
+        for (size_t x = 0; x < w(); ++x) {
+            for (size_t y = 0; y < h(); ++y) {
                 if (y > x) {
                     if (x + y < mid)
-                        at(vb::coo{x, y}) = EAST;
+                        at({x, y}) = EAST;
                     else
-                        at(vb::coo{x, y}) = SOUTH;
+                        at({x, y}) = SOUTH;
                 } else {
                     if (x + y < mid)
-                        at(vb::coo{x, y}) = NORTH;
+                        at({x, y}) = NORTH;
                     else
-                        at(vb::coo{x, y}) = WEST;
+                        at({x, y}) = WEST;
                 }
-                if (vb::prng.bernoulli(p)) at(vb::coo{x, y}) = vb::prng.uniform_int(uint8_t(4));
+                if (vb::prng.bernoulli(p)) at({x, y}) = vb::prng.uniform_int(uint8_t(4));
             }
         }
 
-        for (int x = c; x < w() - c; ++x)
-            for (int y = c; y < h() - c; ++y) at(vb::coo{x, y}) = vb::prng.uniform_int(uint8_t(4));
+        for (size_t x = c; x < w() - c; ++x)
+            for (size_t y = c; y < h() - c; ++y) at({x, y}) = vb::prng.uniform_int(uint8_t(4));
     }
 
     void run() {
