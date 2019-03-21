@@ -27,7 +27,7 @@ public:
     bool alive() const {
         auto lz = z.back();
         auto lx = lz.x, ly = lz.y;
-        return ((lx > 0) && (lx < true_width - 1) && (ly > 0) && (ly < true_height - 1));
+        return ((lx > 0) && (lx < int64_t(true_width) - 1) && (ly > 0) && (ly < int64_t(true_height) - 1));
     }
 
     using vb::CoarseImage::output;

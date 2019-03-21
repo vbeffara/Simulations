@@ -76,6 +76,7 @@ public:
             }
             if (!at(nz)) {
                 if (H['g']) {
+                    // TODO: fix appearances of at(ucoo(...))
                     Color c = tree->at(ucoo(z + z0) * 2);
                     if ((c == BLACK) || (prng.bernoulli(H['u']))) c = HSV(prng.uniform_real(), 1, 1);
                     if (H['i'] && (norm(nz) < 10)) c = nz.y > 0 ? Indexed(0) : Indexed(1);

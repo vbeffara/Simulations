@@ -17,9 +17,9 @@ namespace vb {
     template <typename T> constexpr coo_2d<T> &operator-=(coo_2d<T> &z, const coo_2d<T> &o) { return z = z - o; }
     template <typename T> constexpr coo_2d<T>  operator-(coo_2d<T> &z) { return {-z.x, -z.y}; }
 
-    template <typename T, typename U> constexpr coo_2d<T> operator*(U d, const coo_2d<T> &z) { return {z.x * d, z.y * d}; }
-    template <typename T, typename U> constexpr coo_2d<T> operator*(const coo_2d<T> &z, U d) { return {z.x * d, z.y * d}; }
-    template <typename T, typename U> constexpr coo_2d<T> operator/(const coo_2d<T> &z, U d) { return {z.x / d, z.y / d}; }
+    template <typename T, typename U> constexpr coo_2d<T> operator*(U d, const coo_2d<T> &z) { return {z.x * T(d), z.y * T(d)}; }
+    template <typename T, typename U> constexpr coo_2d<T> operator*(const coo_2d<T> &z, U d) { return {z.x * T(d), z.y * T(d)}; }
+    template <typename T, typename U> constexpr coo_2d<T> operator/(const coo_2d<T> &z, U d) { return {z.x / T(d), z.y / T(d)}; }
 
     template <typename T> constexpr T             pabs(T x) { return x < 0 ? -x : x; }
     template <typename T> constexpr T             pmax(T x, T y) { return x < y ? y : x; }
@@ -48,12 +48,13 @@ namespace vb {
     constexpr ucoo wrap(const coo &z, const ucoo &p) { return {pmod(z.x, p.x), pmod(z.y, p.y)}; }
 
     template <typename T> struct coo_range {
-        coo_2d<T> z, r;
-        coo_range(coo_2d<T> r) : z({0, 0}), r(r) {}
+        coo_2d<T> z, r1, r2;
+        coo_range(coo_2d<T> r) : z({0, 0}), r1({0, 0}), r2(r) {}
+        coo_range(coo_2d<T> r1, coo_2d<T> r2) : z(r1), r1(r1), r2(r2) {}
         const coo_range &begin() const { return *this; }
         const coo_range &end() const { return *this; }
-        bool             operator!=(const coo_range<T> &) const { return z.y != r.y; }
-        void             operator++() { z = (z.x == r.x - 1) ? coo_2d<T>{0, z.y + 1} : coo_2d<T>{z.x + 1, z.y}; }
+        bool             operator!=(const coo_range<T> &) const { return z.y != r2.y; }
+        void             operator++() { z = (z.x == r2.x - 1) ? coo_2d<T>{r1.x, z.y + 1} : coo_2d<T>{z.x + 1, z.y}; }
         coo_2d<T>        operator*() const { return z; }
     };
 } // namespace vb
