@@ -85,11 +85,10 @@ public:
         for (unsigned i = 0; i < size.x; ++i) sinarrayi[i] = sin(M_PI * i / size.x);
         for (unsigned j = 0; j < size.y; ++j) sinarrayj[j] = sin(M_PI * j / size.y);
 
-        for (const auto [i, j] : coo_range(size)) {
+        for (auto [i, j] : coo_range(size)) {
             if ((i == 0) && (j == 0)) continue;
-            auto   ii = unsigned(i), jj = unsigned(j);
-            long   ij   = i + int(size.x) * j;
-            double norm = sqrt(size.x * size.y * (sinarrayi[ii] * sinarrayi[ii] + sinarrayj[jj] * sinarrayj[jj]));
+            auto   ij   = gsl::index(i + size.x * j);
+            double norm = sqrt(size.x * size.y * (sinarrayi[i] * sinarrayi[i] + sinarrayj[j] * sinarrayj[j]));
             auto   fij  = cpx(prng.gaussian(), prng.gaussian()) * sqrt(M_PI / 2) / norm;
             in_[ij][0]  = real(fij);
             in_[ij][1]  = imag(fij);
@@ -102,7 +101,7 @@ public:
         in_[0][1] = 0;
 
         fftw_execute(p);
-        for (auto [i, j] : coo_range(size)) I.at(coo{i, j}).f = out_[i + gsl::index(size.x) * j][0];
+        for (auto [i, j] : coo_range(size)) I.at({i, j}).f = out_[gsl::index(i + size.x * j)][0];
         fftw_destroy_plan(p);
         fftw_free(in);
         fftw_free(out);
@@ -114,9 +113,9 @@ public:
         auto p1 = fftw_plan_dft_2d(int(size.x), int(size.y), d, d, FFTW_FORWARD, FFTW_ESTIMATE);
         auto p2 = fftw_plan_dft_2d(int(size.x), int(size.y), d, d, FFTW_BACKWARD, FFTW_ESTIMATE);
 
-        for (const auto [i, j] : coo_range(size)) {
-            auto ii = min(i, int(size.x) - i), jj = min(j, int(size.y) - j);
-            d_[i + gsl::index(size.x) * j][0] = d_[i + gsl::index(size.x) * j][1] = f(sqrt(ii * ii + jj * jj) / l);
+        for (auto [i, j] : coo_range(size)) {
+            auto ii = min(i, size.x - i), jj = min(j, size.y - j);
+            d_[gsl::index(i + size.x * j)][0] = d_[gsl::index(i + size.x * j)][1] = f(sqrt(ii * ii + jj * jj) / l);
         }
 
         fftw_execute(p1);
@@ -125,7 +124,7 @@ public:
             d_[gsl::index(i)][1] *= prng.gaussian();
         }
         fftw_execute(p2);
-        for (auto z : coo_range(size)) I.at(z).f = sign(d_[z.x + gsl::index(size.x) * z.y][0]);
+        for (auto z : coo_range(size)) I.at(z).f = sign(d_[gsl::index(z.x + size.x * z.y)][0]);
 
         fftw_destroy_plan(p1);
         fftw_destroy_plan(p2);

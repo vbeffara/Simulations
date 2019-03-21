@@ -8,7 +8,7 @@ namespace vb {
         Array(ucoo sz) : size(sz), data((unsigned long)(sz.x * sz.y)) {}
 
         explicit Array(const std::vector<std::vector<T>> &l) : size(ucoo{l.size(), l[0].size()}), data(size.x * size.y) {
-            for (const ucoo z : coo_range(size)) put(z, l[z.x][z.y]);
+            for (auto z : coo_range(size)) put(z, l[z.x][z.y]);
         }
 
         void resize(ucoo sz) {

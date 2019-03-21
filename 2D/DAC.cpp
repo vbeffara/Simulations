@@ -15,27 +15,27 @@ int main(int argc, char **argv) {
     for (auto z : coo_range(connect.size)) connect[z] = (prng.bernoulli(p) ? 1 : 0) + (prng.bernoulli(p) ? 2 : 0);
 
     Array<size_t> cluster({n, n});
-    for (ucoo z : coo_range(cluster.size)) cluster[z] = z.x + n * z.y;
+    for (auto z : coo_range(cluster.size)) cluster[z] = z.x + n * z.y;
 
     bool dirty = true;
     while (dirty) {
         dirty = false;
         for (auto z : coo_range(cluster.size)) {
-            if ((size_t(z.x) < n - 1) && ((connect[z] & 1u) != 0) && (cluster[z] > cluster[z + dz[0]])) {
+            if ((z.x < n - 1) && ((connect[z] & 1u) != 0) && (cluster[z] > cluster[coo(z) + dz[0]])) {
                 dirty      = true;
-                cluster[z] = cluster[z + dz[0]];
+                cluster[z] = cluster[coo(z) + dz[0]];
             }
-            if ((size_t(z.y) < n - 1) && ((connect[z] & 2u) != 0) && (cluster[z] > cluster[z + dz[1]])) {
+            if ((z.y < n - 1) && ((connect[z] & 2u) != 0) && (cluster[z] > cluster[coo(z) + dz[1]])) {
                 dirty      = true;
-                cluster[z] = cluster[z + dz[1]];
+                cluster[z] = cluster[coo(z) + dz[1]];
             }
-            if ((z.x > 0) && ((connect[z + dz[2]] & 1u) != 0) && (cluster[z] > cluster[z + dz[2]])) {
+            if ((z.x > 0) && ((connect[coo(z) + dz[2]] & 1u) != 0) && (cluster[z] > cluster[coo(z) + dz[2]])) {
                 dirty      = true;
-                cluster[z] = cluster[z + dz[2]];
+                cluster[z] = cluster[coo(z) + dz[2]];
             }
-            if ((z.y > 0) && ((connect[z + dz[3]] & 2u) != 0) && (cluster[z] > cluster[z + dz[3]])) {
+            if ((z.y > 0) && ((connect[coo(z) + dz[3]] & 2u) != 0) && (cluster[z] > cluster[coo(z) + dz[3]])) {
                 dirty      = true;
-                cluster[z] = cluster[z + dz[3]];
+                cluster[z] = cluster[coo(z) + dz[3]];
             }
         }
     }

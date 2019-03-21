@@ -10,7 +10,7 @@ public:
     }
 
     void step(vb::coo dz) {
-        vb::coo nz = z.back() + dz;
+        auto nz = vb::coo(z.back()) + dz;
         if (at(nz)) return;
         z.push_back(nz);
         put(nz, true);

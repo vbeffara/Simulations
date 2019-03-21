@@ -3,27 +3,32 @@
 #include <gsl/gsl>
 
 namespace vb {
-    struct coo {
-        int64_t x, y;
-
-        void operator+=(const coo &z) { *this = {x + z.x, y + z.y}; }
-        void operator-=(const coo &z) { *this = {x - z.x, y - z.y}; }
+    template <typename T> struct coo_2d {
+        T                               x, y;
+        template <typename U> constexpr operator coo_2d<U>() const { return {U(x), U(y)}; };
     };
 
-    constexpr bool operator==(const coo &z1, const coo &z2) { return (z1.x == z2.x) && (z1.y == z2.y); }
-    constexpr bool operator!=(const coo &z1, const coo &z2) { return (z1.x != z2.x) || (z1.y != z2.y); }
-    constexpr coo  operator+(const coo &z1, const coo &z2) { return {z1.x + z2.x, z1.y + z2.y}; }
-    constexpr coo  operator-(const coo &z1, const coo &z2) { return {z1.x - z2.x, z1.y - z2.y}; }
-    constexpr coo  operator-(const coo &z) { return {-z.x, -z.y}; }
-    constexpr coo  operator*(const coo &z, int64_t d) { return {z.x * d, z.y * d}; }
-    constexpr coo  operator*(int64_t d, const coo &z) { return {z.x * d, z.y * d}; }
-    constexpr coo  operator/(const coo &z, int64_t d) { return {z.x / d, z.y / d}; }
+    template <typename T> constexpr bool operator==(const coo_2d<T> &z1, const coo_2d<T> &z2) { return (z1.x == z2.x) && (z1.y == z2.y); }
+    template <typename T> constexpr bool operator!=(const coo_2d<T> &z1, const coo_2d<T> &z2) { return (z1.x != z2.x) || (z1.y != z2.y); }
 
-    constexpr int64_t norm(const coo &z) { return z.x * z.x + z.y * z.y; }
-    constexpr int64_t sup(const coo &z) {
-        auto xx = (z.x > 0 ? z.x : -z.x), yy = (z.y > 0 ? z.y : -z.y);
-        return (xx > yy ? xx : yy);
-    }
+    template <typename T> constexpr coo_2d<T>  operator+(const coo_2d<T> &z1, const coo_2d<T> &z2) { return {z1.x + z2.x, z1.y + z2.y}; }
+    template <typename T> constexpr coo_2d<T>  operator-(const coo_2d<T> &z1, const coo_2d<T> &z2) { return {z1.x - z2.x, z1.y - z2.y}; }
+    template <typename T> constexpr coo_2d<T> &operator+=(coo_2d<T> &z, const coo_2d<T> &o) { return z = z + o; }
+    template <typename T> constexpr coo_2d<T> &operator-=(coo_2d<T> &z, const coo_2d<T> &o) { return z = z - o; }
+    template <typename T> constexpr coo_2d<T>  operator-(coo_2d<T> &z) { return {-z.x, -z.y}; }
+
+    template <typename T, typename U> constexpr coo_2d<T> operator*(U d, const coo_2d<T> &z) { return {z.x * d, z.y * d}; }
+    template <typename T, typename U> constexpr coo_2d<T> operator*(const coo_2d<T> &z, U d) { return {z.x * d, z.y * d}; }
+    template <typename T, typename U> constexpr coo_2d<T> operator/(const coo_2d<T> &z, U d) { return {z.x / d, z.y / d}; }
+
+    template <typename T> constexpr T             pabs(T x) { return x < 0 ? -x : x; }
+    template <typename T> constexpr T             pmax(T x, T y) { return x < y ? y : x; }
+    template <typename T, typename U> constexpr U pmod(T k, U n) { return (k %= T(n)) < T(0) ? U(k + T(n)) : U(k); }
+    template <typename T> constexpr T             norm(const coo_2d<T> &z) { return z.x * z.x + z.y * z.y; }
+    template <typename T> constexpr T             sup(const coo_2d<T> &z) { return pmax(pabs(z.x), pabs(z.y)); }
+
+    using coo  = coo_2d<int64_t>;
+    using ucoo = coo_2d<size_t>;
 
     class coo3 {
     public:
@@ -40,32 +45,23 @@ namespace vb {
     constexpr gsl::span<const coo>  dz{dz_};
     constexpr gsl::span<const coo3> dz3{dz3_};
 
-    struct ucoo {
-        size_t x, y;
-        constexpr ucoo(size_t x, size_t y) : x(x), y(y) {}
-        constexpr ucoo(const coo &z) : x(size_t(z.x)), y(size_t(z.y)) {}
-        operator coo() { return {int64_t(x), int64_t(y)}; }
-    };
-
-    template <typename T, typename U> constexpr U pmod(T k, U n) { return (k %= T(n)) < T(0) ? U(k + T(n)) : U(k); }
-
     constexpr ucoo wrap(const coo &z, const ucoo &p) { return {pmod(z.x, p.x), pmod(z.y, p.y)}; }
 
-    struct coo_range {
-        coo z, r;
-        coo_range(ucoo r) : z({0, 0}), r({int64_t(r.x), int64_t(r.y)}) {}
+    template <typename T> struct coo_range {
+        coo_2d<T> z, r;
+        coo_range(coo_2d<T> r) : z({0, 0}), r(r) {}
         const coo_range &begin() const { return *this; }
         const coo_range &end() const { return *this; }
-        bool             operator!=(const coo_range &) const { return z.y != r.y; }
-        void             operator++() { z = (z.x == r.x - 1) ? coo{0, z.y + 1} : coo{z.x + 1, z.y}; }
-        coo              operator*() const { return z; }
+        bool             operator!=(const coo_range<T> &) const { return z.y != r.y; }
+        void             operator++() { z = (z.x == r.x - 1) ? coo_2d<T>{0, z.y + 1} : coo_2d<T>{z.x + 1, z.y}; }
+        coo_2d<T>        operator*() const { return z; }
     };
 } // namespace vb
 
-template <> struct fmt::formatter<vb::coo> {
+template <typename T> struct fmt::formatter<vb::coo_2d<T>> {
     template <typename ParseContext> constexpr auto parse(ParseContext &ctx) { return ctx.begin(); }
 
-    template <typename FormatContext> auto format(const vb::coo &z, FormatContext &ctx) {
+    template <typename FormatContext> auto format(const vb::coo_2d<T> &z, FormatContext &ctx) {
         return format_to(ctx.out(), "({},{})", z.x, z.y);
     }
 };

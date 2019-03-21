@@ -11,7 +11,7 @@ using namespace std;
 
 auto dupe(const Array<double> &a) {
     Array<double> aa({2 * a.size.x, 2 * a.size.y});
-    for (auto z : coo_range(aa.size)) aa[z] = a[z / 2];
+    for (auto z : coo_range(aa.size)) aa[z] = a[z / 2u];
     return aa;
 }
 
@@ -35,13 +35,12 @@ struct Tiling {
         for (size_t i = 0; i < n / 2; ++i) {
             for (size_t j = 0; j < n / 2; ++j) {
                 ucoo z{2 * i, 2 * j};
-                if ((state[z] == 1) && (state[z + coo{1, 1}] == 1)) {
-                    state[z] = 0;
-                    // TODO: arithmetic for ucoo
-                    state[coo(z) + coo{1, 1}] = 0;
-                } else if ((state[z + coo{0, 1}] == 1) && (state[z + coo{1, 0}] == 1)) {
-                    state[coo(z) + coo{1, 0}] = 0;
-                    state[coo(z) + coo{0, 1}] = 0;
+                if ((state[z] == 1) && (state[z + ucoo{1, 1}] == 1)) {
+                    state[z]              = 0;
+                    state[z + ucoo{1, 1}] = 0;
+                } else if ((state[z + ucoo{0, 1}] == 1) && (state[z + ucoo{1, 0}] == 1)) {
+                    state[z + ucoo{1, 0}] = 0;
+                    state[z + ucoo{0, 1}] = 0;
                 }
             }
         }
@@ -100,8 +99,8 @@ struct Tiling {
 
         for (size_t k = 1; k < n; ++k) {
             const auto &AA = A[k - 1];
-            for (ucoo z : coo_range(A[k].size)) {
-                size_t i = z.x, j = z.y, i1 = (i + 1) % per, j1 = (j + 1) % per, ii = (i + 2 * (i % 2)) % per, jj = (j + 2 * (j % 2)) % per;
+            for (auto z : coo_range(A[k].size)) {
+                auto   i = z.x, j = z.y, i1 = (i + 1) % per, j1 = (j + 1) % per, ii = (i + 2 * (i % 2)) % per, jj = (j + 2 * (j % 2)) % per;
                 double a20, a21;
                 auto & a1 = AA[{ii, jj}];
                 if (a1.second + AA[{i1, j1}].second == AA[{ii, j1}].second + AA[{i1, jj}].second) {
@@ -123,7 +122,7 @@ struct Tiling {
         for (size_t k = 0; k < n; ++k) {
             const auto &a0nk1 = A[n - k - 1];
             for (auto z : coo_range(pbs[k].size)) {
-                auto i = z.x, j = z.y;
+                auto i = int64_t(z.x), j = int64_t(z.y);
                 if (a0nk1.atp({2 * i, 2 * j}).second + a0nk1.atp({2 * i + 1, 2 * j + 1}).second >
                     a0nk1.atp({2 * i + 1, 2 * j}).second + a0nk1.atp({2 * i, 2 * j + 1}).second)
                     pbs[k][z] = 0;
@@ -151,8 +150,8 @@ struct Tiling {
                     coo sh = dz[(zz.y + ((((zz.x + 1) % 4) / 2) != 0 ? 5 : 3)) % 4];
                     return cpx(z.x, z.y) + 2 * double(H['r']) * cpx(sh.x, sh.y) - cpx(offx, offy);
                 };
-                double gr = a * TP.atp(z + coo{offx / 2, offy / 2}) + b;
-                F.add(make_unique<Segment>(s(z * 2 - edge), s(z * 2 + edge), Pen(Grey(uint8_t(255 * gr)), 130.0 / state.size.x)));
+                double gr = a * TP.atp(coo(z) + coo{offx / 2, offy / 2}) + b;
+                F.add(make_unique<Segment>(s(coo(z) * 2 - edge), s(coo(z) * 2 + edge), Pen(Grey(uint8_t(255 * gr)), 130.0 / state.size.x)));
             }
         if (H['v']) F.show();
         F.output(name);
@@ -191,7 +190,7 @@ struct Tiling {
 
         auto     H1 = height();
         ofstream dat(name + ".dat");
-        for (ucoo z : coo_range(H1.size)) {
+        for (auto z : coo_range(H1.size)) {
             dat << H1[z] << " ";
             if (z.x == H1.size.x - 1) dat << "\n";
         }

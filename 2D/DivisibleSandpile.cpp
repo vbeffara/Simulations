@@ -20,7 +20,7 @@ public:
     void swipe(const Hub &H) {
         for (auto z : coo_range(size))
             if (double excess = at(z); excess > 0) {
-                for (int i = 0; i < 4; ++i) atp(z + dz[i]) += excess / 4;
+                for (int i = 0; i < 4; ++i) atp(coo(z) + dz[i]) += excess / 4;
                 at(z) = 0;
             }
         if (H['r']) {
@@ -35,8 +35,7 @@ public:
 };
 
 int main(int argc, char **argv) {
-    Hub H("Divisible sandpile", argc, argv, "n=500,m=.01,s=10,r");
-    for (auto z : coo_range({5, 3})) spdlog::info("{}", z);
+    Hub      H("Divisible sandpile", argc, argv, "n=500,m=.01,s=10,r");
     Sandpile S(H, H['n']);
     S.show();
     while (true) { S.swipe(H); }
