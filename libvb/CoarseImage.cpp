@@ -15,7 +15,7 @@ static void flush_data(png_struct *png) {
 namespace vb {
     bool CoarseImage::at(coo z) const {
         z += z0;
-        const CoarseCell &d = Bitmap<CoarseCell>::at(coo{z.x / int(L), z.y / int(L)});
+        const CoarseCell &d = Bitmap<CoarseCell>::at({size_t(z.x) / L, size_t(z.y) / L});
         if (d.fill == 0) return false;
         if (d.fill == LL) return true;
         return d.sub[size_t((z.x % int(L)) + int(L) * (z.y % int(L)))];
@@ -25,7 +25,7 @@ namespace vb {
         step();
         z += z0;
         const unsigned cc = c ? 1 : 0;
-        CoarseCell &   d  = Bitmap<CoarseCell>::at(coo{z.x / int(L), z.y / int(L)});
+        CoarseCell &   d  = Bitmap<CoarseCell>::at({size_t(z.x) / L, size_t(z.y) / L});
         if (d.fill == cc * LL) return;
         if (d.fill == (1 - cc) * LL) d.sub.resize(LL, !c);
         auto sub_xy = size_t((z.x % int(L)) + int(L) * (z.y % int(L)));

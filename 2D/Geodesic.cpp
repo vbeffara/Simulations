@@ -16,7 +16,7 @@ public:
     Info(coo _z, coo _n, double _d, double _f) : z(_z), next(_n), d(_d), f(_f) {}
     bool operator<(const Info &o) const { return d > o.d; }
 
-    coo    z, next;
+    ucoo   z, next;
     double d, f;
 };
 
@@ -132,7 +132,7 @@ public:
     }
 
     void dijkstra() {
-        coo                  mid{w() / 2, h() / 2};
+        ucoo                 mid{size_t(w()) / 2, size_t(h()) / 2};
         priority_queue<Info> Q;
         I.at(mid).d = 0;
         Q.push(I.at(mid));
@@ -144,9 +144,9 @@ public:
             Info im = Q.top();
             Q.pop();
             for (int k = 0; k < 8; ++k) {
-                coo nz = im.z + dz[k];
+                coo nz = coo(im.z) + dz[k];
                 if (!(contains(nz))) continue;
-                Info & ni = I.at(nz);
+                Info & ni = I.at(ucoo(nz));
                 double nd = im.d + (k < 4 ? .5 : sqrt(.5)) * (im.f + ni.f);
                 if (ni.d > nd) {
                     ni.d    = nd;
@@ -159,16 +159,16 @@ public:
 
     double radius() {
         double r = I.at({0, 0}).d;
-        for (int i = 0; i < w(); ++i) {
-            r = min(r, I.at(coo{i, 0}).d);
-            r = min(r, I.at(coo{0, i}).d);
-            r = min(r, I.at(coo{i, h() - 1}).d);
-            r = min(r, I.at(coo{w() - 1, i}).d);
+        for (size_t i = 0; i < size_t(w()); ++i) {
+            r = min(r, I.at({i, 0}).d);
+            r = min(r, I.at({0, i}).d);
+            r = min(r, I.at({i, size_t(h()) - 1}).d);
+            r = min(r, I.at({size_t(w()) - 1, i}).d);
         }
         return r;
     }
 
-    void trace(coo z, Color c = RED) {
+    void trace(ucoo z, Color c = RED) {
         while (at(z) != c) {
             put(z, c);
             z = I.at(z).next;

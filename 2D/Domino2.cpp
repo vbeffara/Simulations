@@ -36,8 +36,8 @@ public:
     explicit Tiling(const Hub &H, size_t n) : Bitmap<Domino>(H.title, {2 * n, 2 * n}) {
         for (size_t i = 0; i < n; ++i)
             for (size_t j = n - 1 - i; j < n + i; j += 2) {
-                putd(Domino{ucoo{i, j}, 1});
-                putd(Domino{ucoo{2 * n - 1 - i, j}, 1});
+                putd(Domino{{int(i), int(j)}, 1});
+                putd(Domino{{int(2 * n - 1 - i), int(j)}, 1});
             }
     };
 
@@ -67,7 +67,7 @@ public:
 
     void run() {
         while (visible()) {
-            flip(prng.uniform_coo(size));
+            flip(prng.uniform_coo(coo(size)));
             step();
         }
     };

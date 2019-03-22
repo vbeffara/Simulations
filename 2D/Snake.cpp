@@ -19,7 +19,7 @@ public:
 
     void shrink() {
         if (z.size() > 1) {
-            put(vb::ucoo(z.back()), false);
+            put(z.back(), false);
             z.pop_back();
         }
     }

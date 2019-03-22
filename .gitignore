@@ -21,3 +21,4 @@ compile_commands.json
 /warnings.*
 *.log
 *.db
+.vscode/ipch

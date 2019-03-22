@@ -15,7 +15,7 @@ namespace vb {
 
         void nn(coo z, QuadIndex &qi) const;
 
-        void paint(Image &img, coo ul, int w);
+        void paint(Image &img, ucoo ul, size_t w);
 
         size_t n;
 

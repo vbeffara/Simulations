@@ -24,13 +24,14 @@ public:
         };
         bcs["wired"] = [this] {
             b = 1;
-            for (int i = 0; i < w(); ++i) {
-                put(coo{i, 0}, 1);
-                put(coo{i, h() - 1}, 1);
+            for (size_t i = 0; i < size_t(w()); ++i) {
+                put({i, 0}, 1);
+                // TODO: size_t(h()) to be replaced everywhere
+                put({i, size_t(h()) - 1}, 1);
             }
-            for (int i = 0; i < h(); ++i) {
-                put(coo{0, i}, 1);
-                put(coo{w() - 1, i}, 1);
+            for (size_t i = 0; i < size_t(h()); ++i) {
+                put({0, i}, 1);
+                put({size_t(w()) - 1, i}, 1);
             }
         };
         bcs["tripod"] = [this] {

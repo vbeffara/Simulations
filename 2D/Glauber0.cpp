@@ -8,7 +8,7 @@ class Glauber : public Image {
 public:
     Glauber(const Hub &H, size_t n_) : Image(H.title, {n_, n_}), n(n_){};
     void fill(double p);
-    void step(int i = -1, int j = -1);
+    void step(ucoo z);
 
 private:
     size_t n;
@@ -23,20 +23,16 @@ void Glauber::fill(double p) {
                 put({i, j}, BLACK);
 }
 
-void Glauber::step(int i, int j) {
-    if (i == -1) i = prng.uniform_int(int(n));
-    if (j == -1) j = prng.uniform_int(int(n));
-
-    int c = 0;
-    if (at(coo{(i + 1) % int(n), j}) == WHITE) ++c;
-    if (at(coo{(i + int(n) - 1) % int(n), j}) == WHITE) ++c;
-    if (at(coo{i, (j + 1) % int(n)}) == WHITE) ++c;
-    if (at(coo{i, (j + int(n) - 1) % int(n)}) == WHITE) ++c;
+void Glauber::step(ucoo z) {
+    auto cz = coo(z);
+    int  c  = 0;
+    for (unsigned d = 0; d < 4; ++d)
+        if (atp(cz + dz[d]) == WHITE) ++c;
 
     if ((c > 2) || ((c == 2) && prng.bernoulli(.5)))
-        put(coo{i, j}, WHITE);
+        put(z, WHITE);
     else
-        put(coo{i, j}, BLACK);
+        put(z, BLACK);
 }
 
 int main(int argc, char **argv) {
@@ -47,6 +43,6 @@ int main(int argc, char **argv) {
     G.fill(p);
     G.show();
 
-    while (true) G.step();
+    while (true) G.step(prng.uniform_coo(G.size));
     return 0;
 }
