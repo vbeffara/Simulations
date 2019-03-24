@@ -7,7 +7,7 @@ using namespace std;
 
 class FCBM : public Image {
 public:
-    FCBM(const std::string &s, size_t n, double p) : Image(s, {2 * n, 2 * n}), mid({int(n - (n % 2)), int(n - (n % 2))}), n(n), p(p) {
+    FCBM(const std::string &s, size_t n, double p) : Image(s, {2 * n, 2 * n}), mid({n - (n % 2), n - (n % 2)}), n(n), p(p) {
         for (size_t x = 0; x < 2 * n; ++x)
             for (size_t y = 0; y < 2 * n; ++y)
                 if ((x % 2 == 0) && (y % 2 == 0)) put({x, y}, WHITE);
@@ -21,7 +21,7 @@ public:
     }
 
     double dlr(coo z, coo d) {
-        if ((z == mid) || (z + 2 * d == mid)) return 1;
+        if ((z == coo(mid)) || (z + 2 * d == coo(mid))) return 1;
         if (atp(z) != atp(z + 2 * d)) return p;
         if ((atp(z) == WHITE) && (atp(z + 2 * d) == WHITE)) return 0;
         if (atp(z + d) == BLACK) return p;
@@ -29,9 +29,9 @@ public:
 
         double out = p;
         atp(z + d) = BLACK;
-        fill(z, WHITE);
+        fill(ucoo(z), WHITE);
         if (atp(z) != atp(z + 2 * d)) out = 1;
-        fill(z, RED);
+        fill(ucoo(z), RED);
         atp(z + d) = RED;
         return out;
     }
@@ -48,7 +48,7 @@ public:
         }
     }
 
-    coo    mid;
+    ucoo   mid;
     size_t n;
     double p;
 };

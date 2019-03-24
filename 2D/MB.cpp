@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
     for (auto z : coo_range(img.size)) img.put(z, WHITE);
     coo z{int(n), int(n)};
     while (img.contains(z)) {
-        img.put(z, BLACK);
+        img.put(ucoo(z), BLACK);
         z += dz[prng() % 4];
     }
     img.output(H.title);
