@@ -43,7 +43,7 @@ public:
         coo c{0, 0};
         for (int x = 0; x < w(); ++x)
             for (int y = 0; y < h(); ++y)
-                if (at(coo{x, y}).s == Stat::max) c = {x - w() / 2, y - h() / 2};
+                if (at(ucoo(coo{x, y})).s == Stat::max) c = {x - w() / 2, y - h() / 2};
         c.x -= c.x % 2;
         c.y -= c.y % 2;
         if (c != coo{0, 0}) {
@@ -52,7 +52,7 @@ public:
             for (int x = 0; x < w(); ++x)
                 for (int y = 0; y < h(); ++y) {
                     coo z{x, y};
-                    tmp.at(z) = atp(z + c);
+                    tmp.at(ucoo(z)) = atp(z + c);
                 }
             me = tmp;
             z -= c;
@@ -78,8 +78,8 @@ public:
             z += d + d;
         }
         if (H['o'])
-            for (int x = 0; x < w(); x += 2) {
-                for (int y = 1; y < h(); y += 2) cout << x << " " << y << " " << at(coo{x, y}).s << endl;
+            for (size_t x = 0; x < w(); x += 2) {
+                for (size_t y = 1; y < h(); y += 2) cout << x << " " << y << " " << at({x, y}).s << endl;
                 cout << endl;
             }
     }

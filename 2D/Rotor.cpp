@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
     img.show();
 
     ucoo z{n / 2, n / 2};
-    while (img.contains(z)) {
+    while (img.contains(coo(z), 1)) {
         Color c = img.at(z);
         if (c == BLACK) {
             img.put(z, C[0]);

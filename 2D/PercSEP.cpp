@@ -29,13 +29,13 @@ public:
             dirty = false;
             for (int x = 0; x < w(); ++x)
                 for (int y = 0; y < h(); ++y) {
-                    if (at(coo{x, y}) == 102) {
+                    if (at(ucoo(coo{x, y})) == 102) {
                         if (atp({x + 1, y}) == 1 || atp({x + 1, y}) == 2 || atp({x, y + 1}) == 1 || atp({x, y + 1}) == 2 ||
                             atp({x, y - 1}) == 1 || atp({x, y - 1}) == 2) {
                             atp({x, y}) = 2;
                             dirty       = true;
                         }
-                    } else if (at(coo{x, y}) == 101) {
+                    } else if (at(ucoo(coo{x, y})) == 101) {
                         if (atp({x + 1, y}) == 1 || atp({x + 1, y}) == 2 || atp({x + 1, y}) == 101 || atp({x, y + 1}) == 1 ||
                             atp({x, y + 1}) == 2 || atp({x, y - 1}) == 1 || atp({x, y - 1}) == 2) {
                             atp({x, y}) = 1;
@@ -44,19 +44,19 @@ public:
                     }
                 }
         }
-        for (int x = 0; x < w(); ++x)
-            for (int y = 0; y < h(); ++y) {
-                if (at(coo{x, y}) >= 102) at(coo{x, y}) = 3;
-                if (at(coo{x, y}) == 101) at(coo{x, y}) = 1;
+        for (size_t x = 0; x < w(); ++x)
+            for (size_t y = 0; y < h(); ++y) {
+                if (at({x, y}) >= 102) at({x, y}) = 3;
+                if (at({x, y}) == 101) at({x, y}) = 1;
             }
     }
     void move() {
-        coo z{prng.uniform_int(w()), prng.uniform_int(h())};
+        auto z = prng.uniform_coo(size);
         if (at(z) < 2) return;
         coo s = prng.bernoulli(d) ? coo{1, 0} : dz[prng.uniform_int(4)];
-        if (atp(z + s) != 1) return;
+        if (atp(coo(z) + s) != 1) return;
         if (tasym && (s == coo{-1, 0})) return;
-        swap(at(z), atp(z + s));
+        swap(at(z), atp(coo(z) + s));
         step();
         flow += s;
     }
@@ -74,9 +74,9 @@ int main(int argc, char **argv) {
         if ((t % (P.w() * P.h())) == 0) {
             if (P.tasym) P.clean();
             int na = 0;
-            for (int x = 0; x < P.w(); ++x)
-                for (int y = 0; y < P.h(); ++y)
-                    if (P.at(coo{x, y}) == 2) ++na;
+            for (size_t x = 0; x < P.w(); ++x)
+                for (size_t y = 0; y < P.h(); ++y)
+                    if (P.at({x, y}) == 2) ++na;
             if (na == 0) exit(0);
             cout << t / (P.w() * P.h()) << " " << na << " " << P.flow.x << " " << double(P.flow.x) / na << endl;
             P.flow = {0, 0};

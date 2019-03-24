@@ -29,8 +29,10 @@ int main(int argc, char **argv) {
     if (t > 0) img.snapshot_setup("MDLA", t);
 
     while (true) {
-        coo z = prng.uniform_coo(img.size), nz = z + dz[prng() % 4];
-        if (!img.contains(nz)) continue;
+        auto z   = prng.uniform_coo(img.size);
+        auto nnz = coo(z) + dz[prng() % 4];
+        if (!img.contains(nnz)) continue;
+        auto nz = ucoo(nnz);
         if (img.at(z) == img.at(nz)) continue;
 
         bool flag = false;
@@ -50,11 +52,7 @@ int main(int argc, char **argv) {
         }
 
         if (img.at(z) == img.at(nz)) continue;
-        if (img.at(z) != ALIVE) {
-            coo t = z;
-            z     = nz;
-            nz    = t;
-        }
+        if (img.at(z) != ALIVE) std::swap(z, nz);
         if (img.at(z) != ALIVE) continue;
 
         if (img.at(nz) == EMPTY) {

@@ -43,13 +43,13 @@ public:
         for (size_t i = 0; i != nstep; i++)
             for (size_t j = 0; j < n * n; ++j) {
                 step();
-                auto z = prng.uniform_coo(size, size_t(c));
+                const auto z = prng.uniform_coo(size, size_t(c));
                 if (k) {
                     coo zz = coo(z) + dz[prng.uniform_int(4)];
                     if (c && !contains(zz, static_cast<int64_t>(c))) continue;
                     if (atp(coo(z)) == atp(zz)) continue;
                     int s = nnb(coo(z)) + nnb(zz) + 2;
-                    if ((s <= 0) || (prng.bernoulli(p[size_t(s)]))) { swap(atp(z), atp(zz)); }
+                    if ((s <= 0) || (prng.bernoulli(p[size_t(s)]))) { swap(at(z), atp(zz)); }
                 } else {
                     int s = nnb(coo(z));
                     if ((s <= 0) || (prng.bernoulli(p[size_t(s)]))) put(z, Grey(uint8_t(255 - int(at(ucoo(z))))));

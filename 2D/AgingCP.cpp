@@ -20,7 +20,7 @@ public:
         for (double &u : P) u /= s;
     }
     void run() {
-        coo z = prng.uniform_coo(size);
+        auto z = prng.uniform_coo(size);
         if (at(z) == 0) return;
         auto action = prng.discrete(P);
         if (action == 0) {
@@ -28,7 +28,7 @@ public:
         } else if ((action == 1) && (at(z) < maxage)) {
             put(z, at(z) + 1);
         } else if (action + kid - 1 <= at(z)) {
-            coo nz = z + dz[prng.uniform_int(4)];
+            coo nz = coo(z) + dz[prng.uniform_int(4)];
             if (atp(nz) == 0) putp(nz, 1);
         }
     }
