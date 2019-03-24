@@ -30,20 +30,20 @@ public:
         while (at(z).t != tgt) {
             coo d = dz[at(z).d];
             // TODO: make this less ugly
-            at(z).t = at(coo{int(z.x), int(z.y)} + d).t = tgt;
-            z                                           = coo{int(z.x), int(z.y)} + d * 2;
+            at(z).t = at(ucoo(coo(z) + d)).t = tgt;
+            z                                = ucoo(coo(z) + d * 2);
         }
     }
 
     void lerw(coo z0) {
         coo z = z0;
-        while (at(z).t != SITE) {
-            int d   = prng.uniform_int(4);
-            at(z).d = d;
+        while (at(ucoo(z)).t != SITE) {
+            int d         = prng.uniform_int(4);
+            at(ucoo(z)).d = d;
             if (contains(z + dz[d])) z += dz[d] * 2;
             step();
         }
-        path(z0, SITE);
+        path(ucoo(z0), SITE);
     }
 
     void go(const Hub &H) {

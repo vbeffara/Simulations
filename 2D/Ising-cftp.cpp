@@ -32,11 +32,11 @@ public:
             if (atp(z + dz[i]) >= 2) ++n2;
         }
         if (U < p[n2])
-            put(z, 2);
+            put(ucoo(z), 2);
         else if (U < p[n1])
-            put(z, 1);
+            put(ucoo(z), 1);
         else
-            put(z, 0);
+            put(ucoo(z), 0);
     }
 
     void up() {
@@ -44,8 +44,7 @@ public:
             up({int(d) + prng.uniform_int(w() - 2 * int(d)), int(d) + prng.uniform_int(h() - 2 * int(d))});
     }
     void snap() {
-        for (int i = 0; i < w(); ++i)
-            for (int j = 0; j < h(); ++j) status.put(coo{i, j}, at(coo{i, j}));
+        for (auto z : coo_range(size)) status.put(z, at(z));
         status.update();
     }
 
@@ -65,9 +64,8 @@ public:
             snap();
             if (s) status.snapshot();
             n = 0;
-            for (int i = 0; i < w(); ++i)
-                for (int j = 0; j < h(); ++j)
-                    if (at(coo{i, j}) == 1) ++n;
+            for (auto z : coo_range(size))
+                if (at(z) == 1) ++n;
         }
     }
 

@@ -29,8 +29,7 @@ public:
 class SF : public Bitmap<Point> {
 public:
     SF(const Hub &H, size_t n_, double a_)
-        : Bitmap<Point>(H.title, {2 * n_, 2 * n_ + 1}), n(n_), a(a_), root({2 * int(n) - 1, 2 * (int(n) / 2)}),
-          start({1, 2 * (int(n) / 4)}) {
+        : Bitmap<Point>(H.title, {2 * n_, 2 * n_ + 1}), n(n_), a(a_), root({2 * n - 1, 2 * (n / 2)}), start({1, 2 * (n / 4)}) {
         ps = {a * a, a * a, 1, 1};
         for (auto &p : ps) p /= 2 * (1 + a * a);
     }
@@ -41,19 +40,19 @@ public:
     }
 
     void path(coo z, Type t = EMPH) {
-        while (contains(z) && (at(z).t != t)) {
-            int d         = at(z).d;
-            at(z).t       = t;
-            at(z + dz[d]) = Point{t, d};
+        while (contains(z) && (at(ucoo(z)).t != t)) {
+            int d               = at(ucoo(z)).d;
+            at(ucoo(z)).t       = t;
+            at(ucoo(z + dz[d])) = Point{t, d};
             z += dz[d] * 2;
         }
     }
 
     void lerw(coo z0, bool killed = false) {
         coo z = z0;
-        while (at(z).t != SITE) {
-            auto d  = prng.discrete(ps);
-            at(z).d = int(d);
+        while (at(ucoo(z)).t != SITE) {
+            auto d        = prng.discrete(ps);
+            at(ucoo(z)).d = int(d);
             step();
             if (contains(z + dz[d] * 2)) {
                 z += dz[d] * 2;
@@ -74,21 +73,21 @@ public:
                     coo z{2 * int(i), 1 + 2 * int(j)};
                     int s = 0, dd = -1;
                     for (int d = 0; d < 4; ++d)
-                        if (at(z + dz[d]).t == VOID) {
+                        if (at(ucoo(z + dz[d])).t == VOID) {
                             ++s;
                             dd = d;
                         }
                     if (s == 1) {
-                        at(z)          = Point{DUAL, dd};
-                        at(z + dz[dd]) = Point{DEDG, dd};
-                        dirty          = true;
+                        at(ucoo(z))          = Point{DUAL, dd};
+                        at(ucoo(z + dz[dd])) = Point{DEDG, dd};
+                        dirty                = true;
                     }
                 }
         }
     }
 
     void special(const Hub &H) {
-        coo    delta{root - start};
+        coo    delta{coo(root) - coo(start)};
         double lambda = double(delta.y) / double(delta.x), L = lambda * lambda;
         double tca = a + 1 / a, Delta = 1 + L * L + L * (tca * tca - 2);
         double u = (tca - sqrt(Delta)) / (1 - L), mu = copysign(acosh(u), delta.x);
@@ -100,22 +99,22 @@ public:
         for (auto &p : cps) p /= s;
 
         int nw = 0;
-        coo z  = start;
+        coo z  = coo(start);
         while (true) {
-            auto d  = prng.discrete(cps);
-            at(z).d = int(d);
+            auto d        = prng.discrete(cps);
+            at(ucoo(z)).d = int(d);
             z += dz[d] * 2;
             step();
-            if (z == root) break;
-            if ((z.x <= start.x) || (!contains(z))) { z = start; }
+            if (z == coo(root)) break;
+            if ((z.x <= start.x) || (!contains(z))) { z = coo(start); }
             if (z.x == root.x) {
                 nw++;
                 if (nw == 1) stage(H);
-                z = start;
+                z = coo(start);
             }
         }
         stage(H);
-        path(start, SITE);
+        path(coo(start), SITE);
     }
 
     void go(const Hub &H) {
@@ -124,14 +123,14 @@ public:
         if (a < 1)
             special(H);
         else
-            lerw(start, false);
+            lerw(coo(start), false);
         stage(H);
         for (size_t i = 0; i < n; ++i) {
             for (size_t j = 0; j <= n; ++j) lerw({2 * int(i) + 1, 2 * int(j)}, true);
         }
         stage(H);
         put(root, Point{EMPH});
-        path(start);
+        path(coo(start));
         stage(H);
         dual();
         stage(H);
@@ -141,7 +140,7 @@ public:
     size_t         n;
     double         a;
     vector<double> ps;
-    coo            root, start;
+    ucoo           root, start;
 };
 
 int main(int argc, char **argv) {

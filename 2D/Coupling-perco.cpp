@@ -11,31 +11,26 @@ public:
 
     void compute_cpts(int r1) {
         int t = 0;
-        for (int x = 0; x < w(); x++) {
-            for (int y = 0; y < h(); y++) {
-                coo z{x, y};
-                expl[z] = (at(z) == WHITE ? 1 : -1) * (++t);
-            }
-        }
+        for (auto z : coo_range(size)) expl[z] = (at(z) == WHITE ? 1 : -1) * (++t);
 
         for (int x = -r1 + 1; x < r1 - 1; x++)
-            for (int y = -r1 + 1; y < r1 - 1; y++) expl[coo{x + w() / 2, y + h() / 2}] = 0;
+            for (int y = -r1 + 1; y < r1 - 1; y++) expl[ucoo{size_t(x + w() / 2), size_t(y + h() / 2)}] = 0;
 
         bool dirty = true;
         while (dirty) {
             dirty = false;
-            for (int x = 0; x < w(); x++) {
-                for (int y = 0; y < h(); y++) {
-                    coo z{x, y};
+            for (size_t x = 0; x < w(); x++) {
+                for (size_t y = 0; y < h(); y++) {
+                    ucoo z{x, y};
                     for (int i = 0; i < 6; ++i) {
-                        coo zz = z + dz[i];
+                        coo zz = coo(z) + dz[i];
                         if (!expl.contains(zz)) continue;
-                        if ((expl[z] > 0) && (expl[zz] > expl[z])) {
-                            expl[z] = expl[zz];
+                        if ((expl[z] > 0) && (expl[ucoo(zz)] > expl[z])) {
+                            expl[z] = expl[ucoo(zz)];
                             dirty   = true;
                         }
-                        if ((expl[z] < 0) && (expl[zz] < expl[z])) {
-                            expl[z] = expl[zz];
+                        if ((expl[z] < 0) && (expl[ucoo(zz)] < expl[z])) {
+                            expl[z] = expl[ucoo(zz)];
                             dirty   = true;
                         }
                     }
@@ -50,31 +45,31 @@ public:
 
         for (auto &t : table) t = 0;
         for (int i = -r2; i < r2; i++) {
-            if ((sides & 1u) != 0) table[size_t(int64_t(N * N) + expl[coo{int(N) / 2 + i, int(N) / 2 - r2}])] = 1;
-            if ((sides & 2u) != 0) table[size_t(int64_t(N * N) + expl[coo{int(N) / 2 + i, int(N) / 2 + r2 - 1}])] = 1;
-            if ((sides & 4u) != 0) table[size_t(int64_t(N * N) + expl[coo{int(N) / 2 - r2, int(N) / 2 + i}])] = 1;
-            if ((sides & 8u) != 0) table[size_t(int64_t(N * N) + expl[coo{int(N) / 2 + r2 - 1, int(N) / 2 + i}])] = 1;
+            if ((sides & 1u) != 0) table[size_t(int64_t(N * N) + expl[ucoo(coo{int(N) / 2 + i, int(N) / 2 - r2})])] = 1;
+            if ((sides & 2u) != 0) table[size_t(int64_t(N * N) + expl[ucoo(coo{int(N) / 2 + i, int(N) / 2 + r2 - 1})])] = 1;
+            if ((sides & 4u) != 0) table[size_t(int64_t(N * N) + expl[ucoo(coo{int(N) / 2 - r2, int(N) / 2 + i})])] = 1;
+            if ((sides & 8u) != 0) table[size_t(int64_t(N * N) + expl[ucoo(coo{int(N) / 2 + r2 - 1, int(N) / 2 + i})])] = 1;
         }
 
         int     n = 0;
         int64_t k;
         for (int i = -r1; i < r1; i++) {
-            k = expl[coo{int(N) / 2 + i, int(N) / 2 - r1}];
+            k = expl[ucoo(coo{int(N) / 2 + i, int(N) / 2 - r1})];
             if (table[size_t(int64_t(N * N) + k)] == 1) {
                 table[size_t(int64_t(N * N) + k)] = 0;
                 n++;
             }
-            k = expl[coo{int(N) / 2 + i, int(N) / 2 + r1 - 1}];
+            k = expl[ucoo(coo{int(N) / 2 + i, int(N) / 2 + r1 - 1})];
             if (table[size_t(int64_t(N * N) + k)] == 1) {
                 table[size_t(int64_t(N * N) + k)] = 0;
                 n++;
             }
-            k = expl[coo{int(N) / 2 - r1, int(N) / 2 + i}];
+            k = expl[ucoo(coo{int(N) / 2 - r1, int(N) / 2 + i})];
             if (table[size_t(int64_t(N * N) + k)] == 1) {
                 table[size_t(int64_t(N * N) + k)] = 0;
                 n++;
             }
-            k = expl[coo{int(N) / 2 + r1 - 1, int(N) / 2 + i}];
+            k = expl[ucoo(coo{int(N) / 2 + r1 - 1, int(N) / 2 + i})];
             if (table[size_t(int64_t(N * N) + k)] == 1) {
                 table[size_t(int64_t(N * N) + k)] = 0;
                 n++;
@@ -97,8 +92,8 @@ public:
 
             for (int x = -r1 + 1; x < r1 - 1; x++) {
                 for (int y = -r1 + 1; y < r1 - 1; y++) {
-                    put(coo{x + w() / 2, y + h() / 2}, BLACK);
-                    put(coo{x + w() / 2, y + h() / 2}, BLACK);
+                    put(ucoo(coo{x + w() / 2, y + h() / 2}), BLACK);
+                    put(ucoo(coo{x + w() / 2, y + h() / 2}), BLACK);
                 }
             }
 
@@ -116,8 +111,8 @@ public:
     Coupling(const Hub &H, size_t r)
         : Image(H.title, {2 * r, 2 * r}), r1(int(r) / 4), r2(int(r) / 2), r3(int(r)), c1(H, 2 * r), c2(H, 2 * r) {
         c1.pick(r1, r2, r3);
-        for (int i = 0; i < w(); ++i)
-            for (int j = 0; j < h(); ++j) c2[coo{i, j}] = c1[coo{i, j}];
+        for (size_t i = 0; i < w(); ++i)
+            for (size_t j = 0; j < h(); ++j) c2[ucoo{i, j}] = c1[ucoo{i, j}];
         c1.show();
         c2.show();
         show();
@@ -127,9 +122,9 @@ public:
 
     int compute_diff() {
         int n = 0;
-        for (int i = 0; i < c1.w(); i++) {
-            for (int j = 0; j < c1.h(); j++) {
-                coo z{i, j};
+        for (size_t i = 0; i < c1.w(); i++) {
+            for (size_t j = 0; j < c1.h(); j++) {
+                ucoo z{i, j};
                 if (c1.at(z) == c2.at(z)) {
                     put(z, BLACK);
                 } else if (int(c1.at(z)) > int(c2.at(z))) {
@@ -146,7 +141,7 @@ public:
 
     void run() {
         while (true) {
-            coo z{0, 0};
+            ucoo z{0, 0};
             while (true) {
                 z      = prng.uniform_coo(size);
                 auto x = z.x, y = z.y;

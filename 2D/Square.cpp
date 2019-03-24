@@ -25,7 +25,7 @@ public:
 
     void step(const vb::Array<double> &o) {
         int    r  = 0;
-        double oo = o.at(vb::coo{xi(), yi()});
+        double oo = o.at(vb::ucoo(vb::coo{xi(), yi()}));
 
         if (yf() == 1) {
             r    = 1;

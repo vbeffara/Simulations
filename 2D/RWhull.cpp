@@ -43,12 +43,12 @@ class Snake : public Bitmap<int> {
 public:
     Snake(const Hub &H, size_t n_) : Bitmap<int>(H.title, {6 * n_, 6 * n_}), n(n_) {
         p.push_back({3 * int(n), 3 * int(n)});
-        put(p.back(), 1);
+        put(ucoo(p.back()), 1);
         show();
     };
     void grow(int d) {
         p.push_back(p.back() + dz[d]);
-        put(p.back(), at(p.back()) + 1);
+        put(ucoo(p.back()), at(ucoo(p.back())) + 1);
     }
     void shrink() { p.pop_back(); }
 

@@ -21,21 +21,21 @@ int main(int argc, char **argv) {
     while (dirty) {
         dirty = false;
         for (auto z : coo_range(cluster.size)) {
-            if ((z.x < n - 1) && ((connect[z] & 1u) != 0) && (cluster[z] > cluster[coo(z) + dz[0]])) {
+            if ((z.x < n - 1) && ((connect[z] & 1u) != 0) && (cluster[z] > cluster[ucoo(coo(z) + dz[0])])) {
                 dirty      = true;
-                cluster[z] = cluster[coo(z) + dz[0]];
+                cluster[z] = cluster[ucoo(coo(z) + dz[0])];
             }
-            if ((z.y < n - 1) && ((connect[z] & 2u) != 0) && (cluster[z] > cluster[coo(z) + dz[1]])) {
+            if ((z.y < n - 1) && ((connect[z] & 2u) != 0) && (cluster[z] > cluster[ucoo(coo(z) + dz[1])])) {
                 dirty      = true;
-                cluster[z] = cluster[coo(z) + dz[1]];
+                cluster[z] = cluster[ucoo(coo(z) + dz[1])];
             }
-            if ((z.x > 0) && ((connect[coo(z) + dz[2]] & 1u) != 0) && (cluster[z] > cluster[coo(z) + dz[2]])) {
+            if ((z.x > 0) && ((connect[ucoo(coo(z) + dz[2])] & 1u) != 0) && (cluster[z] > cluster[ucoo(coo(z) + dz[2])])) {
                 dirty      = true;
-                cluster[z] = cluster[coo(z) + dz[2]];
+                cluster[z] = cluster[ucoo(coo(z) + dz[2])];
             }
-            if ((z.y > 0) && ((connect[coo(z) + dz[3]] & 2u) != 0) && (cluster[z] > cluster[coo(z) + dz[3]])) {
+            if ((z.y > 0) && ((connect[ucoo(coo(z) + dz[3])] & 2u) != 0) && (cluster[z] > cluster[ucoo(coo(z) + dz[3])])) {
                 dirty      = true;
-                cluster[z] = cluster[coo(z) + dz[3]];
+                cluster[z] = cluster[ucoo(coo(z) + dz[3])];
             }
         }
     }
