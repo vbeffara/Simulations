@@ -145,7 +145,7 @@ public:
             Q.pop();
             for (int k = 0; k < 8; ++k) {
                 coo nz = coo(im.z) + dz[k];
-                if (!(contains(nz))) continue;
+                if (!(fits(nz))) continue;
                 Info & ni = I.at(ucoo(nz));
                 double nd = im.d + (k < 4 ? .5 : sqrt(.5)) * (im.f + ni.f);
                 if (ni.d > nd) {

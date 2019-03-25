@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
     while (true) {
         auto z   = prng.uniform_coo(img.size);
         auto nnz = coo(z) + dz[prng() % 4];
-        if (!img.contains(nnz)) continue;
+        if (!img.fits(nnz)) continue;
         auto nz = ucoo(nnz);
         if (img.at(z) == img.at(nz)) continue;
 

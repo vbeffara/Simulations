@@ -101,7 +101,7 @@ public:
         if (at(ucoo(c)).type == 0) return 0;
         uint8_t d  = at(ucoo(c)).d;
         coo     oc = c + dz[d] + dz[(d + 1) % 4];
-        if (!contains(oc)) return 0;
+        if (!fits(oc)) return 0;
         if (at(ucoo(oc)).type == 0) return 0;
         if (at(ucoo(oc)).d != ((d + 2) % 4)) return 0;
         vector<double> rr{r, r * r, 1, r};

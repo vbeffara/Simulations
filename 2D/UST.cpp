@@ -28,10 +28,9 @@ public:
 
     void path(ucoo z, Type tgt) {
         while (at(z).t != tgt) {
-            coo d = dz[at(z).d];
-            // TODO: make this less ugly
-            at(z).t = at(ucoo(coo(z) + d)).t = tgt;
-            z                                = ucoo(coo(z) + d * 2);
+            coo d   = dz[at(z).d];
+            at(z).t = at(z + d).t = tgt;
+            z += d * 2;
         }
     }
 
@@ -40,7 +39,7 @@ public:
         while (at(ucoo(z)).t != SITE) {
             int d         = prng.uniform_int(4);
             at(ucoo(z)).d = d;
-            if (contains(z + dz[d])) z += dz[d] * 2;
+            if (fits(z + dz[d])) z += dz[d] * 2;
             step();
         }
         path(ucoo(z0), SITE);

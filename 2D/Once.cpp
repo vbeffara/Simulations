@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
     for (coo z{int(n) / 2, int(n) / 2};;) {
         img.put(z, true);
         coo nz = z + dz[prng() % 4];
-        if (!img.contains(nz)) break;
+        if (!img.fits(nz)) break;
         if (img.at(nz) || prng.bernoulli(a)) z = nz;
     }
 }

@@ -34,8 +34,8 @@ namespace vb {
         void put(const ucoo &z, T const &c) { at(z) = c; }
         void putp(const coo &z, T const &c) { atp(z) = c; }
 
-        bool contains(const coo &z, int64_t b = 0) const {
-            return (z.x >= b) && (z.y >= b) && (z.x < int64_t(size.x) - b) && (z.y < int64_t(size.y) - b);
+        template <typename U> bool fits(const coo_2d<U> &z, size_t b = 0) const {
+            return (z.x >= U(b)) && (z.y >= U(b)) && (z.x < U(size.x - b)) && (z.y < U(size.y - b));
         }
 
         ucoo size;

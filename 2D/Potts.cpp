@@ -26,7 +26,6 @@ public:
             b = 1;
             for (size_t i = 0; i < w(); ++i) {
                 put({i, 0}, 1);
-                // TODO: h() to be replaced everywhere
                 put({i, h() - 1}, 1);
             }
             for (size_t i = 0; i < h(); ++i) {

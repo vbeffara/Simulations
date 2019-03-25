@@ -72,7 +72,7 @@ public:
             coo nz = z;
             if (at(nz)) {
                 nz += dz[prng.uniform_int(4)];
-                if (!contains(nz)) break;
+                if (!fits(nz)) break;
             }
             if (!at(nz)) {
                 if (H['g']) {

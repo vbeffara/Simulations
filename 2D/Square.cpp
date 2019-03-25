@@ -116,7 +116,7 @@ public:
     pt geodesique(pt p, std::ostream *os = nullptr) const {
         std::set<pt> S;
         while (true) {
-            if (!contains({p.xi(), p.yi()})) { break; }
+            if (!fits(vb::coo{p.xi(), p.yi()})) { break; }
             if (os != nullptr) { (*os) << p; }
             p.step(*this);
             if (S.count(p) != 0) { break; }
@@ -124,7 +124,7 @@ public:
         }
         if (os != nullptr) { (*os) << std::endl; }
 
-        if (!contains({p.xi(), p.yi()})) { return pt(); }
+        if (!fits(vb::coo{p.xi(), p.yi()})) { return pt(); }
 
         pt p_min = p;
         p.step(*this);

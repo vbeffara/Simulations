@@ -68,7 +68,7 @@ public:
         CoarseImage::show();
     }
 
-    bool at(coo z) const { return contains(z) && CoarseImage::at(z); }
+    bool at(coo z) const { return fits(z) && CoarseImage::at(z); }
 
     void put(coo z) {
         CoarseImage::put(z, true);

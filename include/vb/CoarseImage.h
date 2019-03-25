@@ -18,7 +18,8 @@ namespace vb {
             : Bitmap<CoarseCell>(s, {1 + (size.x - 1) / l, 1 + (size.y - 1) / l}, CoarseCell(l)), true_width(size_t(size.x)),
               true_height(size_t(size.y)), L(l), LL(l * l) {}
 
-        bool contains(coo z) const {
+        // TODO: make this work for ucoo as well
+        bool fits(coo z) const {
             z += z0;
             return (z.x >= 0) && (z.y >= 0) && (z.x < int64_t(true_width)) && (z.y < int64_t(true_height));
         }

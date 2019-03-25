@@ -8,10 +8,7 @@ namespace vb {
     public:
         Bitmap(const std::string &s, ucoo size, T d = T());
 
-        using Array<T>::size;
-        using Array<T>::at;
-        using Array<T>::atp;
-        using Array<T>::contains; // TODO: rename, clashes with Fl_Widget
+        using Array<T>::size, Array<T>::at, Array<T>::atp, Array<T>::fits;
 
         // TODO: deprecate
         size_t w() { return size.x; }
@@ -64,7 +61,7 @@ namespace vb {
             xy.pop_back();
             for (int d = 0; d < adj; ++d) {
                 auto nij = coo(ij) + dz[d];
-                if (contains(nij) && (at(ucoo(nij)) == in)) {
+                if (fits(nij) && (at(ucoo(nij)) == in)) {
                     xy.push_back(ucoo(nij));
                     at(ucoo(nij)) = c;
                 }

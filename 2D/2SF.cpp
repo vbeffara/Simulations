@@ -40,7 +40,7 @@ public:
     }
 
     void path(coo z, Type t = EMPH) {
-        while (contains(z) && (at(ucoo(z)).t != t)) {
+        while (fits(z) && (at(ucoo(z)).t != t)) {
             int d               = at(ucoo(z)).d;
             at(ucoo(z)).t       = t;
             at(ucoo(z + dz[d])) = Point{t, d};
@@ -54,7 +54,7 @@ public:
             auto d        = prng.discrete(ps);
             at(ucoo(z)).d = int(d);
             step();
-            if (contains(z + dz[d] * 2)) {
+            if (fits(z + dz[d] * 2)) {
                 z += dz[d] * 2;
                 continue;
             }
@@ -106,7 +106,7 @@ public:
             z += dz[d] * 2;
             step();
             if (z == coo(root)) break;
-            if ((z.x <= int(start.x)) || (!contains(z))) { z = coo(start); }
+            if ((z.x <= int(start.x)) || (!fits(z))) { z = coo(start); }
             if (z.x == int(root.x)) {
                 nw++;
                 if (nw == 1) stage(H);

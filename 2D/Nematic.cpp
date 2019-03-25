@@ -17,8 +17,7 @@ public:
     Nematic(const Hub &H, size_t n, size_t m, size_t k, double b) : Bitmap<size_t>(H.title, {n, m}), k(k), b(b), P(std::max(n, m), 0){};
 
     void prec() {
-        // TODO: make w() and h() return unsigned values
-        ok = std::min(k, size_t(std::min(w(), h())));
+        ok = std::min(k, std::min(w(), h()));
         ob = b;
         std::vector<double> Z(P.size());
         double              zz = exp(2 * ob / double(ok));

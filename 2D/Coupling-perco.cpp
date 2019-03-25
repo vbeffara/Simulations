@@ -24,7 +24,7 @@ public:
                     ucoo z{x, y};
                     for (int i = 0; i < 6; ++i) {
                         coo zz = coo(z) + dz[i];
-                        if (!expl.contains(zz)) continue;
+                        if (!expl.fits(zz)) continue;
                         if ((expl[z] > 0) && (expl[ucoo(zz)] > expl[z])) {
                             expl[z] = expl[ucoo(zz)];
                             dirty   = true;
