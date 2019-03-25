@@ -37,6 +37,7 @@ execute_process(COMMAND "git" describe --always --abbrev=40 WORKING_DIRECTORY "$
 set_source_files_properties(libvb/version.cpp PROPERTIES COMPILE_FLAGS -DGIT_SHA1='"${GIT_SHA1}"')
 
 include_directories ("${PROJECT_SOURCE_DIR}/include")
+include_directories (SYSTEM "/usr/local/opt/llvm/include/c++/v1")
 
 set (DIRS tests 1D 2D 3D)
 if (${PLAYGROUND})
