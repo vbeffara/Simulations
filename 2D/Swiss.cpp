@@ -26,8 +26,8 @@ public:
 
     explicit World(const vb::Hub &H) : Bitmap<uint8_t>(H.title, {H['n'], H['n']}), c(H['c']), p(H['p']), q(H['q']) {
         auto mid = size_t(w() + h()) / 2;
-        for (size_t x = 0; x < size_t(w()); ++x) {
-            for (size_t y = 0; y < size_t(h()); ++y) {
+        for (size_t x = 0; x < w(); ++x) {
+            for (size_t y = 0; y < h(); ++y) {
                 if (y > x) {
                     if (x + y < mid)
                         at({x, y}) = EAST;
@@ -43,12 +43,12 @@ public:
             }
         }
 
-        for (size_t x = c; x < size_t(w()) - c; ++x)
-            for (size_t y = c; y < size_t(h()) - c; ++y) at({x, y}) = vb::prng.uniform_int(uint8_t(4));
+        for (size_t x = c; x < w() - c; ++x)
+            for (size_t y = c; y < h() - c; ++y) at({x, y}) = vb::prng.uniform_int(uint8_t(4));
     }
 
     void run() {
-        for (vb::coo z{w() / 2, h() / 2};;) {
+        for (vb::coo z = vb::coo(vb::ucoo{w() / 2, h() / 2});;) {
             std::vector<int> nb(4, 0);
             nb[atp(z + vb::coo{1, 0})] += 1;
             nb[atp(z - vb::coo{1, 0})] += 1;

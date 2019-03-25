@@ -23,8 +23,8 @@ public:
 class QG : public Image {
 public:
     explicit QG(const Hub &H)
-        : Image(H.title, {1u << unsigned(H['n']), 1u << unsigned(H['n'])}), I({size_t(w()), size_t(h())}, Info({0, 0}, {0, 0}, 0, 0)),
-          g(H['g']), n(H['n']) {
+        : Image(H.title, {1u << unsigned(H['n']), 1u << unsigned(H['n'])}), I({w(), h()}, Info({0, 0}, {0, 0}, 0, 0)), g(H['g']),
+          n(H['n']) {
         map<string, function<void()>> fields;
         fields["boolean"]  = [&, this] { fill_boolean(H['z']); };
         fields["dyadic"]   = [&, this] { fill_dyadic(H['z']); };
@@ -132,7 +132,7 @@ public:
     }
 
     void dijkstra() {
-        ucoo                 mid{size_t(w()) / 2, size_t(h()) / 2};
+        ucoo                 mid{w() / 2, h() / 2};
         priority_queue<Info> Q;
         I.at(mid).d = 0;
         Q.push(I.at(mid));
@@ -159,11 +159,11 @@ public:
 
     double radius() {
         double r = I.at({0, 0}).d;
-        for (size_t i = 0; i < size_t(w()); ++i) {
+        for (size_t i = 0; i < w(); ++i) {
             r = min(r, I.at({i, 0}).d);
             r = min(r, I.at({0, i}).d);
-            r = min(r, I.at({i, size_t(h()) - 1}).d);
-            r = min(r, I.at({size_t(w()) - 1, i}).d);
+            r = min(r, I.at({i, h() - 1}).d);
+            r = min(r, I.at({w() - 1, i}).d);
         }
         return r;
     }

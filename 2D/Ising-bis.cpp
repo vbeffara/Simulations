@@ -44,8 +44,8 @@ public:
             shift   = I;
             pattern = {{.5, .5}, {-.5, .5}, {-.5, -.5}, {.5, -.5}};
         }
-        for (size_t i = 0; i < size_t(w()); ++i)
-            for (size_t j = 0; j < size_t(h()); ++j) {
+        for (size_t i = 0; i < w(); ++i)
+            for (size_t j = 0; j < h(); ++j) {
                 Color c = to_Color(at({i, j}));
                 if (c == to_Color(0)) continue;
                 vector<cpx> p;
@@ -57,7 +57,7 @@ public:
     }
 
     void explore() {
-        coo         z0 = {w() / 2, (con == 6) ? h() / 3 : h() / 2};
+        auto        z0 = coo(ucoo{w() / 2, (con == 6) ? h() / 3 : h() / 2});
         vector<coo> list{z0};
         auto        s = at(ucoo(list.back()));
         while (!list.empty()) {

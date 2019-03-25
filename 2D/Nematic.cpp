@@ -51,7 +51,7 @@ public:
 
     void redo(coo z, size_t d) {
         bool   empty = true;
-        size_t hw    = (d == 1 ? size_t(w()) : size_t(h()));
+        size_t hw    = (d == 1 ? w() : h());
         for (size_t x = 0; x < hw; z += dz[gsl::index(d - 1)], ++x) {
             if (at(ucoo(z)) == 3 - d) empty = false;
             if (at(ucoo(z)) == d) at(ucoo(z)) = 0;

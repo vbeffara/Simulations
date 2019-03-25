@@ -24,14 +24,14 @@ public:
         };
         bcs["wired"] = [this] {
             b = 1;
-            for (size_t i = 0; i < size_t(w()); ++i) {
+            for (size_t i = 0; i < w(); ++i) {
                 put({i, 0}, 1);
-                // TODO: size_t(h()) to be replaced everywhere
-                put({i, size_t(h()) - 1}, 1);
+                // TODO: h() to be replaced everywhere
+                put({i, h() - 1}, 1);
             }
-            for (size_t i = 0; i < size_t(h()); ++i) {
+            for (size_t i = 0; i < h(); ++i) {
                 put({0, i}, 1);
-                put({size_t(w()) - 1, i}, 1);
+                put({w() - 1, i}, 1);
             }
         };
         bcs["tripod"] = [this] {
@@ -95,11 +95,11 @@ public:
             for (size_t i = 3 * w() / 4; i < w(); ++i) put({i, 0}, 2);
             for (size_t i = 0; i < h() / 2; ++i) put({0, i}, 0);
             for (size_t i = h() / 2; i < h(); ++i) put({0, i}, 5);
-            for (size_t i = 0; i < h() / 2; ++i) put({size_t(w()) - 1, i}, 2);
-            for (size_t i = h() / 2; i < h(); ++i) put({size_t(w()) - 1, i}, 3);
-            for (size_t i = 0; i < w() / 4; ++i) put({i, size_t(h()) - 1}, 5);
-            for (size_t i = w() / 4; i < 3 * w() / 4; ++i) put({i, size_t(h()) - 1}, 4);
-            for (size_t i = 3 * w() / 4; i < w(); ++i) put({i, size_t(h()) - 1}, 3);
+            for (size_t i = 0; i < h() / 2; ++i) put({w() - 1, i}, 2);
+            for (size_t i = h() / 2; i < h(); ++i) put({w() - 1, i}, 3);
+            for (size_t i = 0; i < w() / 4; ++i) put({i, h() - 1}, 5);
+            for (size_t i = w() / 4; i < 3 * w() / 4; ++i) put({i, h() - 1}, 4);
+            for (size_t i = 3 * w() / 4; i < w(); ++i) put({i, h() - 1}, 3);
         };
         bcs["123"] = [this, q] {
             b     = 1;
@@ -109,36 +109,36 @@ public:
                 c = (c + 1) % q;
             }
             for (size_t i = 0; i < h() - 1; ++i) {
-                put({size_t(w()) - 1, i}, c);
+                put({w() - 1, i}, c);
                 c = (c + 1) % q;
             }
-            for (size_t i = 0; i < size_t(w()) - 1; ++i) {
-                put({size_t(w()) - 1 - i, size_t(h()) - 1}, c);
+            for (size_t i = 0; i < w() - 1; ++i) {
+                put({w() - 1 - i, h() - 1}, c);
                 c = (c + 1) % q;
             }
-            for (size_t i = 0; i < size_t(h()) - 1; ++i) {
-                put({0, size_t(h()) - 1 - i}, c);
+            for (size_t i = 0; i < h() - 1; ++i) {
+                put({0, h() - 1 - i}, c);
                 c = (c + 1) % q;
             }
         };
         bcs["12123333"] = [this] {
             b = 1;
-            for (size_t i = 0; i < size_t(w()); ++i)
-                for (size_t j = 0; j < size_t(h()); ++j) put({i, j}, (j > size_t(h()) / 2) ? ((i + j) % 2) : 2);
+            for (size_t i = 0; i < w(); ++i)
+                for (size_t j = 0; j < h(); ++j) put({i, j}, (j > h() / 2) ? ((i + j) % 2) : 2);
         };
         bcs["1231234444"] = [this] {
             b = 1;
-            for (size_t i = 0; i < size_t(w()); ++i)
-                for (size_t j = 0; j < size_t(h()); ++j) put({i, j}, (j > size_t(h()) / 2) ? ((i + j) % 3) : 3);
+            for (size_t i = 0; i < w(); ++i)
+                for (size_t j = 0; j < h(); ++j) put({i, j}, (j > h() / 2) ? ((i + j) % 3) : 3);
         };
         bcs["mostlyfree"] = [this, q] {
             b = 1;
-            for (size_t i = 0; i < size_t(w()); ++i)
-                for (size_t j = 0; j < size_t(h()); ++j) put({i, j}, q);
+            for (size_t i = 0; i < w(); ++i)
+                for (size_t j = 0; j < h(); ++j) put({i, j}, q);
         };
 
-        for (size_t i = 0; i < size_t(w()); ++i)
-            for (size_t j = 0; j < size_t(h()); ++j) put({i, j}, prng.uniform_int(q));
+        for (size_t i = 0; i < w(); ++i)
+            for (size_t j = 0; j < h(); ++j) put({i, j}, prng.uniform_int(q));
         beta *= log(1 + sqrt(double(q)));
         bcs[H['c']]();
         show();

@@ -16,13 +16,13 @@ namespace vb {
 class PercSEP : public Bitmap<int> {
 public:
     explicit PercSEP(const Hub &H) : Bitmap<int>(H.title, {2 * size_t(H['n']), H['n']}), flow({0, 0}), d(H['d']), tasym(H['t']) {
-        for (size_t i = 0; i < size_t(w()); ++i)
-            for (size_t j = 0; j < size_t(h()); ++j)
+        for (size_t i = 0; i < w(); ++i)
+            for (size_t j = 0; j < h(); ++j)
                 if (prng.bernoulli(H['p'])) put({i, j}, prng.bernoulli(H['l']) ? 2 : 1);
     }
     void clean() {
-        for (size_t x = 0; x < size_t(w()); ++x)
-            for (size_t y = 0; y < size_t(h()); ++y)
+        for (size_t x = 0; x < w(); ++x)
+            for (size_t y = 0; y < h(); ++y)
                 if (at({x, y}) > 0) at({x, y}) = at({x, y}) + 100;
         bool dirty = true;
         while (dirty) {

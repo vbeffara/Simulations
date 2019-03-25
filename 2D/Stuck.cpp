@@ -26,9 +26,9 @@ int Stat::min = 0, Stat::max = 1;
 class Stuck : public Bitmap<Stat> {
 public:
     explicit Stuck(const Hub &H) : Bitmap<Stat>(H.title, {2 * size_t(H['n']), 2 * size_t(H['n'])}), alpha(H['a']), beta(H['b']), H(H) {
-        for (size_t i = 0; i < size_t(w()) / 2; ++i)
-            for (size_t j = 0; j < size_t(h()) / 2; ++j) at(ucoo{2 * i, 2 * j}) = Stat{-1};
-        z = {w() / 2, h() / 2};
+        for (size_t i = 0; i < w() / 2; ++i)
+            for (size_t j = 0; j < h() / 2; ++j) at(ucoo{2 * i, 2 * j}) = Stat{-1};
+        z = coo(ucoo{w() / 2, h() / 2});
         C.manage(alpha, 0.142, 0.35, "alpha");
         C.lambda<int>([this]() { return nsup(); }, "Support");
         C.lambda<double>([this]() { return -log(double(nsup())) / log(alpha - 1.0 / 7); }, "Prediction");
@@ -43,7 +43,7 @@ public:
         coo c{0, 0};
         for (int x = 0; x < w(); ++x)
             for (int y = 0; y < h(); ++y)
-                if (at(ucoo(coo{x, y})).s == Stat::max) c = {x - w() / 2, y - h() / 2};
+                if (at(ucoo(coo{x, y})).s == Stat::max) c = {x - int(w()) / 2, y - int(h()) / 2};
         c.x -= c.x % 2;
         c.y -= c.y % 2;
         if (c != coo{0, 0}) {

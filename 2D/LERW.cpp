@@ -12,7 +12,8 @@ namespace vb {
 class LERW : private Bitmap<uint8_t> {
 public:
     explicit LERW(const Hub &H) : Bitmap<uint8_t>(H.title, {2 * size_t(H['n']), 2 * size_t(H['n'])}) {
-        coo z{w() / 2, h() / 2};
+        auto z = coo(ucoo{w() / 2, h() / 2});
+        // TODO: contains for ucoo
         while (contains(z)) {
             auto d = prng.uniform_int(uint8_t(4));
             put(ucoo(z), d);
@@ -22,7 +23,7 @@ public:
 
     void output(const std::string &s) override {
         OldPath P(0);
-        coo     z{w() / 2, h() / 2};
+        auto    z = coo(ucoo{w() / 2, h() / 2});
         while (contains(z)) {
             auto d = at(ucoo(z));
             P.push_back(d);

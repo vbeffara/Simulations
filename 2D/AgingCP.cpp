@@ -12,7 +12,7 @@ namespace vb {
 class ACP : public Bitmap<size_t> {
 public:
     explicit ACP(const Hub &H) : Bitmap<size_t>(H.title, {size_t(H['n']), size_t(H['n'])}), kid(H['z']), maxage(H['m']) {
-        put(ucoo{size_t(w()) / 2, size_t(h()) / 2}, 1);
+        put(ucoo{w() / 2, h() / 2}, 1);
         P = {H['d'], H['a']};
         for (size_t i = 0; i < size_t(H['m']) - kid; ++i) P.push_back(double(H['b']) + double(H['r']) * i);
         double s = 0;

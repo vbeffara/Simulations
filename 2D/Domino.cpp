@@ -21,78 +21,78 @@ public:
 
 class Tiling : public Bitmap<Half> {
 public:
-    void putd(coo c, uint8_t d) {
-        at(ucoo(c)).d         = d;
-        at(ucoo(c + dz[d])).d = (d + 2) % 4;
+    void putd(ucoo c, uint8_t d) {
+        at(c).d                    = d;
+        at(ucoo(coo(c) + dz[d])).d = (d + 2) % 4;
         step();
     }
-    void freeze(coo c) {
-        at(ucoo(c)).type                     = 0;
-        at(ucoo(c + dz[at(ucoo(c)).d])).type = 0;
+    void freeze(ucoo c) {
+        at(c).type                          = 0;
+        at(ucoo(coo(c) + dz[at(c).d])).type = 0;
     }
 
     explicit Tiling(const Hub &H) : Bitmap<Half>(H.title, {H['n'], H['n']}), r(H['r']), rr{r, r * r, 1, r} {
-        for (int x = 0; x < w(); ++x)
-            for (int y = 0; y < h(); ++y) { at(ucoo(coo{x, y})) = Half(2 * (x % 2), 1 + ((x + y) % 2) + 2 * (x % 2)); }
+        for (size_t x = 0; x < w(); ++x)
+            for (size_t y = 0; y < h(); ++y) { at({x, y}) = Half(2 * (x % 2), 1 + ((x + y) % 2) + 2 * (x % 2)); }
         if (H['o'] == "aztec") {
-            for (int i = 0; i < h() / 2; ++i) {
-                for (int j = 0; j < w() / 2 - i - 1; ++j) {
-                    at(ucoo(coo{i, j})).type                     = 0;
-                    at(ucoo(coo{w() - 1 - i, j})).type           = 0;
-                    at(ucoo(coo{i, h() - 1 - j})).type           = 0;
-                    at(ucoo(coo{w() - 1 - i, h() - 1 - j})).type = 0;
+            for (size_t i = 0; i < h() / 2; ++i) {
+                for (size_t j = 0; j < w() / 2 - i - 1; ++j) {
+                    at({i, j}).type                     = 0;
+                    at({w() - 1 - i, j}).type           = 0;
+                    at({i, h() - 1 - j}).type           = 0;
+                    at({w() - 1 - i, h() - 1 - j}).type = 0;
                 }
-                for (int j = 0; j < w(); ++j) {
+                for (size_t j = 0; j < w(); ++j) {
                     putd({i, j}, 1 + 2 * ((i + j + h() / 2 + 1) % 2));
                     putd({i + w() / 2, j}, 1 + 2 * ((i + j + w() / 2) % 2));
                 }
             }
         } else if (H['o'] == "hill") {
-            for (int y = 0; y < h() / 2; ++y)
-                for (int x = y; x < w() - y; x += 2) {
+            for (size_t y = 0; y < h() / 2; ++y)
+                for (size_t x = y; x < w() - y; x += 2) {
                     putd({x, y}, 0);
                     putd({x, h() - 1 - y}, 0);
                 }
-            for (int x = 0; x < w() / 2; ++x)
-                for (int y = x + 1; y < h() - 1 - x; y += 2) {
+            for (size_t x = 0; x < w() / 2; ++x)
+                for (size_t y = x + 1; y < h() - 1 - x; y += 2) {
                     putd({x, y}, 1);
                     putd({w() - 1 - x, y}, 1);
                 }
         } else if (H['o'] == "hole") {
-            for (int y = 0; y < h() / 2; ++y)
-                for (int x = y; x < w() - y - 1; x += 2) {
+            for (size_t y = 0; y < h() / 2; ++y)
+                for (size_t x = y; x < w() - y - 1; x += 2) {
                     putd({x, y}, 0);
                     putd({x + 1, h() - 1 - y}, 0);
                 }
-            for (int x = 0; x < w() / 2; ++x)
-                for (int y = x + 1; y < h() - 1 - x; y += 2) {
+            for (size_t x = 0; x < w() / 2; ++x)
+                for (size_t y = x + 1; y < h() - 1 - x; y += 2) {
                     putd({x, y}, 1);
                     putd({w() - 1 - x, y - 1}, 1);
                 }
-            coo mid{w() / 2, h() / 2};
-            at(ucoo(mid)).type = 0;
-            putd(mid + coo{-1, -1}, 1);
-            putd(mid + coo{-1, 1}, 0);
-            putd(mid + coo{1, 1}, 3);
-            putd(mid + coo{1, -1}, 2);
-            at(ucoo(mid)).type = 0;
-            putd(mid + coo{-2, -2}, 1);
-            putd(mid + coo{-2, 0}, 1);
-            putd(mid + coo{-2, 2}, 0);
-            putd(mid + coo{0, 2}, 0);
-            at(ucoo(mid)).type = 0;
-            putd(mid + coo{2, 2}, 3);
-            putd(mid + coo{2, 0}, 3);
-            putd(mid + coo{2, -2}, 2);
-            putd(mid + coo{0, -2}, 2);
+            ucoo mid{w() / 2, h() / 2};
+            at(mid).type = 0;
+            putd(ucoo(coo(mid) + coo{-1, -1}), 1);
+            putd(ucoo(coo(mid) + coo{-1, 1}), 0);
+            putd(ucoo(coo(mid) + coo{1, 1}), 3);
+            putd(ucoo(coo(mid) + coo{1, -1}), 2);
+            at(mid).type = 0;
+            putd(ucoo(coo(mid) + coo{-2, -2}), 1);
+            putd(ucoo(coo(mid) + coo{-2, 0}), 1);
+            putd(ucoo(coo(mid) + coo{-2, 2}), 0);
+            putd(ucoo(coo(mid) + coo{0, 2}), 0);
+            at(mid).type = 0;
+            putd(ucoo(coo(mid) + coo{2, 2}), 3);
+            putd(ucoo(coo(mid) + coo{2, 0}), 3);
+            putd(ucoo(coo(mid) + coo{2, -2}), 2);
+            putd(ucoo(coo(mid) + coo{0, -2}), 2);
         } else {
-            for (int x = 0; x < w(); x += 2)
-                for (int y = 0; y < h(); ++y) putd({x, y}, 0);
-            int b = H['b'];
+            for (size_t x = 0; x < w(); x += 2)
+                for (size_t y = 0; y < h(); ++y) putd({x, y}, 0);
+            size_t b = H['b'];
             if (b > 0) {
-                for (int x = w() / 2 - b; x < w() / 2 + b; ++x) putd(coo{x, h() / 2}, (2 + at(ucoo(coo{x, h() / 2})).d) % 4);
-                at(ucoo(coo{w() / 2 - b, h() / 2})).type = 0;
-                at(ucoo(coo{w() / 2 + b, h() / 2})).type = 0;
+                for (auto x = w() / 2 - b; x < w() / 2 + b; ++x) putd({x, h() / 2}, (2 + at({x, h() / 2}).d) % 4);
+                at({w() / 2 - b, h() / 2}).type = 0;
+                at({w() / 2 + b, h() / 2}).type = 0;
             }
         }
     }
@@ -106,8 +106,8 @@ public:
         if (at(ucoo(oc)).d != ((d + 2) % 4)) return 0;
         vector<double> rr{r, r * r, 1, r};
         if (prng.bernoulli(1 - rr[(d + at(ucoo(c)).type) % 4])) return 0;
-        putd(c, (d + 1) % 4);
-        putd(oc, (d + 3) % 4);
+        putd(ucoo(c), (d + 1) % 4);
+        putd(ucoo(oc), (d + 3) % 4);
         return 1;
     }
 

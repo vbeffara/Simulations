@@ -15,33 +15,31 @@ namespace vb {
 
 class IsingCFTP : public Bitmap<int> {
 public:
-    explicit IsingCFTP(const Hub &H)
-        : Bitmap<int>(H.title, {H['n'], H['n']}), b(H['b']), d(0), s(H['s']), status(H.title, {size_t(w()), size_t(h())}) {
-        for (size_t i = 0; i < size_t(w()); ++i)
-            for (size_t j = 0; j < size_t(h()); ++j) put({i, j}, 1);
+    explicit IsingCFTP(const Hub &H) : Bitmap<int>(H.title, {H['n'], H['n']}), b(H['b']), d(0), s(H['s']), status(H.title, {w(), h()}) {
+        for (size_t i = 0; i < w(); ++i)
+            for (size_t j = 0; j < h(); ++j) put({i, j}, 1);
         snap();
         b *= log(1 + sqrt(double(2)));
         for (int i = 0; i <= 4; ++i) p.push_back(exp(b * i) / (exp(b * i) + exp(b * (4 - i))));
     };
 
-    void up(coo z) {
+    void up(const ucoo z) {
         double   U  = prng.uniform_real();
         unsigned n1 = 0, n2 = 0;
         for (unsigned i = 0; i < 4; ++i) {
-            if (atp(z + dz[i]) >= 1) ++n1;
-            if (atp(z + dz[i]) >= 2) ++n2;
+            if (atp(coo(z) + dz[i]) >= 1) ++n1;
+            if (atp(coo(z) + dz[i]) >= 2) ++n2;
         }
         if (U < p[n2])
-            put(ucoo(z), 2);
+            put(z, 2);
         else if (U < p[n1])
-            put(ucoo(z), 1);
+            put(z, 1);
         else
-            put(ucoo(z), 0);
+            put(z, 0);
     }
 
     void up() {
-        for (size_t i = 0; i < size_t(w() * h()); ++i)
-            up({int(d) + prng.uniform_int(w() - 2 * int(d)), int(d) + prng.uniform_int(h() - 2 * int(d))});
+        for (size_t i = 0; i < size_t(w() * h()); ++i) up({d + prng.uniform_int(w() - 2 * d), d + prng.uniform_int(h() - 2 * d)});
     }
     void snap() {
         for (auto z : coo_range(size)) status.put(z, at(z));
@@ -54,8 +52,8 @@ public:
         int n = w() * h();
         while (n > 0) {
             cerr << n << endl;
-            for (size_t i = d; i < size_t(w()) - 2 * d; ++i)
-                for (size_t j = d; j < size_t(h()) - 2 * d; ++j) put({i, j}, 1);
+            for (size_t i = d; i < w() - 2 * d; ++i)
+                for (size_t j = d; j < h() - 2 * d; ++j) put({i, j}, 1);
             for (auto t = states.size(); t-- > 0;) {
                 prng.state(states[t]);
                 for (unsigned i = 0; i < (1u << t); ++i) up();
@@ -71,29 +69,29 @@ public:
 
     void bc_0() {
         d = 1;
-        for (size_t i = 0; i < size_t(w()); ++i) {
+        for (size_t i = 0; i < w(); ++i) {
             put({i, 0}, 0);
-            put({i, size_t(h()) - 1}, 0);
+            put({i, h() - 1}, 0);
         }
-        for (size_t j = 0; j < size_t(h()); ++j) {
+        for (size_t j = 0; j < h(); ++j) {
             put({0, j}, 0);
-            put({size_t(w()) - 1, j}, 0);
+            put({w() - 1, j}, 0);
         }
     }
 
     void bc_dobrushin() {
         d = 1;
-        for (size_t i = 0; i < size_t(w()); ++i) {
+        for (size_t i = 0; i < w(); ++i) {
             put({i, 0}, 0);
-            put({i, size_t(h()) - 1}, 2);
+            put({i, h() - 1}, 2);
         }
-        for (size_t j = 0; j < size_t(h()) / 2; ++j) {
+        for (size_t j = 0; j < h() / 2; ++j) {
             put({0, j}, 0);
-            put({size_t(w()) - 1, j}, 0);
+            put({w() - 1, j}, 0);
         }
-        for (size_t j = size_t(h()) / 2; j < size_t(h()); ++j) {
+        for (size_t j = h() / 2; j < h(); ++j) {
             put({0, j}, 2);
-            put({size_t(w()) - 1, j}, 2);
+            put({w() - 1, j}, 2);
         }
     }
 

@@ -41,7 +41,7 @@ public:
 
     int nbarms(int r1, int r2, unsigned sides) {
         compute_cpts(r1);
-        auto N = size_t(w());
+        auto N = w();
 
         for (auto &t : table) t = 0;
         for (int i = -r2; i < r2; i++) {
@@ -87,13 +87,13 @@ public:
         int n = 0;
         while (true) {
             cerr << ++n << " \r";
-            for (size_t x = 0; x < size_t(w()); x++)
-                for (size_t y = 0; y < size_t(h()); y++) put({x, y}, prng.bernoulli(.5) ? WHITE : BLACK);
+            for (size_t x = 0; x < w(); x++)
+                for (size_t y = 0; y < h(); y++) put({x, y}, prng.bernoulli(.5) ? WHITE : BLACK);
 
             for (int x = -r1 + 1; x < r1 - 1; x++) {
                 for (int y = -r1 + 1; y < r1 - 1; y++) {
-                    put(ucoo(coo{x + w() / 2, y + h() / 2}), BLACK);
-                    put(ucoo(coo{x + w() / 2, y + h() / 2}), BLACK);
+                    put(ucoo(coo{x + int(w()) / 2, y + int(h()) / 2}), BLACK);
+                    put(ucoo(coo{x + int(w()) / 2, y + int(h()) / 2}), BLACK);
                 }
             }
 
