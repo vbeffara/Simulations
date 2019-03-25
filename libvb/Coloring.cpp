@@ -85,10 +85,10 @@ namespace vb {
         Color tmp  = at(ul);
         bool  mono = true;
         if ((pixel_detail != 0) && (size > pixel_detail)) mono = false;
-        for (; mono && (z != coo{lr.x, ul.y}); z += {1, 0}) mono = mono && (at(z) == tmp);
-        for (; mono && (z != coo{lr.x, lr.y}); z += {0, 1}) mono = mono && (at(z) == tmp);
-        for (; mono && (z != coo{ul.x, lr.y}); z += {-1, 0}) mono = mono && (at(z) == tmp);
-        for (; mono && (z != coo{ul.x, ul.y}); z += {0, -1}) mono = mono && (at(z) == tmp);
+        for (; mono && (z != coo{lr.x, ul.y}); z += coo{1, 0}) mono = mono && (at(z) == tmp);
+        for (; mono && (z != coo{lr.x, lr.y}); z += coo{0, 1}) mono = mono && (at(z) == tmp);
+        for (; mono && (z != coo{ul.x, lr.y}); z += coo{-1, 0}) mono = mono && (at(z) == tmp);
+        for (; mono && (z != coo{ul.x, ul.y}); z += coo{0, -1}) mono = mono && (at(z) == tmp);
 
         if (mono) {
             for (auto i = ul.x + 1; i < lr.x; ++i)

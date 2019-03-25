@@ -11,10 +11,10 @@ namespace vb {
     template <typename T> constexpr bool operator==(const coo_2d<T> &z1, const coo_2d<T> &z2) { return (z1.x == z2.x) && (z1.y == z2.y); }
     template <typename T> constexpr bool operator!=(const coo_2d<T> &z1, const coo_2d<T> &z2) { return (z1.x != z2.x) || (z1.y != z2.y); }
 
-    template <typename T> constexpr coo_2d<T>  operator+(const coo_2d<T> &z1, const coo_2d<T> &z2) { return {z1.x + z2.x, z1.y + z2.y}; }
-    template <typename T> constexpr coo_2d<T>  operator-(const coo_2d<T> &z1, const coo_2d<T> &z2) { return {z1.x - z2.x, z1.y - z2.y}; }
-    template <typename T> constexpr coo_2d<T> &operator+=(coo_2d<T> &z, const coo_2d<T> &o) { return z = z + o; }
-    template <typename T> constexpr coo_2d<T> &operator-=(coo_2d<T> &z, const coo_2d<T> &o) { return z = z - o; }
+    template <typename T, typename U> constexpr coo_2d<T>  operator+(const coo_2d<T> &z1, const coo_2d<U> &z2) { return {z1.x + T(z2.x), z1.y + T(z2.y)}; }
+    template <typename T, typename U> constexpr coo_2d<T>  operator-(const coo_2d<T> &z1, const coo_2d<U> &z2) { return {z1.x - T(z2.x), z1.y - T(z2.y)}; }
+    template <typename T, typename U> constexpr coo_2d<T> &operator+=(coo_2d<T> &z, const coo_2d<U> &o) { return z = z + o; }
+    template <typename T, typename U> constexpr coo_2d<T> &operator-=(coo_2d<T> &z, const coo_2d<U> &o) { return z = z - o; }
     template <typename T> constexpr coo_2d<T>  operator-(coo_2d<T> &z) { return {-z.x, -z.y}; }
 
     template <typename T, typename U> constexpr coo_2d<T> operator*(U d, const coo_2d<T> &z) { return {z.x * T(d), z.y * T(d)}; }
