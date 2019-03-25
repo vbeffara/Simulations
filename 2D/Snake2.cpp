@@ -36,9 +36,10 @@ public:
         }
     }
 
-    bool border(coo z) { return (z.x == 0) || (z.x == w() - 1) || (z.y == h() - 1); }
+    // TODO: now remove all int(h()), int64_t(h()), int(w()), int64_t(w())
+    bool border(coo z) { return (z.x == 0) || (z.x == int(w()) - 1) || (z.y == int(h()) - 1); }
 
-    bool edge(coo z, int d) { return (d != 3 - ((z.x + z.y + w() / 2) % 4)); }
+    bool edge(coo z, int d) { return (d != 3 - ((unsigned(z.x + z.y) + w() / 2) % 4)); }
 
     bool trapped(coo z, int d) {
         if (border(z)) return false;

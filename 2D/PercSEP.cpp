@@ -27,8 +27,8 @@ public:
         bool dirty = true;
         while (dirty) {
             dirty = false;
-            for (int x = 0; x < w(); ++x)
-                for (int y = 0; y < h(); ++y) {
+            for (int x = 0; x < int64_t(w()); ++x)
+                for (int y = 0; y < int64_t(h()); ++y) {
                     if (at(ucoo(coo{x, y})) == 102) {
                         if (atp({x + 1, y}) == 1 || atp({x + 1, y}) == 2 || atp({x, y + 1}) == 1 || atp({x, y + 1}) == 2 ||
                             atp({x, y - 1}) == 1 || atp({x, y - 1}) == 2) {
@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
     PercSEP P(H);
     P.show();
 
-    for (int64_t t = 1;; ++t) {
+    for (size_t t = 1;; ++t) {
         if ((t % (P.w() * P.h())) == 0) {
             if (P.tasym) P.clean();
             int na = 0;

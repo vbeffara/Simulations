@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
             }
         } else if (img.at(nz) == DEAD) {
             img.put(z, DEAD);
-            if ((z.x == 0) || (z.x == 2 * int(n) - 1) || (z.y == 0) || (z.y == 2 * int(n) - 1)) break;
+            if ((z.x == 0) || (z.x == 2 * n - 1) || (z.y == 0) || (z.y == 2 * n - 1)) break;
         }
     }
 }

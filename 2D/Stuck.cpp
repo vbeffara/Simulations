@@ -41,18 +41,18 @@ public:
 
     void center() {
         coo c{0, 0};
-        for (int x = 0; x < w(); ++x)
-            for (int y = 0; y < h(); ++y)
-                if (at(ucoo(coo{x, y})).s == Stat::max) c = {x - int(w()) / 2, y - int(h()) / 2};
+        for (size_t x = 0; x < w(); ++x)
+            for (size_t y = 0; y < h(); ++y)
+                if (at({x, y}).s == Stat::max) c = coo(ucoo{x - w() / 2, y - h() / 2});
         c.x -= c.x % 2;
         c.y -= c.y % 2;
         if (c != coo{0, 0}) {
             static Array<Stat> &me  = *this;
             static Array<Stat>  tmp = me;
-            for (int x = 0; x < w(); ++x)
-                for (int y = 0; y < h(); ++y) {
-                    coo z{x, y};
-                    tmp.at(ucoo(z)) = atp(z + c);
+            for (size_t x = 0; x < w(); ++x)
+                for (size_t y = 0; y < h(); ++y) {
+                    ucoo z{x, y};
+                    tmp.at(z) = atp(coo(z) + c);
                 }
             me = tmp;
             z -= c;

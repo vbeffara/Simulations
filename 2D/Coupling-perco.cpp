@@ -14,7 +14,7 @@ public:
         for (auto z : coo_range(size)) expl[z] = (at(z) == WHITE ? 1 : -1) * (++t);
 
         for (int x = -r1 + 1; x < r1 - 1; x++)
-            for (int y = -r1 + 1; y < r1 - 1; y++) expl[ucoo{size_t(x + w() / 2), size_t(y + h() / 2)}] = 0;
+            for (int y = -r1 + 1; y < r1 - 1; y++) expl[ucoo{size_t(x) + w() / 2, size_t(y) + h() / 2}] = 0;
 
         bool dirty = true;
         while (dirty) {
@@ -145,7 +145,8 @@ public:
             while (true) {
                 z      = prng.uniform_coo(size);
                 auto x = z.x, y = z.y;
-                if ((x < w() / 2 - r1) || (x >= w() / 2 + r1) || (y < h() / 2 - r1) || (y >= h() / 2 + r1)) break;
+                if ((x < w() / 2 - size_t(r1)) || (x >= w() / 2 + size_t(r1)) || (y < h() / 2 - size_t(r1)) || (y >= h() / 2 + size_t(r1)))
+                    break;
             }
 
             auto v = prng.bernoulli(.5) ? WHITE : BLACK;

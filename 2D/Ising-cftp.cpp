@@ -49,7 +49,7 @@ public:
     void run() {
         vector<string> states;
         states.push_back(prng.state());
-        int n = w() * h();
+        auto n = w() * h();
         while (n > 0) {
             cerr << n << endl;
             for (size_t i = d; i < w() - 2 * d; ++i)

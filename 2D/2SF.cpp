@@ -106,8 +106,8 @@ public:
             z += dz[d] * 2;
             step();
             if (z == coo(root)) break;
-            if ((z.x <= start.x) || (!contains(z))) { z = coo(start); }
-            if (z.x == root.x) {
+            if ((z.x <= int(start.x)) || (!contains(z))) { z = coo(start); }
+            if (z.x == int(root.x)) {
                 nw++;
                 if (nw == 1) stage(H);
                 z = coo(start);
