@@ -1,5 +1,5 @@
 #include "catch2/catch.hpp"
-#include <string.h>
+#include <cstring>
 #include <vb/Constellation1.h>
 #include <vb/Hypermap_lib.h>
 

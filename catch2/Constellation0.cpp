@@ -1,5 +1,5 @@
 #include "catch2/catch.hpp"
-#include <string.h>
+#include <cstring>
 #include <vb/Constellation0.h>
 
 using namespace vb;
