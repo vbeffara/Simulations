@@ -5,8 +5,8 @@
 using namespace vb;
 
 TEST_CASE("vb::Constellation1") {
-    char *                 argv[] = {(char *)"test_constellation1"};
-    Hub                    H("Testing Constellation1", 1, argv);
+    std::vector<char *>    argv{strdup("test_constellation1"), nullptr};
+    Hub                    H("Testing Constellation1", 1, argv.data());
     auto                   M = HLib().at("lat_SV");
     Constellation1<double> C(M);
     Constellation1<real_t> Cq(C);
