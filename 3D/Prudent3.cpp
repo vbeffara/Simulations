@@ -36,9 +36,9 @@ public:
         }
     }
 
-    int norm1() const { return abs(pos[0]) + abs(pos[1]) + abs(pos[2]); }
+    [[nodiscard]] int norm1() const { return abs(pos[0]) + abs(pos[1]) + abs(pos[2]); }
 
-    size_t                 length = 0;
+    size_t length = 0;
     vector<int>            pos;
     vector<TriMatrix<int>> Max, Min;
 };

@@ -52,7 +52,7 @@ namespace vb {
         for (size_t j = 0; j < true_height; ++j) {
             auto row = std::vector<uint8_t>(1 + true_width / 8, 0);
             for (size_t i = 0; i < true_width; ++i)
-                if (!at(coo{int64_t(i), int64_t(j)} - z0)) row.at(i / 8) |= (128u >> static_cast<unsigned>(i % 8));
+                if (!at(coo{int64_t(i), int64_t(j)} - z0)) row.at(i / 8) |= (128U >> static_cast<unsigned>(i % 8));
             png_write_row(png, row.data());
         }
 

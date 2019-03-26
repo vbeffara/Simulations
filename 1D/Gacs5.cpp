@@ -43,28 +43,28 @@ void Automaton::shift() {
 void Automaton::emit() {
     for (size_t i = 0; i < size; i++) {
         alt[i] = main[i];
-        if (((main[i] & 1u) != 0) && ((main[(i + size - 1) % size] & 1u) == 0)) alt[i] |= L1_BIT | R1_BIT;
-        if (((main[i] & 1u) == 0) && ((main[(i + size - 1) % size] & 1u) != 0)) alt[i] |= L2_BIT | R2_BIT;
+        if (((main[i] & 1U) != 0) && ((main[(i + size - 1) % size] & 1U) == 0)) alt[i] |= L1_BIT | R1_BIT;
+        if (((main[i] & 1U) == 0) && ((main[(i + size - 1) % size] & 1U) != 0)) alt[i] |= L2_BIT | R2_BIT;
     }
     this->swap();
 }
 
 void Automaton::forget(double r) {
     for (size_t i = 0; i < size; ++i)
-        if (vb::prng.bernoulli(r)) main[i] &= 1u;
+        if (vb::prng.bernoulli(r)) main[i] &= 1U;
 }
 
 void Automaton::effect(double r) {
     for (size_t i = 0; i < size; i++) alt[i] = main[i];
     for (size_t i = 0; i < size; i++) {
-        if (((main[i] & 1u) == 0) && ((main[(i + size - 1) % size] & 1u) != 0) && ((main[i] & L1_BIT) != 0) && (vb::prng.bernoulli(r)))
-            alt[i] |= 1u;
-        else if (((main[i] & 1u) == 0) && ((main[(i + size - 1) % size] & 1u) != 0) && ((main[i] & R1_BIT) != 0) && (vb::prng.bernoulli(r)))
-            alt[(i + size - 1) % size] &= 30u;
-        else if (((main[i] & 1u) != 0) && ((main[(i + size - 1) % size] & 1u) == 0) && ((main[i] & L2_BIT) != 0) && (vb::prng.bernoulli(r)))
-            alt[i] &= 30u;
-        else if (((main[i] & 1u) != 0) && ((main[(i + size - 1) % size] & 1u) == 0) && ((main[i] & R2_BIT) != 0) && (vb::prng.bernoulli(r)))
-            alt[(i + size - 1) % size] |= 1u;
+        if (((main[i] & 1U) == 0) && ((main[(i + size - 1) % size] & 1U) != 0) && ((main[i] & L1_BIT) != 0) && (vb::prng.bernoulli(r)))
+            alt[i] |= 1U;
+        else if (((main[i] & 1U) == 0) && ((main[(i + size - 1) % size] & 1U) != 0) && ((main[i] & R1_BIT) != 0) && (vb::prng.bernoulli(r)))
+            alt[(i + size - 1) % size] &= 30U;
+        else if (((main[i] & 1U) != 0) && ((main[(i + size - 1) % size] & 1U) == 0) && ((main[i] & L2_BIT) != 0) && (vb::prng.bernoulli(r)))
+            alt[i] &= 30U;
+        else if (((main[i] & 1U) != 0) && ((main[(i + size - 1) % size] & 1U) == 0) && ((main[i] & R2_BIT) != 0) && (vb::prng.bernoulli(r)))
+            alt[(i + size - 1) % size] |= 1U;
     }
     this->swap();
 }
@@ -80,13 +80,13 @@ int main(int argc, char **argv) {
 
     Automaton a(n);
 
-    for (size_t x = 0; x < n; ++x) a.main[x] = vb::prng() & 31u;
+    for (size_t x = 0; x < n; ++x) a.main[x] = vb::prng() & 31U;
 
     for (size_t i = 0;; ++i) {
         int nb = 0;
         for (size_t x = 0; x < n; ++x) {
-            img.put({x, i % n}, vb::Grey(255 * (a.main[x] & 1u)));
-            nb += a.main[x] & 1u;
+            img.put({x, i % n}, vb::Grey(255 * (a.main[x] & 1U)));
+            nb += a.main[x] & 1U;
         }
         //    img.update();
         for (int j = 0; j < 100; ++j) {

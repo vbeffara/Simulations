@@ -13,7 +13,7 @@ public:
                 if ((x % 2 == 0) && (y % 2 == 0)) put({x, y}, WHITE);
     }
 
-    int degree(coo z) const {
+    [[nodiscard]] int degree(coo z) const {
         int out = 0;
         for (int i = 0; i < 4; ++i)
             if (atp(z + dz[i]) != BLACK) ++out;

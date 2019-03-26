@@ -40,7 +40,7 @@ namespace vb {
         auto     s = signature();
         Passport out;
         size_t   l = 0, c = 0;
-        if (s.size() > 0)
+        if (!s.empty())
             for (auto i = s.size() - 1; i <= s.size(); --i) {
                 if (s[i] == l)
                     ++c;
@@ -117,7 +117,7 @@ namespace vb {
         });
     }
 
-    Stream<Permutation> permutations(std::vector<size_t> s) {
+    Stream<Permutation> permutations(const std::vector<size_t> &s) {
         return Stream<Permutation>([s](Sink<Permutation> &yield) {
             size_t n = 0;
             for (auto i : s) n += i;

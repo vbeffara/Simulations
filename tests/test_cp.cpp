@@ -33,7 +33,7 @@ int main(int argc, char **argv) {
 
     Minimizer<double> MM(3 * m.n, [&m](const Vector<double> &x, Vector<double> *g) { return m.fg_circle_disk(x, g); });
     if (H['v']) {
-        MM.cb = [](const Vector<double> &, double fx) { spdlog::trace("Current : {}", fx); };
+        MM.cb = [](const Vector<double> & /*unused*/, double fx) { spdlog::trace("Current : {}", fx); };
         spdlog::set_level(spdlog::level::trace);
     }
     MM.minimize_qn(x);

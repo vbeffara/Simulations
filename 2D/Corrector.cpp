@@ -21,35 +21,35 @@ int main(int argc, char **argv) {
         for (size_t j = 0; j < n; ++j) {
             auto ij = i + n * j;
 
-            if (prng.bernoulli(p)) adj[ij] |= 1u;
-            if (prng.bernoulli(p)) adj[ij] |= 2u;
-            if ((i > 0) && ((adj[ij - 1] & 1u) != 0)) adj[ij] |= 4u;
-            if ((j > 0) && ((adj[ij - n] & 2u) != 0)) adj[ij] |= 8u;
+            if (prng.bernoulli(p)) adj[ij] |= 1U;
+            if (prng.bernoulli(p)) adj[ij] |= 2U;
+            if ((i > 0) && ((adj[ij - 1] & 1U) != 0)) adj[ij] |= 4U;
+            if ((j > 0) && ((adj[ij - n] & 2U) != 0)) adj[ij] |= 8U;
         }
     }
 
     for (size_t i = 0; i < n; ++i) {
-        adj[i] |= 5u;
-        adj[n * i] |= 10u;
-        adj[n - 1 + n * i] |= 10u;
-        adj[(n - 1) * n + i] |= 5u;
+        adj[i] |= 5U;
+        adj[n * i] |= 10U;
+        adj[n - 1 + n * i] |= 10U;
+        adj[(n - 1) * n + i] |= 5U;
     }
 
     for (size_t i = 0; i < n; ++i) {
-        adj[i] &= 7u;
-        adj[n * i] &= 11u;
-        adj[n - 1 + n * i] &= 14u;
-        adj[(n - 1) * n + i] &= 13u;
+        adj[i] &= 7U;
+        adj[n * i] &= 11U;
+        adj[n - 1 + n * i] &= 14U;
+        adj[(n - 1) * n + i] &= 13U;
     }
 
     for (size_t i = 0; i < n; ++i) {
         for (size_t j = 0; j < n; ++j) {
             auto ij = i + n * j;
 
-            if ((i < n - 1) && ((adj[ij] & 1u) != 0)) m << Edge(ij, ij + 1);
-            if ((j < n - 1) && ((adj[ij] & 2u) != 0)) m << Edge(ij, ij + n);
-            if ((i > 0) && ((adj[ij] & 4u) != 0)) m << Edge(ij, ij - 1);
-            if ((j > 0) && ((adj[ij] & 8u) != 0)) m << Edge(ij, ij - n);
+            if ((i < n - 1) && ((adj[ij] & 1U) != 0)) m << Edge(ij, ij + 1);
+            if ((j < n - 1) && ((adj[ij] & 2U) != 0)) m << Edge(ij, ij + n);
+            if ((i > 0) && ((adj[ij] & 4U) != 0)) m << Edge(ij, ij - 1);
+            if ((j > 0) && ((adj[ij] & 8U) != 0)) m << Edge(ij, ij - n);
 
             m.v[ij]->z = cpx(i, j);
 

@@ -1,4 +1,5 @@
 #include "catch2/catch.hpp"
+#include <string.h>
 #include <vb/util/CL_Parser.h>
 
 using vb::Value, vb::CL_Parser;

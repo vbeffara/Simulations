@@ -4,7 +4,7 @@
 using namespace vb;
 
 TEST_CASE("vb::Minimizer") {
-    auto f = [](const Vector<double> &x, void *) {
+    auto f = [](const Vector<double> &x, void * /*unused*/) {
         double o = 0;
         for (int i = 0; i < 400; ++i) o += (1 - cos(x[i] / (i + 1)));
         return o;

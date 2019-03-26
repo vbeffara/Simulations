@@ -1,4 +1,5 @@
 #include "catch2/catch.hpp"
+#include <string.h>
 #include <vb/Constellation0.h>
 
 using namespace vb;
@@ -22,7 +23,7 @@ TEST_CASE("vb::Constellation0") {
 
     INFO("Computing polynomial Q");
     Polynomial<complex_t> Q{1};
-    for (auto zd : Cq.f) Q.add_root(zd.z, zd.d);
+    for (const auto &zd : Cq.f) Q.add_root(zd.z, zd.d);
     for (unsigned i = 0; i < Q.size(); ++i) {
         auto &x  = Q[i];
         auto  xx = complex_t(round(real(x)), round(imag(x)));

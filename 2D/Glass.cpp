@@ -15,10 +15,10 @@ vector<bool> init_ok_glass() {
     vector<bool> ok(256, false);
     for (unsigned i = 0; i < 256; i++) {
         int tmp = 0;
-        if ((i & 1u) != 0) tmp++;
-        if ((i & 4u) != 0) tmp++;
-        if ((i & 16u) != 0) tmp++;
-        if ((i & 64u) != 0) tmp++;
+        if ((i & 1U) != 0) tmp++;
+        if ((i & 4U) != 0) tmp++;
+        if ((i & 16U) != 0) tmp++;
+        if ((i & 64U) != 0) tmp++;
         ok[i] = (tmp <= 2);
     }
     return ok;
@@ -35,8 +35,8 @@ vector<bool> init_ok_connect4() {
 
     for (unsigned i = 0; i < 256; i++) {
         for (unsigned j = 0; j < 8; j++) {
-            tmp1[j] = (i & (1u << j)) / (1u << j);
-            tmp2[j] = 1u << j;
+            tmp1[j] = (i & (1U << j)) / (1U << j);
+            tmp2[j] = 1U << j;
         }
 
         if ((tmp1[0] == tmp1[2]) && (tmp1[0] == tmp1[1])) tmp2[2] = tmp2[0];
@@ -49,8 +49,8 @@ vector<bool> init_ok_connect4() {
         unsigned nb1 = (tmp1[0] * tmp2[0]) | (tmp1[2] * tmp2[2]) | (tmp1[4] * tmp2[4]) | (tmp1[6] * tmp2[6]);
         unsigned nb2 = ((1 - tmp1[0]) * tmp2[0]) | ((1 - tmp1[2]) * tmp2[2]) | ((1 - tmp1[4]) * tmp2[4]) | ((1 - tmp1[6]) * tmp2[6]);
 
-        nb1 = (nb1 & 1u) + ((nb1 & 4u) / 4) + ((nb1 & 16u) / 16) + ((nb1 & 64u) / 64);
-        nb2 = (nb2 & 1u) + ((nb2 & 4u) / 4) + ((nb2 & 16u) / 16) + ((nb2 & 64u) / 64);
+        nb1 = (nb1 & 1U) + ((nb1 & 4U) / 4) + ((nb1 & 16U) / 16) + ((nb1 & 64U) / 64);
+        nb2 = (nb2 & 1U) + ((nb2 & 4U) / 4) + ((nb2 & 16U) / 16) + ((nb2 & 64U) / 64);
 
         ok[i] = (nb1 <= 1) && (nb2 <= 1);
     }
@@ -64,12 +64,12 @@ vector<bool> init_ok_connect6() {
     unsigned     tmp[6];
 
     for (unsigned i = 0; i < 256; i++) {
-        tmp[0] = (i & 1u) / 1;
-        tmp[1] = (i & 2u) / 2;
-        tmp[2] = (i & 4u) / 4;
-        tmp[3] = (i & 16u) / 16;
-        tmp[4] = (i & 32u) / 32;
-        tmp[5] = (i & 64u) / 64;
+        tmp[0] = (i & 1U) / 1;
+        tmp[1] = (i & 2U) / 2;
+        tmp[2] = (i & 4U) / 4;
+        tmp[3] = (i & 16U) / 16;
+        tmp[4] = (i & 32U) / 32;
+        tmp[5] = (i & 64U) / 64;
 
         int nb = 0;
         if (tmp[1] != tmp[0]) nb++;

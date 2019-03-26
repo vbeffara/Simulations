@@ -33,7 +33,7 @@ namespace vb {
     bool connected(const Permutation &s, const Permutation &a);
 
     Stream<Permutation> permutations(size_t n);
-    Stream<Permutation> permutations(std::vector<size_t> s);
+    Stream<Permutation> permutations(const std::vector<size_t> &s);
 } // namespace vb
 
 template <> struct fmt::formatter<vb::Permutation> {

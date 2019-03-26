@@ -11,7 +11,7 @@ using namespace std;
 
 auto dupe(const Array<double> &a) {
     Array<double> aa({2 * a.size.x, 2 * a.size.y});
-    for (auto z : coo_range(aa.size)) aa[z] = a[z / 2u];
+    for (auto z : coo_range(aa.size)) aa[z] = a[z / 2U];
     return aa;
 }
 
@@ -157,7 +157,7 @@ struct Tiling {
         F.output(name);
     }
 
-    auto height() const {
+    [[nodiscard]] auto height() const {
         auto       m = state.size.x / 2;
         Array<int> h({m + 1, m + 1}, 0);
         int        z = 0;

@@ -45,10 +45,10 @@ public:
 
         for (auto &t : table) t = 0;
         for (int i = -r2; i < r2; i++) {
-            if ((sides & 1u) != 0) table[size_t(int64_t(N * N) + expl[ucoo(coo{int(N) / 2 + i, int(N) / 2 - r2})])] = 1;
-            if ((sides & 2u) != 0) table[size_t(int64_t(N * N) + expl[ucoo(coo{int(N) / 2 + i, int(N) / 2 + r2 - 1})])] = 1;
-            if ((sides & 4u) != 0) table[size_t(int64_t(N * N) + expl[ucoo(coo{int(N) / 2 - r2, int(N) / 2 + i})])] = 1;
-            if ((sides & 8u) != 0) table[size_t(int64_t(N * N) + expl[ucoo(coo{int(N) / 2 + r2 - 1, int(N) / 2 + i})])] = 1;
+            if ((sides & 1U) != 0) table[size_t(int64_t(N * N) + expl[ucoo(coo{int(N) / 2 + i, int(N) / 2 - r2})])] = 1;
+            if ((sides & 2U) != 0) table[size_t(int64_t(N * N) + expl[ucoo(coo{int(N) / 2 + i, int(N) / 2 + r2 - 1})])] = 1;
+            if ((sides & 4U) != 0) table[size_t(int64_t(N * N) + expl[ucoo(coo{int(N) / 2 - r2, int(N) / 2 + i})])] = 1;
+            if ((sides & 8U) != 0) table[size_t(int64_t(N * N) + expl[ucoo(coo{int(N) / 2 + r2 - 1, int(N) / 2 + i})])] = 1;
         }
 
         int     n = 0;

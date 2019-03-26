@@ -33,7 +33,7 @@ int main(int argc, char **argv) {
         return grad;
     };
 
-    ProgressFunc<CMAParameters<>, CMASolutions> pf = [](const CMAParameters<> &, const CMASolutions &cmasols) {
+    ProgressFunc<CMAParameters<>, CMASolutions> pf = [](const CMAParameters<> & /*unused*/, const CMASolutions &cmasols) {
         spdlog::trace("Current best : {}", cmasols.get_best_seen_candidate().get_fvalue());
         return 0;
     };

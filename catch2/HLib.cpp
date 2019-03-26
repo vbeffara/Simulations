@@ -1,4 +1,5 @@
 #include "catch2/catch.hpp"
+#include <string.h>
 #include <vb/Hypermap_lib.h>
 
 using namespace vb;

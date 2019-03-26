@@ -23,7 +23,7 @@ public:
 class QG : public Image {
 public:
     explicit QG(const Hub &H)
-        : Image(H.title, {1u << unsigned(H['n']), 1u << unsigned(H['n'])}), I({w(), h()}, Info({0, 0}, {0, 0}, 0, 0)), g(H['g']),
+        : Image(H.title, {1U << unsigned(H['n']), 1U << unsigned(H['n'])}), I({w(), h()}, Info({0, 0}, {0, 0}, 0, 0)), g(H['g']),
           n(H['n']) {
         map<string, function<void()>> fields;
         fields["boolean"]  = [&, this] { fill_boolean(H['z']); };
@@ -50,7 +50,7 @@ public:
 
     void fill_dyadic(int n0) {
         for (int l = n - 1; l >= n0; --l) {
-            unsigned ll = 1u << unsigned(l);
+            unsigned ll = 1U << unsigned(l);
             for (unsigned i = 0; i < size.x / ll; ++i)
                 for (unsigned j = 0; j < size.y / ll; ++j) {
                     double g = prng.gaussian();
@@ -62,7 +62,7 @@ public:
 
     void fill_boolean(int n0) {
         for (int l = n - 1; l >= n0; --l) {
-            unsigned ll = 1u << unsigned(l);
+            unsigned ll = 1U << unsigned(l);
             for (unsigned i = 0; i < size.x / ll; ++i)
                 for (unsigned j = 0; j < size.y / ll; ++j) {
                     double g = prng.uniform_real(-1, 1);
@@ -189,7 +189,7 @@ public:
 int main(int argc, char **argv) {
     Hub H("Random 2D geometry", argc, argv, "w=free,n=9,z=0,g=1,s=0,b,i,q,c,l=10,a=1");
     if (unsigned s = H['s']) prng.seed(s);
-    unsigned n = H['n'], nn = 1u << n;
+    unsigned n = H['n'], nn = 1U << n;
 
     QG img(H);
     if (!H['i']) img.show();

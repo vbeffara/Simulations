@@ -7,7 +7,7 @@ namespace vb {
 
     Auto::~Auto() { remove_task(task); }
 
-    size_t Auto::add_task(double period, std::function<void()> task) {
+    size_t Auto::add_task(double period, const std::function<void()> &task) {
         tasks.emplace_back(now(), Duration(period), task);
         return tasks.size() - 1;
     }

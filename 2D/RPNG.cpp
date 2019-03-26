@@ -25,7 +25,7 @@ int main(int argc, char **argv) {
     while (running) {
         auto x = 1 + prng.uniform_int(n - 2);
         auto h = height[x];
-        auto d = prng.uniform_int(1u << 14u);
+        auto d = prng.uniform_int(1U << 14U);
 
         if (d != 0) { // If trying to grow
             if ((height[x - 1] > h) || (height[x + 1] > h) || (prng.bernoulli(e)) || ((c > 0) && (x == n / 2) && (prng.bernoulli(c))))

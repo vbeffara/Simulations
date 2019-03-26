@@ -16,9 +16,9 @@ int main(int argc, char **argv) {
     Hub H("Testing numerical types", argc, argv, "n=10000");
     int n = H['n'];
 
-    test(H, "Standard float", n, 0.0f);
+    test(H, "Standard float", n, 0.0F);
     test(H, "Standard double", n, 0.0);
-    test(H, "Long double", n, 0.0l);
+    test(H, "Long double", n, 0.0L);
 
     test(H, "Boost gmp_float (100 digits)", n, number<gmp_float<100>>(0));
     test(H, "Boost gmp_float (200 digits)", n, number<gmp_float<200>>(0));

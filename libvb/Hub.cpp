@@ -21,7 +21,7 @@ namespace vb {
         real_t::default_precision(100);
         complex_t::default_precision(100);
 
-        mode_t mode = 0755u;
+        mode_t mode = 0755U;
         mkdir("output", mode);
         mkdir(dir.c_str(), mode);
         mkdir((dir + "snapshots").c_str(), mode);

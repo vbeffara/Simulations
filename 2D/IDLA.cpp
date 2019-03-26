@@ -9,7 +9,7 @@ using namespace std;
 class Bounces : public map<string, function<coo(coo)>> {
 public:
     explicit Bounces(const Hub &H) {
-        emplace("none", [&](coo) { return coo{0, 0}; });
+        emplace("none", [&](coo /*unused*/) { return coo{0, 0}; });
         emplace("line", [&](coo z) {
             double p = H['p'];
             return coo{int(-p * z.x), int(-p * z.y)};

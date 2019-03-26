@@ -18,7 +18,7 @@ public:
         (*this) << Edge(n - 1, 0) << Edge(n - 1, n - 2) << Edge(n - 1, 1);
     }
 
-    Edge random_edge() const {
+    [[nodiscard]] Edge random_edge() const {
         auto                   i = vb::prng.uniform_int(n), j = vb::prng.uniform_int(v[i]->adj.size());
         vb::adj_list::iterator k;
         for (k = v[i]->adj.begin(); j > 0; ++k, --j) {};

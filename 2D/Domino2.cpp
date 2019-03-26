@@ -18,9 +18,10 @@ public:
         }
     }
 
-    double weight() const { return W[pmod(z.x, W.size())][pmod(z.y, W[0].size())][d]; }
+    [[nodiscard]] double weight() const { return W[pmod(z.x, W.size())][pmod(z.y, W[0].size())][d]; }
 
-    explicit operator Color() const {
+    explicit
+    operator Color() const {
         if (!active) return BLACK;
         double hh = hues[pmod(z.x, W.size())][pmod(z.y, W[0].size())][d];
         return HSV(hh, 1, contrast + (1 - contrast) * (weight() - minw) / (maxw - minw));

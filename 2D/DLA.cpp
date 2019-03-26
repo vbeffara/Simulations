@@ -68,7 +68,7 @@ public:
         CoarseImage::show();
     }
 
-    bool at(coo z) const { return fits(z) && CoarseImage::at(z); }
+    [[nodiscard]] bool at(coo z) const { return fits(z) && CoarseImage::at(z); }
 
     void put(coo z) {
         CoarseImage::put(z, true);
@@ -76,13 +76,13 @@ public:
         r = std::max(r, sup(z));
     }
 
-    bool neighbor(coo z) const {
+    [[nodiscard]] bool neighbor(coo z) const {
         for (int i = 0; i < 4; ++i)
             if (at(z + dz[i])) return true;
         return false;
     }
 
-    coo jump(long d) const {
+        [[nodiscard]] coo jump(long d) const {
         if (d <= 1) return dz[prng.uniform_int(4)];
         if (d < int(prec.size())) {
             coo w{d, prng.discrete(prec[size_t(d)])};

@@ -33,7 +33,7 @@ namespace vb {
             if (next == 0) run();
         }
 
-        static size_t add_task(double period, std::function<void()> task);
+        static size_t add_task(double period, const std::function<void()> &task);
         static void   remove_task(size_t i);
 
         static inline std::vector<Task> tasks;

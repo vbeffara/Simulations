@@ -143,8 +143,8 @@ public:
         show();
     }
 
-    unsigned HH(unsigned i, unsigned j) const { return i == j ? 0 : 1; }
-    unsigned HH(const coo &z, unsigned i) const {
+    [[nodiscard]] unsigned HH(unsigned i, unsigned j) const { return i == j ? 0 : 1; }[[nodiscard]] unsigned HH(const coo &z,
+                                                                                                                unsigned   i) const {
         return HH(i, atp(z + dz[0])) + HH(i, atp(z + dz[1])) + HH(i, atp(z + dz[2])) + HH(i, atp(z + dz[3]));
     }
 

@@ -20,7 +20,7 @@ class Snake : public Bitmap<site> {
 public:
     Snake(const Hub &H, size_t n, double l, bool hex)
         : Bitmap(H.title, {4 * n + 1, 2 * n + 1}), lambda(l), path(1, {2 * int(n), 0}), hex(hex) {
-        for (size_t x = 0; x < w(); ++x) put({x, 0u}, VERTEX);
+        for (size_t x = 0; x < w(); ++x) put({x, 0U}, VERTEX);
         if (double a = H['a']; a != 0) triangle(a);
         if (!H['v']) show();
     }

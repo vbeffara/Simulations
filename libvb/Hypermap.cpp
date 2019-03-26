@@ -78,7 +78,7 @@ namespace vb {
         initial.resize(sigma.size(), 0);
         for (unsigned i = 0; i < N; ++i) {
             initial[alpha[i]] = initial[i] % 2;
-            if (((initial[i] & 2u) != 0) && ((initial[alpha[sigma[sigma[sigma[alpha[i]]]]]] & 2u) != 0)) initial[alpha[i]] |= 4u;
+            if (((initial[i] & 2U) != 0) && ((initial[alpha[sigma[sigma[sigma[alpha[i]]]]]] & 2U) != 0)) initial[alpha[i]] |= 4U;
         }
     }
 

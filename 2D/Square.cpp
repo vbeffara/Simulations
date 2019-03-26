@@ -11,14 +11,13 @@ public:
     pt(size_t i, size_t j, double x, double y) : ptt(cooo(i, x), cooo(j, y)){};
     pt() : pt(SIZE_MAX, SIZE_MAX, 0, 0){};
 
-    auto &  xi() { return first.first; }
-    double &xf() { return first.second; }
-    double  x() const { return static_cast<double>(first.first) + first.second; }
-    auto &  yi() { return second.first; }
-    double &yf() { return second.second; }
-    double  y() const { return static_cast<double>(second.first) + second.second; }
+    auto &               xi() { return first.first; }
+    double &             xf() { return first.second; }
+    [[nodiscard]] double x() const { return static_cast<double>(first.first) + first.second; } auto &yi() { return second.first; }
+    double &             yf() { return second.second; }
+    [[nodiscard]] double y() const { return static_cast<double>(second.first) + second.second; }
 
-    double dist2(const pt &o) const {
+        [[nodiscard]] double dist2(const pt &o) const {
         double dx = x() - o.x(), dy = y() - o.y();
         return dx * dx + dy * dy;
     }
@@ -143,7 +142,7 @@ public:
         return (p1 < p2) ? ptpair{p1, p2} : ptpair{p2, p1};
     }
 
-    std::set<pt> connections() const {
+    [[nodiscard]] std::set<pt> connections() const {
         std::set<ptpair> S;
         std::set<pt>     P;
 

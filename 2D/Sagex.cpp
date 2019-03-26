@@ -18,7 +18,7 @@ public:
     explicit Particle(coo xy = {0, 0}, unsigned s = 0, bool z = false, double t = 0) : state(s), location(xy), type(z), next(t){};
     bool operator<(const Particle &o) const { return next > o.next; }
 
-    coo jump() const {
+    [[nodiscard]] coo jump() const {
         if (type) {
             int out = prng.uniform_int(2);
             if (state == 2) out += 2;
@@ -30,9 +30,9 @@ public:
     }
 
     unsigned state;
-    coo      location;
-    bool     type;
-    double   next;
+    coo    location;
+    bool   type;
+    double next;
 };
 
 class Sagex : public Bitmap<unsigned> {
