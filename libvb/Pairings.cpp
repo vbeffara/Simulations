@@ -17,7 +17,7 @@ namespace vb {
                 return;
             }
             auto i = p[0];
-            for (unsigned k = 1; k < p.size(); ++k) {
+            for (size_t k = 1; k < p.size(); ++k) {
                 auto o  = p[k];
                 auto cc = c;
                 cc.push_back(i);
@@ -65,7 +65,7 @@ namespace vb {
 
     Permutation Pairings::rrand() {
         Permutation out(n);
-        for (unsigned i = 0; i < n; ++i) {
+        for (size_t i = 0; i < n; ++i) {
             if (out[i] < i) continue;
             while (true) {
                 out[i] = i + 1 + prng.uniform_int(n - i - 1);

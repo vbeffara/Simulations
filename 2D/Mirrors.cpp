@@ -5,11 +5,11 @@
 using namespace vb;
 using namespace std;
 
-constexpr unsigned STATE_NONE    = 0u;
-constexpr unsigned STATE_PRESENT = 128u;
-constexpr unsigned STATE_NE      = 1u;
-constexpr unsigned STATE_FLIP    = 2u;
-constexpr unsigned STATE_VISITED = 4u;
+constexpr unsigned STATE_NONE    = 0U;
+constexpr unsigned STATE_PRESENT = 128U;
+constexpr unsigned STATE_NE      = 1U;
+constexpr unsigned STATE_FLIP    = 2U;
+constexpr unsigned STATE_VISITED = 4U;
 
 constexpr Color MIRROR_NONE();
 constexpr Color MIRROR_NE(255, 0, 0);

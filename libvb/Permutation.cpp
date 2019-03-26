@@ -16,7 +16,7 @@ namespace vb {
     Cycles Permutation::cycles() const {
         Cycles           c;
         std::vector<int> done(size(), 0);
-        for (unsigned i = 0; i < size(); ++i) {
+        for (size_t i = 0; i < size(); ++i) {
             if (done[i] != 0) continue;
             std::vector<size_t> v(1, i);
             done[i] = 1;
@@ -55,7 +55,7 @@ namespace vb {
     }
 
     bool Permutation::is_identity() const {
-        for (unsigned i = 0; i < size(); ++i)
+        for (size_t i = 0; i < size(); ++i)
             if (at(i) != i) return false;
         return true;
     }
@@ -63,20 +63,20 @@ namespace vb {
     Permutation Permutation::inverse() const {
         Permutation s;
         s.resize(size());
-        for (unsigned i = 0; i < size(); ++i) s[at(i)] = i;
+        for (size_t i = 0; i < size(); ++i) s[at(i)] = i;
         return s;
     }
 
     Permutation Permutation::operator*(const Permutation &o) const {
         Permutation s;
         s.resize(size());
-        for (unsigned i = 0; i < size(); ++i) s[i] = o[at(i)];
+        for (size_t i = 0; i < size(); ++i) s[i] = o[at(i)];
         return s;
     }
 
     Permutation Permutation::conjugate(const Permutation &s) const {
         Permutation out(size());
-        for (unsigned i = 0; i < size(); ++i) out[s[i]] = s[at(i)];
+        for (size_t i = 0; i < size(); ++i) out[s[i]] = s[at(i)];
         return out;
     }
 
@@ -126,7 +126,7 @@ namespace vb {
                 return;
             }
             size_t L = 0;
-            for (unsigned i = 0; i < s.size(); ++i)
+            for (size_t i = 0; i < s.size(); ++i)
                 if (s[i] > L) {
                     L       = s[i];
                     auto ns = s;

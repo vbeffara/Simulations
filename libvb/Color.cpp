@@ -1,8 +1,6 @@
 #include <vb/Color.h>
 
 namespace vb {
-    Color Grey(uint8_t x) noexcept { return {x, x, x}; }
-
     Color HSV(double h, double s, double v) noexcept {
         auto   h_i = int(h * 6);
         double f   = h * 6 - h_i;

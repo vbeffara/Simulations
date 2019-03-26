@@ -350,7 +350,7 @@ namespace vb {
     double Map::fg_balance(const Vector<double> &x, Vector<double> *g) {
         double c = 0.0;
 
-        for (unsigned i = 0; i < n; ++i) {
+        for (size_t i = 0; i < n; ++i) {
             (*g)[2 * int(i)]     = 0;
             (*g)[2 * int(i) + 1] = 0;
 
@@ -395,7 +395,7 @@ namespace vb {
     double Map::fg_circle_bd(const Vector<double> &x, Vector<double> *g) {
         double c = fg_circle_base(x, g);
 
-        for (unsigned i = 0; i < n; ++i)
+        for (size_t i = 0; i < n; ++i)
             if (bd[i]) (*g)[3 * int(i) + 2] = 0.0;
 
         return c;

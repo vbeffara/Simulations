@@ -15,28 +15,28 @@ namespace vb {
 
     double Path::left() {
         double m = z[0].real();
-        for (unsigned i = 1; i < z.size(); ++i)
+        for (size_t i = 1; i < z.size(); ++i)
             if (std::isnormal(real(z[i]))) m = std::min(m, z[i].real());
         return m;
     }
 
     double Path::right() {
         double m = z[0].real();
-        for (unsigned i = 1; i < z.size(); ++i)
+        for (size_t i = 1; i < z.size(); ++i)
             if (std::isnormal(real(z[i]))) m = std::max(m, z[i].real());
         return m;
     }
 
     double Path::top() {
         double m = z[0].imag();
-        for (unsigned i = 1; i < z.size(); ++i)
+        for (size_t i = 1; i < z.size(); ++i)
             if (std::isnormal(real(z[i]))) m = std::max(m, z[i].imag());
         return m;
     }
 
     double Path::bottom() {
         double m = z[0].imag();
-        for (unsigned i = 1; i < z.size(); ++i)
+        for (size_t i = 1; i < z.size(); ++i)
             if (std::isnormal(real(z[i]))) m = std::min(m, z[i].imag());
         return m;
     }

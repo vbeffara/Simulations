@@ -59,7 +59,7 @@ namespace vb {
         Cycles sigma_c, alpha_c, phi_c;
         sigma_c = sigma.cycles();
 
-        for (unsigned a = 0; a < N; ++a) {
+        for (size_t a = 0; a < N; ++a) {
             auto b = alpha[a], c = phi[a], f = sigma[a], x = phi[b];
             if (a < b) sigma_c.emplace_back(Permutation({a + N, x + 3 * N, b + 2 * N, b + N, c + 3 * N, a + 2 * N}));
             alpha_c.emplace_back(Permutation({a, a + N}));
@@ -76,7 +76,7 @@ namespace vb {
         alpha = alpha_c;
         phi   = phi_c;
         initial.resize(sigma.size(), 0);
-        for (unsigned i = 0; i < N; ++i) {
+        for (size_t i = 0; i < N; ++i) {
             initial[alpha[i]] = initial[i] % 2;
             if (((initial[i] & 2U) != 0) && ((initial[alpha[sigma[sigma[sigma[alpha[i]]]]]] & 2U) != 0)) initial[alpha[i]] |= 4U;
         }
@@ -120,7 +120,7 @@ namespace vb {
 
     Permutation Hypermap::rebasing() const {
         Permutation s = rebasing(0), a = alpha.conjugate(s), p = phi.conjugate(s);
-        for (unsigned i = 1; i < alpha.size(); ++i) {
+        for (size_t i = 1; i < alpha.size(); ++i) {
             Permutation s2 = rebasing(i), a2 = alpha.conjugate(s2), p2 = phi.conjugate(s2);
             if ((a2 < a) || ((a2 == a) && (p2 < p))) {
                 s = s2;
@@ -248,7 +248,7 @@ namespace vb {
         alpha = alpha.conjugate(p);
         phi   = phi.conjugate(p);
         std::vector<unsigned> b(sigma.size());
-        for (unsigned i = 0; i < sigma.size(); ++i) b[p[i]] = initial[i];
+        for (size_t i = 0; i < sigma.size(); ++i) b[p[i]] = initial[i];
         initial = b;
     }
 
@@ -257,7 +257,7 @@ namespace vb {
         auto   n = sigma.size();
         initial.resize(6 * n);
         Permutation alpha1 = alpha.inverse();
-        for (unsigned i = 0; i < n; ++i) {
+        for (size_t i = 0; i < n; ++i) {
             new_a.emplace_back(Permutation({i, i + n}));
             new_a.emplace_back(Permutation({i + 2 * n, i + 3 * n}));
             new_a.emplace_back(Permutation({i + 4 * n, i + 5 * n}));
@@ -288,7 +288,7 @@ namespace vb {
         std::vector<double> &er{*per};
         out       = in;
         double se = 0;
-        for (unsigned i = 0; i < out.size(); ++i) {
+        for (size_t i = 0; i < out.size(); ++i) {
             if (M.V[i].fixed) continue;
             auto &adj = M.V[i].adj;
             auto  n   = adj.size();
@@ -332,7 +332,7 @@ namespace vb {
                 if (v > mv) mv = v;
             }
             if (mv < mvm) {
-                for (unsigned i = 0; i < V.size(); ++i) {
+                for (size_t i = 0; i < V.size(); ++i) {
                     if (old_e[i] != 0) {
                         double nr = (r[i] - (1 - l[i]) * old_r[i]) / l[i];
                         if (nr > 0) r[i] = nr;
@@ -340,7 +340,7 @@ namespace vb {
                 }
             }
         }
-        for (unsigned i = 0; i < V.size(); ++i) V[i].r = r[i];
+        for (size_t i = 0; i < V.size(); ++i) V[i].r = r[i];
     }
 
     Stream<Hypermap> hypermaps(const Permutation &s, const Permutation &a, const Permutation &p) {

@@ -2,12 +2,12 @@
 #include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
-constexpr unsigned MAIN_BIT = 1u;
-constexpr unsigned L1_BIT   = 2u;
-constexpr unsigned L2_BIT   = 4u;
-constexpr unsigned R1_BIT   = 8u;
-constexpr unsigned R2_BIT   = 16u;
-constexpr unsigned ALL_BITS = 31u;
+constexpr unsigned MAIN_BIT = 1U;
+constexpr unsigned L1_BIT   = 2U;
+constexpr unsigned L2_BIT   = 4U;
+constexpr unsigned R1_BIT   = 8U;
+constexpr unsigned R2_BIT   = 16U;
+constexpr unsigned ALL_BITS = 31U;
 
 class Automaton {
 public:
@@ -83,7 +83,7 @@ int main(int argc, char **argv) {
     for (size_t x = 0; x < n; ++x) a.main[x] = vb::prng() & 31U;
 
     for (size_t i = 0;; ++i) {
-        int nb = 0;
+        size_t nb = 0;
         for (size_t x = 0; x < n; ++x) {
             img.put({x, i % n}, vb::Grey(255 * (a.main[x] & 1U)));
             nb += a.main[x] & 1U;

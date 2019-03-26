@@ -16,7 +16,7 @@ namespace vb {
         bool   flag = true;
         while (flag) {
             flag = false;
-            for (unsigned i = 0; i < ne; ++i) {
+            for (size_t i = 0; i < ne; ++i) {
                 if (std::isnan(E[i].a)) continue;
                 if (std::isnan(E[alpha[i]].a)) {
                     E[alpha[i]].a = E[i].a + M_PI;
@@ -36,7 +36,7 @@ namespace vb {
         while (flag) {
             flag = false;
             periods.clear();
-            for (unsigned e = 0; e < ne; ++e) {
+            for (size_t e = 0; e < ne; ++e) {
                 auto i = E[e].src;
                 if (std::isnan(real(V[i].z))) continue;
                 auto   j = E[alpha[e]].src;
@@ -100,7 +100,7 @@ namespace vb {
     }
 
     void Toroidal::output_pdf(const std::string &s, unsigned mode) {
-        for (unsigned e = 0; e < sigma.size(); ++e) {
+        for (size_t e = 0; e < sigma.size(); ++e) {
             if (initial[e] == 0) continue;
             V[E[e].src].bone = std::max(V[E[e].src].bone, initial[e]);
         }
