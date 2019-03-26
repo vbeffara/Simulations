@@ -35,7 +35,7 @@ public:
     }
 
     void swipe() {
-        for (int t = 0; t < size.x * size.y * size.z; ++t) {
+        for (int64_t t = 0; t < size.x * size.y * size.z; ++t) {
             vb::coo3 c = vb::prng.uniform_coo3(size, b);
             spin(c);
         }
@@ -70,8 +70,8 @@ public:
         });
         emplace("hexagon", [](Ising3 &I) {
             I.b = 1;
-            for (int i = 0; i < I.size.x; ++i)
-                for (int j = 0; j < I.size.x; ++j) {
+            for (int64_t i = 0; i < I.size.x; ++i)
+                for (int64_t j = 0; j < I.size.x; ++j) {
                     I.put({i, j, I.size.z - 1}, 255);
                     I.put({0, i, j}, 255);
                     I.put({i, 0, j}, 255);

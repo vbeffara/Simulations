@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
 
     for (int i = 0; i < t; ++i) {
         if (d) {
-            for (unsigned j = 0; j < env.size(); ++j) {
+            for (size_t j = 0; j < env.size(); ++j) {
                 if (X == int(j))
                     cout << "*";
                 else

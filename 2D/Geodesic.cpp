@@ -51,11 +51,11 @@ public:
     void fill_dyadic(int n0) {
         for (int l = n - 1; l >= n0; --l) {
             unsigned ll = 1U << unsigned(l);
-            for (unsigned i = 0; i < size.x / ll; ++i)
-                for (unsigned j = 0; j < size.y / ll; ++j) {
+            for (size_t i = 0; i < size.x / ll; ++i)
+                for (size_t j = 0; j < size.y / ll; ++j) {
                     double g = prng.gaussian();
-                    for (unsigned x = i * ll; x < (i + 1) * ll; ++x)
-                        for (unsigned y = j * ll; y < (j + 1) * ll; ++y) I.at({x, y}).f += g;
+                    for (auto x = i * ll; x < (i + 1) * ll; ++x)
+                        for (auto y = j * ll; y < (j + 1) * ll; ++y) I.at({x, y}).f += g;
                 }
         }
     }
@@ -63,11 +63,11 @@ public:
     void fill_boolean(int n0) {
         for (int l = n - 1; l >= n0; --l) {
             unsigned ll = 1U << unsigned(l);
-            for (unsigned i = 0; i < size.x / ll; ++i)
-                for (unsigned j = 0; j < size.y / ll; ++j) {
+            for (size_t i = 0; i < size.x / ll; ++i)
+                for (size_t j = 0; j < size.y / ll; ++j) {
                     double g = prng.uniform_real(-1, 1);
-                    for (unsigned x = i * ll; x < (i + 1) * ll; ++x)
-                        for (unsigned y = j * ll; y < (j + 1) * ll; ++y) I.at({x, y}).f += g;
+                    for (auto x = i * ll; x < (i + 1) * ll; ++x)
+                        for (auto y = j * ll; y < (j + 1) * ll; ++y) I.at({x, y}).f += g;
                 }
         }
     }
@@ -82,8 +82,8 @@ public:
         gsl::span<fftw_complex> in_{in, int64_t(size.x * size.y)}, out_{out, int64_t(size.x * size.y)};
 
         vector<double> sinarrayi(size_t(size.x)), sinarrayj(size_t(size.y));
-        for (unsigned i = 0; i < size.x; ++i) sinarrayi[i] = sin(M_PI * i / size.x);
-        for (unsigned j = 0; j < size.y; ++j) sinarrayj[j] = sin(M_PI * j / size.y);
+        for (size_t i = 0; i < size.x; ++i) sinarrayi[i] = sin(M_PI * i / size.x);
+        for (size_t j = 0; j < size.y; ++j) sinarrayj[j] = sin(M_PI * j / size.y);
 
         for (auto [i, j] : coo_range(size)) {
             if ((i == 0) && (j == 0)) continue;

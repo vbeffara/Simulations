@@ -5,21 +5,21 @@
 using namespace vb;
 using namespace std;
 
-#define STATE_NONE 0u
-#define STATE_PRESENT 128u
-#define STATE_NE 1u
-#define STATE_FLIP 2u
-#define STATE_VISITED 4u
+constexpr unsigned STATE_NONE    = 0u;
+constexpr unsigned STATE_PRESENT = 128u;
+constexpr unsigned STATE_NE      = 1u;
+constexpr unsigned STATE_FLIP    = 2u;
+constexpr unsigned STATE_VISITED = 4u;
 
-#define MIRROR_NONE Color(0)
-#define MIRROR_NE Color(255, 0, 0)
-#define MIRROR_NW Color(255, 255, 0)
-#define MIRROR_FLIP_NE Color(0, 0, 255)
-#define MIRROR_FLIP_NW Color(0, 255, 0)
-#define MIRROR_NE_VISITED Color(128, 0, 0)
-#define MIRROR_NW_VISITED Color(128, 128, 0)
-#define MIRROR_FLIP_NE_VISITED Color(0, 0, 128)
-#define MIRROR_FLIP_NW_VISITED Color(0, 128, 0)
+constexpr Color MIRROR_NONE();
+constexpr Color MIRROR_NE(255, 0, 0);
+constexpr Color MIRROR_NW(255, 255, 0);
+constexpr Color MIRROR_FLIP_NE(0, 0, 255);
+constexpr Color MIRROR_FLIP_NW(0, 255, 0);
+constexpr Color MIRROR_NE_VISITED(128, 0, 0);
+constexpr Color MIRROR_NW_VISITED(128, 128, 0);
+constexpr Color MIRROR_FLIP_NE_VISITED(0, 0, 128);
+constexpr Color MIRROR_FLIP_NW_VISITED(0, 128, 0);
 
 namespace vb {
     template <> Color to_Color(uint8_t t) {

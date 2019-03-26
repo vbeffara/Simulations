@@ -27,8 +27,8 @@ public:
         bool dirty = true;
         while (dirty) {
             dirty = false;
-            for (int x = 0; x < int64_t(w()); ++x)
-                for (int y = 0; y < int64_t(h()); ++y) {
+            for (int64_t x = 0; x < int64_t(w()); ++x)
+                for (int64_t y = 0; y < int64_t(h()); ++y) {
                     if (at(ucoo(coo{x, y})) == 102) {
                         if (atp({x + 1, y}) == 1 || atp({x + 1, y}) == 2 || atp({x, y + 1}) == 1 || atp({x, y + 1}) == 2 ||
                             atp({x, y - 1}) == 1 || atp({x, y - 1}) == 2) {

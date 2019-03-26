@@ -2,12 +2,12 @@
 #include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
-#define MAIN_BIT 1u
-#define L1_BIT 2u
-#define L2_BIT 4u
-#define R1_BIT 8u
-#define R2_BIT 16u
-#define ALL_BITS 31u
+constexpr unsigned MAIN_BIT = 1u;
+constexpr unsigned L1_BIT   = 2u;
+constexpr unsigned L2_BIT   = 4u;
+constexpr unsigned R1_BIT   = 8u;
+constexpr unsigned R2_BIT   = 16u;
+constexpr unsigned ALL_BITS = 31u;
 
 class Automaton {
 public:

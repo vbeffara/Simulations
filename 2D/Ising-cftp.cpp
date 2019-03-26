@@ -56,7 +56,7 @@ public:
                 for (size_t j = d; j < h() - 2 * d; ++j) put({i, j}, 1);
             for (auto t = states.size(); t-- > 0;) {
                 prng.state(states[t]);
-                for (unsigned i = 0; i < (1U << t); ++i) up();
+                for (size_t i = 0; i < (1U << t); ++i) up();
                 if (t == states.size() - 1) states.push_back(prng.state());
             }
             snap();

@@ -87,7 +87,7 @@ int main(int argc, char **argv) {
             }
 
             auto flow = edmonds_karp_max_flow(g, (n / 2) * (n + 1), n * n);
-            for (unsigned i = 0; i <= flow; ++i) ++stats2[i];
+            for (size_t i = 0; i <= size_t(flow); ++i) ++stats2[i];
 
             PB.set(iter);
         }

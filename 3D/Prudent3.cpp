@@ -38,7 +38,7 @@ public:
 
     [[nodiscard]] int norm1() const { return abs(pos[0]) + abs(pos[1]) + abs(pos[2]); }
 
-    size_t length = 0;
+    size_t                 length = 0;
     vector<int>            pos;
     vector<TriMatrix<int>> Max, Min;
 };
@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
             while (W.length < l) {
                 if (n == 1) cout << W;
                 ends[W.length] += W.norm1();
-                while (0 == W.step(prng() % 3, 2 * (prng() % 2) - 1)) {};
+                while (0 == W.step(prng.uniform_int(3U), 2 * (prng.uniform_int(2)) - 1)) {};
                 PB.set(++t);
             }
         }

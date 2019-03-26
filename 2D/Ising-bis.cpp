@@ -12,7 +12,7 @@ namespace vb {
 
 class Ising : public Bitmap<int> {
 public:
-    Ising(const Hub &H, size_t n, double beta, int con) : Bitmap<int>(H.title, {n, n}), con(con), p(2 * size_t(con) + 1) {
+    Ising(const Hub &H, size_t n, double beta, size_t con) : Bitmap<int>(H.title, {n, n}), con(con), p(2 * size_t(con) + 1) {
         for (auto z : coo_range(size)) put(z, prng.bernoulli(.5) ? 1 : -1);
         if (con == 6) {
             size_t m = 2 * n / 3;
@@ -20,7 +20,7 @@ public:
                 for (size_t j = 0; j < n; ++j)
                     if ((j > m) || (i < j / 2) || (i > m + j / 2)) put({i, j}, 0);
         }
-        for (int c = -con; c <= con; ++c) p[size_t(c + con)] = 1 / (1 + exp(-beta * c));
+        for (size_t c = 0; c <= 2 * con; ++c) p[c] = 1 / (1 + exp(-beta * (int(c) - int(con))));
     };
 
     void run() {
@@ -28,8 +28,8 @@ public:
             auto z = prng.uniform_coo(size);
             if (at(z) == 0) continue;
             int c = 0;
-            for (int d = 0; d < con; ++d) c += atp(coo(z) + dz[d]);
-            put(z, prng.bernoulli(p[size_t(c + con)]) ? 1 : -1);
+            for (unsigned d = 0; d < con; ++d) c += atp(coo(z) + dz[gsl::index(d)]);
+            put(z, prng.bernoulli(p[size_t(c + int64_t(con))]) ? 1 : -1);
         }
     }
 
@@ -65,12 +65,12 @@ public:
             list.pop_back();
             if (atp(z) == 3) continue;
             putp(z, 3);
-            for (int d = 0; d < con; ++d)
-                if (atp(z + dz[d]) == s) list.push_back(z + dz[d]);
+            for (unsigned d = 0; d < con; ++d)
+                if (atp(z + dz[gsl::index(d)]) == s) list.push_back(z + dz[gsl::index(d)]);
         }
     }
 
-    int            con;
+    size_t         con;
     vector<double> p;
 };
 

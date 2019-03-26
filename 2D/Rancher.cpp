@@ -57,7 +57,7 @@ public:
 
     std::list<point>::iterator insere_maillon(const point &p) {
         std::list<point>::iterator maillonmin2, maillonmax2, i;
-        double                     minpente2 = +INFINITY, maxpente2 = -INFINITY;
+        double                     minpente2 = std::numeric_limits<double>::infinity(), maxpente2 = -minpente2;
 
         for (i = env.begin(); i != env.end(); ++i) {
             double pente = angle(p, *(env.begin()), *i);
@@ -158,7 +158,7 @@ public:
 
         if (plot) {
             std::vector<cpx> path;
-            for (unsigned i = 2; i < traj.size(); ++i) path.push_back(traj[i].z);
+            for (size_t i = 2; i < traj.size(); ++i) path.push_back(traj[i].z);
             F.add(std::make_unique<vb::Path>(path));
             F.show();
             F.pause();
@@ -166,8 +166,8 @@ public:
         }
 
         if (renew) {
-            int n = 0, sx = 0, sxx = 0;
-            for (unsigned i = 0; i < renewals.size(); ++i) {
+            size_t n = 0, sx = 0, sxx = 0;
+            for (size_t i = 0; i < renewals.size(); ++i) {
                 n += renewals[i];
                 sx += i * renewals[i];
                 sxx += i * i * renewals[i];

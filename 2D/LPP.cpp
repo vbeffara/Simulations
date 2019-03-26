@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
                 field[xx]--;
                 img.put({xx, y}, WHITE);
             }
-        for (unsigned x = 0; x < n; ++x)
+        for (size_t x = 0; x < n; ++x)
             if (field[x] != 0) img.put({x, y}, WHITE);
 
         if (y % 100 == 0) img.update();

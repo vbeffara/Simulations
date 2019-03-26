@@ -31,8 +31,8 @@ public:
     }
 
     void swipe() {
-        for (unsigned k = 0; k < size(); k += 2) step(k);
-        for (unsigned k = 1; k < size(); k += 2) step(k);
+        for (size_t k = 0; k < size(); k += 2) step(k);
+        for (size_t k = 1; k < size(); k += 2) step(k);
     }
 };
 

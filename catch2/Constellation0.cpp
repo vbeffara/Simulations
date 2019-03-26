@@ -24,7 +24,7 @@ TEST_CASE("vb::Constellation0") {
     INFO("Computing polynomial Q");
     Polynomial<complex_t> Q{1};
     for (const auto &zd : Cq.f) Q.add_root(zd.z, zd.d);
-    for (unsigned i = 0; i < Q.size(); ++i) {
+    for (size_t i = 0; i < Q.size(); ++i) {
         auto &x  = Q[i];
         auto  xx = complex_t(round(real(x)), round(imag(x)));
         if (abs(x - xx) < 1e-90) x = xx;

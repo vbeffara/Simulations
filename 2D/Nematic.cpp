@@ -21,7 +21,7 @@ public:
         ob = b;
         std::vector<double> Z(P.size());
         double              zz = exp(2 * ob / double(ok));
-        for (unsigned i = 0; i < ok; ++i) Z[i] = pow(zz, -i);
+        for (size_t i = 0; i < ok; ++i) Z[i] = pow(zz, -i);
         for (auto i = ok; i < Z.size(); ++i) Z[i] = Z[i - 1] / zz + Z[i - ok];
         for (auto i = ok; i < P.size(); ++i) P[i] = Z[i - ok] / Z[i];
         dd = ok * Z[Z.size() - ok] / (Z[Z.size() - 1] / zz + ok * Z[Z.size() - ok]);

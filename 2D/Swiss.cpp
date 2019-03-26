@@ -2,15 +2,15 @@
 #include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
-#define EAST 0
-#define NORTH 1
-#define WEST 2
-#define SOUTH 3
+constexpr unsigned EAST  = 0;
+constexpr unsigned NORTH = 1;
+constexpr unsigned WEST  = 2;
+constexpr unsigned SOUTH = 3;
 
-#define C_EAST vb::Color(0, 255, 0)
-#define C_NORTH vb::Color(255, 0, 0)
-#define C_WEST vb::Color(0, 0, 255)
-#define C_SOUTH vb::Color(255, 255, 0)
+constexpr vb::Color C_EAST{0, 255, 0};
+constexpr vb::Color C_NORTH{255, 0, 0};
+constexpr vb::Color C_WEST{0, 0, 255};
+constexpr vb::Color C_SOUTH{255, 255, 0};
 
 namespace vb {
     template <> Color to_Color(uint8_t t) {

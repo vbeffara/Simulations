@@ -28,7 +28,7 @@ public:
     }
 
     [[nodiscard]] Color compute(cpx z) const {
-        for (unsigned k = 0; k < size(); ++k) {
+        for (size_t k = 0; k < size(); ++k) {
             if (z.imag() <= 0) return (z.real() < at(k)) ? LEFTSIDE : RIGHTSIDE;
             if (z.real() < Min[k]) return LEFTSIDE;
             if (z.real() > Max[k]) return RIGHTSIDE;
@@ -37,7 +37,7 @@ public:
         return (z.real() < back()) ? LEFTSIDE : RIGHTSIDE;
     }
 
-    double dt = 1;
+    double              dt = 1;
     std::vector<double> Min, Max;
 };
 
