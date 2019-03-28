@@ -60,8 +60,8 @@ vector<bool> init_ok_connect4() {
 vector<bool> init_ok_connect6() {
     // Connectivity-conditioning on the triangular lattice.
 
-    vector<bool> ok(256, false);
-    unsigned     tmp[6];
+    vector<bool>     ok(256, false);
+    vector<unsigned> tmp(6, 0);
 
     for (unsigned i = 0; i < 256; i++) {
         tmp[0] = (i & 1U) / 1;

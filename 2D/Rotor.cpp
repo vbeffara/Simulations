@@ -4,10 +4,9 @@
 
 using namespace vb;
 
-const Color            CC[] = {RED, GREEN, BLUE, YELLOW};
-gsl::span<const Color> C{CC};
-
 int main(int argc, char **argv) {
+    const std::vector<Color> C{RED, GREEN, BLUE, YELLOW};
+
     Hub    H("Rotor-Router Model", argc, argv, "n=500");
     size_t n = H['n'];
 
@@ -22,7 +21,7 @@ int main(int argc, char **argv) {
             z = {n / 2, n / 2};
         } else
             for (int i = 0; i < 4; ++i)
-                if (c == C[i]) {
+                if (c == C[size_t(i)]) {
                     img.put(z, C[(i + 1) % 4]);
                     z = ucoo(coo(z) + dz[i]);
                 }

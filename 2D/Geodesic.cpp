@@ -88,7 +88,7 @@ public:
         for (auto [i, j] : coo_range(size)) {
             if ((i == 0) && (j == 0)) continue;
             auto   ij   = gsl::index(i + size.x * j);
-            double norm = sqrt(size.x * size.y * (sinarrayi[i] * sinarrayi[i] + sinarrayj[j] * sinarrayj[j]));
+            double norm = sqrt(double(size.x * size.y) * (sinarrayi[i] * sinarrayi[i] + sinarrayj[j] * sinarrayj[j]));
             auto   fij  = cpx(prng.gaussian(), prng.gaussian()) * sqrt(M_PI / 2) / norm;
             in_[ij][0]  = real(fij);
             in_[ij][1]  = imag(fij);

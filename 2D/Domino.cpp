@@ -12,10 +12,9 @@ public:
     uint8_t d, type;
     explicit Half(uint8_t _d = 0, uint8_t _t = 0) : d(_d), type(_t) {}
     explicit operator Color() {
-        static const Color     C[] = {BLACK, BLACK, BLACK, BLACK, RED,    GREEN, YELLOW, BLUE, YELLOW, BLUE,
-                                  RED,   GREEN, RED,   GREEN, YELLOW, BLUE,  YELLOW, BLUE, RED,    GREEN};
-        static const gsl::span CC{C};
-        return CC[d + 4 * type];
+        static const vector<Color> C{BLACK, BLACK, BLACK, BLACK, RED,    GREEN, YELLOW, BLUE, YELLOW, BLUE,
+                                     RED,   GREEN, RED,   GREEN, YELLOW, BLUE,  YELLOW, BLUE, RED,    GREEN};
+        return C[d + 4 * type];
     }
 };
 
@@ -123,7 +122,7 @@ int main(int argc, char **argv) {
     C.show();
     T.show();
     T.pause();
-    auto f = int(T.w() * T.h() * double(H['f']));
+    auto f = int64_t(double(T.w() * T.h()) * double(H['f']));
     for (int64_t t = 1;; ++t) {
         T.flip(coo(prng.uniform_coo(T.size)));
         if (t == f) T.freeze({T.w() / 2, T.h() / 2});

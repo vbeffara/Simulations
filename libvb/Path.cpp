@@ -24,10 +24,10 @@ namespace vb {
     void OldPath::output(const std::string &s) const { output_pdf(s); }
 
     void OldPath::output_pdf(const std::string &s) const {
-        static const cpx dzc[4] = {cpx(1, 0), cpx(0, 1), cpx(-1, 0), cpx(0, -1)};
-        int              l      = 0;
-        cpx              z(0);
-        std::vector<cpx> p(1);
+        static const std::vector<cpx> dzc{cpx(1, 0), cpx(0, 1), cpx(-1, 0), cpx(0, -1)};
+        int                           l = 0;
+        cpx                           z(0);
+        std::vector<cpx>              p(1);
         for (auto i : *this) {
             l = (relative ? l + i : i) % 4;
             z += gsl::at(dzc, l);

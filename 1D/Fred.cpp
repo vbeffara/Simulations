@@ -51,7 +51,7 @@ int main(int argc, char **argv) {
             PB.set(i);
             M.swipe();
             double v = 0;
-            for (size_t k = 0; k < nn; ++k) v += (k - nn2) * (k - nn2) * M[k].v * M[k].v;
+            for (size_t k = 0; k < nn; ++k) v += double((k - nn2) * (k - nn2)) * M[k].v * M[k].v;
             var[t] += v;
         }
         for (size_t k = 0; k < nn; ++k) profile[k] += M[k].v * M[k].v;

@@ -5,7 +5,7 @@
 namespace vb {
     template <typename T> struct coo_2d {
         T                                        x, y;
-        template <typename U> constexpr explicit operator coo_2d<U>() const { return {U(x), U(y)}; };
+        template <typename U> constexpr explicit operator coo_2d<U>() const { return {U(x), U(y)}; }
     };
 
     template <typename T> constexpr bool operator==(const coo_2d<T> &z1, const coo_2d<T> &z2) { return (z1.x == z2.x) && (z1.y == z2.y); }

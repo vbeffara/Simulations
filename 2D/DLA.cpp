@@ -82,7 +82,7 @@ public:
         return false;
     }
 
-        [[nodiscard]] coo jump(long d) const {
+    [[nodiscard]] coo jump(long d) const {
         if (d <= 1) return dz[prng.uniform_int(4)];
         if (d < int(prec.size())) {
             coo w{d, prng.discrete(prec[size_t(d)])};
@@ -102,7 +102,7 @@ public:
         put({0, 0});
         while (r < n / 2 - 1) {
             double    t = prng.uniform_real(0, 2 * M_PI);
-            coo       z{int((2 * r + 20) * cos(t)), int((2 * r + 20) * sin(t))};
+            coo       z{int(double(2 * r + 20) * cos(t)), int(double(2 * r + 20) * sin(t))};
             QuadIndex qi{{0, 0}, sup(z)};
             while (!neighbor(z)) {
                 qi.d = sup(z - qi.z);

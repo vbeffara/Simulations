@@ -25,10 +25,9 @@ namespace vb {
     template <> Color to_Color(uint8_t t) {
         if (t == 0) return BLACK;
         if (t == STATE_VISITED) return Grey(128);
-        static const Color     colors[] = {MIRROR_NW,         MIRROR_NE,         MIRROR_FLIP_NW,         MIRROR_FLIP_NE,
-                                       MIRROR_NW_VISITED, MIRROR_NE_VISITED, MIRROR_FLIP_NW_VISITED, MIRROR_FLIP_NE_VISITED};
-        static const gsl::span ccolors{colors};
-        return ccolors[t % 8];
+        static const vector<Color> colors{MIRROR_NW,         MIRROR_NE,         MIRROR_FLIP_NW,         MIRROR_FLIP_NE,
+                                          MIRROR_NW_VISITED, MIRROR_NE_VISITED, MIRROR_FLIP_NW_VISITED, MIRROR_FLIP_NE_VISITED};
+        return colors[t % 8];
     }
 } // namespace vb
 
@@ -56,12 +55,11 @@ void Mirrors::main() {
         auto z = coo(ucoo{w() / 2, h() / 2});
         for (size_t t = 0, d = 0; (t < 8 * w() * h()) && fits(z); ++t) {
             if ((at(ucoo(z)) & STATE_PRESENT) != 0) {
-                static const unsigned  flip_ne[] = {1, 0, 3, 2}, flip_nw[] = {3, 2, 1, 0};
-                static const gsl::span fne{flip_ne}, fnw{flip_nw};
+                static const vector<unsigned> flip_ne{1, 0, 3, 2}, flip_nw{3, 2, 1, 0};
                 if ((at(ucoo(z)) & STATE_NE) != 0)
-                    d = fne[gsl::index(d)];
+                    d = flip_ne[d];
                 else
-                    d = fnw[gsl::index(d)];
+                    d = flip_nw[d];
                 if ((at(ucoo(z)) & STATE_FLIP) != 0) at(ucoo(z)) ^= STATE_NE;
             }
             at(ucoo(z)) |= STATE_VISITED;

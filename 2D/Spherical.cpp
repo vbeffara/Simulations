@@ -14,8 +14,11 @@ double legendre_p(size_t l, size_t m, double x) {
     double p0 = pow(1 - x * x, m / 2.0);
     if ((m % 2) != 0) { p0 *= -1; }
     if (m == l) { return p0; }
-    double p1 = x * (2 * m + 1) * p0;
-    for (auto n = m + 1; n < l; ++n) { std::tie(p0, p1) = std::make_tuple(p1, ((2 * n + 1) * x * p1 - (n + m) * p0) / (n + 1 - m)); }
+    double p1 = x * double(2 * m + 1) * p0;
+    for (auto n = m + 1; n < l; ++n) {
+        // TODO: swap would be clearer
+        std::tie(p0, p1) = std::make_tuple(p1, (double(2 * n + 1) * x * p1 - double(n + m) * p0) / double(n + 1 - m));
+    }
     return p1;
 }
 
@@ -32,7 +35,7 @@ public:
         detail = 2.0 / n;
         for (size_t m = 0; m <= n; ++m) {
             vb::cpx am{vb::prng.gaussian(), vb::prng.gaussian()};
-            am *= sqrt((2 * n + 1) / (4 * M_PI));
+            am *= sqrt(double(2 * n + 1) / (4 * M_PI));
             for (size_t i = 1; i <= m; ++i) { am *= double(2 * i - 1) / sqrt(double(2 * i - 1 + n - m) * double(2 * i + n - m)); }
             a.push_back(am);
         }

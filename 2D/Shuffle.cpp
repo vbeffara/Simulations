@@ -138,9 +138,9 @@ struct Tiling {
     }
 
     void output_pdf(const std::string &s, const string &name, size_t off = 0) const {
-        Figure F(s);
-        int    ddx[4] = {0, 2, 0, 2}, ddy[4] = {0, -2, -4, -6};
-        int    offx = gsl::at(ddx, off % 4), offy = gsl::at(ddy, off % 4);
+        Figure                   F(s);
+        static const vector<int> ddx{0, 2, 0, 2}, ddy{0, -2, -4, -6};
+        int                      offx = ddx[off % 4], offy = ddy[off % 4];
         for (auto z : coo_range(state.size))
             if (state[z] != 0) {
                 coo  edge{1, ((z.x + z.y) % 2) != 0 ? 1 : -1};

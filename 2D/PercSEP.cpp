@@ -7,9 +7,8 @@ using namespace std;
 
 namespace vb {
     template <> Color to_Color(int t) {
-        static const Color     C[] = {BLACK, Grey(90), GREEN, Color(128, 0, 0)};
-        static const gsl::span CC{C};
-        return CC[t];
+        static const vector<Color> C{BLACK, Grey(90), GREEN, Color(128, 0, 0)};
+        return C[size_t(t)];
     }
 } // namespace vb
 

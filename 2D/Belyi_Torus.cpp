@@ -17,9 +17,6 @@
 using namespace vb;
 using namespace std;
 
-size_t            ntri_[] = {0, 1, 5, 46, 669};
-gsl::span<size_t> ntri{ntri_};
-
 int main(int argc, char **argv) {
     Hub    H("Toroidal enumeration", argc, argv, "s=1,m=228,r=1,o,d=0,D=0,g=1,f,n=2,q");
     size_t s = H['s'], g = H['g'], D = H['D'], d = H['d'], a = 6 * (s + 2 * g - 2);
@@ -31,9 +28,10 @@ int main(int argc, char **argv) {
     for (size_t i = 0; i < a / 3; ++i) phi_c.emplace_back(std::vector<size_t>{3 * i, 3 * i + 1, 3 * i + 2});
     Permutation phi(phi_c);
 
-    vector<Hypermap> v;
-    size_t           target = 0;
-    if ((d == 0) && (g == 1) && (!H['f']) && (int(s) < ntri.size())) target = ntri[gsl::index(s)];
+    vector<Hypermap>     v;
+    size_t               target = 0;
+    const vector<size_t> ntri{0, 1, 5, 46, 669};
+    if ((d == 0) && (g == 1) && (!H['f']) && (s < ntri.size())) target = ntri[s];
 
     Coloring img(H.title, cpx(-1, -1), cpx(1, 1), 500, [](cpx /*unused*/) { return BLACK; });
 

@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
             }
         }
 
-        Z[n + n1 - n2] += exp(n * ff - 3 * (n0 * n1 + n1 * n2 + n2 * n0));
+        Z[n + n1 - n2] += exp(n * ff - 3 * double(n0 * n1 + n1 * n2 + n2 * n0));
 
         ++config[0];
         for (size_t i = 0; (config[i] == 3) && (i < n - 1); ++i) {

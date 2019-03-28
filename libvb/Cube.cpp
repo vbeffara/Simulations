@@ -42,10 +42,10 @@ namespace vb {
                 for (int64_t z = 0; z < size.z; ++z)
                     if (at({x, y, z}) == 255)
                         squares1 << Box({x - .5 * size.x, y - .5 * size.y, z - .5 * size.z},
-                                        {x + 1 - .5 * size.x, y + 1 - .5 * size.y, z + 1 - .5 * size.z});
+                                        {double(x) + 1 - .5 * size.x, double(y) + 1 - .5 * size.y, double(z) + 1 - .5 * size.z});
                     else if (at({x, y, z}) == 255 / 2)
                         squares2 << Box({x - .5 * size.x, y - .5 * size.y, z - .5 * size.z},
-                                        {x + 1 - .5 * size.x, y + 1 - .5 * size.y, z + 1 - .5 * size.z});
+                                        {double(x) + 1 - .5 * size.x, double(y) + 1 - .5 * size.y, double(z) + 1 - .5 * size.z});
 
         squares1 << Texture("pigment { color rgb <.3,.5,.8> } normal { bumps .1 scale .1 } finish { "
                             "reflection {0} ambient 0 diffuse .5 brilliance 1.5 roughness .1 }");

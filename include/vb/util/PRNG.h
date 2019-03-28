@@ -1,5 +1,6 @@
 #pragma once
 #define BOOST_DISABLE_ASSERTS 1
+#define BOOST_ALLOW_DEPRECATED_HEADERS 1
 #include <boost/random.hpp>
 #include <random>
 #include <vb/util/coo.h>
@@ -11,7 +12,7 @@ namespace vb {
         explicit PRNG(uint64_t s = 0) noexcept : boost::mt19937_64(s ? s : std::random_device()()) {}
 
         bool                    bernoulli(double p = .5) { return (boost::bernoulli_distribution<>(p))(*this); }
-        template <typename T> T uniform_int(T mmax) { return (boost::uniform_int<T>(0, mmax - 1))(*this); }
+        template <typename T> T uniform_int(T mmax) { return (boost::uniform_int<T>(0, T(mmax - 1)))(*this); }
         int                     geometric(double p = .5) { return (boost::geometric_distribution<>(p))(*this); }
         int                     poisson(double lambda = 1) { return (boost::poisson_distribution<>(lambda))(*this); }
         double                  uniform_real(double min = 0, double max = 1) { return (boost::uniform_real<>(min, max))(*this); }
