@@ -12,7 +12,7 @@ set (CMAKE_EXPORT_COMPILE_COMMANDS 1)
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG(-fcoroutines-ts COROUTINES_TS)
 if (${COROUTINES_TS})
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcoroutines-ts")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcoroutines-ts -isystem /usr/local/opt/llvm/include/c++/v1")
 endif ()
 
 if (${COV})
@@ -28,6 +28,7 @@ else ()
 endif ()
 
 link_directories ("/usr/local/lib" "/opt/X11/lib")
+include_directories ("${PROJECT_SOURCE_DIR}/include")
 
 file (GLOB vb_sources ${PROJECT_SOURCE_DIR}/libvb/*.cpp)
 add_library (vb SHARED ${vb_sources})
@@ -35,9 +36,6 @@ target_link_libraries (vb ${CONAN_LIBS})
 
 execute_process(COMMAND "git" describe --always --abbrev=40 WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" OUTPUT_VARIABLE GIT_SHA1 OUTPUT_STRIP_TRAILING_WHITESPACE)
 set_source_files_properties(libvb/version.cpp PROPERTIES COMPILE_FLAGS -DGIT_SHA1='"${GIT_SHA1}"')
-
-include_directories ("${PROJECT_SOURCE_DIR}/include")
-include_directories (SYSTEM "/usr/local/opt/llvm/include/c++/v1")
 
 set (DIRS tests 1D 2D 3D)
 if (${PLAYGROUND})
