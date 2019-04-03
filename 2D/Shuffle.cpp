@@ -1,4 +1,4 @@
-// Initial code in Python by Sunil Csize.yita, ported to C++ by VB.
+// Initial code in Python by Sunil Chhita, ported to C++ by VB.
 #include <fstream>
 #include <gsl/gsl>
 #include <vb/Figure.h>
