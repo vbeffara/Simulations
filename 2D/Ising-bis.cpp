@@ -57,9 +57,9 @@ public:
     }
 
     void explore() {
-        auto        z0 = coo(ucoo{w() / 2, (con == 6) ? h() / 3 : h() / 2});
-        vector<coo> list{z0};
-        auto        s = at(ucoo(list.back()));
+        auto   z0 = coo(ucoo{w() / 2, (con == 6) ? h() / 3 : h() / 2});
+        vector list{z0};
+        auto   s = at(ucoo(list.back()));
         while (!list.empty()) {
             auto z = list.back();
             list.pop_back();

@@ -27,7 +27,7 @@ class Stuck : public Bitmap<Stat> {
 public:
     explicit Stuck(const Hub &H) : Bitmap<Stat>(H.title, {2 * size_t(H['n']), 2 * size_t(H['n'])}), alpha(H['a']), beta(H['b']), H(H) {
         for (size_t i = 0; i < w() / 2; ++i)
-            for (size_t j = 0; j < h() / 2; ++j) at(ucoo{2 * i, 2 * j}) = Stat{-1};
+            for (size_t j = 0; j < h() / 2; ++j) at({2 * i, 2 * j}) = Stat{-1};
         z = coo(ucoo{w() / 2, h() / 2});
         C.manage(alpha, 0.142, 0.35, "alpha");
         C.lambda<int>([this]() { return nsup(); }, "Support");

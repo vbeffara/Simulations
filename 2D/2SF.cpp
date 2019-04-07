@@ -39,11 +39,11 @@ public:
         if (H['v']) pause();
     }
 
-    void path(coo z, Type t = EMPH) {
-        while (fits(z) && (at(ucoo(z)).t != t)) {
-            int d               = at(ucoo(z)).d;
-            at(ucoo(z)).t       = t;
-            at(ucoo(z + dz[d])) = Point{t, d};
+    void path(ucoo z, Type t = EMPH) {
+        while (fits(z) && (at(z).t != t)) {
+            int d         = at(z).d;
+            at(z).t       = t;
+            at(z + dz[d]) = Point{t, d};
             z += dz[d] * 2;
         }
     }
@@ -61,7 +61,7 @@ public:
             if (killed && (d == 2)) break;
             if (d == 2) z = z0;
         }
-        path(z0, SITE);
+        path(ucoo(z0), SITE);
     }
 
     void dual() {
@@ -114,7 +114,7 @@ public:
             }
         }
         stage(H);
-        path(coo(start), SITE);
+        path(start, SITE);
     }
 
     void go(const Hub &H) {
@@ -130,7 +130,7 @@ public:
         }
         stage(H);
         put(root, Point{EMPH});
-        path(coo(start));
+        path(start);
         stage(H);
         dual();
         stage(H);

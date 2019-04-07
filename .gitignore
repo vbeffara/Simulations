@@ -22,3 +22,5 @@ compile_commands.json
 *.log
 *.db
 .vscode/ipch
+.vscode/browse.db-shm
+.vscode/browse.db-wal

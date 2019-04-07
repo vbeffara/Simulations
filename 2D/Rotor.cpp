@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
             for (int i = 0; i < 4; ++i)
                 if (c == C[size_t(i)]) {
                     img.put(z, C[(i + 1) % 4]);
-                    z = ucoo(coo(z) + dz[i]);
+                    z += dz[i];
                 }
     }
 

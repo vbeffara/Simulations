@@ -60,10 +60,10 @@ namespace vb {
             auto ij = xy.back();
             xy.pop_back();
             for (int d = 0; d < adj; ++d) {
-                auto nij = coo(ij) + dz[d];
-                if (fits(nij) && (at(ucoo(nij)) == in)) {
-                    xy.push_back(ucoo(nij));
-                    at(ucoo(nij)) = c;
+                auto nij = ij + dz[d];
+                if (fits(nij) && (at(nij) == in)) {
+                    xy.push_back(nij);
+                    at(nij) = c;
                 }
             }
         }

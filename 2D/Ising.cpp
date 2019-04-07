@@ -52,7 +52,7 @@ public:
                     if ((s <= 0) || (prng.bernoulli(p[size_t(s)]))) { swap(at(z), atp(zz)); }
                 } else {
                     int s = nnb(coo(z));
-                    if ((s <= 0) || (prng.bernoulli(p[size_t(s)]))) put(z, Grey(uint8_t(255 - int(at(ucoo(z))))));
+                    if ((s <= 0) || (prng.bernoulli(p[size_t(s)]))) put(z, Grey(uint8_t(255 - int(at(z)))));
                 }
             }
     }

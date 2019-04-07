@@ -22,9 +22,9 @@ public:
 
     void output(const std::string &s) override {
         OldPath P(0);
-        auto    z = coo(ucoo{w() / 2, h() / 2});
+        auto    z = ucoo{w() / 2, h() / 2};
         while (fits(z)) {
-            auto d = at(ucoo(z));
+            auto d = at(z);
             P.push_back(d);
             z += dz[d];
         }

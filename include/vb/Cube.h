@@ -18,12 +18,12 @@ namespace vb {
     public:
         Cube(const std::string &s, coo3 sz);
 
-        unsigned long index(coo3 c) { return (unsigned long)(c.x + size.x * c.y + size.x * size.y * c.z); }
-        coo3          wrap(coo3 c) { return {pmod(c.x, size.x), pmod(c.y, size.y), pmod(c.z, size.z)}; }
+        size_t index(ucoo3 c) { return c.x + size.x * c.y + size.x * size.y * c.z; }
+        ucoo3  wrap(coo3 c) { return {pmod(c.x, size.x), pmod(c.y, size.y), pmod(c.z, size.z)}; }
 
-        uint8_t &at(const coo3 &c) { return data[index(c)]; }
+        uint8_t &at(const ucoo3 &c) { return data[index(c)]; }
         uint8_t &atp(const coo3 &c) { return at(wrap(c)); }
-        void     put(const coo3 &c, uint8_t t);
+        void     put(const ucoo3 &c, uint8_t t);
         void     putp(const coo3 &c, uint8_t t) { put(wrap(c), t); }
 
         void output_pov(const std::string &s);
@@ -32,15 +32,15 @@ namespace vb {
         iterator begin();
         iterator end();
 
-        coo3                 size;
+        ucoo3                size;
         std::vector<uint8_t> data;
         bool                 mirrors = true;
     };
 
-    struct Cube_iterator : public coo3 {
+    struct Cube_iterator : public ucoo3 {
         Cube *c;
-        Cube_iterator(Cube *cc, coo3 xyz) : coo3(xyz), c(cc) {}
-        bool operator!=(const Cube_iterator &o) { return (c != o.c) || coo3::operator!=(o); }
+        Cube_iterator(Cube *cc, ucoo3 xyz) : ucoo3(xyz), c(cc) {}
+        bool operator!=(const Cube_iterator &o) { return (c != o.c) || ucoo3::operator!=(o); }
         void operator++() {
             x++;
             if (x == c->size.x) {

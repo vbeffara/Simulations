@@ -34,22 +34,22 @@ public:
         }
     }
 
-    void lerw(coo z0) {
-        coo z = z0;
-        while (at(ucoo(z)).t != SITE) {
-            int d         = prng.uniform_int(4);
-            at(ucoo(z)).d = d;
+    void lerw(ucoo z0) {
+        auto z = z0;
+        while (at(z).t != SITE) {
+            int d   = prng.uniform_int(4);
+            at(z).d = d;
             if (fits(z + dz[d])) z += dz[d] * 2;
             step();
         }
-        path(ucoo(z0), SITE);
+        path(z0, SITE);
     }
 
     void go(const Hub &H) {
         show();
         put({0, 2 * (n / 2)}, Point{SITE});
         for (size_t i = n + 1; i-- > 0;)
-            for (size_t j = 0; j <= n; ++j) lerw({2 * int(i), 2 * int(j)});
+            for (size_t j = 0; j <= n; ++j) lerw({2 * i, 2 * j});
         if (H['p']) {
             put({0, 2 * (n / 2)}, Point{EMPH});
             path({2 * n, 2 * (n / 4)}, EMPH);

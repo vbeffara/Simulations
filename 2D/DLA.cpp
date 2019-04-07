@@ -38,7 +38,7 @@ public:
                             if (d == r) --d;
 
                             if (d <= 1)
-                                for (gsl::index k = 0; k < 4; ++k) MM.at(ucoo(coo(z) + dz[k])) += t / 4;
+                                for (gsl::index k = 0; k < 4; ++k) MM.at(z + dz[k]) += t / 4;
                             else {
                                 const auto &ps = prec[d];
                                 for (size_t k = 0; k < size_t(d); ++k) {

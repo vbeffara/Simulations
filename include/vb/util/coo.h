@@ -11,11 +11,15 @@ namespace vb {
     template <typename T> constexpr bool operator==(const coo_2d<T> &z1, const coo_2d<T> &z2) { return (z1.x == z2.x) && (z1.y == z2.y); }
     template <typename T> constexpr bool operator!=(const coo_2d<T> &z1, const coo_2d<T> &z2) { return (z1.x != z2.x) || (z1.y != z2.y); }
 
-    template <typename T, typename U> constexpr coo_2d<T>  operator+(const coo_2d<T> &z1, const coo_2d<U> &z2) { return {z1.x + T(z2.x), z1.y + T(z2.y)}; }
-    template <typename T, typename U> constexpr coo_2d<T>  operator-(const coo_2d<T> &z1, const coo_2d<U> &z2) { return {z1.x - T(z2.x), z1.y - T(z2.y)}; }
+    template <typename T, typename U> constexpr coo_2d<T> operator+(const coo_2d<T> &z1, const coo_2d<U> &z2) {
+        return {z1.x + T(z2.x), z1.y + T(z2.y)};
+    }
+    template <typename T, typename U> constexpr coo_2d<T> operator-(const coo_2d<T> &z1, const coo_2d<U> &z2) {
+        return {z1.x - T(z2.x), z1.y - T(z2.y)};
+    }
     template <typename T, typename U> constexpr coo_2d<T> &operator+=(coo_2d<T> &z, const coo_2d<U> &o) { return z = z + o; }
     template <typename T, typename U> constexpr coo_2d<T> &operator-=(coo_2d<T> &z, const coo_2d<U> &o) { return z = z - o; }
-    template <typename T> constexpr coo_2d<T>  operator-(coo_2d<T> &z) { return {-z.x, -z.y}; }
+    template <typename T> constexpr coo_2d<T>              operator-(coo_2d<T> &z) { return {-z.x, -z.y}; }
 
     template <typename T, typename U> constexpr coo_2d<T> operator*(U d, const coo_2d<T> &z) { return {z.x * T(d), z.y * T(d)}; }
     template <typename T, typename U> constexpr coo_2d<T> operator*(const coo_2d<T> &z, U d) { return {z.x * T(d), z.y * T(d)}; }
@@ -30,14 +34,17 @@ namespace vb {
     using coo  = coo_2d<int64_t>;
     using ucoo = coo_2d<size_t>;
 
-    class coo3 {
-    public:
-        int64_t x, y, z;
+    template <typename T> struct coo_3d {
+        T                                        x, y, z;
+        template <typename U> constexpr explicit operator coo_3d<U>() const { return {U(x), U(y), U(z)}; }
 
-        bool operator==(const coo3 &c) const { return (x == c.x) && (y == c.y) && (z == c.z); }
-        bool operator!=(const coo3 &c) const { return (x != c.x) || (y != c.y) || (z != c.z); }
-        coo3 operator+(const coo3 &c) const { return {x + c.x, y + c.y, z + c.z}; }
+        bool                            operator==(const coo_3d<T> &c) const { return (x == c.x) && (y == c.y) && (z == c.z); }
+        bool                            operator!=(const coo_3d<T> &c) const { return (x != c.x) || (y != c.y) || (z != c.z); }
+        template <typename U> coo_3d<T> operator+(const coo_3d<U> &c) const { return {x + T(c.x), y + T(c.y), z + T(c.z)}; }
     };
+
+    using coo3  = coo_3d<int64_t>;
+    using ucoo3 = coo_3d<size_t>;
 
     constexpr std::array<coo, 8>  dz_  = {{{1, 0}, {0, 1}, {-1, 0}, {0, -1}, {1, 1}, {-1, -1}, {-1, 1}, {1, -1}}};
     constexpr std::array<coo3, 6> dz3_ = {{{1, 0, 0}, {-1, 0, 0}, {0, 1, 0}, {0, -1, 0}, {0, 0, 1}, {0, 0, -1}}};

@@ -4,28 +4,28 @@
 
 namespace vb {
     Cube::Cube(const std::string &s, coo3 sz)
-        // TODO: ucoo3
+        // TODO: coo_range
         : Bitmap<Adder>(s, {size_t(sz.x + sz.z), size_t(sz.y + sz.z)}), size(sz), data(size_t(size.x * size.y * size.z), 0) {
-        for (int64_t x = 0; x < size.z; ++x)
-            for (int64_t y = 0; y < size.z; ++y)
-                Bitmap<Adder>::at(ucoo(coo{size.x + x, size.y + y})) = Adder(((x / 10 + y / 10) % 2) != 0 ? 200 : 150);
-        for (int64_t x = 0; x < size.x; ++x)
-            for (int64_t y = 0; y < size.y; ++y) Bitmap<Adder>::at(ucoo(coo{x, y})).dim(size_t(size.z));
-        for (int64_t x = 0; x < size.x; ++x)
-            for (int64_t z = 0; z < size.z; ++z) Bitmap<Adder>::at(ucoo(coo{x, z + size.y})).dim(size_t(size.y));
-        for (int64_t y = 0; y < size.y; ++y)
-            for (int64_t z = 0; z < size.z; ++z) Bitmap<Adder>::at(ucoo(coo{z + size.x, y})).dim(size_t(size.x));
+        for (size_t x = 0; x < size.z; ++x)
+            for (size_t y = 0; y < size.z; ++y)
+                Bitmap<Adder>::at({size.x + x, size.y + y}) = Adder(((x / 10 + y / 10) % 2) != 0 ? 200 : 150);
+        for (size_t x = 0; x < size.x; ++x)
+            for (size_t y = 0; y < size.y; ++y) Bitmap<Adder>::at({x, y}).dim(size_t(size.z));
+        for (size_t x = 0; x < size.x; ++x)
+            for (size_t z = 0; z < size.z; ++z) Bitmap<Adder>::at({x, z + size.y}).dim(size_t(size.y));
+        for (size_t y = 0; y < size.y; ++y)
+            for (size_t z = 0; z < size.z; ++z) Bitmap<Adder>::at({z + size.x, y}).dim(size_t(size.x));
     }
 
-    void Cube::put(const coo3 &c, uint8_t t) {
+    void Cube::put(const ucoo3 &c, uint8_t t) {
         uint8_t d = data[index(c)];
         if (t != d) {
-            Bitmap<Adder>::at(ucoo(coo{c.x, c.y})) -= d;
-            Bitmap<Adder>::at(ucoo(coo{c.x, c.z + size.y})) -= d;
-            Bitmap<Adder>::at(ucoo(coo{c.z + size.x, c.y})) -= d;
-            Bitmap<Adder>::at(ucoo(coo{c.x, c.y})) += t;
-            Bitmap<Adder>::at(ucoo(coo{c.x, c.z + size.y})) += t;
-            Bitmap<Adder>::at(ucoo(coo{c.z + size.x, c.y})) += t;
+            Bitmap<Adder>::at({c.x, c.y}) -= d;
+            Bitmap<Adder>::at({c.x, c.z + size.y}) -= d;
+            Bitmap<Adder>::at({c.z + size.x, c.y}) -= d;
+            Bitmap<Adder>::at({c.x, c.y}) += t;
+            Bitmap<Adder>::at({c.x, c.z + size.y}) += t;
+            Bitmap<Adder>::at({c.z + size.x, c.y}) += t;
             data[index(c)] = t;
         }
         step();
@@ -37,9 +37,9 @@ namespace vb {
     void Cube::output_pov(const std::string &s) {
         Pov_Union squares1, squares2, cube, corner, ground;
 
-        for (int64_t x = 0; x < size.x; ++x)
-            for (int64_t y = 0; y < size.y; ++y)
-                for (int64_t z = 0; z < size.z; ++z)
+        for (size_t x = 0; x < size.x; ++x)
+            for (size_t y = 0; y < size.y; ++y)
+                for (size_t z = 0; z < size.z; ++z)
                     if (at({x, y, z}) == 255)
                         squares1 << Box({x - .5 * size.x, y - .5 * size.y, z - .5 * size.z},
                                         {double(x) + 1 - .5 * size.x, double(y) + 1 - .5 * size.y, double(z) + 1 - .5 * size.z});

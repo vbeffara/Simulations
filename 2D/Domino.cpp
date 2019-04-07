@@ -21,13 +21,13 @@ public:
 class Tiling : public Bitmap<Half> {
 public:
     void putd(ucoo c, uint8_t d) {
-        at(c).d                    = d;
-        at(ucoo(coo(c) + dz[d])).d = (d + 2) % 4;
+        at(c).d         = d;
+        at(c + dz[d]).d = (d + 2) % 4;
         step();
     }
     void freeze(ucoo c) {
-        at(c).type                          = 0;
-        at(ucoo(coo(c) + dz[at(c).d])).type = 0;
+        at(c).type               = 0;
+        at(c + dz[at(c).d]).type = 0;
     }
 
     explicit Tiling(const Hub &H) : Bitmap<Half>(H.title, {H['n'], H['n']}), r(H['r']), rr{r, r * r, 1, r} {
@@ -70,20 +70,20 @@ public:
                 }
             ucoo mid{w() / 2, h() / 2};
             at(mid).type = 0;
-            putd(ucoo(coo(mid) + coo{-1, -1}), 1);
-            putd(ucoo(coo(mid) + coo{-1, 1}), 0);
-            putd(ucoo(coo(mid) + coo{1, 1}), 3);
-            putd(ucoo(coo(mid) + coo{1, -1}), 2);
+            putd(mid + coo{-1, -1}, 1);
+            putd(mid + coo{-1, 1}, 0);
+            putd(mid + coo{1, 1}, 3);
+            putd(mid + coo{1, -1}, 2);
             at(mid).type = 0;
-            putd(ucoo(coo(mid) + coo{-2, -2}), 1);
-            putd(ucoo(coo(mid) + coo{-2, 0}), 1);
-            putd(ucoo(coo(mid) + coo{-2, 2}), 0);
-            putd(ucoo(coo(mid) + coo{0, 2}), 0);
+            putd(mid + coo{-2, -2}, 1);
+            putd(mid + coo{-2, 0}, 1);
+            putd(mid + coo{-2, 2}, 0);
+            putd(mid + coo{0, 2}, 0);
             at(mid).type = 0;
-            putd(ucoo(coo(mid) + coo{2, 2}), 3);
-            putd(ucoo(coo(mid) + coo{2, 0}), 3);
-            putd(ucoo(coo(mid) + coo{2, -2}), 2);
-            putd(ucoo(coo(mid) + coo{0, -2}), 2);
+            putd(mid + coo{2, 2}, 3);
+            putd(mid + coo{2, 0}, 3);
+            putd(mid + coo{2, -2}, 2);
+            putd(mid + coo{0, -2}, 2);
         } else {
             for (size_t x = 0; x < w(); x += 2)
                 for (size_t y = 0; y < h(); ++y) putd({x, y}, 0);

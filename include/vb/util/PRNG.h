@@ -23,8 +23,7 @@ namespace vb {
             return {b + uniform_int(r.x - 2 * b), b + uniform_int(r.y - 2 * b)};
         }
 
-        // TODO: ucoo3
-        coo3 uniform_coo3(coo3 r, int64_t b = 0) {
+        template <typename T> coo_3d<T> uniform_coo3(coo_3d<T> r, T b = 0) {
             return {b + uniform_int(r.x - 2 * b), b + uniform_int(r.y - 2 * b), b + uniform_int(r.z - 2 * b)};
         }
 

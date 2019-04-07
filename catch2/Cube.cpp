@@ -5,7 +5,7 @@ using namespace vb;
 
 TEST_CASE("vb::Cube") {
     Cube C("Testing Cube", {100, 100, 100});
-    C.putp(prng.uniform_coo3(C.size), 1);
+    C.put(prng.uniform_coo3(C.size), 1);
     int s = 0;
     for (auto v : C) s += v;
     CHECK(s == 1);

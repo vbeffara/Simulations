@@ -5,7 +5,7 @@
 
 class Ising3 : public vb::Cube {
 public:
-    int                 b;
+    size_t              b;
     bool                k;
     double              beta;
     std::vector<double> glaub, kaw;
@@ -20,23 +20,23 @@ public:
         return S;
     }
 
-    void spin(vb::coo3 c) {
+    void spin(vb::ucoo3 c) {
         if (k) {
-            int      d  = vb::prng.uniform_int(6);
-            vb::coo3 z2 = c + vb::dz3[d];
+            int  d  = vb::prng.uniform_int(6);
+            auto z2 = vb::coo3(c) + vb::dz3[d];
             if (at(c) == atp(z2)) return;
-            if (vb::prng.bernoulli(kaw[size_t(nbsum(z2) - nbsum(c) + 6)]))
+            if (vb::prng.bernoulli(kaw[size_t(nbsum(z2) - nbsum(vb::coo3(c)) + 6)]))
                 put(c, 255), putp(z2, 0);
             else
                 put(c, 0), putp(z2, 255);
         } else {
-            put(c, vb::prng.bernoulli(glaub[size_t(nbsum(c))]) ? 255 : 0);
+            put(c, vb::prng.bernoulli(glaub[size_t(nbsum(vb::coo3(c)))]) ? 255 : 0);
         }
     }
 
     void swipe() {
-        for (int64_t t = 0; t < size.x * size.y * size.z; ++t) {
-            vb::coo3 c = vb::prng.uniform_coo3(size, b);
+        for (size_t t = 0; t < size.x * size.y * size.z; ++t) {
+            auto c = vb::prng.uniform_coo3(size, b);
             spin(c);
         }
     }
@@ -49,7 +49,7 @@ public:
             I.b = 0;
             for (auto c = I.begin(); c != I.end(); ++c)
                 if (vb::prng.bernoulli(H['p'])) {
-                    const vb::coo3 &cc = c;
+                    const vb::ucoo3 &cc = c;
                     I.put(cc, 255);
                 }
         });
@@ -70,8 +70,8 @@ public:
         });
         emplace("hexagon", [](Ising3 &I) {
             I.b = 1;
-            for (int64_t i = 0; i < I.size.x; ++i)
-                for (int64_t j = 0; j < I.size.x; ++j) {
+            for (size_t i = 0; i < I.size.x; ++i)
+                for (size_t j = 0; j < I.size.x; ++j) {
                     I.put({i, j, I.size.z - 1}, 255);
                     I.put({0, i, j}, 255);
                     I.put({i, 0, j}, 255);
@@ -79,9 +79,9 @@ public:
         });
         emplace("cube", [](Ising3 &I) {
             I.b = 0;
-            for (int64_t x = I.size.x / 10; x < 9 * I.size.x / 10; ++x)
-                for (int64_t y = I.size.y / 10; y < 9 * I.size.y / 10; ++y)
-                    for (int64_t z = I.size.z / 10; z < 9 * I.size.z / 10; ++z) I.put({x, y, z}, 255);
+            for (size_t x = I.size.x / 10; x < 9 * I.size.x / 10; ++x)
+                for (size_t y = I.size.y / 10; y < 9 * I.size.y / 10; ++y)
+                    for (size_t z = I.size.z / 10; z < 9 * I.size.z / 10; ++z) I.put({x, y, z}, 255);
         });
         emplace("slope", [&H](Ising3 &I) {
             I.b = 1;
