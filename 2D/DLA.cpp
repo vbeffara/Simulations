@@ -82,7 +82,7 @@ public:
         return false;
     }
 
-    [[nodiscard]] coo jump(long d) const {
+    [[nodiscard]] coo jump(int64_t d) const {
         if (d <= 1) return dz[prng.uniform_int(4)];
         if (d < int(prec.size())) {
             coo w{d, prng.discrete(prec[size_t(d)])};
@@ -91,10 +91,10 @@ public:
             if (prng.bernoulli()) swap(w.x, w.y);
             return w;
         }
-        if (d < c) return jump(long(prec.size()) - 1);
+        if (d < c) return jump(int64_t(prec.size()) - 1);
         auto   l     = d - c / 2;
         double theta = prng.uniform_real(0, 2 * M_PI);
-        auto   x = int(l * cos(theta)), y = int(l * sin(theta));
+        auto   x = int64_t(l * cos(theta)), y = int64_t(l * sin(theta));
         return {x, y};
     }
 
@@ -109,22 +109,21 @@ public:
                 QT.nn(z, qi);
                 z += jump(qi.d - 1);
                 if (sup(z) > 100 * r) {
-                    z.x -= int64_t(z.x / 10);
-                    z.y -= int64_t(z.y / 10);
+                    z.x -= z.x / 10;
+                    z.y -= z.y / 10;
                 }
             }
             put(z);
+            if (!(QT.n % 1000)) update();
         }
     }
 
-    // TODO: this should go in QuadTree
     void paint() override {
         QT.paint(img, {0, 0}, 512);
         CoarseImage::paint();
     }
 
-    int                    n, c;
-    int64_t                r;
+    int64_t                n, c, r;
     Console                W;
     QuadTree               QT;
     vector<vector<double>> prec;

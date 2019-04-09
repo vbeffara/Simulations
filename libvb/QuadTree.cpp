@@ -5,7 +5,7 @@ namespace vb {
 
     QuadTree::QuadTree(coo UL, coo BR, size_t M) : n(0), ul(UL), br(BR), center((ul + br) / 2), iul(br), ibr(ul), m(M), ch(0) {}
 
-    unsigned QuadTree::index(coo z) const {
+    size_t QuadTree::index(coo z) const {
         if (z.y < center.y) return (z.x < center.x) ? 0 : 1;
         return (z.x < center.x) ? 2 : 3;
     }

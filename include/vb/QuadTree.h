@@ -3,8 +3,8 @@
 
 namespace vb {
     struct QuadIndex {
-        coo  z;
-        long d = 0;
+        coo     z;
+        int64_t d = 0;
     };
 
     class QuadTree {
@@ -22,9 +22,9 @@ namespace vb {
     private:
         static std::vector<std::unique_ptr<QuadTree>> store;
 
-        unsigned index(coo z) const;
-        int64_t  idist(coo z) const;
-        int64_t  odist(coo z) const;
+        size_t  index(coo z) const;
+        int64_t idist(coo z) const;
+        int64_t odist(coo z) const;
 
         void split();
 
