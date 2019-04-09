@@ -24,13 +24,13 @@ public:
     void go(const Hub &H) {
         auto i  = prng.uniform_int(fringe.size());
         auto z  = fringe[i];
-        auto nz = coo(z) + dz[prng.uniform_int(H['d'] ? 2 : 4)];
+        auto nz = z + dz[prng.uniform_int(H['d'] ? 2 : 4)];
         if (!fits(nz)) return;
-        if ((at(ucoo(nz)) == none) && ((l > 1) || prng.bernoulli(l))) {
-            put(ucoo(nz), prey);
-            fringe.push_back(ucoo(nz));
+        if ((at(nz) == none) && ((l > 1) || prng.bernoulli(l))) {
+            put(nz, prey);
+            fringe.push_back(nz);
         }
-        if ((at(ucoo(nz)) == pred) && ((l < 1) || prng.bernoulli(1 / l))) {
+        if ((at(nz) == pred) && ((l < 1) || prng.bernoulli(1 / l))) {
             put(z, pred);
             fringe[i] = fringe.back();
             fringe.pop_back();

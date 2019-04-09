@@ -42,18 +42,18 @@ namespace vb {
 class Snake : public Bitmap<int> {
 public:
     Snake(const Hub &H, size_t n_) : Bitmap<int>(H.title, {6 * n_, 6 * n_}), n(n_) {
-        p.push_back({3 * int(n), 3 * int(n)});
-        put(ucoo(p.back()), 1);
+        p.push_back({3 * n, 3 * n});
+        put(p.back(), 1);
         show();
     };
     void grow(int d) {
         p.push_back(p.back() + dz[d]);
-        put(ucoo(p.back()), at(ucoo(p.back())) + 1);
+        put(p.back(), at(p.back()) + 1);
     }
     void shrink() { p.pop_back(); }
 
-    size_t      n;
-    vector<coo> p;
+    size_t       n;
+    vector<ucoo> p;
 };
 
 int main(int argc, char **argv) {

@@ -12,17 +12,17 @@ namespace vb {
 class LERW : private Bitmap<uint8_t> {
 public:
     explicit LERW(const Hub &H) : Bitmap<uint8_t>(H.title, {2 * size_t(H['n']), 2 * size_t(H['n'])}) {
-        auto z = coo(ucoo{w() / 2, h() / 2});
+        ucoo z{w() / 2, h() / 2};
         while (fits(z)) {
             auto d = prng.uniform_int(uint8_t(4));
-            put(ucoo(z), d);
+            put(z, d);
             z += dz[d];
         }
     }
 
     void output(const std::string &s) override {
         OldPath P(0);
-        auto    z = ucoo{w() / 2, h() / 2};
+        ucoo    z{w() / 2, h() / 2};
         while (fits(z)) {
             auto d = at(z);
             P.push_back(d);

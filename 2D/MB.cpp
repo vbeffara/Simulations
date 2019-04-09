@@ -11,9 +11,9 @@ int main(int argc, char **argv) {
     Image img(H.title, {2 * n, 2 * n});
 
     for (auto z : coo_range(img.size)) img.put(z, WHITE);
-    coo z{int(n), int(n)};
+    ucoo z{n, n};
     while (img.fits(z)) {
-        img.put(ucoo(z), BLACK);
+        img.put(z, BLACK);
         z += dz[prng() % 4];
     }
     img.output(H.title);

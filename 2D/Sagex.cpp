@@ -15,7 +15,7 @@ namespace vb {
 
 class Particle {
 public:
-    explicit Particle(coo xy = {0, 0}, unsigned s = 0, bool z = false, double t = 0) : state(s), location(xy), type(z), next(t){};
+    explicit Particle(ucoo xy = {0, 0}, unsigned s = 0, bool z = false, double t = 0) : state(s), location(xy), type(z), next(t){};
     bool operator<(const Particle &o) const { return next > o.next; }
 
     [[nodiscard]] coo jump() const {
@@ -30,9 +30,9 @@ public:
     }
 
     unsigned state;
-    coo    location;
-    bool   type;
-    double next;
+    ucoo     location;
+    bool     type;
+    double   next;
 };
 
 class Sagex : public Bitmap<unsigned> {
@@ -41,7 +41,7 @@ public:
         for (size_t x = 0; x < w; ++x)
             for (size_t y = 0; y < h; ++y) {
                 if (prng.bernoulli(H['l'])) {
-                    Particle p({int(x), int(y)}, prng.bernoulli(H['p']) ? 1 : 2, H['z'], prng.exponential());
+                    Particle p({x, y}, prng.bernoulli(H['p']) ? 1 : 2, H['z'], prng.exponential());
                     put({x, y}, p.state);
                     q.push(p);
                 }
@@ -54,11 +54,11 @@ public:
         while (true) {
             Particle p = q.top();
             q.pop();
-            auto nz = wrap(p.location + p.jump(), size);
+            auto nz = wrap(p.jump() + p.location, size);
             if (at(nz) == 0) {
-                swap(at(ucoo(p.location)), at(nz));
+                swap(at(p.location), at(nz));
                 step();
-                p.location = coo(nz);
+                p.location = nz;
             }
             p.next += prng.exponential();
             q.push(p);

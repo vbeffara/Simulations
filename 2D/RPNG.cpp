@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
     vector<size_t> height(n);
     for (size_t i = 0; i < n; ++i) {
         height[i] = 0;
-        img.put(coo(ucoo({i, 0})), true);
+        img.put((coo(ucoo{i, 0})), true);
     }
 
     bool running = true;

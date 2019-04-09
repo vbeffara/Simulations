@@ -143,8 +143,8 @@ public:
         show();
     }
 
-    [[nodiscard]] unsigned HH(unsigned i, unsigned j) const { return i == j ? 0 : 1; }[[nodiscard]] unsigned HH(const coo &z,
-                                                                                                                unsigned   i) const {
+    [[nodiscard]] unsigned HH(unsigned i, unsigned j) const { return i == j ? 0 : 1; }
+    [[nodiscard]] unsigned HH(const coo &z, unsigned i) const {
         return HH(i, atp(z + dz[0])) + HH(i, atp(z + dz[1])) + HH(i, atp(z + dz[2])) + HH(i, atp(z + dz[3]));
     }
 
@@ -152,7 +152,7 @@ public:
     void up(coo z) {
         auto   i  = prng.uniform_int(q);
         double dH = HH(z, i) - HH(z, atp(z));
-        // TODO: at(ucoo()), get(ucoo()) and so on
+        // TODO: at(ucoo()), put(ucoo()) and so on
         if ((dH <= 0) || prng.bernoulli(exp(-beta * dH))) put(ucoo(z), i);
     }
 

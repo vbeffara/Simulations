@@ -57,16 +57,16 @@ public:
     }
 
     void explore() {
-        auto   z0 = coo(ucoo{w() / 2, (con == 6) ? h() / 3 : h() / 2});
+        ucoo   z0{w() / 2, (con == 6) ? h() / 3 : h() / 2};
         vector list{z0};
-        auto   s = at(ucoo(list.back()));
+        auto   s = at(list.back());
         while (!list.empty()) {
             auto z = list.back();
             list.pop_back();
-            if (atp(z) == 3) continue;
-            putp(z, 3);
-            for (size_t d = 0; d < con; ++d)
-                if (atp(z + dz[gsl::index(d)]) == s) list.push_back(z + dz[gsl::index(d)]);
+            if (at(z) == 3) continue;
+            put(z, 3);
+            for (gsl::index d = 0; d < gsl::index(con); ++d)
+                if (auto nz = z + dz[d]; fits(nz) && (at(nz) == s)) list.push_back(nz);
         }
     }
 
@@ -75,7 +75,7 @@ public:
 };
 
 int main(int argc, char **argv) {
-    Hub   H("2D Ising model", argc, argv, "n=500,b=.7,c=4");
+    Hub   H("2D Ising model", argc, argv, "n=50,b=.7,c=4");
     Ising I(H, H['n'], H['b'], H['c']);
     I.show();
     I.run();

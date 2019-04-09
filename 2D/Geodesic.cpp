@@ -144,9 +144,9 @@ public:
             Info im = Q.top();
             Q.pop();
             for (int k = 0; k < 8; ++k) {
-                coo nz = coo(im.z) + dz[k];
-                if (!(fits(nz))) continue;
-                Info & ni = I.at(ucoo(nz));
+                auto nz = im.z + dz[k];
+                if (!fits(nz)) continue;
+                Info & ni = I.at(nz);
                 double nd = im.d + (k < 4 ? .5 : sqrt(.5)) * (im.f + ni.f);
                 if (ni.d > nd) {
                     ni.d    = nd;

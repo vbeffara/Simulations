@@ -52,6 +52,7 @@ namespace vb {
     constexpr gsl::span<const coo>  dz{dz_};
     constexpr gsl::span<const coo3> dz3{dz3_};
 
+    // TODO: maybe this should be the only way to do coo -> ucoo conversion?
     constexpr ucoo wrap(const coo &z, const ucoo &p) { return {pmod(z.x, p.x), pmod(z.y, p.y)}; }
 
     template <typename T> struct coo_range {
