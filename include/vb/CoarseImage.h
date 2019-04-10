@@ -21,10 +21,7 @@ namespace vb {
         CoarseImage(const std::string &s, ucoo size) : CoarseImage(s, size, size_t(pow(double(sup(size)), .33))) {}
 
         // TODO: make this work for ucoo as well
-        bool fits(coo z) const {
-            z += z0;
-            return (z.x >= 0) && (z.y >= 0) && (z.x < int64_t(true_width)) && (z.y < int64_t(true_height));
-        }
+        bool fits(coo z) const { return (z.x >= 0) && (z.y >= 0) && (z.x < int64_t(true_width)) && (z.y < int64_t(true_height)); }
 
         // TODO: use ucoo here (get rid of z0)
         bool at(coo z) const;
@@ -36,7 +33,5 @@ namespace vb {
         size_t true_height; ///< The true height of the image, in pixels.
         size_t L;           ///< The size of a block, in pixels.
         size_t LL;          ///< The square of L
-        // TODO: get rid of this
-        coo z0 = {0, 0}; ///< The coordinates of the origin (hides that of vb::Bitmap).
     };
 } // namespace vb

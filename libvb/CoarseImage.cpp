@@ -14,7 +14,6 @@ static void flush_data(png_struct *png) {
 
 namespace vb {
     bool CoarseImage::at(coo z) const {
-        z += z0;
         const CoarseCell &d = Bitmap<CoarseCell>::at({size_t(z.x) / L, size_t(z.y) / L});
         if (d.fill == 0) return false;
         if (d.fill == LL) return true;
@@ -23,7 +22,6 @@ namespace vb {
 
     void CoarseImage::put(coo z, bool c) {
         step();
-        z += z0;
         const unsigned cc = c ? 1 : 0;
         CoarseCell &   d  = Bitmap<CoarseCell>::at({size_t(z.x) / L, size_t(z.y) / L});
         if (d.fill == cc * LL) return;
@@ -52,7 +50,7 @@ namespace vb {
         for (size_t j = 0; j < true_height; ++j) {
             auto row = std::vector<uint8_t>(1 + true_width / 8, 0);
             for (size_t i = 0; i < true_width; ++i)
-                if (!at(coo{int64_t(i), int64_t(j)} - z0)) row.at(i / 8) |= (128U >> static_cast<unsigned>(i % 8));
+                if (!at(coo{int64_t(i), int64_t(j)})) row.at(i / 8) |= (128U >> static_cast<unsigned>(i % 8));
             png_write_row(png, row.data());
         }
 
