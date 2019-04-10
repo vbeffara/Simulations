@@ -52,8 +52,8 @@ void Mirrors::main() {
             }
         }
 
-        auto z = coo(ucoo{w() / 2, h() / 2});
-        for (size_t t = 0, d = 0; (t < 8 * w() * h()) && fits(z); ++t) {
+        auto z = coo(size / 2);
+        for (size_t t = 0, d = 0; (t < 8 * size.x * size.y) && fits(z); ++t) {
             if ((at(ucoo(z)) & STATE_PRESENT) != 0) {
                 static const vector<unsigned> flip_ne{1, 0, 3, 2}, flip_nw{3, 2, 1, 0};
                 if ((at(ucoo(z)) & STATE_NE) != 0)

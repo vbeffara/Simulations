@@ -20,26 +20,26 @@ class Snake : public Bitmap<site> {
 public:
     Snake(const Hub &H, size_t n, double l, bool hex)
         : Bitmap(H.title, {4 * n + 1, 2 * n + 1}), lambda(l), path(1, {2 * int(n), 0}), hex(hex) {
-        for (size_t x = 0; x < w(); ++x) put({x, 0U}, VERTEX);
+        for (size_t x = 0; x < size.x; ++x) put({x, 0U}, VERTEX);
         if (double a = H['a']; a != 0) triangle(a);
         if (!H['v']) show();
     }
 
     void triangle(double a) {
         double ta = tan(a * M_PI / 180);
-        for (size_t y = 0; y < h(); ++y) {
+        for (size_t y = 0; y < size.y; ++y) {
             auto yy = y + (y % 2);
             auto s  = int(2 + yy * ta);
             s += (s % 2);
-            for (size_t x = 0; x < w(); ++x)
-                if (abs(int(x) - int(w() / 2)) >= s) put({x, y}, VERTEX);
+            for (size_t x = 0; x < size.x; ++x)
+                if (abs(int(x) - int(size.x / 2)) >= s) put({x, y}, VERTEX);
         }
     }
 
-    // TODO: now remove all int(h()), int64_t(h()), int(w()), int64_t(w())
-    bool border(coo z) { return (z.x == 0) || (z.x == int(w()) - 1) || (z.y == int(h()) - 1); }
+    // TODO: now remove all int(size.y), int64_t(size.y), int(size.x), int64_t(size.x)
+    bool border(coo z) { return (z.x == 0) || (z.x == int(size.x) - 1) || (z.y == int(size.y) - 1); }
 
-    bool edge(coo z, int d) { return (d != 3 - ((unsigned(z.x + z.y) + w() / 2) % 4)); }
+    bool edge(coo z, int d) { return (d != 3 - ((unsigned(z.x + z.y) + size.x / 2) % 4)); }
 
     bool trapped(coo z, int d) {
         if (border(z)) return false;
@@ -98,8 +98,8 @@ int main(int argc, char **argv) {
     Hub   H("Self-avoiding snake in the half plane", argc, argv, "n=200,l=1.0,v,p,x,a=0");
     Snake S(H, H['n'], H['l'], H['x']);
     S.run();
-    S.fill({size_t(S.w() / 2 + 1), 1}, RIGHT);
-    S.fill({size_t(S.w() / 2 - 1), 1}, LEFT);
+    S.fill({S.size.x / 2 + 1, 1}, RIGHT);
+    S.fill({S.size.x / 2 - 1, 1}, LEFT);
     if (S.visible()) {
         if (H['p']) S.pause();
         S.output(H.title);

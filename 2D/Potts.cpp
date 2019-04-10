@@ -24,49 +24,49 @@ public:
         };
         bcs["wired"] = [this] {
             b = 1;
-            for (size_t i = 0; i < w(); ++i) {
+            for (size_t i = 0; i < size.x; ++i) {
                 put({i, 0}, 1);
-                put({i, h() - 1}, 1);
+                put({i, size.y - 1}, 1);
             }
-            for (size_t i = 0; i < h(); ++i) {
+            for (size_t i = 0; i < size.y; ++i) {
                 put({0, i}, 1);
-                put({w() - 1, i}, 1);
+                put({size.x - 1, i}, 1);
             }
         };
         bcs["tripod"] = [this] {
             b = 1;
-            for (size_t j = 0; j < h() - w() / 2; ++j) {
-                for (size_t i = 0; i < w() / 2; ++i) put({i, j}, 0);
-                for (size_t i = w() / 2; i < w(); ++i) put({i, j}, 2);
+            for (size_t j = 0; j < size.y - size.x / 2; ++j) {
+                for (size_t i = 0; i < size.x / 2; ++i) put({i, j}, 0);
+                for (size_t i = size.x / 2; i < size.x; ++i) put({i, j}, 2);
             }
-            for (size_t j = h() - w() / 2; j < h(); ++j) {
-                for (size_t i = 0; i < h() - j; ++i) put({i, j}, 0);
-                for (size_t i = h() - j; i < w() - h() + j; ++i) put({i, j}, 1);
-                for (size_t i = w() - h() + j; i < w(); ++i) put({i, j}, 2);
+            for (size_t j = size.y - size.x / 2; j < size.y; ++j) {
+                for (size_t i = 0; i < size.y - j; ++i) put({i, j}, 0);
+                for (size_t i = size.y - j; i < size.x - size.y + j; ++i) put({i, j}, 1);
+                for (size_t i = size.x - size.y + j; i < size.x; ++i) put({i, j}, 2);
             }
         };
         bcs["quadripod"] = [this] {
             b = 1;
-            for (size_t j = 0; j < h() / 2; ++j) {
-                for (size_t i = 0; i < w() / 2; ++i) put({i, j}, 0);
-                for (size_t i = w() / 2; i < w(); ++i) put({i, j}, 1);
+            for (size_t j = 0; j < size.y / 2; ++j) {
+                for (size_t i = 0; i < size.x / 2; ++i) put({i, j}, 0);
+                for (size_t i = size.x / 2; i < size.x; ++i) put({i, j}, 1);
             }
-            for (size_t j = h() / 2; j < h(); ++j) {
-                for (size_t i = 0; i < w() / 2; ++i) put({i, j}, 2);
-                for (size_t i = w() / 2; i < w(); ++i) put({i, j}, 3);
+            for (size_t j = size.y / 2; j < size.y; ++j) {
+                for (size_t i = 0; i < size.x / 2; ++i) put({i, j}, 2);
+                for (size_t i = size.x / 2; i < size.x; ++i) put({i, j}, 3);
             }
         };
         bcs["quadripod2"] = [this] {
             b = 1;
-            for (size_t i = 0; i < w(); ++i)
-                for (size_t j = 0; j < h(); ++j) {
+            for (size_t i = 0; i < size.x; ++i)
+                for (size_t j = 0; j < size.y; ++j) {
                     if (i > j) {
-                        if (i + j < w())
+                        if (i + j < size.x)
                             put({i, j}, 0);
                         else
                             put({i, j}, 1);
                     } else {
-                        if (i + j < w())
+                        if (i + j < size.x)
                             put({i, j}, 2);
                         else
                             put({i, j}, 3);
@@ -75,69 +75,69 @@ public:
         };
         bcs["dobrushin"] = [this] {
             b = 1;
-            for (size_t i = 0; i < w(); ++i)
-                for (size_t j = 0; j < h() / 2; ++j) put({i, j}, 0);
-            for (size_t i = 0; i < w(); ++i)
-                for (size_t j = h() / 2; j < h(); ++j) put({i, j}, 1);
+            for (size_t i = 0; i < size.x; ++i)
+                for (size_t j = 0; j < size.y / 2; ++j) put({i, j}, 0);
+            for (size_t i = 0; i < size.x; ++i)
+                for (size_t j = size.y / 2; j < size.y; ++j) put({i, j}, 1);
         };
         bcs["loren"] = [this, q] {
             b = 1;
-            for (size_t i = 0; i < w(); ++i)
-                for (size_t j = 0; j < h(); ++j)
-                    if ((i == 0) || (j == 0) || (i == w() - 1) || (j == h() - 1)) put({i, j}, (q * (i + j) / w()) % q);
+            for (size_t i = 0; i < size.x; ++i)
+                for (size_t j = 0; j < size.y; ++j)
+                    if ((i == 0) || (j == 0) || (i == size.x - 1) || (j == size.y - 1)) put({i, j}, (q * (i + j) / size.x) % q);
         };
         bcs["loren2"] = [this] {
             assert(size_t(H['q']) >= 6);
             b = 1;
-            for (size_t i = 0; i < w() / 4; ++i) put({i, 0}, 0);
-            for (size_t i = w() / 4; i < 3 * w() / 4; ++i) put({i, 0}, 1);
-            for (size_t i = 3 * w() / 4; i < w(); ++i) put({i, 0}, 2);
-            for (size_t i = 0; i < h() / 2; ++i) put({0, i}, 0);
-            for (size_t i = h() / 2; i < h(); ++i) put({0, i}, 5);
-            for (size_t i = 0; i < h() / 2; ++i) put({w() - 1, i}, 2);
-            for (size_t i = h() / 2; i < h(); ++i) put({w() - 1, i}, 3);
-            for (size_t i = 0; i < w() / 4; ++i) put({i, h() - 1}, 5);
-            for (size_t i = w() / 4; i < 3 * w() / 4; ++i) put({i, h() - 1}, 4);
-            for (size_t i = 3 * w() / 4; i < w(); ++i) put({i, h() - 1}, 3);
+            for (size_t i = 0; i < size.x / 4; ++i) put({i, 0}, 0);
+            for (size_t i = size.x / 4; i < 3 * size.x / 4; ++i) put({i, 0}, 1);
+            for (size_t i = 3 * size.x / 4; i < size.x; ++i) put({i, 0}, 2);
+            for (size_t i = 0; i < size.y / 2; ++i) put({0, i}, 0);
+            for (size_t i = size.y / 2; i < size.y; ++i) put({0, i}, 5);
+            for (size_t i = 0; i < size.y / 2; ++i) put({size.x - 1, i}, 2);
+            for (size_t i = size.y / 2; i < size.y; ++i) put({size.x - 1, i}, 3);
+            for (size_t i = 0; i < size.x / 4; ++i) put({i, size.y - 1}, 5);
+            for (size_t i = size.x / 4; i < 3 * size.x / 4; ++i) put({i, size.y - 1}, 4);
+            for (size_t i = 3 * size.x / 4; i < size.x; ++i) put({i, size.y - 1}, 3);
         };
         bcs["123"] = [this, q] {
             b          = 1;
             unsigned c = 0;
-            for (size_t i = 0; i < w() - 1; ++i) {
+            for (size_t i = 0; i < size.x - 1; ++i) {
                 put({i, 0}, c);
                 c = (c + 1) % q;
             }
-            for (size_t i = 0; i < h() - 1; ++i) {
-                put({w() - 1, i}, c);
+            for (size_t i = 0; i < size.y - 1; ++i) {
+                put({size.x - 1, i}, c);
                 c = (c + 1) % q;
             }
-            for (size_t i = 0; i < w() - 1; ++i) {
-                put({w() - 1 - i, h() - 1}, c);
+            for (size_t i = 0; i < size.x - 1; ++i) {
+                put({size.x - 1 - i, size.y - 1}, c);
                 c = (c + 1) % q;
             }
-            for (size_t i = 0; i < h() - 1; ++i) {
-                put({0, h() - 1 - i}, c);
+            for (size_t i = 0; i < size.y - 1; ++i) {
+                put({0, size.y - 1 - i}, c);
                 c = (c + 1) % q;
             }
         };
         bcs["12123333"] = [this] {
             b = 1;
-            for (size_t i = 0; i < w(); ++i)
-                for (size_t j = 0; j < h(); ++j) put({i, j}, (j > h() / 2) ? ((i + j) % 2) : 2);
+            for (size_t i = 0; i < size.x; ++i)
+                for (size_t j = 0; j < size.y; ++j) put({i, j}, (j > size.y / 2) ? ((i + j) % 2) : 2);
         };
         bcs["1231234444"] = [this] {
             b = 1;
-            for (size_t i = 0; i < w(); ++i)
-                for (size_t j = 0; j < h(); ++j) put({i, j}, (j > h() / 2) ? ((i + j) % 3) : 3);
+            for (size_t i = 0; i < size.x; ++i)
+                for (size_t j = 0; j < size.y; ++j) put({i, j}, (j > size.y / 2) ? ((i + j) % 3) : 3);
         };
         bcs["mostlyfree"] = [this, q] {
             b = 1;
-            for (size_t i = 0; i < w(); ++i)
-                for (size_t j = 0; j < h(); ++j) put({i, j}, q);
+            for (size_t i = 0; i < size.x; ++i)
+                for (size_t j = 0; j < size.y; ++j) put({i, j}, q);
         };
 
-        for (size_t i = 0; i < w(); ++i)
-            for (size_t j = 0; j < h(); ++j) put({i, j}, prng.uniform_int(q));
+        for (size_t i = 0; i < size.x; ++i)
+            for (size_t j = 0; j < size.y; ++j) put({i, j}, prng.uniform_int(q));
         beta *= log(1 + sqrt(double(q)));
         bcs[H['c']]();
         show();

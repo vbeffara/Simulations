@@ -12,7 +12,7 @@ namespace vb {
 class LERW : private Bitmap<uint8_t> {
 public:
     explicit LERW(const Hub &H) : Bitmap<uint8_t>(H.title, {2 * size_t(H['n']), 2 * size_t(H['n'])}) {
-        ucoo z{w() / 2, h() / 2};
+        ucoo z = size / 2;
         while (fits(z)) {
             auto d = prng.uniform_int(uint8_t(4));
             put(z, d);
@@ -22,7 +22,7 @@ public:
 
     void output(const std::string &s) override {
         OldPath P(0);
-        ucoo    z{w() / 2, h() / 2};
+        ucoo    z = size / 2;
         while (fits(z)) {
             auto d = at(z);
             P.push_back(d);

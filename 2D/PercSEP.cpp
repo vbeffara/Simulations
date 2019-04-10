@@ -15,19 +15,22 @@ namespace vb {
 class PercSEP : public Bitmap<int> {
 public:
     explicit PercSEP(const Hub &H) : Bitmap<int>(H.title, {2 * size_t(H['n']), H['n']}), flow({0, 0}), d(H['d']), tasym(H['t']) {
-        for (size_t i = 0; i < w(); ++i)
-            for (size_t j = 0; j < h(); ++j)
+        // TODO: coo_range
+        for (size_t i = 0; i < size.x; ++i)
+            for (size_t j = 0; j < size.y; ++j)
                 if (prng.bernoulli(H['p'])) put({i, j}, prng.bernoulli(H['l']) ? 2 : 1);
     }
     void clean() {
-        for (size_t x = 0; x < w(); ++x)
-            for (size_t y = 0; y < h(); ++y)
+        // TODO: coo_range
+        for (size_t x = 0; x < size.x; ++x)
+            for (size_t y = 0; y < size.y; ++y)
                 if (at({x, y}) > 0) at({x, y}) = at({x, y}) + 100;
         bool dirty = true;
         while (dirty) {
             dirty = false;
-            for (int64_t x = 0; x < int64_t(w()); ++x)
-                for (int64_t y = 0; y < int64_t(h()); ++y) {
+            // TODO: coo_range
+            for (int64_t x = 0; x < int64_t(size.x); ++x)
+                for (int64_t y = 0; y < int64_t(size.y); ++y) {
                     if (at(ucoo(coo{x, y})) == 102) {
                         if (atp({x + 1, y}) == 1 || atp({x + 1, y}) == 2 || atp({x, y + 1}) == 1 || atp({x, y + 1}) == 2 ||
                             atp({x, y - 1}) == 1 || atp({x, y - 1}) == 2) {
@@ -43,8 +46,9 @@ public:
                     }
                 }
         }
-        for (size_t x = 0; x < w(); ++x)
-            for (size_t y = 0; y < h(); ++y) {
+        // TODO: coo_range
+        for (size_t x = 0; x < size.x; ++x)
+            for (size_t y = 0; y < size.y; ++y) {
                 if (at({x, y}) >= 102) at({x, y}) = 3;
                 if (at({x, y}) == 101) at({x, y}) = 1;
             }
@@ -70,14 +74,15 @@ int main(int argc, char **argv) {
     P.show();
 
     for (size_t t = 1;; ++t) {
-        if ((t % (P.w() * P.h())) == 0) {
+        if ((t % (P.size.x * P.size.y)) == 0) {
             if (P.tasym) P.clean();
             int na = 0;
-            for (size_t x = 0; x < P.w(); ++x)
-                for (size_t y = 0; y < P.h(); ++y)
+            // TODO: coo_range
+            for (size_t x = 0; x < P.size.x; ++x)
+                for (size_t y = 0; y < P.size.y; ++y)
                     if (P.at({x, y}) == 2) ++na;
             if (na == 0) exit(0);
-            cout << t / (P.w() * P.h()) << " " << na << " " << P.flow.x << " " << double(P.flow.x) / na << endl;
+            cout << t / (P.size.x * P.size.y) << " " << na << " " << P.flow.x << " " << double(P.flow.x) / na << endl;
             P.flow = {0, 0};
         }
         P.move();

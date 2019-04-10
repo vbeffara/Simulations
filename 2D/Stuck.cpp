@@ -26,9 +26,10 @@ int Stat::min = 0, Stat::max = 1;
 class Stuck : public Bitmap<Stat> {
 public:
     explicit Stuck(const Hub &H) : Bitmap<Stat>(H.title, {2 * size_t(H['n']), 2 * size_t(H['n'])}), alpha(H['a']), beta(H['b']), H(H) {
-        for (size_t i = 0; i < w() / 2; ++i)
-            for (size_t j = 0; j < h() / 2; ++j) at({2 * i, 2 * j}) = Stat{-1};
-        z = coo(ucoo{w() / 2, h() / 2});
+        // TODO: coo_range
+        for (size_t i = 0; i < size.x / 2; ++i)
+            for (size_t j = 0; j < size.y / 2; ++j) at({2 * i, 2 * j}) = Stat{-1};
+        z = coo(size / 2);
         C.manage(alpha, 0.142, 0.35, "alpha");
         C.lambda<int>([this]() { return nsup(); }, "Support");
         C.lambda<double>([this]() { return -log(double(nsup())) / log(alpha - 1.0 / 7); }, "Prediction");
@@ -41,16 +42,18 @@ public:
 
     void center() {
         coo c{0, 0};
-        for (size_t x = 0; x < w(); ++x)
-            for (size_t y = 0; y < h(); ++y)
-                if (at({x, y}).s == Stat::max) c = coo(ucoo{x - w() / 2, y - h() / 2});
+        // TODO: coo_range
+        for (size_t x = 0; x < size.x; ++x)
+            for (size_t y = 0; y < size.y; ++y)
+                if (at({x, y}).s == Stat::max) c = coo(ucoo{x - size.x / 2, y - size.y / 2});
         c.x -= c.x % 2;
         c.y -= c.y % 2;
         if (c != coo{0, 0}) {
             static Array<Stat> &me  = *this;
             static Array<Stat>  tmp = me;
-            for (size_t x = 0; x < w(); ++x)
-                for (size_t y = 0; y < h(); ++y) {
+            // TODO: coo_range
+            for (size_t x = 0; x < size.x; ++x)
+                for (size_t y = 0; y < size.y; ++y) {
                     ucoo z{x, y};
                     tmp.at(z) = atp(coo(z) + c);
                 }
@@ -78,8 +81,8 @@ public:
             z += d + d;
         }
         if (H['o'])
-            for (size_t x = 0; x < w(); x += 2) {
-                for (size_t y = 1; y < h(); y += 2) cout << x << " " << y << " " << at({x, y}).s << endl;
+            for (size_t x = 0; x < size.x; x += 2) {
+                for (size_t y = 1; y < size.y; y += 2) cout << x << " " << y << " " << at({x, y}).s << endl;
                 cout << endl;
             }
     }

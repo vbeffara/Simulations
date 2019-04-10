@@ -10,11 +10,6 @@ namespace vb {
 
         using Array<T>::size, Array<T>::at, Array<T>::atp, Array<T>::fits;
 
-        // TODO: deprecate
-        size_t w() { return size.x; }
-        // TODO: deprecate
-        size_t h() { return size.y; }
-
         void put(const ucoo &z, const T &c) {
             Array<T>::put(z, c);
             step();
@@ -36,11 +31,12 @@ namespace vb {
 
     protected:
         void paint() override {
-            auto             ppp = size_t(pixel_w()) / w();
-            gsl::span<Color> stage((Color *)cairo_image_surface_get_data(surface), gsl::index(ppp * w() + stride * (ppp * h() - 1)));
+            auto             ppp = size_t(pixel_w()) / size.x;
+            gsl::span<Color> stage((Color *)cairo_image_surface_get_data(surface), gsl::index(ppp * size.x + stride * (ppp * size.y - 1)));
 
-            for (size_t x = 0; x < w(); ++x)
-                for (size_t y = 0; y < h(); ++y)
+            // TODO: coo_range
+            for (size_t x = 0; x < size.x; ++x)
+                for (size_t y = 0; y < size.y; ++y)
                     for (size_t dx = 0; dx < ppp; ++dx)
                         for (size_t dy = 0; dy < ppp; ++dy)
                             stage[gsl::index(ppp * x + dx + stride * (ppp * y + dy))] = to_Color(at({x, y}));

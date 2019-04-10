@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
     for (size_t t = 0, u = 0;; ++t, ++u) {
         for (size_t j = 0; j < u; ++j)
             for (size_t i = 0; i < T.size(); ++i) T.step();
-        for (size_t i = 0; i < T.size(); ++i) I.put({i, t % size_t(I.h())}, C[T[i]]);
-        if (t == size_t(I.h()) - 1) I.pause();
+        for (size_t i = 0; i < T.size(); ++i) I.put({i, t % size_t(I.size.y)}, C[T[i]]);
+        if (t == I.size.y - 1) I.pause();
     }
 }

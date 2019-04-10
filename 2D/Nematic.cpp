@@ -17,7 +17,7 @@ public:
     Nematic(const Hub &H, size_t n, size_t m, size_t k, double b) : Bitmap<size_t>(H.title, {n, m}), k(k), b(b), P(std::max(n, m), 0){};
 
     void prec() {
-        ok = std::min(k, std::min(w(), h()));
+        ok = std::min(k, std::min(size.x, size.y));
         ob = b;
         std::vector<double> Z(P.size());
         double              zz = exp(2 * ob / double(ok));
@@ -50,7 +50,7 @@ public:
 
     void redo(coo z, size_t d) {
         bool   empty = true;
-        size_t hw    = (d == 1 ? w() : h());
+        size_t hw    = (d == 1 ? size.x : size.y);
         for (size_t x = 0; x < hw; z += dz[gsl::index(d - 1)], ++x) {
             if (at(ucoo(z)) == 3 - d) empty = false;
             if (at(ucoo(z)) == d) at(ucoo(z)) = 0;
@@ -87,8 +87,8 @@ public:
         if (H['v']) snapshot_setup("movie", 10);
         for (int t = int(H['t']) - 1; t != 0; --t) {
             if ((k != ok) || (b != ob)) prec();
-            for (size_t i = 0; i < h(); ++i) redo({0, int64_t(i)}, 1);
-            for (size_t i = 0; i < w(); ++i) redo({int64_t(i), 0}, 2);
+            for (size_t i = 0; i < size.y; ++i) redo({0, int64_t(i)}, 1);
+            for (size_t i = 0; i < size.x; ++i) redo({int64_t(i), 0}, 2);
             int nh = 0;
             for (auto z : coo_range(size))
                 if (at(z) == 1) ++nh;

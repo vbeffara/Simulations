@@ -13,14 +13,16 @@ public:
         int t = 0;
         for (auto z : coo_range(size)) expl[z] = (at(z) == WHITE ? 1 : -1) * (++t);
 
-        for (size_t x = w() / 2 - r1 + 1; x < w() / 2 + r1 - 1; x++)
-            for (size_t y = h() / 2 - r1 + 1; y < h() / 2 + r1 - 1; y++) expl[{x, y}] = 0;
+        // TODO: coo_range
+        for (size_t x = size.x / 2 - r1 + 1; x < size.x / 2 + r1 - 1; x++)
+            for (size_t y = size.y / 2 - r1 + 1; y < size.y / 2 + r1 - 1; y++) expl[{x, y}] = 0;
 
         bool dirty = true;
         while (dirty) {
             dirty = false;
-            for (size_t x = 0; x < w(); x++) {
-                for (size_t y = 0; y < h(); y++) {
+            // TODO: coo_range
+            for (size_t x = 0; x < size.x; x++) {
+                for (size_t y = 0; y < size.y; y++) {
                     ucoo z{x, y};
                     for (int i = 0; i < 6; ++i) {
                         auto zz = z + dz[i];
@@ -41,7 +43,7 @@ public:
 
     int nbarms(size_t r1, size_t r2, unsigned sides) {
         compute_cpts(r1);
-        auto N = w();
+        auto N = size.x;
 
         for (auto &t : table) t = 0;
         for (size_t i = N / 2 - r2; i < N / 2 + r2; i++) {
@@ -90,11 +92,13 @@ public:
         int n = 0;
         while (true) {
             cerr << ++n << " \r";
-            for (size_t x = 0; x < w(); x++)
-                for (size_t y = 0; y < h(); y++) put({x, y}, prng.bernoulli(.5) ? WHITE : BLACK);
+            // TODO: coo_range
+            for (size_t x = 0; x < size.x; x++)
+                for (size_t y = 0; y < size.y; y++) put({x, y}, prng.bernoulli(.5) ? WHITE : BLACK);
 
-            for (auto x = w() / 2 - r1 + 1; x < w() / 2 + r1 - 1; x++) {
-                for (auto y = h() / 2 - r1 + 1; y < h() / 2 - r1 - 1; y++) {
+            // TODO: coo_range
+            for (auto x = size.x / 2 - r1 + 1; x < size.x / 2 + r1 - 1; x++) {
+                for (auto y = size.y / 2 - r1 + 1; y < size.y / 2 - r1 - 1; y++) {
                     put({x, y}, BLACK);
                     put({x, y}, BLACK);
                 }
@@ -113,8 +117,9 @@ class Coupling : public Image {
 public:
     Coupling(const Hub &H, size_t r) : Image(H.title, {2 * r, 2 * r}), r1(r / 4), r2(r / 2), r3(r), c1(H, 2 * r), c2(H, 2 * r) {
         c1.pick(r1, r2, r3);
-        for (size_t i = 0; i < w(); ++i)
-            for (size_t j = 0; j < h(); ++j) c2[{i, j}] = c1[{i, j}];
+        // TODO: coo_range
+        for (size_t i = 0; i < size.x; ++i)
+            for (size_t j = 0; j < size.y; ++j) c2[{i, j}] = c1[{i, j}];
         c1.show();
         c2.show();
         show();
@@ -124,8 +129,9 @@ public:
 
     int compute_diff() {
         int n = 0;
-        for (size_t i = 0; i < c1.w(); i++) {
-            for (size_t j = 0; j < c1.h(); j++) {
+        // TODO: coo_range
+        for (size_t i = 0; i < c1.size.x; i++) {
+            for (size_t j = 0; j < c1.size.y; j++) {
                 ucoo z{i, j};
                 if (c1.at(z) == c2.at(z)) {
                     put(z, BLACK);
@@ -147,7 +153,8 @@ public:
             while (true) {
                 z      = prng.uniform_coo(size);
                 auto x = z.x, y = z.y;
-                if ((x < w() / 2 - size_t(r1)) || (x >= w() / 2 + size_t(r1)) || (y < h() / 2 - size_t(r1)) || (y >= h() / 2 + size_t(r1)))
+                if ((x < size.x / 2 - size_t(r1)) || (x >= size.x / 2 + size_t(r1)) || (y < size.y / 2 - size_t(r1)) ||
+                    (y >= size.y / 2 + size_t(r1)))
                     break;
             }
 

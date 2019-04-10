@@ -44,8 +44,9 @@ public:
             shift   = I;
             pattern = {{.5, .5}, {-.5, .5}, {-.5, -.5}, {.5, -.5}};
         }
-        for (size_t i = 0; i < w(); ++i)
-            for (size_t j = 0; j < h(); ++j) {
+        // TODO: coo_range
+        for (size_t i = 0; i < size.x; ++i)
+            for (size_t j = 0; j < size.y; ++j) {
                 Color c = to_Color(at({i, j}));
                 if (c == to_Color(0)) continue;
                 vector<cpx> p;
@@ -57,7 +58,7 @@ public:
     }
 
     void explore() {
-        ucoo   z0{w() / 2, (con == 6) ? h() / 3 : h() / 2};
+        ucoo   z0{size.x / 2, (con == 6) ? size.y / 3 : size.y / 2};
         vector list{z0};
         auto   s = at(list.back());
         while (!list.empty()) {

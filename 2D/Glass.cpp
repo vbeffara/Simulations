@@ -100,7 +100,7 @@ public:
     };
 
     void run(const vb::Hub &H) {
-        auto   n = w();
+        auto   n = size.x;
         double p = H['p'];
 
         for (size_t i = 0; i < 2000 * n * n; i++) {

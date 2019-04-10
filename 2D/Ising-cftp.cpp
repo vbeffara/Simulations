@@ -15,9 +15,10 @@ namespace vb {
 
 class IsingCFTP : public Bitmap<int> {
 public:
-    explicit IsingCFTP(const Hub &H) : Bitmap<int>(H.title, {H['n'], H['n']}), b(H['b']), d(0), s(H['s']), status(H.title, {w(), h()}) {
-        for (size_t i = 0; i < w(); ++i)
-            for (size_t j = 0; j < h(); ++j) put({i, j}, 1);
+    explicit IsingCFTP(const Hub &H) : Bitmap<int>(H.title, {H['n'], H['n']}), b(H['b']), d(0), s(H['s']), status(H.title, size) {
+        // TODO: coo_range
+        for (size_t i = 0; i < size.x; ++i)
+            for (size_t j = 0; j < size.y; ++j) put({i, j}, 1);
         snap();
         b *= log(1 + sqrt(double(2)));
         for (int i = 0; i <= 4; ++i) p.push_back(exp(b * i) / (exp(b * i) + exp(b * (4 - i))));
@@ -39,7 +40,8 @@ public:
     }
 
     void up() {
-        for (size_t i = 0; i < size_t(w() * h()); ++i) up({d + prng.uniform_int(w() - 2 * d), d + prng.uniform_int(h() - 2 * d)});
+        for (size_t i = 0; i < size_t(size.x * size.y); ++i)
+            up({d + prng.uniform_int(size.x - 2 * d), d + prng.uniform_int(size.y - 2 * d)});
     }
     void snap() {
         for (auto z : coo_range(size)) status.put(z, at(z));
@@ -49,11 +51,12 @@ public:
     void run() {
         vector<string> states;
         states.push_back(prng.state());
-        auto n = w() * h();
+        auto n = size.x * size.y;
         while (n > 0) {
             cerr << n << endl;
-            for (size_t i = d; i < w() - 2 * d; ++i)
-                for (size_t j = d; j < h() - 2 * d; ++j) put({i, j}, 1);
+            // TODO: coo_range
+            for (size_t i = d; i < size.x - 2 * d; ++i)
+                for (size_t j = d; j < size.y - 2 * d; ++j) put({i, j}, 1);
             for (auto t = states.size(); t-- > 0;) {
                 prng.state(states[t]);
                 for (size_t i = 0; i < (1U << t); ++i) up();
@@ -69,29 +72,29 @@ public:
 
     void bc_0() {
         d = 1;
-        for (size_t i = 0; i < w(); ++i) {
+        for (size_t i = 0; i < size.x; ++i) {
             put({i, 0}, 0);
-            put({i, h() - 1}, 0);
+            put({i, size.y - 1}, 0);
         }
-        for (size_t j = 0; j < h(); ++j) {
+        for (size_t j = 0; j < size.y; ++j) {
             put({0, j}, 0);
-            put({w() - 1, j}, 0);
+            put({size.x - 1, j}, 0);
         }
     }
 
     void bc_dobrushin() {
         d = 1;
-        for (size_t i = 0; i < w(); ++i) {
+        for (size_t i = 0; i < size.x; ++i) {
             put({i, 0}, 0);
-            put({i, h() - 1}, 2);
+            put({i, size.y - 1}, 2);
         }
-        for (size_t j = 0; j < h() / 2; ++j) {
+        for (size_t j = 0; j < size.y / 2; ++j) {
             put({0, j}, 0);
-            put({w() - 1, j}, 0);
+            put({size.x - 1, j}, 0);
         }
-        for (size_t j = h() / 2; j < h(); ++j) {
+        for (size_t j = size.y / 2; j < size.y; ++j) {
             put({0, j}, 2);
-            put({w() - 1, j}, 2);
+            put({size.x - 1, j}, 2);
         }
     }
 

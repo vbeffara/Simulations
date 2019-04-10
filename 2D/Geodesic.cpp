@@ -23,8 +23,7 @@ public:
 class QG : public Image {
 public:
     explicit QG(const Hub &H)
-        : Image(H.title, {1U << unsigned(H['n']), 1U << unsigned(H['n'])}), I({w(), h()}, Info({0, 0}, {0, 0}, 0, 0)), g(H['g']),
-          n(H['n']) {
+        : Image(H.title, {1U << unsigned(H['n']), 1U << unsigned(H['n'])}), I(size, Info({0, 0}, {0, 0}, 0, 0)), g(H['g']), n(H['n']) {
         map<string, function<void()>> fields;
         fields["boolean"]  = [&, this] { fill_boolean(H['z']); };
         fields["dyadic"]   = [&, this] { fill_dyadic(H['z']); };
@@ -39,7 +38,7 @@ public:
             minf = min(minf, I.at(z).f);
             maxf = max(maxf, I.at(z).f);
         }
-        spdlog::info("Renormalized field: min = {}, max = {}", minf / log(w()), maxf / log(w()));
+        spdlog::info("Renormalized field: min = {}, max = {}", minf / log(size.x), maxf / log(size.x));
 
         for (auto z : coo_range(size)) {
             put(z, Grey(uint8_t(255 * (I.at(z).f - minf) / (maxf - minf))));
@@ -132,13 +131,13 @@ public:
     }
 
     void dijkstra() {
-        ucoo                 mid{w() / 2, h() / 2};
+        ucoo                 mid = size / 2;
         priority_queue<Info> Q;
         I.at(mid).d = 0;
         Q.push(I.at(mid));
-        ProgressBar PB(size_t(w() * h()));
+        ProgressBar PB(size_t(size.x * size.y));
 
-        for (size_t t = 0; t < size_t(w() * h()); ++t) {
+        for (size_t t = 0; t < size_t(size.x * size.y); ++t) {
             PB.set(t);
             while (I.at(Q.top().z).d < Q.top().d) Q.pop();
             Info im = Q.top();
@@ -159,11 +158,11 @@ public:
 
     double radius() {
         double r = I.at({0, 0}).d;
-        for (size_t i = 0; i < w(); ++i) {
+        for (size_t i = 0; i < size.x; ++i) {
             r = min(r, I.at({i, 0}).d);
             r = min(r, I.at({0, i}).d);
-            r = min(r, I.at({i, h() - 1}).d);
-            r = min(r, I.at({w() - 1, i}).d);
+            r = min(r, I.at({i, size.y - 1}).d);
+            r = min(r, I.at({size.x - 1, i}).d);
         }
         return r;
     }
