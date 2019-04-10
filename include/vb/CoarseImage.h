@@ -18,6 +18,8 @@ namespace vb {
             : Bitmap<CoarseCell>(s, {1 + (size.x - 1) / l, 1 + (size.y - 1) / l}, CoarseCell(l)), true_width(size_t(size.x)),
               true_height(size_t(size.y)), L(l), LL(l * l) {}
 
+        CoarseImage(const std::string &s, ucoo size) : CoarseImage(s, size, size_t(pow(double(sup(size)), .33))) {}
+
         // TODO: make this work for ucoo as well
         bool fits(coo z) const {
             z += z0;

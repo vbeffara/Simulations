@@ -9,8 +9,8 @@ namespace vb {
 
     template <typename T> class AutoWindow : public Auto, public T {
     public:
-        AutoWindow(const std::string &s, ucoo size) : Auto(.1), T(int(size.x), int(size.y)), paused(false) {
-            T::label(s.c_str());
+        AutoWindow(const std::string &s, ucoo size) : Auto(.1), T(int(size.x), int(size.y)), title(s) {
+            T::label(title.c_str());
             T::callback(close_window);
         }
 
@@ -62,6 +62,7 @@ namespace vb {
         }
 
     private:
-        bool paused;
+        bool        paused = false;
+        std::string title;
     };
 } // namespace vb

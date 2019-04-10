@@ -8,64 +8,61 @@
 using namespace vb;
 using namespace std;
 
-class DLA : public CoarseImage {
-public:
-    explicit DLA(const Hub &H)
-        : CoarseImage(H.title, {H['n'], H['n']}, unsigned(pow(double(H['n']), .33))), n(H['n']), c(H['c']), r(1),
-          QT({-n / 2, -n / 2}, {n / 2, n / 2}, H['l']), prec(unsigned(H['p'])), img(H.title, {512, 512}) {
-        z0 = {n / 2, n / 2};
-        W.watch(QT.n, "Nb of particles");
-        W.watch(r, "Cluster radius");
-
-        spdlog::info("Precomputing harmonic measures, d up to {} ...", int(H['p']));
-        for (size_t r = 1; r < size_t(H['p']); ++r) {
-            bool          dirty = true;
-            Array<double> MM({2 * r + 1, 2 * r + 1});
-            MM.at({r, r}) = 1;
-            while (dirty) {
-                dirty = false;
-                for (size_t i = 1; i < 2 * r; ++i)
-                    for (size_t j = 1; j < 2 * r; ++j) {
-                        ucoo   z{i, j};
-                        double t = MM.at(z);
-                        MM.at(z) = 0;
-                        if (t > 1e-13) {
-                            dirty = true;
-
-                            auto ii = (i <= r) ? i : 2 * r - i;
-                            auto jj = (j <= r) ? j : 2 * r - j;
-                            auto d  = min(ii, jj);
-                            if (d == r) --d;
-
-                            if (d <= 1)
-                                for (gsl::index k = 0; k < 4; ++k) MM.at(z + dz[k]) += t / 4;
-                            else {
-                                const auto &ps = prec[d];
-                                for (size_t k = 0; k < size_t(d); ++k) {
-                                    MM.at({i - d, j + k}) += t * ps[k] / 8;
-                                    MM.at({i - d, j - k}) += t * ps[k] / 8;
-                                    MM.at({i + d, j + k}) += t * ps[k] / 8;
-                                    MM.at({i + d, j - k}) += t * ps[k] / 8;
-                                    MM.at({i + k, j - d}) += t * ps[k] / 8;
-                                    MM.at({i - k, j - d}) += t * ps[k] / 8;
-                                    MM.at({i + k, j + d}) += t * ps[k] / 8;
-                                    MM.at({i - k, j + d}) += t * ps[k] / 8;
-                                }
-                            }
+auto harmonic_measures(size_t p) {
+    spdlog::info("Precomputing harmonic measures, d up to {} ...", p);
+    vector<vector<double>> prec(p);
+    for (size_t r = 1; r < p; ++r) {
+        Array<double> MM({2 * r + 1, 2 * r + 1});
+        MM.at({r, r}) = 1;
+        for (bool dirty = true; dirty;) {
+            dirty = false;
+            for (const auto &z : coo_range(ucoo{1, 1}, ucoo{2 * r, 2 * r})) {
+                if (double t = MM.at(z); t > 1e-13) {
+                    MM.at(z) = 0;
+                    dirty    = true;
+                    auto d   = min({z.x, 2 * r - z.x, z.y, 2 * r - z.y});
+                    if ((d == 1) || (d == r))
+                        for (gsl::index k = 0; k < 4; ++k) MM.at(z + dz[k]) += t / 4;
+                    else {
+                        for (size_t k = 0; k < d; ++k) {
+                            MM.at(z + coo{-int64_t(d), +int64_t(k)}) += t * prec[d][k] / 8;
+                            MM.at(z + coo{-int64_t(d), -int64_t(k)}) += t * prec[d][k] / 8;
+                            MM.at(z + coo{+int64_t(d), +int64_t(k)}) += t * prec[d][k] / 8;
+                            MM.at(z + coo{+int64_t(d), -int64_t(k)}) += t * prec[d][k] / 8;
+                            MM.at(z + coo{+int64_t(k), -int64_t(d)}) += t * prec[d][k] / 8;
+                            MM.at(z + coo{-int64_t(k), -int64_t(d)}) += t * prec[d][k] / 8;
+                            MM.at(z + coo{+int64_t(k), +int64_t(d)}) += t * prec[d][k] / 8;
+                            MM.at(z + coo{-int64_t(k), +int64_t(d)}) += t * prec[d][k] / 8;
                         }
                     }
+                }
             }
-
-            prec[size_t(r)].push_back(4 * MM.at({0, r}));
-            for (size_t i = 1; i < r; ++i) prec[r].push_back(8 * MM.at({0, r + i}));
         }
-        start = now();
-    };
+
+        prec[r].push_back(4 * MM.at({0, r}));
+        for (size_t i = 1; i < r; ++i) prec[r].push_back(8 * MM.at({0, r + i}));
+    }
+    return prec;
+}
+
+coo uniform_circle(size_t r) {
+    double theta = prng.uniform_real(0, 2 * M_PI);
+    return {int64_t(double(r) * cos(theta)), int64_t(double(r) * sin(theta))};
+}
+
+class DLA : public CoarseImage {
+public:
+    explicit DLA(int64_t n, const Hub &H)
+        : CoarseImage(H.title, {size_t(n), size_t(n)}), n(n), c(H['c']), QT({0, 0}, {n, n}, H['l']),
+          prec(harmonic_measures(H['p'])), mid{n / 2, n / 2} {}
 
     void show() override {
+        W.watch(QT.n, "Nb of particles");
+        W.watch(r, "Cluster radius");
         W.show();
         img.show();
         CoarseImage::show();
+        start = now();
     }
 
     [[nodiscard]] bool at(coo z) const { return fits(z) && CoarseImage::at(z); }
@@ -73,7 +70,7 @@ public:
     void put(coo z) {
         CoarseImage::put(z, true);
         QT.insert(z);
-        r = std::max(r, sup(z));
+        r = std::max(r, size_t(sup(z - mid)));
     }
 
     [[nodiscard]] bool neighbor(coo z) const {
@@ -82,39 +79,31 @@ public:
         return false;
     }
 
-    [[nodiscard]] coo jump(int64_t d) const {
+    [[nodiscard]] coo jump(size_t d) const {
         if (d <= 1) return dz[prng.uniform_int(4)];
-        if (d < int(prec.size())) {
-            coo w{d, prng.discrete(prec[size_t(d)])};
+        if (d < prec.size()) {
+            coo w{int64_t(d), prng.discrete(prec[d])};
             if (prng.bernoulli()) w.x = -w.x;
             if (prng.bernoulli()) w.y = -w.y;
             if (prng.bernoulli()) swap(w.x, w.y);
             return w;
         }
-        if (d < c) return jump(int64_t(prec.size()) - 1);
-        auto   l     = d - c / 2;
-        double theta = prng.uniform_real(0, 2 * M_PI);
-        auto   x = int64_t(l * cos(theta)), y = int64_t(l * sin(theta));
-        return {x, y};
+        if (d < c) return jump(prec.size() - 1);
+        return uniform_circle(d - c / 2);
     }
 
     void runDLA() {
-        put({0, 0});
-        while (r < n / 2 - 1) {
-            double    t = prng.uniform_real(0, 2 * M_PI);
-            coo       z{int(double(2 * r + 20) * cos(t)), int(double(2 * r + 20) * sin(t))};
-            QuadIndex qi{{0, 0}, sup(z)};
+        put(mid);
+        while (r < size_t(n) / 2 - 1) {
+            coo       z = mid + uniform_circle(2 * r + 20);
+            QuadIndex qi{mid, sup(z - mid)};
             while (!neighbor(z)) {
                 qi.d = sup(z - qi.z);
                 QT.nn(z, qi);
-                z += jump(qi.d - 1);
-                if (sup(z) > 100 * r) {
-                    z.x -= z.x / 10;
-                    z.y -= z.y / 10;
-                }
+                z += jump(size_t(qi.d) - 1);
+                if (size_t(sup(z)) > 100 * r) { z += (mid - z) / 10; }
             }
             put(z);
-            if (!(QT.n % 1000)) update();
         }
     }
 
@@ -123,20 +112,22 @@ public:
         CoarseImage::paint();
     }
 
-    int64_t                n, c, r;
+    int64_t                n;
+    size_t                 c, r = 1;
     Console                W;
     QuadTree               QT;
     vector<vector<double>> prec;
-    Image                  img;
+    Image                  img{"QuadTree", {512, 512}};
+    coo                    mid;
 };
 
 int main(int argc, char **argv) {
     Hub H("Lattice DLA", argc, argv, "n=2000,p=64,c=50,l=30,f,s=0");
-    if (auto s = unsigned(H['s'])) prng.seed(s);
-    DLA dla(H);
+    if (auto s = size_t(H['s'])) prng.seed(s);
+    DLA dla(H['n'], H);
     dla.show();
     dla.runDLA();
     dla.output(H.title);
     if (H['f']) dla.output_fine("dla.png");
-    spdlog::info("Final cluster: {} particles, diameter = {}", dla.QT.n, dla.r);
+    H.output("Final particle number", "m", dla.QT.n);
 }
