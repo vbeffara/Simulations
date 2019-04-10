@@ -65,10 +65,10 @@ public:
         start = now();
     }
 
-    [[nodiscard]] bool at(coo z) const { return fits(z) && CoarseImage::at(z); }
+    [[nodiscard]] bool at(coo z) const { return fits(z) && CoarseImage::at(ucoo(z)); }
 
     void put(coo z) {
-        CoarseImage::put(z, true);
+        CoarseImage::put(ucoo(z), true);
         QT.insert(z);
         r = std::max(r, size_t(sup(z - mid)));
     }

@@ -18,10 +18,11 @@ public:
         if (twostep) pq.push({{int64_t(true_width / 2) + 1, int64_t(true_height) / 2}, cost()});
     };
 
-    void spread(double t, const coo &z) {
+    void spread(double t, const ucoo &z) {
         for (int d = 0; d < 4; ++d) {
             auto zz = z + dz[d];
-            if (!at(zz)) pq.push({zz, t + cost()});
+            // TODO: switch all that (and PointQueue?) to ucoo
+            if (!at(zz)) pq.push({coo(zz), t + cost()});
         }
     }
 
@@ -30,7 +31,7 @@ public:
             if (trace) std::cout << area << " " << pq.size() << std::endl;
 
             auto       pt = pq.get();
-            const coo &z  = pt;
+            const auto z  = ucoo(pt);
             if (!at(z)) {
                 put(z, true);
                 ++area;
@@ -48,7 +49,7 @@ public:
                         if (at(zz)) spread(curtime, zz);
                     }
 
-                if ((z.x == 1) || (z.y == 1) || (z.x == int64_t(true_width) - 2) || (z.y == int64_t(true_height) - 2)) break;
+                if ((z.x == 1) || (z.y == 1) || (z.x == true_width - 2) || (z.y == true_height - 2)) break;
             }
         }
     }

@@ -56,7 +56,7 @@ public:
 class Bouncy : public CoarseImage {
 public:
     Bouncy(const Hub &H, size_t n, const string &j) : CoarseImage(H.title, {n, n}, size_t(pow(n, .25))), jump(Bounces(H).at(j)) {
-        mid = {int(n) / 2, int(n) / 2};
+        mid = size / 2;
         if (H['g']) {
             tree = make_unique<Image>(H.title, ucoo{2 * n - 1, 2 * n - 1});
             tree->put(ucoo(mid) * 2, WHITE);
@@ -69,12 +69,12 @@ public:
     void run(const Hub &H) {
         coo z{0, 0};
         while (true) {
-            coo nz = z;
-            if (at(nz + mid)) {
+            auto nz = z;
+            if (at(mid + nz)) {
                 nz += dz[prng.uniform_int(4)];
                 if (!fits(nz + mid)) break;
             }
-            if (!at(nz + mid)) {
+            if (!at(mid + nz)) {
                 if (H['g']) {
                     // TODO: fix appearances of at(ucoo(...))
                     Color c = tree->at(ucoo(z + mid) * 2);
@@ -83,7 +83,7 @@ public:
                     tree->put(ucoo(nz + mid) * 2, c);
                     tree->put(ucoo(z + nz + mid * 2), c);
                 }
-                put(nz + mid, true);
+                put(mid + nz, true);
                 nz += jump(nz);
             }
             z = nz;
@@ -92,7 +92,7 @@ public:
 
     function<coo(coo)> jump;
     unique_ptr<Image>  tree;
-    coo                mid;
+    ucoo               mid;
 };
 
 int main(int argc, char **argv) {

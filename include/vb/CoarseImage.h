@@ -20,12 +20,12 @@ namespace vb {
 
         CoarseImage(const std::string &s, ucoo size) : CoarseImage(s, size, size_t(pow(double(sup(size)), .33))) {}
 
-        // TODO: make this work for ucoo as well
-        bool fits(coo z) const { return (z.x >= 0) && (z.y >= 0) && (z.x < int64_t(true_width)) && (z.y < int64_t(true_height)); }
+        template <typename T> bool fits(const coo_2d<T> &z) const {
+            return (z.x >= 0) && (z.y >= 0) && (z.x < T(true_width)) && (z.y < T(true_height));
+        }
 
-        // TODO: use ucoo here (get rid of z0)
-        bool at(coo z) const;
-        void put(coo z, bool c);
+        bool at(ucoo z) const;
+        void put(ucoo z, bool c);
 
         void output_fine(const std::string &fn) const;
 

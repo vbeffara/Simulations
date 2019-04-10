@@ -14,9 +14,9 @@ int main(int argc, char **argv) {
     CoarseImage img(H.title, {n, n}, L);
     img.show();
 
-    for (coo z{int(n) / 2, int(n) / 2};;) {
+    for (ucoo z{n / 2, n / 2};;) {
         img.put(z, true);
-        coo nz = z + dz[prng() % 4];
+        auto nz = z + dz[prng.uniform_int(4)];
         if (!img.fits(nz)) break;
         if (img.at(nz) || prng.bernoulli(a)) z = nz;
     }
