@@ -52,8 +52,8 @@ coo uniform_circle(size_t r) {
 
 class DLA : public CoarseImage {
 public:
-    explicit DLA(int64_t n, const Hub &H)
-        : CoarseImage(H.title, {size_t(n), size_t(n)}), n(n), c(H['c']), QT({0, 0}, {n, n}, H['l']),
+    DLA(size_t n, const Hub &H)
+        : CoarseImage(H.title, {n, n}), n(n), c(H['c']), QT({0, 0}, {int64_t(n), int64_t(n)}, H['l']),
           prec(harmonic_measures(H['p'])), mid{n / 2, n / 2} {}
 
     void show() override {
@@ -67,10 +67,10 @@ public:
 
     [[nodiscard]] bool at(coo z) const { return fits(z) && CoarseImage::at(ucoo(z)); }
 
-    void put(coo z) {
-        CoarseImage::put(ucoo(z), true);
-        QT.insert(z);
-        r = std::max(r, size_t(sup(z - mid)));
+    void put(ucoo z) {
+        CoarseImage::put(z, true);
+        QT.insert(coo(z));
+        r = std::max(r, size_t(sup(coo(z) - coo(mid))));
     }
 
     [[nodiscard]] bool neighbor(coo z) const {
@@ -95,15 +95,15 @@ public:
     void runDLA() {
         put(mid);
         while (r < size_t(n) / 2 - 1) {
-            coo       z = mid + uniform_circle(2 * r + 20);
-            QuadIndex qi{mid, sup(z - mid)};
+            coo       z = uniform_circle(2 * r + 20) + mid;
+            QuadIndex qi{coo(mid), sup(z - mid)};
             while (!neighbor(z)) {
                 qi.d = sup(z - qi.z);
                 QT.nn(z, qi);
                 z += jump(size_t(qi.d) - 1);
                 if (size_t(sup(z)) > 100 * r) { z += (mid - z) / 10; }
             }
-            put(z);
+            put(ucoo(z));
         }
     }
 
@@ -112,13 +112,12 @@ public:
         CoarseImage::paint();
     }
 
-    int64_t                n;
-    size_t                 c, r = 1;
+    size_t                 n, c, r = 1;
     Console                W;
     QuadTree               QT;
     vector<vector<double>> prec;
     Image                  img{"QuadTree", {512, 512}};
-    coo                    mid;
+    ucoo                   mid;
 };
 
 int main(int argc, char **argv) {

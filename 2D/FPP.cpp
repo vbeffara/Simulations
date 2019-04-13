@@ -15,7 +15,7 @@ public:
         trace    = H['t'];
 
         pq.push({{int(n) / 2, int(n) / 2}, cost()});
-        if (twostep) pq.push({{int64_t(true_width / 2) + 1, int64_t(true_height) / 2}, cost()});
+        if (twostep) pq.push({{int64_t(n) / 2 + 1, int64_t(n) / 2}, cost()});
     };
 
     void spread(double t, const ucoo &z) {
@@ -49,7 +49,7 @@ public:
                         if (at(zz)) spread(curtime, zz);
                     }
 
-                if ((z.x == 1) || (z.y == 1) || (z.x == true_width - 2) || (z.y == true_height - 2)) break;
+                if ((z.x == 1) || (z.y == 1) || (z.x == size.x - 2) || (z.y == size.y - 2)) break;
             }
         }
     }

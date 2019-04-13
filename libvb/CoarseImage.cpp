@@ -17,7 +17,7 @@ namespace vb {
         const CoarseCell &d = Bitmap<CoarseCell>::at(z / L);
         if (d.fill == 0) return false;
         if (d.fill == LL) return true;
-        return d.sub[(z.x % L) + L * (z.y % L)];
+        return d[(z.x % L) + L * (z.y % L)];
     }
 
     void CoarseImage::put(ucoo z, bool c) {
@@ -25,16 +25,16 @@ namespace vb {
         const unsigned cc = c ? 1 : 0;
         CoarseCell &   d  = Bitmap<CoarseCell>::at(z / L);
         if (d.fill == cc * LL) return;
-        if (d.fill == (1 - cc) * LL) d.sub.resize(LL, !c);
+        if (d.fill == (1 - cc) * LL) d.resize(LL, !c);
         auto sub_xy = (z.x % L) + L * (z.y % L);
-        if (d.sub[sub_xy] != c) {
-            d.sub[sub_xy] = c;
+        if (d[sub_xy] != c) {
+            d[sub_xy] = c;
             if (c)
                 d.fill++;
             else
                 d.fill--;
         }
-        if ((d.fill == 0) || (d.fill == LL)) d.sub.shrink_to_fit();
+        if ((d.fill == 0) || (d.fill == LL)) d.shrink_to_fit();
     }
 
     void CoarseImage::output_fine(const std::string &fn) const {
@@ -43,13 +43,13 @@ namespace vb {
         auto info   = png_create_info_struct(png);
 
         png_set_write_fn(png, &stream, write_data, flush_data);
-        png_set_IHDR(png, info, png_uint_32(true_width), png_uint_32(true_height), 1, PNG_COLOR_TYPE_GRAY, PNG_INTERLACE_NONE,
+        png_set_IHDR(png, info, png_uint_32(size.x), png_uint_32(size.y), 1, PNG_COLOR_TYPE_GRAY, PNG_INTERLACE_NONE,
                      PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
         png_write_info(png, info);
 
-        for (size_t j = 0; j < true_height; ++j) {
-            auto row = std::vector<uint8_t>(1 + true_width / 8, 0);
-            for (size_t i = 0; i < true_width; ++i)
+        for (size_t j = 0; j < size.y; ++j) {
+            auto row = std::vector<uint8_t>(1 + size.x / 8, 0);
+            for (size_t i = 0; i < size.x; ++i)
                 if (!at({i, j})) row.at(i / 8) |= (128U >> static_cast<unsigned>(i % 8));
             png_write_row(png, row.data());
         }
