@@ -1,5 +1,4 @@
 #pragma once
-#define BOOST_CONTEXT_DETAIL_APPLY_H
 #include <boost/coroutine2/all.hpp>
 
 namespace vb {

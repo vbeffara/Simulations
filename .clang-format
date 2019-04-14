@@ -21,7 +21,6 @@ Cpp11BracedListStyle: true
 DerivePointerAlignment: false
 DisableFormat:   false
 ExperimentalAutoDetectBinPacking: false
-ForEachMacros:   [ foreach, Q_FOREACH, BOOST_FOREACH ]
 IncludeIsMainRegex: '$'
 IndentCaseLabels: false
 IndentWidth:     4

@@ -53,5 +53,5 @@ template <> struct fmt::formatter<vb::complex_t> {
     }
 };
 
-// TODO: remove this when upgraded to boost 1.70
+// TODO: remove this when upgraded to boost 1.71
 template <typename T> struct std::is_constructible<fmt::string_view, boost::multiprecision::number<T>> : std::false_type {};

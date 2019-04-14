@@ -1,6 +1,4 @@
 #pragma once
-#define BOOST_DISABLE_ASSERTS 1
-#define BOOST_ALLOW_DEPRECATED_HEADERS 1
 #include <boost/random.hpp>
 #include <random>
 #include <vb/util/coo.h>

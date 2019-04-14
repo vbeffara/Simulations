@@ -12,21 +12,15 @@ set (CMAKE_EXPORT_COMPILE_COMMANDS 1)
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG(-fcoroutines-ts COROUTINES_TS)
 if (${COROUTINES_TS})
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcoroutines-ts -isystem /usr/local/opt/llvm/include/c++/v1")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcoroutines-ts")
 endif ()
 
 if (${COV})
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 --coverage -fprofile-arcs -ftest-coverage")
 	set (CMAKE_EXE_LINKER_FLAGS "--coverage -fprofile-arcs -ftest-coverage")
 else ()
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -DNDEBUG")
 endif ()
-
-if (${DEBUG})
-else ()
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNDEBUG")
-endif ()
-
 link_directories ("/usr/local/lib" "/opt/X11/lib")
 include_directories ("${PROJECT_SOURCE_DIR}/include")
 
