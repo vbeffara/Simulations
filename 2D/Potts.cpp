@@ -87,7 +87,6 @@ public:
                     if ((i == 0) || (j == 0) || (i == size.x - 1) || (j == size.y - 1)) put({i, j}, (q * (i + j) / size.x) % q);
         };
         bcs["loren2"] = [this] {
-            assert(size_t(H['q']) >= 6);
             b = 1;
             for (size_t i = 0; i < size.x / 4; ++i) put({i, 0}, 0);
             for (size_t i = size.x / 4; i < 3 * size.x / 4; ++i) put({i, 0}, 1);
