@@ -36,8 +36,8 @@ public:
 
     void run() {
         while (true) {
-            const Point pt = pq.get();
-            const auto  z  = ucoo(pt);
+            const auto pt = pq.get();
+            const auto z  = ucoo(pt);
 
             if ((z.x == n - 1) || (z.y == n - 1)) return;
             if (!at(z)) {
@@ -46,19 +46,19 @@ public:
                     put(z, true);
                     cursum = max(cursum, z.x + z.y);
                     if (f) fill(z);
-                    if ((z.x < n - 1) && !at(z + coo{1, 0})) pq.push({coo(z) + coo{1, 0}, curtime + prng.exponential() / p});
-                    if ((z.y < n - 1) && !at(z + coo{0, 1})) pq.push({coo(z) + coo{0, 1}, curtime + prng.exponential() / (1 - p)});
+                    if ((z.x < n - 1) && !at(z + coo{1, 0})) pq.push({z + coo{1, 0}, curtime + prng.exponential() / p});
+                    if ((z.y < n - 1) && !at(z + coo{0, 1})) pq.push({z + coo{0, 1}, curtime + prng.exponential() / (1 - p)});
                 } else {
-                    pq.push({coo(z), curtime + prng.exponential()});
+                    pq.push({z, curtime + prng.exponential()});
                 }
             }
         }
     }
 
-    bool       f;
-    size_t     n, cursum;
-    double     p;
-    PointQueue pq;
+    bool             f;
+    size_t           n, cursum;
+    double           p;
+    PointQueue<ucoo> pq;
 };
 
 int main(int argc, char **argv) {

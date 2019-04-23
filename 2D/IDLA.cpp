@@ -55,8 +55,8 @@ public:
 
 class Bouncy : public CoarseImage {
 public:
-    Bouncy(const Hub &H, size_t n, const string &j) : CoarseImage(H.title, {n, n}, size_t(pow(n, .25))), jump(Bounces(H).at(j)) {
-        mid = size / 2;
+    Bouncy(const Hub &H, size_t n, const string &j)
+        : CoarseImage(H.title, {n, n}, size_t(pow(n, .25))), jump(Bounces(H).at(j)), mid(size / 2) {
         if (H['g']) {
             tree = make_unique<Image>(H.title, ucoo{2 * n - 1, 2 * n - 1});
             tree->put(ucoo(mid) * 2, WHITE);

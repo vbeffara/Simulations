@@ -14,15 +14,14 @@ public:
         twostep  = H['2'];
         trace    = H['t'];
 
-        pq.push({{int(n) / 2, int(n) / 2}, cost()});
-        if (twostep) pq.push({{int64_t(n) / 2 + 1, int64_t(n) / 2}, cost()});
+        pq.push({{n / 2, n / 2}, cost()});
+        if (twostep) pq.push({{n / 2 + 1, n / 2}, cost()});
     };
 
     void spread(double t, const ucoo &z) {
         for (int d = 0; d < 4; ++d) {
             auto zz = z + dz[d];
-            // TODO: switch all that (and PointQueue?) to ucoo
-            if (!at(zz)) pq.push({coo(zz), t + cost()});
+            if (!at(zz)) pq.push({zz, t + cost()});
         }
     }
 
@@ -54,9 +53,9 @@ public:
         }
     }
 
-    int        area;
-    bool       trace, invasion, twostep;
-    PointQueue pq;
+    int              area;
+    bool             trace, invasion, twostep;
+    PointQueue<ucoo> pq;
 };
 
 int main(int argc, char **argv) {
