@@ -1,5 +1,5 @@
 #include <vb/CoarseImage.h>
-#include <vb/Point.h>
+#include <vb/data/Queue.h>
 #include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
@@ -27,10 +27,10 @@ public:
 
     void run() {
         while (true) {
-            if (trace) std::cout << area << " " << pq.size() << std::endl;
+            if (trace) std::cout << area << " " << pq.q.size() << std::endl;
 
-            auto       pt = pq.get();
-            const auto z  = ucoo(pt);
+            auto        pt = pq.get();
+            const ucoo &z  = pt;
             if (!at(z)) {
                 put(z, true);
                 ++area;
@@ -53,9 +53,9 @@ public:
         }
     }
 
-    int              area;
-    bool             trace, invasion, twostep;
-    PointQueue<ucoo> pq;
+    int         area;
+    bool        trace, invasion, twostep;
+    Queue<ucoo> pq;
 };
 
 int main(int argc, char **argv) {

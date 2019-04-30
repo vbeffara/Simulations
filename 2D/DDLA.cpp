@@ -1,5 +1,5 @@
 #include <vb/CoarseImage.h>
-#include <vb/Point.h>
+#include <vb/data/Queue.h>
 #include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
@@ -36,8 +36,8 @@ public:
 
     void run() {
         while (true) {
-            const auto pt = pq.get();
-            const auto z  = ucoo(pt);
+            const auto  pt = pq.get();
+            const ucoo &z  = pt;
 
             if ((z.x == n - 1) || (z.y == n - 1)) return;
             if (!at(z)) {
@@ -55,10 +55,10 @@ public:
         }
     }
 
-    bool             f;
-    size_t           n, cursum;
-    double           p;
-    PointQueue<ucoo> pq;
+    bool        f;
+    size_t      n, cursum;
+    double      p;
+    Queue<ucoo> pq;
 };
 
 int main(int argc, char **argv) {
