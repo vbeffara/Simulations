@@ -13,10 +13,6 @@ fltk/1.3.5-1@vbeffara/stable
 fplll/5.2.1-1@vbeffara/stable
 libcmaes/0.9.5-7514782ebe-1@vbeffara/stable
 mpc/1.1.0-1@vbeffara/stable
-sqlite_modern_cpp/3.2-936cd0c-1@vbeffara/stable
-
-[options]
-sqlite3:shared=True
 
 [generators]
 cmake

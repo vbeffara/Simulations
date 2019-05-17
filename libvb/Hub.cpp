@@ -2,7 +2,6 @@
 #include <FL/Fl_Gl_Window.H>
 #include <boost/algorithm/string.hpp>
 #include <spdlog/spdlog.h>
-#include <sqlite_modern_cpp.h>
 #include <sys/stat.h>
 #include <vb/util/Hub.h>
 #include <vb/util/mp.h>
@@ -43,42 +42,8 @@ namespace vb {
         Duration d = end - start, d_u = end_u - start_u, d_s = end_s - start_s;
         output("Time spent", "", fmt::format("{} real, {} user, {} system", d.count(), d_u.count(), d_s.count()), false);
 
-        auto        format = fmt::format("{{:<{}}} : {{}}", max_label_width);
-        std::string os, ls;
-        for (const auto &[k, ks, v, o] : outputs) {
-            spdlog::info(fmt::format(format, k, v));
-            if (o) {
-                os += ",?";
-                ls += "," + ks;
-            }
-        }
-
-        sqlite::database db("diary.db");
-
-        db << "create table if not exists cmds ("
-              "  cmd_id integer primary key autoincrement not null,"
-              "  prog, version, args);";
-        db << "create table if not exists runs ("
-              "  id integer primary key autoincrement not null,"
-              "  date timestamp default (datetime('now')),"
-              "  cmd_id, a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z);";
-
-        std::vector<std::string> as;
-        for (const auto &[k, v] : *this) as.push_back(fmt::format("{}={}", k, std::string(v)));
-        std::string args = boost::join(as, ", ");
-
-        std::optional<int64_t> id;
-        db << "select cmd_id from cmds where prog = ? and version = ? and args = ?;" << prog << version() << args >>
-            [&](int64_t i) { id = i; };
-
-        if (!id) {
-            db << "insert into cmds (prog,version,args) values (?,?,?);" << prog << version() << args;
-            id = db.last_insert_rowid();
-        }
-
-        auto tmp = db << "insert into runs (cmd_id" + ls + ") values (?" + os + ");" << *id;
-        for (const auto &[k, ks, v, o] : outputs)
-            if (o) tmp << v;
+        auto format = fmt::format("{{:<{}}} : {{}}", max_label_width);
+        for (const auto &[k, ks, v, o] : outputs) spdlog::info(fmt::format(format, k, v));
 
         chdir("../..");
     }
