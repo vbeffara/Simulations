@@ -31,15 +31,13 @@ namespace vb {
 
     protected:
         void paint() override {
-            auto             ppp = size_t(pixel_w()) / size.x;
+            size_t           ppp = size_t(pixel_w()) / size.x;
             gsl::span<Color> stage((Color *)cairo_image_surface_get_data(surface), gsl::index(ppp * size.x + stride * (ppp * size.y - 1)));
 
-            // TODO: coo_range
-            for (size_t x = 0; x < size.x; ++x)
-                for (size_t y = 0; y < size.y; ++y)
-                    for (size_t dx = 0; dx < ppp; ++dx)
-                        for (size_t dy = 0; dy < ppp; ++dy)
-                            stage[gsl::index(ppp * x + dx + stride * (ppp * y + dy))] = to_Color(at({x, y}));
+            for (const auto &z : coo_range(size)) {
+                for (const auto &dz : coo_range(ucoo{ppp, ppp}))
+                    stage[gsl::index(ppp * z.x + dz.x + stride * (ppp * z.y + dz.y))] = to_Color(at(z));
+            }
         }
     };
 

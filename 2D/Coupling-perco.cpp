@@ -11,30 +11,23 @@ public:
 
     void compute_cpts(size_t r1) {
         int t = 0;
-        for (auto z : coo_range(size)) expl[z] = (at(z) == WHITE ? 1 : -1) * (++t);
-
-        // TODO: coo_range
-        for (size_t x = size.x / 2 - r1 + 1; x < size.x / 2 + r1 - 1; x++)
-            for (size_t y = size.y / 2 - r1 + 1; y < size.y / 2 + r1 - 1; y++) expl[{x, y}] = 0;
+        for (const auto &z : coo_range(size)) expl[z] = (at(z) == WHITE ? 1 : -1) * (++t);
+        for (const auto &z : coo_range(size / 2 - ucoo{r1 - 1, r1 - 1}, size / 2 + ucoo{r1 - 1, r1 - 1})) expl[z] = 0;
 
         bool dirty = true;
         while (dirty) {
             dirty = false;
-            // TODO: coo_range
-            for (size_t x = 0; x < size.x; x++) {
-                for (size_t y = 0; y < size.y; y++) {
-                    ucoo z{x, y};
-                    for (int i = 0; i < 6; ++i) {
-                        auto zz = z + dz[i];
-                        if (!expl.fits(zz)) continue;
-                        if ((expl[z] > 0) && (expl[zz] > expl[z])) {
-                            expl[z] = expl[zz];
-                            dirty   = true;
-                        }
-                        if ((expl[z] < 0) && (expl[zz] < expl[z])) {
-                            expl[z] = expl[zz];
-                            dirty   = true;
-                        }
+            for (const auto z : coo_range(size)) {
+                for (int i = 0; i < 6; ++i) {
+                    auto zz = z + dz[i];
+                    if (!expl.fits(zz)) continue;
+                    if ((expl[z] > 0) && (expl[zz] > expl[z])) {
+                        expl[z] = expl[zz];
+                        dirty   = true;
+                    }
+                    if ((expl[z] < 0) && (expl[zz] < expl[z])) {
+                        expl[z] = expl[zz];
+                        dirty   = true;
                     }
                 }
             }
@@ -92,17 +85,8 @@ public:
         int n = 0;
         while (true) {
             cerr << ++n << " \r";
-            // TODO: coo_range
-            for (size_t x = 0; x < size.x; x++)
-                for (size_t y = 0; y < size.y; y++) put({x, y}, prng.bernoulli(.5) ? WHITE : BLACK);
-
-            // TODO: coo_range
-            for (auto x = size.x / 2 - r1 + 1; x < size.x / 2 + r1 - 1; x++) {
-                for (auto y = size.y / 2 - r1 + 1; y < size.y / 2 - r1 - 1; y++) {
-                    put({x, y}, BLACK);
-                    put({x, y}, BLACK);
-                }
-            }
+            for (const auto z : coo_range(size)) put(z, prng.bernoulli(.5) ? WHITE : BLACK);
+            for (const auto &z : coo_range(size / 2 - ucoo{r1 - 1, r1 - 1}, size / 2 + ucoo{r1 - 1, r1 - 1})) put(z, BLACK);
 
             if (test2(r1, r2, r3)) break;
         }
@@ -117,9 +101,7 @@ class Coupling : public Image {
 public:
     Coupling(const Hub &H, size_t r) : Image(H.title, {2 * r, 2 * r}), r1(r / 4), r2(r / 2), r3(r), c1(H, 2 * r), c2(H, 2 * r) {
         c1.pick(r1, r2, r3);
-        // TODO: coo_range
-        for (size_t i = 0; i < size.x; ++i)
-            for (size_t j = 0; j < size.y; ++j) c2[{i, j}] = c1[{i, j}];
+        for (const auto &z : coo_range(size)) c2[z] = c1[z];
         c1.show();
         c2.show();
         show();
@@ -129,19 +111,15 @@ public:
 
     int compute_diff() {
         int n = 0;
-        // TODO: coo_range
-        for (size_t i = 0; i < c1.size.x; i++) {
-            for (size_t j = 0; j < c1.size.y; j++) {
-                ucoo z{i, j};
-                if (c1.at(z) == c2.at(z)) {
-                    put(z, BLACK);
-                } else if (int(c1.at(z)) > int(c2.at(z))) {
-                    put(z, GREEN);
-                    n++;
-                } else {
-                    put(z, RED);
-                    n++;
-                }
+        for (const auto &z : coo_range(c1.size)) {
+            if (c1.at(z) == c2.at(z)) {
+                put(z, BLACK);
+            } else if (int(c1.at(z)) > int(c2.at(z))) {
+                put(z, GREEN);
+                n++;
+            } else {
+                put(z, RED);
+                n++;
             }
         }
         return n;

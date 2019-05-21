@@ -63,7 +63,7 @@ namespace vb {
         const coo_range &end() const { return *this; }
         bool             operator!=(const coo_range<T> &) const { return z.y != r2.y; }
         void             operator++() { z = (z.x == r2.x - 1) ? coo_2d<T>{r1.x, z.y + 1} : coo_2d<T>{z.x + 1, z.y}; }
-        coo_2d<T>        operator*() const { return z; }
+        const coo_2d<T> &operator*() const { return z; }
     };
 } // namespace vb
 

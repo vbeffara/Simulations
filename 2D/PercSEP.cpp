@@ -15,43 +15,35 @@ namespace vb {
 class PercSEP : public Bitmap<int> {
 public:
     explicit PercSEP(const Hub &H) : Bitmap<int>(H.title, {2 * size_t(H['n']), H['n']}), flow({0, 0}), d(H['d']), tasym(H['t']) {
-        // TODO: coo_range
-        for (size_t i = 0; i < size.x; ++i)
-            for (size_t j = 0; j < size.y; ++j)
-                if (prng.bernoulli(H['p'])) put({i, j}, prng.bernoulli(H['l']) ? 2 : 1);
+        for (const auto &z : coo_range(size))
+            if (prng.bernoulli(H['p'])) put(z, prng.bernoulli(H['l']) ? 2 : 1);
     }
     void clean() {
-        // TODO: coo_range
-        for (size_t x = 0; x < size.x; ++x)
-            for (size_t y = 0; y < size.y; ++y)
-                if (at({x, y}) > 0) at({x, y}) = at({x, y}) + 100;
+        for (const auto &z : coo_range(size))
+            if (at(z) > 0) at(z) = at(z) + 100;
         bool dirty = true;
         while (dirty) {
             dirty = false;
-            // TODO: coo_range
-            for (int64_t x = 0; x < int64_t(size.x); ++x)
-                for (int64_t y = 0; y < int64_t(size.y); ++y) {
-                    if (at(ucoo(coo{x, y})) == 102) {
-                        if (atp({x + 1, y}) == 1 || atp({x + 1, y}) == 2 || atp({x, y + 1}) == 1 || atp({x, y + 1}) == 2 ||
-                            atp({x, y - 1}) == 1 || atp({x, y - 1}) == 2) {
-                            atp({x, y}) = 2;
-                            dirty       = true;
-                        }
-                    } else if (at(ucoo(coo{x, y})) == 101) {
-                        if (atp({x + 1, y}) == 1 || atp({x + 1, y}) == 2 || atp({x + 1, y}) == 101 || atp({x, y + 1}) == 1 ||
-                            atp({x, y + 1}) == 2 || atp({x, y - 1}) == 1 || atp({x, y - 1}) == 2) {
-                            atp({x, y}) = 1;
-                            dirty       = true;
-                        }
+            for (const auto &z : coo_range(coo(size))) {
+                if (at(ucoo(z)) == 102) {
+                    if (atp(z + coo{1, 0}) == 1 || atp(z + coo{1, 0}) == 2 || atp(z + coo{0, 1}) == 1 || atp(z + coo{0, 1}) == 2 ||
+                        atp(z - coo{0, 1}) == 1 || atp(z - coo{0, 1}) == 2) {
+                        atp(z) = 2;
+                        dirty  = true;
+                    }
+                } else if (at(ucoo(z)) == 101) {
+                    if (atp(z + coo{1, 0}) == 1 || atp(z + coo{1, 0}) == 2 || atp(z + coo{1, 0}) == 101 || atp(z + coo{0, 1}) == 1 ||
+                        atp(z + coo{0, 1}) == 2 || atp(z - coo{0, 1}) == 1 || atp(z - coo{0, 1}) == 2) {
+                        atp(z) = 1;
+                        dirty  = true;
                     }
                 }
-        }
-        // TODO: coo_range
-        for (size_t x = 0; x < size.x; ++x)
-            for (size_t y = 0; y < size.y; ++y) {
-                if (at({x, y}) >= 102) at({x, y}) = 3;
-                if (at({x, y}) == 101) at({x, y}) = 1;
             }
+        }
+        for (const auto &z : coo_range(size)) {
+            if (at(z) >= 102) at(z) = 3;
+            if (at(z) == 101) at(z) = 1;
+        }
     }
     void move() {
         auto z = prng.uniform_coo(size);
@@ -77,10 +69,8 @@ int main(int argc, char **argv) {
         if ((t % (P.size.x * P.size.y)) == 0) {
             if (P.tasym) P.clean();
             int na = 0;
-            // TODO: coo_range
-            for (size_t x = 0; x < P.size.x; ++x)
-                for (size_t y = 0; y < P.size.y; ++y)
-                    if (P.at({x, y}) == 2) ++na;
+            for (const auto &z : coo_range(P.size))
+                if (P.at(z) == 2) ++na;
             if (na == 0) exit(0);
             cout << t / (P.size.x * P.size.y) << " " << na << " " << P.flow.x << " " << double(P.flow.x) / na << endl;
             P.flow = {0, 0};

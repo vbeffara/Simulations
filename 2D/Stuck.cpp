@@ -26,9 +26,7 @@ int Stat::min = 0, Stat::max = 1;
 class Stuck : public Bitmap<Stat> {
 public:
     explicit Stuck(const Hub &H) : Bitmap<Stat>(H.title, {2 * size_t(H['n']), 2 * size_t(H['n'])}), alpha(H['a']), beta(H['b']), H(H) {
-        // TODO: coo_range
-        for (size_t i = 0; i < size.x / 2; ++i)
-            for (size_t j = 0; j < size.y / 2; ++j) at({2 * i, 2 * j}) = Stat{-1};
+        for (const auto &z : coo_range(size / 2)) at(z * 2) = Stat{-1};
         z = coo(size / 2);
         C.manage(alpha, 0.142, 0.35, "alpha");
         C.lambda<int>([this]() { return nsup(); }, "Support");
@@ -42,21 +40,14 @@ public:
 
     void center() {
         coo c{0, 0};
-        // TODO: coo_range
-        for (size_t x = 0; x < size.x; ++x)
-            for (size_t y = 0; y < size.y; ++y)
-                if (at({x, y}).s == Stat::max) c = coo(ucoo{x - size.x / 2, y - size.y / 2});
+        for (const auto &z : coo_range(size))
+            if (at(z).s == Stat::max) c = coo(z - size / 2);
         c.x -= c.x % 2;
         c.y -= c.y % 2;
         if (c != coo{0, 0}) {
             static Array<Stat> &me  = *this;
             static Array<Stat>  tmp = me;
-            // TODO: coo_range
-            for (size_t x = 0; x < size.x; ++x)
-                for (size_t y = 0; y < size.y; ++y) {
-                    ucoo z{x, y};
-                    tmp.at(z) = atp(coo(z) + c);
-                }
+            for (const auto &z : coo_range(size)) tmp.at(z) = atp(coo(z) + c);
             me = tmp;
             z -= c;
         }

@@ -7,17 +7,19 @@ constexpr unsigned NORTH = 1;
 constexpr unsigned WEST  = 2;
 constexpr unsigned SOUTH = 3;
 
-constexpr vb::Color C_EAST{0, 255, 0};
-constexpr vb::Color C_NORTH{255, 0, 0};
-constexpr vb::Color C_WEST{0, 0, 255};
-constexpr vb::Color C_SOUTH{255, 255, 0};
-
 namespace vb {
+    constexpr Color C_EAST{0, 255, 0};
+    constexpr Color C_NORTH{255, 0, 0};
+    constexpr Color C_WEST{0, 0, 255};
+    constexpr Color C_SOUTH{255, 255, 0};
+
     template <> Color to_Color(uint8_t t) {
         static const std::vector<Color> colors{C_EAST, C_NORTH, C_WEST, C_SOUTH};
         return colors[t];
     }
 } // namespace vb
+
+using namespace vb;
 
 class World : public vb::Bitmap<uint8_t> {
 public:
@@ -26,27 +28,22 @@ public:
 
     explicit World(const vb::Hub &H) : Bitmap<uint8_t>(H.title, {H['n'], H['n']}), c(H['c']), p(H['p']), q(H['q']) {
         auto mid = (size.x + size.y) / 2;
-        // TODO: coo_range
-        for (size_t x = 0; x < size.x; ++x) {
-            for (size_t y = 0; y < size.y; ++y) {
-                if (y > x) {
-                    if (x + y < mid)
-                        at({x, y}) = EAST;
-                    else
-                        at({x, y}) = SOUTH;
-                } else {
-                    if (x + y < mid)
-                        at({x, y}) = NORTH;
-                    else
-                        at({x, y}) = WEST;
-                }
-                if (vb::prng.bernoulli(p)) at({x, y}) = vb::prng.uniform_int(uint8_t(4));
+        for (const auto &z : coo_range(size)) {
+            if (z.y > z.x) {
+                if (z.x + z.y < mid)
+                    at(z) = EAST;
+                else
+                    at(z) = SOUTH;
+            } else {
+                if (z.x + z.y < mid)
+                    at(z) = NORTH;
+                else
+                    at(z) = WEST;
             }
+            if (vb::prng.bernoulli(p)) at(z) = vb::prng.uniform_int(uint8_t(4));
         }
 
-        // TODO: coo_range
-        for (size_t x = c; x < size.x - c; ++x)
-            for (size_t y = c; y < size.y - c; ++y) at({x, y}) = vb::prng.uniform_int(uint8_t(4));
+        for (const auto &z : coo_range(ucoo{c, c}, size - ucoo{c, c})) at(z) = vb::prng.uniform_int(uint8_t(4));
     }
 
     void run() {

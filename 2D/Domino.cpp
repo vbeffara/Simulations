@@ -31,11 +31,8 @@ public:
     }
 
     explicit Tiling(const Hub &H) : Bitmap<Half>(H.title, {H['n'], H['n']}), r(H['r']), rr{r, r * r, 1, r} {
-        // TODO: coo_range
-        for (size_t x = 0; x < size.x; ++x)
-            for (size_t y = 0; y < size.y; ++y) { at({x, y}) = Half(2 * (x % 2), 1 + ((x + y) % 2) + 2 * (x % 2)); }
+        for (const auto &z : coo_range(size)) at(z) = Half(2 * (z.x % 2), 1 + ((z.x + z.y) % 2) + 2 * (z.x % 2));
         if (H['o'] == "aztec") {
-            // TODO: coo_range
             for (size_t i = 0; i < size.y / 2; ++i) {
                 for (size_t j = 0; j < size.x / 2 - i - 1; ++j) {
                     at({i, j}).type                           = 0;
@@ -43,33 +40,28 @@ public:
                     at({i, size.y - 1 - j}).type              = 0;
                     at({size.x - 1 - i, size.y - 1 - j}).type = 0;
                 }
-                // TODO: coo_range
                 for (size_t j = 0; j < size.x; ++j) {
                     putd({i, j}, 1 + 2 * ((i + j + size.y / 2 + 1) % 2));
                     putd({i + size.x / 2, j}, 1 + 2 * ((i + j + size.x / 2) % 2));
                 }
             }
         } else if (H['o'] == "hill") {
-            // TODO: coo_range
             for (size_t y = 0; y < size.y / 2; ++y)
                 for (size_t x = y; x < size.x - y; x += 2) {
                     putd({x, y}, 0);
                     putd({x, size.y - 1 - y}, 0);
                 }
-            // TODO: coo_range
             for (size_t x = 0; x < size.x / 2; ++x)
                 for (size_t y = x + 1; y < size.y - 1 - x; y += 2) {
                     putd({x, y}, 1);
                     putd({size.x - 1 - x, y}, 1);
                 }
         } else if (H['o'] == "hole") {
-            // TODO: coo_range
             for (size_t y = 0; y < size.y / 2; ++y)
                 for (size_t x = y; x < size.x - y - 1; x += 2) {
                     putd({x, y}, 0);
                     putd({x + 1, size.y - 1 - y}, 0);
                 }
-            // TODO: coo_range
             for (size_t x = 0; x < size.x / 2; ++x)
                 for (size_t y = x + 1; y < size.y - 1 - x; y += 2) {
                     putd({x, y}, 1);

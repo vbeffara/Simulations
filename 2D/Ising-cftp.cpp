@@ -16,9 +16,7 @@ namespace vb {
 class IsingCFTP : public Bitmap<int> {
 public:
     explicit IsingCFTP(const Hub &H) : Bitmap<int>(H.title, {H['n'], H['n']}), b(H['b']), d(0), s(H['s']), status(H.title, size) {
-        // TODO: coo_range
-        for (size_t i = 0; i < size.x; ++i)
-            for (size_t j = 0; j < size.y; ++j) put({i, j}, 1);
+        for (const auto &z : coo_range(size)) put(z, 1);
         snap();
         b *= log(1 + sqrt(double(2)));
         for (int i = 0; i <= 4; ++i) p.push_back(exp(b * i) / (exp(b * i) + exp(b * (4 - i))));
@@ -54,9 +52,7 @@ public:
         auto n = size.x * size.y;
         while (n > 0) {
             cerr << n << endl;
-            // TODO: coo_range
-            for (size_t i = d; i < size.x - 2 * d; ++i)
-                for (size_t j = d; j < size.y - 2 * d; ++j) put({i, j}, 1);
+            for (const auto &z : coo_range(ucoo{d, d}, size - ucoo{d, d})) put(z, 1);
             for (auto t = states.size(); t-- > 0;) {
                 prng.state(states[t]);
                 for (size_t i = 0; i < (1U << t); ++i) up();

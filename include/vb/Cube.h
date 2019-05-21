@@ -16,7 +16,7 @@ namespace vb {
 
     class Cube : public Bitmap<Adder> {
     public:
-        Cube(const std::string &s, coo3 sz);
+        Cube(const std::string &s, ucoo3 sz);
 
         size_t index(ucoo3 c) { return c.x + size.x * c.y + size.x * size.y * c.z; }
         ucoo3  wrap(coo3 c) { return {pmod(c.x, size.x), pmod(c.y, size.y), pmod(c.z, size.z)}; }

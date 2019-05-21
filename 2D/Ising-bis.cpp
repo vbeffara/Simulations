@@ -44,16 +44,14 @@ public:
             shift   = I;
             pattern = {{.5, .5}, {-.5, .5}, {-.5, -.5}, {.5, -.5}};
         }
-        // TODO: coo_range
-        for (size_t i = 0; i < size.x; ++i)
-            for (size_t j = 0; j < size.y; ++j) {
-                Color c = to_Color(at({i, j}));
-                if (c == to_Color(0)) continue;
-                vector<cpx> p;
-                p.reserve(pattern.size());
-                for (auto zz : pattern) p.push_back(cpx(i) + cpx(j) * shift + zz);
-                F.add(make_unique<Polygon>(p, Pen(BLACK, 1, c, true)));
-            }
+        for (const auto &z : coo_range(size)) {
+            Color c = to_Color(at(z));
+            if (c == to_Color(0)) continue;
+            vector<cpx> p;
+            p.reserve(pattern.size());
+            for (auto zz : pattern) p.push_back(cpx(z.x) + cpx(z.y) * shift + zz);
+            F.add(make_unique<Polygon>(p, Pen(BLACK, 1, c, true)));
+        }
         F.output_pdf(s);
     }
 

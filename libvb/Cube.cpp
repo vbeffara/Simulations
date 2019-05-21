@@ -3,18 +3,12 @@
 #include <vb/Pov.h>
 
 namespace vb {
-    Cube::Cube(const std::string &s, coo3 sz)
-        // TODO: coo_range
-        : Bitmap<Adder>(s, {size_t(sz.x + sz.z), size_t(sz.y + sz.z)}), size(sz), data(size_t(size.x * size.y * size.z), 0) {
-        for (size_t x = 0; x < size.z; ++x)
-            for (size_t y = 0; y < size.z; ++y)
-                Bitmap<Adder>::at({size.x + x, size.y + y}) = Adder(((x / 10 + y / 10) % 2) != 0 ? 200 : 150);
-        for (size_t x = 0; x < size.x; ++x)
-            for (size_t y = 0; y < size.y; ++y) Bitmap<Adder>::at({x, y}).dim(size_t(size.z));
-        for (size_t x = 0; x < size.x; ++x)
-            for (size_t z = 0; z < size.z; ++z) Bitmap<Adder>::at({x, z + size.y}).dim(size_t(size.y));
-        for (size_t y = 0; y < size.y; ++y)
-            for (size_t z = 0; z < size.z; ++z) Bitmap<Adder>::at({z + size.x, y}).dim(size_t(size.x));
+    Cube::Cube(const std::string &s, ucoo3 sz) : Bitmap<Adder>(s, {sz.x + sz.z, sz.y + sz.z}), size(sz), data(size.x * size.y * size.z, 0) {
+        for (const auto &z : coo_range(ucoo{size.z, size.z}))
+            Bitmap<Adder>::at({size.x + z.x, size.y + z.y}) = Adder(((z.x / 10 + z.y / 10) % 2) != 0 ? 200 : 150);
+        for (const auto &z : coo_range(ucoo{size.x, size.y})) Bitmap<Adder>::at(z).dim(size.z);
+        for (const auto &z : coo_range(ucoo{size.x, size.z})) Bitmap<Adder>::at({z.x, z.y + size.y}).dim(size.y);
+        for (const auto &z : coo_range(ucoo{size.y, size.z})) Bitmap<Adder>::at({z.x + size.x, z.y}).dim(size.x);
     }
 
     void Cube::put(const ucoo3 &c, uint8_t t) {
