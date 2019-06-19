@@ -71,12 +71,14 @@ int main(int argc, char **argv) {
         return s - int64_t(s);
     });
 
-    timing(H, "Map+reduce | Single (STL algorithms: transform_reduce)", [=] {
-        vector<double> X(l);
-        std::iota(X.begin(), X.end(), 0);
-        double s = std::transform_reduce(begin(X), end(X), 0.0, std::plus<double>(), cost);
-        return s - int64_t(s);
-    });
+    // TODO: re-enable this when it is implemented in libstdc++
+    //
+    // timing(H, "Map+reduce | Single (STL algorithms: transform_reduce)", [=] {
+    //     vector<double> X(l);
+    //     std::iota(X.begin(), X.end(), 0);
+    //     double s = std::transform_reduce(begin(X), end(X), 0.0, std::plus<double>(), cost);
+    //     return s - int64_t(s);
+    // });
 
     timing(H, "Map+reduce | Async (std::async, split fill + sum)", [=] {
         class mr {
