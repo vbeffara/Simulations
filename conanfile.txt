@@ -1,7 +1,7 @@
 [requires]
 boost/1.70.0@conan/stable
 cairo/1.17.2@bincrafters/stable
-Catch2/2.8.0@catchorg/stable
+Catch2/2.9.1@catchorg/stable
 fftw/3.3.8@bincrafters/stable
 gsl_microsoft/2.0.0@bincrafters/stable
 mpc/1.1.0@bincrafters/stable
