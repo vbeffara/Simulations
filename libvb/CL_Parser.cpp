@@ -5,13 +5,14 @@
 
 namespace vb {
     CL_Parser::CL_Parser(std::string t, int argc, char **argv, std::string c) {
+        std::vector<std::string> args;
+        for (const auto &a : gsl::span(argv, argc)) args.push_back(a);
+
         help  = "Syntax : " + c;
         title = std::move(t);
 
-        auto argv_ = gsl::span(argv, argc);
-
         std::vector<std::string> fs;
-        boost::split(fs, argv_[0], boost::is_any_of(R"(/\)"));
+        boost::split(fs, args[0], boost::is_any_of(R"(/\)"));
 
         prog = fs.back();
         dir  = "output/" + prog + "/";
@@ -45,10 +46,11 @@ namespace vb {
             title += " (" + boost::join(cs, ", ") + ")";
         }
 
-        cmd = argv_[0];
-        for (int i = 1; i < argc; ++i) {
-            cmd += " ";
-            cmd += argv_[i];
+        // TODO use fmt join
+        std::string sep;
+        for (const auto &a : args) {
+            cmd += sep + a;
+            sep = " ";
         }
     }
 } // namespace vb

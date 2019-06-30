@@ -97,7 +97,8 @@
         "__tuple": "cpp",
         "locale": "cpp",
         "numeric": "cpp",
-        "gsl_assert": "cpp"
+        "gsl_assert": "cpp",
+        "bit": "cpp"
     },
     "python.pythonPath": "/usr/local/opt/python/bin/python3.7",
     "C_Cpp.intelliSenseEngineFallback": "Disabled"

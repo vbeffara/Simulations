@@ -14,6 +14,8 @@ namespace vb {
             T::callback(close_window);
         }
 
+        ucoo pixel_size() { return {static_cast<size_t>(T::pixel_w()), static_cast<size_t>(T::pixel_h())}; }
+
         void update() override {
             if (T::visible()) {
                 T::redraw();

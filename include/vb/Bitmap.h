@@ -31,7 +31,7 @@ namespace vb {
 
     protected:
         void paint() override {
-            size_t           ppp = size_t(pixel_w()) / size.x;
+            size_t           ppp = pixel_size().x / size.x;
             gsl::span<Color> stage((Color *)cairo_image_surface_get_data(surface), gsl::index(ppp * size.x + stride * (ppp * size.y - 1)));
 
             for (const auto &z : coo_range(size)) {
