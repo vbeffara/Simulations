@@ -12,8 +12,8 @@ namespace vb {
         for (auto &v : V) v.fixed = false;
         for (auto f : phi.cycles()) {
             if (f.size() != 3) continue;
-            if (std::any_of(begin(f), end(f), [&](auto i) { return V[E[i].src].adj.size() == 2; })) continue;
-            if (phi.cycles().size() > 2) continue;
+            auto bad = std::any_of(begin(f), end(f), [&](auto i) { return V[E[i].src].adj.size() == 2; });
+            if (bad && (phi.cycles().size() > 2)) continue;
             V[E[f[0]].src].fixed = true;
             E[f[0]].a            = M_PI / 3;
             E[sigma[f[0]]].a     = 0;
