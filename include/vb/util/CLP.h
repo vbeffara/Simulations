@@ -18,15 +18,17 @@ namespace vb {
     class CLP {
     public:
         CLP(int argc, char **argv, std::string desc);
+        ~CLP();
 
         bool                    operator()(std::string c, std::string d);
         template <typename T> T operator()(std::string c, T t, std::string d);
 
-        void finalize() const; // TODO: find better name
+        void finalize(); // TODO: find better name
 
     private:
         std::vector<std::string> args, help, flags;
         std::string              desc;
+        bool                     finalized = false;
     };
 
     template <typename T> T CLP::operator()(std::string c, T t, std::string d) {
@@ -37,6 +39,7 @@ namespace vb {
                 exit(1);
             }
             t = from_string<T>(*(i + 1));
+            args.erase(i, i + 2);
         }
         return t;
     }
