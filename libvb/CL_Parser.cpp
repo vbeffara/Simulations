@@ -6,7 +6,8 @@
 namespace vb {
     CL_Parser::CL_Parser(std::string t, int argc, char **argv, std::string c) {
         std::vector<std::string> args;
-        for (const auto &a : gsl::span(argv, argc)) args.push_back(a);
+        for (const auto &a : gsl::span(argv, argc)) args.emplace_back(a);
+        cmd = boost::join(args, " ");
 
         help  = "Syntax : " + c;
         title = std::move(t);
@@ -44,13 +45,6 @@ namespace vb {
             cs.clear();
             for (const auto &[k, v] : *this) cs.push_back(std::string(1, k) + "=" + v);
             title += " (" + boost::join(cs, ", ") + ")";
-        }
-
-        // TODO use fmt join
-        std::string sep;
-        for (const auto &a : args) {
-            cmd += sep + a;
-            sep = " ";
         }
     }
 } // namespace vb

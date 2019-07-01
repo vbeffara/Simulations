@@ -152,21 +152,21 @@ int main(int argc, char **argv) {
     timing(H, "Map+reduce | PSTL, transform_reduce, execution::par", [=] {
         vector<double> X(l);
         std::iota(X.begin(), X.end(), 0);
-        double s = std::transform_reduce(pstl::execution::par, begin(X), end(X), 0.0, std::plus<double>(), cost);
+        double s = std::transform_reduce(pstl::execution::par, begin(X), end(X), 0.0, std::plus<>(), cost);
         return s - int64_t(s);
     });
 
     timing(H, "Map+reduce | PSTL, transform_reduce, execution::unseq", [=] {
         vector<double> X(l);
         std::iota(X.begin(), X.end(), 0);
-        double s = std::transform_reduce(pstl::execution::unseq, begin(X), end(X), 0.0, std::plus<double>(), cost);
+        double s = std::transform_reduce(pstl::execution::unseq, begin(X), end(X), 0.0, std::plus<>(), cost);
         return s - int64_t(s);
     });
 
     timing(H, "Map+reduce | PSTL, transform_reduce, execution::par_unseq", [=] {
         vector<double> X(l);
         std::iota(X.begin(), X.end(), 0);
-        double s = std::transform_reduce(pstl::execution::par_unseq, begin(X), end(X), 0.0, std::plus<double>(), cost);
+        double s = std::transform_reduce(pstl::execution::par_unseq, begin(X), end(X), 0.0, std::plus<>(), cost);
         return s - int64_t(s);
     });
 
