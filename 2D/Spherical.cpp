@@ -16,8 +16,8 @@ double legendre_p(size_t l, size_t m, double x) {
     if (m == l) { return p0; }
     double p1 = x * double(2 * m + 1) * p0;
     for (auto n = m + 1; n < l; ++n) {
-        // TODO: swap would be clearer
-        std::tie(p0, p1) = std::make_tuple(p1, (double(2 * n + 1) * x * p1 - double(n + m) * p0) / double(n + 1 - m));
+        p0 = (double(2 * n + 1) * x * p1 - double(n + m) * p0) / double(n + 1 - m);
+        std::swap(p0, p1);
     }
     return p1;
 }

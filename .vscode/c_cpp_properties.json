@@ -13,7 +13,8 @@
             "includePath": [
                 "${workspaceFolder}/include",
                 "/Users/vincent/.conan/data/boost/1.70.0/conan/stable/package/0a167935b5fb9fa4d45e288ae29a76df3384260c/include",
-                "/Users/vincent/.conan/data/fmt/5.3.0/bincrafters/stable/package/90d5b881c70f44f0c09097116f53b034a9e12624/include"
+                "/Users/vincent/.conan/data/fmt/5.3.0/bincrafters/stable/package/90d5b881c70f44f0c09097116f53b034a9e12624/include",
+                "/Users/vincent/.conan/data/gsl_microsoft/2.0.0/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include"
             ],
             "browse": {
                 "databaseFilename": "${workspaceFolder}/.vscode/browse.db",

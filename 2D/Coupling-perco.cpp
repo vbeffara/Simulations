@@ -49,7 +49,6 @@ public:
         int     n = 0;
         int64_t k;
         for (size_t i = N / 2 - r1; i < N / 2 + r1; i++) {
-            // TODO: Array[ucoo{}] should be Array[{}]
             k = expl[{i, N / 2 - r1}];
             if (table[size_t(int64_t(N * N) + k)] == 1) {
                 table[size_t(int64_t(N * N) + k)] = 0;
