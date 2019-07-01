@@ -4,19 +4,14 @@
 #include <vb/util/CL_Parser.h>
 
 namespace vb {
-    CL_Parser::CL_Parser(std::string t, int argc, char **argv, std::string c) {
-        std::vector<std::string> args;
+    CL_Parser::CL_Parser(std::string t, int argc, char **argv, std::string c) : title(move(t)), help("Syntax : " + c) {
+        std::vector<std::string> args, fs;
         for (const auto &a : gsl::span(argv, argc)) args.emplace_back(a);
-        cmd = boost::join(args, " ");
-
-        help  = "Syntax : " + c;
-        title = std::move(t);
-
-        std::vector<std::string> fs;
         boost::split(fs, args[0], boost::is_any_of(R"(/\)"));
 
         prog = fs.back();
         dir  = "output/" + prog + "/";
+        cmd  = boost::join(args, " ");
 
         std::vector<std::string> cs;
         if (!c.empty()) boost::split(cs, c, boost::is_any_of(", "), boost::token_compress_on);
