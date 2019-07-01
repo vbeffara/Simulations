@@ -2,6 +2,8 @@
 #include <map>
 #include <string>
 
+// TODO remove all of this
+
 namespace vb {
     class Value : public std::string {
     public:
@@ -32,7 +34,7 @@ namespace vb {
     public:
         CL_Parser(std::string t, int argc, char **argv, std::string c = "");
 
-        const Value &operator[](char c) const { return find(c)->second; }
+        [[deprecated]] const Value &operator[](char c) const { return find(c)->second; }
 
         std::string title, help, prog, dir, cmd;
     };

@@ -1,5 +1,6 @@
 #include <vb/Bitmap.h>
 #include <vb/Console.h>
+#include <vb/util/CLP.h>
 #include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
@@ -25,7 +26,8 @@ int Stat::min = 0, Stat::max = 1;
 
 class Stuck : public Bitmap<Stat> {
 public:
-    explicit Stuck(const Hub &H) : Bitmap<Stat>(H.title, {2 * size_t(H['n']), 2 * size_t(H['n'])}), alpha(H['a']), beta(H['b']), H(H) {
+    explicit Stuck(double a, double b, bool c, size_t n, bool o, const Hub &H)
+        : Bitmap<Stat>(H.title, {2 * n, 2 * n}), alpha(a), beta(b), H(H), c(c), o(o) {
         for (const auto &z : coo_range(size / 2)) at(z * 2) = Stat{-1};
         z = coo(size / 2);
         C.manage(alpha, 0.142, 0.35, "alpha");
@@ -71,7 +73,7 @@ public:
             putp(z + d, Stat{atp(z + d).s + 1});
             z += d + d;
         }
-        if (H['o'])
+        if (o)
             for (size_t x = 0; x < size.x; x += 2) {
                 for (size_t y = 1; y < size.y; y += 2) cout << x << " " << y << " " << at({x, y}).s << endl;
                 cout << endl;
@@ -79,7 +81,7 @@ public:
     }
 
     void update() override {
-        if (H['c']) center();
+        if (c) center();
         int m = Stat::max;
         for (auto z : coo_range(size))
             if (at(z).s > 0) m = min(m, at(z).s);
@@ -97,13 +99,23 @@ public:
     double     alpha, beta;
     coo        z = {0, 0};
     const Hub &H;
+    bool       c, o;
     Console    C;
 };
 
 int main(int argc, char **argv) {
-    Hub   H("Stuck walk on the square lattice", argc, argv, "n=200,a=.1432,b=5,v=0,c,o");
-    Stuck S(H);
+    CLP  clp(argc, argv, "Stuck walk on the square lattice");
+    auto c = clp("c", "Center display on center of mass");
+    auto o = clp("o", "Output point coordinates to the console");
+    auto a = clp("a", 0.1432, "Reinforcement parameter (alpha)");
+    auto b = clp("b", 5.0, "Inverse temperature (beta)");
+    auto n = clp("n", size_t(200), "Domain size");
+    auto v = clp("v", 0.0, "Snapshot interval time (0 to disable)");
+    clp.finalize();
+
+    Hub   H("Stuck walk on the square lattice", argc, argv, "");
+    Stuck S(a, b, c, n, o, H);
     S.show();
-    if (double(H['v']) > 0) S.snapshot_setup("Stuck", H['v']);
+    if (v > 0) S.snapshot_setup("Stuck", v);
     S.run();
 }
