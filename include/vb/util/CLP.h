@@ -20,8 +20,8 @@ namespace vb {
         CLP(int argc, char **argv, std::string desc);
         ~CLP();
 
-        bool                    operator()(std::string c, std::string d);
-        template <typename T> T operator()(std::string c, T t, std::string d);
+        bool                    operator()(const std::string &c, const std::string &d);
+        template <typename T> T operator()(const std::string &c, T t, const std::string &d);
 
         void finalize(); // TODO: find better name
 
@@ -31,7 +31,7 @@ namespace vb {
         bool                     finalized = false;
     };
 
-    template <typename T> T CLP::operator()(std::string c, T t, std::string d) {
+    template <typename T> T CLP::operator()(const std::string &c, T t, const std::string &d) {
         help.push_back(fmt::format("|  {}  | {:6} | {:>10} |  {}", c, type_name<T>(), t, d));
         if (auto i = std::find(begin(args), end(args), "-" + c); i != end(args)) {
             if (i + 1 == end(args)) {

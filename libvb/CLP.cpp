@@ -2,18 +2,21 @@
 #include <vb/util/CLP.h>
 
 namespace vb {
-    CLP::CLP(int argc, char **argv, std::string desc) : desc(desc) {
+    CLP::CLP(int argc, char **argv, std::string desc) : desc(move(desc)) {
         for (const auto &a : gsl::span(argv, argc)) args.emplace_back(a);
     }
 
     CLP::~CLP() {
-        if (!finalized) spdlog::warn("CLP was not finalized");
+        if (!finalized) {
+            spdlog::warn("CLP was not finalized, doing it on destruction");
+            finalize();
+        }
     }
 
     void CLP::finalize() {
         finalized = true;
 
-        if (auto i = std::find(begin(args), end(args), "-h"); i != end(args)) {
+        if (std::find(begin(args), end(args), "-h") != end(args)) {
             spdlog::info("");
             spdlog::info("{}", desc);
 
@@ -42,7 +45,7 @@ namespace vb {
         if (!empty(rem)) spdlog::warn("Unused command line arguments: {}", fmt::join(rem, " "));
     }
 
-    bool CLP::operator()(std::string c, std::string d) {
+    bool CLP::operator()(const std::string& c, const std::string& d) {
         flags.push_back(fmt::format("                     |   {}  |  {}", c, d));
         auto i = std::find(begin(args), end(args), "-" + c);
         if (i == end(args)) return false;
