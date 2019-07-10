@@ -5,7 +5,6 @@
 #include <vb/Constellation1.h>
 #include <vb/math/Pairings.h>
 #include <vb/util/CLP.h>
-#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -24,12 +23,10 @@ int main(int argc, char **argv) {
     auto s = clp("s", size_t(2), "Number of vertices");
     clp.finalize();
 
-    Hub H("Toroidal enumeration", argc, argv, "m=228,n=2,q");
     if (r > 0) prng.seed(r);
 
-    Cycles phi_c;
-    for (size_t i = 0; i < 2 * s; ++i) phi_c.emplace_back(std::vector<size_t>{3 * i, 3 * i + 1, 3 * i + 2});
-    Permutation phi(phi_c);
+    Permutation phi(6 * s);
+    std::generate(begin(phi), end(phi), [n = 0]() mutable { return ((++n) % 3) ? n : n - 3; });
 
     vector<Hypermap> v;
     size_t           target = ((d == 0) && (!f) && (s < ntri.size())) ? ntri[s] : 0;
@@ -40,11 +37,10 @@ int main(int argc, char **argv) {
         Permutation alpha = Pairings(6 * s).rrand();
         if (!connected(phi, alpha)) continue;
 
-        Permutation sigma = (alpha * phi).inverse();
-        Hypermap    M(sigma, alpha, phi);
+        Hypermap M((alpha * phi).inverse(), alpha, phi);
         if (M.genus() != 1) continue;
 
-        auto cc = sigma.cycles();
+        auto cc = M.sigma.cycles();
         if ((d > 0) && std::any_of(begin(cc), end(cc), [d](const auto &c) { return c.size() < d; })) continue;
         if ((D > 0) && std::any_of(begin(cc), end(cc), [D](const auto &c) { return c.size() > D; })) continue;
 
@@ -58,9 +54,12 @@ int main(int argc, char **argv) {
         }
 
         v.push_back(M);
-        spdlog::info("{}", M);
+        spdlog::info("Toroidal enumeration (s={}, pass {}, i={})", s, M.sigma.passport(), v.size());
         spdlog::info("     Order number:    {}", v.size());
         spdlog::info("     Passport:        {}", M.sigma.passport());
+        spdlog::info("     Sigma:           {}", M.sigma);
+        spdlog::info("     Alpha:           {}", M.alpha);
+        spdlog::info("     Phi:             {}", M.phi);
 
         Constellation1<double> C(M);
 
