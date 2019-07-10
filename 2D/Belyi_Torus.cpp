@@ -1,6 +1,3 @@
-// m: mode for the generated pdf (see vb/Toroidal.h)
-// n: number of subdivisions for the circle packing
-
 #include <vb/Coloring.h>
 #include <vb/Constellation1.h>
 #include <vb/math/Pairings.h>
@@ -53,7 +50,6 @@ int main(int argc, char **argv) {
             if (std::find(begin(v), end(v), MM) != end(v)) continue;
         }
 
-        v.push_back(M);
         spdlog::info("Toroidal enumeration (s={}, pass {}, i={})", s, M.sigma.passport(), v.size());
         spdlog::info("     Order number:    {}", v.size());
         spdlog::info("     Passport:        {}", M.sigma.passport());
@@ -61,6 +57,7 @@ int main(int argc, char **argv) {
         spdlog::info("     Alpha:           {}", M.alpha);
         spdlog::info("     Phi:             {}", M.phi);
 
+        v.push_back(M);
         Constellation1<double> C(M);
 
         if (o) {
