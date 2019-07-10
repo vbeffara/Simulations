@@ -88,27 +88,17 @@ int main(int argc, char **argv) {
         real_t                 c  = CC.findn();
         int                    lc = -int(log10(c));
         unsigned               nd = unsigned(std::max(10, lc / 2 - 15));
-        cout << fixed << setprecision(std::min(int(nd), 80));
-        cout << "     Modulus:         " << CC.tau() << endl;
-        if (nd > 30) {
-            auto P = guess(CC.tau(), nd);
-            if (P) cout << fmt::format("        root of {}", *P) << std::endl;
-        }
-        cout << "     Klein invariant: " << CC.E.j() << endl;
-        if (nd > 30) {
-            auto P = guess(CC.E.j(), nd);
-            if (P) cout << fmt::format("        root of {}", *P) << std::endl;
-        }
-        cout << "     g2 coefficient:  " << CC.E.g2() << endl;
-        if (nd > 30) {
-            auto P = guess(CC.E.g2(), nd);
-            if (P) cout << fmt::format("        root of {}", *P) << std::endl;
-        }
-        cout << "     g3 coefficient:  " << CC.E.g3() << endl;
-        if (nd > 30) {
-            auto P = guess(CC.E.g3(), nd);
-            if (P) cout << fmt::format("        root of {}", *P) << std::endl;
-        }
-        cout << endl << scientific << setprecision(6);
+        spdlog::info("     Modulus:         {}", CC.tau());
+        if (nd > 30)
+            if (auto P = guess(CC.tau(), nd)) spdlog::info("        root of {}", *P);
+        spdlog::info("     Klein invariant: {}", CC.E.j());
+        if (nd > 30)
+            if (auto P = guess(CC.E.j(), nd)) spdlog::info("        root of {}", *P);
+        spdlog::info("     g2 coefficient:  {}", CC.E.g2());
+        if (nd > 30)
+            if (auto P = guess(CC.E.g2(), nd)) spdlog::info("        root of {}", *P);
+        spdlog::info("     g3 coefficient:  {}", CC.E.g3());
+        if (nd > 30)
+            if (auto P = guess(CC.E.g3(), nd)) spdlog::info("        root of {}", *P);
     }
 }

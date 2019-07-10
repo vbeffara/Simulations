@@ -14,12 +14,6 @@ namespace vb {
             exit(0);
         };
 
-        Fl::gl_visual(FL_RGB);
-        Fl::use_high_res_GL(1);
-
-        real_t::default_precision(100);
-        complex_t::default_precision(100);
-
         mode_t mode = 0755U;
         mkdir("output", mode);
         mkdir(dir.c_str(), mode);

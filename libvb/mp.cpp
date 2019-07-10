@@ -20,4 +20,6 @@ namespace vb {
         }
         return out;
     }
+
+    static const int mp_dummy = (real_t::default_precision(100), complex_t::default_precision(100), 0);
 } // namespace vb

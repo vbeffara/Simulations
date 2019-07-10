@@ -1,7 +1,6 @@
 #pragma once
 #include <boost/math/tools/polynomial.hpp>
 #include <fmt/ostream.h>
-#include <iostream>
 
 namespace vb {
     template <typename T> class Polynomial {
