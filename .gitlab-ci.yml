@@ -1,4 +1,4 @@
-image: ubuntu:cosmic
+image: ubuntu:disco
 
 before_script:
   - apt-get update -qq
