@@ -59,7 +59,7 @@ public:
         : CoarseImage(H.title, {n, n}, size_t(pow(n, .25))), jump(Bounces(H).at(j)), mid(size / 2) {
         if (H['g']) {
             tree = make_unique<Image>(H.title, ucoo{2 * n - 1, 2 * n - 1});
-            tree->put(ucoo(mid) * 2, WHITE);
+            tree->put(mid * 2, WHITE);
             tree->show();
         } else {
             show();
@@ -77,11 +77,11 @@ public:
             if (!at(mid + nz)) {
                 if (H['g']) {
                     // TODO: fix appearances of at(ucoo(...))
-                    Color c = tree->at(ucoo(z + mid) * 2);
+                    Color c = tree->at((mid + z) * 2);
                     if ((c == BLACK) || (prng.bernoulli(H['u']))) c = HSV(prng.uniform_real(), 1, 1);
                     if (H['i'] && (norm(nz) < 10)) c = nz.y > 0 ? Indexed(0) : Indexed(1);
-                    tree->put(ucoo(nz + mid) * 2, c);
-                    tree->put(ucoo(z + nz + mid * 2), c);
+                    tree->put((mid + nz) * 2, c);
+                    tree->put((mid * 2 + z + nz), c);
                 }
                 put(mid + nz, true);
                 nz += jump(nz);

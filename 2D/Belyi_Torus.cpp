@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
     if (r > 0) prng.seed(r);
 
     Permutation phi(6 * s);
-    std::generate(begin(phi), end(phi), [n = 0]() mutable { return ((++n) % 3) ? n : n - 3; });
+    std::generate(begin(phi), end(phi), [n = 0]() mutable { return ((++n) % 3) != 0 ? n : n - 3; });
 
     vector<Hypermap> v;
     size_t           target = ((d == 0) && (!f) && (s < ntri.size())) ? ntri[s] : 0;

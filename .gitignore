@@ -24,3 +24,5 @@ compile_commands.json
 .vscode/ipch
 .vscode/browse.db-shm
 .vscode/browse.db-wal
+/report
+/report.tasks
