@@ -15,15 +15,6 @@ namespace vb {
     }
 
     template <typename T> T sign(T x) { return (T(0) < x) - (x < T(0)); }
-    template <typename T> T gcd(T a, T b) {
-        while (b) {
-            auto c = a % b;
-            a      = b;
-            b      = c;
-        }
-        return a;
-    }
-    template <typename T> T lcm(T a, T b) { return a * b / gcd(a, b); }
 
     template <typename T> T fact(T n) {
         T out(1);
