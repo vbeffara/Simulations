@@ -11,13 +11,13 @@ const vector<size_t> ntri{0, 1, 5, 46, 669, 11096, 196888, 3596104, 66867564, 12
 
 int main(int argc, char **argv) {
     CLP  clp(argc, argv, "Toroidal map enumeration");
-    auto d = clp("d", size_t(0), "Minimum vertex degree");
-    auto D = clp("D", size_t(0), "Maximum vertex degree (0 for unbounded)");
-    auto f = clp("f", "Identify maps obtained after mirror flip");
-    auto o = clp("o", "Enable splitting, circle packing and output");
-    auto q = clp("q", "Refine map embedding using high precision arithmetic");
-    auto r = clp("r", size_t(0), "Seed for the PRNG (0 for time-based)");
-    auto s = clp("s", size_t(2), "Number of vertices");
+    auto d = clp.param("d", size_t(0), "Minimum vertex degree");
+    auto D = clp.param("D", size_t(0), "Maximum vertex degree (0 for unbounded)");
+    auto r = clp.param("r", size_t(0), "Seed for the PRNG (0 for time-based)");
+    auto s = clp.param("s", size_t(2), "Number of vertices");
+    auto f = clp.flag("f", "Identify maps obtained after mirror flip");
+    auto o = clp.flag("o", "Enable splitting, circle packing and output");
+    auto q = clp.flag("q", "Refine map embedding using high precision arithmetic");
     clp.finalize();
 
     if (r > 0) prng.seed(r);

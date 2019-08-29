@@ -2,7 +2,7 @@
 #include <vb/util/CLP.h>
 
 namespace vb {
-    CLP::CLP(int argc, char **argv, std::string desc) : desc(move(desc)) {
+    CLP::CLP(int argc, char **argv, std::string desc) : desc(move(desc)), title(this->desc + " |") {
         for (const auto &a : gsl::span(argv, argc)) args.emplace_back(a);
     }
 
@@ -11,6 +11,44 @@ namespace vb {
             spdlog::warn("CLP was not finalized, doing it on destruction");
             finalize();
         }
+    }
+
+    std::string CLP::get_param(const std::string &c, const std::string &type, std::string val, const std::string &desc) {
+        help.push_back(fmt::format("|  {}  | {:8} | {:>10} |  {}", c, type, val, desc));
+        if (auto i = std::find(begin(args), end(args), "-" + c); i != end(args)) {
+            if (i + 1 == end(args)) {
+                spdlog::error("Missing value for argument {}, exiting.", c);
+                exit(1);
+            }
+            val = *(i + 1);
+            args.erase(i, i + 2);
+        }
+        title += fmt::format(" {}={}", c, val);
+        return val;
+    }
+
+    int CLP::param(const std::string &c, int t, const std::string &d) {
+        auto v = get_param(c, "int", fmt::format("{}", t), d);
+        return int(strtol(v.c_str(), nullptr, 10));
+    }
+
+    size_t CLP::param(const std::string &c, size_t t, const std::string &d) {
+        auto v = get_param(c, "size_t", fmt::format("{}", t), d);
+        return size_t(strtol(v.c_str(), nullptr, 10));
+    }
+
+    bool CLP::flag(const std::string &c, const std::string &d) {
+        flags.push_back(fmt::format("                       |   {}  |  {}", c, d));
+        auto i = std::find(begin(args), end(args), "-" + c);
+        if (i == end(args)) return false;
+        title += " " + c;
+        args.erase(i);
+        return true;
+    }
+
+    double CLP::param(const std::string &c, double t, const std::string &d) {
+        auto v = get_param(c, "double", fmt::format("{}", t), d);
+        return strtod(v.c_str(), nullptr);
     }
 
     void CLP::finalize() {
@@ -22,20 +60,22 @@ namespace vb {
 
             if (!flags.empty()) {
                 spdlog::info("");
-                spdlog::info("                     +------+");
-                spdlog::info("                     | flag |");
-                spdlog::info("                     +------+");
+                spdlog::info("                       +------+");
+                spdlog::info("                       | flag |");
+                spdlog::info("                       +------+");
                 for (const auto &s : flags) spdlog::info(s);
-                spdlog::info("                     +------+");
+                spdlog::info("                       +------+");
             }
             if (!help.empty()) {
                 spdlog::info("");
-                spdlog::info("+-----+--------+------------+");
-                spdlog::info("| arg | type   |    default |");
-                spdlog::info("+-----+--------+------------+");
+                spdlog::info("+-----+----------+------------+");
+                spdlog::info("| arg | type     |    default |");
+                spdlog::info("+-----+----------+------------+");
                 for (const auto &s : help) spdlog::info(s);
-                spdlog::info("+-----+--------+------------+");
+                spdlog::info("+-----+----------+------------+");
             }
+            spdlog::info("");
+            spdlog::info("File title: {}", title);
             spdlog::info("");
             exit(0);
         }
@@ -43,13 +83,5 @@ namespace vb {
         auto rem = args;
         rem.erase(begin(rem));
         if (!empty(rem)) spdlog::warn("Unused command line arguments: {}", fmt::join(rem, " "));
-    }
-
-    bool CLP::operator()(const std::string& c, const std::string& d) {
-        flags.push_back(fmt::format("                     |   {}  |  {}", c, d));
-        auto i = std::find(begin(args), end(args), "-" + c);
-        if (i == end(args)) return false;
-        args.erase(i);
-        return true;
     }
 } // namespace vb

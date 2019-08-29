@@ -4,9 +4,9 @@ using namespace vb;
 
 int main(int argc, char **argv) {
     CLP  clp(argc, argv, "This is a test of the new command line parser");
-    auto s = clp("s", "Use alternative algorithm");
-    auto r = clp("r", 1.0, "Rate of dummyfication");
-    auto n = clp("n", 123, "Number of dummyfications");
+    auto r = clp.param("r", 1.0, "Rate of dummyfication");
+    auto n = clp.param("n", 123, "Number of dummyfications");
+    auto s = clp.flag("s", "Use alternative algorithm");
     clp.finalize();
     spdlog::info("Final state: s = {}, r = {}, n = {}", s, r, n);
 }

@@ -1,6 +1,6 @@
 #include <vb/CoarseImage.h>
 #include <vb/data/Queue.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -8,8 +8,8 @@ using namespace std;
 
 class DDLA : public CoarseImage {
 public:
-    explicit DDLA(const Hub &H, size_t n_)
-        : CoarseImage(H.title, {n_, n_}, H['f'] ? unsigned(pow(n_, .33)) : 1), f(H['f']), n(n_), cursum(0), p(H['p']) {
+    explicit DDLA(const string &title, size_t n_, double p, bool f)
+        : CoarseImage(title, {n_, n_}, f ? unsigned(pow(n_, .33)) : 1), f(f), n(n_), cursum(0), p(p) {
         put({0, 0}, true);
         pq.push({{1, 0}, prng.exponential() / p});
         pq.push({{0, 1}, prng.exponential() / (1 - p)});
@@ -62,9 +62,14 @@ public:
 };
 
 int main(int argc, char **argv) {
-    Hub  H("Directed DLA", argc, argv, "n=750,p=.5,f");
-    DDLA img(H, H['n']);
+    CLP  clp(argc, argv, "Directed DLA");
+    auto n = clp.param("n", size_t(750), "Simulation size");
+    auto p = clp.param("p", .5, "Random walk parameter");
+    auto f = clp.flag("f", "Fill holes and build a CoarseImage");
+    clp.finalize();
+
+    DDLA img(clp.desc, n, p, f);
     img.show();
     img.run();
-    img.output(H.title);
+    img.output(clp.title);
 }

@@ -1,6 +1,6 @@
 #include <spdlog/spdlog.h>
 #include <vb/Elliptic.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/mp.h>
 
 using namespace vb;
@@ -13,9 +13,12 @@ void out2(const std::string &s, cpx z, const complex_t &zz) {
 }
 
 int main(int argc, char **argv) {
-    Hub H("Tests for elliptic functions", argc, argv, "n=100");
-    real_t::default_precision(H['n']);
-    complex_t::default_precision(H['n']);
+    CLP  clp(argc, argv, "Tests for elliptic functions");
+    auto n = clp.param("n", size_t(100), "Precision in digits");
+    clp.finalize();
+
+    real_t::default_precision(n);
+    complex_t::default_precision(n);
 
     cpx       ttau(.125, 1.25);
     complex_t tau = complex_t(1, 10) / 8;

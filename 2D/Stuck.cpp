@@ -105,12 +105,12 @@ public:
 
 int main(int argc, char **argv) {
     CLP  clp(argc, argv, "Stuck walk on the square lattice");
-    auto c = clp("c", "Center display on center of mass");
-    auto o = clp("o", "Output point coordinates to the console");
-    auto a = clp("a", 0.1432, "Reinforcement parameter (alpha)");
-    auto b = clp("b", 5.0, "Inverse temperature (beta)");
-    auto n = clp("n", size_t(200), "Domain size");
-    auto v = clp("v", 0.0, "Snapshot interval time (0 to disable)");
+    auto a = clp.param("a", 0.1432, "Reinforcement parameter (alpha)");
+    auto b = clp.param("b", 5.0, "Inverse temperature (beta)");
+    auto n = clp.param("n", size_t(200), "Domain size");
+    auto v = clp.param("v", 0.0, "Snapshot interval time (0 to disable)");
+    auto c = clp.flag("c", "Center display on center of mass");
+    auto o = clp.flag("o", "Output point coordinates to the console");
     clp.finalize();
 
     Hub   H("Stuck walk on the square lattice", argc, argv, "");
