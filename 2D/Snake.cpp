@@ -24,7 +24,7 @@ public:
         }
     }
 
-    [[nodiscard]] bool alive() const {
+    [[nodiscard]] auto alive() const -> bool {
         auto lz = z.back();
         auto lx = lz.x, ly = lz.y;
         return ((lx > 0) && (lx < int64_t(size.x) - 1) && (ly > 0) && (ly < int64_t(size.y) - 1));
@@ -48,7 +48,7 @@ public:
     std::vector<vb::coo> z;
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     vb::Hub H("Self-avoiding snake", argc, argv, "n=1000,a=.38");
     double  a = H['a'], e = 1.0 / (1.0 + 4 * a);
 

@@ -5,7 +5,7 @@
 using namespace vb;
 using namespace std;
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub          H("Randomized Polynuclear Growth", argc, argv, "n=500,e=0.01,f,c=0");
     const size_t n = H['n'];
     const double e = H['e'];

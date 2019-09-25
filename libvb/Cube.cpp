@@ -25,8 +25,8 @@ namespace vb {
         step();
     }
 
-    Cube_iterator Cube::begin() { return Cube_iterator(this, {0, 0, 0}); }
-    Cube_iterator Cube::end() { return Cube_iterator(this, {0, 0, size.z}); }
+    auto Cube::begin() -> Cube_iterator { return Cube_iterator(this, {0, 0, 0}); }
+    auto Cube::end() -> Cube_iterator { return Cube_iterator(this, {0, 0, size.z}); }
 
     void Cube::output_pov(const std::string &s) {
         Pov_Union squares1, squares2, cube, corner, ground;

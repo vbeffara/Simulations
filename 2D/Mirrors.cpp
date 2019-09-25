@@ -11,7 +11,7 @@ constexpr unsigned STATE_NE      = 1U;
 constexpr unsigned STATE_FLIP    = 2U;
 constexpr unsigned STATE_VISITED = 4U;
 
-constexpr Color MIRROR_NONE();
+constexpr auto MIRROR_NONE() -> Color;
 constexpr Color MIRROR_NE(255, 0, 0);
 constexpr Color MIRROR_NW(255, 255, 0);
 constexpr Color MIRROR_FLIP_NE(0, 0, 255);
@@ -22,7 +22,7 @@ constexpr Color MIRROR_FLIP_NE_VISITED(0, 0, 128);
 constexpr Color MIRROR_FLIP_NW_VISITED(0, 128, 0);
 
 namespace vb {
-    template <> Color to_Color(uint8_t t) {
+    template <> auto to_Color(uint8_t t) -> Color {
         if (t == 0) return BLACK;
         if (t == STATE_VISITED) return Grey(128);
         static const vector<Color> colors{MIRROR_NW,         MIRROR_NE,         MIRROR_FLIP_NW,         MIRROR_FLIP_NE,
@@ -70,7 +70,7 @@ void Mirrors::main() {
     }
 }
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub H("Mirror model", argc, argv, "n=200,p=.5,q=0,f=0");
     Mirrors(H).main();
 }

@@ -219,7 +219,7 @@ struct Tiling {
     Array<uint8_t>        state{{0, 0}};
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub H("Domino shuffle", argc, argv, "m=50,a=1,b=.5,c=.3,s=0,r=0,w=two,v");
     if (size_t seed = H['s']; seed != 0) prng.seed(seed);
 

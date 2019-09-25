@@ -27,7 +27,7 @@ public:
         }
     }
 
-    [[nodiscard]] Color compute(cpx z) const {
+    [[nodiscard]] auto compute(cpx z) const -> Color {
         for (size_t k = 0; k < size(); ++k) {
             if (z.imag() <= 0) return (z.real() < at(k)) ? LEFTSIDE : RIGHTSIDE;
             if (z.real() < Min[k]) return LEFTSIDE;
@@ -41,7 +41,7 @@ public:
     std::vector<double> Min, Max;
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub H("Schramm-Loewner Evolution", argc, argv, "n=300,k=2.666666666667,r=0,a");
     if (size_t r = H['r']; r > 0) prng.seed(r);
 

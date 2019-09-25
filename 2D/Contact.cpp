@@ -1,16 +1,16 @@
 #include <vb/Bitmap.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
 
-int main(int argc, char **argv) {
-    Hub H("Discrete-time contact process on Z^2", argc, argv, "p=.4,n=400");
+auto main(int argc, char **argv) -> int {
+    CLP  clp(argc, argv, "Discrete-time contact process on Z^2");
+    auto p = clp.param("c", .4, "Contagion rate");
+    auto n = clp.param("n", size_t(400), "Simulation size");
+    clp.finalize();
 
-    double p = H['p'];
-    size_t n = H['n'];
-
-    Image img(H.title, {n, n});
+    Image img(clp.title, {n, n});
 
     for (size_t x = 0; x < n; ++x)
         for (size_t y = 0; y < n / 2; ++y) img.put({x, y}, WHITE);

@@ -17,7 +17,7 @@ namespace vb {
         bool        out;
     };
 
-    class Hub : public CL_Parser {
+    class [[deprecated]] Hub : public CL_Parser {
     public:
         Hub(std::string t, int argc, char **argv, std::string c = "");
         ~Hub();

@@ -8,7 +8,7 @@ using std::max;
 using vb::Hub;
 using vb::prng;
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub    H("PingPong process", argc, argv, "n=1000,a=1,b=.5,f");
     size_t n = H['n'];
     double a = H['a'], b = H['b'];

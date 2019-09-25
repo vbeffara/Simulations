@@ -4,7 +4,7 @@
 using namespace vb;
 using namespace std;
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub H("Testing PRNG methods", argc, argv, "n=100000000");
     int n = H['n'];
 

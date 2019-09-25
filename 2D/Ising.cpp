@@ -23,7 +23,7 @@ public:
             }
     }
 
-    int nnb(coo z) {
+    auto nnb(coo z) -> int {
         int   out = 0;
         Color c   = atp(z);
         for (int d = 0; d < 4; ++d) {
@@ -62,7 +62,7 @@ public:
     double beta;
 };
 
-int main(int argc, char *argv[]) {
+auto main(int argc, char *argv[]) -> int {
     Hub   H("Ising model", argc, argv, "b=.88137359,n=300,t=0,c,r=0,k,v");
     Ising I(H, H['n'], H['b'], H['r'], H['c']);
     I.show();

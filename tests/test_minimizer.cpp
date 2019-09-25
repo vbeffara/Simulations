@@ -7,7 +7,7 @@ using namespace std;
 using namespace vb;
 using namespace libcmaes;
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub    H("Tests of minimization strategies", argc, argv, "d=10,s=1,l=-1,t,a=acmaes,m");
     size_t dim    = H['d'];
     int    lambda = H['l'];

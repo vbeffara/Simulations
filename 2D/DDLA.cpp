@@ -15,7 +15,7 @@ public:
         pq.push({{0, 1}, prng.exponential() / (1 - p)});
     };
 
-    bool ok(ucoo z) {
+    auto ok(ucoo z) -> bool {
         while (true) {
             if ((z.x >= n) || (z.y >= n) || (z.x + z.y > cursum)) return true;
             if (at(z)) return false;
@@ -61,7 +61,7 @@ public:
     Queue<ucoo> pq;
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     CLP  clp(argc, argv, "Directed DLA");
     auto n = clp.param("n", size_t(750), "Simulation size");
     auto p = clp.param("p", .5, "Random walk parameter");

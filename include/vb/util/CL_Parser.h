@@ -34,7 +34,7 @@ namespace vb {
     public:
         CL_Parser(std::string t, int argc, char **argv, std::string c = "");
 
-        [[deprecated]] const Value &operator[](char c) const { return find(c)->second; }
+        const Value &operator[](char c) const { return find(c)->second; }
 
         std::string title, help, prog, dir, cmd;
     };

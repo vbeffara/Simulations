@@ -12,7 +12,7 @@ void out2(const std::string &s, cpx z, const complex_t &zz) {
     spdlog::info("  {}", imag(zz));
 }
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     CLP  clp(argc, argv, "Tests for elliptic functions");
     auto n = clp.param("n", size_t(100), "Precision in digits");
     clp.finalize();

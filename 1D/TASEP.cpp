@@ -26,7 +26,7 @@ public:
     vector<double> p;
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub H("TASEP", argc, argv, "n=1280,r=.4,e=0,d=0");
 
     TASEP T(H);

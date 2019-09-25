@@ -9,7 +9,7 @@ constexpr Color AWAY  = Color(50, 50, 50);
 constexpr Color ALIVE = Color(0, 200, 0);
 constexpr Color DEAD  = Color(255, 0, 0);
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub    H("Aggregation of exclusion walkers", argc, argv, "n=250,p=.5,g,a=1.0,t=0.0,s");
     size_t n = H['n']; // Half of board size
     double p = H['p']; // Initial particle density

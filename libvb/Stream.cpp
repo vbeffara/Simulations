@@ -2,7 +2,7 @@
 #include <vector>
 
 namespace vb {
-    Stream<std::vector<size_t>> partitions(size_t n, size_t m) {
+    auto partitions(size_t n, size_t m) -> Stream<std::vector<size_t>> {
         return Stream<std::vector<size_t>>([n, m](Sink<std::vector<size_t>> &yield) {
             for (size_t i = m; i < n; ++i) {
                 for (const auto &p : partitions(n - i, i)) {
@@ -15,7 +15,7 @@ namespace vb {
         });
     }
 
-    Stream<std::vector<size_t>> tuples(size_t k, size_t n) {
+    auto tuples(size_t k, size_t n) -> Stream<std::vector<size_t>> {
         return Stream<std::vector<size_t>>([k, n](Sink<std::vector<size_t>> &yield) {
             if (k == 0) {
                 yield({});
@@ -31,7 +31,7 @@ namespace vb {
         });
     }
 
-    Stream<std::vector<size_t>> cycles(size_t k, size_t n) {
+    auto cycles(size_t k, size_t n) -> Stream<std::vector<size_t>> {
         return Stream<std::vector<size_t>>([k, n](Sink<std::vector<size_t>> &yield) {
             for (size_t i = 0; i < n - k + 1; ++i) {
                 for (const auto &c : tuples(k - 1, n - i - 1)) {

@@ -6,7 +6,7 @@ using namespace vb;
 using namespace std;
 
 namespace vb {
-    template <> Color to_Color(int t) {
+    template <> auto to_Color(int t) -> Color {
         static const vector<Color> C{BLACK, Grey(90), GREEN, Color(128, 0, 0)};
         return C[size_t(t)];
     }
@@ -60,7 +60,7 @@ public:
     bool   tasym;
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub     H("Exclusion on Percolation", argc, argv, "n=400,p=.8,l=.3,d=0,t");
     PercSEP P(H);
     P.show();

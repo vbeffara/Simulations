@@ -4,7 +4,7 @@
 using namespace std;
 using namespace vb;
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub    H("Random field Ising model", argc, argv, "n=5,s=0");
     size_t n = H['n'];
     prng.seed(size_t(H['s']));

@@ -10,7 +10,7 @@
 using std::cout;
 using std::endl;
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     vb::Hub H("Ladder", argc, argv, "t=20,d");
     int     t = H['t'];
     bool    d = H['d'];

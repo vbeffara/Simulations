@@ -6,7 +6,7 @@ using namespace vb;
 using namespace std;
 
 namespace vb {
-    template <> Color to_Color(int t) {
+    template <> auto to_Color(int t) -> Color {
         if (t == 0) return BLACK;
         if (t == 1) return RED;
         return WHITE;
@@ -101,7 +101,7 @@ public:
     vector<double> p;
 };
 
-int main(int argc, char *argv[]) {
+auto main(int argc, char *argv[]) -> int {
     Hub       H("CFTP for the Ising model", argc, argv, "n=200,b=1,s");
     IsingCFTP I(H);
     I.bc_dobrushin();

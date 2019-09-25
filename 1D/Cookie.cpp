@@ -1,7 +1,7 @@
 #include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     vb::Hub H("Cookie random walk", argc, argv, "t=20,p=.67");
     size_t  t = H['t'];
     double  p = H['p'];

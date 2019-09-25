@@ -13,7 +13,7 @@ static void flush_data(png_struct *png) {
 }
 
 namespace vb {
-    bool CoarseImage::at(ucoo z) const {
+    auto CoarseImage::at(ucoo z) const -> bool {
         const CoarseCell &d = Bitmap<CoarseCell>::at(z / L);
         if (d.fill == 0) return false;
         if (d.fill == LL) return true;

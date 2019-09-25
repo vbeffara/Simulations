@@ -13,7 +13,7 @@ namespace vb {
     constexpr Color C_WEST{0, 0, 255};
     constexpr Color C_SOUTH{255, 255, 0};
 
-    template <> Color to_Color(uint8_t t) {
+    template <> auto to_Color(uint8_t t) -> Color {
         static const std::vector<Color> colors{C_EAST, C_NORTH, C_WEST, C_SOUTH};
         return colors[t];
     }
@@ -67,7 +67,7 @@ public:
     }
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     vb::Hub H("The Swiss Journalist", argc, argv, "n=600,c=0,p=.8,q=.35");
     World   w(H);
     w.show();

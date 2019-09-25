@@ -44,11 +44,11 @@ namespace vb {
         z2 += z;
     }
 
-    cpx Coloring::c_to_z(coo c) const { return z1 + cpx(c.x, c.y) * eps; }
+    auto Coloring::c_to_z(coo c) const -> cpx { return z1 + cpx(c.x, c.y) * eps; }
 
-    Color &Coloring::at(coo z) const { return stage[z.x + int64_t(stride) * z.y]; }
+    auto Coloring::at(coo z) const -> Color & { return stage[z.x + int64_t(stride) * z.y]; }
 
-    Color Coloring::aa_color(coo c, bool pre) const {
+    auto Coloring::aa_color(coo c, bool pre) const -> Color {
         cpx z = c_to_z(c);
         int r(0), g(0), b(0), a(0);
         if (pre) {
@@ -117,7 +117,7 @@ namespace vb {
         tessel_go(ul, lr);
     }
 
-    int Coloring::handle(int event) {
+    auto Coloring::handle(int event) -> int {
         if (event == FL_KEYDOWN) switch (Fl::event_key()) {
             case '-':
                 scale(1.25);

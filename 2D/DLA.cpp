@@ -45,7 +45,7 @@ auto harmonic_measures(size_t p) {
     return prec;
 }
 
-coo uniform_circle(size_t r) {
+auto uniform_circle(size_t r) -> coo {
     double theta = prng.uniform_real(0, 2 * M_PI);
     return {int64_t(double(r) * cos(theta)), int64_t(double(r) * sin(theta))};
 }
@@ -65,7 +65,7 @@ public:
         start = now();
     }
 
-    [[nodiscard]] bool at(coo z) const { return fits(z) && CoarseImage::at(ucoo(z)); }
+    [[nodiscard]] auto at(coo z) const -> bool { return fits(z) && CoarseImage::at(ucoo(z)); }
 
     void put(ucoo z) {
         CoarseImage::put(z, true);
@@ -73,13 +73,13 @@ public:
         r = std::max(r, size_t(sup(coo(z) - coo(mid))));
     }
 
-    [[nodiscard]] bool neighbor(coo z) const {
+    [[nodiscard]] auto neighbor(coo z) const -> bool {
         for (int i = 0; i < 4; ++i)
             if (at(z + dz[i])) return true;
         return false;
     }
 
-    [[nodiscard]] coo jump(size_t d) const {
+    [[nodiscard]] auto jump(size_t d) const -> coo {
         if (d <= 1) return dz[prng.uniform_int(4)];
         if (d < prec.size()) {
             coo w{int64_t(d), prng.discrete(prec[d])};
@@ -120,7 +120,7 @@ public:
     ucoo                   mid;
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub H("Lattice DLA", argc, argv, "n=2000,p=64,c=50,l=30,f,s=0");
     if (auto s = size_t(H['s'])) prng.seed(s);
     DLA dla(H['n'], H);

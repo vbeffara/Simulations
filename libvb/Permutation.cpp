@@ -13,7 +13,7 @@ namespace vb {
         }
     }
 
-    Cycles Permutation::cycles() const {
+    auto Permutation::cycles() const -> Cycles {
         Cycles           c;
         std::vector<int> done(size(), 0);
         for (size_t i = 0; i < size(); ++i) {
@@ -29,14 +29,14 @@ namespace vb {
         return c;
     }
 
-    std::vector<size_t> Permutation::signature() const {
+    auto Permutation::signature() const -> std::vector<size_t> {
         vector<size_t> output;
         for (const auto &c : cycles()) output.push_back(c.size());
         sort(output.begin(), output.end());
         return output;
     }
 
-    Passport Permutation::passport() const {
+    auto Permutation::passport() const -> Passport {
         auto     s = signature();
         Passport out;
         size_t   l = 0, c = 0;
@@ -54,40 +54,40 @@ namespace vb {
         return out;
     }
 
-    bool Permutation::is_identity() const {
+    auto Permutation::is_identity() const -> bool {
         for (size_t i = 0; i < size(); ++i)
             if (at(i) != i) return false;
         return true;
     }
 
-    Permutation Permutation::inverse() const {
+    auto Permutation::inverse() const -> Permutation {
         Permutation s;
         s.resize(size());
         for (size_t i = 0; i < size(); ++i) s[at(i)] = i;
         return s;
     }
 
-    Permutation Permutation::operator*(const Permutation &o) const {
+    auto Permutation::operator*(const Permutation &o) const -> Permutation {
         Permutation s;
         s.resize(size());
         for (size_t i = 0; i < size(); ++i) s[i] = o[at(i)];
         return s;
     }
 
-    Permutation Permutation::conjugate(const Permutation &s) const {
+    auto Permutation::conjugate(const Permutation &s) const -> Permutation {
         Permutation out(size());
         for (size_t i = 0; i < size(); ++i) out[s[i]] = s[at(i)];
         return out;
     }
 
-    Permutation Transposition(size_t n, size_t i, size_t j) {
+    auto Transposition(size_t n, size_t i, size_t j) -> Permutation {
         Permutation p(n);
         p[i] = j;
         p[j] = i;
         return p;
     }
 
-    bool connected(const Permutation &s, const Permutation &a) {
+    auto connected(const Permutation &s, const Permutation &a) -> bool {
         auto                n = s.size();
         std::vector<size_t> l(n);
         for (size_t i = 0; i < n; ++i) l[i] = i;
@@ -108,7 +108,7 @@ namespace vb {
         return std::all_of(begin(l), end(l), [](auto v) { return v == 0; });
     }
 
-    Stream<Permutation> permutations(size_t n) {
+    auto permutations(size_t n) -> Stream<Permutation> {
         return Stream<Permutation>([n](Sink<Permutation> &yield) {
             Permutation p(n);
             do
@@ -117,7 +117,7 @@ namespace vb {
         });
     }
 
-    Stream<Permutation> permutations(const std::vector<size_t> &s) {
+    auto permutations(const std::vector<size_t> &s) -> Stream<Permutation> {
         return Stream<Permutation>([s](Sink<Permutation> &yield) {
             size_t n = 0;
             for (auto i : s) n += i;

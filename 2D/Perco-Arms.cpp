@@ -29,7 +29,7 @@ void add_one(Graph *gg, size_t i, size_t j) {
     put(edge_reverse, g, e2, e1);
 }
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub    H("Percolation arm exponents", argc, argv, "n=100,t=1,p=.5");
     size_t n = H['n'], n_iter = H['t'];
     double p = H['p'];

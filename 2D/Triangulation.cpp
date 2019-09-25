@@ -18,14 +18,14 @@ public:
         (*this) << Edge(n - 1, 0) << Edge(n - 1, n - 2) << Edge(n - 1, 1);
     }
 
-    [[nodiscard]] Edge random_edge() const {
+    [[nodiscard]] auto random_edge() const -> Edge {
         auto                   i = vb::prng.uniform_int(n), j = vb::prng.uniform_int(v[i]->adj.size());
         vb::adj_list::iterator k;
         for (k = v[i]->adj.begin(); j > 0; ++k, --j) {};
         return Edge(i, *k);
     }
 
-    bool flip(Edge e) {
+    auto flip(Edge e) -> bool {
         auto i = e.first, j = e.second;
 
         auto e1 = find_edge(Edge(i, j));
@@ -53,7 +53,7 @@ public:
     }
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     vb::Hub H("Random triangulation", argc, argv, "n=10,t=0");
     size_t  n = H['n'], t = H['t'];
     if (t == 0) t = 50 * n * n;

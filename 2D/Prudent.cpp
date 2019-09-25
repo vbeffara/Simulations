@@ -5,7 +5,7 @@
 using namespace std;
 using namespace vb;
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub H("Prudent random walk", argc, argv, "t=100000,n=10000");
     int T = H['t'], N = H['n'];
 

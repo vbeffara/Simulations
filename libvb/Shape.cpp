@@ -13,28 +13,28 @@ namespace vb {
         cairo_arc(cr, z.real(), z.imag(), r, 0, 2 * M_PI);
     }
 
-    double Path::left() {
+    auto Path::left() -> double {
         double m = z[0].real();
         for (size_t i = 1; i < z.size(); ++i)
             if (std::isnormal(real(z[i]))) m = std::min(m, z[i].real());
         return m;
     }
 
-    double Path::right() {
+    auto Path::right() -> double {
         double m = z[0].real();
         for (size_t i = 1; i < z.size(); ++i)
             if (std::isnormal(real(z[i]))) m = std::max(m, z[i].real());
         return m;
     }
 
-    double Path::top() {
+    auto Path::top() -> double {
         double m = z[0].imag();
         for (size_t i = 1; i < z.size(); ++i)
             if (std::isnormal(real(z[i]))) m = std::max(m, z[i].imag());
         return m;
     }
 
-    double Path::bottom() {
+    auto Path::bottom() -> double {
         double m = z[0].imag();
         for (size_t i = 1; i < z.size(); ++i)
             if (std::isnormal(real(z[i]))) m = std::min(m, z[i].imag());

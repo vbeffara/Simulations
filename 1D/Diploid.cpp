@@ -43,7 +43,7 @@ public:
         B[5] = (naB + nAB + 2 * nBB) * (naB + nAB + 2 * nBB) / (4 * (naA + nAA + naB + nAB + nBB));
     }
 
-    double NewNu() {
+    auto NewNu() -> double {
         for (size_t i = 0; i < 6; ++i) {
             De[i] = DR[i];
             for (size_t j = 0; j < 6; ++j) De[i] += Comp[i][j] * nu[j];
@@ -73,7 +73,7 @@ public:
     std::vector<std::vector<double>> Comp;
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     vb::Hub H("Diploid model", argc, argv, "s=0,i=10000000,K=10000,f=6,d=.7,D=.1,c=1,e=.02,x=.0001,y=.01,z=5.3,Z=.0001,t=1000");
 
     if (size_t seed = H['s']) vb::prng.seed(seed);

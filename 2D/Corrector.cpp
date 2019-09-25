@@ -8,7 +8,7 @@ using namespace std;
 int center   = 6;
 int infinity = 13;
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub    H("Corrector", argc, argv, "n=10,p=.9,b");
     size_t n     = H['n'];
     double p     = H['p'];

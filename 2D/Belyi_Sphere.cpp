@@ -7,7 +7,7 @@
 using namespace vb;
 using namespace std;
 
-Stream<Hypermap> triangulations(unsigned n) {
+auto triangulations(unsigned n) -> Stream<Hypermap> {
     Cycles phic;
     for (unsigned i = 0; i < n / 3; ++i) phic.emplace_back(std::vector<size_t>{i, i + n / 3, i + 2 * n / 3});
     Permutation    phi(phic);
@@ -41,7 +41,7 @@ Stream<Hypermap> triangulations(unsigned n) {
     });
 }
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub      H("Spheroidal enumeration", argc, argv, "s=3,m=228,d=2,g=0,v,o,b,q");
     unsigned s = H['s'], g = 0, a = 6 * (s - 2), d = H['d'];
 

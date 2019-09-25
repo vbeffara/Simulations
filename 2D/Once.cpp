@@ -4,7 +4,7 @@
 
 using namespace vb;
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub    H("Once-reinforced random walk", argc, argv, "n=1000,a=2");
     size_t n = H['n'];
     double a = H['a'];

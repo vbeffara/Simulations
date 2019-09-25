@@ -5,10 +5,10 @@
 using namespace std;
 using namespace vb;
 
-bool good(const Permutation &p) { return p[0] == 2; }
+auto good(const Permutation &p) -> bool { return p[0] == 2; }
 auto sec(const Permutation &p) { return p[2]; }
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub  H("Testing coroutines", argc, argv, "n=5");
     auto S    = permutations(H['n']);
     auto SS   = filter(good, move(S));

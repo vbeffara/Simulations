@@ -15,7 +15,7 @@ public:
         }
     }
 
-    int step(unsigned dir, int add) {
+    auto step(unsigned dir, int add) -> int {
         if (add == 0) { return 0; }
         if (add > 0) {
             if (pos[dir] < Max[dir].at({pos[(dir + 1) % 3], pos[(dir + 2) % 3]})) return 0;
@@ -36,19 +36,19 @@ public:
         }
     }
 
-    [[nodiscard]] int norm1() const { return abs(pos[0]) + abs(pos[1]) + abs(pos[2]); }
+    [[nodiscard]] auto norm1() const -> int { return abs(pos[0]) + abs(pos[1]) + abs(pos[2]); }
 
     size_t                 length = 0;
     vector<int>            pos;
     vector<TriMatrix<int>> Max, Min;
 };
 
-ostream &operator<<(ostream &o, const Walker &W) {
+auto operator<<(ostream &o, const Walker &W) -> ostream & {
     o << W.pos[0] << ' ' << W.pos[1] << ' ' << W.pos[2] << ' ' << W.norm1() << endl;
     return o;
 }
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub         H("3D prudent walker", argc, argv, "l=1000,n=1");
     size_t      l = H['l'], n = H['n'];
     vector<int> ends(l, 0);

@@ -4,7 +4,7 @@
 
 using namespace vb;
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     const std::vector<Color> C{RED, GREEN, BLUE, YELLOW};
 
     Hub    H("Rotor-Router Model", argc, argv, "n=500");

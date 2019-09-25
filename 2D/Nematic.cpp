@@ -6,7 +6,7 @@
 using namespace vb;
 
 namespace vb {
-    template <> Color to_Color(size_t t) {
+    template <> auto to_Color(size_t t) -> Color {
         static const std::vector<Color> key = {BLACK, RED, GREEN};
         return key[t];
     }
@@ -105,7 +105,7 @@ public:
     std::vector<double> P;
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub H("Nematic system on the square lattice", argc, argv, "n=500,m=0,k=7,b=2,v,l,t=0");
     Nematic(H, H['n'], int(H['m']) != 0 ? H['m'] : H['n'], H['k'], H['b']).go(H);
 }

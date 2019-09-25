@@ -7,7 +7,7 @@ using namespace vb;
 using namespace std;
 
 namespace vb {
-    template <> Color to_Color(int t) { return t != 0 ? Indexed((3 + t) / 2) : Grey(128); }
+    template <> auto to_Color(int t) -> Color { return t != 0 ? Indexed((3 + t) / 2) : Grey(128); }
 } // namespace vb
 
 class Ising : public Bitmap<int> {
@@ -73,7 +73,7 @@ public:
     vector<double> p;
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub   H("2D Ising model", argc, argv, "n=50,b=.7,c=4");
     Ising I(H, H['n'], H['b'], H['c']);
     I.show();

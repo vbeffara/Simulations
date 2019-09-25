@@ -4,7 +4,7 @@
 
 using namespace vb;
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub H("Discrete-time contact process on the hexagonal lattice", argc, argv, "p=.44,n=400");
 
     double p = H['p'];

@@ -5,7 +5,7 @@
 
 using namespace vb;
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub H("Testing spdlog", argc, argv);
     spdlog::set_level(spdlog::level::trace); // Set global log level to info
 

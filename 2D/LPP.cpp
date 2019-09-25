@@ -5,7 +5,7 @@
 using namespace std;
 using namespace vb;
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub    H("Last-passage percolation", argc, argv, "n=500,r=.1,l=.01,d=0");
     size_t n = H['n'];
     double r = H['r'], l = H['l'], d = H['d'];

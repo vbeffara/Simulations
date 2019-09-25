@@ -6,7 +6,7 @@ using namespace vb;
 using namespace std;
 
 namespace vb {
-    template <> Color to_Color(unsigned t) {
+    template <> auto to_Color(unsigned t) -> Color {
         static const vector<Color> C{RED, BLUE, YELLOW, GREEN, MAGENTA, CYAN};
         if ((t >= 0) && (t < 6)) return C[size_t(t)];
         if (t < 0) return WHITE;
@@ -142,8 +142,8 @@ public:
         show();
     }
 
-    [[nodiscard]] unsigned HH(unsigned i, unsigned j) const { return i == j ? 0 : 1; }
-    [[nodiscard]] unsigned HH(const coo &z, unsigned i) const {
+    [[nodiscard]] static auto     HH(unsigned i, unsigned j) -> unsigned { return i == j ? 0 : 1; }
+    [[nodiscard]] auto HH(const coo &z, unsigned i) const -> unsigned {
         return HH(i, atp(z + dz[0])) + HH(i, atp(z + dz[1])) + HH(i, atp(z + dz[2])) + HH(i, atp(z + dz[3]));
     }
 
@@ -160,7 +160,7 @@ public:
     map<string, function<void()>> bcs;
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub   H("Potts model", argc, argv, "n=500,q=3,b=1,c=free");
     Potts P(H, H['n'], H['q'], H['b']);
     while (true) P.up();

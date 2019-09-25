@@ -5,7 +5,7 @@
 
 using namespace vb;
 
-double cost() { return prng.exponential(); }
+auto cost() -> double { return prng.exponential(); }
 
 class FPP : public CoarseImage {
 public:
@@ -58,7 +58,7 @@ public:
     Queue<ucoo> pq;
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub H("First-passage percolation", argc, argv, "n=5000,i,2,t");
     FPP F(H, H['n']);
     F.show();

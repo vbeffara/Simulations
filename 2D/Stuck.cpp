@@ -89,7 +89,7 @@ public:
         Bitmap<Stat>::update();
     }
 
-    int nsup() {
+    auto nsup() -> int {
         int n = 0;
         for (auto z : coo_range(size))
             if ((at(z).s > 0) && (at(z).ml > .9 * Stat::max)) ++n;
@@ -103,7 +103,7 @@ public:
     Console    C;
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     CLP  clp(argc, argv, "Stuck walk on the square lattice");
     auto a = clp.param("a", 0.1432, "Reinforcement parameter (alpha)");
     auto b = clp.param("b", 5.0, "Inverse temperature (beta)");

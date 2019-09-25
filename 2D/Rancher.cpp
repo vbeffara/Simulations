@@ -24,7 +24,7 @@ public:
     bool k;
 };
 
-double angle(const point &O, const point &A, const point &B) {
+auto angle(const point &O, const point &A, const point &B) -> double {
     cpx vza = A.z;
     if (A.k) vza -= O.z;
     cpx vzb = B.z;
@@ -46,7 +46,7 @@ public:
 
     Rancher(int argc, char **argv) : H("Rancher process", argc, argv, "p=.1,n=1000,i=1,o,r"), F(H.title) {}
 
-    point rand_point() {
+    auto rand_point() -> point {
         point p = *cur, pp = *boost::prior(cur), ppp = *boost::next(cur);
         cpx   vzp = pp.z;
         if (pp.k) vzp -= p.z;
@@ -55,7 +55,7 @@ public:
         return point(p.z + vzp * std::polar(1.0, alpha) / sqrt(norm(vzp)));
     }
 
-    std::list<point>::iterator insere_maillon(const point &p) {
+    auto insere_maillon(const point &p) -> std::list<point>::iterator {
         std::list<point>::iterator maillonmin2, maillonmax2, i;
         double                     minpente2 = std::numeric_limits<double>::infinity(), maxpente2 = -minpente2;
 
@@ -104,7 +104,7 @@ public:
         F.add(std::make_unique<vb::Path>(V, P));
     }
 
-    double env_width() {
+    auto env_width() -> double {
         auto i = env.begin();
         ++i;
         point p1 = *i;
@@ -178,4 +178,4 @@ public:
     }
 };
 
-int main(int argc, char **argv) { Rancher(argc, argv).main(); }
+auto main(int argc, char **argv) -> int { Rancher(argc, argv).main(); }

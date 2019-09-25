@@ -6,7 +6,7 @@
 namespace vb {
     OldPath::OldPath(size_t l, bool rel) : std::vector<uint8_t>(l), relative(rel) {}
 
-    bool OldPath::self_avoiding() {
+    auto OldPath::self_avoiding() -> bool {
         TriMatrix<uint8_t> T;
         int                l = 0;
         coo                z{0, 0};

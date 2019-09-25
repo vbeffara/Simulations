@@ -3,7 +3,7 @@
 
 using vb::Hub;
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub    H("Rarefaction fan", argc, argv, "n=20");
     size_t n = H['n'];
 

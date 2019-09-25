@@ -2,7 +2,7 @@
 
 using namespace vb;
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     CLP  clp(argc, argv, "This is a test of the new command line parser");
     auto r = clp.param("r", 1.0, "Rate of dummyfication");
     auto n = clp.param("n", 123, "Number of dummyfications");

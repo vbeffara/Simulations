@@ -5,7 +5,7 @@
 
 using namespace vb;
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub H("Test: circle packing", argc, argv, "s=4,v");
 
     Map m(H.title, 13);

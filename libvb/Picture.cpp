@@ -54,7 +54,7 @@ namespace vb {
         if (period > 0) snapshot_task = add_task(period, [this] { this->snapshot(); });
     }
 
-    int Picture::handle(int event) {
+    auto Picture::handle(int event) -> int {
         if ((event == FL_KEYDOWN) && (Fl::event_key() == 's')) snapshot();
         return AutoWindow::handle(event);
     }

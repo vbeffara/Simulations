@@ -18,7 +18,7 @@ public:
         }
     }
 
-    [[nodiscard]] double weight() const { return W[pmod(z.x, W.size())][pmod(z.y, W[0].size())][d]; }
+    [[nodiscard]] auto weight() const -> double { return W[pmod(z.x, W.size())][pmod(z.y, W[0].size())][d]; }
 
     explicit
     operator Color() const {
@@ -96,7 +96,7 @@ void three_by_two(double a) {
     if (maxw == minw) minw -= 1;
 }
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub H("Domino tiling (v2)", argc, argv, "n=100,a=.5");
     two_by_two(H['a']);
     hues = W;

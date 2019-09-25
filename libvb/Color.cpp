@@ -1,7 +1,7 @@
 #include <vb/Color.h>
 
 namespace vb {
-    Color HSV(double h, double s, double v) noexcept {
+    auto HSV(double h, double s, double v) noexcept -> Color {
         auto   h_i = int(h * 6);
         double f   = h * 6 - h_i;
         v *= 255;
@@ -14,7 +14,7 @@ namespace vb {
         return {uint8_t(v), p, q};
     }
 
-    Color Indexed(int i, double s, double v) noexcept {
+    auto Indexed(int i, double s, double v) noexcept -> Color {
         double x = i * 1.61803398874989484820;
         return HSV(x - int(x), s, v);
     }

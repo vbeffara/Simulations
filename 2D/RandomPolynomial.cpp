@@ -6,7 +6,7 @@
 using namespace vb;
 using namespace std;
 
-template <typename T> T sm3(size_t i, size_t j, size_t k) {
+template <typename T> auto sm3(size_t i, size_t j, size_t k) -> T {
     static T np = 9 * pi_<T>();
     if (i < j) return sm3<T>(j, i, k);
     if (i < k) return sm3<T>(k, i, j);
@@ -29,7 +29,7 @@ public:
             }
     }
 
-    T operator()(T x, T y) {
+    auto operator()(T x, T y) -> T {
         if (p) {
             T r = (x * x + y * y);
             if (r >= 1) return 0;
@@ -45,7 +45,7 @@ public:
         return out;
     }
 
-    Color operator()(cpx z) {
+    auto operator()(cpx z) -> Color {
         T val = (*this)(T(real(z)), T(imag(z)));
         if (val == T(0)) return NOCOLOR;
         return HSV(val > 0 ? 0 : .5, .8, .8);
@@ -56,7 +56,7 @@ public:
     vector<vector<T>> A;
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub H("Random polynomial in 2 variables", argc, argv, "n=100,g=gaussian,s=0,p");
     if (unsigned s = H['s']; s > 0) prng.seed(s);
     RPoly<double> P(H, H['n'], H['p']);

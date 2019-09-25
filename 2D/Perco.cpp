@@ -44,7 +44,7 @@ public:
     double p;
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub   H("Percolation", argc, argv, "n=500,p=.5,c,d,s=0");
     Perco P(H, H['n'], H['p']);
     if (H['d'])

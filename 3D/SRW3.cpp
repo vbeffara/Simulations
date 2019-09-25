@@ -18,7 +18,7 @@ public:
     coo3   pos;
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     CLP  clp(argc, argv, "Simple random walk in dimension 3");
     auto n = clp.param("n", size_t(100), "Box size");
     clp.finalize();

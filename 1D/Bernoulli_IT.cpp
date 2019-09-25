@@ -6,12 +6,12 @@
 using namespace vb;
 using namespace std;
 
-double indexed_compose(const vector<function<double(double)>> &fs, const vector<size_t> &etas, double x) {
+auto indexed_compose(const vector<function<double(double)>> &fs, const vector<size_t> &etas, double x) -> double {
     for (auto eta : etas) x = fs[eta](x);
     return x;
 }
 
-double run(size_t N, size_t T, double theta, bool v) {
+auto run(size_t N, size_t T, double theta, bool v) -> double {
     vector<function<double(double)>> funs = {[theta](double x) { return (x < theta) ? x : x - theta; },
                                              [theta](double x) { return (x < theta) ? x + 1 - theta : x; }};
 
@@ -30,7 +30,7 @@ double run(size_t N, size_t T, double theta, bool v) {
     return s2 / T - s1 * s1 / double(T * T);
 }
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub H("Bernoullicity of [I,T]", argc, argv, "n=1,t=1000,s=.61803398874989484820,v,k=1");
 
     double sum = 0;

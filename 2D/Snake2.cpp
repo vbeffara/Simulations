@@ -7,7 +7,7 @@ using namespace vb;
 enum site { EMPTY = 0, VERTEX, EDGE, LEFT, RIGHT };
 
 namespace vb {
-    template <> Color to_Color(site t) {
+    template <> auto to_Color(site t) -> Color {
         if (t == VERTEX) return BLACK;
         if (t == EDGE) return Grey(128);
         if (t == LEFT) return Indexed(1);
@@ -37,11 +37,11 @@ public:
     }
 
     // TODO: now remove all int(size.y), int64_t(size.y), int(size.x), int64_t(size.x)
-    bool border(coo z) { return (z.x == 0) || (z.x == int(size.x) - 1) || (z.y == int(size.y) - 1); }
+    auto border(coo z) -> bool { return (z.x == 0) || (z.x == int(size.x) - 1) || (z.y == int(size.y) - 1); }
 
-    bool edge(coo z, int d) { return (d != 3 - ((unsigned(z.x + z.y) + size.x / 2) % 4)); }
+    auto edge(coo z, int d) -> bool { return (d != 3 - ((unsigned(z.x + z.y) + size.x / 2) % 4)); }
 
-    bool trapped(coo z, int d) {
+    auto trapped(coo z, int d) -> bool {
         if (border(z)) return false;
         bool surrounded = true;
         for (int i = 0; i < 4; ++i)
@@ -61,7 +61,7 @@ public:
         }
     }
 
-    bool allowed(coo z, int d) {
+    auto allowed(coo z, int d) -> bool {
         if (hex && !edge(z, d)) return false;
         coo nz = z + dz[d] * 2;
         return (at(ucoo(nz)) != VERTEX) && (nz.y >= 0) && !trapped(nz, d);
@@ -94,7 +94,7 @@ public:
     bool             hex;
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub   H("Self-avoiding snake in the half plane", argc, argv, "n=200,l=1.0,v,p,x,a=0");
     Snake S(H, H['n'], H['l'], H['x']);
     S.run();

@@ -6,7 +6,7 @@ using namespace std;
 using namespace vb;
 
 namespace vb {
-    template <> Color to_Color(size_t t) { return t == 0 ? BLACK : Indexed(int(t)); }
+    template <> auto to_Color(size_t t) -> Color { return t == 0 ? BLACK : Indexed(int(t)); }
 } // namespace vb
 
 class ACP : public Bitmap<size_t> {
@@ -36,7 +36,7 @@ public:
     vector<double> P;
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub H("Contact process with aging", argc, argv, "n=400,d=.01,a=.1,z=0,m=5,b=.2,r=.1");
     ACP A(H);
     A.show();

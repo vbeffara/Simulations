@@ -41,7 +41,7 @@ public:
     std::vector<ucoo> fringe;
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub H("SIR process on the lattice", argc, argv, "n=600,l=.5,d,s=1");
 
     SIR img(H, H['n'], H['l']);

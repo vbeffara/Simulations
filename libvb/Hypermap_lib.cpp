@@ -18,7 +18,7 @@ namespace vb {
         }
     }
 
-    Hypermap H_artem(size_t n) {
+    auto H_artem(size_t n) -> Hypermap {
         Permutation sigma(6 * n), alpha(6 * n), phi(6 * n);
         for (size_t i = 0; i < n; ++i) {
             sigma[i]         = 2 * n + i;
@@ -52,7 +52,7 @@ namespace vb {
         return Hypermap(sigma, alpha, phi);
     }
 
-    Hypermap H_genus0(size_t n) {
+    auto H_genus0(size_t n) -> Hypermap {
         Permutation sigma(6 * n), alpha(6 * n), phi(6 * n);
         for (size_t i = 0; i < n; ++i) {
             size_t j = (i + 1) % n, k = (i + n - 1) % n;
@@ -78,7 +78,7 @@ namespace vb {
         return Hypermap(sigma, alpha, phi);
     }
 
-    Hypermap H_genus1(size_t n) {
+    auto H_genus1(size_t n) -> Hypermap {
         Permutation sigma(6 * n), alpha(6 * n), phi(6 * n);
         for (size_t i = 0; i < n; ++i) {
             size_t j = (i + 1) % n, k = (i + n - 1) % n;

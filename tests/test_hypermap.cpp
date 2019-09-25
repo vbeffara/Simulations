@@ -6,7 +6,7 @@
 
 using namespace vb;
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub H("Hypermap of genus 0", argc, argv, "m=228,v,q,g=m_cube,p,a,f=0,s=0,u=0,d=1,D=0,o");
 
     auto M = HLib().at(H['g']);

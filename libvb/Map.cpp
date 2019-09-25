@@ -10,25 +10,25 @@ namespace vb {
     }
 
     // TODO: min_element
-    double Map::left() {
+    auto Map::left() -> double {
         double l = 0.0;
         for (size_t i = 0; i < n; ++i) l = std::min(l, v[i]->z.real());
         return l;
     }
 
-    double Map::right() {
+    auto Map::right() -> double {
         double l = 0.0;
         for (size_t i = 0; i < n; ++i) l = std::max(l, v[i]->z.real());
         return l;
     }
 
-    double Map::top() {
+    auto Map::top() -> double {
         double l = 0.0;
         for (size_t i = 0; i < n; ++i) l = std::max(l, v[i]->z.imag());
         return l;
     }
 
-    double Map::bottom() {
+    auto Map::bottom() -> double {
         double l = 0.0;
         for (size_t i = 0; i < n; ++i) l = std::min(l, v[i]->z.imag());
         return l;
@@ -64,21 +64,21 @@ namespace vb {
         cairo_restore(cr);
     }
 
-    adj_list::iterator Map::find_edge(const Edge &e) const {
+    auto Map::find_edge(const Edge &e) const -> adj_list::iterator {
         if (e.first >= n) return v[0]->adj.end();
         for (auto i = v[e.first]->adj.begin(); i != v[e.first]->adj.end(); ++i)
             if (*i == e.second) return i;
         return v[0]->adj.end();
     }
 
-    Edge Map::turn_left(const Edge &e) const {
+    auto Map::turn_left(const Edge &e) const -> Edge {
         auto ee = find_edge(Edge(e.second, e.first));
         if (ee == v[e.second]->adj.begin()) ee = v[e.second]->adj.end();
         --ee;
         return Edge(e.second, *ee);
     }
 
-    Edge Map::turn_right(const Edge &e) const {
+    auto Map::turn_right(const Edge &e) const -> Edge {
         auto ee = find_edge(Edge(e.second, e.first));
         ++ee;
         if (ee == v[e.second]->adj.end()) ee = v[e.second]->adj.begin();
@@ -96,7 +96,7 @@ namespace vb {
         v[e.first]->adj.insert(ee, vv);
     }
 
-    std::vector<size_t> Map::face(Edge e) {
+    auto Map::face(Edge e) -> std::vector<size_t> {
         std::vector<size_t> l;
         auto                first = e.first;
         l.push_back(first);
@@ -123,7 +123,7 @@ namespace vb {
         }
     }
 
-    double Map::balance() {
+    auto Map::balance() -> double {
         Vector<double> x(2 * n);
 
         for (size_t i = 0; i < n; ++i) {
@@ -159,7 +159,7 @@ namespace vb {
         update();
     }
 
-    std::vector<size_t> Map::split_edges() {
+    auto Map::split_edges() -> std::vector<size_t> {
         std::vector<int64_t> tmp;
         tmp.reserve(n * n);
         for (size_t i = 0; i < n * n; ++i) tmp.push_back(-1);
@@ -248,22 +248,22 @@ namespace vb {
         }
     }
 
-    size_t Map::nb_aretes() {
+    auto Map::nb_aretes() -> size_t {
         size_t tmp = 0;
         for (size_t i = 0; i < n; ++i) tmp += v[i]->adj.size();
         return (tmp / 2);
     }
 
-    size_t Map::nb_faces() {
+    auto Map::nb_faces() -> size_t {
         double tmp = 0.0;
         for (size_t i = 0; i < n; ++i)
             for (auto j : v[i]->adj) tmp += double(1.0) / double(face(Edge(i, j)).size());
         return size_t(tmp + .1);
     }
 
-    int Map::euler() { return int(nb_sommets()) - int(nb_aretes()) + int(nb_faces()); }
+    auto Map::euler() -> int { return int(nb_sommets()) - int(nb_aretes()) + int(nb_faces()); }
 
-    int Map::genre() { return 1 - (euler() / 2); }
+    auto Map::genre() -> int { return 1 - (euler() / 2); }
 
     void Map::mobius(cpx w, const double &theta) {
         for (size_t i = 0; i < n; ++i) {
@@ -342,12 +342,12 @@ namespace vb {
         }
     }
 
-    Map &operator<<(Map &m, const Edge &e) {
+    auto operator<<(Map &m, const Edge &e) -> Map & {
         m.v[e.first]->adj.push_back(e.second);
         return m;
     }
 
-    double Map::fg_balance(const Vector<double> &x, Vector<double> *g) {
+    auto Map::fg_balance(const Vector<double> &x, Vector<double> *g) -> double {
         double c = 0.0;
 
         for (size_t i = 0; i < n; ++i) {
@@ -367,7 +367,7 @@ namespace vb {
         return c;
     }
 
-    double Map::fg_circle_base(const Vector<double> &x, Vector<double> *g) {
+    auto Map::fg_circle_base(const Vector<double> &x, Vector<double> *g) -> double {
         double c = 0.0;
 
         *g = Vector<double>::Zero(g->rows(), 1);
@@ -392,7 +392,7 @@ namespace vb {
         return c;
     }
 
-    double Map::fg_circle_bd(const Vector<double> &x, Vector<double> *g) {
+    auto Map::fg_circle_bd(const Vector<double> &x, Vector<double> *g) -> double {
         double c = fg_circle_base(x, g);
 
         for (size_t i = 0; i < n; ++i)
@@ -401,7 +401,7 @@ namespace vb {
         return c;
     }
 
-    double Map::fg_circle_disk(const Vector<double> &x, Vector<double> *g) {
+    auto Map::fg_circle_disk(const Vector<double> &x, Vector<double> *g) -> double {
         double c = fg_circle_base(x, g);
 
         for (int i = 0; i < int(n); ++i) {

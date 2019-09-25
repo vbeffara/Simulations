@@ -21,7 +21,7 @@ public:
         output(H.title);
     };
 
-    cpx phiwb(int mw, int nw, int mb, int nb) {
+    auto phiwb(int mw, int nw, int mb, int nb) -> cpx {
         return real(pow(beta / gamma, -mw) * pow(beta / alpha, -nw) / lambda) * alpha * lambda * pow(beta / gamma, mb) *
                pow(beta / alpha, nb);
     }
@@ -89,7 +89,7 @@ public:
     double theta, a = 1, b = 1, c = 1, pa = 1, pb = 1, pc = 1;
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub    H("T-graph for the triangular lattice", argc, argv, "n=20,l,x=.4,y=.6,t");
     TGraph TG(H, H['n'], cpx{H['x'], H['y']}, H['t']);
     if (H['l'])

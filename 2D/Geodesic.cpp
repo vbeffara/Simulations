@@ -14,7 +14,7 @@ using namespace std;
 class Info {
 public:
     Info(coo _z, coo _n, double _d, double _f) : z(_z), next(_n), d(_d), f(_f) {}
-    bool operator<(const Info &o) const { return d > o.d; }
+    auto operator<(const Info &o) const -> bool { return d > o.d; }
 
     ucoo   z, next;
     double d, f;
@@ -156,7 +156,7 @@ public:
         }
     }
 
-    double radius() {
+    auto radius() -> double {
         double r = I.at({0, 0}).d;
         for (size_t i = 0; i < size.x; ++i) {
             r = min(r, I.at({i, 0}).d);
@@ -185,7 +185,7 @@ public:
     int         n;
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub H("Random 2D geometry", argc, argv, "w=free,n=9,z=0,g=1,s=0,b,i,q,c,l=10,a=1");
     if (unsigned s = H['s']) prng.seed(s);
     unsigned n = H['n'], nn = 1U << n;

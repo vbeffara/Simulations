@@ -4,7 +4,7 @@
 
 using namespace vb;
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub    H("Testing Console", argc, argv);
     double x = 1.1;
 

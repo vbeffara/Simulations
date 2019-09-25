@@ -3,7 +3,7 @@
 #include <vb/util/PRNG.h>
 
 namespace vb {
-    unsigned PRNG::discrete(const std::vector<double> &p) {
+    auto PRNG::discrete(const std::vector<double> &p) -> unsigned {
         double   U = uniform_real();
         unsigned i = 0;
         while (U > p[i]) {
@@ -13,7 +13,7 @@ namespace vb {
         return i;
     }
 
-    std::string PRNG::state() { return fmt::format("{}", *this); }
+    auto PRNG::state() -> std::string { return fmt::format("{}", *this); }
 
     void PRNG::state(const std::string &s) { std::istringstream(s) >> (*this); }
 

@@ -4,13 +4,13 @@
 
 using std::vector, vb::prng, vb::BLACK, vb::WHITE, vb::coo;
 
-vector<bool> init_ok_none() {
+auto init_ok_none() -> vector<bool> {
     vector<bool> ok(256, false);
     for (size_t i = 0; i < 256; i++) ok[i] = true;
     return ok;
 }
 
-vector<bool> init_ok_glass() {
+auto init_ok_glass() -> vector<bool> {
     // Flippable iff at least two of the 4 neighbors are empty.
     vector<bool> ok(256, false);
     for (unsigned i = 0; i < 256; i++) {
@@ -24,7 +24,7 @@ vector<bool> init_ok_glass() {
     return ok;
 }
 
-vector<bool> init_ok_connect4() {
+auto init_ok_connect4() -> vector<bool> {
     /* This is connectivity-conditioning, on  the square lattice (which is
      * a bit awkward, in particular it is not ergodic for the wrong reason
      * that the lattice  and dual lattice look different  - the checkboard
@@ -57,7 +57,7 @@ vector<bool> init_ok_connect4() {
     return ok;
 }
 
-vector<bool> init_ok_connect6() {
+auto init_ok_connect6() -> vector<bool> {
     // Connectivity-conditioning on the triangular lattice.
 
     vector<bool>     ok(256, false);
@@ -134,7 +134,7 @@ public:
     vector<bool> ok;
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     vb::Hub H("Glassy Glauber dynamics for percolation", argc, argv, "n=300,p=.5,c=none");
     Glass   img(H, H['n']);
     img.run(H);

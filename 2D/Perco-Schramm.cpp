@@ -73,9 +73,9 @@ private:
     vector<bool> cols, mask;
     const double omx{sqrt(3.0)};
 
-    cpx thepos(size_t i) { return cpx(omx * double(((i / w) % 2) + 2 * (i % w)), 3 * double(size_t(i / w))); }
+    auto thepos(size_t i) -> cpx { return cpx(omx * double(((i / w) % 2) + 2 * (i % w)), 3 * double(size_t(i / w))); }
 
-    size_t follow(size_t base, size_t dir) {
+    auto follow(size_t base, size_t dir) -> size_t {
         static const vector<int> fola = {1, int(w), int(w) - 1, -1, -int(w) - 1, -int(w)};
         static const vector<int> folb = {1, int(w) + 1, int(w), -1, -int(w), -int(w) + 1};
         return size_t((((base / w) % 2) != 0 ? folb : fola)[dir] + int64_t(base));
@@ -89,7 +89,7 @@ private:
     }
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub           H("Percolation exploration process", argc, argv, "n=28,l=55,p=.5,t");
     Perco_Schramm RS(H);
     if (H['t'])

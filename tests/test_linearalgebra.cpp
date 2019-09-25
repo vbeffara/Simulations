@@ -19,7 +19,7 @@ template <typename T> void test(string s) {
     spdlog::info("{} | Solution x = {}", s, x.transpose());
 }
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub H("Testing linear algebra", argc, argv);
     test<double>("double   ");
     test<cpx>("cpx      ");

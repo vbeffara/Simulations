@@ -7,7 +7,7 @@ using namespace vb;
 using namespace std;
 
 namespace vb {
-    template <> Color to_Color(unsigned t) {
+    template <> auto to_Color(unsigned t) -> Color {
         static const vector<Color> C = {BLACK, RED, GREEN};
         return C[t];
     }
@@ -16,9 +16,9 @@ namespace vb {
 class Particle {
 public:
     explicit Particle(ucoo xy = {0, 0}, unsigned s = 0, bool z = false, double t = 0) : state(s), location(xy), type(z), next(t){};
-    bool operator<(const Particle &o) const { return next > o.next; }
+    auto operator<(const Particle &o) const -> bool { return next > o.next; }
 
-    [[nodiscard]] coo jump() const {
+    [[nodiscard]] auto jump() const -> coo {
         if (type) {
             int out = prng.uniform_int(2);
             if (state == 2) out += 2;
@@ -68,7 +68,7 @@ public:
     priority_queue<Particle> q;
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub H("Sagex process", argc, argv, "n=400,w=0,l=.22,p=.5,v,z");
     Sagex(H, int(H['w']) != 0 ? H['w'] : H['n'], H['n']).go(H);
 }

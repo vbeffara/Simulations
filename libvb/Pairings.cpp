@@ -48,22 +48,22 @@ namespace vb {
         next();
     }
 
-    bool Pairings_Iterator::operator!=(const Pairings_Iterator &o) const { return (n != o.n) || (i != o.i); }
+    auto Pairings_Iterator::operator!=(const Pairings_Iterator &o) const -> bool { return (n != o.n) || (i != o.i); }
 
-    Permutation &Pairings_Iterator::operator*() { return current; }
+    auto Pairings_Iterator::operator*() -> Permutation & { return current; }
 
     Pairings::Pairings(size_t n) : n(n) {}
 
-    size_t Pairings::size() const {
+    auto Pairings::size() const -> size_t {
         size_t nn = n;
         return fact(nn) / fact(nn / 2) / (size_t(1) << (n / 2));
     }
 
-    Pairings_Iterator Pairings::begin() const { return Pairings_Iterator(n, 0, true); }
+    auto Pairings::begin() const -> Pairings_Iterator { return Pairings_Iterator(n, 0, true); }
 
-    Pairings_Iterator Pairings::end() const { return Pairings_Iterator(n, size(), false); }
+    auto Pairings::end() const -> Pairings_Iterator { return Pairings_Iterator(n, size(), false); }
 
-    Permutation Pairings::rrand() {
+    auto Pairings::rrand() -> Permutation {
         Permutation out(n);
         for (size_t i = 0; i < n; ++i) {
             if (out[i] < i) continue;

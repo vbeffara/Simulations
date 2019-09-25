@@ -143,7 +143,7 @@ public:
     ucoo           root, start;
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub H("Spanning forest with 2-periodic weights", argc, argv, "n=400,a=.2,v,s");
     SF(H, H['n'], H['a']).go(H);
 }

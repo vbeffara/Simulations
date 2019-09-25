@@ -5,7 +5,7 @@
 using namespace vb;
 using namespace std;
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub H("Testing various MP choices", argc, argv);
     real_t::default_precision(100);
     complex_t::default_precision(100);

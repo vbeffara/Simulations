@@ -11,9 +11,9 @@
 using namespace std;
 using namespace vb;
 
-constexpr size_t fib(size_t n) { return n < 2 ? n : fib(n - 1) + fib(n - 2); }
+constexpr auto fib(size_t n) -> size_t { return n < 2 ? n : fib(n - 1) + fib(n - 2); }
 
-size_t tbb_fib(size_t n) {
+auto tbb_fib(size_t n) -> size_t {
     if (n < 25) return fib(n);
     size_t          x, y;
     tbb::task_group g;
@@ -23,12 +23,12 @@ size_t tbb_fib(size_t n) {
     return x + y;
 }
 
-double cost(double x) {
+auto cost(double x) -> double {
     for (int i = 0; i < 10; ++i) x = cos(x);
     return x;
 }
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub    H("Test of various parallel frameworks", argc, argv, "n=41,l=4000000");
     size_t n = H['n'], l = H['l'];
 
@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
     timing(H, "Fibonacci  | Async (recursive)", [=] {
         class fib_async {
         public:
-            size_t operator()(size_t n) {
+            auto operator()(size_t n) -> size_t {
                 if (n < 25) return fib(n);
                 auto res1 = async([=]() { return (*this)(n - 1); });
                 auto res2 = async([=]() { return (*this)(n - 2); });
@@ -95,7 +95,7 @@ int main(int argc, char **argv) {
                 one.get();
                 two.get();
             }
-            double sum() {
+            auto sum() -> double {
                 double s = 0;
                 for (auto x : X) s += x;
                 return s - int64_t(s);
@@ -107,7 +107,7 @@ int main(int argc, char **argv) {
     timing(H, "Map+reduce | Async (std::async, split direct sum)", [=] {
         class mr {
         public:
-            double run(size_t l1, size_t l2) {
+            auto run(size_t l1, size_t l2) -> double {
                 if (l2 - l1 <= 1000) {
                     double s = 0;
                     for (auto i = l1; i < l2; ++i) s += cost(i);
@@ -117,7 +117,7 @@ int main(int argc, char **argv) {
                 auto one = async([=] { return run(l1, l3); }), two = async([=] { return run(l3, l2); });
                 return one.get() + two.get();
             }
-            double sum(size_t l) {
+            auto sum(size_t l) -> double {
                 double s = run(0, l);
                 return s - int64_t(s);
             }

@@ -5,7 +5,7 @@
 
 using namespace vb;
 
-template <> Color vb::to_Color(double t) {
+template <> auto vb::to_Color(double t) -> Color {
     if (t < -1e-9) return HSV(.5, t / (t - 1), 1);
     if (t > +1e-9) return HSV(0, t / (1 + t), 1);
     return BLACK;
@@ -34,7 +34,7 @@ public:
     }
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub      H("Divisible sandpile", argc, argv, "n=500,m=.01,s=10,r");
     Sandpile S(H, H['n']);
     S.show();

@@ -1,7 +1,7 @@
 #include <vb/util/mp.h>
 
 namespace vb {
-    template <> real_t sum<real_t>(const std::function<real_t(int)> &f) {
+    template <> auto sum<real_t>(const std::function<real_t(int)> &f) -> real_t {
         real_t out = 0, eps = pow(real_t(.1), 10 + real_t::default_precision());
         for (int n = 0;; ++n) {
             real_t dd = f(n);
@@ -10,7 +10,7 @@ namespace vb {
         }
         return out;
     }
-    template <> complex_t sum<complex_t>(const std::function<complex_t(int)> &f) {
+    template <> auto sum<complex_t>(const std::function<complex_t(int)> &f) -> complex_t {
         complex_t out(0);
         real_t    eps = pow(real_t(.1), 10 + real_t::default_precision());
         for (int n = 0;; ++n) {

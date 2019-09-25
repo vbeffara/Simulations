@@ -95,7 +95,7 @@ public:
     ucoo               mid;
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub    H("Internal DLA", argc, argv, "n=1000,j=idla,p=.1,a=2,b=1,g,u=0,i");
     Bouncy B(H, H['n'], H['j']);
     B.run(H);

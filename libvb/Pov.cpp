@@ -3,15 +3,15 @@
 namespace vb {
     void Pov_Scene::output_pov(const std::string &s) { std::ofstream((s + ".pov").c_str()) << fmt::format("{}", (bunch)(*this)); }
 
-    std::string Box(tri a, tri b) { return fmt::format("box {{ {}, {} }}", a, b); }
-    std::string Camera(tri a, tri b, double d) { return fmt::format("camera {{ location {} look_at {} angle {} }}", a, b, d); }
-    std::string Cylinder(tri a, tri b, double r) { return fmt::format("cylinder {{ {}, {}, {} }}", a, b, r); }
-    std::string Light_Source(tri a) { return fmt::format("light_source {{ {} color White*2 }}", a); }
-    std::string Plane(tri a, double d) { return fmt::format("plane {{ {}, {} }}", a, d); }
-    std::string Sphere(tri a, double r) { return fmt::format("sphere {{ {}, {} }}", a, r); }
-    std::string Texture(const std::string &t) { return fmt::format("texture {{ {} }}", t); }
+    auto Box(tri a, tri b) -> std::string { return fmt::format("box {{ {}, {} }}", a, b); }
+    auto Camera(tri a, tri b, double d) -> std::string { return fmt::format("camera {{ location {} look_at {} angle {} }}", a, b, d); }
+    auto Cylinder(tri a, tri b, double r) -> std::string { return fmt::format("cylinder {{ {}, {}, {} }}", a, b, r); }
+    auto Light_Source(tri a) -> std::string { return fmt::format("light_source {{ {} color White*2 }}", a); }
+    auto Plane(tri a, double d) -> std::string { return fmt::format("plane {{ {}, {} }}", a, d); }
+    auto Sphere(tri a, double r) -> std::string { return fmt::format("sphere {{ {}, {} }}", a, r); }
+    auto Texture(const std::string &t) -> std::string { return fmt::format("texture {{ {} }}", t); }
 
-    Pov_Union Frame(tri a, tri b, const std::string &t) {
+    auto Frame(tri a, tri b, const std::string &t) -> Pov_Union {
         Pov_Union u;
         u << Sphere({a.x, a.y, a.z}, .1) << Sphere({a.x, a.y, b.z}, .1) << Sphere({a.x, b.y, a.z}, .1) << Sphere({a.x, b.y, b.z}, .1)
           << Sphere({b.x, a.y, a.z}, .1) << Sphere({b.x, a.y, b.z}, .1) << Sphere({b.x, b.y, a.z}, .1) << Sphere({b.x, b.y, b.z}, .1)

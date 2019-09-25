@@ -7,7 +7,7 @@
 using namespace vb;
 using namespace std;
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub      H("Toroidal triangulation", argc, argv, "n=4,o=0,m=4,f,g=lat_C5");
     Toroidal G(HLib().at(H['g']));
 

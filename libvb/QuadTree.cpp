@@ -5,7 +5,7 @@ namespace vb {
 
     QuadTree::QuadTree(coo UL, coo BR, size_t M) : n(0), ul(UL), br(BR), center((ul + br) / 2), iul(br), ibr(ul), m(M), ch(0) {}
 
-    size_t QuadTree::index(coo z) const {
+    auto QuadTree::index(coo z) const -> size_t {
         if (z.y < center.y) return (z.x < center.x) ? 0 : 1;
         return (z.x < center.x) ? 2 : 3;
     }
@@ -33,8 +33,8 @@ namespace vb {
         std::vector<coo>().swap(pts);
     }
 
-    int64_t QuadTree::idist(coo z) const { return std::min({z.x - ul.x, z.y - ul.y, br.x - z.x, br.y - z.y}); }
-    int64_t QuadTree::odist(coo z) const { return std::max({z.x - ibr.x, z.y - ibr.y, iul.x - z.x, iul.y - z.y}); }
+    auto QuadTree::idist(coo z) const -> int64_t { return std::min({z.x - ul.x, z.y - ul.y, br.x - z.x, br.y - z.y}); }
+    auto QuadTree::odist(coo z) const -> int64_t { return std::max({z.x - ibr.x, z.y - ibr.y, iul.x - z.x, iul.y - z.y}); }
 
     void QuadTree::nn(coo z, QuadIndex &qi) const {
         if (n <= m)

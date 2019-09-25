@@ -6,7 +6,7 @@
 using namespace vb;
 
 namespace vb {
-    template <> Color to_Color(uint8_t t) { return Grey(t); }
+    template <> auto to_Color(uint8_t t) -> Color { return Grey(t); }
 } // namespace vb
 
 class LERW : private Bitmap<uint8_t> {
@@ -32,7 +32,7 @@ public:
     }
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub H("Loop-erased random walk", argc, argv, "n=500");
     LERW(H).output(H.title);
 }

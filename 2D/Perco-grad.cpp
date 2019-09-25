@@ -4,7 +4,7 @@
 
 using namespace vb;
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub    H("Gradient percolation", argc, argv, "n=500,p=0,q=1,W=0,H=0");
     size_t n  = H['n'];
     size_t w  = H['W'];

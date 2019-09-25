@@ -6,7 +6,7 @@
 using namespace std;
 using namespace vb;
 
-vector<int> bridge(size_t n, bool p = false) {
+auto bridge(size_t n, bool p = false) -> vector<int> {
     vector<int> v(n, -1);
     for (size_t i = 0; i < n / 2; ++i) v[i] = 1;
     for (size_t i = n; i-- > 0;) swap(v[i], v[prng.uniform_int(i + 1)]);
@@ -32,7 +32,7 @@ vector<int> bridge(size_t n, bool p = false) {
 int m = 1;
 
 namespace vb {
-    template <> Color to_Color(int t) {
+    template <> auto to_Color(int t) -> Color {
         if (t == 0) return WHITE;
         if (t == 1) return RED;
         return Grey(uint8_t(215 - (t * 215) / m));
@@ -56,7 +56,7 @@ public:
     vector<ucoo> p;
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub    H("Random walk hull", argc, argv, "n=50,i,v");
     size_t n = H['n'], l = n * n * n * n;
     bool   inf = H['i'], vid = H['v'];

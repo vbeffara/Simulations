@@ -3,7 +3,7 @@
 #include <vb/util/PRNG.h>
 #include <vb/util/coo.h>
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     vb::Hub  H("Simple random walk", argc, argv, "a=15,o=1");
     unsigned adj = H['a'];
 

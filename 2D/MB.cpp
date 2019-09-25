@@ -4,7 +4,7 @@
 
 using namespace vb;
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub    H("Brownian motion", argc, argv, "n=500");
     size_t n = H['n'];
 

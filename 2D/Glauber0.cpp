@@ -35,7 +35,7 @@ void Glauber::step(ucoo z) {
         put(z, BLACK);
 }
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub    H("Glauber dynamics at zero temperature", argc, argv, "n=500,p=.51");
     double p = H['p'];
 

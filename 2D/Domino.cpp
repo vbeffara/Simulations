@@ -95,7 +95,7 @@ public:
         }
     }
 
-    int flip(coo c) {
+    auto flip(coo c) -> int {
         if (at(ucoo(c)).type == 0) return 0;
         uint8_t d  = at(ucoo(c)).d;
         coo     oc = c + dz[d] + dz[(d + 1) % 4];
@@ -113,7 +113,7 @@ public:
     vector<double> rr;
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub     H("Domino tiling", argc, argv, "n=200,o=aztec|hill|hole|flat,b=0,f=0,r=1");
     Tiling  T(H);
     Console C;

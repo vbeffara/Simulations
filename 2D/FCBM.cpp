@@ -13,14 +13,14 @@ public:
                 if ((x % 2 == 0) && (y % 2 == 0)) put({x, y}, WHITE);
     }
 
-    [[nodiscard]] int degree(coo z) const {
+    [[nodiscard]] auto degree(coo z) const -> int {
         int out = 0;
         for (int i = 0; i < 4; ++i)
             if (atp(z + dz[i]) != BLACK) ++out;
         return out;
     }
 
-    double dlr(coo z, coo d) {
+    auto dlr(coo z, coo d) -> double {
         if ((z == coo(mid)) || (z + 2 * d == coo(mid))) return 1;
         if (atp(z) != atp(z + 2 * d)) return p;
         if ((atp(z) == WHITE) && (atp(z + 2 * d) == WHITE)) return 0;
@@ -53,7 +53,7 @@ public:
     double p;
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub  H("Fully Connected Bond Percolation", argc, argv, "n=300,p=.5");
     FCBM P(H.title, H['n'], H['p']);
     P.show();

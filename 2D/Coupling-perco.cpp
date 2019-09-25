@@ -34,7 +34,7 @@ public:
         }
     }
 
-    int nbarms(size_t r1, size_t r2, unsigned sides) {
+    auto nbarms(size_t r1, size_t r2, unsigned sides) -> int {
         compute_cpts(r1);
         auto N = size.x;
 
@@ -74,11 +74,11 @@ public:
         return n;
     }
 
-    bool test1(size_t r1, size_t r2, size_t r3) {
+    auto test1(size_t r1, size_t r2, size_t r3) -> bool {
         return (nbarms(r1, r3, 15) == 4) && (nbarms(r2, r3, 15) == 4) && (nbarms(r1, r2, 15) == 4);
     }
 
-    bool test2(size_t r1, size_t r2, size_t r3) { return test1(r1, r2, r3) && (nbarms(r1, r3, 6) == 2); }
+    auto test2(size_t r1, size_t r2, size_t r3) -> bool { return test1(r1, r2, r3) && (nbarms(r1, r3, 6) == 2); }
 
     void pick(size_t r1, size_t r2, size_t r3) {
         int n = 0;
@@ -108,7 +108,7 @@ public:
         update();
     }
 
-    int compute_diff() {
+    auto compute_diff() -> int {
         int n = 0;
         for (const auto &z : coo_range(c1.size)) {
             if (c1.at(z) == c2.at(z)) {
@@ -156,7 +156,7 @@ public:
     Configuration c1, c2;
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub      H("Coupling percolation configurations", argc, argv, "r=20");
     Coupling C(H, H['r']);
     C.run();

@@ -20,7 +20,7 @@ public:
     }
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub H("Voter model", argc, argv, "n=500,p=.5,d=1");
 
     Voter V(H, H['n'], H['p'], H['d']);

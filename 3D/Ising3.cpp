@@ -15,7 +15,7 @@ public:
         for (int k = 0; k <= 12; ++k) kaw.push_back(1 / (1 + exp(2 * beta * (k - 6))));
     };
 
-    int64_t nbsum(vb::coo3 c) {
+    auto nbsum(vb::coo3 c) -> int64_t {
         int S = 0;
         for (int i = 0; i < 6; ++i) S += atp(c + vb::dz3[i]) != 0 ? 1 : 0;
         return S;
@@ -93,7 +93,7 @@ public:
     }
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     vb::Hub H("3D Ising model", argc, argv, "n=50,b=1,t=0,p=.5,q=0,k,c=bernoulli,s=0,m,i,r=0");
     if (size_t r = H['r']) vb::prng.seed(r);
     Ising3 C(H, H['n'], H['k'], H['b']);

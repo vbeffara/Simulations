@@ -1,7 +1,7 @@
 #include <vb/Hypermap.h>
 
 namespace vb {
-    bool Hypermap::validate() const {
+    auto Hypermap::validate() const -> bool {
         if (sigma.size() != alpha.size()) return false;
         if (sigma.size() != phi.size()) return false;
         return (sigma * alpha * phi).is_identity();
@@ -27,26 +27,26 @@ namespace vb {
             for (auto e : sc[v.i]) { v.adj.push_back(E[alpha[e]].src); }
     }
 
-    int Hypermap::euler() const {
+    auto Hypermap::euler() const -> int {
         return int(sigma.cycles().size()) + int(alpha.cycles().size()) - int(sigma.size()) + int(phi.cycles().size());
     }
 
-    unsigned Hypermap::genus() const { return unsigned(1 - euler() / 2); }
+    auto Hypermap::genus() const -> unsigned { return unsigned(1 - euler() / 2); }
 
-    bool Hypermap::is_graph() const {
+    auto Hypermap::is_graph() const -> bool {
         for (const auto &v : alpha.cycles())
             if (v.size() != 2) return false;
         return true;
     }
 
-    bool Hypermap::is_triangulation() const {
+    auto Hypermap::is_triangulation() const -> bool {
         if (!(is_graph())) return false;
         for (const auto &f : phi.cycles())
             if (f.size() != 3) return false;
         return true;
     }
 
-    bool Hypermap::is_simple(size_t d) const {
+    auto Hypermap::is_simple(size_t d) const -> bool {
         for (const auto &s : sigma.cycles())
             if (s.size() <= d) return false;
         for (const auto &f : phi.cycles())
@@ -102,7 +102,7 @@ namespace vb {
         alpha    = (phi * sigma).inverse();
     }
 
-    Permutation Hypermap::rebasing(size_t i) const {
+    auto Hypermap::rebasing(size_t i) const -> Permutation {
         auto                n = alpha.size(), m = size_t(0);
         std::vector<size_t> s1(n, n), s2(n, n);
         auto                go = [&](size_t i) {
@@ -118,7 +118,7 @@ namespace vb {
         return s1;
     }
 
-    Permutation Hypermap::rebasing() const {
+    auto Hypermap::rebasing() const -> Permutation {
         Permutation s = rebasing(0), a = alpha.conjugate(s), p = phi.conjugate(s);
         for (size_t i = 1; i < alpha.size(); ++i) {
             Permutation s2 = rebasing(i), a2 = alpha.conjugate(s2), p2 = phi.conjugate(s2);
@@ -275,15 +275,15 @@ namespace vb {
         sigma = (alpha * phi).inverse();
     }
 
-    double Hypermap::alpha_xyz(double x, double y, double z) const { return acos((x * (x + y + z) - y * z) / ((x + y) * (x + z))); }
+    auto Hypermap::alpha_xyz(double x, double y, double z) const -> double { return acos((x * (x + y + z) - y * z) / ((x + y) * (x + z))); }
 
-    double Hypermap::ccn(size_t n) const {
+    auto Hypermap::ccn(size_t n) const -> double {
         static std::vector<double> p;
         for (auto i = p.size(); i <= n; ++i) p.push_back(sqrt(2 / (1 - cos(2 * M_PI / i))) - 1);
         return p[n];
     }
 
-    double acpa_step(const Hypermap &M, const std::vector<double> &in, std::vector<double> *pout, std::vector<double> *per) {
+    auto acpa_step(const Hypermap &M, const std::vector<double> &in, std::vector<double> *pout, std::vector<double> *per) -> double {
         std::vector<double> &out{*pout};
         std::vector<double> &er{*per};
         out       = in;
@@ -343,7 +343,7 @@ namespace vb {
         for (size_t i = 0; i < V.size(); ++i) V[i].r = r[i];
     }
 
-    Stream<Hypermap> hypermaps(const Permutation &s, const Permutation &a, const Permutation &p) {
+    auto hypermaps(const Permutation &s, const Permutation &a, const Permutation &p) -> Stream<Hypermap> {
         Cycles cs;
         size_t i = 0;
         for (auto l : s) {
@@ -376,7 +376,7 @@ namespace vb {
     }
 } // namespace vb
 
-YAML::Node YAML::convert<vb::Hypermap>::encode(const vb::Hypermap &h) {
+auto YAML::convert<vb::Hypermap>::encode(const vb::Hypermap &h) -> YAML::Node {
     Node node;
     node["sigma"] = h.sigma.cycles();
     node["alpha"] = h.alpha.cycles();
@@ -384,7 +384,7 @@ YAML::Node YAML::convert<vb::Hypermap>::encode(const vb::Hypermap &h) {
     return node;
 }
 
-bool YAML::convert<vb::Hypermap>::decode(const Node &node, vb::Hypermap &h) {
+auto YAML::convert<vb::Hypermap>::decode(const Node &node, vb::Hypermap &h) -> bool {
     auto sigma = node["sigma"].as<vb::Cycles>();
     auto alpha = node["alpha"].as<vb::Cycles>();
     auto phi   = node["phi"].as<vb::Cycles>();

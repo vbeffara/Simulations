@@ -4,31 +4,31 @@
 namespace vb {
     Figure::Figure(const std::string &s) : Picture(s, {600, 600}) {}
 
-    double Figure::left() {
+    auto Figure::left() -> double {
         double l = 0.0;
         for (const auto &i : contents) l = std::min(l, i->left());
         return l - margin;
     }
 
-    double Figure::right() {
+    auto Figure::right() -> double {
         double l = 0.0;
         for (const auto &i : contents) l = std::max(l, i->right());
         return l + margin;
     }
 
-    double Figure::top() {
+    auto Figure::top() -> double {
         double l = 0.0;
         for (const auto &i : contents) l = std::max(l, i->top());
         return l + margin;
     }
 
-    double Figure::bottom() {
+    auto Figure::bottom() -> double {
         double l = 0.0;
         for (const auto &i : contents) l = std::min(l, i->bottom());
         return l - margin;
     }
 
-    Figure &Figure::add(std::unique_ptr<Shape> &&S) {
+    auto Figure::add(std::unique_ptr<Shape> &&S) -> Figure & {
         contents.push_back(std::move(S));
         return (*this);
     }

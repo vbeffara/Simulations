@@ -12,7 +12,7 @@ template <typename T> void test(Hub &H, const string &s, int n, T z) {
     });
 }
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub H("Testing numerical types", argc, argv, "n=10000");
     int n = H['n'];
 

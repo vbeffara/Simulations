@@ -61,7 +61,7 @@ public:
     size_t n;
 };
 
-int main(int argc, char **argv) {
+auto main(int argc, char **argv) -> int {
     Hub H("Uniform spanning tree", argc, argv, "n=200,p");
     UST(H, H['n']).go(H);
 }
