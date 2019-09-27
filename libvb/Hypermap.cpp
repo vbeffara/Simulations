@@ -275,9 +275,9 @@ namespace vb {
         sigma = (alpha * phi).inverse();
     }
 
-    auto Hypermap::alpha_xyz(double x, double y, double z) const -> double { return acos((x * (x + y + z) - y * z) / ((x + y) * (x + z))); }
+    auto Hypermap::alpha_xyz(double x, double y, double z) -> double { return acos((x * (x + y + z) - y * z) / ((x + y) * (x + z))); }
 
-    auto Hypermap::ccn(size_t n) const -> double {
+    auto Hypermap::ccn(size_t n) -> double {
         static std::vector<double> p;
         for (auto i = p.size(); i <= n; ++i) p.push_back(sqrt(2 / (1 - cos(2 * M_PI / i))) - 1);
         return p[n];

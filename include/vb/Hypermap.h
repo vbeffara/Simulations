@@ -59,8 +59,8 @@ namespace vb {
         std::vector<Vertex>   V;
         std::vector<Edge>     E;
 
-        double alpha_xyz(double x, double y, double z) const;
-        double ccn(size_t n) const;
+        static double alpha_xyz(double x, double y, double z);
+        static double ccn(size_t n);
 
     private:
         Permutation rebasing(size_t i) const;
