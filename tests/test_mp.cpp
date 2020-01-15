@@ -28,17 +28,17 @@ auto main(int argc, char **argv) -> int {
     test(H, "Boost mpfr_float (200 digits)", n, number<mpfr_float_backend<200>>(0));
     test(H, "Boost mpfr_float (1000 digits)", n, number<mpfr_float_backend<1000>>(0));
 
-    mpfr_float::default_precision(100);
+    default_precision(100);
     test(H, "Boost mpfr_float (100 digits)", n, number<mpfr_float_backend<0>>(0));
-    mpfr_float::default_precision(200);
+    default_precision(200);
     test(H, "Boost mpfr_float (200 digits)", n, number<mpfr_float_backend<0>>(0));
-    mpfr_float::default_precision(1000);
+    default_precision(1000);
     test(H, "Boost mpfr_float (1000 digits)", n, number<mpfr_float_backend<0>>(0));
 
-    mpfr_float::default_precision(100);
+    default_precision(100);
     test(H, "Wrapped real_t (100 digits)", n, real_t(0));
-    mpfr_float::default_precision(200);
+    default_precision(200);
     test(H, "Wrapped real_t (200 digits)", n, real_t(0));
-    mpfr_float::default_precision(1000);
+    default_precision(1000);
     test(H, "Wrapped real_t (1000 digits)", n, real_t(0));
 }

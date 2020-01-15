@@ -11,6 +11,8 @@ namespace vb {
     using complex_t = boost::multiprecision::mpc_complex;
     using real_t    = boost::multiprecision::mpfr_float;
 
+    void default_precision(unsigned n) noexcept;
+
     template <> struct cpx_t<real_t> { using type = complex_t; };
 
     template <> real_t    sum<real_t>(const std::function<real_t(int)> &f);

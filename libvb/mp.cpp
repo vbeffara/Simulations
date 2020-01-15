@@ -21,5 +21,10 @@ namespace vb {
         return out;
     }
 
-    static const int mp_dummy = (real_t::default_precision(100), complex_t::default_precision(100), 0);
+    void default_precision(unsigned n) noexcept {
+        real_t::default_precision(n);
+        complex_t::default_precision(n);
+    }
+
+    static const int mp_dummy = (default_precision(100), 0);
 } // namespace vb

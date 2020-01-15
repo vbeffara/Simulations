@@ -77,7 +77,7 @@ public:
 
     void fill_free(int n0 = 0) {
         auto                    in = fftw_alloc_complex(size_t(size.x * size.y)), out = fftw_alloc_complex(size_t(size.x * size.y));
-        fftw_plan               p = fftw_plan_dft_2d(int(size.x), int(size.y), in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+        fftw_plan               p = fftw_plan_dft_2d(int(size.x), int(size.y), in, out, FFTW_FORWARD, 1U << 6U /* FFTW_ESTIMATE */);
         gsl::span<fftw_complex> in_{in, int64_t(size.x * size.y)}, out_{out, int64_t(size.x * size.y)};
 
         vector<double> sinarrayi(size_t(size.x)), sinarrayj(size_t(size.y));
@@ -109,8 +109,8 @@ public:
     void fill_radial(const function<double(double)> &f, double l) {
         auto d  = fftw_alloc_complex(size.x * size.y);
         auto d_ = gsl::span<fftw_complex>{d, int64_t(size.x * size.y)};
-        auto p1 = fftw_plan_dft_2d(int(size.x), int(size.y), d, d, FFTW_FORWARD, FFTW_ESTIMATE);
-        auto p2 = fftw_plan_dft_2d(int(size.x), int(size.y), d, d, FFTW_BACKWARD, FFTW_ESTIMATE);
+        auto p1 = fftw_plan_dft_2d(int(size.x), int(size.y), d, d, FFTW_FORWARD, 1U << 6U /* FFTW_ESTIMATE */);
+        auto p2 = fftw_plan_dft_2d(int(size.x), int(size.y), d, d, FFTW_BACKWARD, 1U << 6U /* FFTW_ESTIMATE */);
 
         for (auto [i, j] : coo_range(size)) {
             auto ii = min(i, size.x - i), jj = min(j, size.y - j);

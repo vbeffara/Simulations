@@ -125,10 +125,6 @@ namespace vb {
                 return 1;
                 break;
             case '+':
-                scale(0.80);
-                show();
-                return 1;
-                break;
             case '=':
                 scale(0.80);
                 show();

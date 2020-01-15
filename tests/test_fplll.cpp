@@ -7,8 +7,6 @@ using namespace std;
 
 auto main(int argc, char **argv) -> int {
     Hub H("Testing various MP choices", argc, argv);
-    real_t::default_precision(100);
-    complex_t::default_precision(100);
 
     vector<real_t> xs;
     xs.emplace_back("0.9162918442410306144165008200767499077603397502333144975769802641182380808885019256331544308341889255");

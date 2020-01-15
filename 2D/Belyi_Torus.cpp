@@ -7,8 +7,6 @@
 using namespace vb;
 using namespace std;
 
-const vector<size_t> ntri{0, 1, 5, 46, 669, 11096, 196888, 3596104, 66867564, 1258801076}; // https://oeis.org/A292408
-
 auto main(int argc, char **argv) -> int {
     CLP  clp(argc, argv, "Toroidal map enumeration");
     auto d = clp.param("d", size_t(0), "Minimum vertex degree");
@@ -25,8 +23,9 @@ auto main(int argc, char **argv) -> int {
     Permutation phi(6 * s);
     std::generate(begin(phi), end(phi), [n = 0]() mutable { return ((++n) % 3) != 0 ? n : n - 3; });
 
-    vector<Hypermap> v;
-    size_t           target = ((d == 0) && (!f) && (s < ntri.size())) ? ntri[s] : 0;
+    vector<Hypermap>     v;
+    const vector<size_t> ntri{0, 1, 5, 46, 669, 11096, 196888, 3596104, 66867564, 1258801076}; // https://oeis.org/A292408
+    size_t               target = ((d == 0) && (!f) && (s < ntri.size())) ? ntri[s] : 0;
 
     Coloring img("Toroidal enumeration", cpx(-1, -1), cpx(1, 1), 500, [](cpx /*unused*/) { return BLACK; });
 

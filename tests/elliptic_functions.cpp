@@ -17,8 +17,7 @@ auto main(int argc, char **argv) -> int {
     auto n = clp.param("n", size_t(100), "Precision in digits");
     clp.finalize();
 
-    real_t::default_precision(n);
-    complex_t::default_precision(n);
+    default_precision(unsigned(n));
 
     cpx       ttau(.125, 1.25);
     complex_t tau = complex_t(1, 10) / 8;
