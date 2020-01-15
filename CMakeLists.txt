@@ -18,7 +18,7 @@ endif ()
 
 if (${COV})
 	add_compile_options(-g -O0 --coverage -fprofile-arcs -ftest-coverage)
-	add_link_options(--coverage -fprofile-arcs -ftest-coverag)
+	add_link_options(--coverage -fprofile-arcs -ftest-coverage)
 else ()
 	add_compile_options(-O3 -DNDEBUG)
 endif ()
