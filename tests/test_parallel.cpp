@@ -1,12 +1,16 @@
 #include <functional>
 #include <future>
 #include <numeric>
-#include <pstl/algorithm>
-#include <pstl/execution>
-#include <pstl/memory>
-#include <pstl/numeric>
 #include <tbb/task_group.h>
 #include <vb/util/misc.h>
+
+#ifdef EXECUTION
+#include <execution>
+#else
+#include <pstl/algorithm>
+#include <pstl/execution>
+#include <pstl/numeric>
+#endif
 
 using namespace std;
 using namespace vb;
@@ -128,7 +132,7 @@ auto main(int argc, char **argv) -> int {
     timing(H, "Map+reduce | PSTL, transform+accumulate, execution::par", [=] {
         vector<double> X(l);
         std::iota(X.begin(), X.end(), 0);
-        std::transform(pstl::execution::par, X.begin(), X.end(), X.begin(), cost);
+        std::transform(execution::par, X.begin(), X.end(), X.begin(), cost);
         double s = std::accumulate(X.begin(), X.end(), 0.0);
         return s - int64_t(s);
     });
@@ -136,7 +140,7 @@ auto main(int argc, char **argv) -> int {
     timing(H, "Map+reduce | PSTL, transform+accumulate, execution::unseq", [=] {
         vector<double> X(l);
         std::iota(X.begin(), X.end(), 0);
-        std::transform(pstl::execution::unseq, X.begin(), X.end(), X.begin(), cost);
+        std::transform(execution::unseq, X.begin(), X.end(), X.begin(), cost);
         double s = std::accumulate(X.begin(), X.end(), 0.0);
         return s - int64_t(s);
     });
@@ -144,7 +148,7 @@ auto main(int argc, char **argv) -> int {
     timing(H, "Map+reduce | PSTL, transform+accumulate, execution::par_unseq", [=] {
         vector<double> X(l);
         std::iota(X.begin(), X.end(), 0);
-        std::transform(pstl::execution::par_unseq, X.begin(), X.end(), X.begin(), cost);
+        std::transform(execution::par_unseq, X.begin(), X.end(), X.begin(), cost);
         double s = std::accumulate(X.begin(), X.end(), 0.0);
         return s - int64_t(s);
     });
@@ -152,21 +156,21 @@ auto main(int argc, char **argv) -> int {
     timing(H, "Map+reduce | PSTL, transform_reduce, execution::par", [=] {
         vector<double> X(l);
         std::iota(X.begin(), X.end(), 0);
-        double s = std::transform_reduce(pstl::execution::par, begin(X), end(X), 0.0, std::plus<>(), cost);
+        double s = std::transform_reduce(execution::par, begin(X), end(X), 0.0, std::plus<>(), cost);
         return s - int64_t(s);
     });
 
     timing(H, "Map+reduce | PSTL, transform_reduce, execution::unseq", [=] {
         vector<double> X(l);
         std::iota(X.begin(), X.end(), 0);
-        double s = std::transform_reduce(pstl::execution::unseq, begin(X), end(X), 0.0, std::plus<>(), cost);
+        double s = std::transform_reduce(execution::unseq, begin(X), end(X), 0.0, std::plus<>(), cost);
         return s - int64_t(s);
     });
 
     timing(H, "Map+reduce | PSTL, transform_reduce, execution::par_unseq", [=] {
         vector<double> X(l);
         std::iota(X.begin(), X.end(), 0);
-        double s = std::transform_reduce(pstl::execution::par_unseq, begin(X), end(X), 0.0, std::plus<>(), cost);
+        double s = std::transform_reduce(execution::par_unseq, begin(X), end(X), 0.0, std::plus<>(), cost);
         return s - int64_t(s);
     });
 
