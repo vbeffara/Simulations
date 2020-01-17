@@ -11,6 +11,7 @@ cmake:
     - pip3 install -q conan
     - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
     - conan remote add vb https://api.bintray.com/conan/vbeffara/misc
+    - conan profile new default --detect
     - conan profile update settings.compiler.libcxx=libstdc++11 default
     - mkdir -p build/cov
     - cd build
