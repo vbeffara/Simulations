@@ -1,4 +1,4 @@
-image: ubuntu:disco
+image: ubuntu:eoan
 
 before_script:
   - apt-get update -qq
