@@ -25,6 +25,7 @@ namespace vb {
         }
 
         void show() override {
+            Fl::use_high_res_GL(1);
             T::show();
             update();
         }
