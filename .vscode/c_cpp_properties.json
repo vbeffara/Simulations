@@ -2,55 +2,16 @@
     "configurations": [
         {
             "name": "Mac",
-            "intelliSenseMode": "clang-x64",
-            "compileCommands": "${workspaceFolder}/build/compile_commands.json",
-            "cStandard": "c11",
-            "cppStandard": "c++17",
-            "macFrameworkPath": [
-                "/System/Library/Frameworks",
-                "/Library/Frameworks"
-            ],
             "includePath": [
-                "${workspaceFolder}/include",
-                "/usr/include",
-                "/Users/vincent/.conan/data/boost/1.70.0/conan/stable/package/0a167935b5fb9fa4d45e288ae29a76df3384260c/include",
-                "/Users/vincent/.conan/data/fmt/5.3.0/bincrafters/stable/package/90d5b881c70f44f0c09097116f53b034a9e12624/include",
-                "/Users/vincent/.conan/data/gsl_microsoft/2.0.0/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include",
-                "/Users/vincent/.conan/data/spdlog/1.3.1/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include",
-                "/System/Library/Frameworks/Kernel.framework/Versions/A/Headers/sys",
-                "/usr/local/Cellar/llvm/9.0.0/include/c++/v1",
-                "/Users/vincent/.conan/data/eigen/3.3.7/conan/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include/eigen3"
-            ],
-            "browse": {
-                "databaseFilename": "${workspaceFolder}/.vscode/browse.db",
-                "path": [
-                    "${workspaceFolder}/include",
-                    "/System/Library/Frameworks/Kernel.framework/Versions/A/Headers/sys",
-                    "/usr/include",
-                    "/Users/vincent/.conan/data",
-                    "/usr/local/Cellar/llvm/9.0.0/include/c++/v1"
-                ]
-            },
-            "compilerPath": "/usr/local/opt/llvm/bin/clang++"
-        },
-        {
-            "name": "Linux",
-            "includePath": [
-                "${workspaceRoot}/libvb",
-                "/usr/include/c++/7",
-                "/usr/include/x86_64-linux-gnu/c++/7",
-                "/usr/include/linux",
-                "/usr/include/x86_64-linux-gnu",
-                "/usr/include/c++/7/tr1",
-                "/usr/include/cairo",
-                "${workspaceRoot}/build/libvb",
-                "/home/vincent/.conan/data/range-v3/0.3.0/ericniebler/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include",
-                "/home/vincent/.conan/data/range-v3/0.3.5/ericniebler/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include",
-                "/home/vincent/.conan/data/fltk/1.3.4/vbeffara/testing/package/9bfdcfa2bb925892ecf42e2a018a3f3529826676/include",
-                "/home/vincent/.conan/data/spdlog/1.1.0/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include",
-                "/home/vincent/.conan/data/gsl_microsoft/20180102/bincrafters/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include"
+                "${workspaceFolder}/**"
             ],
             "defines": [],
+            "macFrameworkPath": [
+                "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks"
+            ],
+            "compilerPath": "/usr/local/opt/ccache/libexec/clang",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
             "intelliSenseMode": "clang-x64",
             "compileCommands": "${workspaceFolder}/build/compile_commands.json"
         }
