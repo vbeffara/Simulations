@@ -11,7 +11,7 @@ namespace vb {
         T at(coo z) const {
             auto target = std::max(std::abs(z.x), std::abs(z.y));
             if (target >= size) return empty;
-            if (size == BSIZE) return tile[(unsigned long)((2 * BSIZE + 1) * BSIZE + z.x + 2 * BSIZE * z.y)];
+            if (size == BSIZE) return tile[size_t((2 * BSIZE + 1) * BSIZE + z.x + 2 * BSIZE * z.y)];
             auto index = 4u;
             if (z.x >= sub_size) {
                 index += 1;
@@ -38,7 +38,7 @@ namespace vb {
             auto target = std::max(std::abs(z.x), std::abs(z.y));
             while (size <= target) triple();
             if (size == BSIZE)
-                tile[(unsigned long)((2 * BSIZE + 1) * BSIZE + z.x + 2 * BSIZE * z.y)] = t;
+                tile[size_t((2 * BSIZE + 1) * BSIZE + z.x + 2 * BSIZE * z.y)] = t;
             else {
                 unsigned index = 4;
                 if (z.x >= sub_size) {

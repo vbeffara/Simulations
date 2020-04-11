@@ -46,20 +46,20 @@ namespace vb {
         squares2 << Texture("pigment { color rgb <.3,.5,.8> transmit .8 } normal { bumps .1 scale .1 } finish { "
                             "reflection {0} ambient 0 diffuse .5 brilliance 1.5 roughness .1 }");
 
-        cube << fmt::format("{}", (bunch)Frame(tri{-.5 * size.x, -.5 * size.y, -.5 * size.z}, tri{.5 * size.x, .5 * size.y, .5 * size.z},
-                                               "pigment { color rgb <.8,0,0> }"))
-             << fmt::format("{}", (bunch)squares1) << fmt::format("{}", (bunch)squares2) << "rotate 360*clock*y";
+        cube << fmt::format("{}", static_cast<bunch>(Frame(tri{-.5 * size.x, -.5 * size.y, -.5 * size.z},
+                                                           tri{.5 * size.x, .5 * size.y, .5 * size.z}, "pigment { color rgb <.8,0,0> }")))
+             << fmt::format("{}", static_cast<bunch>(squares1)) << fmt::format("{}", static_cast<bunch>(squares2)) << "rotate 360*clock*y";
 
         Pov_Scene SS;
         SS << Camera({1.3 * size.x, .9 * size.y, -1.5 * size.z}, {0, 0, 0}, 60) << Light_Source({50. * size.x, 30. * size.y, -15. * size.z})
-           << fmt::format("{}", (bunch)cube);
+           << fmt::format("{}", static_cast<bunch>(cube));
 
         if (mirrors) {
-            corner << Plane({1, 0, 0}, -.75 * size.x) << Plane({0, 0, 1}, .75 * size.z)
+            corner << Plane({1, 0, 0}, -.75 * double(size.x)) << Plane({0, 0, 1}, .75 * double(size.z))
                    << Texture("pigment { color White } finish { reflection {.5} ambient 0 diffuse 0 }");
-            ground << Plane({0, 1, 0}, -.75 * size.y)
+            ground << Plane({0, 1, 0}, -.75 * double(size.y))
                    << Texture("pigment { color White } finish { reflection {.1} ambient 0.2 diffuse 0.1 }");
-            SS << fmt::format("{}", (bunch)corner) << fmt::format("{}", (bunch)ground);
+            SS << fmt::format("{}", static_cast<bunch>(corner)) << fmt::format("{}", static_cast<bunch>(ground));
         }
         SS.output_pov(s);
     }

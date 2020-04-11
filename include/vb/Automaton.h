@@ -45,7 +45,7 @@ namespace vb {
         }
 
         void swipe() {
-            for (size_t i = 0; i < n * lt; ++i) step();
+            for (size_t i = 0; double(i) < double(n) * lt; ++i) step();
             for (size_t i = 0; i < n; ++i) I.put({i, y}, (*this)[i]);
             ++y;
             if (y == 500) {

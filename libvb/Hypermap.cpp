@@ -279,7 +279,7 @@ namespace vb {
 
     auto Hypermap::ccn(size_t n) -> double {
         static std::vector<double> p;
-        for (auto i = p.size(); i <= n; ++i) p.push_back(sqrt(2 / (1 - cos(2 * M_PI / i))) - 1);
+        for (auto i = p.size(); i <= n; ++i) p.push_back(sqrt(2 / (1 - cos(2 * M_PI / double(i)))) - 1);
         return p[n];
     }
 
@@ -297,7 +297,7 @@ namespace vb {
             for (size_t j = 0; j < n - 1; ++j) s += M.alpha_xyz(out[i], out[adj[j]], out[adj[j + 1]]);
             er[i] = s - 2 * M_PI;
             se += fabs(er[i]);
-            double c  = cos(s / n);
+            double c  = cos(s / double(n));
             double nr = M.ccn(n) * (1 - c + sqrt(2 * (1 - c))) / (1 + c);
             out[i] *= 1.1 * nr - .1;
         }
@@ -320,7 +320,7 @@ namespace vb {
             old_r     = r;
             double se = 0;
             for (int i = 0; i < m; ++i) se = acpa_step(*this, r, &r, &e);
-            if (se / n < tgt) break;
+            if (se / double(n) < tgt) break;
             double mv = 0;
             for (size_t i = 0; i < n; ++i) {
                 if (old_e[i] == 0) continue;

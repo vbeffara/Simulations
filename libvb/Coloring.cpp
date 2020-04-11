@@ -4,7 +4,8 @@
 
 namespace vb {
     Coloring::Coloring(const std::string &s, cpx z1_, cpx z2_, size_t n, std::function<Color(cpx)> f_)
-        : Picture(s, {n, size_t(n * imag(z2_ - z1_) / real(z2_ - z1_))}), eps(real(z1_ - z2_) / n), z1(z1_), z2(z2_), f(std::move(f_)) {}
+        : Picture(s, {n, size_t(n * imag(z2_ - z1_) / real(z2_ - z1_))}), eps(real(z1_ - z2_) / double(n)), z1(z1_), z2(z2_),
+          f(std::move(f_)) {}
 
     void Coloring::show() {
         Picture::show();
@@ -44,7 +45,7 @@ namespace vb {
         z2 += z;
     }
 
-    auto Coloring::c_to_z(coo c) const -> cpx { return z1 + cpx(c.x, c.y) * eps; }
+    auto Coloring::c_to_z(coo c) const -> cpx { return z1 + cpx(double(c.x), double(c.y)) * eps; }
 
     auto Coloring::at(coo z) const -> Color & { return stage[z.x + int64_t(stride) * z.y]; }
 
@@ -61,11 +62,11 @@ namespace vb {
         for (int i = -1; i <= 1; ++i)
             for (int j = -1; j <= 1; ++j)
                 if ((!pre) || (i != 0) || (j != 0)) {
-                    Color c = f(z + eps * cpx(i, j) / 3.0);
-                    r += c.r;
-                    g += c.g;
-                    b += c.b;
-                    a += c.a;
+                    Color cc = f(z + eps * cpx(i, j) / 3.0);
+                    r += cc.r;
+                    g += cc.g;
+                    b += cc.b;
+                    a += cc.a;
                 }
         return Color(uint8_t(r / 9), uint8_t(g / 9), uint8_t(b / 9), uint8_t(a / 9));
     }

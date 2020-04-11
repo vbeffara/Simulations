@@ -13,21 +13,14 @@ namespace vb {
             return *this;
         }
 
-        operator bool() const { return bool(strtol(c_str(), (char **)nullptr, 10)); } // NOLINT implicit conversion is the point
-
-        operator int() const { return int(strtol(c_str(), (char **)nullptr, 10)); }               // NOLINT implicit conversion is the point
-        operator long() const { return long(strtol(c_str(), (char **)nullptr, 10)); }             // NOLINT implicit conversion is the point
-        operator long long() const { return (long long)(strtol(c_str(), (char **)nullptr, 10)); } // NOLINT implicit conversion is the point
-
-        operator unsigned() const { return unsigned(strtol(c_str(), (char **)nullptr, 10)); } // NOLINT implicit conversion is the point
-        operator unsigned long() const {
-            return (unsigned long)(strtol(c_str(), (char **)nullptr, 10));
-        } // NOLINT implicit conversion is the point
-        operator unsigned long long() const {
-            return (unsigned long long)(strtol(c_str(), (char **)nullptr, 10));
-        } // NOLINT implicit conversion is the point
-
-        operator double() const { return strtod(c_str(), (char **)nullptr); } // NOLINT implicit conversion is the point
+        operator bool() const { return bool(strtol(c_str(), nullptr, 10)); }                                          // NOLINT
+        operator int() const { return int(strtol(c_str(), nullptr, 10)); }                                            // NOLINT
+        operator long() const { return long(strtol(c_str(), nullptr, 10)); }                                          // NOLINT
+        operator long long() const { return static_cast<long long>(strtol(c_str(), nullptr, 10)); }                   // NOLINT
+        operator unsigned() const { return unsigned(strtol(c_str(), nullptr, 10)); }                                  // NOLINT
+        operator unsigned long() const { return static_cast<unsigned long>(strtol(c_str(), nullptr, 10)); }           // NOLINT
+        operator unsigned long long() const { return static_cast<unsigned long long>(strtol(c_str(), nullptr, 10)); } // NOLINT
+        operator double() const { return strtod(c_str(), nullptr); }                                                  // NOLINT
     };
 
     class CL_Parser : public std::map<char, Value> {

@@ -68,8 +68,8 @@ namespace vb {
         p[0] = cplx(1);
         cplx avg(0), d(0);
         for (auto zd : w) {
-            d += zd.d;
-            avg += (*this)(zd.z) * cplx(zd.d);
+            d += double(zd.d);
+            avg += (*this)(zd.z) * cplx(double(zd.d));
         }
         p[0] = d / avg;
     }
@@ -139,8 +139,8 @@ namespace vb {
     template <typename T> auto Constellation0<T>::logder(cplx z, unsigned k) const -> cplx {
         if (k == 0) return log((*this)(z));
         cplx sum(0);
-        for (auto zd : b) sum += cplx(zd.d) / pow(z - zd.z, k);
-        for (auto zd : f) sum -= cplx(zd.d) / pow(z - zd.z, k);
+        for (auto zd : b) sum += cplx(double(zd.d)) / pow(z - zd.z, k);
+        for (auto zd : f) sum -= cplx(double(zd.d)) / pow(z - zd.z, k);
         return sum;
     }
 
@@ -172,8 +172,8 @@ namespace vb {
     }
 
     template <typename T> auto Constellation0<T>::jacvcost() const -> Matrix<cplx> { // m_ij = \partial_j(f_i)
-        Matrix<cplx>           out(dim, dim);
-        unsigned               i = 0, j = 0;
+        Matrix<cplx> out(dim, dim);
+        unsigned     i = 0, j = 0;
         for (unsigned ii = 0; ii < w.size(); ++ii)
             for (unsigned id = 0; id < w[ii].d; ++id) {
                 j = 0;
@@ -338,7 +338,7 @@ namespace vb {
             cplx u = z.z + rad * exp(cplx(0, .001));
             T    s = imag((*this)(u));
             for (unsigned i = 0; i < 10 * z.d; ++i) {
-                u    = z.z + exp(cplx(0, 2 * pi_<T>() / (10 * z.d))) * (u - z.z);
+                u    = z.z + exp(cplx(0, 2 * pi_<T>() / double(10 * z.d))) * (u - z.z);
                 T ns = imag((*this)(u));
                 if (s * ns < 0) {
                     hs.push_back(u);
@@ -356,7 +356,7 @@ namespace vb {
         cplx                u = large * exp(cplx(0, .001));
         T                   s = imag((*this)(u));
         for (unsigned i = 0; i < 10 * maxdeg; ++i) {
-            u    = exp(cplx(0, -2 * pi_<T>() / (10 * maxdeg))) * u;
+            u    = exp(cplx(0, -2 * pi_<T>() / double(10 * maxdeg))) * u;
             T ns = imag((*this)(u));
             if (s * ns < 0) {
                 hs.push_back(u);
@@ -372,7 +372,7 @@ namespace vb {
         for (unsigned i = 0; i < Z.size(); ++i) {
             for (unsigned j = 0; j < hands[i].size(); ++j) {
                 auto l       = hands[i][j];
-                cplx r       = Z[i].z + exp(cplx(0, -2 * pi_<T>() / (10 * Z[i].d))) * (l - Z[i].z);
+                cplx r       = Z[i].z + exp(cplx(0, -2 * pi_<T>() / double(10 * Z[i].d))) * (l - Z[i].z);
                 auto sl      = imag((*this)(l));
                 bool looking = true;
                 while (looking) {

@@ -23,7 +23,7 @@ namespace vb {
             }
         double time = Duration(now() - start).count();
         slice *= 1.01;
-        if (time > .1) slice = std::min(.1 * n_call / time, slice);
+        if (time > .1) slice = std::min(.1 * double(n_call) / time, slice);
         next = int(slice);
     }
 } // namespace vb

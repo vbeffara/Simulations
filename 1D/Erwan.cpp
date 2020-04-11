@@ -74,7 +74,7 @@ public:
     auto avg(size_t n, size_t t, const vector<vector<double>> &p) -> double {
         double s = 0.0;
         for (size_t i = 0; i < t; ++i) s += markov(n, p);
-        return s / t;
+        return s / double(t);
     }
 
     static auto x_to_p(const gsl::span<const double> x) -> vector<vector<double>> {

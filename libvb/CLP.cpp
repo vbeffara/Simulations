@@ -13,8 +13,8 @@ namespace vb {
         }
     }
 
-    auto CLP::get_param(const std::string &c, const std::string &type, std::string val, const std::string &desc) -> std::string {
-        help.push_back(fmt::format("|  {}  | {:8} | {:>10} |  {}", c, type, val, desc));
+    auto CLP::get_param(const std::string &c, const std::string &type, std::string val, const std::string &dsc) -> std::string {
+        help.push_back(fmt::format("|  {}  | {:8} | {:>10} |  {}", c, type, val, dsc));
         if (auto i = std::find(begin(args), end(args), "-" + c); i != end(args)) {
             if (i + 1 == end(args)) {
                 spdlog::error("Missing value for argument {}, exiting.", c);

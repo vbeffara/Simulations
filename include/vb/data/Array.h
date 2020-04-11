@@ -4,8 +4,8 @@
 namespace vb {
     template <typename T> class Array {
     public:
-        Array(ucoo sz, T d) : size(sz), data((unsigned long)(sz.x * sz.y), d) {}
-        Array(ucoo sz) : size(sz), data((unsigned long)(sz.x * sz.y)) {}
+        Array(ucoo sz, T d) : size(sz), data(sz.x * sz.y, d) {}
+        Array(ucoo sz) : size(sz), data(sz.x * sz.y) {}
 
         explicit Array(const std::vector<std::vector<T>> &l) : size(ucoo{l.size(), l[0].size()}), data(size.x * size.y) {
             for (auto z : coo_range(size)) put(z, l[z.x][z.y]);
