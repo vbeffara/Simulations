@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "Doxyfile": "ini",
         "algorithm": "cpp",
         "list": "cpp",
         "array": "cpp",
@@ -98,7 +99,8 @@
         "locale": "cpp",
         "numeric": "cpp",
         "gsl_assert": "cpp",
-        "bit": "cpp"
+        "bit": "cpp",
+        "execution": "cpp"
     },
     "python.pythonPath": "/usr/local/opt/python/bin/python3.7",
     "C_Cpp.intelliSenseEngineFallback": "Disabled",

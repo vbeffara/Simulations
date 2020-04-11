@@ -1,15 +1,53 @@
 cmake_minimum_required (VERSION 3.0)
 project (Simulations CXX)
 
-set(CONAN_SYSTEM_INCLUDES ON)
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup(KEEP_RPATHS)
-unset (CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE)
-
 set (CMAKE_CXX_STANDARD 17)
-set (CMAKE_OSX_SYSROOT "${CMAKE_OSX_SYSROOT}/")
 set (CMAKE_EXPORT_COMPILE_COMMANDS 1)
-add_compile_options(-fdiagnostics-color=always -pedantic -Wall -Wextra -Wpedantic -Wconversion -Wno-unused-function)
+set (CMAKE_OSX_SYSROOT "${CMAKE_OSX_SYSROOT}/")
+
+if(NOT CMAKE_BUILD_TYPE)
+  message(STATUS "Setting build type to 'Release' as none was specified.")
+  set(CMAKE_BUILD_TYPE Release)
+endif()
+
+include(${PROJECT_SOURCE_DIR}/conan.cmake)
+conan_add_remote(NAME bincrafters URL https://api.bintray.com/conan/bincrafters/public-conan)
+conan_add_remote(NAME vb URL https://api.bintray.com/conan/vbeffara/misc)
+set(CONAN_SYSTEM_INCLUDES ON)
+conan_cmake_run(REQUIRES
+				boost/1.72.0
+				cairo/1.17.2@bincrafters/stable
+				Catch2/2.11.1@catchorg/stable
+				fftw/3.3.8
+				gsl_microsoft/2.0.0@bincrafters/stable
+				mpc/1.1.0@bincrafters/stable
+				mpfr/4.0.2
+				spdlog/1.5.0
+				tbb/2020.1
+				yaml-cpp/0.6.3
+
+				fltk/1.3.5-3@vbeffara/stable
+				fplll/5.3.2-1@vbeffara/stable
+				libcmaes/0.9.5-7514782ebe-2@vbeffara/stable
+                BASIC_SETUP NO_OUTPUT_DIRS BUILD missing)
+
+add_compile_options(-fdiagnostics-color=always -pedantic -Wall -Wextra -Wshadow
+                    -Wpedantic -Wold-style-cast -Wunused -Wconversion
+                    -Wsign-conversion -Wnull-dereference)
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+  message("-- Debug mode")
+  add_compile_options(-g)
+else()
+  message("-- Release mode")
+  add_compile_options(-O3 -DNDEBUG)
+endif()
+
+find_program(CCACHE ccache)
+if(CCACHE)
+  message(STATUS "Using ccache")
+  set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE})
+endif()
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG(-fcoroutines-ts COROUTINES_TS)
