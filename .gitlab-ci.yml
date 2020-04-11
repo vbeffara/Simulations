@@ -14,10 +14,8 @@ cmake:
     - conan profile new default --detect
     - conan profile update settings.compiler.libcxx=libstdc++11 default
     - mkdir -p build/cov
-    - cd build
-    - conan install .. --build missing
-    - cmake .. -G Ninja -DCOV=1
-    - ninja
+    - cmake -B build -G Ninja -DCOV=1
+    - cmake --build build
   artifacts:
     paths:
       - build/
