@@ -29,7 +29,7 @@ conan_cmake_run(REQUIRES
 				fltk/1.3.5-3@vbeffara/stable
 				fplll/5.3.2-1@vbeffara/stable
 				libcmaes/0.9.5-7514782ebe-2@vbeffara/stable
-                BASIC_SETUP NO_OUTPUT_DIRS BUILD missing)
+                BASIC_SETUP NO_OUTPUT_DIRS KEEP_RPATHS BUILD missing)
 
 add_compile_options(-fdiagnostics-color=always -pedantic -Wall -Wextra -Wshadow
                     -Wpedantic -Wold-style-cast -Wunused -Wconversion
