@@ -25,6 +25,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update -qq
+        sudo apt-get upgrade -qq
         sudo apt-get install python3-pip cmake m4 gcc-9 ninja-build git lcov ruby libgl1-mesa-dev libxcb-shm0 yasm
         sudo apt-get install xvfb libglu1-mesa-dev xorg-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
         python -m pip install --upgrade pip setuptools wheel 
