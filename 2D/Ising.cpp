@@ -24,10 +24,10 @@ public:
     }
 
     auto nnb(coo z) -> int {
-        int   out = 0;
-        Color c   = atp(z);
+        int  out   = 0;
+        auto state = atp(z);
         for (int d = 0; d < 4; ++d) {
-            if (atp(z + dz[d]) == c)
+            if (atp(z + dz[d]) == state)
                 out++;
             else
                 out--;
@@ -37,8 +37,8 @@ public:
 
     void run(size_t nstep, bool k) {
         vector<double> p(10, 0);
-        for (size_t i = 0; i < 10; ++i) p[i] = exp(-(i * beta));
-        if (nstep == 0) nstep = 10 + size_t(n * 0.01 / fabs(beta - log(1 + sqrt(2))));
+        for (size_t i = 0; i < 10; ++i) p[i] = exp(-double(i) * beta);
+        if (nstep == 0) nstep = 10 + size_t(double(n) * 0.01 / fabs(beta - log(1 + sqrt(2))));
 
         for (size_t i = 0; i != nstep; i++)
             for (size_t j = 0; j < n * n; ++j) {

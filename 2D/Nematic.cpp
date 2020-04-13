@@ -24,7 +24,7 @@ public:
         for (size_t i = 0; i < ok; ++i) Z[i] = pow(zz, -i);
         for (auto i = ok; i < Z.size(); ++i) Z[i] = Z[i - 1] / zz + Z[i - ok];
         for (auto i = ok; i < P.size(); ++i) P[i] = Z[i - ok] / Z[i];
-        dd = ok * Z[Z.size() - ok] / (Z[Z.size() - 1] / zz + ok * Z[Z.size() - ok]);
+        dd = double(ok) * Z[Z.size() - ok] / (Z[Z.size() - 1] / zz + double(ok) * Z[Z.size() - ok]);
     }
 
     void add(coo z, size_t d) {

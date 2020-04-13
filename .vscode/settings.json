@@ -100,7 +100,9 @@
         "numeric": "cpp",
         "gsl_assert": "cpp",
         "bit": "cpp",
-        "execution": "cpp"
+        "execution": "cpp",
+        "unordered_set": "cpp",
+        "matrixfunctions": "cpp"
     },
     "python.pythonPath": "/usr/local/opt/python/bin/python3.7",
     "C_Cpp.intelliSenseEngineFallback": "Disabled",

@@ -63,16 +63,18 @@ auto main(int argc, char **argv) -> int {
     vector<edge_descriptor> all_edges(2 * (n + 1) * n);
     vector<edge_descriptor> rev_edges(2 * (n + 1) * n);
 
-    size_t i = 0;
-    for (tie(e, e_final) = edges(g); e != e_final; ++e) {
-        if (cap[*e] == 0) {
-            all_edges[i]      = *e;
-            cap[all_edges[i]] = 1;
+    {
+        size_t i = 0;
+        for (tie(e, e_final) = edges(g); e != e_final; ++e) {
+            if (cap[*e] == 0) {
+                all_edges[i]      = *e;
+                cap[all_edges[i]] = 1;
 
-            rev_edges[i]      = get(edge_reverse, g, *e);
-            cap[rev_edges[i]] = 1;
+                rev_edges[i]      = get(edge_reverse, g, *e);
+                cap[rev_edges[i]] = 1;
 
-            ++i;
+                ++i;
+            }
         }
     }
 
@@ -94,6 +96,6 @@ auto main(int argc, char **argv) -> int {
     }
 
     vector<string> out2;
-    for (unsigned i = 1; i <= 4; ++i) out2.push_back(fmt::format("{} {}", stats2[i], double(stats2[i]) / n_iter));
+    for (unsigned i = 1; i <= 4; ++i) out2.push_back(fmt::format("{} {}", stats2[i], double(stats2[i]) / double(n_iter)));
     spdlog::info("{} | {} | {}", n, n_iter, fmt::join(out2, " | "));
 }

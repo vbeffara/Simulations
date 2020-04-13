@@ -26,7 +26,7 @@ auto main(int argc, char **argv) -> int {
 
     for (size_t x = 0; x < w; ++x) {
         for (size_t y = 0; y < h; ++y) {
-            if (prng.bernoulli(p1 + (p2 - p1) * y / h))
+            if (prng.bernoulli(p1 + (p2 - p1) * double(y) / double(h)))
                 img.put({x, y}, Grey(200));
             else
                 img.put({x, y}, Grey(100));

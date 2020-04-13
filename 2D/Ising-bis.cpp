@@ -47,10 +47,10 @@ public:
         for (const auto &z : coo_range(size)) {
             Color c = to_Color(at(z));
             if (c == to_Color(0)) continue;
-            vector<cpx> p;
-            p.reserve(pattern.size());
-            for (auto zz : pattern) p.push_back(cpx(z.x) + cpx(z.y) * shift + zz);
-            F.add(make_unique<Polygon>(p, Pen(BLACK, 1, c, true)));
+            vector<cpx> path;
+            path.reserve(pattern.size());
+            for (auto zz : pattern) path.push_back(cpx(double(z.x)) + cpx(double(z.y)) * shift + zz);
+            F.add(make_unique<Polygon>(path, Pen(BLACK, 1, c, true)));
         }
         F.output_pdf(s);
     }
@@ -75,9 +75,9 @@ public:
 
 auto main(int argc, char **argv) -> int {
     Hub   H("2D Ising model", argc, argv, "n=50,b=.7,c=4");
-    Ising I(H, H['n'], H['b'], H['c']);
-    I.show();
-    I.run();
-    I.explore();
-    I.output_pdf(H);
+    Ising conf(H, H['n'], H['b'], H['c']);
+    conf.show();
+    conf.run();
+    conf.explore();
+    conf.output_pdf(H);
 }
