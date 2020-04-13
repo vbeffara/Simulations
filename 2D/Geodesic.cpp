@@ -52,9 +52,9 @@ public:
             unsigned ll = 1U << unsigned(l);
             for (size_t i = 0; i < size.x / ll; ++i)
                 for (size_t j = 0; j < size.y / ll; ++j) {
-                    double g = prng.gaussian();
+                    double noise = prng.gaussian();
                     for (auto x = i * ll; x < (i + 1) * ll; ++x)
-                        for (auto y = j * ll; y < (j + 1) * ll; ++y) I.at({x, y}).f += g;
+                        for (auto y = j * ll; y < (j + 1) * ll; ++y) I.at({x, y}).f += noise;
                 }
         }
     }
@@ -64,9 +64,9 @@ public:
             unsigned ll = 1U << unsigned(l);
             for (size_t i = 0; i < size.x / ll; ++i)
                 for (size_t j = 0; j < size.y / ll; ++j) {
-                    double g = prng.uniform_real(-1, 1);
+                    double noise = prng.uniform_real(-1, 1);
                     for (auto x = i * ll; x < (i + 1) * ll; ++x)
-                        for (auto y = j * ll; y < (j + 1) * ll; ++y) I.at({x, y}).f += g;
+                        for (auto y = j * ll; y < (j + 1) * ll; ++y) I.at({x, y}).f += noise;
                 }
         }
     }
@@ -81,8 +81,8 @@ public:
         gsl::span<fftw_complex> in_{in, int64_t(size.x * size.y)}, out_{out, int64_t(size.x * size.y)};
 
         vector<double> sinarrayi(size_t(size.x)), sinarrayj(size_t(size.y));
-        for (size_t i = 0; i < size.x; ++i) sinarrayi[i] = sin(M_PI * i / size.x);
-        for (size_t j = 0; j < size.y; ++j) sinarrayj[j] = sin(M_PI * j / size.y);
+        for (size_t i = 0; i < size.x; ++i) sinarrayi[i] = sin(M_PI * double(i) / double(size.x));
+        for (size_t j = 0; j < size.y; ++j) sinarrayj[j] = sin(M_PI * double(j) / double(size.y));
 
         for (auto [i, j] : coo_range(size)) {
             if ((i == 0) && (j == 0)) continue;

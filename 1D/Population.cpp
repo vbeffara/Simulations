@@ -17,7 +17,7 @@ double a0 = 10, aex1 = 20, aex2 = 20, sigmab0 = .5, sigmabex1 = .1, sigmabex2 = 
 auto g(double x, double sigma) -> double { return exp(-x * x / (2 * sigma * sigma)); }
 auto b(double x) -> double { return a0 * g(x, sigmab0) + aex1 * g(x - 2, sigmabex1) + aex2 * g(x + 2, sigmabex2) + slope * x; }
 auto c(double x, double y) -> double { return .1 * max(-Ac * (x - y) * (x - y) * (x - y) * (x - y) + (x - y) * (x - y) + 3, 0.0); }
-auto rescaling(double x, size_t size) -> double { return 6.0 * (x - 1.0) / (size - 1.0) - 3.0; }
+auto rescaling(double x, size_t size) -> double { return 6.0 * (x - 1.0) / (double(size) - 1.0) - 3.0; }
 
 auto NewNu(vector<double> *nup, double K, double p, size_t size) -> double {
     vector<double> &nu = *nup;
@@ -26,10 +26,10 @@ auto NewNu(vector<double> *nup, double K, double p, size_t size) -> double {
 
     for (size_t x = 1; x <= size; x++) {
         double s = 0;
-        for (size_t y = 1; y <= size; ++y) { s += c(rescaling(x, size), rescaling(y, size)) * nu[y]; }
-        B[x] = nu[x] * (1 - p) * b(rescaling(x, size));
+        for (size_t y = 1; y <= size; ++y) { s += c(rescaling(double(x), size), rescaling(double(y), size)) * nu[y]; }
+        B[x] = nu[x] * (1 - p) * b(rescaling(double(x), size));
         BB += B[x];
-        M[x] = nu[x] * p * b(rescaling(x, size));
+        M[x] = nu[x] * p * b(rescaling(double(x), size));
         MM += M[x];
         De[x] = nu[x] * s;
         DD += De[x];
@@ -78,7 +78,7 @@ auto main(int argc, char **argv) -> int {
     nu[shift] = 3;
 
     vector<cpx> pos(size, 0);
-    for (size_t i = 0; i < size; ++i) pos[i] = cpx(i, nu[i + 1]);
+    for (size_t i = 0; i < size; ++i) pos[i] = cpx(double(i), nu[i + 1]);
 
     vb::Console W;
     W.manage(slope, -100.0, 100.0, "slope");
@@ -106,13 +106,13 @@ auto main(int argc, char **argv) -> int {
             cout << endl;
             G.contents.clear();
             for (size_t i = 0; i < size; ++i) {
-                graph[i].emplace_back(1000.0 * k / iterations, nu[i + 1]);
+                graph[i].emplace_back(1000.0 * double(k) / double(iterations), nu[i + 1]);
                 G.add(std::make_unique<Path>(graph[i], vb::Pen(vb::Indexed(int(i)))));
             }
             if (!G.visible()) { G.show(); }
             G.step();
         }
-        for (size_t i = 0; i < size; ++i) pos[i] = cpx(i, nu[i + 1]);
+        for (size_t i = 0; i < size; ++i) pos[i] = cpx(double(i), nu[i + 1]);
         F.contents.clear();
         F.add(std::make_unique<Path>(pos));
         F.step();

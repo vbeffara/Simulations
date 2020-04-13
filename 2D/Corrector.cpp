@@ -51,7 +51,7 @@ auto main(int argc, char **argv) -> int {
             if ((i > 0) && ((adj[ij] & 4U) != 0)) m << Edge(ij, ij - 1);
             if ((j > 0) && ((adj[ij] & 8U) != 0)) m << Edge(ij, ij - n);
 
-            m.v[ij]->z = cpx(i, j);
+            m.v[ij]->z = cpx(double(i), double(j));
 
             m.bd[ij] = ((i == 0) || (i == n - 1) || (j == 0) || (j == n - 1));
         }

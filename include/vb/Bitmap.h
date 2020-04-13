@@ -36,8 +36,8 @@ namespace vb {
                                    gsl::index(ppp * size.x + stride * (ppp * size.y - 1)));
 
             for (const auto &z : coo_range(size)) {
-                for (const auto &dz : coo_range(ucoo{ppp, ppp}))
-                    stage[gsl::index(ppp * z.x + dz.x + stride * (ppp * z.y + dz.y))] = to_Color(at(z));
+                for (const auto &shift : coo_range(ucoo{ppp, ppp}))
+                    stage[gsl::index(ppp * z.x + shift.x + stride * (ppp * z.y + shift.y))] = to_Color(at(z));
             }
         }
     };

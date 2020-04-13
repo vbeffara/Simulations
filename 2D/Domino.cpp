@@ -102,8 +102,8 @@ public:
         if (!fits(oc)) return 0;
         if (at(ucoo(oc)).type == 0) return 0;
         if (at(ucoo(oc)).d != ((d + 2) % 4)) return 0;
-        vector<double> rr{r, r * r, 1, r};
-        if (prng.bernoulli(1 - rr[(d + at(ucoo(c)).type) % 4])) return 0;
+        vector<double> rs{r, r * r, 1, r};
+        if (prng.bernoulli(1 - rs[(d + at(ucoo(c)).type) % 4])) return 0;
         putd(ucoo(c), (d + 1) % 4);
         putd(ucoo(oc), (d + 3) % 4);
         return 1;

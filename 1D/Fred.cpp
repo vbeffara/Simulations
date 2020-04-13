@@ -74,8 +74,8 @@ auto main(int argc, char **argv) -> int {
             bmax = std::max(bmax, b);
         }
         std::vector<int> data(nclass);
-        for (auto b : boltzmann) data[unsigned((nclass - .01) * (b - bmin) / (bmax - bmin))]++;
+        for (auto b : boltzmann) data[unsigned((double(nclass) - .01) * (b - bmin) / (bmax - bmin))]++;
         std::ofstream of("out.boltzmann");
-        for (size_t i = 0; i < nclass; ++i) of << bmin + i * (bmax - bmin) / nclass << " " << data[i] << std::endl;
+        for (size_t i = 0; i < nclass; ++i) of << bmin + double(i) * (bmax - bmin) / double(nclass) << " " << data[i] << std::endl;
     }
 }
