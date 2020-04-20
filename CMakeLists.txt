@@ -18,6 +18,7 @@ conan_cmake_run(REQUIRES
 				boost/1.72.0
 				cairo/1.17.2@bincrafters/stable
 				Catch2/2.11.1@catchorg/stable
+				docopt.cpp/0.6.2
 				fftw/3.3.8
 				gsl_microsoft/2.0.0@bincrafters/stable
 				mpc/1.1.0@bincrafters/stable
@@ -77,7 +78,7 @@ endif ()
 link_directories ("/usr/local/lib" "/opt/X11/lib")
 include_directories ("${PROJECT_SOURCE_DIR}/include")
 
-file (GLOB vb_sources ${PROJECT_SOURCE_DIR}/libvb/*.cpp)
+file (GLOB vb_sources CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/libvb/*.cpp)
 add_library (vb SHARED ${vb_sources})
 target_link_libraries (vb ${CONAN_LIBS})
 link_libraries(vb)
@@ -91,13 +92,13 @@ if (${PLAYGROUND})
 endif ()
 foreach (dir ${DIRS})
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${dir})
-	file (GLOB src ${PROJECT_SOURCE_DIR}/${dir}/*.cpp)
+	file (GLOB src CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/${dir}/*.cpp)
 	foreach (f ${src})
 		get_filename_component (e ${f} NAME_WE)
 		add_executable (${e} ${f})
 	endforeach (f)
 endforeach (dir)
 
-file (GLOB tests_sources ${PROJECT_SOURCE_DIR}/catch2/*.cpp)
+file (GLOB tests_sources CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/catch2/*.cpp)
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 add_executable(catch2 ${tests_sources})

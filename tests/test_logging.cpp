@@ -10,9 +10,6 @@ using namespace vb;
 auto main(int argc, char **argv) -> int {
     Hub H("Testing spdlog", argc, argv);
     spdlog::set_level(spdlog::level::trace);
-    auto sink = std::make_shared<spdlog::sinks::basic_file_sink_st>("output.log");
-    spdlog::default_logger()->sinks().push_back(sink);
-    spdlog::default_logger()->sinks()[0]->set_level(spdlog::level::info);
 
     spdlog::critical("Support for int: {0:d};  hex: {0:x};  oct: {0:o}; bin: {0:b}", 42);
     spdlog::error("An error message example {}..", 1);
@@ -24,6 +21,10 @@ auto main(int argc, char **argv) -> int {
     spdlog::info("{:<30}", "left aligned");
     spdlog::info("{:>30}", "right aligned");
     spdlog::info("{:^30}", "centered");
+
+    auto sink = std::make_shared<spdlog::sinks::basic_file_sink_st>("output.log");
+    spdlog::default_logger()->sinks().push_back(sink);
+    spdlog::default_logger()->sinks()[0]->set_level(spdlog::level::info);
 
     spdlog::critical("Support for int: {0:d};  hex: {0:x};  oct: {0:o}; bin: {0:b}", 42);
     spdlog::error("An error message example {}..", 1);
