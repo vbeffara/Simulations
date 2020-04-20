@@ -1,5 +1,7 @@
 #define SPDLOG_DEBUG_ON
 #define SPDLOG_TRACE_ON
+#include <memory>
+#include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/spdlog.h>
 #include <vb/util/Hub.h>
 
@@ -7,7 +9,10 @@ using namespace vb;
 
 auto main(int argc, char **argv) -> int {
     Hub H("Testing spdlog", argc, argv);
-    spdlog::set_level(spdlog::level::trace); // Set global log level to info
+    spdlog::set_level(spdlog::level::trace);
+    auto sink = std::make_shared<spdlog::sinks::basic_file_sink_st>("output.log");
+    spdlog::default_logger()->sinks().push_back(sink);
+    spdlog::default_logger()->sinks()[0]->set_level(spdlog::level::info);
 
     spdlog::critical("Support for int: {0:d};  hex: {0:x};  oct: {0:o}; bin: {0:b}", 42);
     spdlog::error("An error message example {}..", 1);

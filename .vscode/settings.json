@@ -102,7 +102,8 @@
         "bit": "cpp",
         "execution": "cpp",
         "unordered_set": "cpp",
-        "matrixfunctions": "cpp"
+        "matrixfunctions": "cpp",
+        "regex": "cpp"
     },
     "python.pythonPath": "/usr/local/opt/python/bin/python3.7",
     "C_Cpp.intelliSenseEngineFallback": "Disabled",
