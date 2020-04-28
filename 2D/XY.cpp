@@ -6,7 +6,10 @@ Usage: XY [options]
 Options:
   -n <size>   Size of the simulation [default: 500]
   -b <beta>   Inverse temperature [default: 1.0]
-  -h, --help  Print usage help and exit)";
+  -h, --help  Print usage help and exit
+  
+The boundary conditions are periodic, and for now the dynamics is just a
+continuous-time Glauber process with uniform updates.)";
 
 #include <docopt/docopt.h>
 #include <vb/Bitmap.h>
