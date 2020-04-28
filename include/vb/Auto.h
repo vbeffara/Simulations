@@ -43,7 +43,7 @@ namespace vb {
         void run();
 
         int     next   = 1;
-        double  slice  = 10;
+        double  slice  = 1;
         int64_t n_call = 0;
         size_t  task;
 

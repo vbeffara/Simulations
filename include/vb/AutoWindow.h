@@ -28,6 +28,7 @@ namespace vb {
             Fl::use_high_res_GL(1);
             T::show();
             update();
+            start = now();
         }
 
         bool visible() { return static_cast<bool>(T::visible()); }

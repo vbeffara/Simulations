@@ -1,3 +1,4 @@
+#include <spdlog/spdlog.h>
 #include <vb/Auto.h>
 
 namespace vb {
