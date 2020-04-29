@@ -11,7 +11,7 @@ namespace vb {
     }
 
     void ProgressBar::update() {
-        static const std::vector<std::string> symbols{u8" ", u8"▏", u8"▎", u8"▍", u8"▌", u8"▋", u8"▊", u8"▉", u8"█"};
+        static const std::vector<std::string> symbols{" ", "▏", "▎", "▍", "▌", "▋", "▊", "▉", "█"};
         std::string                           bar, days, rest;
 
         auto n = current * 400 / final;
