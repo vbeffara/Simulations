@@ -75,7 +75,7 @@ if (${COV})
 else ()
 	add_compile_options(-O3 -DNDEBUG)
 endif ()
-link_directories ("/usr/local/lib" "/opt/X11/lib")
+link_directories ("/usr/local/lib")
 include_directories ("${PROJECT_SOURCE_DIR}/include")
 
 file (GLOB vb_sources CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/libvb/*.cpp)
