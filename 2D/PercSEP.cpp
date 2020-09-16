@@ -5,27 +5,33 @@
 using namespace vb;
 using namespace std;
 
-namespace vb {
-    template <> auto to_Color(int t) -> Color {
-        static const vector<Color> C{BLACK, Grey(90), GREEN, Color(128, 0, 0)};
-        return C[size_t(t)];
-    }
-} // namespace vb
+enum state : size_t { s_closed, s_empty, s_full, s_stuck };
 
-class PercSEP : public Bitmap<int> {
+template <> auto vb::to_Color(state t) -> Color {
+    switch (t) {
+    case s_closed: return BLACK;
+    case s_empty: return Grey(90);
+    case s_full: return GREEN;
+    case s_stuck: return Color(128, 0, 0);
+    }
+}
+
+class PercSEP : public Bitmap<state> {
 public:
     coo    flow{0, 0};
     double drift;
-    bool   tasym;
+    bool   tasym, stats;
 
-    PercSEP(std::string title, size_t sz, double d, bool t, double p, double l) : Bitmap<int>(title, {2 * sz, sz}), drift(d), tasym(t) {
+    PercSEP(std::string title, size_t sz, double d, bool t, double p, double l, bool s)
+        : Bitmap<state>(title, {2 * sz, sz}), drift(d), tasym(t), stats(s) {
         for (const auto &z : coo_range(size))
-            if (prng.bernoulli(p)) put(z, prng.bernoulli(l) ? 2 : 1);
+            if (prng.bernoulli(p)) put(z, prng.bernoulli(l) ? s_full : s_empty);
+        show();
     }
 
     void clean() {
         for (const auto &z : coo_range(size))
-            if (at(z) > 0) at(z) = at(z) + 100;
+            if (at(z) > 0) at(z) = state(at(z) + 100);
         bool dirty = true;
 
         while (dirty) {
@@ -34,13 +40,13 @@ public:
                 if (at(ucoo(z)) == 102) {
                     if (atp(z + coo{1, 0}) == 1 || atp(z + coo{1, 0}) == 2 || atp(z + coo{0, 1}) == 1 || atp(z + coo{0, 1}) == 2 ||
                         atp(z - coo{0, 1}) == 1 || atp(z - coo{0, 1}) == 2) {
-                        atp(z) = 2;
+                        atp(z) = s_full;
                         dirty  = true;
                     }
                 } else if (at(ucoo(z)) == 101) {
                     if (atp(z + coo{1, 0}) == 1 || atp(z + coo{1, 0}) == 2 || atp(z + coo{1, 0}) == 101 || atp(z + coo{0, 1}) == 1 ||
                         atp(z + coo{0, 1}) == 2 || atp(z - coo{0, 1}) == 1 || atp(z - coo{0, 1}) == 2) {
-                        atp(z) = 1;
+                        atp(z) = s_empty;
                         dirty  = true;
                     }
                 }
@@ -48,8 +54,8 @@ public:
         }
 
         for (const auto &z : coo_range(size)) {
-            if (at(z) >= 102) at(z) = 3;
-            if (at(z) == 101) at(z) = 1;
+            if (at(z) >= 102) at(z) = s_stuck;
+            if (at(z) == 101) at(z) = s_empty;
         }
     }
 
@@ -63,6 +69,21 @@ public:
         step();
         flow += s;
     }
+
+    void run() {
+        for (size_t t = 1;; ++t) {
+            if (stats && (t % (size.x * size.y)) == 0) {
+                if (tasym) clean();
+                int na = 0;
+                for (const auto &z : coo_range(size))
+                    if (at(z) == 2) ++na;
+                if (na == 0) return;
+                fmt::print("{} {} {} {}\n", t / (size.x * size.y), na, flow.x, double(flow.x) / na);
+                flow = {0, 0};
+            }
+            move();
+        }
+    }
 };
 
 auto main(int argc, char **argv) -> int {
@@ -75,19 +96,5 @@ auto main(int argc, char **argv) -> int {
     auto s = clp.flag("s", "Output statistics on particle movement");
     clp.finalize();
 
-    PercSEP P(clp.title, n, d, T, p, l);
-    P.show();
-
-    for (size_t t = 1;; ++t) {
-        if (s && (t % (P.size.x * P.size.y)) == 0) {
-            if (P.tasym) P.clean();
-            int na = 0;
-            for (const auto &z : coo_range(P.size))
-                if (P.at(z) == 2) ++na;
-            if (na == 0) exit(0);
-            fmt::print("{} {} {} {}\n", t / (P.size.x * P.size.y), na, P.flow.x, double(P.flow.x) / na);
-            P.flow = {0, 0};
-        }
-        P.move();
-    }
+    PercSEP(clp.title, n, d, T, p, l, s).run();
 }
