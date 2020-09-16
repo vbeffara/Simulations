@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "Doxyfile": "ini",
+        "*.plt": "latex",
         "algorithm": "cpp",
         "list": "cpp",
         "array": "cpp",
@@ -103,7 +104,8 @@
         "execution": "cpp",
         "unordered_set": "cpp",
         "matrixfunctions": "cpp",
-        "regex": "cpp"
+        "regex": "cpp",
+        "ranges": "cpp"
     },
     "python.pythonPath": "/usr/local/opt/python/bin/python3.7",
     "C_Cpp.intelliSenseEngineFallback": "Disabled",
