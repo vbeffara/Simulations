@@ -5,9 +5,9 @@
 using namespace vb;
 using namespace std;
 
-enum state : size_t { s_closed = 0, s_empty, s_full, s_stuck, s_empty_tagged = 101, s_full_tagged };
-auto tagged(state s) -> state { return state(s + 100); }
-auto untagged(state s) -> state { return state(s - 100); }
+enum state : size_t { s_closed, s_empty, s_full, s_stuck, s_empty_tagged, s_full_tagged };
+auto tagged(state s) -> state { return s == s_empty ? s_empty_tagged : s == s_full ? s_full_tagged : s; }
+auto untagged(state s) -> state { return s == s_empty_tagged ? s_empty : s == s_full_tagged ? s_full : s; }
 auto not_stuck(state s) -> bool { return (s == s_empty) || (s == s_full) || (s == s_empty_tagged); }
 
 template <> auto vb::to_Color(state t) -> Color {
@@ -33,8 +33,7 @@ public:
     }
 
     void clean() {
-        for (const auto &z : coo_range(size))
-            if ((at(z) == s_empty) || (at(z) == s_full)) at(z) = tagged(at(z));
+        for (const auto &z : coo_range(size)) at(z) = tagged(at(z));
 
         for (bool dirty = true; dirty;) {
             dirty = false;
@@ -66,18 +65,16 @@ public:
 
     void run() {
         for (size_t t = 1;; ++t) {
-            if ((t % (size.x * size.y)) == 0) {
-                if (tasym) clean();
-                if (stats) {
-                    int na = 0;
-                    for (const auto &z : coo_range(size))
-                        if (at(z) == s_full) ++na;
-                    if (na == 0) return;
-                    fmt::print("{} {} {} {}\n", t / (size.x * size.y), na, flow.x, double(flow.x) / na);
-                    flow = {0, 0};
-                }
-            }
             move();
+            if ((t % (size.x * size.y)) != 0) continue;
+            if (tasym) clean();
+            if (!stats) continue;
+            int na = 0;
+            for (const auto &z : coo_range(size))
+                if (at(z) == s_full) ++na;
+            if (na == 0) return;
+            fmt::print("{} {} {} {}\n", t / (size.x * size.y), na, flow.x, double(flow.x) / na);
+            flow = {0, 0};
         }
     }
 };
