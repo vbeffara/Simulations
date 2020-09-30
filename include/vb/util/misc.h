@@ -8,7 +8,7 @@ namespace vb {
     template <typename F> void timing(Hub &H, const std::string &label, const F &f) {
         double t      = time();
         auto   result = f();
-        H.output(label, "", fmt::format("time = {:<10} ans = {}", time() - t, result), false);
+        H.output(label, "", fmt::format("time = {:>7.3f} ans = {}", time() - t, result), false);
     }
 
     template <typename T> T check(T x, T y) {

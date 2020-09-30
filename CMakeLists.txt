@@ -15,16 +15,16 @@ conan_add_remote(NAME bincrafters URL https://api.bintray.com/conan/bincrafters/
 conan_add_remote(NAME vb URL https://api.bintray.com/conan/vbeffara/misc)
 set(CONAN_SYSTEM_INCLUDES ON)
 conan_cmake_run(REQUIRES
-				boost/1.72.0
+				boost/1.74.0
 				cairo/1.17.2@bincrafters/stable
 				Catch2/2.11.1@catchorg/stable
-				docopt.cpp/0.6.2
+				docopt.cpp/0.6.3
 				fftw/3.3.8
 				gsl_microsoft/2.0.0@bincrafters/stable
 				mpc/1.1.0@bincrafters/stable
-				mpfr/4.0.2
-				spdlog/1.5.0
-				tbb/2020.1
+				mpfr/4.1.0
+				spdlog/1.8.0
+				tbb/2020.2
 				yaml-cpp/0.6.3
 
 				fltk/1.3.5-3@vbeffara/stable
