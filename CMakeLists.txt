@@ -11,25 +11,25 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 include(${PROJECT_SOURCE_DIR}/conan.cmake)
-conan_add_remote(NAME bincrafters URL https://api.bintray.com/conan/bincrafters/public-conan)
 conan_add_remote(NAME vb URL https://api.bintray.com/conan/vbeffara/misc)
 set(CONAN_SYSTEM_INCLUDES ON)
 conan_cmake_run(REQUIRES
-				boost/1.74.0
-				cairo/1.17.2@bincrafters/stable
-				Catch2/2.11.1@catchorg/stable
+				boost/1.75.0
+				cairo/1.17.4
+				catch2/2.13.6
 				docopt.cpp/0.6.3
-				fftw/3.3.8
-				gsl_microsoft/2.0.0@bincrafters/stable
-				mpc/1.1.0@bincrafters/stable
+				eigen/3.3.9
+				fftw/3.3.9
+				ms-gsl/3.1.0
+				mpc/1.2.0
 				mpfr/4.1.0
-				spdlog/1.8.0
-				tbb/2020.2
+				pkgconf/1.7.3
+				spdlog/1.8.5
+				tbb/2020.3
 				yaml-cpp/0.6.3
 
 				fltk/1.3.5-3@vbeffara/stable
 				fplll/5.3.2-1@vbeffara/stable
-				libcmaes/0.9.5-7514782ebe-2@vbeffara/stable
                 BASIC_SETUP NO_OUTPUT_DIRS KEEP_RPATHS BUILD missing)
 
 add_compile_options(-fdiagnostics-color=always -pedantic -Wall -Wextra -Wshadow

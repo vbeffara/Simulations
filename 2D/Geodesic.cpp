@@ -13,7 +13,7 @@ using namespace std;
 
 class Info {
 public:
-    Info(coo _z, coo _n, double _d, double _f) : z(_z), next(_n), d(_d), f(_f) {}
+    Info(ucoo _z, ucoo _n, double _d, double _f) : z(_z), next(_n), d(_d), f(_f) {}
     auto operator<(const Info &o) const -> bool { return d > o.d; }
 
     ucoo   z, next;
@@ -43,7 +43,7 @@ public:
         for (auto z : coo_range(size)) {
             put(z, Grey(uint8_t(255 * (I.at(z).f - minf) / (maxf - minf))));
             if (H['c']) put(z, Indexed(int(at(z)) > 128 ? 1 : 2));
-            I.at(z) = Info(coo(z), coo(z), numeric_limits<double>::infinity(), exp(g * I.at(z).f));
+            I.at(z) = Info(z, z, numeric_limits<double>::infinity(), exp(g * I.at(z).f));
         }
     };
 
@@ -78,7 +78,7 @@ public:
     void fill_free(int n0 = 0) {
         auto                    in = fftw_alloc_complex(size_t(size.x * size.y)), out = fftw_alloc_complex(size_t(size.x * size.y));
         fftw_plan               p = fftw_plan_dft_2d(int(size.x), int(size.y), in, out, FFTW_FORWARD, 1U << 6U /* FFTW_ESTIMATE */);
-        gsl::span<fftw_complex> in_{in, int64_t(size.x * size.y)}, out_{out, int64_t(size.x * size.y)};
+        gsl::span<fftw_complex> in_{in, size.x * size.y}, out_{out, size.x * size.y};
 
         vector<double> sinarrayi(size_t(size.x)), sinarrayj(size_t(size.y));
         for (size_t i = 0; i < size.x; ++i) sinarrayi[i] = sin(M_PI * double(i) / double(size.x));
@@ -108,7 +108,7 @@ public:
 
     void fill_radial(const function<double(double)> &f, double l) {
         auto d  = fftw_alloc_complex(size.x * size.y);
-        auto d_ = gsl::span<fftw_complex>{d, int64_t(size.x * size.y)};
+        auto d_ = gsl::span<fftw_complex>{d, size.x * size.y};
         auto p1 = fftw_plan_dft_2d(int(size.x), int(size.y), d, d, FFTW_FORWARD, 1U << 6U /* FFTW_ESTIMATE */);
         auto p2 = fftw_plan_dft_2d(int(size.x), int(size.y), d, d, FFTW_BACKWARD, 1U << 6U /* FFTW_ESTIMATE */);
 
