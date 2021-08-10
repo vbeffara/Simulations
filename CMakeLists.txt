@@ -24,7 +24,6 @@ conan_cmake_run(REQUIRES
 				pkgconf/1.7.4
                 range-v3/0.11.0
 				spdlog/1.8.5
-				yaml-cpp/0.6.3
                 BASIC_SETUP NO_OUTPUT_DIRS KEEP_RPATHS BUILD missing)
 
 add_compile_options(-fdiagnostics-color=always -pedantic -Wall -Wextra -Wshadow
@@ -56,7 +55,8 @@ pkg_search_module(CAIRO REQUIRED cairo)
 pkg_search_module(FPLLL REQUIRED fplll)
 pkg_search_module(PNG REQUIRED libpng)
 pkg_search_module(TBB REQUIRED tbb)
-include_directories(SYSTEM ${CAIRO_INCLUDE_DIRS} ${FPLLL_INCLUDE_DIRS} ${LIBPNG_INCLUDE_DIRS} ${TBB_INCLUDE_DIRS})
+pkg_search_module(YAMLCPP REQUIRED yaml-cpp)
+include_directories(SYSTEM ${CAIRO_INCLUDE_DIRS} ${FPLLL_INCLUDE_DIRS} ${LIBPNG_INCLUDE_DIRS} ${TBB_INCLUDE_DIRS} ${YAMLCPP_INCLUDE_DIRS})
 
 include(FindFLTK)
 if (${FLTK_FOUND})
@@ -76,7 +76,7 @@ include_directories ("${PROJECT_SOURCE_DIR}/include")
 
 file (GLOB vb_sources CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/libvb/*.cpp)
 add_library (vb SHARED ${vb_sources})
-target_link_libraries (vb ${CONAN_LIBS} ${CAIRO_LIBRARIES} ${FLTK_LIBRARIES} ${FPLLL_LIBRARIES} ${PNG_LIBRARIES} ${TBB_LIBRARIES})
+target_link_libraries (vb ${CONAN_LIBS} ${CAIRO_LIBRARIES} ${FLTK_LIBRARIES} ${FPLLL_LIBRARIES} ${PNG_LIBRARIES} ${TBB_LIBRARIES} ${YAMLCPP_LIBRARIES})
 link_libraries(vb)
 
 execute_process(COMMAND "git" describe --always --abbrev=40 WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" OUTPUT_VARIABLE GIT_SHA1 OUTPUT_STRIP_TRAILING_WHITESPACE)
