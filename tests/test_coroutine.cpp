@@ -4,15 +4,13 @@
 
 using namespace std;
 using namespace vb;
+namespace rv = ranges::views;
 
 auto good(const Permutation &p) -> bool { return p[0] == 2; }
 auto sec(const Permutation &p) { return p[2]; }
 
 auto main(int argc, char **argv) -> int {
     Hub  H("Testing coroutines", argc, argv, "n=5");
-    auto S    = permutations(H['n']);
-    auto SS   = S | ranges::views::filter(good);
-    auto SSS  = SS | ranges::views::transform(sec);
-    auto SSSS = SSS | ranges::views::take(8);
-    for (const auto &p : SSSS) spdlog::info("{}", p);
+    for (const auto &p : permutations(H['n']) | rv::filter(good) | rv::transform(sec) | rv::take(8))
+        spdlog::info("{}", p);
 }
