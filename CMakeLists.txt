@@ -11,7 +11,6 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 include(${PROJECT_SOURCE_DIR}/conan.cmake)
-conan_add_remote(NAME vb URL https://api.bintray.com/conan/vbeffara/misc)
 set(CONAN_SYSTEM_INCLUDES ON)
 conan_cmake_run(REQUIRES
 				boost/1.76.0
@@ -28,8 +27,6 @@ conan_cmake_run(REQUIRES
 				spdlog/1.8.5
 				tbb/2020.3
 				yaml-cpp/0.6.3
-
-				fplll/5.3.2-1@vbeffara/stable
                 BASIC_SETUP NO_OUTPUT_DIRS KEEP_RPATHS BUILD missing)
 
 add_compile_options(-fdiagnostics-color=always -pedantic -Wall -Wextra -Wshadow
@@ -76,6 +73,10 @@ else()
     message(FATAL_ERROR "FLTK not found")
 endif()
 
+include(FindPkgConfig)
+pkg_search_module(FPLLL REQUIRED fplll)
+include_directories(SYSTEM ${FPLLL_INCLUDE_DIRS})
+
 if (${COV})
 	add_compile_options(-g -O0 --coverage -fprofile-arcs -ftest-coverage)
 	add_link_options(--coverage -fprofile-arcs -ftest-coverage)
@@ -87,7 +88,7 @@ include_directories ("${PROJECT_SOURCE_DIR}/include")
 
 file (GLOB vb_sources CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/libvb/*.cpp)
 add_library (vb SHARED ${vb_sources})
-target_link_libraries (vb ${CONAN_LIBS} ${FLTK_LIBRARIES})
+target_link_libraries (vb ${CONAN_LIBS} ${FLTK_LIBRARIES} ${FPLLL_LIBRARIES})
 link_libraries(vb)
 
 execute_process(COMMAND "git" describe --always --abbrev=40 WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" OUTPUT_VARIABLE GIT_SHA1 OUTPUT_STRIP_TRAILING_WHITESPACE)
