@@ -14,7 +14,7 @@ include(${PROJECT_SOURCE_DIR}/conan.cmake)
 conan_add_remote(NAME vb URL https://api.bintray.com/conan/vbeffara/misc)
 set(CONAN_SYSTEM_INCLUDES ON)
 conan_cmake_run(REQUIRES
-				boost/1.75.0
+				boost/1.76.0
 				cairo/1.17.4
 				catch2/2.13.6
 				docopt.cpp/0.6.3
