@@ -109,22 +109,17 @@ namespace vb {
     }
 
     auto permutations(size_t n) -> Stream<Permutation> {
-        return Stream<Permutation>([n](Sink<Permutation> &yield) {
-            Permutation p(n);
-            do
-                yield(Permutation(p));
-            while (next_permutation(p.begin(), p.end()));
-        });
+        Permutation p(n);
+        do co_yield(Permutation(p));
+        while (next_permutation(p.begin(), p.end()));
     }
 
     auto permutations(const std::vector<size_t> &s) -> Stream<Permutation> {
-        return Stream<Permutation>([s](Sink<Permutation> &yield) {
-            size_t n = 0;
-            for (auto i : s) n += i;
-            if (n == 0) {
-                yield({{}});
-                return;
-            }
+        size_t n = 0;
+        for (auto i : s) n += i;
+        if (n == 0) {
+            co_yield(Permutation{{}});
+        } else {
             size_t L = 0;
             for (size_t i = 0; i < s.size(); ++i)
                 if (s[i] > L) {
@@ -139,15 +134,15 @@ namespace vb {
                         for (auto i : cc) missed[i] = 0;
                         for (size_t i = 0, j = 0; j < n; ++j)
                             if (missed[j] != 0) missed[i++] = missed[j];
-                        for (auto &p : permutations(ns)) {
+                        for (const auto &p : permutations(ns)) {
                             auto out = p.cycles();
                             for (auto &c : out)
                                 for (auto &i : c) i = missed[i];
                             out.push_back(cc);
-                            yield(out);
+                            co_yield(out);
                         }
                     }
                 }
-        });
+        }
     }
 } // namespace vb

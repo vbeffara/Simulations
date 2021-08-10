@@ -13,32 +13,30 @@ auto triangulations(unsigned n) -> Stream<Hypermap> {
     Permutation    phi(phic);
     unsigned       np = n / 6;
     vector<size_t> a(n / 2 - np, 2);
+    std::vector<Hypermap> hs;
 
-    return Stream<Hypermap>([a, phi, n, np](Sink<Hypermap> &yield) {
-        std::vector<Hypermap> hs;
-        for (auto alph : permutations(a)) {
-            Permutation alpha(n);
-            for (unsigned i = 0; i + 2 * np < n; ++i) alpha[i] = alph[i];
-            for (unsigned i = 0; i < np; ++i) {
-                alpha[n - 2 * np + 2 * i]     = n - 2 * np + 2 * i + 1;
-                alpha[n - 2 * np + 2 * i + 1] = n - 2 * np + 2 * i;
-            }
-            if (!connected(phi, alpha)) continue;
-            Permutation sigma = (alpha * phi).inverse();
-            Hypermap    h(sigma, alpha, phi);
-            h.normalize();
-            bool done = false;
-            for (auto &hh : hs)
-                if (h == hh) {
-                    done = true;
-                    break;
-                }
-            if (!done) {
-                hs.push_back(h);
-                yield(h);
-            }
+    for (auto alph : permutations(a)) {
+        Permutation alpha(n);
+        for (unsigned i = 0; i + 2 * np < n; ++i) alpha[i] = alph[i];
+        for (unsigned i = 0; i < np; ++i) {
+            alpha[n - 2 * np + 2 * i]     = n - 2 * np + 2 * i + 1;
+            alpha[n - 2 * np + 2 * i + 1] = n - 2 * np + 2 * i;
         }
-    });
+        if (!connected(phi, alpha)) continue;
+        Permutation sigma = (alpha * phi).inverse();
+        Hypermap    h(sigma, alpha, phi);
+        h.normalize();
+        bool done = false;
+        for (auto &hh : hs)
+            if (h == hh) {
+                done = true;
+                break;
+            }
+        if (!done) {
+            hs.push_back(h);
+            co_yield(h);
+        }
+    }
 }
 
 auto main(int argc, char **argv) -> int {
@@ -46,7 +44,7 @@ auto main(int argc, char **argv) -> int {
     unsigned s = H['s'], g = 0, a = 6 * (s - 2), d = H['d'];
 
     int nb = 0;
-    for (Hypermap &M : triangulations(a)) {
+    for (const Hypermap &M : triangulations(a)) {
         if (M.genus() != g) continue;
         bool good = true;
         for (auto &c : M.sigma.cycles())
