@@ -8,15 +8,6 @@ namespace vb {
     Stream<std::vector<size_t>> tuples(size_t k, size_t n);         // Ordered, distinct k-tuples in [0,n-1]
     Stream<std::vector<size_t>> cycles(size_t k, size_t n);         // k-tuples up to cyclic permutation
 
-    template <typename T> size_t size(Stream<T> &&S) {
-        size_t out = 0;
-        for (const auto &i : S) {
-            (void)i;
-            out++;
-        }
-        return out;
-    }
-
     template <typename T> auto take(size_t n, Stream<T> &&S) -> Stream<T> {
         if (n > 0) {
             for (const auto &x : S) {
