@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.0)
+cmake_minimum_required (VERSION 3.10)
 project (Simulations CXX)
 
 set (CMAKE_CXX_STANDARD 20)
@@ -14,7 +14,6 @@ include(${PROJECT_SOURCE_DIR}/conan.cmake)
 set(CONAN_SYSTEM_INCLUDES ON)
 conan_cmake_run(REQUIRES
 				boost/1.76.0
-				cairo/1.17.4
 				catch2/2.13.6
 				docopt.cpp/0.6.3
 				eigen/3.3.9
@@ -25,7 +24,6 @@ conan_cmake_run(REQUIRES
 				pkgconf/1.7.4
                 range-v3/0.11.0
 				spdlog/1.8.5
-				tbb/2020.3
 				yaml-cpp/0.6.3
                 BASIC_SETUP NO_OUTPUT_DIRS KEEP_RPATHS BUILD missing)
 
@@ -53,18 +51,12 @@ if (${COROUTINES_TS})
 	add_compile_options(-fcoroutines-ts)
 endif ()
 
-include(CheckIncludeFileCXX)
-set (CMAKE_REQUIRED_INCLUDES ${CONAN_INCLUDE_DIRS_TBB}) 
-set (CMAKE_REQUIRED_FLAGS "-L${CONAN_LIB_DIRS_TBB}")
-set (CMAKE_REQUIRED_LIBRARIES ${CONAN_LIBS_TBB})
-cmake_policy(SET CMP0075 NEW)
-CHECK_INCLUDE_FILE_CXX(execution EXECUTION)
-if (${EXECUTION})
-	message("Using native <execution> header")
-	add_compile_options(-DEXECUTION)
-else()
-	message("Using parallel STL from Conan")
-endif()
+include(FindPkgConfig)
+pkg_search_module(CAIRO REQUIRED cairo)
+pkg_search_module(FPLLL REQUIRED fplll)
+pkg_search_module(PNG REQUIRED libpng)
+pkg_search_module(TBB REQUIRED tbb)
+include_directories(SYSTEM ${CAIRO_INCLUDE_DIRS} ${FPLLL_INCLUDE_DIRS} ${LIBPNG_INCLUDE_DIRS} ${TBB_INCLUDE_DIRS})
 
 include(FindFLTK)
 if (${FLTK_FOUND})
@@ -72,10 +64,6 @@ if (${FLTK_FOUND})
 else()
     message(FATAL_ERROR "FLTK not found")
 endif()
-
-include(FindPkgConfig)
-pkg_search_module(FPLLL REQUIRED fplll)
-include_directories(SYSTEM ${FPLLL_INCLUDE_DIRS})
 
 if (${COV})
 	add_compile_options(-g -O0 --coverage -fprofile-arcs -ftest-coverage)
@@ -88,16 +76,13 @@ include_directories ("${PROJECT_SOURCE_DIR}/include")
 
 file (GLOB vb_sources CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/libvb/*.cpp)
 add_library (vb SHARED ${vb_sources})
-target_link_libraries (vb ${CONAN_LIBS} ${FLTK_LIBRARIES} ${FPLLL_LIBRARIES})
+target_link_libraries (vb ${CONAN_LIBS} ${CAIRO_LIBRARIES} ${FLTK_LIBRARIES} ${FPLLL_LIBRARIES} ${PNG_LIBRARIES} ${TBB_LIBRARIES})
 link_libraries(vb)
 
 execute_process(COMMAND "git" describe --always --abbrev=40 WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" OUTPUT_VARIABLE GIT_SHA1 OUTPUT_STRIP_TRAILING_WHITESPACE)
 set_source_files_properties(libvb/version.cpp PROPERTIES COMPILE_FLAGS -DGIT_SHA1='"${GIT_SHA1}"')
 
 set (DIRS tests 1D 2D 3D)
-if (${PLAYGROUND})
-	set (DIRS ${DIRS} playground)
-endif ()
 foreach (dir ${DIRS})
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${dir})
 	file (GLOB src CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/${dir}/*.cpp)

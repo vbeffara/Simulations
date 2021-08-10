@@ -6,7 +6,7 @@
 #include <tbb/task_group.h>
 #include <vb/util/misc.h>
 
-#ifdef EXECUTION
+#if __has_include(<execution>)
 #include <execution>
 #else
 #include <pstl/algorithm>
