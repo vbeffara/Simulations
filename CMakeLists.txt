@@ -23,7 +23,8 @@ conan_cmake_run(REQUIRES
 				ms-gsl/3.1.0
 				mpc/1.2.0
 				mpfr/4.1.0
-				pkgconf/1.7.3
+				pkgconf/1.7.4
+                range-v3/0.11.0
 				spdlog/1.8.5
 				tbb/2020.3
 				yaml-cpp/0.6.3
