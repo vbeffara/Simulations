@@ -13,7 +13,6 @@ endif()
 include(${PROJECT_SOURCE_DIR}/conan.cmake)
 set(CONAN_SYSTEM_INCLUDES ON)
 conan_cmake_run(REQUIRES
-				boost/1.76.0
 				catch2/2.13.6
 				docopt.cpp/0.6.3
 				eigen/3.3.9
@@ -50,6 +49,9 @@ if (${COROUTINES_TS})
 	add_compile_options(-fcoroutines-ts)
 endif ()
 
+include(FindBoost)
+find_package(Boost REQUIRED COMPONENTS chrono)
+
 include(FindPkgConfig)
 pkg_search_module(CAIRO REQUIRED cairo)
 pkg_search_module(FPLLL REQUIRED fplll)
@@ -76,7 +78,7 @@ include_directories ("${PROJECT_SOURCE_DIR}/include")
 
 file (GLOB vb_sources CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/libvb/*.cpp)
 add_library (vb SHARED ${vb_sources})
-target_link_libraries (vb ${CONAN_LIBS} ${CAIRO_LIBRARIES} ${FLTK_LIBRARIES} ${FPLLL_LIBRARIES} ${PNG_LIBRARIES} ${TBB_LIBRARIES} ${YAMLCPP_LIBRARIES})
+target_link_libraries (vb ${CONAN_LIBS} ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${FLTK_LIBRARIES} ${FPLLL_LIBRARIES} ${PNG_LIBRARIES} ${TBB_LIBRARIES} ${YAMLCPP_LIBRARIES})
 link_libraries(vb)
 
 execute_process(COMMAND "git" describe --always --abbrev=40 WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" OUTPUT_VARIABLE GIT_SHA1 OUTPUT_STRIP_TRAILING_WHITESPACE)
