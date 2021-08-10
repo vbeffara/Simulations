@@ -29,7 +29,6 @@ conan_cmake_run(REQUIRES
 				tbb/2020.3
 				yaml-cpp/0.6.3
 
-				fltk/1.3.5-3@vbeffara/stable
 				fplll/5.3.2-1@vbeffara/stable
                 BASIC_SETUP NO_OUTPUT_DIRS KEEP_RPATHS BUILD missing)
 
@@ -70,6 +69,13 @@ else()
 	message("Using parallel STL from Conan")
 endif()
 
+include(FindFLTK)
+if (${FLTK_FOUND})
+    include_directories(SYSTEM ${FLTK_INCLUDE_DIR})
+else()
+    message(FATAL_ERROR "FLTK not found")
+endif()
+
 if (${COV})
 	add_compile_options(-g -O0 --coverage -fprofile-arcs -ftest-coverage)
 	add_link_options(--coverage -fprofile-arcs -ftest-coverage)
@@ -81,7 +87,7 @@ include_directories ("${PROJECT_SOURCE_DIR}/include")
 
 file (GLOB vb_sources CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/libvb/*.cpp)
 add_library (vb SHARED ${vb_sources})
-target_link_libraries (vb ${CONAN_LIBS})
+target_link_libraries (vb ${CONAN_LIBS} ${FLTK_LIBRARIES})
 link_libraries(vb)
 
 execute_process(COMMAND "git" describe --always --abbrev=40 WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" OUTPUT_VARIABLE GIT_SHA1 OUTPUT_STRIP_TRAILING_WHITESPACE)
