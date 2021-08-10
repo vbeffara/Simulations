@@ -13,6 +13,6 @@ auto main(int argc, char **argv) -> int {
     auto S    = permutations(H['n']);
     auto SS   = filter(good, move(S));
     auto SSS  = fmap(sec, move(SS));
-    auto SSSS = take(8, move(SSS));
+    auto SSSS = SSS | ranges::views::take(8);
     for (const auto &p : SSSS) spdlog::info("{}", p);
 }

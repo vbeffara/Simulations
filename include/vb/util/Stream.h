@@ -1,4 +1,5 @@
 #pragma once
+#include <range/v3/all.hpp>
 #include <range/v3/experimental/utility/generator.hpp>
 
 namespace vb {
@@ -7,16 +8,6 @@ namespace vb {
     Stream<std::vector<size_t>> partitions(size_t n, size_t m = 1); // Partitions of n with piece size at least m
     Stream<std::vector<size_t>> tuples(size_t k, size_t n);         // Ordered, distinct k-tuples in [0,n-1]
     Stream<std::vector<size_t>> cycles(size_t k, size_t n);         // k-tuples up to cyclic permutation
-
-    template <typename T> auto take(size_t n, Stream<T> &&S) -> Stream<T> {
-        if (n > 0) {
-            for (const auto &x : S) {
-                co_yield(x);
-                --n;
-                if (n == 0) break;
-            }
-        }
-    }
 
     template <typename F, typename T> auto filter(F f, Stream<T> &&S) -> Stream<T> {
         for (const auto &x : S)
