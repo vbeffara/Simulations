@@ -1,29 +1,31 @@
 cmake_minimum_required (VERSION 3.10)
 project (Simulations CXX)
 
+include(CheckCXXCompilerFlag)
+include(FindBoost)
+include(FindFLTK)
+include(FindPkgConfig)
+include(${PROJECT_SOURCE_DIR}/conan.cmake)
+
 set (CMAKE_CXX_STANDARD 20)
 set (CMAKE_EXPORT_COMPILE_COMMANDS 1)
+set (CONAN_SYSTEM_INCLUDES ON)
 
 if(NOT CMAKE_BUILD_TYPE)
   message(STATUS "Setting build type to 'Release' as none was specified.")
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
-include(${PROJECT_SOURCE_DIR}/conan.cmake)
-set(CONAN_SYSTEM_INCLUDES ON)
 conan_cmake_run(REQUIRES
 				docopt.cpp/0.6.3
 				ms-gsl/3.1.0
 				mpc/1.2.0
-				mpfr/4.1.0
-				pkgconf/1.7.4
                 range-v3/0.11.0
 				spdlog/1.8.5
                 BASIC_SETUP NO_OUTPUT_DIRS KEEP_RPATHS BUILD missing)
 
-add_compile_options(-fdiagnostics-color=always -pedantic -Wall -Wextra -Wshadow
-                    -Wpedantic -Wold-style-cast -Wunused -Wconversion
-                    -Wsign-conversion -Wnull-dereference)
+add_compile_options(-fdiagnostics-color=always -pedantic -Wall -Wextra -Wshadow -Wpedantic
+                    -Wold-style-cast -Wunused -Wconversion -Wsign-conversion -Wnull-dereference)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   message("-- Debug mode")
@@ -39,39 +41,29 @@ if(CCACHE)
   set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE})
 endif()
 
-include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG(-fcoroutines-ts COROUTINES_TS)
 if (${COROUTINES_TS})
 	add_compile_options(-fcoroutines-ts)
 endif ()
 
-include(FindBoost)
 find_package(Boost REQUIRED COMPONENTS chrono)
-
-file (GLOB vb_sources CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/libvb/*.cpp)
-add_library (vb SHARED ${vb_sources})
-link_libraries(vb)
-
-include(FindPkgConfig)
 
 function(add_pkg)
     foreach(pkg ${ARGV})
         pkg_search_module(${pkg} REQUIRED ${pkg})
         include_directories(SYSTEM ${${pkg}_INCLUDE_DIRS})
-        target_link_directories(vb PRIVATE ${${pkg}_LIBRARY_DIRS})
-        target_link_libraries(vb ${${pkg}_LIBRARIES})
+        link_directories(${${pkg}_LIBRARY_DIRS})
+        link_libraries(${${pkg}_LIBRARIES})
     endforeach()
 endfunction()
 
-add_pkg(cairo catch2 eigen3 fftw3 tbb)
-pkg_search_module(FPLLL REQUIRED fplll)
-pkg_search_module(PNG REQUIRED libpng)
-pkg_search_module(YAMLCPP REQUIRED yaml-cpp)
-include_directories(SYSTEM ${FPLLL_INCLUDE_DIRS} ${LIBPNG_INCLUDE_DIRS} ${YAMLCPP_INCLUDE_DIRS})
-target_link_directories(vb PRIVATE ${FPLLL_LIBRARY_DIRS} ${PNG_LIBRARY_DIRS} ${YAMLCPP_LIBRARY_DIRS})
-target_link_libraries(vb ${CONAN_LIBS} ${Boost_LIBRARIES} ${FPLLL_LIBRARIES} ${PNG_LIBRARIES} ${YAMLCPP_LIBRARIES})
+add_pkg(cairo catch2 eigen3 fftw3 fplll libpng tbb yaml-cpp)
 
-include(FindFLTK)
+file (GLOB vb_sources CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/libvb/*.cpp)
+add_library (vb SHARED ${vb_sources})
+target_link_libraries(vb ${CONAN_LIBS} ${Boost_LIBRARIES})
+link_libraries(vb)
+
 if (${FLTK_FOUND})
     include_directories(SYSTEM ${FLTK_INCLUDE_DIR})
     target_link_libraries(vb ${FLTK_LIBRARIES})
@@ -91,9 +83,8 @@ include_directories ("${PROJECT_SOURCE_DIR}/include")
 execute_process(COMMAND "git" describe --always --abbrev=40 WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" OUTPUT_VARIABLE GIT_SHA1 OUTPUT_STRIP_TRAILING_WHITESPACE)
 set_source_files_properties(libvb/version.cpp PROPERTIES COMPILE_FLAGS -DGIT_SHA1='"${GIT_SHA1}"')
 
-set (DIRS tests 1D 2D 3D)
-foreach (dir ${DIRS})
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${dir})
+foreach (dir tests 1D 2D 3D)
+    set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${dir})
 	file (GLOB src CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/${dir}/*.cpp)
 	foreach (f ${src})
 		get_filename_component (e ${f} NAME_WE)
