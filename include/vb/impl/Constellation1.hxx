@@ -46,12 +46,12 @@ namespace vb {
         dy = int(round(T(imag(szp) / imag(p[0]))));
         dx = int(round(T(real(szp - T(dy) * p[0]))));
         for (auto &zd : f) {
-            auto ddx = int(double(dx) / zd.d);
+            auto ddx = int(double(dx) / double(zd.d));
             if (ddx != 0) {
                 zd.z += T(ddx);
                 dx -= int(zd.d) * ddx;
             }
-            auto ddy = int(double(dy) / zd.d);
+            auto ddy = int(double(dy) / double(zd.d));
             if (ddy != 0) {
                 zd.z += T(ddy) * p[0];
                 dy -= int(zd.d) * ddy;

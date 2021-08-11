@@ -53,7 +53,7 @@ add_pkg(cairo catch2 docopt eigen3 fftw3 fmt fplll libpng spdlog tbb yaml-cpp)
 
 file (GLOB vb_sources CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/libvb/*.cpp)
 add_library (vb SHARED ${vb_sources})
-target_link_libraries(vb ${CONAN_LIBS} ${Boost_LIBRARIES} ${MPC})
+target_link_libraries(vb ${Boost_LIBRARIES} ${MPC})
 link_libraries(vb)
 
 if (NOT ${FLTK_FOUND})

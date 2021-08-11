@@ -1,6 +1,7 @@
 #include <vb/Bitmap.h>
 #include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
+#include <vb/util/misc.h>
 
 using namespace vb;
 using namespace std;
@@ -10,7 +11,7 @@ gsl::span<Color>     C{CC};
 
 class TASEP : public vector<int> {
 public:
-    explicit TASEP(const Hub &H) : vector<int>(H['n'], 0), p(size(), 1) {
+    explicit TASEP(const Hub &H) : vector<int>(size_t(H['n']), 0), p(size(), 1) {
         for (int &e : *this) {
             e = prng.bernoulli(H['r']) ? 2 : 0;
             if (prng.bernoulli(H['d']) && (e == 2)) e = 1;
@@ -35,7 +36,7 @@ auto main(int argc, char **argv) -> int {
     for (size_t t = 0, u = 0;; ++t, ++u) {
         for (size_t j = 0; j < u; ++j)
             for (size_t i = 0; i < T.size(); ++i) T.step();
-        for (size_t i = 0; i < T.size(); ++i) I.put({i, t % size_t(I.size.y)}, C[T[i]]);
+        for (size_t i = 0; i < T.size(); ++i) I.put({i, t % size_t(I.size.y)}, C[to_unsigned(T[i])]);
         if (t == I.size.y - 1) I.pause();
     }
 }

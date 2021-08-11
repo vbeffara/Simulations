@@ -24,7 +24,7 @@ namespace vb {
             return at(z);
         }
 
-        void fill(ucoo z, T c, int adj = 4);
+        void fill(ucoo z, T c, size_t adj = 4);
 
     private:
         T dflt; ///< The default value.
@@ -33,18 +33,18 @@ namespace vb {
         void paint() override {
             size_t           ppp = pixel_size().x / size.x;
             gsl::span<Color> stage(static_cast<Color *>(static_cast<void *>(cairo_image_surface_get_data(surface))),
-                                   gsl::index(ppp * size.x + stride * (ppp * size.y - 1)));
+                                   ppp * size.x + stride * (ppp * size.y - 1));
 
             for (const auto &z : coo_range(size)) {
                 for (const auto &shift : coo_range(ucoo{ppp, ppp}))
-                    stage[gsl::index(ppp * z.x + shift.x + stride * (ppp * z.y + shift.y))] = to_Color(at(z));
+                    stage[ppp * z.x + shift.x + stride * (ppp * z.y + shift.y)] = to_Color(at(z));
             }
         }
     };
 
     template <typename T> Bitmap<T>::Bitmap(const std::string &s, ucoo size, T d) : Picture(s, size), Array<T>(size, d), dflt(d) {}
 
-    template <typename T> void Bitmap<T>::fill(ucoo z, T c, int adj) {
+    template <typename T> void Bitmap<T>::fill(ucoo z, T c, size_t adj) {
         T in = at(z);
         if (in == c) return;
         std::vector<ucoo> xy;
@@ -54,7 +54,7 @@ namespace vb {
         while (!xy.empty()) {
             auto ij = xy.back();
             xy.pop_back();
-            for (int d = 0; d < adj; ++d) {
+            for (size_t d = 0; d < adj; ++d) {
                 auto nij = ij + dz[d];
                 if (fits(nij) && (at(nij) == in)) {
                     xy.push_back(nij);
