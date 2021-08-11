@@ -1,27 +1,18 @@
-cmake_minimum_required (VERSION 3.10)
+cmake_minimum_required (VERSION 3.18)
 project (Simulations CXX)
 
 include(CheckCXXCompilerFlag)
 include(FindBoost)
 include(FindFLTK)
 include(FindPkgConfig)
-include(${PROJECT_SOURCE_DIR}/conan.cmake)
 
-set (CMAKE_CXX_STANDARD 20)
+set (CMAKE_CXX_STANDARD 17)
 set (CMAKE_EXPORT_COMPILE_COMMANDS 1)
-set (CONAN_SYSTEM_INCLUDES ON)
 
 if(NOT CMAKE_BUILD_TYPE)
   message(STATUS "Setting build type to 'Release' as none was specified.")
   set(CMAKE_BUILD_TYPE Release)
 endif()
-
-conan_cmake_run(REQUIRES
-				ms-gsl/3.1.0
-				mpc/1.2.0
-                range-v3/0.11.0
-				spdlog/1.8.5
-                BASIC_SETUP NO_OUTPUT_DIRS KEEP_RPATHS BUILD missing)
 
 add_compile_options(-pedantic -Wall -Wextra -Wshadow -Wpedantic -Wold-style-cast -Wunused -Wconversion -Wsign-conversion -Wnull-dereference)
 
@@ -44,7 +35,10 @@ if (${COROUTINES_TS})
 	add_compile_options(-fcoroutines-ts)
 endif ()
 
+find_library(MPC mpc REQUIRED)
 find_package(Boost REQUIRED COMPONENTS chrono)
+find_package(Microsoft.GSL REQUIRED CONFIG)
+find_package(range-v3 REQUIRED)
 
 function(add_pkg)
     foreach(pkg ${ARGV})
@@ -55,19 +49,20 @@ function(add_pkg)
     endforeach()
 endfunction()
 
-add_pkg(cairo catch2 docopt eigen3 fftw3 fplll libpng tbb yaml-cpp)
+add_pkg(cairo catch2 docopt eigen3 fftw3 fmt fplll libpng spdlog tbb yaml-cpp)
 
 file (GLOB vb_sources CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/libvb/*.cpp)
 add_library (vb SHARED ${vb_sources})
-target_link_libraries(vb ${CONAN_LIBS} ${Boost_LIBRARIES})
+target_link_libraries(vb ${CONAN_LIBS} ${Boost_LIBRARIES} ${MPC})
 link_libraries(vb)
 
-if (${FLTK_FOUND})
-    include_directories(SYSTEM ${FLTK_INCLUDE_DIR})
-    target_link_libraries(vb ${FLTK_LIBRARIES})
-else()
+if (NOT ${FLTK_FOUND})
     message(FATAL_ERROR "FLTK not found")
 endif()
+
+include_directories(SYSTEM ${FLTK_INCLUDE_DIR})
+include_directories("${PROJECT_SOURCE_DIR}/include")
+target_link_libraries(vb ${FLTK_LIBRARIES})
 
 if (${COV})
 	add_compile_options(-g -O0 --coverage -fprofile-arcs -ftest-coverage)
@@ -75,8 +70,6 @@ if (${COV})
 else ()
 	add_compile_options(-O3 -DNDEBUG)
 endif ()
-link_directories ("/usr/local/lib")
-include_directories ("${PROJECT_SOURCE_DIR}/include")
 
 execute_process(COMMAND "git" describe --always --abbrev=40 WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" OUTPUT_VARIABLE GIT_SHA1 OUTPUT_STRIP_TRAILING_WHITESPACE)
 set_source_files_properties(libvb/version.cpp PROPERTIES COMPILE_FLAGS -DGIT_SHA1='"${GIT_SHA1}"')
