@@ -14,7 +14,6 @@ include(${PROJECT_SOURCE_DIR}/conan.cmake)
 set(CONAN_SYSTEM_INCLUDES ON)
 conan_cmake_run(REQUIRES
 				docopt.cpp/0.6.3
-				fftw/3.3.9
 				ms-gsl/3.1.0
 				mpc/1.2.0
 				mpfr/4.1.0
@@ -54,11 +53,12 @@ include(FindPkgConfig)
 pkg_search_module(CAIRO REQUIRED cairo)
 pkg_search_module(CATCH2 REQUIRED catch2)
 pkg_search_module(EIGEN REQUIRED eigen3)
+pkg_search_module(FFTW3 REQUIRED fftw3)
 pkg_search_module(FPLLL REQUIRED fplll)
 pkg_search_module(PNG REQUIRED libpng)
 pkg_search_module(TBB REQUIRED tbb)
 pkg_search_module(YAMLCPP REQUIRED yaml-cpp)
-include_directories(SYSTEM ${CAIRO_INCLUDE_DIRS} ${CATCH2_INCLUDE_DIRS} ${EIGEN_INCLUDE_DIRS} ${FPLLL_INCLUDE_DIRS} ${LIBPNG_INCLUDE_DIRS} ${TBB_INCLUDE_DIRS} ${YAMLCPP_INCLUDE_DIRS})
+include_directories(SYSTEM ${CAIRO_INCLUDE_DIRS} ${CATCH2_INCLUDE_DIRS} ${EIGEN_INCLUDE_DIRS} ${FFTW3_INCLUDE_DIRS} ${FPLLL_INCLUDE_DIRS} ${LIBPNG_INCLUDE_DIRS} ${TBB_INCLUDE_DIRS} ${YAMLCPP_INCLUDE_DIRS})
 
 include(FindFLTK)
 if (${FLTK_FOUND})
@@ -78,7 +78,7 @@ include_directories ("${PROJECT_SOURCE_DIR}/include")
 
 file (GLOB vb_sources CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/libvb/*.cpp)
 add_library (vb SHARED ${vb_sources})
-target_link_libraries (vb ${CONAN_LIBS} ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${FLTK_LIBRARIES} ${FPLLL_LIBRARIES} ${PNG_LIBRARIES} ${TBB_LIBRARIES} ${YAMLCPP_LIBRARIES})
+target_link_libraries (vb ${CONAN_LIBS} ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${FFTW3_LIBRARIES} ${FLTK_LIBRARIES} ${FPLLL_LIBRARIES} ${PNG_LIBRARIES} ${TBB_LIBRARIES} ${YAMLCPP_LIBRARIES})
 link_libraries(vb)
 
 execute_process(COMMAND "git" describe --always --abbrev=40 WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" OUTPUT_VARIABLE GIT_SHA1 OUTPUT_STRIP_TRAILING_WHITESPACE)
