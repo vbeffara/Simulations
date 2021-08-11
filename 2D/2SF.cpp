@@ -1,6 +1,7 @@
 #include <vb/Bitmap.h>
 #include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
+#include <vb/util/misc.h>
 
 using namespace vb;
 using namespace std;
@@ -41,9 +42,9 @@ public:
 
     void path(ucoo z, Type t = EMPH) {
         while (fits(z) && (at(z).t != t)) {
-            int d         = at(z).d;
+            auto d        = to_unsigned(at(z).d);
             at(z).t       = t;
-            at(z + dz[d]) = Point{t, d};
+            at(z + dz[d]) = Point{t, to_signed(d)};
             z += dz[d] * 2;
         }
     }
@@ -72,15 +73,15 @@ public:
                 for (size_t j = 0; j < n; ++j) {
                     coo z{2 * int(i), 1 + 2 * int(j)};
                     int s = 0, dd = -1;
-                    for (int d = 0; d < 4; ++d)
+                    for (unsigned d = 0; d < 4; ++d)
                         if (at(ucoo(z + dz[d])).t == VOID) {
                             ++s;
-                            dd = d;
+                            dd = to_signed(d);
                         }
                     if (s == 1) {
-                        at(ucoo(z))          = Point{DUAL, dd};
-                        at(ucoo(z + dz[dd])) = Point{DEDG, dd};
-                        dirty                = true;
+                        at(ucoo(z))                       = Point{DUAL, dd};
+                        at(ucoo(z + dz[to_unsigned(dd)])) = Point{DEDG, dd};
+                        dirty                             = true;
                     }
                 }
         }
