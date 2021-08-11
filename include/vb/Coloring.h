@@ -19,16 +19,16 @@ namespace vb {
         std::function<Color(cpx)> f;
 
     protected:
-        Color &at(coo z) const;
-        cpx    c_to_z(coo c) const;
+        Color &at(ucoo z) const;
+        cpx    c_to_z(ucoo c) const;
         double detail = 0;
 
     private:
-        Color aa_color(coo c, bool pre = false) const;
+        Color aa_color(ucoo c, bool pre = false) const;
 
-        void line(coo s, coo d, int64_t l);
-        void tessel_go(coo ul, coo lr);
-        void tessel(coo ul, coo lr);
+        void line(ucoo s, coo d, int64_t l);
+        void tessel_go(ucoo ul, ucoo lr);
+        void tessel(ucoo ul, ucoo lr);
         void do_aa();
 
         gsl::span<Color> stage;

@@ -22,8 +22,8 @@ namespace vb {
     void Sphere::show() {
         Coloring::show();
         for (const auto &ij : coo_range(pixel_size())) {
-            cpx    z = c_to_z(coo(ij));
-            Color &c = at(coo(ij));
+            cpx    z = c_to_z(ij);
+            Color &c = at(ij);
             double f = 1, x1 = real(z), x2 = imag(z), z2 = x1 * x1 + x2 * x2;
             if (z2 <= 1) {
                 double x3 = sqrt(1 - z2), y1 = .3, y2 = -.2, y3 = sqrt(1 - y1 * y1 - y2 * y2);

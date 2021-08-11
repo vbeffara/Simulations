@@ -1,9 +1,10 @@
 #include <gsl/gsl>
 #include <vb/util/CLP.h>
+#include <vb/util/misc.h>
 
 namespace vb {
     CLP::CLP(int argc, char **argv, std::string desc) : desc(move(desc)), title(this->desc + " |") {
-        for (const auto &a : gsl::span(argv, argc)) args.emplace_back(a);
+        for (const auto &a : gsl::span(argv, to_unsigned(argc))) args.emplace_back(a);
     }
 
     CLP::~CLP() {

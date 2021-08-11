@@ -1,6 +1,7 @@
 #include <tbb/parallel_for.h>
 #include <tbb/task_group.h>
 #include <vb/Coloring.h>
+#include <vb/util/misc.h>
 
 namespace vb {
     Coloring::Coloring(const std::string &s, cpx z1_, cpx z2_, size_t n, std::function<Color(cpx)> f_)
@@ -10,25 +11,25 @@ namespace vb {
     void Coloring::show() {
         Picture::show();
         auto sd      = static_cast<Color *>(static_cast<void *>(cairo_image_surface_get_data(surface)));
-        stage        = gsl::span<Color>(sd, int(stride) * pixel_h());
+        stage        = gsl::span<Color>(sd, stride * to_unsigned(pixel_h()));
         eps          = real(z2 - z1) / pixel_w();
         pixel_detail = int(detail / eps);
-        for (int i = 0; i < pixel_w(); ++i)
-            for (int j = 0; j < pixel_h(); ++j) at({i, j}) = BLACK;
-        run([&] { tessel({0, 0}, {pixel_w() - 1, pixel_h() - 1}); });
+        for (size_t i = 0; i < to_unsigned(pixel_w()); ++i)
+            for (size_t j = 0; j < to_unsigned(pixel_h()); ++j) at({i, j}) = BLACK;
+        run([&] { tessel({0, 0}, {to_unsigned(pixel_w()) - 1, to_unsigned(pixel_h()) - 1}); });
         if (aa) run([&]() { do_aa(); });
         update();
     }
 
     void Coloring::do_aa() {
-        int pw = pixel_w(), ph = pixel_h();
-        tbb::parallel_for(0, pw * ph, [=](int i) {
-            auto [x, y] = std::div(i, ph);
-            coo   c{x, y};
+        auto pw = to_unsigned(pixel_w()), ph = to_unsigned(pixel_h());
+        tbb::parallel_for(0, to_signed(pw * ph), [=](int i) {
+            auto [x, y] = std::div(i, to_signed(ph));
+            ucoo  c{to_unsigned(x), to_unsigned(y)};
             Color cc = at(c);
             bool  u  = true;
-            for (int d = 0; d < 4; ++d) {
-                coo c2 = c + dz[d];
+            for (size_t d = 0; d < 4; ++d) {
+                auto c2 = c + dz[d];
                 if ((c2.x >= 0) && (c2.x < pw) && (c2.y >= 0) && (c2.y < ph) && (at(c2) != cc)) u = false;
             }
             if (!(u || die)) at(c) = aa_color(c, true);
@@ -45,11 +46,11 @@ namespace vb {
         z2 += z;
     }
 
-    auto Coloring::c_to_z(coo c) const -> cpx { return z1 + cpx(double(c.x), double(c.y)) * eps; }
+    auto Coloring::c_to_z(ucoo c) const -> cpx { return z1 + cpx(double(c.x), double(c.y)) * eps; }
 
-    auto Coloring::at(coo z) const -> Color & { return stage[z.x + int64_t(stride) * z.y]; }
+    auto Coloring::at(ucoo z) const -> Color & { return stage[z.x + stride * z.y]; }
 
-    auto Coloring::aa_color(coo c, bool pre) const -> Color {
+    auto Coloring::aa_color(ucoo c, bool pre) const -> Color {
         cpx z = c_to_z(c);
         int r(0), g(0), b(0), a(0);
         if (pre) {
@@ -71,25 +72,25 @@ namespace vb {
         return Color(uint8_t(r / 9), uint8_t(g / 9), uint8_t(b / 9), uint8_t(a / 9));
     }
 
-    void Coloring::line(coo s, coo d, int64_t l) {
+    void Coloring::line(ucoo s, coo d, int64_t l) {
         tbb::parallel_for(int64_t(0), l, [=](int64_t i) {
-            coo c = s + d * i;
+            ucoo c = s + d * i;
             if (!die) at(c) = f(c_to_z(c));
         });
     }
 
-    void Coloring::tessel_go(coo ul, coo lr) {
+    void Coloring::tessel_go(ucoo ul, ucoo lr) {
         auto size = std::min(lr.x - ul.x, lr.y - ul.y);
         if (size <= 1) return;
 
-        coo   z    = ul;
+        auto  z    = ul;
         Color tmp  = at(ul);
         bool  mono = true;
         if ((pixel_detail != 0) && (size > pixel_detail)) mono = false;
-        for (; mono && (z != coo{lr.x, ul.y}); z += coo{1, 0}) mono = mono && (at(z) == tmp);
-        for (; mono && (z != coo{lr.x, lr.y}); z += coo{0, 1}) mono = mono && (at(z) == tmp);
-        for (; mono && (z != coo{ul.x, lr.y}); z += coo{-1, 0}) mono = mono && (at(z) == tmp);
-        for (; mono && (z != coo{ul.x, ul.y}); z += coo{0, -1}) mono = mono && (at(z) == tmp);
+        for (; mono && (z != ucoo{lr.x, ul.y}); z += coo{1, 0}) mono = mono && (at(z) == tmp);
+        for (; mono && (z != ucoo{lr.x, lr.y}); z += coo{0, 1}) mono = mono && (at(z) == tmp);
+        for (; mono && (z != ucoo{ul.x, lr.y}); z += coo{-1, 0}) mono = mono && (at(z) == tmp);
+        for (; mono && (z != ucoo{ul.x, ul.y}); z += coo{0, -1}) mono = mono && (at(z) == tmp);
 
         if (mono) {
             for (auto i = ul.x + 1; i < lr.x; ++i)
@@ -97,9 +98,9 @@ namespace vb {
             return;
         }
 
-        coo ul_ = (lr.x - ul.x > lr.y - ul.y) ? coo{(ul.x + lr.x) / 2, ul.y} : coo{ul.x, (ul.y + lr.y) / 2};
-        coo lr_ = (lr.x - ul.x > lr.y - ul.y) ? coo{(ul.x + lr.x) / 2, lr.y} : coo{lr.x, (ul.y + lr.y) / 2};
-        coo dd_ = (lr.x - ul.x > lr.y - ul.y) ? coo{0, 1} : coo{1, 0};
+        auto ul_ = (lr.x - ul.x > lr.y - ul.y) ? ucoo{(ul.x + lr.x) / 2, ul.y} : ucoo{ul.x, (ul.y + lr.y) / 2};
+        auto lr_ = (lr.x - ul.x > lr.y - ul.y) ? ucoo{(ul.x + lr.x) / 2, lr.y} : ucoo{lr.x, (ul.y + lr.y) / 2};
+        auto dd_ = (lr.x - ul.x > lr.y - ul.y) ? coo{0, 1} : coo{1, 0};
 
         line(ul_, dd_, size);
         tbb::task_group g;
@@ -108,7 +109,7 @@ namespace vb {
         g.wait();
     }
 
-    void Coloring::tessel(coo ul, coo lr) {
+    void Coloring::tessel(ucoo ul, ucoo lr) {
         tbb::task_group g;
         g.run([=]() { line(ul, {1, 0}, lr.x - ul.x); });
         g.run([=]() { line({lr.x, ul.y}, {0, 1}, lr.y - ul.y); });

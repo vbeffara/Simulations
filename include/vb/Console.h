@@ -13,8 +13,8 @@ namespace vb {
         template <typename T> struct Input : public Fl_Hor_Nice_Slider {
             Input(T t, T t1, T t2, std::function<void(T)> cb, int w, int h, Console *c)
                 : Fl_Hor_Nice_Slider(0, h, w, 30), f(move(cb)), c(c) {
-                bounds(t1, t2);
-                value(t);
+                bounds(static_cast<double>(t1), static_cast<double>(t2));
+                value(static_cast<double>(t));
                 callback(runinput<T>);
             }
             std::function<void(T)> f;

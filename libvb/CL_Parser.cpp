@@ -2,11 +2,12 @@
 #include <getopt.h>
 #include <gsl/gsl>
 #include <vb/util/CL_Parser.h>
+#include <vb/util/misc.h>
 
 namespace vb {
     CL_Parser::CL_Parser(std::string t, int argc, char **argv, std::string c) : title(move(t)), help("Syntax : " + c) {
         std::vector<std::string> args, fs;
-        for (const auto &a : gsl::span(argv, argc)) args.emplace_back(a);
+        for (const auto &a : gsl::span(argv, to_unsigned(argc))) args.emplace_back(a);
         boost::split(fs, args[0], boost::is_any_of(R"(/\)"));
 
         prog = fs.back();
