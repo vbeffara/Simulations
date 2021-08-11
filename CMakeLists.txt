@@ -17,21 +17,19 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 conan_cmake_run(REQUIRES
-				docopt.cpp/0.6.3
 				ms-gsl/3.1.0
 				mpc/1.2.0
                 range-v3/0.11.0
 				spdlog/1.8.5
                 BASIC_SETUP NO_OUTPUT_DIRS KEEP_RPATHS BUILD missing)
 
-add_compile_options(-fdiagnostics-color=always -pedantic -Wall -Wextra -Wshadow -Wpedantic
-                    -Wold-style-cast -Wunused -Wconversion -Wsign-conversion -Wnull-dereference)
+add_compile_options(-pedantic -Wall -Wextra -Wshadow -Wpedantic -Wold-style-cast -Wunused -Wconversion -Wsign-conversion -Wnull-dereference)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-  message("-- Debug mode")
+  message(STATUS "Debug mode")
   add_compile_options(-g)
 else()
-  message("-- Release mode")
+  message(STATUS "Release mode")
   add_compile_options(-O3 -DNDEBUG)
 endif()
 
@@ -57,7 +55,7 @@ function(add_pkg)
     endforeach()
 endfunction()
 
-add_pkg(cairo catch2 eigen3 fftw3 fplll libpng tbb yaml-cpp)
+add_pkg(cairo catch2 docopt eigen3 fftw3 fplll libpng tbb yaml-cpp)
 
 file (GLOB vb_sources CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/libvb/*.cpp)
 add_library (vb SHARED ${vb_sources})
