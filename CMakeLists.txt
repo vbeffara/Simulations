@@ -13,7 +13,6 @@ endif()
 include(${PROJECT_SOURCE_DIR}/conan.cmake)
 set(CONAN_SYSTEM_INCLUDES ON)
 conan_cmake_run(REQUIRES
-				catch2/2.13.6
 				docopt.cpp/0.6.3
 				fftw/3.3.9
 				ms-gsl/3.1.0
@@ -53,12 +52,13 @@ find_package(Boost REQUIRED COMPONENTS chrono)
 
 include(FindPkgConfig)
 pkg_search_module(CAIRO REQUIRED cairo)
+pkg_search_module(CATCH2 REQUIRED catch2)
 pkg_search_module(EIGEN REQUIRED eigen3)
 pkg_search_module(FPLLL REQUIRED fplll)
 pkg_search_module(PNG REQUIRED libpng)
 pkg_search_module(TBB REQUIRED tbb)
 pkg_search_module(YAMLCPP REQUIRED yaml-cpp)
-include_directories(SYSTEM ${CAIRO_INCLUDE_DIRS} ${EIGEN_INCLUDE_DIRS} ${FPLLL_INCLUDE_DIRS} ${LIBPNG_INCLUDE_DIRS} ${TBB_INCLUDE_DIRS} ${YAMLCPP_INCLUDE_DIRS})
+include_directories(SYSTEM ${CAIRO_INCLUDE_DIRS} ${CATCH2_INCLUDE_DIRS} ${EIGEN_INCLUDE_DIRS} ${FPLLL_INCLUDE_DIRS} ${LIBPNG_INCLUDE_DIRS} ${TBB_INCLUDE_DIRS} ${YAMLCPP_INCLUDE_DIRS})
 
 include(FindFLTK)
 if (${FLTK_FOUND})
