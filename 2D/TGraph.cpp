@@ -69,20 +69,20 @@ public:
     }
 
     void interact() {
-        Console C;
-        C.manage(theta, 0.0, 1.0, "arg(λ) / 2π", [this] {
+        Console CC;
+        CC.manage(theta, 0.0, 1.0, "arg(λ) / 2π", [this] {
             compute();
             plot();
             update();
         });
-        C.watch(lambda, "λ");
-        C.manage(A, {-1, 0}, {2, 2}, "point A", [this] {
+        CC.watch(lambda, "λ");
+        CC.manage(A, {-1, 0}, {2, 2}, "point A", [this] {
             compute();
             plot();
             update();
         });
-        C.show();
-        C.pause();
+        CC.show();
+        CC.pause();
     }
 
     cpx    A, B = 0, C = 1, alpha = 1, beta = 1, gamma = 1, lambda;

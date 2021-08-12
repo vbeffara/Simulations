@@ -15,11 +15,11 @@ public:
         if ((t == SITE) || (t == EDGE)) return WHITE;
         if (t == EMPH) return RED;
         if (d < 0) return BLACK;
-        return Indexed(d);
+        return Indexed(int(d));
     }
 
-    int  d = -1;
-    Type t = VOID;
+    size_t d = size_t(-1);
+    Type   t = VOID;
 };
 
 class UST : public Bitmap<Point> {
@@ -37,7 +37,7 @@ public:
     void lerw(ucoo z0) {
         auto z = z0;
         while (at(z).t != SITE) {
-            int d   = prng.uniform_int(4);
+            auto d  = prng.uniform_int(4u);
             at(z).d = d;
             if (fits(z + dz[d])) z += dz[d] * 2;
             step();
