@@ -22,7 +22,7 @@ auto main(int argc, char **argv) -> int {
         for (int b = 0; b < a; ++b) {
             unsigned d = 9;
             while (((1U << d) & adj) == 0) { d = vb::prng.uniform_int(8U); }
-            z += vb::cpx(vb::dz[d].x, vb::dz[d].y);
+            z += vb::cpx(double(vb::dz[d].x), double(vb::dz[d].y));
             path.push_back(z);
         }
         f.update();

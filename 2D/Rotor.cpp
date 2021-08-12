@@ -20,8 +20,8 @@ auto main(int argc, char **argv) -> int {
             img.put(z, C[0]);
             z = {n / 2, n / 2};
         } else
-            for (int i = 0; i < 4; ++i)
-                if (c == C[size_t(i)]) {
+            for (unsigned i = 0; i < 4; ++i)
+                if (c == C[i]) {
                     img.put(z, C[(i + 1) % 4]);
                     z += dz[i];
                 }

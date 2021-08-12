@@ -29,7 +29,7 @@ public:
         double ta = tan(a * M_PI / 180);
         for (size_t y = 0; y < size.y; ++y) {
             auto yy = y + (y % 2);
-            auto s  = int(2 + yy * ta);
+            auto s  = 2 + int(double(yy) * ta);
             s += (s % 2);
             for (size_t x = 0; x < size.x; ++x)
                 if (abs(int(x) - int(size.x / 2)) >= s) put({x, y}, VERTEX);
@@ -39,19 +39,19 @@ public:
     // TODO: now remove all int(size.y), int64_t(size.y), int(size.x), int64_t(size.x)
     auto border(coo z) -> bool { return (z.x == 0) || (z.x == int(size.x) - 1) || (z.y == int(size.y) - 1); }
 
-    auto edge(coo z, int d) -> bool { return (d != 3 - ((unsigned(z.x + z.y) + size.x / 2) % 4)); }
+    auto edge(coo z, size_t d) -> bool { return (d != 3 - ((unsigned(z.x + z.y) + size.x / 2) % 4)); }
 
-    auto trapped(coo z, int d) -> bool {
+    auto trapped(coo z, size_t d) -> bool {
         if (border(z)) return false;
         bool surrounded = true;
-        for (int i = 0; i < 4; ++i)
+        for (unsigned i = 0; i < 4; ++i)
             if ((at(ucoo(z + dz[i] * 2)) == EMPTY) && (!hex || edge(z, i))) surrounded = false;
         if (surrounded) return true;
 
         d = (d + 1) % 4;
         while ((at(ucoo(z + dz[d] * 2)) == VERTEX) || (hex && !edge(z, d))) d = (d + 3) % 4;
         coo zz = z;
-        int dd = d;
+        auto dd = d;
         while (true) {
             zz += dz[d] * 2;
             if (border(zz)) return false;
@@ -61,7 +61,7 @@ public:
         }
     }
 
-    auto allowed(coo z, int d) -> bool {
+    auto allowed(coo z, size_t d) -> bool {
         if (hex && !edge(z, d)) return false;
         coo nz = z + dz[d] * 2;
         return (at(ucoo(nz)) != VERTEX) && (nz.y >= 0) && !trapped(nz, d);
@@ -79,7 +79,7 @@ public:
                 continue;
             }
             coo z = path.back();
-            int d = prng.uniform_int(4);
+            auto d = prng.uniform_int(4u);
             if (!allowed(z, d)) continue;
             coo nz = z + dz[d] * 2;
             put(ucoo(z + dz[d]), EDGE);

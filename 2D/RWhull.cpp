@@ -46,7 +46,7 @@ public:
         put(p.back(), 1);
         show();
     };
-    void grow(int d) {
+    void grow(unsigned d) {
         p.push_back(p.back() + dz[d]);
         put(p.back(), at(p.back()) + 1);
     }
@@ -67,7 +67,7 @@ auto main(int argc, char **argv) -> int {
         if (vid) S.snapshot_setup("RWSH", 1.0);
         while (size_t(norm(S.p.back() - coo{3 * int(n), 3 * int(n)})) < (3 * n - 1) * (3 * n - 1)) {
             if ((S.p.size() == 1) || (prng.bernoulli(.5)))
-                S.grow(prng.uniform_int(4));
+                S.grow(prng.uniform_int(4u));
             else
                 S.shrink();
         }
@@ -75,7 +75,7 @@ auto main(int argc, char **argv) -> int {
         auto b = bridge(l, true);
         for (size_t i = 0; i < l; ++i) {
             if (b[i] == 1)
-                S.grow(prng.uniform_int(4));
+                S.grow(prng.uniform_int(4u));
             else
                 S.shrink();
         }

@@ -28,7 +28,7 @@ class Stuck : public Bitmap<Stat> {
 public:
     explicit Stuck(double a, double b, bool c, size_t n, bool o, const Hub &H)
         : Bitmap<Stat>(H.title, {2 * n, 2 * n}), alpha(a), beta(b), H(H), c(c), o(o) {
-        for (const auto &z : coo_range(size / 2)) at(z * 2) = Stat{-1};
+        for (const auto &zz : coo_range(size / 2)) at(zz * 2) = Stat{-1};
         z = coo(size / 2);
         C.manage(alpha, 0.142, 0.35, "alpha");
         C.lambda<int>([this]() { return nsup(); }, "Support");
@@ -41,17 +41,17 @@ public:
     }
 
     void center() {
-        coo c{0, 0};
-        for (const auto &z : coo_range(size))
-            if (at(z).s == Stat::max) c = coo(z - size / 2);
-        c.x -= c.x % 2;
-        c.y -= c.y % 2;
-        if (c != coo{0, 0}) {
+        coo cc{0, 0};
+        for (const auto &zz : coo_range(size))
+            if (at(zz).s == Stat::max) cc = coo(zz - size / 2);
+        cc.x -= cc.x % 2;
+        cc.y -= cc.y % 2;
+        if (cc != coo{0, 0}) {
             static Array<Stat> &me  = *this;
             static Array<Stat>  tmp = me;
-            for (const auto &z : coo_range(size)) tmp.at(z) = atp(coo(z) + c);
+            for (const auto &zz : coo_range(size)) tmp.at(zz) = atp(coo(zz) + cc);
             me = tmp;
-            z -= c;
+            z -= cc;
         }
     }
 
@@ -83,16 +83,16 @@ public:
     void update() override {
         if (c) center();
         int m = Stat::max;
-        for (auto z : coo_range(size))
-            if (at(z).s > 0) m = min(m, at(z).s);
+        for (auto zz : coo_range(size))
+            if (at(zz).s > 0) m = min(m, at(zz).s);
         if (m < Stat::max) Stat::min = m;
         Bitmap<Stat>::update();
     }
 
     auto nsup() -> int {
         int n = 0;
-        for (auto z : coo_range(size))
-            if ((at(z).s > 0) && (at(z).ml > .9 * Stat::max)) ++n;
+        for (auto zz : coo_range(size))
+            if ((at(zz).s > 0) && (at(zz).ml > .9 * Stat::max)) ++n;
         return n;
     }
 

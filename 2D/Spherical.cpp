@@ -11,7 +11,7 @@ auto f_to_c(double f) -> vb::Color {
 
 auto legendre_p(size_t l, size_t m, double x) -> double {
     // l>=0, 0<=m<=l, -1<=x<=1
-    double p0 = pow(1 - x * x, m / 2.0);
+    double p0 = pow(1 - x * x, double(m) / 2.0);
     if ((m % 2) != 0) { p0 *= -1; }
     if (m == l) { return p0; }
     double p1 = x * double(2 * m + 1) * p0;
@@ -25,14 +25,14 @@ auto legendre_p(size_t l, size_t m, double x) -> double {
 auto legendre_p(size_t l, double x) -> double { return legendre_p(l, 0, x); }
 
 auto spherical_harmonic(size_t n, size_t m, double theta, double phi) -> vb::cpx { // 0<=m<=n, 0<=theta<=pi, 0<=phi<=2pi
-    return vb::cpx{cos(m * phi), sin(m * phi)} * legendre_p(n, m, cos(theta));
+    return vb::cpx{cos(double(m) * phi), sin(double(m) * phi)} * legendre_p(n, m, cos(theta));
 }
 
 class Wave : public vb::Sphere {
 public:
     Wave(const vb::Hub &H, size_t n, size_t w)
         : vb::Sphere(H.title, w, [this](double theta, double phi) { return f_to_c(v(theta, phi)); }), n(n) {
-        detail = 2.0 / n;
+        detail = 2.0 / double(n);
         for (size_t m = 0; m <= n; ++m) {
             vb::cpx am{vb::prng.gaussian(), vb::prng.gaussian()};
             am *= sqrt(double(2 * n + 1) / (4 * M_PI));
@@ -43,7 +43,9 @@ public:
 
     auto v(double theta, double phi) -> double {
         double harm = 0;
-        for (size_t m = 0; m <= n; ++m) { harm += (real(a[m]) * cos(m * phi) - imag(a[m]) * sin(m * phi)) * legendre_p(n, m, cos(theta)); }
+        for (size_t m = 0; m <= n; ++m) {
+            harm += (real(a[m]) * cos(double(m) * phi) - imag(a[m]) * sin(double(m) * phi)) * legendre_p(n, m, cos(theta));
+        }
         return harm;
     }
 
@@ -74,15 +76,15 @@ public:
         eps *= double(H['e']);
     }
 
-    auto vv(const std::vector<std::vector<double>> &a, double x, double y, double z) -> double {
-        auto i0 = size_t(n * x * x), j0 = size_t(n * y * y);
+    auto vv(const std::vector<std::vector<double>> &aa, double x, double y, double z) -> double {
+        auto i0 = size_t(double(n) * x * x), j0 = size_t(double(n) * y * y);
         i0 -= i0 % 2;
         j0 -= j0 % 2;
         double out = 0, t = 1;
         for (size_t i = i0; i <= n; ++i) {
             double tt = t;
             for (size_t j = j0; j <= n - i; ++j) {
-                out += a[i][j] * tt;
+                out += aa[i][j] * tt;
                 tt *= (y / z) * sqsq[n - i - j][j + 1];
                 if (abs(tt) < eps) { break; }
             }
@@ -90,7 +92,7 @@ public:
             for (size_t j = j0; j-- > 0;) {
                 tt /= (y / z) * sqsq[n - i - j][j + 1];
                 if (abs(tt) < eps) { break; }
-                out += a[i][j] * tt;
+                out += aa[i][j] * tt;
             }
             t *= (x / z) * sqsq[n - i - j0][i + 1];
             if (abs(t) < eps) { break; }
@@ -101,7 +103,7 @@ public:
             if (abs(t) < eps) { break; }
             double tt = t;
             for (size_t j = j0; j <= n - i; ++j) {
-                out += a[i][j] * tt;
+                out += aa[i][j] * tt;
                 tt *= (y / z) * sqsq[n - i - j][j + 1];
                 if (abs(tt) < eps) { break; }
             }
@@ -109,7 +111,7 @@ public:
             for (size_t j = j0; j-- > 0;) {
                 tt /= (y / z) * sqsq[n - i - j][j + 1];
                 if (abs(tt) < eps) { break; }
-                out += a[i][j] * tt;
+                out += aa[i][j] * tt;
             }
         }
         if (((n % 2) != 0) && (z < 0)) { out = -out; }

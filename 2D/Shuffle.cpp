@@ -27,13 +27,13 @@ auto threebytwo(double b) {
 
 struct Tiling {
     void delslide() {
-        auto n = state.size.x;
-        state.resize({n + 2, n + 2}, 0);
+        auto nn = state.size.x;
+        state.resize({nn + 2, nn + 2}, 0);
         for (auto y = state.size.y - 2; y > 0; --y)
-            for (auto x = state.size.x - 2; x > 0; --x) swap(state[{x, y}], state[{(x - 1) + n * (y - 1), 0}]);
+            for (auto x = state.size.x - 2; x > 0; --x) swap(state[{x, y}], state[{(x - 1) + nn * (y - 1), 0}]);
 
-        for (size_t i = 0; i < n / 2; ++i) {
-            for (size_t j = 0; j < n / 2; ++j) {
+        for (size_t i = 0; i < nn / 2; ++i) {
+            for (size_t j = 0; j < nn / 2; ++j) {
                 ucoo z{2 * i, 2 * j};
                 if ((state[z] == 1) && (state[z + ucoo{1, 1}] == 1)) {
                     state[z]              = 0;
@@ -44,8 +44,8 @@ struct Tiling {
                 }
             }
         }
-        for (size_t i = 0; i <= n; i += 2) {
-            for (size_t j = 0; j <= n; j += 2) {
+        for (size_t i = 0; i <= nn; i += 2) {
+            for (size_t j = 0; j <= nn; j += 2) {
                 if (state[{i + 1, j + 1}] == 1) {
                     state[{i, j}]         = 1;
                     state[{i + 1, j + 1}] = 0;
@@ -64,16 +64,16 @@ struct Tiling {
     }
 
     void create(const Array<double> &p) {
-        auto n = state.size.x;
-        for (size_t i = 0; i < n / 2; ++i) {
-            for (size_t j = 0; j < n / 2; ++j) {
+        auto nn = state.size.x;
+        for (size_t i = 0; i < nn / 2; ++i) {
+            for (size_t j = 0; j < nn / 2; ++j) {
                 if ((state[{2 * i, 2 * j}] == 0) && (state[{2 * i + 1, 2 * j}] == 0) && (state[{2 * i, 2 * j + 1}] == 0) &&
                     (state[{2 * i + 1, 2 * j + 1}] == 0)) {
                     bool a1 = true, a2 = true, a3 = true, a4 = true;
                     if (j > 0) a1 = (state[{2 * i, 2 * j - 1}] == 0) && (state[{2 * i + 1, 2 * j - 1}] == 0);
-                    if (j < n / 2 - 1) a2 = (state[{2 * i, 2 * j + 2}] == 0) && (state[{2 * i + 1, 2 * j + 2}] == 0);
+                    if (j < nn / 2 - 1) a2 = (state[{2 * i, 2 * j + 2}] == 0) && (state[{2 * i + 1, 2 * j + 2}] == 0);
                     if (i > 0) a3 = (state[{2 * i - 1, 2 * j}] == 0) && (state[{2 * i - 1, 2 * j + 1}] == 0);
-                    if (i < n / 2 - 1) a4 = (state[{2 * i + 2, 2 * j}] == 0) && (state[{2 * i + 2, 2 * j + 1}] == 0);
+                    if (i < nn / 2 - 1) a4 = (state[{2 * i + 2, 2 * j}] == 0) && (state[{2 * i + 2, 2 * j + 1}] == 0);
                     if (a1 && a2 && a3 && a4) {
                         if (prng.bernoulli(p.atp({int(i), int(j)}))) {
                             state[{2 * i, 2 * j}]         = 1;
@@ -137,40 +137,40 @@ struct Tiling {
         }
     }
 
-    void output_pdf(const std::string &s, const string &name, size_t off = 0) const {
+    void output_pdf(const std::string &s, const string &fname, size_t off = 0) const {
         Figure                   F(s);
         static const vector<int> ddx{0, 2, 0, 2}, ddy{0, -2, -4, -6};
         int                      offx = ddx[off % 4], offy = ddy[off % 4];
         for (auto z : coo_range(state.size))
             if (state[z] != 0) {
                 coo  edge{1, ((z.x + z.y) % 2) != 0 ? 1 : -1};
-                auto s = [=](coo z) {
+                auto ss = [=](ucoo z) {
                     z += coo{offx, offy};
-                    coo zz = (z + coo{1, 1}) / 2;
-                    coo sh = dz[(zz.y + ((((zz.x + 1) % 4) / 2) != 0 ? 5 : 3)) % 4];
-                    return cpx(z.x, z.y) + 2 * double(H['r']) * cpx(sh.x, sh.y) - cpx(offx, offy);
+                    ucoo zz = (z + coo{1, 1}) / 2;
+                    coo  sh = dz[(zz.y + ((((zz.x + 1) % 4) / 2) != 0 ? 5 : 3)) % 4];
+                    return cpx(double(z.x), double(z.y)) + 2 * double(H['r']) * cpx(double(sh.x), double(sh.y)) - cpx(offx, offy);
                 };
                 double gr = a * TP.atp(coo(z) + coo{offx / 2, offy / 2}) + b;
-                F.add(make_unique<Segment>(s(coo(z) * 2 - edge), s(coo(z) * 2 + edge), Pen(Grey(uint8_t(255 * gr)), 130.0 / state.size.x)));
+                F.add(make_unique<Segment>(ss(z * 2 - edge), ss(z * 2 + edge), Pen(Grey(uint8_t(255 * gr)), 130.0 / double(state.size.x))));
             }
         if (H['v']) F.show();
-        F.output(name);
+        F.output(fname);
     }
 
     [[nodiscard]] auto height() const {
-        auto       m = state.size.x / 2;
-        Array<int> h({m + 1, m + 1}, 0);
+        auto       mm = state.size.x / 2;
+        Array<int> h({mm + 1, mm + 1}, 0);
         int        z = 0;
-        for (size_t x = 0; x < m; ++x) {
+        for (size_t x = 0; x < mm; ++x) {
             z += 4 * state[{2 * x, 0}] + 4 * state[{2 * x + 1, 0}] - 2;
             h[{x + 1, 0}] = z;
         }
-        for (size_t y = 0; y < m; ++y) {
-            int z         = h[{0, y}] + 4 * state[{0, 2 * y}] + 4 * state[{0, 2 * y + 1}] - 2;
-            h[{0, y + 1}] = z;
-            for (size_t x = 0; x < m; ++x) {
-                z -= 4 * state[{2 * x, 2 * y + 1}] + 4 * state[{2 * x + 1, 2 * y + 1}] - 2;
-                h[{x + 1, y + 1}] = z;
+        for (size_t y = 0; y < mm; ++y) {
+            int zz        = h[{0, y}] + 4 * state[{0, 2 * y}] + 4 * state[{0, 2 * y + 1}] - 2;
+            h[{0, y + 1}] = zz;
+            for (size_t x = 0; x < mm; ++x) {
+                zz -= 4 * state[{2 * x, 2 * y + 1}] + 4 * state[{2 * x + 1, 2 * y + 1}] - 2;
+                h[{x + 1, y + 1}] = zz;
             }
         }
         return h;
@@ -184,9 +184,9 @@ struct Tiling {
         }
     }
 
-    void run(const Hub &H) {
+    void run(const Hub &HH) {
         aztecgen();
-        output_pdf(H.title, name);
+        output_pdf(HH.title, name);
 
         auto     H1 = height();
         ofstream dat(name + ".dat");

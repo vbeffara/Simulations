@@ -18,7 +18,7 @@ auto main(int argc, char **argv) -> int {
         auto j = prng.uniform_int(n);
         auto k = uint8_t(1) + prng.uniform_int(uint8_t(3));
         auto l = P[j];
-        P[j]   = (P[j] + k) % 4;
+        P[j]   = static_cast<unsigned char>((P[j] + k) % 4);
         if (P.self_avoiding())
             i++;
         else
