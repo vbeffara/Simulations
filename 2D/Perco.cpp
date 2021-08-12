@@ -32,7 +32,7 @@ public:
             if ((z.x + z.y) % 2 == 0) continue;
             fill(mid, IN);
             if (c)
-                swap(at(z), atp(coo(z) + dz[4 + prng.uniform_int(4)]));
+                swap(at(z), atp(coo(z) + dz[4u + prng.uniform_int(4u)]));
             else
                 at(z) = prng.bernoulli(p) ? IN : BLACK;
             fill(mid, RED);

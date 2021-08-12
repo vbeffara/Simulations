@@ -30,7 +30,7 @@ public:
     void add(coo z, size_t d) {
         for (size_t i = 0; i < ok; ++i) {
             atp(z) = d;
-            z += dz[gsl::index(d - 1)];
+            z += dz[d - 1];
         }
     }
 
@@ -38,11 +38,10 @@ public:
         while (l >= ok) {
             if (prng.bernoulli(P[l])) {
                 add(z, d);
-                // TODO: somehow get rid of gsl::index
-                z += dz[gsl::index(d - 1)] * int(ok);
+                z += dz[d - 1] * int(ok);
                 l -= ok;
             } else {
-                z += dz[gsl::index(d - 1)];
+                z += dz[d - 1];
                 l--;
             }
         }
@@ -51,27 +50,27 @@ public:
     void redo(coo z, size_t d) {
         bool   empty = true;
         size_t hw    = (d == 1 ? size.x : size.y);
-        for (size_t x = 0; x < hw; z += dz[gsl::index(d - 1)], ++x) {
+        for (size_t x = 0; x < hw; z += dz[d - 1], ++x) {
             if (at(ucoo(z)) == 3 - d) empty = false;
             if (at(ucoo(z)) == d) at(ucoo(z)) = 0;
         }
         if (empty) {
             if (prng.bernoulli(dd)) {
-                z -= dz[gsl::index(d - 1)] * int(prng.uniform_int(ok));
+                z -= dz[d - 1] * int(prng.uniform_int(ok));
                 add(z, d);
-                fill(z + dz[gsl::index(d - 1)] * int(ok), d, hw - ok);
+                fill(z + dz[d - 1] * int(ok), d, hw - ok);
             } else
-                fill(z + dz[gsl::index(d - 1)], d, hw - 1);
+                fill(z + dz[d - 1], d, hw - 1);
         } else {
-            while (atp(z) != 3 - d) { z += dz[gsl::index(d - 1)]; }
-            z += dz[gsl::index(d - 1)];
-            for (coo zz = z - dz[gsl::index(d - 1)] * int(hw); zz != z; zz += dz[gsl::index(d - 1)]) {
+            while (atp(z) != 3 - d) { z += dz[d - 1]; }
+            z += dz[d - 1];
+            for (coo zz = z - dz[d - 1] * int(hw); zz != z; zz += dz[d - 1]) {
                 size_t l = 0;
                 while (atp(zz) == 0) {
                     ++l;
-                    zz += dz[gsl::index(d - 1)];
+                    zz += dz[d - 1];
                 }
-                if (l > 0) fill(zz - dz[gsl::index(d - 1)] * int(l), d, l);
+                if (l > 0) fill(zz - dz[d - 1] * int(l), d, l);
             }
         }
         step();

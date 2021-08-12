@@ -13,7 +13,7 @@ namespace vb {
         auto sd      = static_cast<Color *>(static_cast<void *>(cairo_image_surface_get_data(surface)));
         stage        = gsl::span<Color>(sd, stride * to_unsigned(pixel_h()));
         eps          = real(z2 - z1) / pixel_w();
-        pixel_detail = int(detail / eps);
+        pixel_detail = size_t(detail / eps);
         for (size_t i = 0; i < to_unsigned(pixel_w()); ++i)
             for (size_t j = 0; j < to_unsigned(pixel_h()); ++j) at({i, j}) = BLACK;
         run([&] { tessel({0, 0}, {to_unsigned(pixel_w()) - 1, to_unsigned(pixel_h()) - 1}); });
@@ -72,8 +72,8 @@ namespace vb {
         return Color(uint8_t(r / 9), uint8_t(g / 9), uint8_t(b / 9), uint8_t(a / 9));
     }
 
-    void Coloring::line(ucoo s, coo d, int64_t l) {
-        tbb::parallel_for(int64_t(0), l, [=](int64_t i) {
+    void Coloring::line(ucoo s, coo d, size_t l) {
+        tbb::parallel_for(size_t(0), l, [=](size_t i) {
             ucoo c = s + d * i;
             if (!die) at(c) = f(c_to_z(c));
         });

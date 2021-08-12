@@ -19,7 +19,7 @@ public:
     };
 
     void spread(double t, const ucoo &z) {
-        for (int d = 0; d < 4; ++d) {
+        for (unsigned d = 0; d < 4; ++d) {
             auto zz = z + dz[d];
             if (!at(zz)) pq.push({zz, t + cost()});
         }
@@ -39,11 +39,11 @@ public:
 
                 int deg = 1;
                 if (twostep)
-                    for (int d = 0; d < 4; ++d) deg += (at(z + dz[d]) ? 1 : 0);
+                    for (unsigned d = 0; d < 4; ++d) deg += (at(z + dz[d]) ? 1 : 0);
 
                 for (int i = 0; i < deg; ++i) spread(curtime, z);
                 if (twostep)
-                    for (int d = 0; d < 4; ++d) {
+                    for (unsigned d = 0; d < 4; ++d) {
                         auto zz = z + dz[d];
                         if (at(zz)) spread(curtime, zz);
                     }

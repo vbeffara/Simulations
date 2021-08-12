@@ -71,7 +71,7 @@ public:
         while (true) {
             auto nz = z;
             if (at(mid + nz)) {
-                nz += dz[prng.uniform_int(4)];
+                nz += dz[prng.uniform_int(4u)];
                 if (!fits(nz + mid)) break;
             }
             if (!at(mid + nz)) {

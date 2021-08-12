@@ -16,7 +16,7 @@ auto main(int argc, char **argv) -> int {
 
     for (ucoo z{n / 2, n / 2};;) {
         img.put(z, true);
-        auto nz = z + dz[prng.uniform_int(4)];
+        auto nz = z + dz[prng.uniform_int(4u)];
         if (!img.fits(nz)) break;
         if (img.at(nz) || prng.bernoulli(a)) z = nz;
     }

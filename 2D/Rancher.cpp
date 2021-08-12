@@ -158,7 +158,7 @@ public:
 
         if (plot) {
             std::vector<cpx> path;
-            for (size_t i = 2; i < traj.size(); ++i) path.push_back(traj[i].z);
+            for (size_t j = 2; j < traj.size(); ++j) path.push_back(traj[j].z);
             F.add(std::make_unique<vb::Path>(path));
             F.show();
             F.pause();
@@ -167,13 +167,13 @@ public:
 
         if (renew) {
             size_t n = 0, sx = 0, sxx = 0;
-            for (size_t i = 0; i < renewals.size(); ++i) {
-                n += renewals[i];
-                sx += i * renewals[i];
-                sxx += i * i * renewals[i];
+            for (size_t j = 0; j < renewals.size(); ++j) {
+                n += renewals[j];
+                sx += j * renewals[j];
+                sxx += j * j * renewals[j];
             }
-            std::cerr << n << " renewals (density " << double(n) / nb << ")" << std::endl;
-            std::cerr << "Average length: " << double(sx) / n << std::endl;
+            std::cerr << n << " renewals (density " << double(n) / double(nb) << ")" << std::endl;
+            std::cerr << "Average length: " << double(sx) / double(n) << std::endl;
         }
     }
 };

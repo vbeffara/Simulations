@@ -86,7 +86,7 @@ public:
 
         for (auto [i, j] : coo_range(size)) {
             if ((i == 0) && (j == 0)) continue;
-            auto   ij   = gsl::index(i + size.x * j);
+            auto   ij   = i + size.x * j;
             double norm = sqrt(double(size.x * size.y) * (sinarrayi[i] * sinarrayi[i] + sinarrayj[j] * sinarrayj[j]));
             auto   fij  = cpx(prng.gaussian(), prng.gaussian()) * sqrt(M_PI / 2) / norm;
             in_[ij][0]  = real(fij);
@@ -100,7 +100,7 @@ public:
         in_[0][1] = 0;
 
         fftw_execute(p);
-        for (auto [i, j] : coo_range(size)) I.at({i, j}).f = out_[gsl::index(i + size.x * j)][0];
+        for (auto [i, j] : coo_range(size)) I.at({i, j}).f = out_[i + size.x * j][0];
         fftw_destroy_plan(p);
         fftw_free(in);
         fftw_free(out);
@@ -114,16 +114,16 @@ public:
 
         for (auto [i, j] : coo_range(size)) {
             auto ii = min(i, size.x - i), jj = min(j, size.y - j);
-            d_[gsl::index(i + size.x * j)][0] = d_[gsl::index(i + size.x * j)][1] = f(sqrt(ii * ii + jj * jj) / l);
+            d_[i + size.x * j][0] = d_[i + size.x * j][1] = f(sqrt(ii * ii + jj * jj) / l);
         }
 
         fftw_execute(p1);
         for (size_t i = 0; i < size.x * size.y; ++i) {
-            d_[gsl::index(i)][0] *= prng.gaussian();
-            d_[gsl::index(i)][1] *= prng.gaussian();
+            d_[i][0] *= prng.gaussian();
+            d_[i][1] *= prng.gaussian();
         }
         fftw_execute(p2);
-        for (auto z : coo_range(size)) I.at(z).f = sign(d_[gsl::index(z.x + size.x * z.y)][0]);
+        for (auto z : coo_range(size)) I.at(z).f = sign(d_[z.x + size.x * z.y][0]);
 
         fftw_destroy_plan(p1);
         fftw_destroy_plan(p2);
@@ -142,7 +142,7 @@ public:
             while (I.at(Q.top().z).d < Q.top().d) Q.pop();
             Info im = Q.top();
             Q.pop();
-            for (int k = 0; k < 8; ++k) {
+            for (unsigned k = 0; k < 8; ++k) {
                 auto nz = im.z + dz[k];
                 if (!fits(nz)) continue;
                 Info & ni = I.at(nz);

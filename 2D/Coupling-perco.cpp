@@ -18,7 +18,7 @@ public:
         while (dirty) {
             dirty = false;
             for (const auto z : coo_range(size)) {
-                for (int i = 0; i < 6; ++i) {
+                for (unsigned i = 0; i < 6; ++i) {
                     auto zz = z + dz[i];
                     if (!expl.fits(zz)) continue;
                     if ((expl[z] > 0) && (expl[zz] > expl[z])) {

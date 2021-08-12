@@ -22,7 +22,7 @@ auto harmonic_measures(size_t p) {
                     dirty    = true;
                     auto d   = min({z.x, 2 * r - z.x, z.y, 2 * r - z.y});
                     if ((d == 1) || (d == r))
-                        for (gsl::index k = 0; k < 4; ++k) MM.at(z + dz[k]) += t / 4;
+                        for (unsigned k = 0; k < 4; ++k) MM.at(z + dz[k]) += t / 4;
                     else {
                         for (size_t k = 0; k < d; ++k) {
                             MM.at(z + coo{-int64_t(d), +int64_t(k)}) += t * prec[d][k] / 8;
@@ -74,13 +74,13 @@ public:
     }
 
     [[nodiscard]] auto neighbor(coo z) const -> bool {
-        for (int i = 0; i < 4; ++i)
+        for (unsigned i = 0; i < 4; ++i)
             if (at(z + dz[i])) return true;
         return false;
     }
 
     [[nodiscard]] auto jump(size_t d) const -> coo {
-        if (d <= 1) return dz[prng.uniform_int(4)];
+        if (d <= 1) return dz[prng.uniform_int(4u)];
         if (d < prec.size()) {
             coo w{int64_t(d), prng.discrete(prec[d])};
             if (prng.bernoulli()) w.x = -w.x;

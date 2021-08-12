@@ -26,14 +26,14 @@ namespace vb {
     private:
         Color aa_color(ucoo c, bool pre = false) const;
 
-        void line(ucoo s, coo d, int64_t l);
+        void line(ucoo s, coo d, size_t l);
         void tessel_go(ucoo ul, ucoo lr);
         void tessel(ucoo ul, ucoo lr);
         void do_aa();
 
         gsl::span<Color> stage;
 
-        int handle(int event) override;
-        int pixel_detail = 0;
+        int    handle(int event) override;
+        size_t pixel_detail = 0;
     };
 } // namespace vb

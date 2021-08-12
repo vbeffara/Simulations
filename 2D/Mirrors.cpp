@@ -63,7 +63,7 @@ void Mirrors::main() {
                 if ((at(ucoo(z)) & STATE_FLIP) != 0) at(ucoo(z)) ^= STATE_NE;
             }
             at(ucoo(z)) |= STATE_VISITED;
-            z += dz[gsl::index(d)];
+            z += dz[d];
         }
 
         pause();

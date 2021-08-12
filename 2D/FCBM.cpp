@@ -15,7 +15,7 @@ public:
 
     [[nodiscard]] auto degree(coo z) const -> int {
         int out = 0;
-        for (int i = 0; i < 4; ++i)
+        for (unsigned i = 0; i < 4; ++i)
             if (atp(z + dz[i]) != BLACK) ++out;
         return out;
     }
@@ -39,7 +39,7 @@ public:
     void run() {
         while (true) {
             auto   z  = prng.uniform_coo(mid) * 2;
-            auto   d  = dz[prng.uniform_int(4)];
+            auto   d  = dz[prng.uniform_int(4u)];
             double pp = dlr(coo(z), d);
             fill(mid, WHITE);
             atp(coo(z) + d) = prng.bernoulli(pp) ? WHITE : BLACK;

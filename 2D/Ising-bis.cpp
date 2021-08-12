@@ -28,7 +28,7 @@ public:
             auto z = prng.uniform_coo(size);
             if (at(z) == 0) continue;
             int c = 0;
-            for (size_t d = 0; d < con; ++d) c += atp(coo(z) + dz[gsl::index(d)]);
+            for (size_t d = 0; d < con; ++d) c += atp(coo(z) + dz[d]);
             put(z, prng.bernoulli(p[size_t(c + int64_t(con))]) ? 1 : -1);
         }
     }
@@ -64,7 +64,7 @@ public:
             list.pop_back();
             if (at(z) == 3) continue;
             put(z, 3);
-            for (gsl::index d = 0; d < gsl::index(con); ++d)
+            for (unsigned d = 0; d < con; ++d)
                 if (auto nz = z + dz[d]; fits(nz) && (at(nz) == s)) list.push_back(nz);
         }
     }

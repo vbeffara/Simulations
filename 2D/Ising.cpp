@@ -26,7 +26,7 @@ public:
     auto nnb(coo z) -> int {
         int  out   = 0;
         auto state = atp(z);
-        for (int d = 0; d < 4; ++d) {
+        for (unsigned d = 0; d < 4; ++d) {
             if (atp(z + dz[d]) == state)
                 out++;
             else
@@ -45,7 +45,7 @@ public:
                 step();
                 const auto z = prng.uniform_coo(size, size_t(c));
                 if (k) {
-                    coo zz = coo(z) + dz[prng.uniform_int(4)];
+                    coo zz = coo(z) + dz[prng.uniform_int(4u)];
                     if (c && !fits(zz, static_cast<size_t>(c))) continue;
                     if (atp(coo(z)) == atp(zz)) continue;
                     int s = nnb(coo(z)) + nnb(zz) + 2;
