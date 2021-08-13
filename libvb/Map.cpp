@@ -39,7 +39,7 @@ namespace vb {
         double height = top() - bottom(), mid_y = (top() + bottom()) / 2;
         double scale_x = w() / width, scale_y = h() / height;
 
-        double scale = std::min(scale_x, scale_y);
+        double local_scale = std::min(scale_x, scale_y);
 
         cairo_save(cr);
         cairo_set_source_rgb(cr, 1, 1, 1);
@@ -48,10 +48,10 @@ namespace vb {
 
         cairo_save(cr);
         cairo_translate(cr, w() * .5, h() * .5);
-        cairo_scale(cr, scale, scale);
+        cairo_scale(cr, local_scale, local_scale);
         cairo_translate(cr, -mid_x, -mid_y);
         cairo_set_source_rgb(cr, 0, 0, 0);
-        cairo_set_line_width(cr, .5 / scale);
+        cairo_set_line_width(cr, .5 / local_scale);
 
         for (size_t i = 0; i < n; ++i) {
             for (auto j : v[i]->adj) {
@@ -118,7 +118,7 @@ namespace vb {
         for (auto i : face_ext) {
             --k;
             bd[i]        = true;
-            double angle = (reverse ? -2.0 : 2.0) * 3.1415927 * k / n_ext;
+            double angle = (reverse ? -2.0 : 2.0) * 3.1415927 * k / double(n_ext);
             v[i]->z      = radius * cpx(cos(angle), sin(angle));
         }
     }
@@ -152,7 +152,7 @@ namespace vb {
                 cpx old = v[i]->z;
                 v[i]->z = 0.0;
                 for (auto j : v[i]->adj) v[i]->z += v[j]->z;
-                v[i]->z /= v[i]->adj.size();
+                v[i]->z /= double(v[i]->adj.size());
                 if (v[i]->z != old) dirty = true;
             }
         }

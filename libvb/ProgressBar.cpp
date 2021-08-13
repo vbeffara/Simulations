@@ -19,7 +19,7 @@ namespace vb {
         if (n < 400) bar += symbols[n % 8] + std::string(size_t(49 - n / 8), ' ');
 
         if (current > 0) {
-            auto eta = int(Duration((now() - start) * (pow(double(final) / current, power) - 1)).count());
+            auto eta = int(Duration((now() - start) * (pow(double(final) / double(current), power) - 1)).count());
             if (eta >= 3600 * 24) days = fmt::format("{}d ", eta / 3600 / 24);
             rest = fmt::format("{}:{:02}:{:02}       ", (eta / 3600) % 24, (eta / 60) % 60, eta % 60);
         }

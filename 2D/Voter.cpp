@@ -16,7 +16,7 @@ public:
 
     void up() {
         auto z = prng.uniform_coo(size);
-        put(z, atp(coo(z) + dz[prng.uniform_int(4)]));
+        put(z, atp(coo(z) + dz[prng.uniform_int(4u)]));
     }
 };
 

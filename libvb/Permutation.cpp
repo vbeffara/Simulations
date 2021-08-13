@@ -128,16 +128,16 @@ namespace vb {
                     ns[i]   = 0;
                     for (const auto &c : tuples(L - 1, n - 1)) {
                         std::vector<size_t> cc({0});
-                        for (auto i : c) cc.push_back(i + 1);
+                        for (auto ii : c) cc.push_back(ii + 1);
                         std::vector<size_t> missed(n);
-                        for (size_t i = 0; i < n; ++i) missed[i] = i;
-                        for (auto i : cc) missed[i] = 0;
-                        for (size_t i = 0, j = 0; j < n; ++j)
-                            if (missed[j] != 0) missed[i++] = missed[j];
+                        for (size_t ii = 0; ii < n; ++ii) missed[ii] = ii;
+                        for (auto ii : cc) missed[ii] = 0;
+                        for (size_t ii = 0, j = 0; j < n; ++j)
+                            if (missed[j] != 0) missed[ii++] = missed[j];
                         for (const auto &p : permutations(ns)) {
                             auto out = p.cycles();
-                            for (auto &c : out)
-                                for (auto &i : c) i = missed[i];
+                            for (auto &cyc : out)
+                                for (auto &ii : cyc) ii = missed[ii];
                             out.push_back(cc);
                             co_yield(out);
                         }

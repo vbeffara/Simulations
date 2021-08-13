@@ -1,7 +1,7 @@
 #include <vb/Pov.h>
 
 namespace vb {
-    void Pov_Scene::output_pov(const std::string &s) { std::ofstream((s + ".pov").c_str()) << fmt::format("{}", (bunch)(*this)); }
+    void Pov_Scene::output_pov(const std::string &s) { std::ofstream((s + ".pov").c_str()) << fmt::format("{}", static_cast<bunch>(*this)); }
 
     auto Box(tri a, tri b) -> std::string { return fmt::format("box {{ {}, {} }}", a, b); }
     auto Camera(tri a, tri b, double d) -> std::string { return fmt::format("camera {{ location {} look_at {} angle {} }}", a, b, d); }

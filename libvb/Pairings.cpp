@@ -10,21 +10,21 @@ namespace vb {
             auto p = todo_p.back();
             todo_p.pop_back();
             if (p.empty()) {
-                for (size_t i = 0; i < n / 2; ++i) {
-                    current[c[2 * i]]     = c[2 * i + 1];
-                    current[c[2 * i + 1]] = c[2 * i];
+                for (size_t ii = 0; ii < n / 2; ++ii) {
+                    current[c[2 * ii]]     = c[2 * ii + 1];
+                    current[c[2 * ii + 1]] = c[2 * ii];
                 }
                 return;
             }
-            auto i = p[0];
+            auto ii = p[0];
             for (size_t k = 1; k < p.size(); ++k) {
                 auto o  = p[k];
                 auto cc = c;
-                cc.push_back(i);
+                cc.push_back(ii);
                 cc.push_back(o);
                 std::vector<size_t> pp;
                 for (auto j : p)
-                    if ((j != i) && (j != o)) pp.push_back(j);
+                    if ((j != ii) && (j != o)) pp.push_back(j);
                 todo_c.push_back(cc);
                 todo_p.push_back(pp);
             }
@@ -35,7 +35,7 @@ namespace vb {
         if (d) {
             std::vector<size_t> all;
             all.reserve(n);
-            for (size_t i = 0; i < n; ++i) all.push_back(i);
+            for (size_t ii = 0; ii < n; ++ii) all.push_back(ii);
             std::vector<size_t> c;
             todo_c.push_back(c);
             todo_p.push_back(all);

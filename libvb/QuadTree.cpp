@@ -56,21 +56,21 @@ namespace vb {
         }
     }
 
-    void QuadTree::paint(Image &img, ucoo ul, size_t w) {
+    void QuadTree::paint(Image &img, ucoo u_l, size_t w) {
         if (w == 1) {
-            img.at(ul) = (n > 0) ? GREEN : BLACK;
+            img.at(u_l) = (n > 0) ? GREEN : BLACK;
             return;
         }
         if (n > m) {
-            store[ch + 0]->paint(img, ul, w / 2);
-            store[ch + 1]->paint(img, ul + ucoo{w / 2, 0}, w / 2);
-            store[ch + 2]->paint(img, ul + ucoo{0, w / 2}, w / 2);
-            store[ch + 3]->paint(img, ul + ucoo{w / 2, w / 2}, w / 2);
+            store[ch + 0]->paint(img, u_l, w / 2);
+            store[ch + 1]->paint(img, u_l + ucoo{w / 2, 0}, w / 2);
+            store[ch + 2]->paint(img, u_l + ucoo{0, w / 2}, w / 2);
+            store[ch + 3]->paint(img, u_l + ucoo{w / 2, w / 2}, w / 2);
             return;
         }
         for (size_t i = 0; i < w; ++i) {
-            img.at(ul + ucoo{i, 0}) = Color(128, 0, 0);
-            img.at(ul + ucoo{0, i}) = Color(128, 0, 0);
+            img.at(u_l + ucoo{i, 0}) = Color(128, 0, 0);
+            img.at(u_l + ucoo{0, i}) = Color(128, 0, 0);
         }
     }
 } // namespace vb

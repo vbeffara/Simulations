@@ -11,19 +11,19 @@ public:
     std::vector<double> glaub, kaw;
 
     Ising3(const vb::Hub &H, size_t n, bool k_, double b_) : Cube(H.title, {n, n, n}), b(0), k(k_), beta(b_) {
-        for (int k = 0; k <= 6; ++k) glaub.push_back(exp(k * beta) / (exp(k * beta) + exp((6 - k) * beta)));
-        for (int k = 0; k <= 12; ++k) kaw.push_back(1 / (1 + exp(2 * beta * (k - 6))));
+        for (int kk = 0; kk <= 6; ++kk) glaub.push_back(exp(kk * beta) / (exp(kk * beta) + exp((6 - kk) * beta)));
+        for (int kk = 0; kk <= 12; ++kk) kaw.push_back(1 / (1 + exp(2 * beta * (kk - 6))));
     };
 
     auto nbsum(vb::coo3 c) -> int64_t {
         int S = 0;
-        for (int i = 0; i < 6; ++i) S += atp(c + vb::dz3[i]) != 0 ? 1 : 0;
+        for (unsigned i = 0; i < 6; ++i) S += atp(c + vb::dz3[i]) != 0 ? 1 : 0;
         return S;
     }
 
     void spin(vb::ucoo3 c) {
         if (k) {
-            int  d  = vb::prng.uniform_int(6);
+            auto d  = vb::prng.uniform_int(6u);
             auto z2 = vb::coo3(c) + vb::dz3[d];
             if (at(c) == atp(z2)) return;
             if (vb::prng.bernoulli(kaw[size_t(nbsum(z2) - nbsum(vb::coo3(c)) + 6)]))
@@ -87,7 +87,9 @@ public:
         emplace("slope", [&H](Ising3 &I) {
             I.b = 1;
             for (auto c = I.begin(); c != I.end(); ++c)
-                if ((c.y - I.size.y * .5) - double(H['p']) * (c.z - I.size.z * .5) + double(H['q']) * (c.x - I.size.x * .5) < 0)
+                if ((double(c.y) - double(I.size.y) * .5) - double(H['p']) * (double(c.z) - double(I.size.z) * .5) +
+                        double(H['q']) * (double(c.x) - double(I.size.x) * .5) <
+                    0)
                     I.put(c, 255);
         });
     }

@@ -57,16 +57,16 @@ auto main(int argc, char **argv) -> int {
 
     timing(H, "Map+reduce | Single (fill then sum)", [=] {
         vector<double> X(l);
-        for (size_t i = 0; i < l; ++i) X[i] = cost(i);
+        for (size_t i = 0; i < l; ++i) X[i] = cost(double(i));
         double s = 0;
         for (auto x : X) s += x;
-        return s - int64_t(s);
+        return s - floor(s);
     });
 
     timing(H, "Map+reduce | Single (direct sum)", [=] {
         double s = 0;
-        for (size_t i = 0; i < l; ++i) s += cost(i);
-        return s - int64_t(s);
+        for (size_t i = 0; i < l; ++i) s += cost(double(i));
+        return s - floor(s);
     });
 
     timing(H, "Map+reduce | Single (STL algorithms: transform + accumulate)", [=] {
@@ -74,7 +74,7 @@ auto main(int argc, char **argv) -> int {
         std::iota(X.begin(), X.end(), 0);
         std::transform(X.begin(), X.end(), X.begin(), cost);
         double s = std::accumulate(X.begin(), X.end(), 0.0);
-        return s - int64_t(s);
+        return s - floor(s);
     });
 
     // TODO: re-enable this when it is implemented in libstdc++
@@ -93,7 +93,7 @@ auto main(int argc, char **argv) -> int {
             explicit mr(size_t l) : X(l) { run(0, l); }
             void run(size_t l1, size_t l2) {
                 if (l2 - l1 <= 1000) {
-                    for (auto i = l1; i < l2; ++i) X[i] = cost(i);
+                    for (auto i = l1; i < l2; ++i) X[i] = cost(double(i));
                     return;
                 }
                 auto l3  = (l1 + l2) / 2;
@@ -104,7 +104,7 @@ auto main(int argc, char **argv) -> int {
             auto sum() -> double {
                 double s = 0;
                 for (auto x : X) s += x;
-                return s - int64_t(s);
+                return s - floor(s);
             }
         };
         return mr(l).sum();
@@ -116,7 +116,7 @@ auto main(int argc, char **argv) -> int {
             auto run(size_t l1, size_t l2) -> double {
                 if (l2 - l1 <= 1000) {
                     double s = 0;
-                    for (auto i = l1; i < l2; ++i) s += cost(i);
+                    for (auto i = l1; i < l2; ++i) s += cost(double(i));
                     return s;
                 }
                 auto l3  = (l1 + l2) / 2;
@@ -125,7 +125,7 @@ auto main(int argc, char **argv) -> int {
             }
             auto sum(size_t l) -> double {
                 double s = run(0, l);
-                return s - int64_t(s);
+                return s - floor(s);
             }
         };
         return mr().sum(l);
@@ -137,11 +137,11 @@ auto main(int argc, char **argv) -> int {
             sum_cost(const sum_cost & /* unused */, tbb::split /* unused */) {}
             double my_sum = 0.0;
             void   operator()(const tbb::blocked_range<size_t> &r) {
-                for (size_t i = r.begin(); i != r.end(); ++i) my_sum += cost(i);
+                for (size_t i = r.begin(); i != r.end(); ++i) my_sum += cost(double(i));
             }
             void join(const sum_cost &y) { my_sum += y.my_sum; }
         } sc;
         tbb::parallel_reduce(tbb::blocked_range<size_t>(0, l), sc);
-        return sc.my_sum - int64_t(sc.my_sum);
+        return sc.my_sum - floor(sc.my_sum);
     });
 }

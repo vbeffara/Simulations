@@ -8,7 +8,7 @@ namespace vb {
 
     auto OldPath::self_avoiding() -> bool {
         TriMatrix<uint8_t> T;
-        int                l = 0;
+        unsigned           l = 0;
         coo                z{0, 0};
 
         T.put(z, 1);

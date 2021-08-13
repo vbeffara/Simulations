@@ -26,7 +26,7 @@ public:
     };
 
     Wave(const vb::Hub &H, size_t n, int k, double l_, double w_, double e_)
-        : Coloring(H.title, cpx(-n, -n), cpx(n, n), n, [&](cpx z) { return c(z); }), H(H) {
+        : Coloring(H.title, cpx(-double(n), -double(n)), cpx(double(n), double(n)), n, [&](cpx z) { return c(z); }), H(H) {
         for (int i = 0; i < k; ++i) {
             double delta     = (2 * prng.uniform_real() - 1) * (1 + e_);
             double amplitude = bump(delta, e_) * prng.gaussian();
