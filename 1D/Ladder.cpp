@@ -4,6 +4,7 @@
  *        = 2 to the right of max(range)==env.size()
  */
 
+#include <math.h>
 #include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
@@ -35,7 +36,7 @@ auto main(int argc, char **argv) -> int {
         } else
             cout << X << endl;
 
-        double p;
+        double p = NAN;
         if (X == 0)
             p = 1;
         else

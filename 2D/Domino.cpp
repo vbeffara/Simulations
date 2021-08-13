@@ -11,7 +11,7 @@ class Half {
 public:
     uint8_t d, type;
     explicit Half(uint8_t _d = 0, uint8_t _t = 0) : d(_d), type(_t) {}
-    explicit operator Color() {
+    explicit operator Color() const {
         static const vector<Color> C{BLACK, BLACK, BLACK, BLACK, RED,    GREEN, YELLOW, BLUE, YELLOW, BLUE,
                                      RED,   GREEN, RED,   GREEN, YELLOW, BLUE,  YELLOW, BLUE, RED,    GREEN};
         return C[d + 4 * type];

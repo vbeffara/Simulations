@@ -28,7 +28,7 @@ public:
         } else if ((action == 1) && (at(z) < maxage)) {
             put(z, at(z) + 1);
         } else if (action + kid - 1 <= at(z)) {
-            coo nz = coo(z) + dz[prng.uniform_int(4u)];
+            coo nz = coo(z) + dz[prng.uniform_int(4U)];
             if (atp(nz) == 0) putp(nz, 1);
         }
     }

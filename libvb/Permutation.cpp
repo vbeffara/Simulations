@@ -139,7 +139,7 @@ namespace vb {
                             for (auto &cyc : out)
                                 for (auto &ii : cyc) ii = missed[ii];
                             out.push_back(cc);
-                            co_yield(out);
+                            co_yield(Permutation{out});
                         }
                     }
                 }

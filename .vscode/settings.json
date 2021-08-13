@@ -114,5 +114,6 @@
     },
     "python.pythonPath": "/usr/local/opt/python/bin/python3.7",
     "C_Cpp.intelliSenseEngineFallback": "Disabled",
-    "C_Cpp.errorSquiggles": "Enabled"
+    "C_Cpp.errorSquiggles": "Enabled",
+    "editor.formatOnSave": true
 }

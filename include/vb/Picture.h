@@ -19,8 +19,8 @@ namespace vb {
 
         Picture(const Picture &) = delete;
         Picture(Picture &&)      = delete;
-        Picture &operator=(const Picture &) = delete;
-        Picture &operator=(Picture &&) = delete;
+        auto operator=(const Picture &) -> Picture & = delete;
+        auto operator=(Picture &&) -> Picture & = delete;
 
         /// Output the image in the preferred format (PNG by default).
         virtual void output(const std::string &s);
@@ -30,7 +30,7 @@ namespace vb {
         void snapshot();
 
         void show() override;
-        int  handle(int event) override; ///< Handle the events, in particular 'q' and 'x'.
+        auto handle(int event) -> int override; ///< Handle the events, in particular 'q' and 'x'.
 
     protected:
         cairo_surface_t *surface = nullptr; ///< Cairo version of the surface.

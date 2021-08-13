@@ -28,7 +28,7 @@ namespace vb {
             stride = size_t(cairo_image_surface_get_stride(surface)) / sizeof(Color);
         }
         paint();
-        auto sd = static_cast<const ulong *>(static_cast<void *>(cairo_image_surface_get_data(surface)));
+        const auto *sd = static_cast<const ulong *>(static_cast<void *>(cairo_image_surface_get_data(surface)));
         glPixelStorei(GL_UNPACK_ROW_LENGTH, GLint(stride));
         glDrawPixels(pixel_w(), pixel_h(), GL_BGRA, GL_UNSIGNED_BYTE, sd);
     }

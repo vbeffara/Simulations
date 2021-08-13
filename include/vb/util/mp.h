@@ -15,8 +15,8 @@ namespace vb {
 
     template <> struct cpx_t<real_t> { using type = complex_t; };
 
-    template <> real_t    sum<real_t>(const std::function<real_t(int)> &f);
-    template <> complex_t sum<complex_t>(const std::function<complex_t(int)> &f);
+    template <> auto sum<real_t>(const std::function<real_t(int)> &f) -> real_t;
+    template <> auto sum<complex_t>(const std::function<complex_t(int)> &f) -> complex_t;
 } // namespace vb
 
 namespace Eigen {
@@ -26,9 +26,9 @@ namespace Eigen {
         using Literal    = vb::complex_t;
         using Nested     = vb::complex_t;
 
-        static inline Real epsilon() { return 0; }
-        static inline int  dummy_precision() { return 0; }
-        static inline int  digits10() { return 0; }
+        static inline auto epsilon() -> Real { return 0; }
+        static inline auto dummy_precision() -> int { return 0; }
+        static inline auto digits10() -> int { return 0; }
 
         enum {
             IsInteger = 0,

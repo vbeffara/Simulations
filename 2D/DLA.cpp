@@ -80,7 +80,7 @@ public:
     }
 
     [[nodiscard]] auto jump(size_t d) const -> coo {
-        if (d <= 1) return dz[prng.uniform_int(4u)];
+        if (d <= 1) return dz[prng.uniform_int(4U)];
         if (d < prec.size()) {
             coo w{int64_t(d), prng.discrete(prec[d])};
             if (prng.bernoulli()) w.x = -w.x;

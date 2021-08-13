@@ -1,20 +1,21 @@
 #pragma once /// \file
 #include <FL/Fl.H>
 #include <future>
+#include <utility>
 #include <vb/Auto.h>
 #include <vb/util/coo.h>
 
 namespace vb {
-    static inline void close_window(Fl_Widget *) { exit(1); }
+    static inline void close_window(Fl_Widget * /*unused*/) { exit(1); }
 
     template <typename T> class AutoWindow : public Auto, public T {
     public:
-        AutoWindow(const std::string &s, ucoo size) : Auto(.1), T(int(size.x), int(size.y)), title(s) {
+        AutoWindow(std::string s, ucoo size) : Auto(.1), T(int(size.x), int(size.y)), title(std::move(s)) {
             T::label(title.c_str());
             T::callback(close_window);
         }
 
-        ucoo pixel_size() { return {static_cast<size_t>(T::pixel_w()), static_cast<size_t>(T::pixel_h())}; }
+        auto pixel_size() -> ucoo { return {static_cast<size_t>(T::pixel_w()), static_cast<size_t>(T::pixel_h())}; }
 
         void update() override {
             if (T::visible()) {
@@ -31,7 +32,7 @@ namespace vb {
             start = now();
         }
 
-        bool visible() { return static_cast<bool>(T::visible()); }
+        auto visible() -> bool { return static_cast<bool>(T::visible()); }
 
         void pause() {
             paused = true;
@@ -47,7 +48,7 @@ namespace vb {
             if (die) exit(0);
         }
 
-        int handle(int event) override {
+        auto handle(int event) -> int override {
             if (event == FL_KEYDOWN) switch (Fl::event_key()) {
                 case 'q':
                     die = true;

@@ -5,7 +5,7 @@ namespace vb {
     template <typename T> struct Queue {
         struct Item : public T {
             Item(T z, double t) : T(z), t(t) {}
-            bool   operator<(const Item &pt) const { return t > pt.t; }
+            auto   operator<(const Item &pt) const -> bool { return t > pt.t; }
             double t = 0;
         };
 

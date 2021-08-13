@@ -33,7 +33,7 @@ namespace vb {
             }
         }
 
-        char ch;
+        char ch = 0;
         optind = 1;
         while ((ch = char(getopt(argc, argv, getopt_arg.c_str()))) != -1) insert_or_assign(ch, has_arg[ch] ? optarg : "1");
 

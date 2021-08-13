@@ -20,11 +20,11 @@ public:
 
     [[nodiscard]] auto jump() const -> coo {
         if (type) {
-            auto out = prng.uniform_int(2u);
+            auto out = prng.uniform_int(2U);
             if (state == 2) out += 2;
             return dz[out];
         }
-        auto out = prng.uniform_int(4u);
+        auto out = prng.uniform_int(4U);
         if (out + 2 * state == 4) out = 2 - out;
         return dz[out];
     }

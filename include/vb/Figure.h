@@ -5,13 +5,13 @@
 namespace vb {
     class Figure : public Picture {
     public:
-        Figure(const std::string &s);
+        explicit Figure(const std::string &s);
 
-        double  left();
-        double  right();
-        double  top();
-        double  bottom();
-        Figure &add(std::unique_ptr<Shape> &&S);
+        auto left() -> double;
+        auto right() -> double;
+        auto top() -> double;
+        auto bottom() -> double;
+        auto add(std::unique_ptr<Shape> &&S) -> Figure &;
 
         std::vector<std::unique_ptr<Shape>> contents;
 

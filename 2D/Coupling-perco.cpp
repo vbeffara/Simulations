@@ -47,7 +47,7 @@ public:
         }
 
         int     n = 0;
-        int64_t k;
+        int64_t k = 0;
         for (size_t i = N / 2 - r1; i < N / 2 + r1; i++) {
             k = expl[{i, N / 2 - r1}];
             if (table[size_t(int64_t(N * N) + k)] == 1) {

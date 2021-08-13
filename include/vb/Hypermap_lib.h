@@ -13,9 +13,9 @@
  */
 
 namespace vb {
-    Hypermap H_artem(size_t n);  // Triangular lattice with one edge type split into n edges
-    Hypermap H_genus0(size_t n); // One arbitrary triangulation of the sphere with 2n faces
-    Hypermap H_genus1(size_t n); // One arbitrary triangulation of the torus with n vertices
+    auto H_artem(size_t n) -> Hypermap;  // Triangular lattice with one edge type split into n edges
+    auto H_genus0(size_t n) -> Hypermap; // One arbitrary triangulation of the sphere with 2n faces
+    auto H_genus1(size_t n) -> Hypermap; // One arbitrary triangulation of the torus with n vertices
 
     class HLib : public std::map<std::string, Hypermap> {
     public:

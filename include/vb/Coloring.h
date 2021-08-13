@@ -19,12 +19,12 @@ namespace vb {
         std::function<Color(cpx)> f;
 
     protected:
-        Color &at(ucoo z) const;
-        cpx    c_to_z(ucoo c) const;
-        double detail = 0;
+        [[nodiscard]] auto at(ucoo z) const -> Color &;
+        [[nodiscard]] auto c_to_z(ucoo c) const -> cpx;
+        double             detail = 0;
 
     private:
-        Color aa_color(ucoo c, bool pre = false) const;
+        [[nodiscard]] auto aa_color(ucoo c, bool pre = false) const -> Color;
 
         void line(ucoo s, coo d, size_t l);
         void tessel_go(ucoo ul, ucoo lr);
@@ -33,7 +33,7 @@ namespace vb {
 
         gsl::span<Color> stage;
 
-        int    handle(int event) override;
+        auto   handle(int event) -> int override;
         size_t pixel_detail = 0;
     };
 } // namespace vb

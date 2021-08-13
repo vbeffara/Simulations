@@ -3,7 +3,7 @@
 #include <vb/util/Hub.h>
 
 namespace vb {
-    double time();
+    auto time() -> double;
 
     template <typename F> void timing(Hub &H, const std::string &label, const F &f) {
         double t      = time();
@@ -11,7 +11,7 @@ namespace vb {
         H.output(label, "", fmt::format("time = {:>7.3f} ans = {}", time() - t, result), false);
     }
 
-    template <typename T> T check(T x, T y) {
+    template <typename T> auto check(T x, T y) -> T {
         static double merr = -1.0;
         double        err  = abs(x - y);
         if (err > merr) {

@@ -10,7 +10,7 @@ class SRW3 : public Cube {
 public:
     explicit SRW3(const string &title, size_t n) : Cube(title, {n, n, n}), n(n), pos({int64_t(n) / 2, int64_t(n) / 2, int64_t(n) / 2}) {}
     void step() {
-        pos = pos + dz3[prng.uniform_int(6u)];
+        pos = pos + dz3[prng.uniform_int(6U)];
         putp(pos, 255);
     }
 

@@ -12,7 +12,7 @@ class Point {
 public:
     Point() = default;
     explicit Point(Type t_, int d_ = 0) : t(t_), d(d_) {}
-    explicit operator Color() {
+    explicit operator Color() const {
         if (t == SITE) return ((d == 0) || (d == 1)) ? RED : Color(200, 200, 255);
         if (t == EDGE) return ((d == 0) || (d == 1)) ? RED : Color(200, 200, 255);
         if (t == DUAL) return ((d == 2) || (d == 3)) ? Color(200, 100, 0) : Color(128, 255, 128);

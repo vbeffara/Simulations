@@ -4,19 +4,19 @@
 namespace vb {
     template <typename T> class Minimizer {
     public:
-        Minimizer(size_t n_);
+        explicit Minimizer(size_t n_);
         Minimizer(size_t n_, std::function<T(const Vector<T> &, Vector<T> *)> fg_);
         Minimizer(size_t n_, std::function<T(const Vector<T> &)> f_, std::function<Vector<T>(const Vector<T> &)> g_);
 
-        T compute(const Vector<T> &x = Vector<T>(0));
+        auto compute(const Vector<T> &x = Vector<T>(0)) -> T;
 
         void line_search(const Vector<T> &d);
 
-        T minimize_grad(const Vector<T> &x0);
-        T minimize_bfgs(const Vector<T> &x0, const Vector<T> &W0 = Vector<T>(0));
-        T minimize_fr(const Vector<T> &x0);
-        T minimize_pr(const Vector<T> &x0);
-        T minimize_qn(const Vector<T> &x0);
+        auto minimize_grad(const Vector<T> &x0) -> T;
+        auto minimize_bfgs(const Vector<T> &x0, const Vector<T> &W0 = Vector<T>(0)) -> T;
+        auto minimize_fr(const Vector<T> &x0) -> T;
+        auto minimize_pr(const Vector<T> &x0) -> T;
+        auto minimize_qn(const Vector<T> &x0) -> T;
 
         size_t n = 0;
 

@@ -22,22 +22,22 @@ namespace vb {
 
         Map(const std::string &s, size_t n);
 
-        adj_list::iterator find_edge(const Edge &e) const;
+        [[nodiscard]] auto find_edge(const Edge &e) const -> adj_list::iterator;
 
-        Edge turn_left(const Edge &e) const;
-        Edge turn_right(const Edge &e) const;
+        [[nodiscard]] auto turn_left(const Edge &e) const -> Edge;
+        [[nodiscard]] auto turn_right(const Edge &e) const -> Edge;
 
         void add_before(const Edge &e, size_t vv);
         void add_after(const Edge &e, size_t vv);
 
-        std::vector<size_t> face(Edge e);
+        [[nodiscard]] auto face(Edge e) const -> std::vector<size_t>;
 
         void inscribe(const std::vector<size_t> &face_ext, const double &radius = 1.0, bool reverse = false);
 
-        double balance();
-        void   balance_old();
+        auto balance() -> double;
+        void balance_old();
 
-        std::vector<size_t> split_edges();
+        auto split_edges() -> std::vector<size_t>;
 
         void hex_to_triangle(const std::vector<size_t> &f);
         void barycentric();
@@ -46,11 +46,11 @@ namespace vb {
         void plot_edges(Figure *F);
         void plot_circles(Figure *F);
 
-        size_t nb_sommets() { return n; }
-        size_t nb_aretes();
-        size_t nb_faces();
-        int    euler();
-        int    genre();
+        auto nb_sommets() const -> size_t { return n; }
+        auto nb_aretes() -> size_t;
+        auto nb_faces() -> size_t;
+        auto euler() -> int;
+        auto genre() -> int;
 
         void mobius(cpx w, const double &theta);
 
@@ -60,21 +60,21 @@ namespace vb {
 
         void mobius_circle(cpx w, double r);
 
-        double left();
-        double right();
-        double top();
-        double bottom();
+        auto left() -> double;
+        auto right() -> double;
+        auto top() -> double;
+        auto bottom() -> double;
 
-        double fg_balance(const Vector<double> &x, Vector<double> *g);
-        double fg_circle_base(const Vector<double> &x, Vector<double> *g);
-        double fg_circle_bd(const Vector<double> &x, Vector<double> *g);
-        double fg_circle_disk(const Vector<double> &x, Vector<double> *g);
+        auto fg_balance(const Vector<double> &x, Vector<double> *g) -> double;
+        auto fg_circle_base(const Vector<double> &x, Vector<double> *g) -> double;
+        auto fg_circle_bd(const Vector<double> &x, Vector<double> *g) -> double;
+        auto fg_circle_disk(const Vector<double> &x, Vector<double> *g) -> double;
 
     protected:
         void paint() override;
     };
 
-    Map &operator<<(Map &m, const Edge &e);
+    auto operator<<(Map &m, const Edge &e) -> Map &;
 } // namespace vb
 
 template <> struct fmt::formatter<vb::Map> {

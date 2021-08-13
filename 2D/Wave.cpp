@@ -21,7 +21,7 @@ public:
     class Mode {
     public:
         Mode(double a_, double t, double l, double p_) : a(a_), c(l * cos(t)), s(l * sin(t)), p(p_) {}
-        auto operator()(const cpx &z) -> double { return a * cos(c * real(z) + s * imag(z) + p); }
+        auto   operator()(const cpx &z) const -> double { return a * cos(c * real(z) + s * imag(z) + p); }
         double a, c, s, p;
     };
 

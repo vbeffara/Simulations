@@ -6,13 +6,13 @@ namespace vb {
 
     template <typename T> class TriMatrix {
     public:
-        TriMatrix(T e = 0) : empty(e) {}
+        explicit TriMatrix(T e = 0) : empty(e) {}
 
-        T at(coo z) const {
+        auto at(coo z) const -> T {
             auto target = std::max(std::abs(z.x), std::abs(z.y));
             if (target >= size) return empty;
             if (size == BSIZE) return tile[size_t((2 * BSIZE + 1) * BSIZE + z.x + 2 * BSIZE * z.y)];
-            auto index = 4u;
+            auto index = 4U;
             if (z.x >= sub_size) {
                 index += 1;
                 z.x -= sub_shift;
@@ -62,7 +62,7 @@ namespace vb {
     private:
         void triple() {
             if (size == 0) return;
-            std::vector<TriMatrix<T>> tmp_sub(9, empty);
+            std::vector<TriMatrix<T>> tmp_sub(9, TriMatrix<T>{empty});
             tmp_sub.swap(sub);
             tmp_sub.swap(sub[4].sub);
             sub[4].tile.swap(tile);

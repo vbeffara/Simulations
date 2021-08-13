@@ -5,17 +5,17 @@
 namespace vb {
     template <typename T> class Polynomial {
     public:
-        Polynomial(const boost::math::tools::polynomial<T> &p) : P(p) {}
-        Polynomial(const std::vector<T> &V) : P(begin(V), end(V)) {}
-        Polynomial(const T &t) : P({t}) {}
+        explicit Polynomial(const boost::math::tools::polynomial<T> &p) : P(p) {}
+        explicit Polynomial(const std::vector<T> &V) : P(begin(V), end(V)) {}
+        explicit Polynomial(const T &t) : P({t}) {}
 
-        size_t degree() const { return P.degree(); }
-        size_t size() const { return P.size(); }
+        [[nodiscard]] auto degree() const -> size_t { return P.degree(); }
+        [[nodiscard]] auto size() const -> size_t { return P.size(); }
 
-        T  operator[](size_t i) const { return P[i]; }
-        T &operator[](size_t i) { return P[i]; }
+        auto operator[](size_t i) const -> T { return P[i]; }
+        auto operator[](size_t i) -> T & { return P[i]; }
 
-        template <typename V> V operator()(const V &x) const {
+        template <typename V> auto operator()(const V &x) const -> V {
             if (P.size() == 0) return 0;
             V out = P[degree()];
             if (degree() == 0) return out;
@@ -23,11 +23,11 @@ namespace vb {
             return out;
         }
 
-        Polynomial<T> derivative() const {
-            if (P.size() <= 1) return T{0};
+        auto derivative() const -> Polynomial<T> {
+            if (P.size() <= 1) return Polynomial{T{0}};
             std::vector<T> out(P.degree());
             for (unsigned i = 0; i < P.degree(); ++i) out[i] = T(i + 1) * P[i + 1];
-            return out;
+            return Polynomial{out};
         }
 
         void operator*=(const T &x) { P *= x; }

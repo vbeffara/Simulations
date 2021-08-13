@@ -35,5 +35,5 @@ namespace vb {
         size_t              max_label_width = 0;
     };
 
-    std::string version();
+    auto version() -> std::string;
 } // namespace vb

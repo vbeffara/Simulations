@@ -8,7 +8,7 @@ using namespace std;
 
 class Walker {
 public:
-    Walker() : pos(3, 0), Max(3, INT_MIN), Min(3, INT_MAX) {
+    Walker() : pos(3, 0), Max(3, TriMatrix{INT_MIN}), Min(3, TriMatrix{INT_MAX}) {
         for (unsigned i = 0; i < 3; ++i) {
             Max[i].put({0, 0}, 0);
             Min[i].put({0, 0}, 0);

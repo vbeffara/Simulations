@@ -96,7 +96,7 @@ namespace vb {
         v[e.first]->adj.insert(ee, vv);
     }
 
-    auto Map::face(Edge e) -> std::vector<size_t> {
+    auto Map::face(Edge e) const -> std::vector<size_t> {
         std::vector<size_t> l;
         auto                first = e.first;
         l.push_back(first);

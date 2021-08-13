@@ -19,7 +19,7 @@ namespace vb {
             step();
         }
 
-        T lazy(coo z, std::function<T(coo)> f) {
+        auto lazy(coo z, std::function<T(coo)> f) -> T {
             if (at(z) == dflt) put(z, f(z));
             return at(z);
         }

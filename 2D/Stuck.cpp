@@ -10,8 +10,8 @@ using namespace vb;
 class Stat {
 public:
     explicit Stat(int ss = 0) : s(ss), ml(max) { max = std::max(max, s); }
-    explicit operator int() { return s; }
-    explicit operator Color() {
+    explicit operator int() const { return s; }
+    explicit operator Color() const {
         if (s < 0) return Color(0, 64, 0);
         if (s == 0) return BLACK;
         if (ml <= .1 * max) return Color(0, 0, 64);

@@ -29,14 +29,14 @@ namespace vb {
 
         void from_hypermap(); //< If the Hypermap part is correct, fill in V and E.
 
-        bool operator==(const Hypermap &o) const { return (sigma == o.sigma) && (alpha == o.alpha); }
+        auto operator==(const Hypermap &o) const -> bool { return (sigma == o.sigma) && (alpha == o.alpha); }
 
-        bool     validate() const;
-        bool     is_graph() const;
-        bool     is_triangulation() const;
-        bool     is_simple(size_t d = 2) const; // ! parallel but non-consecutive edges (like an eye) are not detected
-        int      euler() const;
-        unsigned genus() const;
+        [[nodiscard]] auto validate() const -> bool;
+        [[nodiscard]] auto is_graph() const -> bool;
+        [[nodiscard]] auto is_triangulation() const -> bool;
+        [[nodiscard]] auto is_simple(size_t d = 2) const -> bool; // ! parallel but non-consecutive edges (like an eye) are not detected
+        [[nodiscard]] auto euler() const -> int;
+        [[nodiscard]] auto genus() const -> unsigned;
 
         void flip(size_t e);
 
@@ -59,21 +59,21 @@ namespace vb {
         std::vector<Vertex>   V;
         std::vector<Edge>     E;
 
-        static double alpha_xyz(double x, double y, double z);
-        static double ccn(size_t n);
+        static auto alpha_xyz(double x, double y, double z) -> double;
+        static auto ccn(size_t n) -> double;
 
     private:
-        Permutation rebasing(size_t i) const;
-        Permutation rebasing() const;
+        [[nodiscard]] auto rebasing(size_t i) const -> Permutation;
+        [[nodiscard]] auto rebasing() const -> Permutation;
     };
 
-    Stream<Hypermap> hypermaps(const Permutation &s, const Permutation &a, const Permutation &p);
+    auto hypermaps(const Permutation &s, const Permutation &a, const Permutation &p) -> Stream<Hypermap>;
 } // namespace vb
 
 namespace YAML {
     template <> struct convert<vb::Hypermap> {
-        static Node encode(const vb::Hypermap &h);
-        static bool decode(const Node &node, vb::Hypermap &h);
+        static auto encode(const vb::Hypermap &h) -> Node;
+        static auto decode(const Node &node, vb::Hypermap &h) -> bool;
     };
 } // namespace YAML
 

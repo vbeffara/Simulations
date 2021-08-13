@@ -10,7 +10,7 @@ namespace vb {
 
     void Coloring::show() {
         Picture::show();
-        auto sd      = static_cast<Color *>(static_cast<void *>(cairo_image_surface_get_data(surface)));
+        auto *sd     = static_cast<Color *>(static_cast<void *>(cairo_image_surface_get_data(surface)));
         stage        = gsl::span<Color>(sd, stride * to_unsigned(pixel_h()));
         eps          = real(z2 - z1) / pixel_w();
         pixel_detail = size_t(detail / eps);

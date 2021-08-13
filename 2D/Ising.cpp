@@ -45,7 +45,7 @@ public:
                 step();
                 const auto z = prng.uniform_coo(size, size_t(c));
                 if (k) {
-                    coo zz = coo(z) + dz[prng.uniform_int(4u)];
+                    coo zz = coo(z) + dz[prng.uniform_int(4U)];
                     if (c && !fits(zz, static_cast<size_t>(c))) continue;
                     if (atp(coo(z)) == atp(zz)) continue;
                     int s = nnb(coo(z)) + nnb(zz) + 2;

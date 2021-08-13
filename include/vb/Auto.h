@@ -22,8 +22,8 @@ namespace vb {
 
         Auto(const Auto &) = delete;
         Auto(Auto &&)      = delete;
-        Auto &operator=(const Auto &) = delete;
-        Auto &operator=(Auto &&) = delete;
+        auto operator=(const Auto &) -> Auto & = delete;
+        auto operator=(Auto &&) -> Auto & = delete;
 
         virtual void update() = 0;
 
@@ -33,8 +33,8 @@ namespace vb {
             if (next == 0) run();
         }
 
-        static size_t add_task(double period, const std::function<void()> &task);
-        static void   remove_task(size_t i);
+        static auto add_task(double period, const std::function<void()> &task) -> size_t;
+        static void remove_task(size_t i);
 
         static inline std::vector<Task> tasks;
         TimePoint                       start;

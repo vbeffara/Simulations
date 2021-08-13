@@ -38,7 +38,7 @@ namespace vb {
 
     void QuadTree::nn(coo z, QuadIndex &qi) const {
         if (n <= m)
-            for (auto &w : pts) {
+            for (const auto &w : pts) {
                 auto newnorm = sup(z - w);
                 if (newnorm < qi.d) {
                     qi.d = newnorm;
@@ -56,7 +56,7 @@ namespace vb {
         }
     }
 
-    void QuadTree::paint(Image &img, ucoo u_l, size_t w) {
+    void QuadTree::paint(Image &img, ucoo u_l, size_t w) const {
         if (w == 1) {
             img.at(u_l) = (n > 0) ? GREEN : BLACK;
             return;

@@ -3,12 +3,12 @@
 #include <vb/CoarseImage.h>
 
 static void write_data(png_struct *png, uint8_t *data, size_t length) {
-    auto stream = static_cast<std::ostream *>(png_get_io_ptr(png));
+    auto *stream = static_cast<std::ostream *>(png_get_io_ptr(png));
     stream->write(static_cast<char *>(static_cast<void *>(data)), std::streamsize(length));
 }
 
 static void flush_data(png_struct *png) {
-    auto stream = static_cast<std::ostream *>(png_get_io_ptr(png));
+    auto *stream = static_cast<std::ostream *>(png_get_io_ptr(png));
     stream->flush();
 }
 
@@ -39,8 +39,8 @@ namespace vb {
 
     void CoarseImage::output_fine(const std::string &fn) const {
         auto stream = std::ofstream(fn, std::ios::binary);
-        auto png    = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
-        auto info   = png_create_info_struct(png);
+        auto *png    = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
+        auto *info   = png_create_info_struct(png);
 
         png_set_write_fn(png, &stream, write_data, flush_data);
         png_set_IHDR(png, info, png_uint_32(size.x), png_uint_32(size.y), 1, PNG_COLOR_TYPE_GRAY, PNG_INTERLACE_NONE,

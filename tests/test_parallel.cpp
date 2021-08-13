@@ -21,7 +21,7 @@ constexpr auto fib(size_t n) -> size_t { return n < 2 ? n : fib(n - 1) + fib(n -
 
 auto tbb_fib(size_t n) -> size_t {
     if (n < 25) return fib(n);
-    size_t          x, y;
+    size_t          x = 0, y = 0;
     tbb::task_group g;
     g.run([&] { x = tbb_fib(n - 1); });
     g.run([&] { y = tbb_fib(n - 2); });

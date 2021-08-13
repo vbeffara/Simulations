@@ -7,18 +7,18 @@ namespace vb {
         CLP(int argc, char **argv, std::string desc);
         ~CLP();
 
-        bool flag(const std::string &c, const std::string &d);
+        auto flag(const std::string &c, const std::string &d) -> bool;
 
-        double param(const std::string &c, double t, const std::string &d);
-        int    param(const std::string &c, int t, const std::string &d);
-        size_t param(const std::string &c, size_t t, const std::string &d);
+        auto param(const std::string &c, double t, const std::string &d) -> double;
+        auto param(const std::string &c, int t, const std::string &d) -> int;
+        auto param(const std::string &c, size_t t, const std::string &d) -> size_t;
 
         void finalize(); // TODO: find better name
 
         std::string desc, title;
 
     private:
-        std::string get_param(const std::string &c, const std::string &type, std::string val, const std::string &desc);
+        auto get_param(const std::string &c, const std::string &type, std::string val, const std::string &dsc) -> std::string;
 
         std::vector<std::string> args, help, flags;
         bool                     finalized = false;

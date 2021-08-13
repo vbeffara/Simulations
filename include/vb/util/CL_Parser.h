@@ -8,7 +8,7 @@ namespace vb {
     class Value : public std::string {
     public:
         explicit Value(std::string s = "") : std::string(std::move(s)) {}
-        Value &operator=(const std::string &s) {
+        auto operator=(const std::string &s) -> Value & {
             std::string::operator=(s);
             return *this;
         }
@@ -27,7 +27,7 @@ namespace vb {
     public:
         CL_Parser(std::string t, int argc, char **argv, std::string c = "");
 
-        const Value &operator[](char c) const { return find(c)->second; }
+        auto operator[](char c) const -> const Value & { return find(c)->second; }
 
         std::string title, help, prog, dir, cmd;
     };

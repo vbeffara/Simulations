@@ -70,7 +70,7 @@ namespace vb {
             t = {real(t), tt};
             cb();
         });
-        if (n) watch(t, n);
+        if (n != nullptr) watch(t, n);
     }
 
     template <typename T> void runinput(Fl_Widget *W) {

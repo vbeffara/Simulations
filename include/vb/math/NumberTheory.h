@@ -5,7 +5,7 @@
 #include <vb/util/mp.h>
 
 namespace vb {
-    template <typename T> std::optional<Polynomial<mpz_int>> guess(const T &x, unsigned nd) {
+    template <typename T> auto guess(const T &x, unsigned nd) -> std::optional<Polynomial<mpz_int>> {
         real_t m{pow(real_t{10, x.precision()}, nd * 2 / 3)};
         for (unsigned d = 1; d <= nd / 10; ++d) {
             T             t{1, x.precision()};

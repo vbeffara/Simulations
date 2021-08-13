@@ -23,7 +23,7 @@ public:
 
     void spin(vb::ucoo3 c) {
         if (k) {
-            auto d  = vb::prng.uniform_int(6u);
+            auto d  = vb::prng.uniform_int(6U);
             auto z2 = vb::coo3(c) + vb::dz3[d];
             if (at(c) == atp(z2)) return;
             if (vb::prng.bernoulli(kaw[size_t(nbsum(z2) - nbsum(vb::coo3(c)) + 6)]))

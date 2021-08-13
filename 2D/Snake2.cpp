@@ -79,7 +79,7 @@ public:
                 continue;
             }
             coo z = path.back();
-            auto d = prng.uniform_int(4u);
+            auto d = prng.uniform_int(4U);
             if (!allowed(z, d)) continue;
             coo nz = z + dz[d] * 2;
             put(ucoo(z + dz[d]), EDGE);

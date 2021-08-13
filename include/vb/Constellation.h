@@ -20,24 +20,24 @@ namespace vb {
         Constellation();
         Constellation(const Constellation &) = default;
         Constellation(Constellation &&)      = default;
-        Constellation &operator=(const Constellation &) = default;
-        Constellation &operator=(Constellation &&) = default;
+        auto operator=(const Constellation &) -> Constellation & = default;
+        auto operator=(Constellation &&) -> Constellation & = default;
 
-        template <typename U> Constellation(const Constellation<U> &C);
+        template <typename U> explicit Constellation(const Constellation<U> &C);
 
         virtual ~Constellation() = default;
 
-        virtual Vector<cplx> vec() const                     = 0;
-        virtual void         readvec(const Vector<cplx> &xy) = 0;
-        virtual Vector<cplx> vcost() const                   = 0;
-        virtual Matrix<cplx> jacvcost() const                = 0;
+        [[nodiscard]] virtual auto vec() const -> Vector<cplx>      = 0;
+        virtual void               readvec(const Vector<cplx> &xy)  = 0;
+        [[nodiscard]] virtual auto vcost() const -> Vector<cplx>    = 0;
+        [[nodiscard]] virtual auto jacvcost() const -> Matrix<cplx> = 0;
 
-        virtual cplx                  operator()(cplx z) const = 0;
-        virtual cplx                  reduce(cplx z) const { return z; }
-        virtual std::pair<cplx, cplx> bounds() const = 0;
+        virtual auto               operator()(cplx z) const -> cplx = 0;
+        [[nodiscard]] virtual auto reduce(cplx z) const -> cplx { return z; }
+        [[nodiscard]] virtual auto bounds() const -> std::pair<cplx, cplx> = 0;
 
-        T cost() const;
-        T findn();
+        [[nodiscard]] auto cost() const -> T;
+        auto               findn() -> T;
     };
 
     template <> template <> Constellation<real_t>::Constellation(const Constellation<double> &C);

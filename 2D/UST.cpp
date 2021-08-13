@@ -11,7 +11,7 @@ class Point {
 public:
     explicit Point(int /*unused*/ = 0) {}
     explicit Point(Type _t) : t(_t) {}
-    explicit operator Color() {
+    explicit operator Color() const {
         if ((t == SITE) || (t == EDGE)) return WHITE;
         if (t == EMPH) return RED;
         if (d < 0) return BLACK;
@@ -37,7 +37,7 @@ public:
     void lerw(ucoo z0) {
         auto z = z0;
         while (at(z).t != SITE) {
-            auto d  = prng.uniform_int(4u);
+            auto d  = prng.uniform_int(4U);
             at(z).d = d;
             if (fits(z + dz[d])) z += dz[d] * 2;
             step();

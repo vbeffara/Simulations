@@ -72,9 +72,9 @@ namespace vb {
             phi_c.push_back(FF);
         }
 
-        sigma = sigma_c;
-        alpha = alpha_c;
-        phi   = phi_c;
+        sigma = Permutation{sigma_c};
+        alpha = Permutation{alpha_c};
+        phi   = Permutation{phi_c};
         initial.resize(sigma.size(), 0);
         for (size_t i = 0; i < N; ++i) {
             initial[alpha[i]] = initial[i] % 2;
@@ -115,7 +115,7 @@ namespace vb {
         };
         go(i);
         for (auto x : s2) go(phi[x]);
-        return s1;
+        return Permutation{s1};
     }
 
     auto Hypermap::rebasing() const -> Permutation {
@@ -270,8 +270,8 @@ namespace vb {
             initial[i + 4 * n] = 8;
             initial[i + 5 * n] = 2;
         }
-        alpha = new_a;
-        phi   = new_f;
+        alpha = Permutation{new_a};
+        phi   = Permutation{new_f};
         sigma = (alpha * phi).inverse();
     }
 
@@ -290,8 +290,8 @@ namespace vb {
         double se = 0;
         for (size_t i = 0; i < out.size(); ++i) {
             if (M.V[i].fixed) continue;
-            auto &adj = M.V[i].adj;
-            auto  n   = adj.size();
+            const auto &adj = M.V[i].adj;
+            auto        n   = adj.size();
             if (n == 2) continue;
             double s = M.alpha_xyz(out[i], out[adj[0]], out[adj[n - 1]]);
             for (size_t j = 0; j < n - 1; ++j) s += M.alpha_xyz(out[i], out[adj[j]], out[adj[j + 1]]);

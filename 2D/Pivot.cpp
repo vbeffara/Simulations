@@ -34,7 +34,7 @@ public:
         size_t p = 0;
         while (p == 0) {
             zs[0] = center;
-            for (size_t k = 1; k < n; k++) zs[k] = zs[k - 1] + dz[prng.uniform_int(4u)];
+            for (size_t k = 1; k < n; k++) zs[k] = zs[k - 1] + dz[prng.uniform_int(4U)];
             p = piv();
         }
 

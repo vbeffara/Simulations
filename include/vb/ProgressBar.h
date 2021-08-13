@@ -5,7 +5,7 @@
 namespace vb {
     class ProgressBar : public Auto {
     public:
-        ProgressBar(size_t length = 100, double pow = 1.0);
+        explicit ProgressBar(size_t length = 100, double pow = 1.0);
 
         void set(size_t pos);
 

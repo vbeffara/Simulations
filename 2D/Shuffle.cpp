@@ -1,6 +1,7 @@
 // Initial code in Python by Sunil Chhita, ported to C++ by VB.
 #include <fstream>
 #include <gsl/gsl>
+#include <math.h>
 #include <vb/Figure.h>
 #include <vb/data/Array.h>
 #include <vb/util/Hub.h>
@@ -89,7 +90,7 @@ struct Tiling {
     }
 
     void probs() {
-        vector<Array<pair<double, double>>> A(n, ucoo{per, per});
+        vector<Array<pair<double, double>>> A(n, Array<pair<double, double>>{ucoo{per, per}});
 
         for (auto z : coo_range(A[0].size))
             if (double w = TP.atp(coo(z)); w != 0)
@@ -101,8 +102,8 @@ struct Tiling {
             const auto &AA = A[k - 1];
             for (auto z : coo_range(A[k].size)) {
                 auto   i = z.x, j = z.y, i1 = (i + 1) % per, j1 = (j + 1) % per, ii = (i + 2 * (i % 2)) % per, jj = (j + 2 * (j % 2)) % per;
-                double a20, a21;
-                auto & a1 = AA[{ii, jj}];
+                double a20 = NAN, a21 = NAN;
+                const auto &a1 = AA[{ii, jj}];
                 if (a1.second + AA[{i1, j1}].second == AA[{ii, j1}].second + AA[{i1, jj}].second) {
                     a20 = a1.first * AA[{i1, j1}].first + AA[{ii, j1}].first * AA[{i1, jj}].first;
                     a21 = a1.second + AA[{i1, j1}].second;
@@ -117,7 +118,7 @@ struct Tiling {
             }
         }
 
-        pbs = vector<Array<double>>(n, ucoo{per / 2, per / 2});
+        pbs = vector<Array<double>>(n, Array<double>{ucoo{per / 2, per / 2}});
 
         for (size_t k = 0; k < n; ++k) {
             const auto &a0nk1 = A[n - k - 1];

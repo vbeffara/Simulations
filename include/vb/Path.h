@@ -35,7 +35,7 @@ namespace vb {
         void output_pdf(const std::string &s) const;
 
         /// Check whether the path is self-avoiding.
-        bool self_avoiding();
+        auto self_avoiding() -> bool;
 
     private:
         std::string title;

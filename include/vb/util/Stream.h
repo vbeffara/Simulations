@@ -5,7 +5,7 @@
 namespace vb {
     template <typename T> using Stream = ranges::experimental::generator<T>;
 
-    Stream<std::vector<size_t>> partitions(size_t n, size_t m = 1); // Partitions of n with piece size at least m
-    Stream<std::vector<size_t>> tuples(size_t k, size_t n);         // Ordered, distinct k-tuples in [0,n-1]
-    Stream<std::vector<size_t>> cycles(size_t k, size_t n);         // k-tuples up to cyclic permutation
+    auto partitions(size_t n, size_t m = 1) -> Stream<std::vector<size_t>>; // Partitions of n with piece size at least m
+    auto tuples(size_t k, size_t n) -> Stream<std::vector<size_t>>;         // Ordered, distinct k-tuples in [0,n-1]
+    auto cycles(size_t k, size_t n) -> Stream<std::vector<size_t>>;         // k-tuples up to cyclic permutation
 } // namespace vb

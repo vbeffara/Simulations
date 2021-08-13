@@ -59,7 +59,7 @@ auto main(int argc, char **argv) -> int {
         if (vb::prng.bernoulli(e)) {
             S.shrink();
         } else {
-            S.step(vb::dz[vb::prng.uniform_int(4u)]);
+            S.step(vb::dz[vb::prng.uniform_int(4U)]);
         }
     }
     S.output(H.title);

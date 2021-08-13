@@ -22,13 +22,13 @@ namespace vb {
         Shape(const Shape &) = default;
         Shape(Shape &&)      = default;
         virtual ~Shape()     = default;
-        Shape &operator=(const Shape &) = default;
-        Shape &operator=(Shape &&) = default;
+        auto operator=(const Shape &) -> Shape & = default;
+        auto operator=(Shape &&) -> Shape & = default;
 
-        virtual double left()            = 0;
-        virtual double right()           = 0;
-        virtual double top()             = 0;
-        virtual double bottom()          = 0;
+        virtual auto   left() -> double   = 0;
+        virtual auto   right() -> double  = 0;
+        virtual auto   top() -> double    = 0;
+        virtual auto   bottom() -> double = 0;
         virtual void   draw(cairo_t *cr) = 0;
 
         Pen p;
@@ -38,10 +38,10 @@ namespace vb {
     public:
         Segment(cpx zz1, cpx zz2, Pen p = Pen()) : Shape(p), z1(zz1), z2(zz2) {}
 
-        double left() override { return std::min(z1.real(), z2.real()); }
-        double right() override { return std::max(z1.real(), z2.real()); }
-        double top() override { return std::max(z1.imag(), z2.imag()); }
-        double bottom() override { return std::min(z1.imag(), z2.imag()); }
+        auto   left() -> double override { return std::min(z1.real(), z2.real()); }
+        auto   right() -> double override { return std::max(z1.real(), z2.real()); }
+        auto   top() -> double override { return std::max(z1.imag(), z2.imag()); }
+        auto   bottom() -> double override { return std::min(z1.imag(), z2.imag()); }
         void   draw(cairo_t *cr) override;
 
         cpx z1, z2;
@@ -51,10 +51,10 @@ namespace vb {
     public:
         explicit Dot(cpx zz, Pen p = Pen()) : Shape(p), z(zz) {}
 
-        double left() override { return z.real(); }
-        double right() override { return z.real(); }
-        double top() override { return z.imag(); }
-        double bottom() override { return z.imag(); }
+        auto   left() -> double override { return z.real(); }
+        auto   right() -> double override { return z.real(); }
+        auto   top() -> double override { return z.imag(); }
+        auto   bottom() -> double override { return z.imag(); }
         void   draw(cairo_t *cr) override;
 
         cpx z;
@@ -64,10 +64,10 @@ namespace vb {
     public:
         Circle(cpx z_, double r_, Pen p = Pen()) : Shape(p), z(z_), r(r_) {}
 
-        double left() override { return z.real() - r; }
-        double right() override { return z.real() + r; }
-        double top() override { return z.imag() + r; }
-        double bottom() override { return z.imag() - r; }
+        auto   left() -> double override { return z.real() - r; }
+        auto   right() -> double override { return z.real() + r; }
+        auto   top() -> double override { return z.imag() + r; }
+        auto   bottom() -> double override { return z.imag() - r; }
         void   draw(cairo_t *cr) override;
 
         cpx    z;
@@ -78,10 +78,10 @@ namespace vb {
     public:
         explicit Path(std::vector<cpx> z_, Pen p = Pen()) : Shape(p), z(std::move(z_)) {}
 
-        double left() override;
-        double right() override;
-        double top() override;
-        double bottom() override;
+        auto   left() -> double override;
+        auto   right() -> double override;
+        auto   top() -> double override;
+        auto   bottom() -> double override;
         void   draw(cairo_t *cr) override;
 
         std::vector<cpx> z;

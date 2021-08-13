@@ -12,7 +12,7 @@ Options:
   -p <drift>     Random walk parameter [default: 0.5]
   -v, --version  Print version number and exit)";
 
-int main(int argc, const char **argv) {
+auto main(int argc, const char **argv) -> int {
     std::map<std::string, docopt::value> args = docopt::docopt(USAGE, {argv + 1, argv + argc},
                                                                true,              // show help if requested
                                                                "Naval Fate 2.0"); // version string

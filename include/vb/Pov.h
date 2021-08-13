@@ -1,6 +1,7 @@
 #pragma once /// \file
 #include <fmt/ostream.h>
 #include <fstream>
+#include <utility>
 #include <vector>
 
 namespace vb {
@@ -9,8 +10,8 @@ namespace vb {
     };
 
     struct bunch : public std::vector<std::string> {
-        bunch(std::string bef = "", std::string aft = "") : before(bef), after(aft) {}
-        template <typename T> bunch &operator<<(const T &t) {
+        explicit bunch(std::string bef = "", std::string aft = "") : before(std::move(std::move(bef))), after(std::move(std::move(aft))) {}
+        template <typename T> auto operator<<(const T &t) -> bunch & {
             push_back(fmt::format("{}", t));
             return *this;
         }
@@ -35,14 +36,14 @@ namespace vb {
         Pov_Union() : bunch("union {", "}"){};
     };
 
-    std::string Box(tri a, tri b);
-    std::string Camera(tri a, tri b, double d);
-    std::string Cylinder(tri a, tri b, double r);
-    std::string Light_Source(tri a);
-    std::string Plane(tri a, double d);
-    std::string Sphere(tri a, double r);
-    std::string Texture(const std::string &t);
-    Pov_Union   Frame(tri a, tri b, const std::string &t);
+    auto Box(tri a, tri b) -> std::string;
+    auto Camera(tri a, tri b, double d) -> std::string;
+    auto Cylinder(tri a, tri b, double r) -> std::string;
+    auto Light_Source(tri a) -> std::string;
+    auto Plane(tri a, double d) -> std::string;
+    auto Sphere(tri a, double r) -> std::string;
+    auto Texture(const std::string &t) -> std::string;
+    auto Frame(tri a, tri b, const std::string &t) -> Pov_Union;
 } // namespace vb
 
 template <> struct fmt::formatter<vb::tri> {

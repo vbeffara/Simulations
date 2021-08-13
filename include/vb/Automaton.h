@@ -10,7 +10,7 @@ namespace vb {
 
         Rule(Pattern in, Pattern out) : cond(std::move(in)), move(std::move(out)) {}
 
-        bool check(Automaton<T> &A, size_t i) {
+        auto check(Automaton<T> &A, size_t i) -> bool {
             for (auto &c : cond)
                 if (!(A.atp(int(i) + c.first) == c.second)) return false;
             return true;
@@ -28,7 +28,7 @@ namespace vb {
     public:
         Automaton(const std::string &title, size_t n_, T s, bool p = true) : std::vector<T>(n_, s), n(n_), pause(p), I(title, {n, 500}) {}
 
-        T &atp(int i) {
+        auto atp(int i) -> T & {
             int j = i % int(n);
             if (j < 0) j += n;
             return (*this)[size_t(j)];

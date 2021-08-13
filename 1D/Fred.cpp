@@ -4,15 +4,13 @@
 #include <vb/util/PRNG.h>
 
 struct state {
-    static double a, b;
-    double        v, x;
-    void          step() {
+    static inline double a, b;
+    double               v, x;
+    void                 step() {
         x = a * x + b;
         while (x >= 1) x -= 1;
     }
 };
-
-double state::a, state::b;
 
 class Model : public std::vector<state> {
 public:

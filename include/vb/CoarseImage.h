@@ -5,7 +5,7 @@ namespace vb {
     class CoarseCell : public std::vector<bool> {
     public:
         explicit CoarseCell(size_t l) : LL(l * l) {}
-        explicit operator Color() { return Grey(uint8_t(fill * 255 / LL)); }
+        explicit operator Color() const { return Grey(uint8_t(fill * 255 / LL)); }
 
         size_t fill = 0; ///< The number of pixels with value 1 in the cell.
         size_t LL;       ///< The number of vertices in the cell.
@@ -18,11 +18,11 @@ namespace vb {
 
         CoarseImage(const std::string &s, ucoo size) : CoarseImage(s, size, size_t(pow(double(sup(size)), .33))) {}
 
-        template <typename T> bool fits(const coo_2d<T> &z) const {
+        template <typename T> auto fits(const coo_2d<T> &z) const -> bool {
             return (z.x >= 0) && (z.y >= 0) && (z.x < T(size.x)) && (z.y < T(size.y));
         }
 
-        bool at(ucoo z) const;
+        [[nodiscard]] auto at(ucoo z) const -> bool;
         void put(ucoo z, bool c);
 
         void output_fine(const std::string &fn) const;
