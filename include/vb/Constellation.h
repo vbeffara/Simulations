@@ -19,9 +19,9 @@ namespace vb {
 
         Constellation();
         Constellation(const Constellation &) = default;
-        Constellation(Constellation &&)      = default;
+        Constellation(Constellation &&) noexcept = default;
         auto operator=(const Constellation &) -> Constellation & = default;
-        auto operator=(Constellation &&) -> Constellation & = default;
+        auto operator=(Constellation &&) noexcept -> Constellation & = default;
 
         template <typename U> explicit Constellation(const Constellation<U> &C);
 

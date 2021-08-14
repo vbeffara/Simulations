@@ -16,25 +16,25 @@ namespace vb {
         using Constellation<T>::cost;
         using Constellation<T>::dim;
 
-        Constellation0(const Hypermap &M);
-        template <typename U> Constellation0(const Constellation0<U> &C);
+        explicit Constellation0(const Hypermap &M);
+        template <typename U> explicit Constellation0(const Constellation0<U> &C);
 
-        cplx operator()(cplx z) const override;
+        auto operator()(cplx z) const -> cplx override;
 
-        std::pair<cplx, cplx> bounds() const override;
+        auto bounds() const -> std::pair<cplx, cplx> override;
 
         void belyi(); // does too many things at once
 
-        std::optional<Hypermap> explore() const; // Recover the hypermap
+        [[nodiscard]] auto explore() const -> std::optional<Hypermap>; // Recover the hypermap
 
     private:
-        Vector<cplx> vec() const override;
+        auto         vec() const -> Vector<cplx> override;
         void         readvec(const Vector<cplx> &xy) override;
 
-        Vector<cplx> vcost() const override;
-        Matrix<cplx> jacvcost() const override;
+        auto vcost() const -> Vector<cplx> override;
+        auto jacvcost() const -> Matrix<cplx> override;
 
-        cplx logder(cplx z, unsigned k = 0) const;
+        auto logder(cplx z, unsigned k = 0) const -> cplx;
         void linear(cplx u, cplx v = cplx(0)); // move the points, recompute P and Q, don't touch l
         void normalize();                      // choose l to make ones ones
         void make_l_1();                       // rescale to make l equal to 1
@@ -42,5 +42,5 @@ namespace vb {
         void make_p_1();                       // try to have reasonable scaling
     };
 
-    template <typename T> std::ostream &operator<<(std::ostream &os, const Constellation0<T> &C);
+    template <typename T> auto operator<<(std::ostream &os, const Constellation0<T> &C) -> std::ostream &;
 } // namespace vb

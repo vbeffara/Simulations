@@ -46,7 +46,7 @@ namespace vb {
         void plot_edges(Figure *F);
         void plot_circles(Figure *F);
 
-        auto nb_sommets() const -> size_t { return n; }
+        [[nodiscard]] auto nb_sommets() const -> size_t { return n; }
         auto nb_aretes() -> size_t;
         auto nb_faces() -> size_t;
         auto euler() -> int;

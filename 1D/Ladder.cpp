@@ -4,7 +4,7 @@
  *        = 2 to the right of max(range)==env.size()
  */
 
-#include <math.h>
+#include <cmath>
 #include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 

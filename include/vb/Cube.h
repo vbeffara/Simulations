@@ -18,8 +18,8 @@ namespace vb {
     public:
         Cube(const std::string &s, ucoo3 sz);
 
-        auto index(ucoo3 c) const -> size_t { return c.x + size.x * c.y + size.x * size.y * c.z; }
-        auto wrap(coo3 c) const -> ucoo3 { return {pmod(c.x, size.x), pmod(c.y, size.y), pmod(c.z, size.z)}; }
+        [[nodiscard]] auto index(ucoo3 c) const -> size_t { return c.x + size.x * c.y + size.x * size.y * c.z; }
+        [[nodiscard]] auto wrap(coo3 c) const -> ucoo3 { return {pmod(c.x, size.x), pmod(c.y, size.y), pmod(c.z, size.z)}; }
 
         auto at(const ucoo3 &c) -> uint8_t & { return data[index(c)]; }
         auto atp(const coo3 &c) -> uint8_t & { return at(wrap(c)); }

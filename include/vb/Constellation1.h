@@ -16,39 +16,39 @@ namespace vb {
         using Constellation<T>::cost;
         using Constellation<T>::dim;
 
-        Constellation1(const Hypermap &M);
-        template <typename U> Constellation1(const Constellation1<U> &C);
+        explicit Constellation1(const Hypermap &M);
+        template <typename U> explicit Constellation1(const Constellation1<U> &C);
 
-        cplx operator()(cplx z) const override;
+        auto operator()(cplx z) const -> cplx override;
 
-        std::pair<cplx, cplx> bounds() const override;
+        auto bounds() const -> std::pair<cplx, cplx> override;
 
-        cplx tau() const { return p[0]; }
+        auto tau() const -> cplx { return p[0]; }
 
         int         dx = 0, dy = 0;
         Elliptic<T> E{q_<T>(I_<T>())};
 
     private:
-        Vector<cplx> vec() const override;
+        auto         vec() const -> Vector<cplx> override;
         void         readvec(const Vector<cplx> &xy) override;
 
-        Vector<cplx> vcost() const override;
-        Matrix<cplx> jacvcost() const override;
-        Matrix<cplx> jacnum();
+        auto vcost() const -> Vector<cplx> override;
+        auto jacvcost() const -> Matrix<cplx> override;
+        auto jacnum() -> Matrix<cplx>;
 
-        cplx reduce(cplx z) const override;
-        cplx logderp(cplx z, unsigned k) const;
-        cplx logderp_z(cplx z, unsigned k) const;
-        cplx logderp_q(cplx z, unsigned k) const;
-        cplx logderp_t(cplx z, unsigned k) const;
-        cplx logder(cplx z, unsigned k) const;
-        cplx logder_z(cplx z, unsigned k) const;
-        cplx logder_t(cplx z, unsigned k) const;
+        auto reduce(cplx z) const -> cplx override;
+        auto logderp(cplx z, unsigned k) const -> cplx;
+        auto logderp_z(cplx z, unsigned k) const -> cplx;
+        auto logderp_q(cplx z, unsigned k) const -> cplx;
+        auto logderp_t(cplx z, unsigned k) const -> cplx;
+        auto logder(cplx z, unsigned k) const -> cplx;
+        auto logder_z(cplx z, unsigned k) const -> cplx;
+        auto logder_t(cplx z, unsigned k) const -> cplx;
 
         void from_points();
         void normalize();
         void shift(cplx z);
     };
 
-    template <typename T> std::ostream &operator<<(std::ostream &os, const Constellation1<T> &C);
+    template <typename T> auto operator<<(std::ostream &os, const Constellation1<T> &C) -> std::ostream &;
 } // namespace vb

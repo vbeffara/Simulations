@@ -21,7 +21,7 @@ public:
         output(H.title);
     };
 
-    auto phiwb(int mw, int nw, int mb, int nb) const -> cpx {
+    [[nodiscard]] auto phiwb(int mw, int nw, int mb, int nb) const -> cpx {
         return real(pow(beta / gamma, -mw) * pow(beta / alpha, -nw) / lambda) * alpha * lambda * pow(beta / gamma, mb) *
                pow(beta / alpha, nb);
     }

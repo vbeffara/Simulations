@@ -1,7 +1,7 @@
 // Initial code in Python by Sunil Chhita, ported to C++ by VB.
+#include <cmath>
 #include <fstream>
 #include <gsl/gsl>
-#include <math.h>
 #include <vb/Figure.h>
 #include <vb/data/Array.h>
 #include <vb/util/Hub.h>

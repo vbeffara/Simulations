@@ -10,9 +10,9 @@ using namespace std;
 auto triangulations(unsigned n) -> Stream<Hypermap> {
     Cycles phic;
     for (unsigned i = 0; i < n / 3; ++i) phic.emplace_back(std::vector<size_t>{i, i + n / 3, i + 2 * n / 3});
-    Permutation    phi(phic);
-    unsigned       np = n / 6;
-    vector<size_t> a(n / 2 - np, 2);
+    Permutation           phi(phic);
+    unsigned              np = n / 6;
+    vector<size_t>        a(n / 2 - np, 2);
     std::vector<Hypermap> hs;
 
     for (auto alph : permutations(a)) {

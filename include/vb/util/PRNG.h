@@ -7,7 +7,7 @@
 namespace vb {
     class PRNG : public boost::mt19937_64 {
     public:
-        explicit PRNG(uint64_t s = 0) noexcept : boost::mt19937_64(s != 0u ? s : std::random_device()()) {}
+        explicit PRNG(uint64_t s = 0) noexcept : boost::mt19937_64(s != 0U ? s : std::random_device()()) {}
 
         auto                       bernoulli(double p = .5) -> bool { return (boost::bernoulli_distribution<>(p))(*this); }
         template <typename T> auto uniform_int(T mmax) -> T { return (boost::uniform_int<T>(0, T(mmax - 1)))(*this); }

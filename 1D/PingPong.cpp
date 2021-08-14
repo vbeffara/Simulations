@@ -25,12 +25,12 @@ auto main(int argc, char **argv) -> int {
         if (x <= xmin) {
             cout << x << endl;
             xmin = x - 1;
-            x += int64_t(a * pow(-x, b));
+            x += int(a * pow(-x, b));
         }
         if (x >= xmax) {
             cout << x << endl;
             xmax = x + 1;
-            x -= int64_t(1 * pow(+x, b));
+            x -= int(1 * pow(+x, b));
         }
         PB.set(size_t(max(xmax, -xmin)));
     }
