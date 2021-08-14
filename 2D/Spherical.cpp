@@ -1,10 +1,11 @@
+#include <cmath>
 #include <spdlog/spdlog.h>
 #include <vb/Sphere.h>
 #include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 auto f_to_c(double f) -> vb::Color {
-    if (isnan(f)) { return vb::RED; }
+    if (std::isnan(f)) { return vb::RED; }
     if (f > 0) { return vb::Indexed(1); }
     return vb::Indexed(2);
 }
