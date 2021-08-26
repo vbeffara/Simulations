@@ -1,6 +1,12 @@
 cmake_minimum_required (VERSION 3.18)
 project (Simulations CXX)
 
+if (EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    set(CONAN_SYSTEM_INCLUDES ON)
+    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    conan_basic_setup(NO_OUTPUT_DIRS)
+endif ()
+
 include(CheckCXXCompilerFlag)
 include(FindBoost)
 include(FindFLTK)
