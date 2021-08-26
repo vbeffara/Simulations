@@ -151,6 +151,6 @@ auto main(int argc, char **argv) -> int {
         }
     } else {
         spdlog::error("Type should be 'wave' or 'barg', exiting...");
-        exit(1);
+        return 1;
     }
 }

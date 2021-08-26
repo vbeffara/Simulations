@@ -12,7 +12,7 @@ public:
         emplace("none", [&](coo /*unused*/) { return coo{0, 0}; });
         emplace("line", [&](coo z) {
             double p = H['p'];
-            return coo{int(-p * z.x), int(-p * z.y)};
+            return coo{int(-p * double(z.x)), int(-p * double(z.y))};
         });
         emplace("idla", [&](coo z) { return -z; });
         emplace("sign", [&](coo z) { return coo{-sign(z.x), -sign(z.y)}; });
@@ -26,7 +26,7 @@ public:
         });
         emplace("sqrt", [&](coo z) {
             double l = 1 + sqrt(norm(z));
-            return coo{int(-z.x / sqrt(l)), int(-z.y / sqrt(l))};
+            return coo{int(-double(z.x) / sqrt(l)), int(-double(z.y) / sqrt(l))};
         });
 
         emplace("maxi", [&](coo z) { return (abs(z.x) > abs(z.y)) ? coo{-sign(z.x), 0} : coo{0, -sign(z.y)}; });
@@ -36,7 +36,7 @@ public:
         });
         emplace("maxb", [&](coo z) {
             double l = pow(norm(z), double(H['b']));
-            return (abs(z.x) > abs(z.y)) ? coo{int(-l * sign(z.x)), 0} : coo{0, int(-l * sign(z.y))};
+            return (abs(z.x) > abs(z.y)) ? coo{int(-l * sign(double(z.x))), 0} : coo{0, int(-l * sign(double(z.y)))};
         });
 
         emplace("dent", [&](coo z) {
@@ -46,9 +46,9 @@ public:
 
         emplace("octo", [&](coo z) {
             double a = H['a'], b = H['b'];
-            if (abs(z.x) > 2 * abs(z.y)) return coo{int(-a * sign(z.x)), 0};
-            if (abs(z.y) > 2 * abs(z.x)) return coo{0, int(-a * sign(z.y))};
-            return coo{int(-b * sign(z.x)), int(-b * sign(z.y))};
+            if (abs(z.x) > 2 * abs(z.y)) return coo{int(-a * sign(double(z.x))), 0};
+            if (abs(z.y) > 2 * abs(z.x)) return coo{0, int(-a * sign(double(z.y)))};
+            return coo{int(-b * sign(double(z.x))), int(-b * sign(double(z.y)))};
         });
     }
 };

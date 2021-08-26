@@ -20,7 +20,7 @@ using Graph           = adjacency_list<
 void add_one(Graph *gg, size_t i, size_t j) {
     Graph &         g{*gg};
     edge_descriptor e1, e2;
-    bool            t = 0;
+    bool            t = false;
 
     tie(e1, t) = add_edge(i, j, g);
     tie(e2, t) = add_edge(j, i, g);

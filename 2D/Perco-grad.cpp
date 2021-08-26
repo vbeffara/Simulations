@@ -14,7 +14,7 @@ auto main(int argc, char **argv) -> int {
 
     if ((w * h == 0) && (w + h != 0)) {
         std::cerr << "Please specify both width and height, or neither." << std::endl;
-        exit(1);
+        return 1;
     }
 
     if (w * h == 0) {

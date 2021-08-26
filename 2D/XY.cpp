@@ -1,5 +1,4 @@
-static const auto usage = R"(
-The XY model on Z^2
+static const auto usage = R"(The XY model on Z^2
 
 Usage: XY [options]
 
@@ -39,7 +38,7 @@ namespace vb {
 } // namespace vb
 
 auto main(int argc, char **argv) -> int {
-    auto args = docopt::docopt(usage, {argv + 1, argv + argc}, true);
+    auto args = docopt::docopt(usage, {&argv[1], &argv[argc]}, true);
     auto n    = std::stoul(args["-n"].asString());
     auto b    = std::stod(args["-b"].asString());
     auto xy   = vb::XY(n, b);
