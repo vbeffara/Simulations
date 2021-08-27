@@ -31,7 +31,7 @@ namespace vb {
         }
     }
 
-    Pairings_Iterator::Pairings_Iterator(size_t n, size_t i, bool d) : current(n), n(n), i(i) {
+    Pairings_Iterator::Pairings_Iterator(size_t n_, size_t i_, bool d) : current(n_), n(n_), i(i_) {
         if (d) {
             std::vector<size_t> all;
             all.reserve(n);
@@ -52,7 +52,7 @@ namespace vb {
 
     auto Pairings_Iterator::operator*() -> Permutation & { return current; }
 
-    Pairings::Pairings(size_t n) : n(n) {}
+    Pairings::Pairings(size_t n_) : n(n_) {}
 
     auto Pairings::size() const -> size_t {
         size_t nn = n;

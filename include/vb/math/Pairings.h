@@ -4,11 +4,11 @@
 namespace vb {
     class Pairings_Iterator {
     public:
-        Pairings_Iterator(size_t n, size_t i, bool d);
+        Pairings_Iterator(size_t n_, size_t i_, bool d);
 
-        auto         operator!=(const Pairings_Iterator &o) const -> bool;
-        void         operator++();
-        auto         operator*() -> Permutation &;
+        auto operator!=(const Pairings_Iterator &o) const -> bool;
+        void operator++();
+        auto operator*() -> Permutation &;
 
     private:
         void next();
@@ -20,7 +20,7 @@ namespace vb {
 
     class Pairings {
     public:
-        explicit Pairings(size_t n);
+        explicit Pairings(size_t n_);
 
         [[nodiscard]] auto size() const -> size_t;
 

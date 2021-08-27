@@ -4,13 +4,13 @@
 
 namespace vb {
     auto PRNG::discrete(const std::vector<double> &p) -> unsigned {
-        double   U = uniform_real();
-        unsigned i = 0;
-        while (U > p[i]) {
-            U -= p[i];
-            ++i;
+        double   U  = uniform_real();
+        unsigned ii = 0;
+        while (U > p[ii]) {
+            U -= p[ii];
+            ++ii;
         }
-        return i;
+        return ii;
     }
 
     auto PRNG::state() -> std::string { return fmt::format("{}", *this); }

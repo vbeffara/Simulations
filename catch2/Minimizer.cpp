@@ -16,11 +16,11 @@ TEST_CASE("vb::Minimizer") {
         return out;
     };
 
-    auto fg = [](const Vector<double> &x, Vector<double> *g) {
+    auto fg = [](const Vector<double> &x, Vector<double> *gg) {
         double o = 0;
         for (int i = 0; i < 400; ++i) {
             o += (1 - cos(x[i] / (i + 1)));
-            (*g)[i] = sin(x[i] / (i + 1)) / (i + 1);
+            (*gg)[i] = sin(x[i] / (i + 1)) / (i + 1);
         }
         return o;
     };

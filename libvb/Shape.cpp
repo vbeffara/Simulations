@@ -44,8 +44,8 @@ namespace vb {
     void Path::draw(cairo_t *cr) {
         bool down = false;
         int  l    = 0;
-        for (auto p : z) {
-            if (std::isnan(real(p))) {
+        for (auto pp : z) {
+            if (std::isnan(real(pp))) {
                 down = false;
                 continue;
             }
@@ -54,10 +54,10 @@ namespace vb {
                     cairo_stroke(cr);
                     l = 0;
                 }
-                cairo_move_to(cr, p.real(), p.imag());
-                if (!std::isnan(real(p))) down = true;
+                cairo_move_to(cr, pp.real(), pp.imag());
+                if (!std::isnan(real(pp))) down = true;
             } else {
-                cairo_line_to(cr, p.real(), p.imag());
+                cairo_line_to(cr, pp.real(), pp.imag());
             }
             ++l;
         }

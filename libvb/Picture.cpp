@@ -46,12 +46,12 @@ namespace vb {
         output_png(fn);
     }
 
-    void Picture::snapshot_setup(const std::string &prefix, double period) {
+    void Picture::snapshot_setup(const std::string &prefix, double per) {
         if (snapshot_task) remove_task(*snapshot_task);
-        snapshot_period = period;
+        snapshot_period = per;
         snapshot_prefix = prefix;
         snapshot();
-        if (period > 0) snapshot_task = add_task(period, [this] { this->snapshot(); });
+        if (per > 0) snapshot_task = add_task(per, [this] { this->snapshot(); });
     }
 
     auto Picture::handle(int event) -> int {

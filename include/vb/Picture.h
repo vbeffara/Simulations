@@ -26,7 +26,7 @@ namespace vb {
         virtual void output(const std::string &s);
         void         output_png(const std::string &s);
 
-        void snapshot_setup(const std::string &prefix, double period = 0.0);
+        void snapshot_setup(const std::string &prefix, double per = 0.0);
         void snapshot();
 
         void show() override;
