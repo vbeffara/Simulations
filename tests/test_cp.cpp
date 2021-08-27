@@ -23,7 +23,7 @@ auto main(int argc, char **argv) -> int {
     m.show();
 
     Vector<double> x(3 * m.n);
-    double         r = 1.0 / sqrt(m.n);
+    double         r = 1.0 / sqrt(double(m.n));
 
     for (int64_t i = 0; i < int(m.n); ++i) {
         x[3 * i]     = m.v[size_t(i)]->z.real() / (1 - r);
@@ -31,7 +31,7 @@ auto main(int argc, char **argv) -> int {
         x[3 * i + 2] = .8 * r;
     }
 
-    Minimizer<double> MM(3 * m.n, [&m](const Vector<double> &x, Vector<double> *g) { return m.fg_circle_disk(x, g); });
+    Minimizer<double> MM(3 * m.n, [&m](const Vector<double> &xx, Vector<double> *g) { return m.fg_circle_disk(xx, g); });
     if (H['v']) {
         MM.cb = [](const Vector<double> & /*unused*/, double fx) { spdlog::trace("Current : {}", fx); };
         spdlog::set_level(spdlog::level::trace);

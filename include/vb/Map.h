@@ -14,7 +14,7 @@ namespace vb {
 
     class Map : public Picture {
     public:
-        size_t                               n;
+        size_t                               n; // TODO remove after checking that n==v.size() always holds
         std::vector<std::unique_ptr<Vertex>> v;
         std::vector<bool>                    bd;
 

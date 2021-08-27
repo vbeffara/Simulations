@@ -105,12 +105,12 @@ namespace vb {
     auto Hypermap::rebasing(size_t i) const -> Permutation {
         auto                n = alpha.size(), m = size_t(0);
         std::vector<size_t> s1(n, n), s2(n, n);
-        auto                go = [&](size_t i) {
-            while (s1[i] == n) {
-                s1[i] = m;
-                s2[m] = i;
+        auto                go = [&](size_t ii) {
+            while (s1[ii] == n) {
+                s1[ii] = m;
+                s2[m]  = ii;
                 ++m;
-                i = alpha[i];
+                ii = alpha[ii];
             }
         };
         go(i);
@@ -308,10 +308,10 @@ namespace vb {
         auto                n = V.size();
         std::vector<double> r(n, 0), old_r(n, 0), e(n, 1), old_e(n, 0), l(n, 0), ll(n, 0);
 
-        int    m   = int(pow(n, .25)); // Steps between looks
-        double eps = .1;               // Dampening of the decay estimator
-        double mvm = .01;              // Threshold to trigger the jump
-        double tgt = 1e-8;             // Target per-vertex error
+        int    m   = int(pow(double(n), .25)); // Steps between looks
+        double eps = .1;                       // Dampening of the decay estimator
+        double mvm = .01;                      // Threshold to trigger the jump
+        double tgt = 1e-8;                     // Target per-vertex error
 
         for (size_t i = 0; i < n; ++i)
             if (V[i].adj.size() > 2) { r[i] = V[i].r; }

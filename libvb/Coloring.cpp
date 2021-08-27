@@ -60,10 +60,10 @@ namespace vb {
             bb      = C.b;
             aa      = C.a;
         }
-        for (int i = -1; i <= 1; ++i)
-            for (int j = -1; j <= 1; ++j)
-                if ((!pre) || (i != 0) || (j != 0)) {
-                    Color cc = f(z + eps * cpx(i, j) / 3.0);
+        for (int ii = -1; ii <= 1; ++ii)
+            for (int jj = -1; jj <= 1; ++jj)
+                if ((!pre) || (ii != 0) || (jj != 0)) {
+                    Color cc = f(z + eps * cpx(ii, jj) / 3.0);
                     rr += cc.r;
                     gg += cc.g;
                     bb += cc.b;
@@ -73,8 +73,8 @@ namespace vb {
     }
 
     void Coloring::line(ucoo s, coo d, size_t l) {
-        tbb::parallel_for(size_t(0), l, [=](size_t i) {
-            ucoo c = s + d * i;
+        tbb::parallel_for(size_t(0), l, [=](size_t ii) {
+            ucoo c = s + d * ii;
             if (!die) at(c) = f(c_to_z(c));
         });
     }
@@ -93,8 +93,9 @@ namespace vb {
         for (; mono && (z != ucoo{ul.x, ul.y}); z += coo{0, -1}) mono = mono && (at(z) == tmp);
 
         if (mono) {
-            for (auto i = ul.x + 1; i < lr.x; ++i)
-                for (auto j = ul.y + 1; j < lr.y; ++j) at({i, j}) = tmp;
+            // TODO coo_range
+            for (auto ii = ul.x + 1; ii < lr.x; ++ii)
+                for (auto jj = ul.y + 1; jj < lr.y; ++jj) at({ii, jj}) = tmp;
             return;
         }
 
@@ -103,19 +104,19 @@ namespace vb {
         auto dd_ = (lr.x - ul.x > lr.y - ul.y) ? coo{0, 1} : coo{1, 0};
 
         line(ul_, dd_, size);
-        tbb::task_group g;
-        g.run([=]() { tessel_go(ul, lr_); });
-        g.run([=]() { tessel_go(ul_, lr); });
-        g.wait();
+        tbb::task_group G;
+        G.run([=]() { tessel_go(ul, lr_); });
+        G.run([=]() { tessel_go(ul_, lr); });
+        G.wait();
     }
 
     void Coloring::tessel(ucoo ul, ucoo lr) {
-        tbb::task_group g;
-        g.run([=]() { line(ul, {1, 0}, lr.x - ul.x); });
-        g.run([=]() { line({lr.x, ul.y}, {0, 1}, lr.y - ul.y); });
-        g.run([=]() { line(lr, {-1, 0}, lr.x - ul.x); });
-        g.run([=]() { line({ul.x, lr.y}, {0, -1}, lr.y - ul.y); });
-        g.wait();
+        tbb::task_group G;
+        G.run([=]() { line(ul, {1, 0}, lr.x - ul.x); });
+        G.run([=]() { line({lr.x, ul.y}, {0, 1}, lr.y - ul.y); });
+        G.run([=]() { line(lr, {-1, 0}, lr.x - ul.x); });
+        G.run([=]() { line({ul.x, lr.y}, {0, -1}, lr.y - ul.y); });
+        G.wait();
         tessel_go(ul, lr);
     }
 

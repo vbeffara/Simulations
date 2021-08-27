@@ -6,25 +6,25 @@ namespace vb {
 
     auto Figure::left() -> double {
         double l = 0.0;
-        for (const auto &i : contents) l = std::min(l, i->left());
+        for (const auto &c : contents) l = std::min(l, c->left());
         return l - margin;
     }
 
     auto Figure::right() -> double {
         double l = 0.0;
-        for (const auto &i : contents) l = std::max(l, i->right());
+        for (const auto &c : contents) l = std::max(l, c->right());
         return l + margin;
     }
 
     auto Figure::top() -> double {
         double l = 0.0;
-        for (const auto &i : contents) l = std::max(l, i->top());
+        for (const auto &c : contents) l = std::max(l, c->top());
         return l + margin;
     }
 
     auto Figure::bottom() -> double {
         double l = 0.0;
-        for (const auto &i : contents) l = std::min(l, i->bottom());
+        for (const auto &c : contents) l = std::min(l, c->bottom());
         return l - margin;
     }
 
@@ -58,14 +58,14 @@ namespace vb {
         cairo_set_line_join(cr, CAIRO_LINE_JOIN_ROUND);
         cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND);
 
-        for (const auto &i : contents) {
+        for (const auto &c : contents) {
             cairo_save(cr);
-            cairo_set_source_rgb(cr, i->p.c.r / 255.0, i->p.c.g / 255.0, i->p.c.b / 255.0);
-            cairo_set_line_width(cr, basewidth * i->p.w);
-            i->draw(cr);
-            if (i->p.ff) {
+            cairo_set_source_rgb(cr, c->p.c.r / 255.0, c->p.c.g / 255.0, c->p.c.b / 255.0);
+            cairo_set_line_width(cr, basewidth * c->p.w);
+            c->draw(cr);
+            if (c->p.ff) {
                 cairo_stroke_preserve(cr);
-                cairo_set_source_rgba(cr, i->p.f.r / 255.0, i->p.f.g / 255.0, i->p.f.b / 255.0, i->p.f.a / 255.0);
+                cairo_set_source_rgba(cr, c->p.f.r / 255.0, c->p.f.g / 255.0, c->p.f.b / 255.0, c->p.f.a / 255.0);
                 cairo_fill(cr);
             }
             cairo_stroke(cr);
@@ -75,7 +75,7 @@ namespace vb {
         cairo_restore(cr);
     }
 
-    void Figure::paint() { paint(cr); }
+    void Figure::paint() { paint(context); }
 
     void Figure::output_pdf(const std::string &s) {
         std::string os = s + ".pdf";

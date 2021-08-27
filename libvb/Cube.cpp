@@ -35,23 +35,27 @@ namespace vb {
             for (size_t y = 0; y < size.y; ++y)
                 for (size_t z = 0; z < size.z; ++z)
                     if (at({x, y, z}) == 255)
-                        squares1 << Box({x - .5 * size.x, y - .5 * size.y, z - .5 * size.z},
-                                        {double(x) + 1 - .5 * size.x, double(y) + 1 - .5 * size.y, double(z) + 1 - .5 * size.z});
+                        squares1 << Box({double(x) - .5 * double(size.x), double(y) - .5 * double(size.y), double(z) - .5 * double(size.z)},
+                                        {double(x) + 1 - .5 * double(size.x), double(y) + 1 - .5 * double(size.y),
+                                         double(z) + 1 - .5 * double(size.z)});
                     else if (at({x, y, z}) == 255 / 2)
-                        squares2 << Box({x - .5 * size.x, y - .5 * size.y, z - .5 * size.z},
-                                        {double(x) + 1 - .5 * size.x, double(y) + 1 - .5 * size.y, double(z) + 1 - .5 * size.z});
+                        squares2 << Box({double(x) - .5 * double(size.x), double(y) - .5 * double(size.y), double(z) - .5 * double(size.z)},
+                                        {double(x) + 1 - .5 * double(size.x), double(y) + 1 - .5 * double(size.y),
+                                         double(z) + 1 - .5 * double(size.z)});
 
         squares1 << Texture("pigment { color rgb <.3,.5,.8> } normal { bumps .1 scale .1 } finish { "
                             "reflection {0} ambient 0 diffuse .5 brilliance 1.5 roughness .1 }");
         squares2 << Texture("pigment { color rgb <.3,.5,.8> transmit .8 } normal { bumps .1 scale .1 } finish { "
                             "reflection {0} ambient 0 diffuse .5 brilliance 1.5 roughness .1 }");
 
-        cube << fmt::format("{}", static_cast<bunch>(Frame(tri{-.5 * size.x, -.5 * size.y, -.5 * size.z},
-                                                           tri{.5 * size.x, .5 * size.y, .5 * size.z}, "pigment { color rgb <.8,0,0> }")))
+        cube << fmt::format("{}", static_cast<bunch>(Frame(tri{-.5 * double(size.x), -.5 * double(size.y), -.5 * double(size.z)},
+                                                           tri{.5 * double(size.x), .5 * double(size.y), .5 * double(size.z)},
+                                                           "pigment { color rgb <.8,0,0> }")))
              << fmt::format("{}", static_cast<bunch>(squares1)) << fmt::format("{}", static_cast<bunch>(squares2)) << "rotate 360*clock*y";
 
         Pov_Scene SS;
-        SS << Camera({1.3 * size.x, .9 * size.y, -1.5 * size.z}, {0, 0, 0}, 60) << Light_Source({50. * size.x, 30. * size.y, -15. * size.z})
+        SS << Camera({1.3 * double(size.x), .9 * double(size.y), -1.5 * double(size.z)}, {0, 0, 0}, 60)
+           << Light_Source({50. * double(size.x), 30. * double(size.y), -15. * double(size.z)})
            << fmt::format("{}", static_cast<bunch>(cube));
 
         if (mirrors) {

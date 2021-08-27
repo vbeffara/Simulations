@@ -14,8 +14,8 @@ namespace vb {
         AutoWindow::show();
         if (surface == nullptr) {
             surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, pixel_w(), pixel_h());
-            cr      = cairo_create(surface);
-            cairo_scale(cr, 1.0 * pixel_w() / w(), 1.0 * pixel_h() / h());
+            context = cairo_create(surface);
+            cairo_scale(context, 1.0 * pixel_w() / w(), 1.0 * pixel_h() / h());
             stride = size_t(cairo_image_surface_get_stride(surface)) / sizeof(Color);
         }
     }
@@ -23,8 +23,8 @@ namespace vb {
     void Picture::draw() {
         if (surface == nullptr) {
             surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, pixel_w(), pixel_h());
-            cr      = cairo_create(surface);
-            cairo_scale(cr, 1.0 * pixel_w() / w(), 1.0 * pixel_h() / h());
+            context = cairo_create(surface);
+            cairo_scale(context, 1.0 * pixel_w() / w(), 1.0 * pixel_h() / h());
             stride = size_t(cairo_image_surface_get_stride(surface)) / sizeof(Color);
         }
         paint();
