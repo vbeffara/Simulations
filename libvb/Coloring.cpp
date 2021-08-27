@@ -5,7 +5,7 @@
 
 namespace vb {
     Coloring::Coloring(const std::string &s, cpx z1_, cpx z2_, size_t n, std::function<Color(cpx)> f_)
-        : Picture(s, {n, size_t(n * imag(z2_ - z1_) / real(z2_ - z1_))}), eps(real(z1_ - z2_) / double(n)), z1(z1_), z2(z2_),
+        : Picture(s, {n, size_t(double(n) * imag(z2_ - z1_) / real(z2_ - z1_))}), eps(real(z1_ - z2_) / double(n)), z1(z1_), z2(z2_),
           f(std::move(f_)) {}
 
     void Coloring::show() {
@@ -14,23 +14,23 @@ namespace vb {
         stage        = gsl::span<Color>(sd, stride * to_unsigned(pixel_h()));
         eps          = real(z2 - z1) / pixel_w();
         pixel_detail = size_t(detail / eps);
-        for (size_t i = 0; i < to_unsigned(pixel_w()); ++i)
-            for (size_t j = 0; j < to_unsigned(pixel_h()); ++j) at({i, j}) = BLACK;
+        for (size_t ii = 0; ii < to_unsigned(pixel_w()); ++ii)
+            for (size_t j = 0; j < to_unsigned(pixel_h()); ++j) at({ii, j}) = BLACK;
         run([&] { tessel({0, 0}, {to_unsigned(pixel_w()) - 1, to_unsigned(pixel_h()) - 1}); });
-        if (aa) run([&]() { do_aa(); });
+        if (antialias) run([&]() { do_aa(); });
         update();
     }
 
     void Coloring::do_aa() {
         auto pw = to_unsigned(pixel_w()), ph = to_unsigned(pixel_h());
-        tbb::parallel_for(0, to_signed(pw * ph), [=](int i) {
-            auto [x, y] = std::div(i, to_signed(ph));
+        tbb::parallel_for(0, to_signed(pw * ph), [=](int ii) {
+            auto [x, y] = std::div(ii, to_signed(ph));
             ucoo  c{to_unsigned(x), to_unsigned(y)};
             Color cc = at(c);
             bool  u  = true;
             for (size_t d = 0; d < 4; ++d) {
                 auto c2 = c + dz[d];
-                if ((c2.x >= 0) && (c2.x < pw) && (c2.y >= 0) && (c2.y < ph) && (at(c2) != cc)) u = false;
+                if ((c2.x < pw) && (c2.y < ph) && (at(c2) != cc)) u = false;
             }
             if (!(u || die)) at(c) = aa_color(c, true);
         });
@@ -52,24 +52,24 @@ namespace vb {
 
     auto Coloring::aa_color(ucoo c, bool pre) const -> Color {
         cpx z = c_to_z(c);
-        int r(0), g(0), b(0), a(0);
+        int rr(0), gg(0), bb(0), aa(0);
         if (pre) {
             Color C = at(c);
-            r       = C.r;
-            g       = C.g;
-            b       = C.b;
-            a       = C.a;
+            rr      = C.r;
+            gg      = C.g;
+            bb      = C.b;
+            aa      = C.a;
         }
         for (int i = -1; i <= 1; ++i)
             for (int j = -1; j <= 1; ++j)
                 if ((!pre) || (i != 0) || (j != 0)) {
                     Color cc = f(z + eps * cpx(i, j) / 3.0);
-                    r += cc.r;
-                    g += cc.g;
-                    b += cc.b;
-                    a += cc.a;
+                    rr += cc.r;
+                    gg += cc.g;
+                    bb += cc.b;
+                    aa += cc.a;
                 }
-        return Color(uint8_t(r / 9), uint8_t(g / 9), uint8_t(b / 9), uint8_t(a / 9));
+        return Color(uint8_t(rr / 9), uint8_t(gg / 9), uint8_t(bb / 9), uint8_t(aa / 9));
     }
 
     void Coloring::line(ucoo s, coo d, size_t l) {
@@ -133,7 +133,7 @@ namespace vb {
                 return 1;
                 break;
             case 'a':
-                aa = !aa;
+                antialias = !antialias;
                 show();
                 return 1;
                 break;

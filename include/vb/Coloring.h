@@ -14,7 +14,7 @@ namespace vb {
         void shift(cpx z);
 
         double                    eps;
-        bool                      aa = true;
+        bool                      antialias = true;
         cpx                       z1, z2;
         std::function<Color(cpx)> f;
 

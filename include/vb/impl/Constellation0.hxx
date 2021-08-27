@@ -83,8 +83,8 @@ namespace vb {
     template <typename T> void Constellation0<T>::make_l_1() {
         normalize();
         int deg = 0;
-        for (auto zd : b) deg += zd.d;
-        for (auto zd : f) deg -= zd.d;
+        for (auto zd : b) deg += int(zd.d);
+        for (auto zd : f) deg -= int(zd.d);
         linear(pow(p[0], cplx(T(1) / T(deg))));
         p[0] = T(1);
     }
@@ -93,7 +93,7 @@ namespace vb {
         int  deg = 0;
         cplx sum(0);
         for (auto zd : b) {
-            deg += zd.d;
+            deg += int(zd.d);
             sum += T(zd.d) * zd.z;
         }
         sum /= deg;

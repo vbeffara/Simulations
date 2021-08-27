@@ -42,7 +42,7 @@ namespace vb {
         }
     };
 
-    template <typename T> Bitmap<T>::Bitmap(const std::string &s, ucoo size, T d) : Picture(s, size), Array<T>(size, d), dflt(d) {}
+    template <typename T> Bitmap<T>::Bitmap(const std::string &s, ucoo sz, T d) : Picture(s, sz), Array<T>(sz, d), dflt(d) {}
 
     template <typename T> void Bitmap<T>::fill(ucoo z, T c, size_t adj) {
         T in = at(z);

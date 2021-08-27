@@ -37,7 +37,7 @@ public:
         return (z.real() < back()) ? LEFTSIDE : RIGHTSIDE;
     }
 
-    double dt = 1;
+    double              dt = 1;
     std::vector<double> Min, Max;
 };
 
@@ -48,7 +48,7 @@ auto main(int argc, char **argv) -> int {
     Loewner  L(H['n'], H['k']);
     double   w = L.Max[0] - L.Min[0];
     Coloring C(H.title, cpx(-w, 0), cpx(w, 4.0 * w / 3.0), H['n'], [&L](cpx z) { return L.compute(z); });
-    if (H['a']) C.aa = false;
+    if (H['a']) C.antialias = false;
     C.show();
     C.output(H.title);
 }

@@ -14,7 +14,7 @@ public:
     explicit operator Color() const {
         if ((t == SITE) || (t == EDGE)) return WHITE;
         if (t == EMPH) return RED;
-        if (d < 0) return BLACK;
+        if (d == size_t(-1)) return BLACK;
         return Indexed(int(d));
     }
 
@@ -48,8 +48,8 @@ public:
     void go(const Hub &H) {
         show();
         put({0, 2 * (n / 2)}, Point{SITE});
-        for (size_t i = n + 1; i-- > 0;)
-            for (size_t j = 0; j <= n; ++j) lerw({2 * i, 2 * j});
+        for (size_t ii = n + 1; ii-- > 0;)
+            for (size_t j = 0; j <= n; ++j) lerw({2 * ii, 2 * j});
         if (H['p']) {
             put({0, 2 * (n / 2)}, Point{EMPH});
             path({2 * n, 2 * (n / 4)}, EMPH);

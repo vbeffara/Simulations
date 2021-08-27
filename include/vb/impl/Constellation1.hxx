@@ -63,7 +63,7 @@ namespace vb {
         cplx sf(0);
         int  sdf(0);
         for (auto zd : f) {
-            sdf += zd.d;
+            sdf += int(zd.d);
             sf += zd.z * T(zd.d);
         }
         for (auto &zd : b) zd.z -= sf / T(sdf);
@@ -73,7 +73,7 @@ namespace vb {
         cplx avg(0);
         int  d = 0;
         for (auto zd : w) {
-            d += zd.d;
+            d += int(zd.d);
             avg += logder(zd.z, 0) * T(zd.d);
         }
         p[1] = -avg / T(d);
@@ -181,8 +181,8 @@ namespace vb {
     }
 
     template <typename T> auto Constellation1<T>::jacvcost() const -> Matrix<cplx> { // m_ij = \partial_j(f_i)
-        Matrix<cplx>           out = Matrix<cplx>::Zero(int(dim), int(dim));
-        int                    i = 0, j = 0;
+        Matrix<cplx> out = Matrix<cplx>::Zero(int(dim), int(dim));
+        int          i = 0, j = 0;
         for (unsigned ii = 0; ii < w.size(); ++ii)
             for (unsigned id = 0; id < w[ii].d; ++id) {
                 j         = 0; // f_i is logder(w[ii],id)

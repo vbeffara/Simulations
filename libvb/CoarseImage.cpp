@@ -38,7 +38,7 @@ namespace vb {
     }
 
     void CoarseImage::output_fine(const std::string &fn) const {
-        auto stream = std::ofstream(fn, std::ios::binary);
+        auto  stream = std::ofstream(fn, std::ios::binary);
         auto *png    = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
         auto *info   = png_create_info_struct(png);
 
@@ -49,8 +49,8 @@ namespace vb {
 
         for (size_t j = 0; j < size.y; ++j) {
             auto row = std::vector<uint8_t>(1 + size.x / 8, 0);
-            for (size_t i = 0; i < size.x; ++i)
-                if (!at({i, j})) row.at(i / 8) |= (128U >> static_cast<unsigned>(i % 8));
+            for (size_t ii = 0; ii < size.x; ++ii)
+                if (!at({ii, j})) row.at(ii / 8) |= uint8_t(128U >> static_cast<unsigned>(ii % 8));
             png_write_row(png, row.data());
         }
 

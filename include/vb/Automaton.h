@@ -30,7 +30,7 @@ namespace vb {
 
         auto atp(int i) -> T & {
             int j = i % int(n);
-            if (j < 0) j += n;
+            if (j < 0) j += int(n);
             return (*this)[size_t(j)];
         }
 

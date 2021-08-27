@@ -9,7 +9,7 @@ namespace vb {
     class Vertex : public Circle {
     public:
         adj_list adj;
-        explicit Vertex(const cpx &z = cpx(0.0, 0.0), const double &r = 0.0) : Circle(z, r){};
+        explicit Vertex(const cpx &z_ = cpx(0.0, 0.0), const double &r_ = 0.0) : Circle(z_, r_){};
     };
 
     class Map : public Picture {
@@ -47,10 +47,10 @@ namespace vb {
         void plot_circles(Figure *F);
 
         [[nodiscard]] auto nb_sommets() const -> size_t { return n; }
-        auto nb_aretes() -> size_t;
-        auto nb_faces() -> size_t;
-        auto euler() -> int;
-        auto genre() -> int;
+        auto               nb_aretes() -> size_t;
+        auto               nb_faces() -> size_t;
+        auto               euler() -> int;
+        auto               genre() -> int;
 
         void mobius(cpx w, const double &theta);
 

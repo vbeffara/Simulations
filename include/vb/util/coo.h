@@ -59,15 +59,16 @@ namespace vb {
     // TODO: maybe this should be the only way to do coo -> ucoo conversion?
     constexpr auto wrap(const coo &z, const ucoo &p) -> ucoo { return {pmod(z.x, p.x), pmod(z.y, p.y)}; }
 
+    // TODO: implement this using Stream instead
     template <typename T> struct coo_range {
         coo_2d<T> z, r1, r2;
         explicit coo_range(coo_2d<T> r) : z({0, 0}), r1({0, 0}), r2(r) {}
-        coo_range(coo_2d<T> r1, coo_2d<T> r2) : z(r1), r1(r1), r2(r2) {}
-        auto             begin() const -> const coo_range & { return *this; }
-        auto             end() const -> const coo_range & { return *this; }
-        auto             operator!=(const coo_range<T> & /*unused*/) const -> bool { return z.y != r2.y; }
-        void             operator++() { z = (z.x == r2.x - 1) ? coo_2d<T>{r1.x, z.y + 1} : coo_2d<T>{z.x + 1, z.y}; }
-        auto             operator*() const -> const coo_2d<T> & { return z; }
+        coo_range(coo_2d<T> r1_, coo_2d<T> r2_) : z(r1_), r1(r1_), r2(r2_) {}
+        auto begin() const -> const coo_range & { return *this; }
+        auto end() const -> const coo_range & { return *this; }
+        auto operator!=(const coo_range<T> & /*unused*/) const -> bool { return z.y != r2.y; }
+        void operator++() { z = (z.x == r2.x - 1) ? coo_2d<T>{r1.x, z.y + 1} : coo_2d<T>{z.x + 1, z.y}; }
+        auto operator*() const -> const coo_2d<T> & { return z; }
     };
 } // namespace vb
 

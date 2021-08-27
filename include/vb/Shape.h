@@ -25,50 +25,50 @@ namespace vb {
         auto operator=(const Shape &) -> Shape & = default;
         auto operator=(Shape &&) -> Shape & = default;
 
-        virtual auto   left() -> double   = 0;
-        virtual auto   right() -> double  = 0;
-        virtual auto   top() -> double    = 0;
-        virtual auto   bottom() -> double = 0;
-        virtual void   draw(cairo_t *cr) = 0;
+        virtual auto left() -> double   = 0;
+        virtual auto right() -> double  = 0;
+        virtual auto top() -> double    = 0;
+        virtual auto bottom() -> double = 0;
+        virtual void draw(cairo_t *cr)  = 0;
 
         Pen p;
     };
 
     class Segment : public Shape {
     public:
-        Segment(cpx zz1, cpx zz2, Pen p = Pen()) : Shape(p), z1(zz1), z2(zz2) {}
+        Segment(cpx zz1, cpx zz2, Pen p_ = Pen()) : Shape(p_), z1(zz1), z2(zz2) {}
 
-        auto   left() -> double override { return std::min(z1.real(), z2.real()); }
-        auto   right() -> double override { return std::max(z1.real(), z2.real()); }
-        auto   top() -> double override { return std::max(z1.imag(), z2.imag()); }
-        auto   bottom() -> double override { return std::min(z1.imag(), z2.imag()); }
-        void   draw(cairo_t *cr) override;
+        auto left() -> double override { return std::min(z1.real(), z2.real()); }
+        auto right() -> double override { return std::max(z1.real(), z2.real()); }
+        auto top() -> double override { return std::max(z1.imag(), z2.imag()); }
+        auto bottom() -> double override { return std::min(z1.imag(), z2.imag()); }
+        void draw(cairo_t *cr) override;
 
         cpx z1, z2;
     };
 
     class Dot : public Shape {
     public:
-        explicit Dot(cpx zz, Pen p = Pen()) : Shape(p), z(zz) {}
+        explicit Dot(cpx zz, Pen p_ = Pen()) : Shape(p_), z(zz) {}
 
-        auto   left() -> double override { return z.real(); }
-        auto   right() -> double override { return z.real(); }
-        auto   top() -> double override { return z.imag(); }
-        auto   bottom() -> double override { return z.imag(); }
-        void   draw(cairo_t *cr) override;
+        auto left() -> double override { return z.real(); }
+        auto right() -> double override { return z.real(); }
+        auto top() -> double override { return z.imag(); }
+        auto bottom() -> double override { return z.imag(); }
+        void draw(cairo_t *cr) override;
 
         cpx z;
     };
 
     class Circle : public Shape {
     public:
-        Circle(cpx z_, double r_, Pen p = Pen()) : Shape(p), z(z_), r(r_) {}
+        Circle(cpx z_, double r_, Pen p_ = Pen()) : Shape(p_), z(z_), r(r_) {}
 
-        auto   left() -> double override { return z.real() - r; }
-        auto   right() -> double override { return z.real() + r; }
-        auto   top() -> double override { return z.imag() + r; }
-        auto   bottom() -> double override { return z.imag() - r; }
-        void   draw(cairo_t *cr) override;
+        auto left() -> double override { return z.real() - r; }
+        auto right() -> double override { return z.real() + r; }
+        auto top() -> double override { return z.imag() + r; }
+        auto bottom() -> double override { return z.imag() - r; }
+        void draw(cairo_t *cr) override;
 
         cpx    z;
         double r;
@@ -76,20 +76,20 @@ namespace vb {
 
     class Path : public Shape {
     public:
-        explicit Path(std::vector<cpx> z_, Pen p = Pen()) : Shape(p), z(std::move(z_)) {}
+        explicit Path(std::vector<cpx> z_, Pen p_ = Pen()) : Shape(p_), z(std::move(z_)) {}
 
-        auto   left() -> double override;
-        auto   right() -> double override;
-        auto   top() -> double override;
-        auto   bottom() -> double override;
-        void   draw(cairo_t *cr) override;
+        auto left() -> double override;
+        auto right() -> double override;
+        auto top() -> double override;
+        auto bottom() -> double override;
+        void draw(cairo_t *cr) override;
 
         std::vector<cpx> z;
     };
 
     class Polygon : public Path {
     public:
-        explicit Polygon(std::vector<cpx> z, Pen p = Pen()) : Path(std::move(z), p) {}
+        explicit Polygon(std::vector<cpx> z_, Pen p_ = Pen()) : Path(std::move(z_), p_) {}
         void draw(cairo_t *cr) override;
     };
 } // namespace vb

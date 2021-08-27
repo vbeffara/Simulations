@@ -3,7 +3,7 @@
 
 namespace vb {
     struct Adder {
-        explicit Adder(size_t s = 0) : s(s) {}
+        explicit Adder(size_t s_ = 0) : s(s_) {}
         void     dim(size_t _n) { n = _n; }
         auto     operator+=(size_t t) -> size_t { return (s += t); }
         auto     operator-=(size_t t) -> size_t { return (s -= t); }

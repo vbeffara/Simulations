@@ -13,17 +13,17 @@ namespace vb {
 
     class CoarseImage : public Bitmap<CoarseCell> {
     public:
-        CoarseImage(const std::string &s, ucoo size, size_t l)
-            : Bitmap<CoarseCell>(s, {1 + (size.x - 1) / l, 1 + (size.y - 1) / l}, CoarseCell(l)), size(size), L(l), LL(l * l) {}
+        CoarseImage(const std::string &s, ucoo sz, size_t l)
+            : Bitmap<CoarseCell>(s, {1 + (sz.x - 1) / l, 1 + (sz.y - 1) / l}, CoarseCell(l)), size(sz), L(l), LL(l * l) {}
 
-        CoarseImage(const std::string &s, ucoo size) : CoarseImage(s, size, size_t(pow(double(sup(size)), .33))) {}
+        CoarseImage(const std::string &s, ucoo sz) : CoarseImage(s, sz, size_t(pow(double(sup(sz)), .33))) {}
 
         template <typename T> auto fits(const coo_2d<T> &z) const -> bool {
             return (z.x >= 0) && (z.y >= 0) && (z.x < T(size.x)) && (z.y < T(size.y));
         }
 
         [[nodiscard]] auto at(ucoo z) const -> bool;
-        void put(ucoo z, bool c);
+        void               put(ucoo z, bool c);
 
         void output_fine(const std::string &fn) const;
 

@@ -11,8 +11,8 @@ namespace vb {
     class Console : public AutoWindow<Fl_Window> {
     public:
         template <typename T> struct Input : public Fl_Hor_Nice_Slider {
-            Input(T t, T t1, T t2, std::function<void(T)> cb, int w, int h, Console *c)
-                : Fl_Hor_Nice_Slider(0, h, w, 30), f(move(cb)), c(c) {
+            Input(T t, T t1, T t2, std::function<void(T)> cb, int w, int h, Console *c_)
+                : Fl_Hor_Nice_Slider(0, h, w, 30), f(move(cb)), c(c_) {
                 bounds(static_cast<double>(t1), static_cast<double>(t2));
                 value(static_cast<double>(t));
                 callback(runinput<T>);
@@ -22,7 +22,7 @@ namespace vb {
         };
 
         template <typename T> struct Output : public Fl_Output {
-            Output(std::function<T()> f, const char *n, int w, int h) : Fl_Output(0, h, w - 150, 30, n), f(move(f)) {
+            Output(std::function<T()> f_, const char *n, int w, int h) : Fl_Output(0, h, w - 150, 30, n), f(move(f_)) {
                 align(FL_ALIGN_RIGHT);
             }
             void draw() override {
