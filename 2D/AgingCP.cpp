@@ -14,7 +14,7 @@ public:
     explicit ACP(const Hub &H) : Bitmap<size_t>(H.title, {size_t(H['n']), size_t(H['n'])}), kid(H['z']), maxage(H['m']) {
         put(size / 2, 1);
         P = {H['d'], H['a']};
-        for (size_t i = 0; i < size_t(H['m']) - kid; ++i) P.push_back(double(H['b']) + double(H['r']) * double(i));
+        for (size_t ii = 0; ii < size_t(H['m']) - kid; ++ii) P.push_back(double(H['b']) + double(H['r']) * double(ii));
         double s = 0;
         for (double u : P) s += u;
         for (double &u : P) u /= s;

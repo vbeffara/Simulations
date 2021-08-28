@@ -8,8 +8,8 @@ using namespace std;
 
 class DDLA : public CoarseImage {
 public:
-    explicit DDLA(const string &title, size_t n_, double p, bool f)
-        : CoarseImage(title, {n_, n_}, f ? unsigned(pow(n_, .33)) : 1), f(f), n(n_), cursum(0), p(p) {
+    explicit DDLA(const string &title_, size_t n_, double p_, bool f_)
+        : CoarseImage(title_, {n_, n_}, f_ ? unsigned(pow(n_, .33)) : 1), f(f_), n(n_), cursum(0), p(p_) {
         put({0, 0}, true);
         pq.push({{1, 0}, prng.exponential() / p});
         pq.push({{0, 1}, prng.exponential() / (1 - p)});

@@ -66,7 +66,7 @@ namespace vb {
         for (cpx p : periods)
             if (fabs(imag(p)) > .1) moduli.push_back(p);
         double n2 = abs(moduli[0]);
-        m         = moduli[0];
+        if (!moduli.empty()) m = moduli[0];
         for (cpx p : moduli)
             if (abs(p) < n2) {
                 n2 = abs(p);

@@ -17,7 +17,7 @@ public:
 
     auto nbsum(vb::coo3 c) -> int64_t {
         int S = 0;
-        for (unsigned i = 0; i < 6; ++i) S += atp(c + vb::dz3[i]) != 0 ? 1 : 0;
+        for (const auto &dz : vb::dz3) S += atp(c + dz) != 0 ? 1 : 0;
         return S;
     }
 

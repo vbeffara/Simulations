@@ -52,8 +52,8 @@ auto uniform_circle(size_t r) -> coo {
 
 class DLA : public CoarseImage {
 public:
-    DLA(size_t n, const Hub &H)
-        : CoarseImage(H.title, {n, n}), n(n), c(H['c']), QT({0, 0}, {int64_t(n), int64_t(n)}, H['l']),
+    DLA(size_t n_, const Hub &H)
+        : CoarseImage(H.title, {n_, n_}), n(n_), c(H['c']), QT({0, 0}, {int64_t(n), int64_t(n)}, H['l']),
           prec(harmonic_measures(H['p'])), mid{n / 2, n / 2} {}
 
     void show() override {
@@ -74,8 +74,8 @@ public:
     }
 
     [[nodiscard]] auto neighbor(coo z) const -> bool {
-        for (unsigned i = 0; i < 4; ++i)
-            if (at(z + dz[i])) return true;
+        for (unsigned ii = 0; ii < 4; ++ii)
+            if (at(z + dz[ii])) return true;
         return false;
     }
 

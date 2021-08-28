@@ -69,9 +69,9 @@ public:
         bool dirty = true;
         while (dirty) {
             dirty = false;
-            for (size_t i = 0; i < n; ++i)
+            for (size_t ii = 0; ii < n; ++ii)
                 for (size_t j = 0; j < n; ++j) {
-                    const ucoo z{2 * i, 1 + 2 * j};
+                    const ucoo z{2 * ii, 1 + 2 * j};
                     int        s = 0, dd = -1;
                     for (unsigned d = 0; d < 4; ++d)
                         if (at(z + dz[d]).t == VOID) {
@@ -126,8 +126,8 @@ public:
         else
             lerw(coo(start), false);
         stage(H);
-        for (size_t i = 0; i < n; ++i) {
-            for (size_t j = 0; j <= n; ++j) lerw({2 * int(i) + 1, 2 * int(j)}, true);
+        for (size_t ii = 0; ii < n; ++ii) {
+            for (size_t j = 0; j <= n; ++j) lerw({2 * int(ii) + 1, 2 * int(j)}, true);
         }
         stage(H);
         put(root, Point{EMPH});

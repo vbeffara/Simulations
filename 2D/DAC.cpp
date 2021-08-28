@@ -12,7 +12,7 @@ auto main(int argc, char **argv) -> int {
 
     // Connectivity (&1 -> to the right, &2 -> downwards)
     Array<uint8_t> connect({n, n});
-    for (auto z : coo_range(connect.size)) connect[z] = (prng.bernoulli(p) ? 1 : 0) + (prng.bernoulli(p) ? 2 : 0);
+    for (auto z : coo_range(connect.size)) connect[z] = uint8_t((prng.bernoulli(p) ? 1 : 0) + (prng.bernoulli(p) ? 2 : 0));
 
     Array<size_t> cluster({n, n});
     for (auto z : coo_range(cluster.size)) cluster[z] = z.x + n * z.y;

@@ -20,7 +20,7 @@ public:
     void swipe(const Hub &H) {
         for (auto z : coo_range(size))
             if (double excess = at(z); excess > 0) {
-                for (unsigned i = 0; i < 4; ++i) atp(coo(z) + dz[i]) += excess / 4;
+                for (unsigned ii = 0; ii < 4; ++ii) atp(coo(z) + dz[ii]) += excess / 4;
                 at(z) = 0;
             }
         if (H['r']) {

@@ -35,8 +35,8 @@ void Automaton::randomize(double e) {
 
 void Automaton::shift() {
     for (size_t i = 0; i < size; ++i)
-        alt[i] = (main[i] & MAIN_BIT) + (main[(i + size - 1) % size] & R1_BIT) + (main[(i + size - 1) % size] & R2_BIT) +
-                 (main[(i + 1) % size] & L1_BIT) + (main[(i + 1) % size] & L2_BIT);
+        alt[i] = uint8_t((main[i] & MAIN_BIT) + (main[(i + size - 1) % size] & R1_BIT) + (main[(i + size - 1) % size] & R2_BIT) +
+                         (main[(i + 1) % size] & L1_BIT) + (main[(i + 1) % size] & L2_BIT));
     this->swap();
 }
 

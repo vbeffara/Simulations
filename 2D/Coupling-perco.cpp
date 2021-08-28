@@ -18,8 +18,8 @@ public:
         while (dirty) {
             dirty = false;
             for (const auto z : coo_range(size)) {
-                for (unsigned i = 0; i < 6; ++i) {
-                    auto zz = z + dz[i];
+                for (unsigned ii = 0; ii < 6; ++ii) {
+                    auto zz = z + dz[ii];
                     if (!expl.fits(zz)) continue;
                     if ((expl[z] > 0) && (expl[zz] > expl[z])) {
                         expl[z] = expl[zz];
@@ -39,32 +39,32 @@ public:
         auto N = size.x;
 
         for (auto &t : table) t = 0;
-        for (size_t i = N / 2 - r2; i < N / 2 + r2; i++) {
-            if ((sides & 1U) != 0) table[size_t(int64_t(N * N) + expl[{i, N / 2 - r2}])] = 1;
-            if ((sides & 2U) != 0) table[size_t(int64_t(N * N) + expl[{i, N / 2 + r2 - 1}])] = 1;
-            if ((sides & 4U) != 0) table[size_t(int64_t(N * N) + expl[{N / 2 - r2, i}])] = 1;
-            if ((sides & 8U) != 0) table[size_t(int64_t(N * N) + expl[{N / 2 + r2 - 1, i}])] = 1;
+        for (size_t ii = N / 2 - r2; ii < N / 2 + r2; ii++) {
+            if ((sides & 1U) != 0) table[size_t(int64_t(N * N) + expl[{ii, N / 2 - r2}])] = 1;
+            if ((sides & 2U) != 0) table[size_t(int64_t(N * N) + expl[{ii, N / 2 + r2 - 1}])] = 1;
+            if ((sides & 4U) != 0) table[size_t(int64_t(N * N) + expl[{N / 2 - r2, ii}])] = 1;
+            if ((sides & 8U) != 0) table[size_t(int64_t(N * N) + expl[{N / 2 + r2 - 1, ii}])] = 1;
         }
 
         int     n = 0;
         int64_t k = 0;
-        for (size_t i = N / 2 - r1; i < N / 2 + r1; i++) {
-            k = expl[{i, N / 2 - r1}];
+        for (size_t ii = N / 2 - r1; ii < N / 2 + r1; ii++) {
+            k = expl[{ii, N / 2 - r1}];
             if (table[size_t(int64_t(N * N) + k)] == 1) {
                 table[size_t(int64_t(N * N) + k)] = 0;
                 n++;
             }
-            k = expl[{i, N / 2 + r1 - 1}];
+            k = expl[{ii, N / 2 + r1 - 1}];
             if (table[size_t(int64_t(N * N) + k)] == 1) {
                 table[size_t(int64_t(N * N) + k)] = 0;
                 n++;
             }
-            k = expl[{N / 2 - r1, i}];
+            k = expl[{N / 2 - r1, ii}];
             if (table[size_t(int64_t(N * N) + k)] == 1) {
                 table[size_t(int64_t(N * N) + k)] = 0;
                 n++;
             }
-            k = expl[{N / 2 + r1 - 1, i}];
+            k = expl[{N / 2 + r1 - 1, ii}];
             if (table[size_t(int64_t(N * N) + k)] == 1) {
                 table[size_t(int64_t(N * N) + k)] = 0;
                 n++;
