@@ -1,19 +1,15 @@
 cmake_minimum_required (VERSION 3.18)
 project (Simulations CXX)
 
-if (EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-    set(CONAN_SYSTEM_INCLUDES ON)
-    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-    conan_basic_setup(NO_OUTPUT_DIRS)
-endif ()
-
-include(CheckCXXCompilerFlag)
-include(FindBoost)
-include(FindFLTK)
-include(FindPkgConfig)
-
 set (CMAKE_CXX_STANDARD 17)
 set (CMAKE_EXPORT_COMPILE_COMMANDS 1)
+set (CONAN_SYSTEM_INCLUDES ON)
+
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup(NO_OUTPUT_DIRS)
+
+include(CheckCXXCompilerFlag)
+include(FindFLTK)
 
 if(NOT CMAKE_BUILD_TYPE)
   message(STATUS "Setting build type to 'Release' as none was specified.")
@@ -48,25 +44,8 @@ else()
     endif()
 endif()
 
-find_library(MPC mpc REQUIRED)
-find_package(Boost REQUIRED COMPONENTS chrono)
-find_package(Microsoft.GSL REQUIRED CONFIG)
-find_package(range-v3 REQUIRED)
-
-function(add_pkg)
-    foreach(pkg ${ARGV})
-        pkg_search_module(${pkg} REQUIRED ${pkg})
-        include_directories(SYSTEM ${${pkg}_INCLUDE_DIRS})
-        link_directories(${${pkg}_LIBRARY_DIRS})
-        link_libraries(${${pkg}_LIBRARIES})
-    endforeach()
-endfunction()
-
-add_pkg(cairo catch2 docopt eigen3 fftw3 fmt fplll libpng spdlog tbb yaml-cpp)
-
 file (GLOB vb_sources CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/libvb/*.cpp)
 add_library (vb SHARED ${vb_sources})
-target_link_libraries(vb ${Boost_LIBRARIES} ${MPC})
 link_libraries(vb)
 
 if (NOT ${FLTK_FOUND})
@@ -75,7 +54,7 @@ endif()
 
 include_directories(SYSTEM ${FLTK_INCLUDE_DIR})
 include_directories("${PROJECT_SOURCE_DIR}/include")
-target_link_libraries(vb ${FLTK_LIBRARIES})
+target_link_libraries(vb ${FLTK_LIBRARIES} ${CONAN_LIBS})
 
 if (${COV})
 	add_compile_options(-g -O0 --coverage -fprofile-arcs -ftest-coverage)

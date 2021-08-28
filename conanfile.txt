@@ -1,9 +1,21 @@
 [requires]
+boost/1.76.0
+cairo/1.17.4
+catch2/2.13.7
 docopt.cpp/0.6.3
+eigen/3.4.0
+fftw/3.3.9
 fmt/8.0.1
-fplll/5.3.2-1
+fplll/5.4.1
+mpc/1.2.0
+ms-gsl/3.1.0
+range-v3/0.11.0
 spdlog/1.9.2
+tbb/2020.3
 yaml-cpp/0.7.0
 
 [generators]
 cmake
+
+[options]
+boost:without_fiber=True
