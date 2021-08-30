@@ -14,7 +14,7 @@ public:
     explicit operator Color() const {
         static const vector<Color> C{BLACK, BLACK, BLACK, BLACK, RED,    GREEN, YELLOW, BLUE, YELLOW, BLUE,
                                      RED,   GREEN, RED,   GREEN, YELLOW, BLUE,  YELLOW, BLUE, RED,    GREEN};
-        return C[d + 4 * type];
+        return C[d + 4U * type];
     }
 };
 
@@ -22,7 +22,7 @@ class Tiling : public Bitmap<Half> {
 public:
     void putd(ucoo c, uint8_t d) {
         at(c).d         = d;
-        at(c + dz[d]).d = (d + 2) % 4;
+        at(c + dz[d]).d = (d + 2) % 4U;
         step();
     }
     void freeze(ucoo c) {
@@ -33,16 +33,16 @@ public:
     explicit Tiling(const Hub &H) : Bitmap<Half>(H.title, {H['n'], H['n']}), r(H['r']), rr{r, r * r, 1, r} {
         for (const auto &z : coo_range(size)) at(z) = Half(2 * (z.x % 2), 1 + ((z.x + z.y) % 2) + 2 * (z.x % 2));
         if (H['o'] == "aztec") {
-            for (size_t i = 0; i < size.y / 2; ++i) {
-                for (size_t j = 0; j < size.x / 2 - i - 1; ++j) {
-                    at({i, j}).type                           = 0;
-                    at({size.x - 1 - i, j}).type              = 0;
-                    at({i, size.y - 1 - j}).type              = 0;
-                    at({size.x - 1 - i, size.y - 1 - j}).type = 0;
+            for (size_t ii = 0; ii < size.y / 2; ++ii) {
+                for (size_t j = 0; j < size.x / 2 - ii - 1; ++j) {
+                    at({ii, j}).type                           = 0;
+                    at({size.x - 1 - ii, j}).type              = 0;
+                    at({ii, size.y - 1 - j}).type              = 0;
+                    at({size.x - 1 - ii, size.y - 1 - j}).type = 0;
                 }
                 for (size_t j = 0; j < size.x; ++j) {
-                    putd({i, j}, 1 + 2 * ((i + j + size.y / 2 + 1) % 2));
-                    putd({i + size.x / 2, j}, 1 + 2 * ((i + j + size.x / 2) % 2));
+                    putd({ii, j}, 1 + 2 * ((ii + j + size.y / 2 + 1) % 2));
+                    putd({ii + size.x / 2, j}, 1 + 2 * ((ii + j + size.x / 2) % 2));
                 }
             }
         } else if (H['o'] == "hill") {

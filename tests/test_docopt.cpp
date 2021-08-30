@@ -18,6 +18,6 @@ auto main(int argc, const char **argv) -> int {
                                                                "Naval Fate 2.0"); // version string
 
     for (auto const &arg : args) spdlog::info("{} = {}", arg.first, arg.second);
-    spdlog::info("Simulation size: {}", std::stoi(args["-n"].asString()));
+    spdlog::info("Simulation size: {}", args["-n"].asLong());
     spdlog::info("Walk parameter: {}", std::stod(args["-p"].asString()));
 }

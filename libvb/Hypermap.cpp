@@ -1,3 +1,4 @@
+#include <range/v3/algorithm/all_of.hpp>
 #include <vb/Hypermap.h>
 
 namespace vb {
@@ -34,24 +35,16 @@ namespace vb {
     auto Hypermap::genus() const -> unsigned { return unsigned(1 - euler() / 2); }
 
     auto Hypermap::is_graph() const -> bool {
-        for (const auto &v : alpha.cycles())
-            if (v.size() != 2) return false;
-        return true;
+        return ranges::all_of(alpha.cycles(), [](const auto &v) { return v.size() == 2; });
     }
 
     auto Hypermap::is_triangulation() const -> bool {
-        if (!(is_graph())) return false;
-        for (const auto &f : phi.cycles())
-            if (f.size() != 3) return false;
-        return true;
+        return is_graph() && ranges::all_of(phi.cycles(), [](const auto &f) { return f.size() == 3; });
     }
 
     auto Hypermap::is_simple(size_t d) const -> bool {
-        for (const auto &s : sigma.cycles())
-            if (s.size() <= d) return false;
-        for (const auto &f : phi.cycles())
-            if (f.size() <= d) return false;
-        return true;
+        return ranges::all_of(sigma.cycles(), [d](const auto &s) { return s.size() > d; }) &&
+               ranges::all_of(phi.cycles(), [d](const auto &f) { return f.size() > d; });
     }
 
     void Hypermap::split_edges() {

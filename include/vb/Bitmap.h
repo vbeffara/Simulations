@@ -6,7 +6,7 @@
 namespace vb {
     template <typename T> class Bitmap : public Picture, public Array<T> {
     public:
-        Bitmap(const std::string &s, ucoo size, T d = T());
+        Bitmap(const std::string &s, ucoo sz, T d = T());
 
         using Array<T>::size, Array<T>::at, Array<T>::atp, Array<T>::fits;
 
