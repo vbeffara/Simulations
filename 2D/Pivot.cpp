@@ -10,7 +10,7 @@ auto rot(coo z, coo p) -> coo { return p + coo{p.y - z.y, z.x - p.x}; }
 
 class Pivot : public Image {
 public:
-    Pivot(const string &title, size_t nn_) : Image(title, {4 * nn_, 4 * nn_}), nn(nn_), n(nn * nn), zs(n, {0, 0}) { show(); }
+    Pivot(const string &title_, size_t nn_) : Image(title_, {4 * nn_, 4 * nn_}), nn(nn_), n(nn * nn), zs(n, {0, 0}) { show(); }
 
     auto piv() -> size_t {
         for (auto z : coo_range(size)) put(z, BLACK);

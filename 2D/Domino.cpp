@@ -31,7 +31,7 @@ public:
     }
 
     explicit Tiling(const Hub &H) : Bitmap<Half>(H.title, {H['n'], H['n']}), r(H['r']), rr{r, r * r, 1, r} {
-        for (const auto &z : coo_range(size)) at(z) = Half(2 * (z.x % 2), 1 + ((z.x + z.y) % 2) + 2 * (z.x % 2));
+        for (const auto &z : coo_range(size)) at(z) = Half(2 * (z.x % 2), uint8_t(1 + ((z.x + z.y) % 2) + 2 * (z.x % 2)));
         if (H['o'] == "aztec") {
             for (size_t ii = 0; ii < size.y / 2; ++ii) {
                 for (size_t j = 0; j < size.x / 2 - ii - 1; ++j) {
@@ -41,8 +41,8 @@ public:
                     at({size.x - 1 - ii, size.y - 1 - j}).type = 0;
                 }
                 for (size_t j = 0; j < size.x; ++j) {
-                    putd({ii, j}, 1 + 2 * ((ii + j + size.y / 2 + 1) % 2));
-                    putd({ii + size.x / 2, j}, 1 + 2 * ((ii + j + size.x / 2) % 2));
+                    putd({ii, j}, uint8_t(1 + 2 * ((ii + j + size.y / 2 + 1) % 2)));
+                    putd({ii + size.x / 2, j}, uint8_t(1 + 2 * ((ii + j + size.x / 2) % 2)));
                 }
             }
         } else if (H['o'] == "hill") {
@@ -88,7 +88,7 @@ public:
                 for (size_t y = 0; y < size.y; ++y) putd({x, y}, 0);
             size_t b = H['b'];
             if (b > 0) {
-                for (auto x = size.x / 2 - b; x < size.x / 2 + b; ++x) putd({x, size.y / 2}, (2 + at({x, size.y / 2}).d) % 4);
+                for (auto x = size.x / 2 - b; x < size.x / 2 + b; ++x) putd({x, size.y / 2}, (2 + at({x, size.y / 2}).d) % 4u);
                 at({size.x / 2 - b, size.y / 2}).type = 0;
                 at({size.x / 2 + b, size.y / 2}).type = 0;
             }
@@ -98,14 +98,14 @@ public:
     auto flip(coo c) -> int {
         if (at(ucoo(c)).type == 0) return 0;
         uint8_t d  = at(ucoo(c)).d;
-        coo     oc = c + dz[d] + dz[(d + 1) % 4];
+        coo     oc = c + dz[d] + dz[(d + 1) % 4u];
         if (!fits(oc)) return 0;
         if (at(ucoo(oc)).type == 0) return 0;
         if (at(ucoo(oc)).d != ((d + 2) % 4)) return 0;
         vector<double> rs{r, r * r, 1, r};
         if (prng.bernoulli(1 - rs[(d + at(ucoo(c)).type) % 4])) return 0;
-        putd(ucoo(c), (d + 1) % 4);
-        putd(ucoo(oc), (d + 3) % 4);
+        putd(ucoo(c), (d + 1) % 4u);
+        putd(ucoo(oc), (d + 3) % 4u);
         return 1;
     }
 

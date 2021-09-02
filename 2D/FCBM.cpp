@@ -7,7 +7,7 @@ using namespace std;
 
 class FCBM : public Image {
 public:
-    FCBM(const std::string &s, size_t n, double p) : Image(s, {2 * n, 2 * n}), mid({n - (n % 2), n - (n % 2)}), n(n), p(p) {
+    FCBM(const std::string &s, size_t n_, double p_) : Image(s, {2 * n_, 2 * n_}), mid({n_ - (n_ % 2), n_ - (n_ % 2)}), n(n_), p(p_) {
         for (size_t x = 0; x < 2 * n; ++x)
             for (size_t y = 0; y < 2 * n; ++y)
                 if ((x % 2 == 0) && (y % 2 == 0)) put({x, y}, WHITE);
@@ -15,8 +15,8 @@ public:
 
     [[nodiscard]] auto degree(coo z) const -> int {
         int out = 0;
-        for (unsigned i = 0; i < 4; ++i)
-            if (atp(z + dz[i]) != BLACK) ++out;
+        for (unsigned ii = 0; ii < 4; ++ii)
+            if (atp(z + dz[ii]) != BLACK) ++out;
         return out;
     }
 

@@ -20,8 +20,7 @@ public:
 
     [[nodiscard]] auto weight() const -> double { return W[pmod(z.x, W.size())][pmod(z.y, W[0].size())][d]; }
 
-    explicit
-    operator Color() const {
+    explicit operator Color() const {
         if (!active) return BLACK;
         double hh = hues[pmod(z.x, W.size())][pmod(z.y, W[0].size())][d];
         return HSV(hh, 1, contrast + (1 - contrast) * (weight() - minw) / (maxw - minw));
@@ -35,10 +34,10 @@ public:
 class Tiling : public Bitmap<Domino> {
 public:
     explicit Tiling(const Hub &H, size_t n) : Bitmap<Domino>(H.title, {2 * n, 2 * n}) {
-        for (size_t i = 0; i < n; ++i)
-            for (size_t j = n - 1 - i; j < n + i; j += 2) {
-                putd(Domino{{int(i), int(j)}, 1});
-                putd(Domino{{int(2 * n - 1 - i), int(j)}, 1});
+        for (size_t ii = 0; ii < n; ++ii)
+            for (size_t j = n - 1 - ii; j < n + ii; j += 2) {
+                putd(Domino{{int(ii), int(j)}, 1});
+                putd(Domino{{int(2 * n - 1 - ii), int(j)}, 1});
             }
     };
 
