@@ -15,12 +15,13 @@ private:
 };
 
 void Glauber::fill(double p) {
-    for (size_t i = 0; i < n; ++i)
-        for (size_t j = 0; j < n; ++j)
+    // TODO coo_range
+    for (size_t ii = 0; ii < n; ++ii)
+        for (size_t jj = 0; jj < n; ++jj)
             if (prng.bernoulli(p))
-                put({i, j}, WHITE);
+                put({ii, jj}, WHITE);
             else
-                put({i, j}, BLACK);
+                put({ii, jj}, BLACK);
 }
 
 void Glauber::step(ucoo z) {

@@ -14,21 +14,21 @@ namespace vb {
 
 class Nematic : public vb::Bitmap<size_t> {
 public:
-    Nematic(const Hub &H, size_t n, size_t m, size_t k, double b) : Bitmap<size_t>(H.title, {n, m}), k(k), b(b), P(std::max(n, m), 0){};
+    Nematic(const Hub &H, size_t n, size_t m, size_t k_, double b_) : Bitmap<size_t>(H.title, {n, m}), k(k_), b(b_), P(std::max(n, m), 0){};
 
     void prec() {
         ok = std::min(k, std::min(size.x, size.y));
         ob = b;
         std::vector<double> Z(P.size());
         double              zz = exp(2 * ob / double(ok));
-        for (size_t i = 0; i < ok; ++i) Z[i] = pow(zz, -i);
-        for (auto i = ok; i < Z.size(); ++i) Z[i] = Z[i - 1] / zz + Z[i - ok];
-        for (auto i = ok; i < P.size(); ++i) P[i] = Z[i - ok] / Z[i];
+        for (size_t ii = 0; ii < ok; ++ii) Z[ii] = pow(zz, -double(ii));
+        for (size_t ii = ok; ii < Z.size(); ++ii) Z[ii] = Z[ii - 1] / zz + Z[ii - ok];
+        for (size_t ii = ok; ii < P.size(); ++ii) P[ii] = Z[ii - ok] / Z[ii];
         dd = double(ok) * Z[Z.size() - ok] / (Z[Z.size() - 1] / zz + double(ok) * Z[Z.size() - ok]);
     }
 
     void add(coo z, size_t d) {
-        for (size_t i = 0; i < ok; ++i) {
+        for (size_t ii = 0; ii < ok; ++ii) {
             atp(z) = d;
             z += dz[d - 1];
         }
@@ -86,8 +86,8 @@ public:
         if (H['v']) snapshot_setup("movie", 10);
         for (int t = int(H['t']) - 1; t != 0; --t) {
             if ((k != ok) || (b != ob)) prec();
-            for (size_t i = 0; i < size.y; ++i) redo({0, int64_t(i)}, 1);
-            for (size_t i = 0; i < size.x; ++i) redo({int64_t(i), 0}, 2);
+            for (size_t ii = 0; ii < size.y; ++ii) redo({0, int64_t(ii)}, 1);
+            for (size_t ii = 0; ii < size.x; ++ii) redo({int64_t(ii), 0}, 2);
             int nh = 0;
             for (auto z : coo_range(size))
                 if (at(z) == 1) ++nh;

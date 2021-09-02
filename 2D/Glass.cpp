@@ -95,7 +95,7 @@ public:
         ok = init[H['c']]();
 
         fill({0, 0}, BLACK);
-        for (size_t i = 0; i < n; i++) put({i, n / 2}, WHITE);
+        for (size_t ii = 0; ii < n; ii++) put({ii, n / 2}, WHITE);
         show();
     };
 
@@ -103,7 +103,7 @@ public:
         auto   n = size.x;
         double p = H['p'];
 
-        for (size_t i = 0; i < 2000 * n * n; i++) {
+        for (size_t ii = 0; ii < 2000 * n * n; ii++) {
             // TODO: uniform_coo
             size_t x = 1 + prng.uniform_int(n - 2), y = 1 + prng.uniform_int(n - 2), nb = 0;
             if (at({x + 1, y}) != BLACK) nb += 1;

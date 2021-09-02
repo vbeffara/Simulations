@@ -15,14 +15,14 @@ class Perco_Schramm : public Figure {
 public:
     explicit Perco_Schramm(const Hub &H)
         : Figure(H.title), w(2 * size_t(H['n'])), h(size_t(H['l']) > 0 ? H['l'] : w - 1), mask(w * h, true) {
-        for (size_t i = 0; i < w / 2; ++i) cols.push_back(true);
-        for (size_t i = 0; i < w / 2; ++i) cols.push_back(false);
-        for (size_t i = 0; i < (w - 1) * h; ++i) cols.push_back(prng.bernoulli(H['p']));
+        for (size_t ii = 0; ii < w / 2; ++ii) cols.push_back(true);
+        for (size_t ii = 0; ii < w / 2; ++ii) cols.push_back(false);
+        for (size_t ii = 0; ii < (w - 1) * h; ++ii) cols.push_back(prng.bernoulli(H['p']));
     }
 
     void tri_boundary() {
         for (size_t j = 0; j < h; ++j) {
-            for (size_t i = 0; i < w; ++i) mask[i + w * j] = (i <= (w + j) / 2) && (i >= (w - j) / 2 - 1) && (j < h);
+            for (size_t ii = 0; ii < w; ++ii) mask[ii + w * j] = (ii <= (w + j) / 2) && (ii >= (w - j) / 2 - 1) && (j < h);
             cols[(w - j) / 2 + w * j - 1] = true;
             cols[(w + j) / 2 + w * j]     = false;
         }
@@ -36,9 +36,9 @@ public:
     }
 
     void perc() {
-        for (size_t i = 0; i < w * h; ++i)
-            if (mask[i]) {
-                cpx         xy = thepos(i);
+        for (size_t ii = 0; ii < w * h; ++ii)
+            if (mask[ii]) {
+                cpx         xy = thepos(ii);
                 vector<cpx> coo;
                 coo.push_back(xy + cpx(omx, 1));
                 coo.push_back(xy + cpx(0, 2));
@@ -46,7 +46,7 @@ public:
                 coo.push_back(xy + cpx(-omx, -1));
                 coo.push_back(xy + cpx(0, -2));
                 coo.push_back(xy + cpx(omx, -1));
-                add(make_unique<Polygon>(coo, Pen(BLACK, 1, cols[i] ? CYAN : YELLOW, true)));
+                add(make_unique<Polygon>(coo, Pen(BLACK, 1, cols[ii] ? CYAN : YELLOW, true)));
             }
     }
 
@@ -54,7 +54,7 @@ public:
         size_t base = w / 2 - 1, dir = 0;
         auto   p = make_unique<Path>(vector<cpx>(0), Pen(BLUE, 4));
         p->z.push_back(thepos(base) + cpx(omx, -1));
-        while (((base + 1) % w >= 0) && (base / w < h - 1)) {
+        while (base / w < h - 1) {
             seg(p.get(), base, dir, 1);
             auto thenext = follow(base, (dir + 1) % 6);
             if (cols[thenext]) {
@@ -73,7 +73,9 @@ private:
     vector<bool> cols, mask;
     const double omx{sqrt(3.0)};
 
-    [[nodiscard]] auto thepos(size_t i) const -> cpx { return cpx(omx * double(((i / w) % 2) + 2 * (i % w)), 3 * double(size_t(i / w))); }
+    [[nodiscard]] auto thepos(size_t ii) const -> cpx {
+        return cpx(omx * double(((ii / w) % 2) + 2 * (ii % w)), 3 * double(size_t(ii / w)));
+    }
 
     [[nodiscard]] auto follow(size_t base, size_t dir) const -> size_t {
         static const vector<int> fola = {1, int(w), int(w) - 1, -1, -int(w) - 1, -int(w)};

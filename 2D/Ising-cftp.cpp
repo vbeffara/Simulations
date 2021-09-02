@@ -19,15 +19,15 @@ public:
         for (const auto &z : coo_range(size)) put(z, 1);
         snap();
         b *= log(1 + sqrt(double(2)));
-        for (int i = 0; i <= 4; ++i) p.push_back(exp(b * i) / (exp(b * i) + exp(b * (4 - i))));
+        for (int ii = 0; ii <= 4; ++ii) p.push_back(exp(b * ii) / (exp(b * ii) + exp(b * (4 - ii))));
     };
 
     void up(const ucoo z) {
         double   U  = prng.uniform_real();
         unsigned n1 = 0, n2 = 0;
-        for (unsigned i = 0; i < 4; ++i) {
-            if (atp(coo(z) + dz[i]) >= 1) ++n1;
-            if (atp(coo(z) + dz[i]) >= 2) ++n2;
+        for (unsigned ii = 0; ii < 4; ++ii) {
+            if (atp(coo(z) + dz[ii]) >= 1) ++n1;
+            if (atp(coo(z) + dz[ii]) >= 2) ++n2;
         }
         if (U < p[n2])
             put(z, 2);
@@ -38,7 +38,7 @@ public:
     }
 
     void up() {
-        for (size_t i = 0; i < size_t(size.x * size.y); ++i)
+        for (size_t ii = 0; ii < size_t(size.x * size.y); ++ii)
             up({d + prng.uniform_int(size.x - 2 * d), d + prng.uniform_int(size.y - 2 * d)});
     }
     void snap() {
@@ -55,7 +55,7 @@ public:
             for (const auto &z : coo_range(ucoo{d, d}, size - ucoo{d, d})) put(z, 1);
             for (auto t = states.size(); t-- > 0;) {
                 prng.state(states[t]);
-                for (size_t i = 0; i < (1U << t); ++i) up();
+                for (size_t ii = 0; ii < (1U << t); ++ii) up();
                 if (t == states.size() - 1) states.push_back(prng.state());
             }
             snap();
@@ -68,9 +68,9 @@ public:
 
     void bc_0() {
         d = 1;
-        for (size_t i = 0; i < size.x; ++i) {
-            put({i, 0}, 0);
-            put({i, size.y - 1}, 0);
+        for (size_t ii = 0; ii < size.x; ++ii) {
+            put({ii, 0}, 0);
+            put({ii, size.y - 1}, 0);
         }
         for (size_t j = 0; j < size.y; ++j) {
             put({0, j}, 0);
@@ -80,17 +80,17 @@ public:
 
     void bc_dobrushin() {
         d = 1;
-        for (size_t i = 0; i < size.x; ++i) {
-            put({i, 0}, 0);
-            put({i, size.y - 1}, 2);
+        for (size_t ii = 0; ii < size.x; ++ii) {
+            put({ii, 0}, 0);
+            put({ii, size.y - 1}, 2);
         }
-        for (size_t j = 0; j < size.y / 2; ++j) {
-            put({0, j}, 0);
-            put({size.x - 1, j}, 0);
+        for (size_t jj = 0; jj < size.y / 2; ++jj) {
+            put({0, jj}, 0);
+            put({size.x - 1, jj}, 0);
         }
-        for (size_t j = size.y / 2; j < size.y; ++j) {
-            put({0, j}, 2);
-            put({size.x - 1, j}, 2);
+        for (size_t jj = size.y / 2; jj < size.y; ++jj) {
+            put({0, jj}, 2);
+            put({size.x - 1, jj}, 2);
         }
     }
 

@@ -15,11 +15,11 @@ public:
                 for (size_t y = 1; y < n - 1; y++) put({x, y}, x < (n / 2) ? BLACK : WHITE);
         }
         if (c)
-            for (size_t i = 0; i < n; i++) {
-                put({i, 0}, i < n / 2 ? BLACK : WHITE);
-                put({i, n - 1}, i < n / 2 ? BLACK : WHITE);
-                put({0, i}, BLACK);
-                put({n - 1, i}, WHITE);
+            for (size_t ii = 0; ii < n; ii++) {
+                put({ii, 0}, ii < n / 2 ? BLACK : WHITE);
+                put({ii, n - 1}, ii < n / 2 ? BLACK : WHITE);
+                put({0, ii}, BLACK);
+                put({n - 1, ii}, WHITE);
             }
     }
 
@@ -37,10 +37,10 @@ public:
 
     void run(size_t nstep, bool k) {
         vector<double> p(10, 0);
-        for (size_t i = 0; i < 10; ++i) p[i] = exp(-double(i) * beta);
+        for (size_t ii = 0; ii < 10; ++ii) p[ii] = exp(-double(ii) * beta);
         if (nstep == 0) nstep = 10 + size_t(double(n) * 0.01 / fabs(beta - log(1 + sqrt(2))));
 
-        for (size_t i = 0; i != nstep; i++)
+        for (size_t ii = 0; ii != nstep; ii++)
             for (size_t j = 0; j < n * n; ++j) {
                 step();
                 const auto z = prng.uniform_coo(size, size_t(c));

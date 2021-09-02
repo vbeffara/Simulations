@@ -9,7 +9,7 @@ auto main(int argc, char **argv) -> int {
     size_t n = H['n'];
     double a = H['a'];
     a        = 1 / (1 + a);
-    auto L   = size_t(pow(n, .33));
+    auto L   = size_t(pow(double(n), .33));
 
     CoarseImage img(H.title, {n, n}, L);
     img.show();

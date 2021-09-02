@@ -12,13 +12,13 @@ namespace vb {
 
 class Ising : public Bitmap<int> {
 public:
-    Ising(const Hub &H, size_t n, double beta, size_t con) : Bitmap<int>(H.title, {n, n}), con(con), p(2 * size_t(con) + 1) {
+    Ising(const Hub &H, size_t n, double beta, size_t con_) : Bitmap<int>(H.title, {n, n}), con(con_), p(2 * size_t(con) + 1) {
         for (auto z : coo_range(size)) put(z, prng.bernoulli(.5) ? 1 : -1);
         if (con == 6) {
             size_t m = 2 * n / 3;
-            for (size_t i = 0; i < n; ++i)
-                for (size_t j = 0; j < n; ++j)
-                    if ((j > m) || (i < j / 2) || (i > m + j / 2)) put({i, j}, 0);
+            for (size_t ii = 0; ii < n; ++ii)
+                for (size_t jj = 0; jj < n; ++jj)
+                    if ((jj > m) || (ii < jj / 2) || (ii > m + jj / 2)) put({ii, jj}, 0);
         }
         for (size_t c = 0; c <= 2 * con; ++c) p[c] = 1 / (1 + exp(-beta * (int(c) - int(con))));
     };
