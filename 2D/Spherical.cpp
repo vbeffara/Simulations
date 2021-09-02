@@ -31,13 +31,13 @@ auto spherical_harmonic(size_t n, size_t m, double theta, double phi) -> vb::cpx
 
 class Wave : public vb::Sphere {
 public:
-    Wave(const vb::Hub &H, size_t n, size_t w)
-        : vb::Sphere(H.title, w, [this](double theta, double phi) { return f_to_c(v(theta, phi)); }), n(n) {
+    Wave(const vb::Hub &H, size_t nn, size_t w)
+        : vb::Sphere(H.title, w, [this](double theta, double phi) { return f_to_c(v(theta, phi)); }), n(nn) {
         detail = 2.0 / double(n);
         for (size_t m = 0; m <= n; ++m) {
             vb::cpx am{vb::prng.gaussian(), vb::prng.gaussian()};
             am *= sqrt(double(2 * n + 1) / (4 * M_PI));
-            for (size_t i = 1; i <= m; ++i) { am *= double(2 * i - 1) / sqrt(double(2 * i - 1 + n - m) * double(2 * i + n - m)); }
+            for (size_t ii = 1; ii <= m; ++ii) { am *= double(2 * ii - 1) / sqrt(double(2 * ii - 1 + n - m) * double(2 * ii + n - m)); }
             a.push_back(am);
         }
     };
@@ -56,23 +56,23 @@ public:
 
 class Bargman : public vb::Sphere {
 public:
-    Bargman(const vb::Hub &H, size_t n, size_t w)
-        : vb::Sphere(H.title, w, [this](double x, double y, double z) { return f_to_c(v(x, y, z)); }), a(n + 1), b(n + 1), c(n + 1),
-          sqsq(n + 1), n(n) {
-        for (size_t i = 0; i <= n; ++i) {
-            for (size_t j = 0; j <= n - i; ++j) { a[i].push_back(vb::prng.gaussian()); }
+    Bargman(const vb::Hub &H, size_t nn, size_t w)
+        : vb::Sphere(H.title, w, [this](double x, double y, double z) { return f_to_c(v(x, y, z)); }), a(nn + 1), b(nn + 1), c(nn + 1),
+          sqsq(nn + 1), n(nn) {
+        for (size_t ii = 0; ii <= n; ++ii) {
+            for (size_t j = 0; j <= n - ii; ++j) { a[ii].push_back(vb::prng.gaussian()); }
         }
-        for (size_t i = 0; i <= n; ++i) {
-            for (size_t j = 0; j <= n - i; ++j) { b[i].push_back(a[i][n - i - j]); }
+        for (size_t ii = 0; ii <= n; ++ii) {
+            for (size_t j = 0; j <= n - ii; ++j) { b[ii].push_back(a[ii][n - ii - j]); }
         }
-        for (size_t i = 0; i <= n; ++i) {
-            for (size_t j = 0; j <= n - i; ++j) { c[i].push_back(a[n - i - j][j]); }
+        for (size_t ii = 0; ii <= n; ++ii) {
+            for (size_t j = 0; j <= n - ii; ++j) { c[ii].push_back(a[n - ii - j][j]); }
         }
-        for (size_t i = 0; i <= n; ++i) {
-            for (size_t j = 0; j <= n - i; ++j) { eps = std::max(eps, abs(a[i][j])); }
+        for (size_t ii = 0; ii <= n; ++ii) {
+            for (size_t j = 0; j <= n - ii; ++j) { eps = std::max(eps, abs(a[ii][j])); }
         }
-        for (size_t i = 0; i <= n; ++i) {
-            for (size_t j = 0; j <= n; ++j) { sqsq[i].push_back(sqrt(i) / sqrt(j)); }
+        for (size_t ii = 0; ii <= n; ++ii) {
+            for (size_t j = 0; j <= n; ++j) { sqsq[ii].push_back(sqrt(double(ii)) / sqrt(double(j))); }
         }
         eps *= double(H['e']);
     }
@@ -82,37 +82,37 @@ public:
         i0 -= i0 % 2;
         j0 -= j0 % 2;
         double out = 0, t = 1;
-        for (size_t i = i0; i <= n; ++i) {
+        for (size_t ii = i0; ii <= n; ++ii) {
             double tt = t;
-            for (size_t j = j0; j <= n - i; ++j) {
-                out += aa[i][j] * tt;
-                tt *= (y / z) * sqsq[n - i - j][j + 1];
+            for (size_t j = j0; j <= n - ii; ++j) {
+                out += aa[ii][j] * tt;
+                tt *= (y / z) * sqsq[n - ii - j][j + 1];
                 if (abs(tt) < eps) { break; }
             }
             tt = t;
             for (size_t j = j0; j-- > 0;) {
-                tt /= (y / z) * sqsq[n - i - j][j + 1];
+                tt /= (y / z) * sqsq[n - ii - j][j + 1];
                 if (abs(tt) < eps) { break; }
-                out += aa[i][j] * tt;
+                out += aa[ii][j] * tt;
             }
-            t *= (x / z) * sqsq[n - i - j0][i + 1];
+            t *= (x / z) * sqsq[n - ii - j0][ii + 1];
             if (abs(t) < eps) { break; }
         }
         t = 1;
-        for (size_t i = i0; i-- > 0;) {
-            t /= (x / z) * sqsq[n - i - j0][i + 1];
+        for (size_t ii = i0; ii-- > 0;) {
+            t /= (x / z) * sqsq[n - ii - j0][ii + 1];
             if (abs(t) < eps) { break; }
             double tt = t;
-            for (size_t j = j0; j <= n - i; ++j) {
-                out += aa[i][j] * tt;
-                tt *= (y / z) * sqsq[n - i - j][j + 1];
+            for (size_t j = j0; j <= n - ii; ++j) {
+                out += aa[ii][j] * tt;
+                tt *= (y / z) * sqsq[n - ii - j][j + 1];
                 if (abs(tt) < eps) { break; }
             }
             tt = t;
             for (size_t j = j0; j-- > 0;) {
-                tt /= (y / z) * sqsq[n - i - j][j + 1];
+                tt /= (y / z) * sqsq[n - ii - j][j + 1];
                 if (abs(tt) < eps) { break; }
-                out += aa[i][j] * tt;
+                out += aa[ii][j] * tt;
             }
         }
         if (((n % 2) != 0) && (z < 0)) { out = -out; }

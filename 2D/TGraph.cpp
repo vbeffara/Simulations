@@ -14,7 +14,7 @@ class TGraph : public Figure, Array<loc> {
 public:
     using Array::size;
 
-    TGraph(const Hub &H, size_t n, cpx A, double t) : Figure(H.title), Array<loc>({n, n}), A(A), theta(t) {
+    TGraph(const Hub &H, size_t n, cpx A_, double t) : Figure(H.title), Array<loc>({n, n}), A(A_), theta(t) {
         compute();
         plot();
         show();
@@ -38,23 +38,23 @@ public:
         pc     = arg((B - C) / (A - C)) / M_PI;
         lambda = exp(2.0 * M_PI * I * theta);
 
-        for (size_t i = 0; i < size.x; ++i) {
+        for (size_t ii = 0; ii < size.x; ++ii) {
             for (size_t j = 0; j < size.y; ++j) {
                 if (j > 0)
-                    at({i, j}).z = at({i, j - 1}).z + c * phiwb(int(i) + 1, int(j) - 2, int(i), int(j) - 1);
-                else if (i > 0)
-                    at({i, j}).z = at({i - 1, j}).z - a * phiwb(int(i), int(j) - 1, int(i), int(j) - 1);
+                    at({ii, j}).z = at({ii, j - 1}).z + c * phiwb(int(ii) + 1, int(j) - 2, int(ii), int(j) - 1);
+                else if (ii > 0)
+                    at({ii, j}).z = at({ii - 1, j}).z - a * phiwb(int(ii), int(j) - 1, int(ii), int(j) - 1);
             }
         }
     }
 
     void plot() {
         contents.clear();
-        for (size_t i = 0; i < size.x; ++i) {
+        for (size_t ii = 0; ii < size.x; ++ii) {
             for (size_t j = 0; j < size.y; ++j) {
-                if (i < size.x - 1) add(make_unique<Segment>(at({i, j}).z, at({i + 1, j}).z));
-                if (j < size.y - 1) add(make_unique<Segment>(at({i, j}).z, at({i, j + 1}).z));
-                if ((i > 0) && (j < size.y - 1)) add(make_unique<Segment>(at({i, j}).z, at({i - 1, j + 1}).z));
+                if (ii < size.x - 1) add(make_unique<Segment>(at({ii, j}).z, at({ii + 1, j}).z));
+                if (j < size.y - 1) add(make_unique<Segment>(at({ii, j}).z, at({ii, j + 1}).z));
+                if ((ii > 0) && (j < size.y - 1)) add(make_unique<Segment>(at({ii, j}).z, at({ii - 1, j + 1}).z));
             }
         }
     }

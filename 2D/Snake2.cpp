@@ -18,8 +18,8 @@ namespace vb {
 
 class Snake : public Bitmap<site> {
 public:
-    Snake(const Hub &H, size_t n, double l, bool hex)
-        : Bitmap(H.title, {4 * n + 1, 2 * n + 1}), lambda(l), path(1, {2 * int(n), 0}), hex(hex) {
+    Snake(const Hub &H, size_t n, double l, bool hex_)
+        : Bitmap(H.title, {4 * n + 1, 2 * n + 1}), lambda(l), path(1, {2 * int(n), 0}), hex(hex_) {
         for (size_t x = 0; x < size.x; ++x) put({x, 0U}, VERTEX);
         if (double a = H['a']; a != 0) triangle(a);
         if (!H['v']) show();
@@ -44,13 +44,13 @@ public:
     auto trapped(coo z, size_t d) -> bool {
         if (border(z)) return false;
         bool surrounded = true;
-        for (unsigned i = 0; i < 4; ++i)
-            if ((at(ucoo(z + dz[i] * 2)) == EMPTY) && (!hex || edge(z, i))) surrounded = false;
+        for (unsigned ii = 0; ii < 4; ++ii)
+            if ((at(ucoo(z + dz[ii] * 2)) == EMPTY) && (!hex || edge(z, ii))) surrounded = false;
         if (surrounded) return true;
 
         d = (d + 1) % 4;
         while ((at(ucoo(z + dz[d] * 2)) == VERTEX) || (hex && !edge(z, d))) d = (d + 3) % 4;
-        coo zz = z;
+        coo  zz = z;
         auto dd = d;
         while (true) {
             zz += dz[d] * 2;
@@ -78,7 +78,7 @@ public:
                 }
                 continue;
             }
-            coo z = path.back();
+            coo  z = path.back();
             auto d = prng.uniform_int(4U);
             if (!allowed(z, d)) continue;
             coo nz = z + dz[d] * 2;

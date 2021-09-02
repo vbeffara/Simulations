@@ -30,8 +30,8 @@ namespace vb {
         void up(coo z) {
             double oh = 0, nh = 0;
             double nt = prng.uniform_real();
-            for (unsigned i = 0; i < 4; ++i) oh += cos(2.0 * M_PI * (atp(z) - atp(z + dz[i])));
-            for (unsigned i = 0; i < 4; ++i) nh += cos(2.0 * M_PI * (nt - atp(z + dz[i])));
+            for (unsigned ii = 0; ii < 4; ++ii) oh += cos(2.0 * M_PI * (atp(z) - atp(z + dz[ii])));
+            for (unsigned ii = 0; ii < 4; ++ii) nh += cos(2.0 * M_PI * (nt - atp(z + dz[ii])));
             if ((nh >= oh) || prng.bernoulli(exp(beta * (nh - oh)))) putp(z, nt);
         }
     };

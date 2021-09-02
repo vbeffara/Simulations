@@ -26,8 +26,8 @@ int Stat::min = 0, Stat::max = 1;
 
 class Stuck : public Bitmap<Stat> {
 public:
-    explicit Stuck(double a, double b, bool c, size_t n, bool o, const Hub &H)
-        : Bitmap<Stat>(H.title, {2 * n, 2 * n}), alpha(a), beta(b), H(H), c(c), o(o) {
+    explicit Stuck(double a, double b, bool cc, size_t n, bool oo, const Hub &HH)
+        : Bitmap<Stat>(HH.title, {2 * n, 2 * n}), alpha(a), beta(b), H(HH), c(cc), o(oo) {
         for (const auto &zz : coo_range(size / 2)) at(zz * 2) = Stat{-1};
         z = coo(size / 2);
         C.manage(alpha, 0.142, 0.35, "alpha");
@@ -58,17 +58,17 @@ public:
     void run() {
         vector<double> l(4);
         while (visible()) {
-            for (unsigned i = 0; i < 4; ++i) {
-                coo d = dz[i], dl = dz[(i + 1) % 4], dr = dz[(i + 3) % 4];
-                l[i] = alpha * (atp(z + d + d + d).s + atp(z + d + d + dl).s + atp(z + d + d + dr).s) - atp(z + d).s;
+            for (unsigned ii = 0; ii < 4; ++ii) {
+                coo d = dz[ii], dl = dz[(ii + 1) % 4], dr = dz[(ii + 3) % 4];
+                l[ii] = alpha * (atp(z + d + d + d).s + atp(z + d + d + dl).s + atp(z + d + d + dr).s) - atp(z + d).s;
             }
             double ml = l[0], sl = 0;
-            for (unsigned i = 1; i < 4; ++i) { ml = max(ml, l[i]); }
-            for (unsigned i = 0; i < 4; ++i) {
-                l[i] = exp(beta * (l[i] - ml));
-                sl += l[i];
+            for (unsigned ii = 1; ii < 4; ++ii) { ml = max(ml, l[ii]); }
+            for (unsigned ii = 0; ii < 4; ++ii) {
+                l[ii] = exp(beta * (l[ii] - ml));
+                sl += l[ii];
             }
-            for (unsigned i = 0; i < 4; ++i) { l[i] /= sl; }
+            for (unsigned ii = 0; ii < 4; ++ii) { l[ii] /= sl; }
             coo d = dz[prng.discrete(l)];
             putp(z + d, Stat{atp(z + d).s + 1});
             z += d + d;

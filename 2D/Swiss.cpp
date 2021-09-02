@@ -54,8 +54,8 @@ public:
             nb[atp(z + vb::coo{0, 1})] += 1;
             nb[atp(z - vb::coo{0, 1})] += 1;
             int max = 0;
-            for (int i : nb)
-                if (i > max) max = i;
+            for (int ii : nb)
+                if (ii > max) max = ii;
 
             auto d = vb::prng.uniform_int(uint8_t(4));
             if (vb::prng.bernoulli(1 - q))

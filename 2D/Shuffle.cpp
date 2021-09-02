@@ -145,11 +145,11 @@ struct Tiling {
         for (auto z : coo_range(state.size))
             if (state[z] != 0) {
                 coo  edge{1, ((z.x + z.y) % 2) != 0 ? 1 : -1};
-                auto ss = [=](ucoo z) {
-                    z += coo{offx, offy};
-                    ucoo zz = (z + coo{1, 1}) / 2;
+                auto ss = [=](ucoo z_) {
+                    z_ += coo{offx, offy};
+                    ucoo zz = (z_ + coo{1, 1}) / 2;
                     coo  sh = dz[(zz.y + ((((zz.x + 1) % 4) / 2) != 0 ? 5 : 3)) % 4];
-                    return cpx(double(z.x), double(z.y)) + 2 * double(H['r']) * cpx(double(sh.x), double(sh.y)) - cpx(offx, offy);
+                    return cpx(double(z_.x), double(z_.y)) + 2 * double(H['r']) * cpx(double(sh.x), double(sh.y)) - cpx(offx, offy);
                 };
                 double gr = a * TP.atp(coo(z) + coo{offx / 2, offy / 2}) + b;
                 F.add(make_unique<Segment>(ss(z * 2 - edge), ss(z * 2 + edge), Pen(Grey(uint8_t(255 * gr)), 130.0 / double(state.size.x))));
@@ -197,8 +197,8 @@ struct Tiling {
         }
     }
 
-    Tiling(const Hub &H, Array<double> TP_, size_t m)
-        : H(H), name(H.title), TP(move(TP_)), m(m), per(lcm(TP.size.x, TP.size.y)), n(m * per / 2) {
+    Tiling(const Hub &H_, Array<double> TP_, size_t mm)
+        : H(H_), name(H.title), TP(move(TP_)), m(mm), per(lcm(TP.size.x, TP.size.y)), n(m * per / 2) {
         probs();
         for (auto z : coo_range(TP.size)) {
             if (TP[z] == 0) continue;

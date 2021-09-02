@@ -16,7 +16,7 @@ template <typename T> auto sm3(size_t i, size_t j, size_t k) -> T {
 
 template <typename T> class RPoly {
 public:
-    RPoly(const Hub &H, size_t n, bool(p_)) : n(n), p(p_), A(n + 1) {
+    RPoly(const Hub &H, size_t n_, bool(p_)) : n(n_), p(p_), A(n + 1) {
         map<string, function<double()>> generators;
         generators.emplace("gaussian", [] { return prng.gaussian(0, 1); });
         generators.emplace("bernoulli", [] { return prng.bernoulli(.5) ? 1 : -1; });

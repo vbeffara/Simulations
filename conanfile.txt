@@ -20,4 +20,5 @@ cmake
 
 [options]
 boost:without_fiber=True
+boost:visibility=global
 tbb:shared=False

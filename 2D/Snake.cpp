@@ -6,7 +6,7 @@
 class Snake : public vb::CoarseImage {
 public:
     explicit Snake(const vb::Hub &H, size_t n)
-        : vb::CoarseImage(H.title, {2 * n, 2 * n}, size_t(pow(n, .333))), z(1, vb::coo(vb::ucoo{n, n})) {
+        : vb::CoarseImage(H.title, {2 * n, 2 * n}, size_t(pow(double(n), .333))), z(1, vb::coo(vb::ucoo{n, n})) {
         put({n, n}, true);
     }
 
@@ -33,13 +33,13 @@ public:
     using vb::CoarseImage::output;
     void output(const std::string &s) override {
         vb::OldPath P(z.size() - 1);
-        for (size_t i = 0; i < z.size() - 1; ++i) {
-            auto dz = z[i + 1] - z[i];
+        for (size_t ii = 0; ii < z.size() - 1; ++ii) {
+            auto dz = z[ii + 1] - z[ii];
             auto dx = dz.x, dy = dz.y;
-            if (dx > 0) { P[i] = 0; }
-            if (dx < 0) { P[i] = 2; }
-            if (dy > 0) { P[i] = 1; }
-            if (dy < 0) { P[i] = 3; }
+            if (dx > 0) { P[ii] = 0; }
+            if (dx < 0) { P[ii] = 2; }
+            if (dy > 0) { P[ii] = 1; }
+            if (dy < 0) { P[ii] = 3; }
         }
         P.output(s);
     }
