@@ -25,8 +25,8 @@ public:
     double drift;
     bool   tasym, stats;
 
-    PercSEP(const std::string &title, size_t sz, double d, bool t, double p, double l, bool s)
-        : Bitmap<state>(title, {2 * sz, sz}), drift(d), tasym(t), stats(s) {
+    PercSEP(const std::string &title_, size_t sz, double d, bool t, double p, double l, bool s)
+        : Bitmap<state>(title_, {2 * sz, sz}), drift(d), tasym(t), stats(s) {
         for (const auto &z : coo_range(size))
             if (prng.bernoulli(p)) put(z, prng.bernoulli(l) ? s_full : s_empty);
         show();
