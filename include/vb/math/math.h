@@ -9,6 +9,7 @@ namespace vb {
         for (int n = 0; out != old; ++n) {
             old  = out;
             T dd = f(n);
+            using std::isnormal;
             if (isnormal(real(dd))) out += dd;
         }
         return out;
