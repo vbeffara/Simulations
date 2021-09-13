@@ -1,5 +1,5 @@
 [requires]
-boost/1.76.0
+boost/1.77.0
 cairo/1.17.4
 catch2/2.13.7
 docopt.cpp/0.6.3
