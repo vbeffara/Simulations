@@ -24,6 +24,11 @@ struct mobius {
     cpx    operator()(cpx z) { return exp(I * theta) * (a + z) / (1.0 + conj(a) * z); }
     mobius operator()(mobius m) { return {(*this)(m(-I)), (*this)(m(I))}; }
 
+    mobius inverse() { return {-a * exp(I * theta), -theta}; }
+
+    cpx    sym(cpx z) { return (*this)(-conj(inverse()(z))); }
+    mobius sym(mobius m) { return {sym(m(I)), sym(m(-I))}; }
+
     std::string repr() const { return fmt::format("[a={}, theta={}]", a, theta * 180 / M_PI); }
 
     std::string draw() {
@@ -44,4 +49,5 @@ int main() {
     std::cout << gen1.draw() << std::endl;
     std::cout << gen2.draw() << std::endl;
     std::cout << gen3.draw() << std::endl;
+    std::cout << gen3.sym(gen1).draw() << std::endl;
 }
