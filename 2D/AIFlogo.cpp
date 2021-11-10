@@ -6,10 +6,10 @@
 using namespace vb;
 
 struct mobius {
-    double a;
+    cpx    a;
     double theta;
 
-    mobius(double _a, double _theta) : a(_a), theta(_theta) {}
+    mobius(cpx _a, double _theta) : a(_a), theta(_theta) {}
     mobius(cpx zm, cpx zp) {
         if (abs(zp / zm + 1.0) < .001) {
             a     = 0;
@@ -21,16 +21,18 @@ struct mobius {
         }
     }
 
-    cpx    operator()(cpx z) { return exp(I * theta) * (a + z) / (1.0 + a * z); }
+    cpx    operator()(cpx z) { return exp(I * theta) * (a + z) / (1.0 + conj(a) * z); }
     mobius operator()(mobius m) { return {(*this)(m(-I)), (*this)(m(I))}; }
 
     std::string repr() const { return fmt::format("[a={}, theta={}]", a, theta * 180 / M_PI); }
 
     std::string draw() {
         std::string r = repr();
-        if (a > .001)
-            return fmt::format("{} circle ({}) % {}", exp(I * theta) * (1 + a * a) / (2 * a), (1 - a * a) / (2 * a), r);
-        else {
+        if (abs(a) > .001) {
+            cpx    center = exp(I * theta) * (1.0 + a * a) / (a + conj(a));
+            double radius = real((1.0 - a * conj(a)) / (a + conj(a)));
+            return fmt::format("{} circle ({}) % {}", center, radius, r);
+        } else {
             double th = theta * 180 / M_PI;
             return fmt::format("[rotate={}] (0,-1) rectangle (1,2) [rotate={}] % {}", th, -th, r);
         }
