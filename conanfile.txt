@@ -10,6 +10,7 @@ fmt/8.0.1
 fplll/5.4.1
 mpc/1.2.0
 ms-gsl/3.1.0
+pcre/8.45
 range-v3/0.11.0
 spdlog/1.9.2
 tbb/2020.3
