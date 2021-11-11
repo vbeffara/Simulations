@@ -10,7 +10,7 @@ struct mobius {
     double theta;
 
     static auto from_endpoints(cpx zm, cpx zp) -> mobius {
-        if (abs(zp / zm + 1.0) < .001) return {0, arg(sqrt(zp * zm))};
+        if (norm(zp / zm + 1.0) < .000001) return {0, arg(zp * zm) / 2};
         cpx w = sqrt(zp / zm);
         return {real((w - I) / (1.0 - w * I)), arg(zm * w)};
     }
@@ -21,8 +21,8 @@ struct mobius {
     [[nodiscard]] auto sym(mobius m) const -> mobius { return from_endpoints(sym(m(I)), sym(m(-I))); }
 
     [[nodiscard]] auto like(const mobius &m) const -> bool {
-        if ((abs(a) < .001) && (abs(m.a) < .001) && (abs(abs(theta - m.theta) - M_PI) < .001)) return true;
-        if (abs(a - m.a) > .001) return false;
+        if ((norm(a) < .001) && (norm(m.a) < .001) && (abs(abs(theta - m.theta) - M_PI) < .001)) return true;
+        if (norm(a - m.a) > .000001) return false;
         if (abs(theta - m.theta) < .001) return true;
         return (abs(abs(theta - m.theta) - 2 * M_PI) < .001);
     }
@@ -30,9 +30,9 @@ struct mobius {
     [[nodiscard]] auto repr() const -> std::string { return fmt::format("[a={}, theta={}]", a, theta * 180 / M_PI); }
 
     [[nodiscard]] auto draw() const -> std::string {
-        if (abs(a) > .001) {
-            cpx    center = exp(I * theta) * (1.0 + a * a) / (a + conj(a));
-            double radius = real((1.0 - a * conj(a)) / (a + conj(a)));
+        if (norm(a) > .001) {
+            cpx    center = exp(I * theta) * (1.0 + a * a) / (2 * real(a));
+            double radius = (1.0 - norm(a)) / (2 * real(a));
             return fmt::format("{} circle ({}) % {}", center, radius, repr());
         }
         double th = theta * 180 / M_PI;
@@ -49,7 +49,7 @@ auto main() -> int {
             for (const auto &n : list) candidates.push_back(m.sym(n));
         done = true;
         for (const auto &m : candidates) {
-            if (abs(m.a) > .999) continue;
+            if (norm(m.a) > .98) continue;
             if (std::any_of(begin(list), end(list), [&m](const mobius &n) { return m.like(n); })) continue;
             list.push_back(m);
             done = false;
