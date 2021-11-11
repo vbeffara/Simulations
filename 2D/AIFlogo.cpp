@@ -21,17 +21,22 @@ struct mobius {
         }
     }
 
-    cpx    operator()(cpx z) { return exp(I * theta) * (a + z) / (1.0 + conj(a) * z); }
-    mobius operator()(mobius m) { return {(*this)(m(-I)), (*this)(m(I))}; }
+    cpx    operator()(cpx z) const { return exp(I * theta) * (a + z) / (1.0 + conj(a) * z); }
+    mobius operator()(mobius m) const { return {(*this)(m(-I)), (*this)(m(I))}; }
+    mobius inverse() const { return {-a * exp(I * theta), -theta}; }
+    cpx    sym(cpx z) const { return (*this)(-conj(inverse()(z))); }
+    mobius sym(mobius m) const { return {sym(m(I)), sym(m(-I))}; }
 
-    mobius inverse() { return {-a * exp(I * theta), -theta}; }
-
-    cpx    sym(cpx z) { return (*this)(-conj(inverse()(z))); }
-    mobius sym(mobius m) { return {sym(m(I)), sym(m(-I))}; }
+    bool like(const mobius &m) const {
+        if ((abs(a) < .001) && (abs(m.a) < .001) && (abs(abs(theta - m.theta) - M_PI) < .001)) return true;
+        if (abs(a - m.a) > .001) return false;
+        if (abs(theta - m.theta) < .001) return true;
+        return (abs(abs(theta - m.theta) - 2 * M_PI) < .001);
+    }
 
     std::string repr() const { return fmt::format("[a={}, theta={}]", a, theta * 180 / M_PI); }
 
-    std::string draw() {
+    std::string draw() const {
         std::string r = repr();
         if (abs(a) > .001) {
             cpx    center = exp(I * theta) * (1.0 + a * a) / (a + conj(a));
@@ -45,9 +50,22 @@ struct mobius {
 };
 
 int main() {
-    mobius gen1(0, 0), gen2(0, -M_PI / 6), gen3(sqrt(sqrt(5.0) - 2), M_PI / 3);
-    std::cout << gen1.draw() << std::endl;
-    std::cout << gen2.draw() << std::endl;
-    std::cout << gen3.draw() << std::endl;
-    std::cout << gen3.sym(gen1).draw() << std::endl;
+    mobius              gen1(0, 0), gen2(0, -M_PI / 6), gen3(sqrt(sqrt(5.0) - 2), M_PI / 3);
+    std::vector<mobius> list{gen1, gen2, gen3};
+    bool                done = false;
+    while (!done) {
+        std::vector<mobius> candidates;
+        for (const auto &m : list) {
+            for (const auto &n : list) { candidates.push_back(m.sym(n)); }
+        }
+        done = true;
+        for (const auto &m : candidates) {
+            if (abs(m.a) > .999) continue;
+            if (std::none_of(begin(list), end(list), [&](const mobius &n) { return m.like(n); })) {
+                list.push_back(m);
+                done = false;
+            }
+        }
+    }
+    for (const auto &m : list) std::cout << m.draw() << std::endl;
 }
