@@ -88,7 +88,7 @@ public:
                 for (size_t y = 0; y < size.y; ++y) putd({x, y}, 0);
             size_t b = H['b'];
             if (b > 0) {
-                for (auto x = size.x / 2 - b; x < size.x / 2 + b; ++x) putd({x, size.y / 2}, (2 + at({x, size.y / 2}).d) % 4u);
+                for (auto x = size.x / 2 - b; x < size.x / 2 + b; ++x) putd({x, size.y / 2}, (2 + at({x, size.y / 2}).d) % 4U);
                 at({size.x / 2 - b, size.y / 2}).type = 0;
                 at({size.x / 2 + b, size.y / 2}).type = 0;
             }
@@ -98,14 +98,14 @@ public:
     auto flip(coo c) -> int {
         if (at(ucoo(c)).type == 0) return 0;
         uint8_t d  = at(ucoo(c)).d;
-        coo     oc = c + dz[d] + dz[(d + 1) % 4u];
+        coo     oc = c + dz[d] + dz[(d + 1) % 4U];
         if (!fits(oc)) return 0;
         if (at(ucoo(oc)).type == 0) return 0;
         if (at(ucoo(oc)).d != ((d + 2) % 4)) return 0;
         vector<double> rs{r, r * r, 1, r};
         if (prng.bernoulli(1 - rs[(d + at(ucoo(c)).type) % 4])) return 0;
-        putd(ucoo(c), (d + 1) % 4u);
-        putd(ucoo(oc), (d + 3) % 4u);
+        putd(ucoo(c), (d + 1) % 4U);
+        putd(ucoo(oc), (d + 3) % 4U);
         return 1;
     }
 

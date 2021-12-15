@@ -49,7 +49,7 @@ namespace vb {
         phi[3 * n]       = 0;
         phi[4 * n]       = 4 * n - 1;
         phi[6 * n - 1]   = 2 * n;
-        return Hypermap(sigma, alpha, phi);
+        return {sigma, alpha, phi};
     }
 
     auto H_genus0(size_t n) -> Hypermap {
@@ -75,7 +75,7 @@ namespace vb {
             phi[4 * n + i]   = 5 * n + j;
             phi[5 * n + i]   = 3 * n + k;
         }
-        return Hypermap(sigma, alpha, phi);
+        return {sigma, alpha, phi};
     }
 
     auto H_genus1(size_t n) -> Hypermap {
@@ -101,6 +101,6 @@ namespace vb {
             phi[6 * i + 4]   = 6 * k;
             phi[6 * i + 5]   = 6 * i + 1;
         }
-        return Hypermap(sigma, alpha, phi);
+        return {sigma, alpha, phi};
     }
 } // namespace vb

@@ -10,8 +10,7 @@ const Color LEFTSIDE(Indexed(1)), RIGHTSIDE(Indexed(2));
 
 class Loewner : public std::vector<double> {
 public:
-    Loewner(size_t n, double k) {
-        dt = 1.0 / double(n * n);
+    Loewner(size_t n, double k) : dt(1.0 / double(n * n)) {
         reserve(n * n);
         push_back(0);
         for (size_t i = 1; i < n * n; i++) push_back(back() + sqrt(k * dt) * prng.gaussian());

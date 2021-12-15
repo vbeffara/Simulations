@@ -59,9 +59,9 @@ namespace vb {
         return fact(nn) / fact(nn / 2) / (size_t(1) << (n / 2));
     }
 
-    auto Pairings::begin() const -> Pairings_Iterator { return Pairings_Iterator(n, 0, true); }
+    auto Pairings::begin() const -> Pairings_Iterator { return {n, 0, true}; }
 
-    auto Pairings::end() const -> Pairings_Iterator { return Pairings_Iterator(n, size(), false); }
+    auto Pairings::end() const -> Pairings_Iterator { return {n, size(), false}; }
 
     auto Pairings::rrand() const -> Permutation {
         Permutation out(n);

@@ -12,10 +12,10 @@ public:
     explicit Stat(int ss = 0) : s(ss), ml(max) { max = std::max(max, s); }
     explicit operator int() const { return s; }
     explicit operator Color() const {
-        if (s < 0) return Color(0, 64, 0);
+        if (s < 0) return {0, 64, 0};
         if (s == 0) return BLACK;
-        if (ml <= .1 * max) return Color(0, 0, 64);
-        if (ml <= .9 * max) return Color(0, 0, uint8_t(64 + 128 * (ml - .1 * max) / (.8 * max)));
+        if (ml <= .1 * max) return {0, 0, 64};
+        if (ml <= .9 * max) return {0, 0, uint8_t(64 + 128 * (ml - .1 * max) / (.8 * max))};
         return Grey(uint8_t(64 + (s - min) * (255 - 64) / (max - min)));
     }
     int        s, ml;

@@ -73,9 +73,7 @@ private:
     vector<bool> cols, mask;
     const double omx{sqrt(3.0)};
 
-    [[nodiscard]] auto thepos(size_t ii) const -> cpx {
-        return cpx(omx * double(((ii / w) % 2) + 2 * (ii % w)), 3 * double(size_t(ii / w)));
-    }
+    [[nodiscard]] auto thepos(size_t ii) const -> cpx { return {omx * double(((ii / w) % 2) + 2 * (ii % w)), 3 * double(size_t(ii / w))}; }
 
     [[nodiscard]] auto follow(size_t base, size_t dir) const -> size_t {
         static const vector<int> fola = {1, int(w), int(w) - 1, -1, -int(w) - 1, -int(w)};

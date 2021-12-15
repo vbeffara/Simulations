@@ -11,13 +11,14 @@ public:
     pt(size_t i, size_t j, double x, double y) : ptt(cooo(i, x), cooo(j, y)){};
     pt() : pt(SIZE_MAX, SIZE_MAX, 0, 0){};
 
-    auto               xi() -> auto & { return first.first; }
-    auto             xf() -> double & { return first.second; }
-    [[nodiscard]] auto x() const -> double { return static_cast<double>(first.first) + first.second; } auto yi() -> auto & { return second.first; }
-    auto             yf() -> double & { return second.second; }
+    auto               xi() -> auto               &{ return first.first; }
+    auto               xf() -> double               &{ return first.second; }
+    [[nodiscard]] auto x() const -> double { return static_cast<double>(first.first) + first.second; }
+    auto               yi() -> auto               &{ return second.first; }
+    auto               yf() -> double               &{ return second.second; }
     [[nodiscard]] auto y() const -> double { return static_cast<double>(second.first) + second.second; }
 
-        [[nodiscard]] auto dist2(const pt &o) const -> double {
+    [[nodiscard]] auto dist2(const pt &o) const -> double {
         double dx = x() - o.x(), dy = y() - o.y();
         return dx * dx + dy * dy;
     }
@@ -123,7 +124,7 @@ public:
         }
         if (os != nullptr) { (*os) << std::endl; }
 
-        if (!fits(vb::coo{p.xi(), p.yi()})) { return pt(); }
+        if (!fits(vb::coo{p.xi(), p.yi()})) { return {}; }
 
         pt p_min = p;
         p.step(*this);

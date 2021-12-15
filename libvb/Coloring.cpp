@@ -69,7 +69,7 @@ namespace vb {
                     bb += cc.b;
                     aa += cc.a;
                 }
-        return Color(uint8_t(rr / 9), uint8_t(gg / 9), uint8_t(bb / 9), uint8_t(aa / 9));
+        return {uint8_t(rr / 9), uint8_t(gg / 9), uint8_t(bb / 9), uint8_t(aa / 9)};
     }
 
     void Coloring::line(ucoo s, coo d, size_t l) {
