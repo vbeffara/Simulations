@@ -21,7 +21,6 @@ namespace vb {
         chdir(dir.c_str());
 
         output("Command line", "", cmd, false);
-        output("Code version", "", version(), false);
         output("Image title", "", title, false);
 
         start   = boost::chrono::process_real_cpu_clock::now();

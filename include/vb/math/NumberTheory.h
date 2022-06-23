@@ -4,6 +4,10 @@
 #include <vb/math/Polynomial.h>
 #include <vb/util/mp.h>
 
+using fplll::vector;
+using fplll::Z_NR;
+using fplll::ZZ_mat;
+
 namespace vb {
     template <typename T> auto guess(const T &x, unsigned nd) -> std::optional<Polynomial<mpz_int>> {
         real_t m{pow(real_t{10, x.precision()}, nd * 2 / 3)};

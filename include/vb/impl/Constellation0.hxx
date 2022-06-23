@@ -102,6 +102,7 @@ namespace vb {
     }
 
     template <typename T> void Constellation0<T>::make_p_1() {
+        using std::real;
         T eps = real(pow(cost(), T(.5)));
         if (eps > T(.1)) eps = T(.1);
         Polynomial<cplx> P{1}, Q{1};

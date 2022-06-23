@@ -34,6 +34,4 @@ namespace vb {
         std::vector<Output> outputs;
         size_t              max_label_width = 0;
     };
-
-    auto version() -> std::string;
 } // namespace vb
