@@ -36,7 +36,7 @@ namespace vb {
         output("Time spent", "", fmt::format("{} real, {} user, {} system", d.count(), d_u.count(), d_s.count()), false);
 
         auto format = fmt::format("{{:<{}}} : {{}}", max_label_width);
-        for (const auto &[k, ks, v, o] : outputs) spdlog::info(fmt::format(format, k, v));
+        for (const auto &[k, ks, v, o] : outputs) spdlog::info(fmt::format(fmt::runtime(format), k, v));
 
         chdir("../..");
     }

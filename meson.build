@@ -5,6 +5,7 @@ docopt = dependency ('docopt')
 
 subdir ('libvb')
 subdir ('catch2')
+subdir ('tests')
 subdir ('1D')
 subdir ('2D')
 subdir ('3D')

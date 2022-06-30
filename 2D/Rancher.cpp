@@ -166,11 +166,10 @@ public:
         }
 
         if (renew) {
-            size_t n = 0, sx = 0, sxx = 0;
+            size_t n = 0, sx = 0;
             for (size_t j = 0; j < renewals.size(); ++j) {
                 n += renewals[j];
                 sx += j * renewals[j];
-                sxx += j * j * renewals[j];
             }
             std::cerr << n << " renewals (density " << double(n) / double(nb) << ")" << std::endl;
             std::cerr << "Average length: " << double(sx) / double(n) << std::endl;

@@ -248,7 +248,7 @@ namespace vb {
         os << "Black vertices / zeros: "
            << "\n";
         for (auto &zd : C.b) {
-            os << "| " << zd.d << "\t" << fmt::format("{:<30}", zd.z);
+            os << "| " << zd.d << "\t" << fmt::format(fmt::runtime("{:<30}"), zd.z);
             if (auto P = guess(zd.z, nd)) os << "\troot of " << fmt::format("{}", *P);
             os << "\n";
         }
@@ -256,7 +256,7 @@ namespace vb {
         os << "White vertices / ones: "
            << "\n";
         for (auto &zd : C.w) {
-            os << "| " << zd.d << "\t" << fmt::format("{:<30}", zd.z);
+            os << "| " << zd.d << "\t" << fmt::format(fmt::runtime("{:<30}"), zd.z);
             if (auto P = guess(zd.z, nd)) os << "\troot of " << fmt::format("{}", *P);
             os << "\n";
         }
@@ -264,7 +264,7 @@ namespace vb {
         os << "Red vertices / poles: "
            << "\n";
         for (auto &zd : C.f) {
-            os << "| " << zd.d << "\t" << fmt::format("{:<30}", zd.z);
+            os << "| " << zd.d << "\t" << fmt::format(fmt::runtime("{:<30}"), zd.z);
             if (auto P = guess(zd.z, nd)) os << "\troot of " << fmt::format("{}", *P);
             os << "\n";
         }

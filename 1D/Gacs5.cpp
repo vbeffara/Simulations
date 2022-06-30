@@ -83,12 +83,7 @@ auto main(int argc, char **argv) -> int {
     for (size_t x = 0; x < n; ++x) a.main[x] = vb::prng() & 31U;
 
     for (size_t i = 0;; ++i) {
-        size_t nb = 0;
-        for (size_t x = 0; x < n; ++x) {
-            img.put({x, i % n}, vb::Grey(255 * (a.main[x] & 1U)));
-            nb += a.main[x] & 1U;
-        }
-        //    img.update();
+        for (size_t x = 0; x < n; ++x) { img.put({x, i % n}, vb::Grey(255 * (a.main[x] & 1U))); }
         for (int j = 0; j < 100; ++j) {
             a.randomize(e);
             a.emit();
