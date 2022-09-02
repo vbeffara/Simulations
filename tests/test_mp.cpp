@@ -12,6 +12,8 @@ template <typename T> void test(Hub &H, const string &s, int n, T z) {
     });
 }
 
+template <typename T> struct fmt::formatter<number<T>> : fmt::ostream_formatter {}; // TODO: do this better
+
 auto main(int argc, char **argv) -> int {
     Hub H("Testing numerical types", argc, argv, "n=10000");
     int n = H['n'];

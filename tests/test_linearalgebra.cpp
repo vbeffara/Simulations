@@ -6,6 +6,8 @@
 using namespace vb;
 using namespace std;
 
+template <typename T> struct fmt::formatter<Eigen::Transpose<T>> : fmt::ostream_formatter {}; // TODO: do this better
+
 template <typename T> void test(string s) {
     Matrix<T> m(3, 3);
     for (int i = 0; i < 3; ++i)

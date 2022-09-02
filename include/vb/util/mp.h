@@ -54,3 +54,5 @@ template <> struct fmt::formatter<vb::complex_t> {
         return format_to(ctx.out(), "({} + {} I)", real(z), imag(z));
     }
 };
+
+template <> struct fmt::formatter<vb::mpz_int> : ostream_formatter {}; // TODO: do this better

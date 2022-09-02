@@ -28,8 +28,8 @@ namespace vb {
         [[nodiscard]] auto explore() const -> std::optional<Hypermap>; // Recover the hypermap
 
     private:
-        auto         vec() const -> Vector<cplx> override;
-        void         readvec(const Vector<cplx> &xy) override;
+        auto vec() const -> Vector<cplx> override;
+        void readvec(const Vector<cplx> &xy) override;
 
         auto vcost() const -> Vector<cplx> override;
         auto jacvcost() const -> Matrix<cplx> override;
@@ -44,3 +44,5 @@ namespace vb {
 
     template <typename T> auto operator<<(std::ostream &os, const Constellation0<T> &C) -> std::ostream &;
 } // namespace vb
+
+template <typename T> struct fmt::formatter<vb::Constellation0<T>> : fmt::ostream_formatter {}; // TODO: do this better

@@ -27,9 +27,11 @@ namespace vb {
 
         auto discrete(const std::vector<double> &p) -> unsigned;
 
-        auto        state() -> std::string;
-        void        state(const std::string &s);
+        auto state() -> std::string;
+        void state(const std::string &s);
     };
 
     extern PRNG prng;
 } // namespace vb
+
+template <> struct fmt::formatter<vb::PRNG> : ostream_formatter {}; // TODO: do this better

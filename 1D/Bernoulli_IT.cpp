@@ -18,8 +18,8 @@ public:
 
     void plot() const {
         for (size_t i = 0; i < jumps.size(); ++i) {
-            std::cout << jump(i) << ' ' << jump(i) + shifts[i] << '\n';
-            std::cout << jump(i + 1) << ' ' << jump(i + 1) + shifts[i] << '\n' << '\n';
+            fmt::print("{} {}\n", jump(i), jump(i) + shifts[i]);
+            fmt::print("{} {}\n\n", jump(i + 1), jump(i + 1) + shifts[i]);
         }
     }
 
@@ -54,13 +54,12 @@ auto run(double theta, size_t N) {
     vector<fun> Fs = {fun({0.0, theta}, {0, -theta}), fun({0.0, theta}, {1 - theta, 0})};
     fun         F({0.0}, {0.0});
     for (size_t i = 0; i < N; ++i) {
-        F        = Fs[prng.uniform_int(Fs.size())].compose(F);
+        F        = F.compose(Fs[prng.uniform_int(Fs.size())]);
         auto   R = F.range();
-        double l{0.0};
-        for (const auto &I : R) l += I.upper() - I.lower();
-        std::cout << i << ' ' << l << ' ' << boost::icl::upper(R) - boost::icl::lower(R) << '\n';
+        double l = std::accumulate(begin(R), end(R), 0.0, [](double s, const intv &I) { return s + upper(I) - lower(I); });
+        fmt::print("{} {} {}\n", i, l, upper(R) - lower(R));
     };
-    // F.plot();
+    F.plot();
 }
 
 auto main(int argc, char **argv) -> int {
