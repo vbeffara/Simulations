@@ -225,7 +225,7 @@ namespace vb {
            << "\n";
         for (const auto &u : C.f) os << "| " << u.d << "\t" << u.z << "\n";
         os << "\n";
-        os << u8"λ     := " << C.p[0] << "\n";
+        os << (char *)(u8"λ     := ") << C.p[0] << "\n"; // TODO: this is wrong
         Polynomial<typename cpx_t<T>::type> P{1}, Q{1};
         for (auto zd : C.b) P.add_root(zd.z, zd.d);
         for (auto zd : C.f) Q.add_root(zd.z, zd.d);
@@ -269,8 +269,8 @@ namespace vb {
             os << "\n";
         }
         os << "\n";
-        os << u8"λ     := " << C.p[0] << "\n";
-        if (auto L = guess(C.p[0], nd)) os << u8"Λ[z_] := " << fmt::format("{}", *L) << "\n";
+        os << (char *)(u8"λ     := ") << C.p[0] << "\n";                                                // TODO: this is wrong
+        if (auto L = guess(C.p[0], nd)) os << (char *)(u8"Λ[z_] := ") << fmt::format("{}", *L) << "\n"; // TODO: this is wrong
         Polynomial<complex_t> P{1}, Q{1};
         for (auto zd : C.b) P.add_root(zd.z, zd.d);
         for (auto zd : C.f) Q.add_root(zd.z, zd.d);

@@ -65,7 +65,7 @@ public:
             }
             seg(p.get(), base, dir, 5);
         }
-        add(move(p));
+        add(std::move(p));
     }
 
 private:

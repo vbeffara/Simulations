@@ -54,12 +54,13 @@ auto run(double theta, size_t N) {
     vector<fun> Fs = {fun({0.0, theta}, {0, -theta}), fun({0.0, theta}, {1 - theta, 0})};
     fun         F({0.0}, {0.0});
     for (size_t i = 0; i < N; ++i) {
-        F        = F.compose(Fs[prng.uniform_int(Fs.size())]);
+        // F        = F.compose(Fs[prng.uniform_int(Fs.size())]);
+        F        = Fs[prng.uniform_int(Fs.size())].compose(F);
         auto   R = F.range();
         double l = std::accumulate(begin(R), end(R), 0.0, [](double s, const intv &I) { return s + upper(I) - lower(I); });
         fmt::print("{} {} {}\n", i, l, upper(R) - lower(R));
     };
-    F.plot();
+    // F.plot();
 }
 
 auto main(int argc, char **argv) -> int {

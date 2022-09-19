@@ -12,17 +12,17 @@ namespace vb {
     public:
         template <typename T> struct Input : public Fl_Hor_Nice_Slider {
             Input(T t, T t1, T t2, std::function<void(T)> cb, int w, int h, Console *c_)
-                : Fl_Hor_Nice_Slider(0, h, w, 30), f(move(cb)), c(c_) {
+                : Fl_Hor_Nice_Slider(0, h, w, 30), f(std::move(cb)), c(c_) {
                 bounds(static_cast<double>(t1), static_cast<double>(t2));
                 value(static_cast<double>(t));
                 callback(runinput<T>);
             }
             std::function<void(T)> f;
-            Console *              c;
+            Console               *c;
         };
 
         template <typename T> struct Output : public Fl_Output {
-            Output(std::function<T()> f_, const char *n, int w, int h) : Fl_Output(0, h, w - 150, 30, n), f(move(f_)) {
+            Output(std::function<T()> f_, const char *n, int w, int h) : Fl_Output(0, h, w - 150, 30, n), f(std::move(f_)) {
                 align(FL_ALIGN_RIGHT);
             }
             void draw() override {
@@ -45,7 +45,7 @@ namespace vb {
         }
 
         template <typename T> void input(T t, T t1, T t2, std::function<void(T)> f) {
-            add(new Input<T>(t, t1, t2, move(f), w(), h(), this));
+            add(new Input<T>(t, t1, t2, std::move(f), w(), h(), this));
         }
 
         template <typename T> void manage(T &t, T t1, T t2, const char *n, const std::function<void()> &cb) {

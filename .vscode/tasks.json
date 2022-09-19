@@ -18,6 +18,22 @@
             "problemMatcher": [
                 "$gcc"
             ]
+        },
+        {
+            "type": "meson",
+            "mode": "build",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": {
+                "base": "$gcc",
+                "fileLocation": [
+                    "relative",
+                    "${workspaceFolder}/builddir"
+                ]
+            },
+            "label": "Meson: Build all targets"
         }
     ]
 }

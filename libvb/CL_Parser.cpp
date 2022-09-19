@@ -1,3 +1,4 @@
+#define BOOST_NO_CXX98_FUNCTION_BASE
 #include <boost/algorithm/string.hpp>
 #include <getopt.h>
 #include <gsl/gsl>
@@ -5,7 +6,7 @@
 #include <vb/util/misc.h>
 
 namespace vb {
-    CL_Parser::CL_Parser(std::string t, int argc, char **argv, std::string c) : title(move(t)), help("Syntax : " + c) {
+    CL_Parser::CL_Parser(std::string t, int argc, char **argv, std::string c) : title(std::move(t)), help("Syntax : " + c) {
         std::vector<std::string> args, fs;
         for (const auto &a : gsl::span(argv, to_unsigned(argc))) args.emplace_back(a);
         boost::split(fs, args[0], boost::is_any_of(R"(/\)"));
@@ -34,7 +35,7 @@ namespace vb {
         }
 
         char ch = 0;
-        optind = 1;
+        optind  = 1;
         while ((ch = char(getopt(argc, argv, getopt_arg.c_str()))) != -1) insert_or_assign(ch, has_arg[ch] ? optarg : "1");
 
         if (!empty()) {

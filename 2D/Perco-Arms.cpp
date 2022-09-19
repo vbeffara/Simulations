@@ -1,3 +1,4 @@
+#define BOOST_NO_CXX98_FUNCTION_BASE
 #include <boost/config.hpp>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/edmonds_karp_max_flow.hpp>
@@ -18,7 +19,7 @@ using Graph           = adjacency_list<
     property<edge_capacity_t, int64_t, property<edge_residual_capacity_t, int64_t, property<edge_reverse_t, edge_descriptor>>>>;
 
 void add_one(Graph *gg, size_t i, size_t j) {
-    Graph &         g{*gg};
+    Graph          &g{*gg};
     edge_descriptor e1, e2;
     bool            t = false;
 

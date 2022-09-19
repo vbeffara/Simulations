@@ -1,3 +1,4 @@
+#define BOOST_NO_CXX98_FUNCTION_BASE
 #include <FL/Fl.H>
 #include <FL/Fl_Gl_Window.H>
 #include <boost/algorithm/string.hpp>
