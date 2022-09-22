@@ -17,7 +17,7 @@ auto harmonic_measures(size_t p) {
         for (bool dirty = true; dirty;) {
             dirty = false;
             for (const auto &z : coo_range(ucoo{1, 1}, ucoo{2 * r, 2 * r})) {
-                if (double t = MM.at(z); t > 1e-13) {
+                if (double const t = MM.at(z); t > 1e-13) {
                     MM.at(z) = 0;
                     dirty    = true;
                     auto d   = min({z.x, 2 * r - z.x, z.y, 2 * r - z.y});
@@ -46,7 +46,7 @@ auto harmonic_measures(size_t p) {
 }
 
 auto uniform_circle(size_t r) -> coo {
-    double theta = prng.uniform_real(0, 2 * M_PI);
+    double const theta = prng.uniform_real(0, 2 * M_PI);
     return {int64_t(double(r) * cos(theta)), int64_t(double(r) * sin(theta))};
 }
 

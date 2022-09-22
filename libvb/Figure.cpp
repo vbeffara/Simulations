@@ -34,12 +34,12 @@ namespace vb {
     }
 
     void Figure::paint(cairo_t *cr, bool fill, bool crop) {
-        double real_h = w() * (top() - bottom()) / (right() - left());
+        double const real_h = w() * (top() - bottom()) / (right() - left());
         double wd = right() - left(), mid_x = (right() + left()) / 2;
         double ht = top() - bottom(), mid_y = (top() + bottom()) / 2;
 
         double scale_x = w() / wd, scale_y = (crop ? real_h : h()) / ht;
-        double scale = std::min(scale_x, scale_y);
+        double const scale = std::min(scale_x, scale_y);
         if (ortho) scale_x = scale_y = scale;
         basewidth = 1.0 / scale;
 
@@ -78,9 +78,9 @@ namespace vb {
     void Figure::paint() { paint(context); }
 
     void Figure::output_pdf(const std::string &s) {
-        std::string os = s + ".pdf";
+        std::string const os = s + ".pdf";
 
-        double real_h = w() * (top() - bottom()) / (right() - left());
+        double const real_h = w() * (top() - bottom()) / (right() - left());
 
         cairo_surface_t *pdf = cairo_pdf_surface_create(os.c_str(), w(), real_h);
         cairo_t *        pcr = cairo_create(pdf);

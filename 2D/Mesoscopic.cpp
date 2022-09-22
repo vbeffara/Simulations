@@ -8,7 +8,7 @@ using namespace vb;
 using namespace std;
 
 auto main(int argc, char **argv) -> int {
-    Hub      H("Toroidal triangulation", argc, argv, "n=4,o=0,m=4,f,g=lat_C5");
+    Hub const H("Toroidal triangulation", argc, argv, "n=4,o=0,m=4,f,g=lat_C5");
     Toroidal G(HLib().at(H['g']));
 
     for (int i = 0; i < int(H['o']); ++i) {

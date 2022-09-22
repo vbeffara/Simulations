@@ -12,7 +12,7 @@ namespace vb {
     }
 
     void Cube::put(const ucoo3 &c, uint8_t t) {
-        uint8_t d = data[index(c)];
+        uint8_t const d = data[index(c)];
         if (t != d) {
             Bitmap<Adder>::at({c.x, c.y}) -= d;
             Bitmap<Adder>::at({c.x, c.z + size.y}) -= d;

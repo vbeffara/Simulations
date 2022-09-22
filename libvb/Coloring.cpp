@@ -25,8 +25,8 @@ namespace vb {
         auto pw = to_unsigned(pixel_w()), ph = to_unsigned(pixel_h());
         tbb::parallel_for(0, to_signed(pw * ph), [=](int ii) {
             auto [x, y] = std::div(ii, to_signed(ph));
-            ucoo  c{to_unsigned(x), to_unsigned(y)};
-            Color cc = at(c);
+            ucoo const  c{to_unsigned(x), to_unsigned(y)};
+            Color const cc = at(c);
             bool  u  = true;
             for (size_t d = 0; d < 4; ++d) {
                 auto c2 = c + dz[d];
@@ -37,7 +37,7 @@ namespace vb {
     }
 
     void Coloring::scale(double s) {
-        cpx mid = (z1 + z2) / 2.0;
+        cpx const mid = (z1 + z2) / 2.0;
         z1      = mid + s * (z1 - mid);
         z2      = mid + s * (z2 - mid);
     }
@@ -51,10 +51,10 @@ namespace vb {
     auto Coloring::at(ucoo z) const -> Color & { return stage[z.x + stride * z.y]; }
 
     auto Coloring::aa_color(ucoo c, bool pre) const -> Color {
-        cpx z = c_to_z(c);
+        cpx const z = c_to_z(c);
         int rr(0), gg(0), bb(0), aa(0);
         if (pre) {
-            Color C = at(c);
+            Color const C = at(c);
             rr      = C.r;
             gg      = C.g;
             bb      = C.b;
@@ -63,7 +63,7 @@ namespace vb {
         for (int ii = -1; ii <= 1; ++ii)
             for (int jj = -1; jj <= 1; ++jj)
                 if ((!pre) || (ii != 0) || (jj != 0)) {
-                    Color cc = f(z + eps * cpx(ii, jj) / 3.0);
+                    Color const cc = f(z + eps * cpx(ii, jj) / 3.0);
                     rr += cc.r;
                     gg += cc.g;
                     bb += cc.b;
@@ -74,7 +74,7 @@ namespace vb {
 
     void Coloring::line(ucoo s, coo d, size_t l) {
         tbb::parallel_for(size_t(0), l, [=](size_t ii) {
-            ucoo c = s + d * ii;
+            ucoo const c = s + d * ii;
             if (!die) at(c) = f(c_to_z(c));
         });
     }
@@ -84,7 +84,7 @@ namespace vb {
         if (size <= 1) return;
 
         auto  z    = ul;
-        Color tmp  = at(ul);
+        Color const tmp  = at(ul);
         bool  mono = true;
         if ((pixel_detail != 0) && (size > pixel_detail)) mono = false;
         for (; mono && (z != ucoo{lr.x, ul.y}); z += coo{1, 0}) mono = mono && (at(z) == tmp);

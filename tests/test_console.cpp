@@ -5,7 +5,7 @@
 using namespace vb;
 
 auto main(int argc, char **argv) -> int {
-    Hub    H("Testing Console", argc, argv);
+    Hub const H("Testing Console", argc, argv);
     double x = 1.1;
 
     Console W;

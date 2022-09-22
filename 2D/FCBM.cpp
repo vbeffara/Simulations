@@ -40,7 +40,7 @@ public:
         while (true) {
             auto   z  = prng.uniform_coo(mid) * 2;
             auto   d  = dz[prng.uniform_int(4U)];
-            double pp = dlr(coo(z), d);
+            double const pp = dlr(coo(z), d);
             fill(mid, WHITE);
             atp(coo(z) + d) = prng.bernoulli(pp) ? WHITE : BLACK;
             fill(mid, RED);
@@ -54,7 +54,7 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub  H("Fully Connected Bond Percolation", argc, argv, "n=300,p=.5");
+    Hub const H("Fully Connected Bond Percolation", argc, argv, "n=300,p=.5");
     FCBM P(H.title, H['n'], H['p']);
     P.show();
     P.run();

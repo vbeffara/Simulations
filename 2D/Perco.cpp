@@ -24,7 +24,7 @@ public:
 
     void run(const Hub &H) {
         int  s = H['s'], t = 0;
-        bool c = H['c'];
+        bool const c = H['c'];
 
         while (true) {
             if ((s > 0) && ((t++ % s) == 0)) snapshot();
@@ -45,7 +45,7 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub   H("Percolation", argc, argv, "n=500,p=.5,c,d,s=0");
+    Hub const H("Percolation", argc, argv, "n=500,p=.5,c,d,s=0");
     Perco P(H, H['n'], H['p']);
     if (H['d'])
         P.run(H);

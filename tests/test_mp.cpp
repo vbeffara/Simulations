@@ -16,7 +16,7 @@ template <typename T> struct fmt::formatter<number<T>> : fmt::ostream_formatter 
 
 auto main(int argc, char **argv) -> int {
     Hub H("Testing numerical types", argc, argv, "n=10000");
-    int n = H['n'];
+    int const n = H['n'];
 
     test(H, "Standard float", n, 0.0F);
     test(H, "Standard double", n, 0.0);

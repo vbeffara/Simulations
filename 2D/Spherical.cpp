@@ -131,8 +131,8 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    vb::Hub H("Random wave on the sphere", argc, argv, "n=50,p,s=0,t=wave,w=800,e=.001");
-    if (size_t s = H['s']; s != 0) { vb::prng.seed(s); }
+    vb::Hub const H("Random wave on the sphere", argc, argv, "n=50,p,s=0,t=wave,w=800,e=.001");
+    if (size_t const s = H['s']; s != 0) { vb::prng.seed(s); }
     if (H['t'] == "wave") {
         Wave F(H, H['n'], H['w']);
         F.show();

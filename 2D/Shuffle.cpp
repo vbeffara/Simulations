@@ -35,7 +35,7 @@ struct Tiling {
 
         for (size_t i = 0; i < nn / 2; ++i) {
             for (size_t j = 0; j < nn / 2; ++j) {
-                ucoo z{2 * i, 2 * j};
+                ucoo const z{2 * i, 2 * j};
                 if ((state[z] == 1) && (state[z + ucoo{1, 1}] == 1)) {
                     state[z]              = 0;
                     state[z + ucoo{1, 1}] = 0;
@@ -93,7 +93,7 @@ struct Tiling {
         vector<Array<pair<double, double>>> A(n, Array<pair<double, double>>{ucoo{per, per}});
 
         for (auto z : coo_range(A[0].size))
-            if (double w = TP.atp(coo(z)); w != 0)
+            if (double const w = TP.atp(coo(z)); w != 0)
                 A[0][z] = {w, 0};
             else
                 A[0][z] = {1, 1};
@@ -144,14 +144,14 @@ struct Tiling {
         int                      offx = ddx[off % 4], offy = ddy[off % 4];
         for (auto z : coo_range(state.size))
             if (state[z] != 0) {
-                coo  edge{1, ((z.x + z.y) % 2) != 0 ? 1 : -1};
+                coo const edge{1, ((z.x + z.y) % 2) != 0 ? 1 : -1};
                 auto ss = [=](ucoo z_) {
                     z_ += coo{offx, offy};
-                    ucoo zz = (z_ + coo{1, 1}) / 2;
-                    coo  sh = dz[(zz.y + ((((zz.x + 1) % 4) / 2) != 0 ? 5 : 3)) % 4];
+                    ucoo const zz = (z_ + coo{1, 1}) / 2;
+                    coo const  sh = dz[(zz.y + ((((zz.x + 1) % 4) / 2) != 0 ? 5 : 3)) % 4];
                     return cpx(double(z_.x), double(z_.y)) + 2 * double(H['r']) * cpx(double(sh.x), double(sh.y)) - cpx(offx, offy);
                 };
-                double gr = a * TP.atp(coo(z) + coo{offx / 2, offy / 2}) + b;
+                double const gr = a * TP.atp(coo(z) + coo{offx / 2, offy / 2}) + b;
                 F.add(make_unique<Segment>(ss(z * 2 - edge), ss(z * 2 + edge), Pen(Grey(uint8_t(255 * gr)), 130.0 / double(state.size.x))));
             }
         if (H['v']) F.show();
@@ -198,7 +198,7 @@ struct Tiling {
     }
 
     Tiling(const Hub &H_, Array<double> TP_, size_t mm)
-        : H(H_), name(H.title), TP(move(TP_)), m(mm), per(lcm(TP.size.x, TP.size.y)), n(m * per / 2) {
+        : H(H_), name(H.title), TP(std::move(TP_)), m(mm), per(lcm(TP.size.x, TP.size.y)), n(m * per / 2) {
         probs();
         for (auto z : coo_range(TP.size)) {
             if (TP[z] == 0) continue;
@@ -222,7 +222,7 @@ struct Tiling {
 
 auto main(int argc, char **argv) -> int {
     Hub H("Domino shuffle", argc, argv, "m=50,a=1,b=.5,c=.3,s=0,r=0,w=two,v");
-    if (size_t seed = H['s']; seed != 0) prng.seed(seed);
+    if (size_t const seed = H['s']; seed != 0) prng.seed(seed);
 
     std::map<string, function<Array<double>()>> TPs;
     TPs["unif"]   = [&] { return Array<double>({2, 2}, 1.0); };

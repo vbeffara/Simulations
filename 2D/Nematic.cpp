@@ -20,7 +20,7 @@ public:
         ok = std::min(k, std::min(size.x, size.y));
         ob = b;
         std::vector<double> Z(P.size());
-        double              zz = exp(2 * ob / double(ok));
+        double const        zz = exp(2 * ob / double(ok));
         for (size_t ii = 0; ii < ok; ++ii) Z[ii] = pow(zz, -double(ii));
         for (size_t ii = ok; ii < Z.size(); ++ii) Z[ii] = Z[ii - 1] / zz + Z[ii - ok];
         for (size_t ii = ok; ii < P.size(); ++ii) P[ii] = Z[ii - ok] / Z[ii];
@@ -49,7 +49,7 @@ public:
 
     void redo(coo z, size_t d) {
         bool   empty = true;
-        size_t hw    = (d == 1 ? size.x : size.y);
+        size_t const hw    = (d == 1 ? size.x : size.y);
         for (size_t x = 0; x < hw; z += dz[d - 1], ++x) {
             if (at(ucoo(z)) == 3 - d) empty = false;
             if (at(ucoo(z)) == d) at(ucoo(z)) = 0;
@@ -105,6 +105,6 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub H("Nematic system on the square lattice", argc, argv, "n=500,m=0,k=7,b=2,v,l,t=0");
+    Hub const H("Nematic system on the square lattice", argc, argv, "n=500,m=0,k=7,b=2,v,l,t=0");
     Nematic(H, H['n'], int(H['m']) != 0 ? H['m'] : H['n'], H['k'], H['b']).go(H);
 }

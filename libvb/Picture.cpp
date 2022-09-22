@@ -35,14 +35,14 @@ namespace vb {
 
     void Picture::output_png(const std::string &s) {
         paint();
-        std::string os = s + ".png";
+        std::string const os = s + ".png";
         cairo_surface_write_to_png(surface, os.c_str());
     }
 
     void Picture::output(const std::string &s) { output_png(s); }
 
     void Picture::snapshot() {
-        std::string fn = fmt::format("snapshots/{}_{:04d}", snapshot_prefix, snapshot_number++);
+        std::string const fn = fmt::format("snapshots/{}_{:04d}", snapshot_prefix, snapshot_number++);
         output_png(fn);
     }
 

@@ -6,13 +6,13 @@ using namespace std;
 
 auto main(int argc, char **argv) -> int {
     Hub H("Testing PRNG methods", argc, argv, "n=100000000");
-    int n = H['n'];
+    int const n = H['n'];
 
-    string state = prng.state();
+    string const state = prng.state();
     timing(H, "vb::PRNG::gaussian", [n] {
         double s = 0;
         for (int i = 0; i < n; ++i) {
-            double o = prng.gaussian();
+            double const o = prng.gaussian();
             s += o * o;
         }
         return s / n;
@@ -23,7 +23,7 @@ auto main(int argc, char **argv) -> int {
         boost::mt19937_64            boostengine;
         double                       s = 0;
         for (int i = 0; i < n; ++i) {
-            double o = dist(boostengine);
+            double const o = dist(boostengine);
             s += o * o;
         }
         return s / n;
@@ -32,7 +32,7 @@ auto main(int argc, char **argv) -> int {
     timing(H, "many boost::gaussian_distributions", [n] {
         double s = 0;
         for (int i = 0; i < n; ++i) {
-            double o = (boost::normal_distribution<>(0, 1))(prng);
+            double const o = (boost::normal_distribution<>(0, 1))(prng);
             s += o * o;
         }
         return s / n;
@@ -43,7 +43,7 @@ auto main(int argc, char **argv) -> int {
         std::mt19937_64            engine;
         double                     s = 0;
         for (int i = 0; i < n; ++i) {
-            double o = dist2(engine);
+            double const o = dist2(engine);
             s += o * o;
         }
         return s / n;
@@ -53,7 +53,7 @@ auto main(int argc, char **argv) -> int {
     timing(H, "Stored state, first version", [n] {
         double s = 0;
         for (int i = 0; i < n; ++i) {
-            double o = prng.gaussian();
+            double const o = prng.gaussian();
             s += o * o;
         }
         return s / n;

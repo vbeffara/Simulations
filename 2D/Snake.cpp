@@ -49,7 +49,7 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    vb::Hub H("Self-avoiding snake", argc, argv, "n=1000,a=.38");
+    vb::Hub const H("Self-avoiding snake", argc, argv, "n=1000,a=.38");
     double  a = H['a'], e = 1.0 / (1.0 + 4 * a);
 
     Snake S(H, H['n']);

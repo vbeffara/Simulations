@@ -9,7 +9,7 @@ using namespace std;
 class DDLA : public CoarseImage {
 public:
     explicit DDLA(const string &title_, size_t n_, double p_, bool f_)
-        : CoarseImage(title_, {n_, n_}, f_ ? unsigned(pow(n_, .33)) : 1), f(f_), n(n_), cursum(0), p(p_) {
+        : CoarseImage(title_, {n_, n_}, f_ ? unsigned(pow(n_, .33)) : 1), f(f_), n(n_), p(p_) {
         put({0, 0}, true);
         pq.push({{1, 0}, prng.exponential() / p});
         pq.push({{0, 1}, prng.exponential() / (1 - p)});
@@ -41,7 +41,7 @@ public:
 
             if ((z.x == n - 1) || (z.y == n - 1)) return;
             if (!at(z)) {
-                double curtime = pt.t;
+                double const curtime = pt.t;
                 if (ok(z)) {
                     put(z, true);
                     cursum = max(cursum, z.x + z.y);
@@ -56,7 +56,7 @@ public:
     }
 
     bool        f;
-    size_t      n, cursum;
+    size_t      n, cursum{0};
     double      p;
     Queue<ucoo> pq;
 };

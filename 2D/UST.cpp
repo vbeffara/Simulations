@@ -28,7 +28,7 @@ public:
 
     void path(ucoo z, Type tgt) {
         while (at(z).t != tgt) {
-            coo d   = dz[at(z).d];
+            coo const d = dz[at(z).d];
             at(z).t = at(z + d).t = tgt;
             z += d * 2;
         }
@@ -62,6 +62,6 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub H("Uniform spanning tree", argc, argv, "n=200,p");
+    Hub const H("Uniform spanning tree", argc, argv, "n=200,p");
     UST(H, H['n']).go(H);
 }

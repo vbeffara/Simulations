@@ -22,7 +22,7 @@ namespace vb {
                 t();
                 t.next = now() + t.period;
             }
-        double time = Duration(now() - start).count();
+        double const time = Duration(now() - start).count();
         slice *= 1.01;
         if (time > .1) slice = std::min(.1 * double(n_call) / time, slice);
         next = int(slice);

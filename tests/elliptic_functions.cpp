@@ -19,20 +19,20 @@ auto main(int argc, char **argv) -> int {
 
     default_precision(unsigned(n));
 
-    cpx       ttau(.125, 1.25);
-    complex_t tau = complex_t(1, 10) / 8;
+    cpx const       ttau(.125, 1.25);
+    complex_t const tau = complex_t(1, 10) / 8;
     out2("Tau", ttau, tau);
 
-    cpx       qq(q_<double>(ttau));
-    complex_t q(q_<real_t>(tau));
+    cpx const       qq(q_<double>(ttau));
+    complex_t const q(q_<real_t>(tau));
     out2("q", qq, q);
 
-    cpx       zz(.25, .75);
-    complex_t z = complex_t(1, 3) / 4;
+    cpx const       zz(.25, .75);
+    complex_t const z = complex_t(1, 3) / 4;
     out2("Z", zz, z);
 
-    Elliptic<double> EE{qq};
-    Elliptic<real_t> E{q};
+    Elliptic<double> const EE{qq};
+    Elliptic<real_t> const E{q};
 
     out2("q14", EE.q14, E.q14);
     out2("q_t", q_t<double>(ttau), q_t<real_t>(tau));

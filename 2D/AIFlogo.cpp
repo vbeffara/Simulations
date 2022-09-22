@@ -11,7 +11,7 @@ struct mobius {
 
     static auto from_endpoints(cpx zm, cpx zp) -> mobius {
         if (norm(zp / zm + 1.0) < .000001) return {0, arg(zp * zm) / 2};
-        cpx w = sqrt(zp / zm);
+        cpx const w = sqrt(zp / zm);
         return {real((w - I) / (1.0 - w * I)), arg(zm * w)};
     }
 

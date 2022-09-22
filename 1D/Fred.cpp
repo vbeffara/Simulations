@@ -35,7 +35,7 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    vb::Hub H("Deterministic Fourier law", argc, argv, "a=2,b=.2394879347,n=500,m=1000,t=100");
+    vb::Hub const H("Deterministic Fourier law", argc, argv, "a=2,b=.2394879347,n=500,m=1000,t=100");
     size_t  nn = H['n'], nn2 = nn / 2, mm = H['m'], tt = H['t'];
     state::a = H['a'];
     state::b = H['b'];

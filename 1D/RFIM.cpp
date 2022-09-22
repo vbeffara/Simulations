@@ -5,8 +5,8 @@ using namespace std;
 using namespace vb;
 
 auto main(int argc, char **argv) -> int {
-    Hub    H("Random field Ising model", argc, argv, "n=5,s=0");
-    size_t n = H['n'];
+    Hub const    H("Random field Ising model", argc, argv, "n=5,s=0");
+    size_t const n = H['n'];
     prng.seed(size_t(H['s']));
 
     size_t nconfig = 1;

@@ -150,7 +150,7 @@ public:
     void up() { up(prng.uniform_coo(coo(size))); }
     void up(coo z) {
         auto   ii = prng.uniform_int(q);
-        double dH = HH(z, ii) - HH(z, atp(z));
+        double const dH = HH(z, ii) - HH(z, atp(z));
         // TODO: at(ucoo()), put(ucoo()) and so on
         if ((dH <= 0) || prng.bernoulli(exp(-beta * dH))) put(ucoo(z), ii);
     }
@@ -161,7 +161,7 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub   H("Potts model", argc, argv, "n=500,q=3,b=1,c=free");
+    Hub const H("Potts model", argc, argv, "n=500,q=3,b=1,c=free");
     Potts P(H, H['n'], H['q'], H['b']);
     while (true) P.up();
 }

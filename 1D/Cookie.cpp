@@ -2,9 +2,9 @@
 #include <vb/util/PRNG.h>
 
 auto main(int argc, char **argv) -> int {
-    vb::Hub H("Cookie random walk", argc, argv, "t=20,p=.67");
-    size_t  t = H['t'];
-    double  p = H['p'];
+    vb::Hub const H("Cookie random walk", argc, argv, "t=20,p=.67");
+    size_t const  t = H['t'];
+    double const  p = H['p'];
 
     std::vector<int> env;
     int64_t          X = 0;

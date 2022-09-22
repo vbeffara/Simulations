@@ -5,10 +5,10 @@
 using namespace vb;
 
 auto main(int argc, char **argv) -> int {
-    Hub H("Discrete-time contact process on the hexagonal lattice", argc, argv, "p=.44,n=400");
+    Hub const H("Discrete-time contact process on the hexagonal lattice", argc, argv, "p=.44,n=400");
 
-    double p = H['p'];
-    size_t n = H['n'];
+    double const p = H['p'];
+    size_t const n = H['n'];
 
     Image img(H.title, {n, n});
 

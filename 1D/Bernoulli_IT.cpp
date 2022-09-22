@@ -10,11 +10,11 @@ using intv = iset::interval_type;
 
 class fun {
 public:
-    fun(const std::vector<double> js, const std::vector<double> ds) : jumps(js), shifts(ds){};
+    fun(const std::vector<double> &js, const std::vector<double> &ds) : jumps(js), shifts(ds){};
 
-    auto index(double x) const -> size_t { return (std::lower_bound(begin(jumps), end(jumps), x) - begin(jumps)) - 1; };
+    [[nodiscard]] auto index(double x) const -> size_t { return (std::lower_bound(begin(jumps), end(jumps), x) - begin(jumps)) - 1; };
 
-    auto jump(size_t i) const -> double { return i < jumps.size() ? jumps[i] : 1.0; }
+    [[nodiscard]] auto jump(size_t i) const -> double { return i < jumps.size() ? jumps[i] : 1.0; }
 
     void plot() const {
         for (size_t i = 0; i < jumps.size(); ++i) {
@@ -23,15 +23,15 @@ public:
         }
     }
 
-    auto range(size_t i) const -> intv { return intv::right_open(jumps[i] + shifts[i], jump(i + 1) + shifts[i]); }
+    [[nodiscard]] auto range(size_t i) const -> intv { return intv::right_open(jumps[i] + shifts[i], jump(i + 1) + shifts[i]); }
 
-    auto range() const -> iset {
+    [[nodiscard]] auto range() const -> iset {
         iset out;
         for (size_t i = 0; i < jumps.size(); ++i) out.insert(range(i));
         return out;
     }
 
-    auto compose(const fun &o) const -> fun {
+    [[nodiscard]] auto compose(const fun &o) const -> fun {
         std::vector<double> nj, ns;
         for (size_t i = 0; i < jumps.size(); ++i) {
             auto I = range(i);
@@ -64,6 +64,6 @@ auto run(double theta, size_t N) {
 }
 
 auto main(int argc, char **argv) -> int {
-    Hub H("Bernoullicity of [I,T]", argc, argv, "n=1,t=1000,s=.61803398874989484820,v,k=1");
+    Hub const H("Bernoullicity of [I,T]", argc, argv, "n=1,t=1000,s=.61803398874989484820,v,k=1");
     run(H['s'], H['n']);
 }

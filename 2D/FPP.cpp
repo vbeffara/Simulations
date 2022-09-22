@@ -10,7 +10,7 @@ auto cost() -> double { return prng.exponential(); }
 class FPP : public CoarseImage {
 public:
     FPP(const Hub &H, size_t n)
-        : CoarseImage(H.title, {n, n}, size_t(pow(double(n), .33))), area(0), trace(H['t']), invasion(H['i']), twostep(H['2']) {
+        : CoarseImage(H.title, {n, n}, size_t(pow(double(n), .33))), trace(H['t']), invasion(H['i']), twostep(H['2']) {
         pq.push({{n / 2, n / 2}, cost()});
         if (twostep) pq.push({{n / 2 + 1, n / 2}, cost()});
     };
@@ -32,7 +32,7 @@ public:
                 put(z, true);
                 ++area;
 
-                double curtime = invasion ? 0.0 : pt.t;
+                double const curtime = invasion ? 0.0 : pt.t;
 
                 int deg = 1;
                 if (twostep)
@@ -50,13 +50,13 @@ public:
         }
     }
 
-    int         area;
+    int         area{0};
     bool        trace, invasion, twostep;
     Queue<ucoo> pq;
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub H("First-passage percolation", argc, argv, "n=5000,i,2,t");
+    Hub const H("First-passage percolation", argc, argv, "n=5000,i,2,t");
     FPP F(H, H['n']);
     F.show();
     F.run();

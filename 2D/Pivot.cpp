@@ -30,7 +30,7 @@ public:
     }
 
     void run() {
-        coo    center{2 * int64_t(nn), 2 * int64_t(nn)};
+        coo const center{2 * int64_t(nn), 2 * int64_t(nn)};
         size_t p = 0;
         while (p == 0) {
             zs[0] = center;
@@ -43,7 +43,7 @@ public:
         for (auto z : coo_range(size)) put(z, BLACK);
         for (size_t k = 0; k < n; k++) putp(zs[k] - zs[p] + center, WHITE);
         for (size_t k = p + 1; k < n; k++) {
-            coo z = rot(zs[k] - zs[p], {0, 0}) + center;
+            coo const z = rot(zs[k] - zs[p], {0, 0}) + center;
             if (atp(z) != WHITE) putp(z, RED);
         }
     }

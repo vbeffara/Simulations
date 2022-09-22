@@ -50,7 +50,7 @@ public:
         point p = *cur, pp = *boost::prior(cur), ppp = *boost::next(cur);
         cpx   vzp = pp.z;
         if (pp.k) vzp -= p.z;
-        double alpha = vb::prng.uniform_real(0, 2 * M_PI + angle(p, pp, ppp));
+        double const alpha = vb::prng.uniform_real(0, 2 * M_PI + angle(p, pp, ppp));
 
         return point(p.z + vzp * std::polar(1.0, alpha) / sqrt(norm(vzp)));
     }
@@ -60,7 +60,7 @@ public:
         double                     minpente2 = std::numeric_limits<double>::infinity(), maxpente2 = -minpente2;
 
         for (i = env.begin(); i != env.end(); ++i) {
-            double pente = angle(p, *(env.begin()), *i);
+            double const pente = angle(p, *(env.begin()), *i);
             if (pente <= minpente2) {
                 minpente2   = pente;
                 maillonmin2 = i;
@@ -71,7 +71,7 @@ public:
 
         do {
             --i;
-            double pente = angle(p, *(env.begin()), *i);
+            double const pente = angle(p, *(env.begin()), *i);
             if (pente >= maxpente2) {
                 maxpente2   = pente;
                 maillonmax2 = i;
@@ -107,16 +107,16 @@ public:
     auto env_width() -> double {
         auto i = env.begin();
         ++i;
-        point p1 = *i;
+        point const p1 = *i;
         i        = env.end();
         --i;
         --i;
-        point p2 = *i;
+        point const p2 = *i;
         return sqrt(norm(p1.z - p2.z));
     }
 
     void main() {
-        double pente = H['p'];
+        double const pente = H['p'];
         size_t nb = H['n'], inter = H['i'];
         bool   plot = H['o'], renew = H['r'];
 
@@ -142,7 +142,7 @@ public:
         std::vector<size_t> renewals;
 
         for (i = 3; i < nb; i++) {
-            point p = rand_point();
+            point const p = rand_point();
             if (plot) traj.push_back(p);
             cur = insere_maillon(p);
             if (plot && ((i + 1) % inter == 0)) dessine_enveloppe();

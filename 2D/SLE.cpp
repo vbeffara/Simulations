@@ -41,11 +41,11 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub H("Schramm-Loewner Evolution", argc, argv, "n=300,k=2.666666666667,r=0,a");
-    if (size_t r = H['r']; r > 0) prng.seed(r);
+    Hub const H("Schramm-Loewner Evolution", argc, argv, "n=300,k=2.666666666667,r=0,a");
+    if (size_t const r = H['r']; r > 0) prng.seed(r);
 
     Loewner  L(H['n'], H['k']);
-    double   w = L.Max[0] - L.Min[0];
+    double const w = L.Max[0] - L.Min[0];
     Coloring C(H.title, cpx(-w, 0), cpx(w, 4.0 * w / 3.0), H['n'], [&L](cpx z) { return L.compute(z); });
     if (H['a']) C.antialias = false;
     C.show();

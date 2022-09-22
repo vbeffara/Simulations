@@ -8,7 +8,7 @@
 using namespace vb;
 
 auto main(int argc, char **argv) -> int {
-    Hub H("Testing spdlog", argc, argv);
+    Hub const H("Testing spdlog", argc, argv);
     spdlog::set_level(spdlog::level::trace);
 
     spdlog::critical("Support for int: {0:d};  hex: {0:x};  oct: {0:o}; bin: {0:b}", 42);

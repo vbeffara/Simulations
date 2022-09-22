@@ -101,7 +101,7 @@ public:
 
     void run(const vb::Hub &H) {
         auto   n = size.x;
-        double p = H['p'];
+        double const p = H['p'];
 
         for (size_t ii = 0; ii < 2000 * n * n; ii++) {
             // TODO: uniform_coo
@@ -135,7 +135,7 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    vb::Hub H("Glassy Glauber dynamics for percolation", argc, argv, "n=300,p=.5,c=none");
+    vb::Hub const H("Glassy Glauber dynamics for percolation", argc, argv, "n=300,p=.5,c=none");
     Glass   img(H, H['n']);
     img.run(H);
 }

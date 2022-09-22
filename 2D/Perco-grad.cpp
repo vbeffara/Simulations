@@ -5,12 +5,12 @@
 using namespace vb;
 
 auto main(int argc, char **argv) -> int {
-    Hub    H("Gradient percolation", argc, argv, "n=500,p=0,q=1,W=0,H=0");
-    size_t n  = H['n'];
+    Hub const    H("Gradient percolation", argc, argv, "n=500,p=0,q=1,W=0,H=0");
+    size_t const n  = H['n'];
     size_t w  = H['W'];
     size_t h  = H['H'];
-    double p1 = H['p'];
-    double p2 = H['q'];
+    double const p1 = H['p'];
+    double const p2 = H['q'];
 
     if ((w * h == 0) && (w + h != 0)) {
         std::cerr << "Please specify both width and height, or neither." << std::endl;

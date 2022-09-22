@@ -36,7 +36,7 @@ namespace vb {
             std::vector<size_t> all;
             all.reserve(n);
             for (size_t ii = 0; ii < n; ++ii) all.push_back(ii);
-            std::vector<size_t> c;
+            std::vector<size_t> const c;
             todo_c.push_back(c);
             todo_p.push_back(all);
             next();
@@ -55,7 +55,7 @@ namespace vb {
     Pairings::Pairings(size_t n_) : n(n_) {}
 
     auto Pairings::size() const -> size_t {
-        size_t nn = n;
+        size_t const nn = n;
         return fact(nn) / fact(nn / 2) / (size_t(1) << (n / 2));
     }
 

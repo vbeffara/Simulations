@@ -3,7 +3,7 @@
 #include <vb/util/misc.h>
 
 namespace vb {
-    CLP::CLP(int argc, char **argv, std::string desc_) : desc(move(desc_)), title(desc + " |") {
+    CLP::CLP(int argc, char **argv, std::string desc_) : desc(std::move(desc_)), title(desc + " |") {
         for (const auto &a : gsl::span(argv, to_unsigned(argc))) args.emplace_back(a);
     }
 

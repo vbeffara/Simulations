@@ -11,7 +11,7 @@ public:
     explicit Bounces(const Hub &H) {
         emplace("none", [&](coo /*unused*/) { return coo{0, 0}; });
         emplace("line", [&](coo z) {
-            double p = H['p'];
+            double const p = H['p'];
             return coo{int(-p * double(z.x)), int(-p * double(z.y))};
         });
         emplace("idla", [&](coo z) { return -z; });
@@ -21,21 +21,21 @@ public:
             return coo{-sign(z.x), -sign(z.y)} * (1 + (a - 1) * (1 + k) / 2);
         });
         emplace("soft", [&](coo z) {
-            int k = z.x > 2 * abs(z.y) ? H['a'] : 1;
+            int const k = z.x > 2 * abs(z.y) ? H['a'] : 1;
             return coo{-sign(z.x), -sign(z.y)} * k;
         });
         emplace("sqrt", [&](coo z) {
-            double l = 1 + sqrt(norm(z));
+            double const l = 1 + sqrt(norm(z));
             return coo{int(-double(z.x) / sqrt(l)), int(-double(z.y) / sqrt(l))};
         });
 
         emplace("maxi", [&](coo z) { return (abs(z.x) > abs(z.y)) ? coo{-sign(z.x), 0} : coo{0, -sign(z.y)}; });
         emplace("max2", [&](coo z) {
-            int a = H['a'];
+            int const a = H['a'];
             return (abs(z.x) > abs(z.y)) ? coo{-sign(z.x), 0} : coo{0, -a * sign(z.y)};
         });
         emplace("maxb", [&](coo z) {
-            double l = pow(norm(z), double(H['b']));
+            double const l = pow(norm(z), double(H['b']));
             return (abs(z.x) > abs(z.y)) ? coo{int(-l * sign(double(z.x))), 0} : coo{0, int(-l * sign(double(z.y)))};
         });
 
@@ -96,7 +96,7 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub    H("Internal DLA", argc, argv, "n=1000,j=idla,p=.1,a=2,b=1,g,u=0,i");
+    Hub const H("Internal DLA", argc, argv, "n=1000,j=idla,p=.1,a=2,b=1,g,u=0,i");
     Bouncy B(H, H['n'], H['j']);
     B.run(H);
     if (H['g'])

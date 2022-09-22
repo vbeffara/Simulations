@@ -6,8 +6,8 @@ using namespace vb;
 using namespace std;
 
 auto main(int argc, char **argv) -> int {
-    Hub    H("Divide-and-color model", argc, argv, "n=300,p=.3,q=.4");
-    size_t n = H['n'];
+    Hub const    H("Divide-and-color model", argc, argv, "n=300,p=.3,q=.4");
+    size_t const n = H['n'];
     double p = H['p'], q = H['q'];
 
     // Connectivity (&1 -> to the right, &2 -> downwards)

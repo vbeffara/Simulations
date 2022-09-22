@@ -25,12 +25,12 @@ auto main(int argc, char **argv) -> int {
 
     vector<Hypermap>     v;
     const vector<size_t> ntri{0, 1, 5, 46, 669, 11096, 196888, 3596104, 66867564, 1258801076}; // https://oeis.org/A292408
-    size_t               target = ((d == 0) && (!f) && (s < ntri.size())) ? ntri[s] : 0;
+    size_t const         target = ((d == 0) && (!f) && (s < ntri.size())) ? ntri[s] : 0;
 
     Coloring img("Toroidal enumeration", cpx(-1, -1), cpx(1, 1), 500, [](cpx /*unused*/) { return BLACK; });
 
     while ((target == 0) || (v.size() < target)) {
-        Permutation alpha = Pairings(6 * s).rrand();
+        Permutation const alpha = Pairings(6 * s).rrand();
         if (!connected(phi, alpha)) continue;
 
         Hypermap M((alpha * phi).inverse(), alpha, phi);
@@ -81,9 +81,9 @@ auto main(int argc, char **argv) -> int {
         }
 
         Constellation1<real_t> CC(C);
-        real_t                 c  = CC.findn();
-        int                    lc = -int(log10(c));
-        unsigned               nd = unsigned(std::max(10, lc / 2 - 15));
+        real_t const           c  = CC.findn();
+        int const              lc = -int(log10(c));
+        unsigned const         nd = unsigned(std::max(10, lc / 2 - 15));
         spdlog::info("     Modulus:         {}", CC.tau());
         if (nd > 30)
             if (auto P = guess(CC.tau(), nd)) spdlog::info("        root of {}", *P);

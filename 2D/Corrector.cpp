@@ -9,10 +9,10 @@ int center   = 6;
 int infinity = 13;
 
 auto main(int argc, char **argv) -> int {
-    Hub    H("Corrector", argc, argv, "n=10,p=.9,b");
-    size_t n     = H['n'];
-    double p     = H['p'];
-    bool   batch = H['b'];
+    Hub const    H("Corrector", argc, argv, "n=10,p=.9,b");
+    size_t const n     = H['n'];
+    double const p     = H['p'];
+    bool const   batch = H['b'];
 
     Map             m(H.title, n * n);
     vector<uint8_t> adj(n * n, 0);
@@ -62,7 +62,7 @@ auto main(int argc, char **argv) -> int {
         m.pause();
     }
 
-    double output = m.balance();
+    double const output = m.balance();
     cout << n << " " << p << " " << output << endl;
 
     if (!batch) m.pause();

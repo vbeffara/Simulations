@@ -35,7 +35,7 @@ auto NewNu(vector<double> *nup, double K, double p, size_t size) -> double {
         DD += De[x];
     }
 
-    double u = prng.uniform_real() * (BB + DD + MM);
+    double const u = prng.uniform_real() * (BB + DD + MM);
     if (u < BB) {
         size_t z = 0;
         double v = prng.uniform_real() * BB;
@@ -60,7 +60,7 @@ auto NewNu(vector<double> *nup, double K, double p, size_t size) -> double {
             z++;
             v -= M[z];
         }
-        int64_t dz = prng.bernoulli() ? 1 : -1;
+        int64_t const dz = prng.bernoulli() ? 1 : -1;
         if ((z > 0) && (int(z) + dz >= 1) && (size_t(int(z) + dz) <= size)) nu[size_t(int(z) + dz)] += 1 / K;
     }
 
@@ -69,7 +69,7 @@ auto NewNu(vector<double> *nup, double K, double p, size_t size) -> double {
 
 auto main(int argc, char **argv) -> int {
     // n impair ! the function rescaling maps {1, ..., size} to {-3, ..., 3}; 7+(2^k*)6 is optimal rescaling
-    vb::Hub H("Population dynamics", argc, argv, "s=4,K=100,p=.05,n=7,i=1000000");
+    vb::Hub const H("Population dynamics", argc, argv, "s=4,K=100,p=.05,n=7,i=1000000");
     prng.seed(size_t(H['s']));
     double K = H['K'], p = H['p'];
     size_t size = H['n'], shift = (size + 1) / 2, iterations = H['i'];

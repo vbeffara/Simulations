@@ -67,7 +67,7 @@ public:
                     putd({x, y}, 1);
                     putd({size.x - 1 - x, y - 1}, 1);
                 }
-            ucoo mid     = size / 2;
+            ucoo const mid = size / 2;
             at(mid).type = 0;
             putd(mid + coo{-1, -1}, 1);
             putd(mid + coo{-1, 1}, 0);
@@ -86,7 +86,7 @@ public:
         } else {
             for (size_t x = 0; x < size.x; x += 2)
                 for (size_t y = 0; y < size.y; ++y) putd({x, y}, 0);
-            size_t b = H['b'];
+            size_t const b = H['b'];
             if (b > 0) {
                 for (auto x = size.x / 2 - b; x < size.x / 2 + b; ++x) putd({x, size.y / 2}, (2 + at({x, size.y / 2}).d) % 4U);
                 at({size.x / 2 - b, size.y / 2}).type = 0;
@@ -97,8 +97,8 @@ public:
 
     auto flip(coo c) -> int {
         if (at(ucoo(c)).type == 0) return 0;
-        uint8_t d  = at(ucoo(c)).d;
-        coo     oc = c + dz[d] + dz[(d + 1) % 4U];
+        uint8_t const d  = at(ucoo(c)).d;
+        coo const     oc = c + dz[d] + dz[(d + 1) % 4U];
         if (!fits(oc)) return 0;
         if (at(ucoo(oc)).type == 0) return 0;
         if (at(ucoo(oc)).d != ((d + 2) % 4)) return 0;
@@ -114,7 +114,7 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub     H("Domino tiling", argc, argv, "n=200,o=aztec|hill|hole|flat,b=0,f=0,r=1");
+    Hub const H("Domino tiling", argc, argv, "n=200,o=aztec|hill|hole|flat,b=0,f=0,r=1");
     Tiling  T(H);
     Console C;
     C.manage(T.r, 0.0, 1.0, "r");

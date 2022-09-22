@@ -4,8 +4,8 @@
 #include <vb/util/coo.h>
 
 auto main(int argc, char **argv) -> int {
-    vb::Hub  H("Simple random walk", argc, argv, "a=15,o=1");
-    unsigned adj = H['a'];
+    vb::Hub const  H("Simple random walk", argc, argv, "a=15,o=1");
+    unsigned const adj = H['a'];
 
     auto                  C    = std::make_unique<vb::Circle>(0, .5);
     vb::cpx &             z    = C->z;

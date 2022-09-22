@@ -20,8 +20,6 @@
 //   24 -> whole triangulation;
 //  228 -> dessin (bones, vertices in black, midpoints in white, centers of faces)
 
-#include <vb/Hypermap.h>
-
 namespace vb {
     class Toroidal : public Hypermap {
     public:

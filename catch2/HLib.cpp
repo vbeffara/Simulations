@@ -6,7 +6,7 @@ using namespace vb;
 
 TEST_CASE("vb::Hypermap library") {
     std::vector<char *> argv{strdup("test_hlib"), nullptr};
-    Hub                 H("Testing hypermap lib", 1, argv.data());
+    Hub const           H("Testing hypermap lib", 1, argv.data());
     CHECK(HLib().at("tripod_l").sigma.size() == 4);
     CHECK(!H_artem(12).is_simple(6));
     CHECK(H_genus0(15).is_triangulation());

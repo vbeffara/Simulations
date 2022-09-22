@@ -49,10 +49,10 @@ public:
 
     void fill_dyadic(int n0) {
         for (int l = n - 1; l >= n0; --l) {
-            unsigned ll = 1U << unsigned(l);
+            unsigned const ll = 1U << unsigned(l);
             for (size_t ii = 0; ii < size.x / ll; ++ii)
                 for (size_t j = 0; j < size.y / ll; ++j) {
-                    double noise = prng.gaussian();
+                    double const noise = prng.gaussian();
                     for (auto x = ii * ll; x < (ii + 1) * ll; ++x)
                         for (auto y = j * ll; y < (j + 1) * ll; ++y) I.at({x, y}).f += noise;
                 }
@@ -61,10 +61,10 @@ public:
 
     void fill_boolean(int n0) {
         for (int l = n - 1; l >= n0; --l) {
-            unsigned ll = 1U << unsigned(l);
+            unsigned const ll = 1U << unsigned(l);
             for (size_t ii = 0; ii < size.x / ll; ++ii)
                 for (size_t j = 0; j < size.y / ll; ++j) {
-                    double noise = prng.uniform_real(-1, 1);
+                    double const noise = prng.uniform_real(-1, 1);
                     for (auto x = ii * ll; x < (ii + 1) * ll; ++x)
                         for (auto y = j * ll; y < (j + 1) * ll; ++y) I.at({x, y}).f += noise;
                 }
@@ -87,7 +87,7 @@ public:
         for (auto [ii, jj] : coo_range(size)) {
             if ((ii == 0) && (jj == 0)) continue;
             auto   ij   = ii + size.x * jj;
-            double norm = sqrt(double(size.x * size.y) * (sinarrayi[ii] * sinarrayi[ii] + sinarrayj[jj] * sinarrayj[jj]));
+            double const norm = sqrt(double(size.x * size.y) * (sinarrayi[ii] * sinarrayi[ii] + sinarrayj[jj] * sinarrayj[jj]));
             auto   fij  = cpx(prng.gaussian(), prng.gaussian()) * sqrt(M_PI / 2) / norm;
             in_[ij][0]  = real(fij);
             in_[ij][1]  = imag(fij);
@@ -131,7 +131,7 @@ public:
     }
 
     void dijkstra() {
-        ucoo                 mid = size / 2;
+        ucoo const           mid = size / 2;
         priority_queue<Info> Q;
         I.at(mid).d = 0;
         Q.push(I.at(mid));
@@ -140,13 +140,13 @@ public:
         for (size_t t = 0; t < size_t(size.x * size.y); ++t) {
             PB.set(t);
             while (I.at(Q.top().z).d < Q.top().d) Q.pop();
-            Info im = Q.top();
+            Info const im = Q.top();
             Q.pop();
             for (unsigned k = 0; k < 8; ++k) {
                 auto nz = im.z + dz[k];
                 if (!fits(nz)) continue;
                 Info & ni = I.at(nz);
-                double nd = im.d + (k < 4 ? .5 : sqrt(.5)) * (im.f + ni.f);
+                double const nd = im.d + (k < 4 ? .5 : sqrt(.5)) * (im.f + ni.f);
                 if (ni.d > nd) {
                     ni.d    = nd;
                     ni.next = im.z;
@@ -175,7 +175,7 @@ public:
     }
 
     void ball() {
-        double r = radius();
+        double const r = radius();
         for (auto z : coo_range(size))
             if (I.at(z).d <= r) put(z, Color(0, 0, 127 + at(z).b / 2));
     }
@@ -186,8 +186,8 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub H("Random 2D geometry", argc, argv, "w=free,n=9,z=0,g=1,s=0,b,i,q,c,l=10,a=1");
-    if (unsigned s = H['s']) prng.seed(s);
+    Hub const H("Random 2D geometry", argc, argv, "w=free,n=9,z=0,g=1,s=0,b,i,q,c,l=10,a=1");
+    if (unsigned const s = H['s']) prng.seed(s);
     unsigned n = H['n'], nn = 1U << n;
 
     QG img(H);

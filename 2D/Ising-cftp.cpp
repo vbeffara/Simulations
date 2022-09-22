@@ -15,7 +15,7 @@ namespace vb {
 
 class IsingCFTP : public Bitmap<int> {
 public:
-    explicit IsingCFTP(const Hub &H) : Bitmap<int>(H.title, {H['n'], H['n']}), b(H['b']), d(0), s(H['s']), status(H.title, size) {
+    explicit IsingCFTP(const Hub &H) : Bitmap<int>(H.title, {H['n'], H['n']}), b(H['b']), s(H['s']), status(H.title, size) {
         for (const auto &z : coo_range(size)) put(z, 1);
         snap();
         b *= log(1 + sqrt(double(2)));
@@ -23,7 +23,7 @@ public:
     };
 
     void up(const ucoo z) {
-        double   U  = prng.uniform_real();
+        double const U  = prng.uniform_real();
         unsigned n1 = 0, n2 = 0;
         for (unsigned ii = 0; ii < 4; ++ii) {
             if (atp(coo(z) + dz[ii]) >= 1) ++n1;
@@ -95,14 +95,14 @@ public:
     }
 
     double         b;
-    size_t         d;
+    size_t         d{0};
     bool           s;
     Bitmap<int>    status;
     vector<double> p;
 };
 
 auto main(int argc, char *argv[]) -> int {
-    Hub       H("CFTP for the Ising model", argc, argv, "n=200,b=1,s");
+    Hub const H("CFTP for the Ising model", argc, argv, "n=200,b=1,s");
     IsingCFTP I(H);
     I.bc_dobrushin();
     I.show();

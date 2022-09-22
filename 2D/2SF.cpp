@@ -88,7 +88,7 @@ public:
     }
 
     void special(const Hub &H) {
-        coo    delta{coo(root) - coo(start)};
+        coo const delta{coo(root) - coo(start)};
         double lambda = double(delta.y) / double(delta.x), L = lambda * lambda;
         double tca = a + 1 / a, Delta = 1 + L * L + L * (tca * tca - 2);
         double u = (tca - sqrt(Delta)) / (1 - L), mu = copysign(acosh(u), delta.x);
@@ -145,6 +145,6 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub H("Spanning forest with 2-periodic weights", argc, argv, "n=400,a=.2,v,s");
+    Hub const H("Spanning forest with 2-periodic weights", argc, argv, "n=400,a=.2,v,s");
     SF(H, H['n'], H['a']).go(H);
 }

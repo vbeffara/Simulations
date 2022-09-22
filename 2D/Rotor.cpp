@@ -7,15 +7,15 @@ using namespace vb;
 auto main(int argc, char **argv) -> int {
     const std::vector<Color> C{RED, GREEN, BLUE, YELLOW};
 
-    Hub    H("Rotor-Router Model", argc, argv, "n=500");
-    size_t n = H['n'];
+    Hub const    H("Rotor-Router Model", argc, argv, "n=500");
+    size_t const n = H['n'];
 
     Image img(H.title, {n, n});
     img.show();
 
     ucoo z{n / 2, n / 2};
     while (img.fits(coo(z), 1)) {
-        Color c = img.at(z);
+        Color const c = img.at(z);
         if (c == BLACK) {
             img.put(z, C[0]);
             z = {n / 2, n / 2};

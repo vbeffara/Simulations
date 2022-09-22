@@ -38,7 +38,7 @@ public:
     void perc() {
         for (size_t ii = 0; ii < w * h; ++ii)
             if (mask[ii]) {
-                cpx         xy = thepos(ii);
+                cpx const   xy = thepos(ii);
                 vector<cpx> coo;
                 coo.push_back(xy + cpx(omx, 1));
                 coo.push_back(xy + cpx(0, 2));
@@ -82,15 +82,15 @@ private:
     }
 
     void seg(Path *p, size_t base, size_t dir, size_t rot) {
-        cpx x1y1 = thepos(base);
-        cpx x2y2 = thepos(follow(base, dir));
-        cpx x3y3 = thepos(follow(base, (dir + rot) % 6));
+        cpx const x1y1 = thepos(base);
+        cpx const x2y2 = thepos(follow(base, dir));
+        cpx const x3y3 = thepos(follow(base, (dir + rot) % 6));
         p->z.push_back((x1y1 + x2y2 + x3y3) / 3.0);
     }
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub           H("Percolation exploration process", argc, argv, "n=28,l=55,p=.5,t");
+    Hub const     H("Percolation exploration process", argc, argv, "n=28,l=55,p=.5,t");
     Perco_Schramm RS(H);
     if (H['t'])
         RS.tri_boundary();

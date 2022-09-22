@@ -6,7 +6,7 @@ namespace vb {
     auto time() -> double;
 
     template <typename F> void timing(Hub &H, const std::string &label, const F &f) {
-        double t      = time();
+        double const t      = time();
         auto   result = f();
         H.output(label, "", fmt::format("time = {:>7.3f} ans = {}", time() - t, result), false);
     }

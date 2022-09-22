@@ -15,7 +15,7 @@ public:
     Ising(const Hub &H, size_t n, double beta, size_t con_) : Bitmap<int>(H.title, {n, n}), con(con_), p(2 * size_t(con) + 1) {
         for (auto z : coo_range(size)) put(z, prng.bernoulli(.5) ? 1 : -1);
         if (con == 6) {
-            size_t m = 2 * n / 3;
+            size_t const m = 2 * n / 3;
             for (size_t ii = 0; ii < n; ++ii)
                 for (size_t jj = 0; jj < n; ++jj)
                     if ((jj > m) || (ii < jj / 2) || (ii > m + jj / 2)) put({ii, jj}, 0);
@@ -45,7 +45,7 @@ public:
             pattern = {{.5, .5}, {-.5, .5}, {-.5, -.5}, {.5, -.5}};
         }
         for (const auto &z : coo_range(size)) {
-            Color c = to_Color(at(z));
+            Color const c = to_Color(at(z));
             if (c == to_Color(0)) continue;
             vector<cpx> path;
             path.reserve(pattern.size());
@@ -56,7 +56,7 @@ public:
     }
 
     void explore() {
-        ucoo   z0{size.x / 2, (con == 6) ? size.y / 3 : size.y / 2};
+        ucoo const z0{size.x / 2, (con == 6) ? size.y / 3 : size.y / 2};
         vector list{z0};
         auto   s = at(list.back());
         while (!list.empty()) {
@@ -74,7 +74,7 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub   H("2D Ising model", argc, argv, "n=50,b=.7,c=4");
+    Hub const H("2D Ising model", argc, argv, "n=50,b=.7,c=4");
     Ising conf(H, H['n'], H['b'], H['c']);
     conf.show();
     conf.run();

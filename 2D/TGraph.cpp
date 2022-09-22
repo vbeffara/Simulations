@@ -90,7 +90,7 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub    H("T-graph for the triangular lattice", argc, argv, "n=20,l,x=.4,y=.6,t");
+    Hub const H("T-graph for the triangular lattice", argc, argv, "n=20,l,x=.4,y=.6,t");
     TGraph TG(H, H['n'], cpx{H['x'], H['y']}, H['t']);
     if (H['l'])
         TG.loop();

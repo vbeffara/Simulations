@@ -5,8 +5,8 @@
 using namespace vb;
 
 auto main(int argc, char **argv) -> int {
-    Hub    H("Once-reinforced random walk", argc, argv, "n=1000,a=2");
-    size_t n = H['n'];
+    Hub const    H("Once-reinforced random walk", argc, argv, "n=1000,a=2");
+    size_t const n = H['n'];
     double a = H['a'];
     a        = 1 / (1 + a);
     auto L   = size_t(pow(double(n), .33));

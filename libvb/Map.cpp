@@ -39,7 +39,7 @@ namespace vb {
         double height = top() - bottom(), mid_y = (top() + bottom()) / 2;
         double scale_x = w() / width, scale_y = h() / height;
 
-        double local_scale = std::min(scale_x, scale_y);
+        double const local_scale = std::min(scale_x, scale_y);
 
         cairo_save(context);
         cairo_set_source_rgb(context, 1, 1, 1);
@@ -118,7 +118,7 @@ namespace vb {
         for (auto ii : face_ext) {
             --k;
             bd[ii]       = true;
-            double angle = (reverse ? -2.0 : 2.0) * 3.1415927 * k / double(n_ext);
+            double const angle = (reverse ? -2.0 : 2.0) * 3.1415927 * k / double(n_ext);
             v[ii]->z     = radius * cpx(cos(angle), sin(angle));
         }
     }
@@ -132,7 +132,7 @@ namespace vb {
         }
 
         Minimizer<double> M(2 * n, [this](const Vector<double> &xx, Vector<double> *gg) { return fg_balance(xx, gg); });
-        double            output = M.minimize_qn(x);
+        double const      output = M.minimize_qn(x);
 
         for (size_t ii = 0; ii < n; ++ii) { v[ii]->z = cpx(M.x[2 * int(ii)], M.x[2 * int(ii) + 1]); }
 
@@ -149,7 +149,7 @@ namespace vb {
                 if (bd[ii]) continue;
                 if (v[ii]->adj.empty()) continue;
 
-                cpx old  = v[ii]->z;
+                cpx const old = v[ii]->z;
                 v[ii]->z = 0.0;
                 for (auto j : v[ii]->adj) v[ii]->z += v[j]->z;
                 v[ii]->z /= double(v[ii]->adj.size());
@@ -267,7 +267,7 @@ namespace vb {
 
     void Map::mobius(cpx w, const double &theta) {
         for (size_t ii = 0; ii < n; ++ii) {
-            cpx z = v[ii]->z / scale;
+            cpx const z = v[ii]->z / scale;
             w /= scale;
             v[ii]->z = scale * (z - w) * cpx(cos(theta), sin(theta)) / (cpx(1, 0) - z * conj(w));
         }
@@ -278,7 +278,7 @@ namespace vb {
         for (size_t ii = 0; ii < n; ++ii)
             if (v[ii]->r > R_max) R_max = v[ii]->r;
 
-        cpx nowhere(-2 * int(n) * R_max, 0.0);
+        cpx const nowhere(-2 * int(n) * R_max, 0.0);
         for (size_t ii = 0; ii < n; ++ii) v[ii]->z = nowhere;
 
         v[zero]->z = cpx(0.0, 0.0);
@@ -298,8 +298,8 @@ namespace vb {
                 for (auto j : v[ii]->adj) {
                     cpx z = v[j]->z;
                     if ((prev_z != nowhere) && (z == nowhere) && ((!bd[ii]) || (!bd[j]))) {
-                        double x = v[ii]->r;
-                        double y = v[j]->r;
+                        double const x = v[ii]->r;
+                        double const y = v[j]->r;
                         double t = (((x + y) * (x + y) + (x + prev_r) * (x + prev_r) - (y + prev_r) * (y + prev_r)) /
                                     (2 * (x + y) * (x + prev_r)));
                         if (t < -1.0) t = -1.0;
@@ -325,17 +325,17 @@ namespace vb {
         w /= scale;
         r /= scale;
 
-        cpx Delta((1 + norm(w) - r * r) * (1 + norm(w) - r * r) - 4 * norm(w), 0);
+        cpx const Delta((1 + norm(w) - r * r) * (1 + norm(w) - r * r) - 4 * norm(w), 0);
         cpx x = (cpx(1 + norm(w) - r * r) + sqrt(Delta)) / (cpx(2) * conj(w));
         if (norm(x) > 1) x = (cpx(1 + norm(w) - r * r) - sqrt(Delta)) / (cpx(2) * conj(w));
 
         for (size_t ii = 0; ii < n; ++ii) {
-            cpx    W = v[ii]->z / scale;
-            double R = v[ii]->r / scale;
+            cpx const    W = v[ii]->z / scale;
+            double const R = v[ii]->r / scale;
 
-            cpx A = norm(double(1) - W * conj(x)) - cpx(R * R * norm(x), 0);
-            cpx B = (cpx(1, 0) - W * conj(x)) * (conj(x) - conj(W)) - cpx(R * R, 0) * conj(x);
-            cpx C = (x - W) * (conj(x) - conj(W)) - cpx(R * R, 0);
+            cpx const A = norm(double(1) - W * conj(x)) - cpx(R * R * norm(x), 0);
+            cpx const B = (cpx(1, 0) - W * conj(x)) * (conj(x) - conj(W)) - cpx(R * R, 0) * conj(x);
+            cpx const C = (x - W) * (conj(x) - conj(W)) - cpx(R * R, 0);
 
             v[ii]->z = scale * conj(-B / A);
             v[ii]->r = scale * sqrt(abs(norm(v[ii]->z / scale) - C / A));
@@ -373,13 +373,13 @@ namespace vb {
         *gg = Vector<double>::Zero(gg->rows(), 1);
 
         for (size_t ii = 0; ii < n; ++ii) {
-            for (size_t j : v[ii]->adj) {
-                double dx   = x[3 * int(j)] - x[3 * int(ii)];
-                double dy   = x[3 * int(j) + 1] - x[3 * int(ii) + 1];
-                double l    = sqrt(dx * dx + dy * dy);
-                double sr   = x[3 * int(ii) + 2] + x[3 * int(j) + 2];
-                double lsr  = l - sr;
-                double lsrl = lsr / l;
+            for (size_t const j : v[ii]->adj) {
+                double const dx   = x[3 * int(j)] - x[3 * int(ii)];
+                double const dy   = x[3 * int(j) + 1] - x[3 * int(ii) + 1];
+                double const l    = sqrt(dx * dx + dy * dy);
+                double const sr   = x[3 * int(ii) + 2] + x[3 * int(j) + 2];
+                double const lsr  = l - sr;
+                double const lsrl = lsr / l;
 
                 c += lsr * lsr;
 
@@ -393,7 +393,7 @@ namespace vb {
     }
 
     auto Map::fg_circle_bd(const Vector<double> &x, Vector<double> *gg) -> double {
-        double c = fg_circle_base(x, gg);
+        double const c = fg_circle_base(x, gg);
 
         for (size_t ii = 0; ii < n; ++ii)
             if (bd[ii]) (*gg)[3 * int(ii) + 2] = 0.0;
@@ -405,13 +405,13 @@ namespace vb {
         double c = fg_circle_base(x, gg);
 
         for (int ii = 0; ii < int(n); ++ii) {
-            double l2 = x[3 * ii] * x[3 * ii] + x[3 * ii + 1] * x[3 * ii + 1];
-            double l  = sqrt(l2);
-            double r  = x[3 * ii + 2];
+            double const l2 = x[3 * ii] * x[3 * ii] + x[3 * ii + 1] * x[3 * ii + 1];
+            double const l  = sqrt(l2);
+            double const r  = x[3 * ii + 2];
 
             if ((bd[unsigned(ii)]) || (l + r > 1.0)) {
-                double lr1  = l + r - 1.0;
-                double lr1r = lr1 / l;
+                double const lr1  = l + r - 1.0;
+                double const lr1r = lr1 / l;
 
                 c += .1 * lr1 * lr1;
 

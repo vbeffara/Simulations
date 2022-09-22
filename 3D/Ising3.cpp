@@ -5,12 +5,12 @@
 
 class Ising3 : public vb::Cube {
 public:
-    size_t              b;
+    size_t              b{0};
     bool                k;
     double              beta;
     std::vector<double> glaub, kaw;
 
-    Ising3(const vb::Hub &H, size_t n, bool k_, double b_) : Cube(H.title, {n, n, n}), b(0), k(k_), beta(b_) {
+    Ising3(const vb::Hub &H, size_t n, bool k_, double b_) : Cube(H.title, {n, n, n}), k(k_), beta(b_) {
         for (int kk = 0; kk <= 6; ++kk) glaub.push_back(exp(kk * beta) / (exp(kk * beta) + exp((6 - kk) * beta)));
         for (int kk = 0; kk <= 12; ++kk) kaw.push_back(1 / (1 + exp(2 * beta * (kk - 6))));
     };
@@ -96,8 +96,8 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    vb::Hub H("3D Ising model", argc, argv, "n=50,b=1,t=0,p=.5,q=0,k,c=bernoulli,s=0,m,i,r=0");
-    if (size_t r = H['r']) vb::prng.seed(r);
+    vb::Hub const H("3D Ising model", argc, argv, "n=50,b=1,t=0,p=.5,q=0,k,c=bernoulli,s=0,m,i,r=0");
+    if (size_t const r = H['r']) vb::prng.seed(r);
     Ising3 C(H, H['n'], H['k'], H['b']);
     BCs{H}[H['c']](C);
     C.show();
@@ -105,7 +105,7 @@ auto main(int argc, char **argv) -> int {
     if (T == 0) T = 2 * size_t(H['n']);
     {
         vb::ProgressBar P(T);
-        size_t          s = H['s'];
+        size_t const    s = H['s'];
         for (size_t t = 0; t < T; ++t) {
             if ((s > 0) && (t % (T / s)) == 0) C.output_pov(fmt::format("snapshots/snapshot_{:04d}", t / (T / s)));
             C.swipe();

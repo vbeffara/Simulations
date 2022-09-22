@@ -37,8 +37,8 @@ void Glauber::step(ucoo z) {
 }
 
 auto main(int argc, char **argv) -> int {
-    Hub    H("Glauber dynamics at zero temperature", argc, argv, "n=500,p=.51");
-    double p = H['p'];
+    Hub const    H("Glauber dynamics at zero temperature", argc, argv, "n=500,p=.51");
+    double const p = H['p'];
 
     Glauber G(H, H['n']);
     G.fill(p);

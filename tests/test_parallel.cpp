@@ -73,14 +73,14 @@ auto main(int argc, char **argv) -> int {
         vector<double> X(l);
         std::iota(X.begin(), X.end(), 0);
         std::transform(X.begin(), X.end(), X.begin(), cost);
-        double s = std::accumulate(X.begin(), X.end(), 0.0);
+        double const s = std::accumulate(X.begin(), X.end(), 0.0);
         return s - floor(s);
     });
 
     timing(H, "Map+reduce | Single (STL algorithms: transform_reduce)", [=] {
         vector<double> X(l);
         std::iota(X.begin(), X.end(), 0);
-        double s = std::transform_reduce(begin(X), end(X), 0.0, std::plus<double>(), cost);
+        double const s = std::transform_reduce(begin(X), end(X), 0.0, std::plus<double>(), cost);
         return s - floor(s);
     });
 
@@ -122,7 +122,7 @@ auto main(int argc, char **argv) -> int {
                 return one.get() + two.get();
             }
             auto sum(size_t l) -> double {
-                double s = run(0, l);
+                double const s = run(0, l);
                 return s - floor(s);
             }
         };

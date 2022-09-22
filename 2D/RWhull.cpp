@@ -57,7 +57,7 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub    H("Random walk hull", argc, argv, "n=50,i,v");
+    Hub const H("Random walk hull", argc, argv, "n=50,i,v");
     size_t n = H['n'], l = n * n * n * n;
     bool   inf = H['i'], vid = H['v'];
 

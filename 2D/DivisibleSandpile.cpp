@@ -19,14 +19,14 @@ public:
 
     void swipe(const Hub &H) {
         for (auto z : coo_range(size))
-            if (double excess = at(z); excess > 0) {
+            if (double const excess = at(z); excess > 0) {
                 for (unsigned ii = 0; ii < 4; ++ii) atp(coo(z) + dz[ii]) += excess / 4;
                 at(z) = 0;
             }
         if (H['r']) {
             double m = 0;
             for (auto z : coo_range(size))
-                if (double mm = abs(at(z)); mm > m) m = mm;
+                if (double const mm = abs(at(z)); mm > m) m = mm;
             if (m > 0)
                 for (auto z : coo_range(size)) at(z) = at(z) * (100 / m);
         }
@@ -35,7 +35,7 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub      H("Divisible sandpile", argc, argv, "n=500,m=.01,s=10,r");
+    Hub const H("Divisible sandpile", argc, argv, "n=500,m=.01,s=10,r");
     Sandpile S(H, H['n']);
     S.show();
     while (true) { S.swipe(H); }

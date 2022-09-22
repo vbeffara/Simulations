@@ -60,10 +60,10 @@ public:
         }
 
         if (r == 1) {
-            int ti    = di;
+            int const ti    = di;
             di        = dj;
             dj        = -ti;
-            double tx = xf();
+            double const tx = xf();
             xf()      = yf();
             yf()      = 1 - tx;
         } else if (r == 2) {
@@ -72,10 +72,10 @@ public:
             xf() = 1 - xf();
             yf() = 1 - yf();
         } else if (r == 3) {
-            int ti    = di;
+            int const ti    = di;
             di        = -dj;
             dj        = ti;
-            double tx = xf();
+            double const tx = xf();
             xf()      = 1 - yf();
             yf()      = tx;
         }
@@ -119,7 +119,7 @@ public:
             if (!fits(vb::coo{p.xi(), p.yi()})) { break; }
             if (os != nullptr) { (*os) << p; }
             p.step(*this);
-            if (S.count(p) != 0) { break; }
+            if (S.contains(p)) { break; }
             S.insert(p);
         }
         if (os != nullptr) { (*os) << std::endl; }
@@ -137,9 +137,9 @@ public:
     }
 
     auto leaf(pt p, std::ostream *os = nullptr) const -> std::pair<pt, pt> {
-        pt p1 = geodesique(p, os);
+        pt const p1 = geodesique(p, os);
         p.reverse();
-        pt p2 = geodesique(p, os);
+        pt const p2 = geodesique(p, os);
         return (p1 < p2) ? ptpair{p1, p2} : ptpair{p2, p1};
     }
 
@@ -150,11 +150,11 @@ public:
         for (size_t i = 0; i < size.x; ++i) {
             for (size_t j = 0; j < size.y; ++j) {
                 for (int xx = 1; xx < 100; ++xx) {
-                    double            x  = .01 * xx;
+                    double const      x  = .01 * xx;
                     std::pair<pt, pt> pp = leaf(pt(i, j, x, 0), nullptr);
 
                     if ((pp.first != pt()) && (pp.second != pt())) {
-                        if (S.count(pp) == 0) {
+                        if (!S.contains(pp)) {
                             S.insert(pp);
                             P.insert(pt(i, j, x, 0));
                         }
@@ -163,7 +163,7 @@ public:
                     pp = leaf(pt(i, j, 0, x), nullptr);
 
                     if ((pp.first != pt()) && (pp.second != pt())) {
-                        if (S.count(pp) == 0) {
+                        if (!S.contains(pp)) {
                             S.insert(pp);
                             P.insert(pt(i, j, 0, x));
                         }
@@ -176,8 +176,8 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    vb::Hub    H("Random lamination", argc, argv, "n=20,c");
-    Lamination o(H['n']);
+    vb::Hub const    H("Random lamination", argc, argv, "n=20,c");
+    Lamination const o(H['n']);
 
     for (size_t i = 0; i < o.size.x; ++i) {
         for (size_t j = 0; j < o.size.y; ++j) {
@@ -189,13 +189,13 @@ auto main(int argc, char **argv) -> int {
     }
 
     if (H['c']) {
-        std::set<pt> P = o.connections();
+        std::set<pt> const P = o.connections();
         std::set<pt> E;
-        for (pt i : P) {
+        for (pt const i : P) {
             auto pp = o.leaf(i, nullptr);
             E.insert(pp.first);
             E.insert(pp.second);
         }
-        for (pt i : E) { o.geodesique(i, &std::cerr); }
+        for (pt const i : E) { o.geodesique(i, &std::cerr); }
     }
 }

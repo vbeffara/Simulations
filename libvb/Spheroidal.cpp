@@ -54,8 +54,8 @@ namespace vb {
                 auto i = E[e].src;
                 if (std::isnan(real(V[i].z))) continue;
                 auto   j = E[alpha[e]].src;
-                double l = V[i].r + V[j].r;
-                cpx    z = V[i].z + std::polar(l, E[e].a);
+                double const l = V[i].r + V[j].r;
+                cpx const    z = V[i].z + std::polar(l, E[e].a);
                 if (std::isnan(real(V[j].z))) {
                     flag                 = true;
                     V[E[alpha[e]].src].z = z;
@@ -91,7 +91,7 @@ namespace vb {
 
     void Spheroidal::mobiusto0(cpx a) {
         if (a == 0.0) return;
-        cpx abar = conj(a);
+        cpx const abar = conj(a);
         for (auto &v : V) {
             const cpx    z1 = 1.0 - abar * v.z;
             const double r1 = norm(z1) - v.r * v.r * norm(a);
@@ -115,7 +115,7 @@ namespace vb {
         Cycles           sc = sigma.cycles();
 
         for (auto &v : V) {
-            cpx z = v.z;
+            cpx const z = v.z;
             if ((((mode & 1U) != 0) && (v.bone != 0)) || (((mode & 2U) != 0) && (v.bone == 0)))
                 F.add(std::make_unique<Circle>(z, fabs(v.r), Pen(BLACK, .3)));
             for (auto e : sc[v.i]) {
@@ -132,7 +132,7 @@ namespace vb {
 
         for (const auto &v : V) {
             if (v.r < 0) continue;
-            cpx z = v.z;
+            cpx const z = v.z;
             if (((mode & 32U) != 0) && ((v.bone & 2U) != 0)) F.add(std::make_unique<Circle>(z, .01, Pen(BLACK, 2, BLACK, true)));
             if (((mode & 64U) != 0) && ((v.bone & 4U) != 0)) F.add(std::make_unique<Circle>(z, .01, Pen(BLACK, 2, WHITE, true)));
             if (((mode & 128U) != 0) && ((v.bone & 8U) != 0)) F.add(std::make_unique<Circle>(z, .01, Pen(BLACK, 2, RED, true)));

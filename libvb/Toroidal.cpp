@@ -12,7 +12,7 @@ namespace vb {
         acpa();
 
         E[0].a      = 0;
-        size_t ne   = sigma.size();
+        size_t const ne   = sigma.size();
         bool   flag = true;
         while (flag) {
             flag = false;
@@ -40,8 +40,8 @@ namespace vb {
                 auto i = E[e].src;
                 if (std::isnan(real(V[i].z))) continue;
                 auto   j = E[alpha[e]].src;
-                double l = V[i].r + V[j].r;
-                cpx    z = V[i].z + std::polar(l, E[e].a);
+                double const l = V[i].r + V[j].r;
+                cpx const    z = V[i].z + std::polar(l, E[e].a);
                 if (std::isnan(real(V[j].z))) {
                     flag                 = true;
                     V[E[alpha[e]].src].z = z;
@@ -52,7 +52,7 @@ namespace vb {
         }
 
         cpx p1 = periods[0];
-        for (cpx p : periods)
+        for (cpx const p : periods)
             if (abs(p) < abs(p1)) { p1 = p; }
 
         for (auto &v : V) {
@@ -63,11 +63,11 @@ namespace vb {
         for (cpx &p : periods) p /= p1;
 
         std::vector<cpx> moduli;
-        for (cpx p : periods)
+        for (cpx const p : periods)
             if (fabs(imag(p)) > .1) moduli.push_back(p);
         double n2 = abs(moduli[0]);
         if (!moduli.empty()) m = moduli[0];
-        for (cpx p : moduli)
+        for (cpx const p : moduli)
             if (abs(p) < n2) {
                 n2 = abs(p);
                 m  = p;
@@ -84,7 +84,7 @@ namespace vb {
                 mpos = v.z;
             }
 
-        double slope = real(m) / imag(m);
+        double const slope = real(m) / imag(m);
         for (auto &v : V) {
             v.z -= mpos;
             while (imag(v.z) < 0) v.z += m;
@@ -112,7 +112,7 @@ namespace vb {
         for (int a = -2; a < 3; ++a) {
             for (int b = -1; b < 2; ++b) {
                 for (auto &v : V) {
-                    cpx z = v.z + cpx(a) + cpx(b) * m;
+                    cpx const z = v.z + cpx(a) + cpx(b) * m;
                     if ((imag(z) < -.6) || (imag(z) > 1.7 * std::max(1.0, imag(m))) || (real(z) < -.8) || (real(z) > 2.6)) continue;
                     if ((((mode & 1U) != 0) && (v.bone != 0)) || (((mode & 2U) != 0) && (v.bone == 0)))
                         F.add(std::make_unique<Circle>(z, v.r, Pen(BLACK, .3)));
@@ -133,7 +133,7 @@ namespace vb {
         for (int a = -2; a < 3; ++a) {
             for (int b = -1; b < 2; ++b) {
                 for (const auto &v : V) {
-                    cpx z = v.z + cpx(a) + cpx(b) * m;
+                    cpx const z = v.z + cpx(a) + cpx(b) * m;
                     if ((imag(z) < -.6) || (imag(z) > 1.7 * std::max(1.0, imag(m))) || (real(z) < -.8) || (real(z) > 2.6)) continue;
                     if (((mode & 32U) != 0) && ((v.bone & 2U) != 0)) F.add(std::make_unique<Circle>(z, .015, Pen(BLACK, .5, BLACK, true)));
                     if (((mode & 64U) != 0) && ((v.bone & 4U) != 0)) F.add(std::make_unique<Circle>(z, .01, Pen(BLACK, 2, WHITE, true)));

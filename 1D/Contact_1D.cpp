@@ -27,7 +27,7 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    vb::Hub H("1D contact process", argc, argv, "n=1000,e=0,l=1.6494,m=100,j,p");
+    vb::Hub const H("1D contact process", argc, argv, "n=1000,e=0,l=1.6494,m=100,j,p");
     Contact T(H);
     T.show();
     while (true) T.swipe();

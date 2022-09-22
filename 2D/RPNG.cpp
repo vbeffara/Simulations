@@ -6,7 +6,7 @@ using namespace vb;
 using namespace std;
 
 auto main(int argc, char **argv) -> int {
-    Hub          H("Randomized Polynuclear Growth", argc, argv, "n=500,e=0.01,f,c=0");
+    Hub const    H("Randomized Polynuclear Growth", argc, argv, "n=500,e=0.01,f,c=0");
     const size_t n = H['n'];
     const double e = H['e'];
     const bool   f = H['f'];
@@ -21,7 +21,7 @@ auto main(int argc, char **argv) -> int {
         img.put({i, 0}, true);
     }
 
-    bool running = true;
+    bool const running = true;
     while (running) {
         auto x = 1 + prng.uniform_int(n - 2);
         auto h = height[x];

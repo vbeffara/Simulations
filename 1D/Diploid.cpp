@@ -74,9 +74,9 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    vb::Hub H("Diploid model", argc, argv, "s=0,i=10000000,K=10000,f=6,d=.7,D=.1,c=1,e=.02,x=.0001,y=.01,z=5.3,Z=.0001,t=1000");
+    vb::Hub const H("Diploid model", argc, argv, "s=0,i=10000000,K=10000,f=6,d=.7,D=.1,c=1,e=.02,x=.0001,y=.01,z=5.3,Z=.0001,t=1000");
 
-    if (size_t seed = H['s']) vb::prng.seed(seed);
+    if (size_t const seed = H['s']) vb::prng.seed(seed);
 
     Diploid D(H);
 

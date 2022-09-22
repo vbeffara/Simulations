@@ -15,7 +15,7 @@ namespace vb {
             exit(0);
         };
 
-        mode_t mode = 0755U;
+        mode_t const mode = 0755U;
         mkdir("output", mode);
         mkdir(dir.c_str(), mode);
         mkdir((dir + "snapshots").c_str(), mode);

@@ -54,7 +54,7 @@ public:
             nb[atp(z + vb::coo{0, 1})] += 1;
             nb[atp(z - vb::coo{0, 1})] += 1;
             int max = 0;
-            for (int ii : nb)
+            for (int const ii : nb)
                 if (ii > max) max = ii;
 
             auto d = vb::prng.uniform_int(uint8_t(4));
@@ -68,7 +68,7 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    vb::Hub H("The Swiss Journalist", argc, argv, "n=600,c=0,p=.8,q=.35");
+    vb::Hub const H("The Swiss Journalist", argc, argv, "n=600,c=0,p=.8,q=.35");
     World   w(H);
     w.show();
     w.run();

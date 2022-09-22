@@ -16,7 +16,7 @@ public:
         P = {H['d'], H['a']};
         for (size_t ii = 0; ii < size_t(H['m']) - kid; ++ii) P.push_back(double(H['b']) + double(H['r']) * double(ii));
         double s = 0;
-        for (double u : P) s += u;
+        for (double const u : P) s += u;
         for (double &u : P) u /= s;
     }
     void run() {
@@ -28,7 +28,7 @@ public:
         } else if ((action == 1) && (at(z) < maxage)) {
             put(z, at(z) + 1);
         } else if (action + kid - 1 <= at(z)) {
-            coo nz = coo(z) + dz[prng.uniform_int(4U)];
+            coo const nz = coo(z) + dz[prng.uniform_int(4U)];
             if (atp(nz) == 0) putp(nz, 1);
         }
     }
@@ -37,7 +37,7 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub H("Contact process with aging", argc, argv, "n=400,d=.01,a=.1,z=0,m=5,b=.2,r=.1");
+    Hub const H("Contact process with aging", argc, argv, "n=400,d=.01,a=.1,z=0,m=5,b=.2,r=.1");
     ACP A(H);
     A.show();
     while (true) A.run();

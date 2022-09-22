@@ -9,10 +9,10 @@ const Color none(BLACK), prey(GREEN), pred(RED);
 class SIR : public Image {
 public:
     SIR(const Hub &H, size_t n, double l_) : Image(H.title, {n, n}), l(l_) {
-        size_t n0 = H['d'] ? 0 : size_t(H['n']) / 2;
+        size_t const n0 = H['d'] ? 0 : size_t(H['n']) / 2;
         for (size_t ii = n0 - 10; ii < n0 + 10; ++ii)
             for (size_t j = n0 - 10; j < n0 + 10; ++j) {
-                ucoo z{ii, j};
+                ucoo const z{ii, j};
                 if (fits(z)) put(z, prey);
             }
         put({n0, n0}, pred);
@@ -42,7 +42,7 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub H("SIR process on the lattice", argc, argv, "n=600,l=.5,d,s=1");
+    Hub const H("SIR process on the lattice", argc, argv, "n=600,l=.5,d,s=1");
 
     SIR img(H, H['n'], H['l']);
     for (int t = 0; !img.fringe.empty(); ++t) {

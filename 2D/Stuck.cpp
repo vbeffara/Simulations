@@ -69,7 +69,7 @@ public:
                 sl += l[ii];
             }
             for (unsigned ii = 0; ii < 4; ++ii) { l[ii] /= sl; }
-            coo d = dz[prng.discrete(l)];
+            coo const d = dz[prng.discrete(l)];
             putp(z + d, Stat{atp(z + d).s + 1});
             z += d + d;
         }
@@ -113,7 +113,7 @@ auto main(int argc, char **argv) -> int {
     auto o = clp.flag("o", "Output point coordinates to the console");
     clp.finalize();
 
-    Hub   H("Stuck walk on the square lattice", argc, argv, "");
+    Hub const H("Stuck walk on the square lattice", argc, argv, "");
     Stuck S(a, b, c, n, o, H);
     S.show();
     if (v > 0) S.snapshot_setup("Stuck", v);

@@ -10,12 +10,12 @@ constexpr Color ALIVE = Color(0, 200, 0);
 constexpr Color DEAD  = Color(255, 0, 0);
 
 auto main(int argc, char **argv) -> int {
-    Hub    H("Aggregation of exclusion walkers", argc, argv, "n=250,p=.5,g,a=1.0,t=0.0,s");
-    size_t n = H['n']; // Half of board size
-    double p = H['p']; // Initial particle density
-    bool   g = H['g']; // Dynamic discovery of environment (ghosts)
-    double t = H['t']; // Snapshot interval for movies
-    double a = H['a']; // Contagion probability
+    Hub const    H("Aggregation of exclusion walkers", argc, argv, "n=250,p=.5,g,a=1.0,t=0.0,s");
+    size_t const n = H['n']; // Half of board size
+    double const p = H['p']; // Initial particle density
+    bool const   g = H['g']; // Dynamic discovery of environment (ghosts)
+    double const t = H['t']; // Snapshot interval for movies
+    double const a = H['a']; // Contagion probability
 
     Image img(H.title, {2 * n, 2 * n});
 

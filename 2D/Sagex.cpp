@@ -41,7 +41,7 @@ public:
         for (size_t x = 0; x < w; ++x)
             for (size_t y = 0; y < h; ++y) {
                 if (prng.bernoulli(H['l'])) {
-                    Particle p({x, y}, prng.bernoulli(H['p']) ? 1 : 2, H['z'], prng.exponential());
+                    Particle const p({x, y}, prng.bernoulli(H['p']) ? 1 : 2, H['z'], prng.exponential());
                     put({x, y}, p.state);
                     q.push(p);
                 }
@@ -69,6 +69,6 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub H("Sagex process", argc, argv, "n=400,w=0,l=.22,p=.5,v,z");
+    Hub const H("Sagex process", argc, argv, "n=400,w=0,l=.22,p=.5,v,z");
     Sagex(H, int(H['w']) != 0 ? H['w'] : H['n'], H['n']).go(H);
 }

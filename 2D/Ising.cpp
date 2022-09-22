@@ -45,13 +45,13 @@ public:
                 step();
                 const auto z = prng.uniform_coo(size, size_t(c));
                 if (k) {
-                    coo zz = coo(z) + dz[prng.uniform_int(4U)];
+                    coo const zz = coo(z) + dz[prng.uniform_int(4U)];
                     if (c && !fits(zz, static_cast<size_t>(c))) continue;
                     if (atp(coo(z)) == atp(zz)) continue;
-                    int s = nnb(coo(z)) + nnb(zz) + 2;
+                    int const s = nnb(coo(z)) + nnb(zz) + 2;
                     if ((s <= 0) || (prng.bernoulli(p[size_t(s)]))) { swap(at(z), atp(zz)); }
                 } else {
-                    int s = nnb(coo(z));
+                    int const s = nnb(coo(z));
                     if ((s <= 0) || (prng.bernoulli(p[size_t(s)]))) put(z, Grey(uint8_t(255 - int(at(z)))));
                 }
             }
@@ -63,7 +63,7 @@ public:
 };
 
 auto main(int argc, char *argv[]) -> int {
-    Hub   H("Ising model", argc, argv, "b=.88137359,n=300,t=0,c,r=0,k,v");
+    Hub const H("Ising model", argc, argv, "b=.88137359,n=300,t=0,c,r=0,k,v");
     Ising I(H, H['n'], H['b'], H['r'], H['c']);
     I.show();
     if (H['v']) I.snapshot_setup("Ising", 10);

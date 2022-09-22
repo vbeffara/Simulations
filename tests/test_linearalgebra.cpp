@@ -22,7 +22,7 @@ template <typename T> void test(string s) {
 }
 
 auto main(int argc, char **argv) -> int {
-    Hub H("Testing linear algebra", argc, argv);
+    Hub const H("Testing linear algebra", argc, argv);
     test<double>("double   ");
     test<cpx>("cpx      ");
     test<real_t>("real_t   ");

@@ -70,7 +70,7 @@ void Automaton::effect(double r) {
 }
 
 auto main(int argc, char **argv) -> int {
-    vb::Hub      H("1D cellular automaton", argc, argv, "n=500,e=.03,r=.05");
+    vb::Hub const H("1D cellular automaton", argc, argv, "n=500,e=.03,r=.05");
     const size_t n = H['n'];
     const double e = H['e'];
     const double r = H['r'];

@@ -33,6 +33,6 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub H("Loop-erased random walk", argc, argv, "n=500");
+    Hub const H("Loop-erased random walk", argc, argv, "n=500");
     LERW(H).output(H.title);
 }

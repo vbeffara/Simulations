@@ -290,8 +290,8 @@ namespace vb {
             for (size_t j = 0; j < n - 1; ++j) s += M.alpha_xyz(out[i], out[adj[j]], out[adj[j + 1]]);
             er[i] = s - 2 * M_PI;
             se += fabs(er[i]);
-            double c  = cos(s / double(n));
-            double nr = M.ccn(n) * (1 - c + sqrt(2 * (1 - c))) / (1 + c);
+            double const c  = cos(s / double(n));
+            double const nr = M.ccn(n) * (1 - c + sqrt(2 * (1 - c))) / (1 + c);
             out[i] *= 1.1 * nr - .1;
         }
         return se;
@@ -301,10 +301,10 @@ namespace vb {
         auto                n = V.size();
         std::vector<double> r(n, 0), old_r(n, 0), e(n, 1), old_e(n, 0), l(n, 0), ll(n, 0);
 
-        int    m   = int(pow(double(n), .25)); // Steps between looks
-        double eps = .1;                       // Dampening of the decay estimator
-        double mvm = .01;                      // Threshold to trigger the jump
-        double tgt = 1e-8;                     // Target per-vertex error
+        int const    m   = int(pow(double(n), .25)); // Steps between looks
+        double const eps = .1;                       // Dampening of the decay estimator
+        double const mvm = .01;                      // Threshold to trigger the jump
+        double const tgt = 1e-8;                     // Target per-vertex error
 
         for (size_t i = 0; i < n; ++i)
             if (V[i].adj.size() > 2) { r[i] = V[i].r; }
@@ -317,17 +317,17 @@ namespace vb {
             double mv = 0;
             for (size_t i = 0; i < n; ++i) {
                 if (old_e[i] == 0) continue;
-                double x = (old_e[i] - e[i]) / old_e[i]; // if (x<0) x=0;
+                double const x = (old_e[i] - e[i]) / old_e[i]; // if (x<0) x=0;
                 l[i]     = (1 - eps) * l[i] + eps * x;
                 ll[i]    = (1 - eps) * ll[i] + eps * x * x;
                 if (l[i] == 0) continue;
-                double v = (ll[i] - l[i] * l[i]) / (ll[i]);
+                double const v = (ll[i] - l[i] * l[i]) / (ll[i]);
                 if (v > mv) mv = v;
             }
             if (mv < mvm) {
                 for (size_t i = 0; i < V.size(); ++i) {
                     if (old_e[i] != 0) {
-                        double nr = (r[i] - (1 - l[i]) * old_r[i]) / l[i];
+                        double const nr = (r[i] - (1 - l[i]) * old_r[i]) / l[i];
                         if (nr > 0) r[i] = nr;
                     }
                 }

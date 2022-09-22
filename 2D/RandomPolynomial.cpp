@@ -57,10 +57,10 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub H("Random polynomial in 2 variables", argc, argv, "n=100,g=gaussian,s=0,p");
-    if (unsigned s = H['s']; s > 0) prng.seed(s);
-    RPoly<double> P(H, H['n'], H['p']);
-    double        l = H['p'] ? 1 : 10;
+    Hub const H("Random polynomial in 2 variables", argc, argv, "n=100,g=gaussian,s=0,p");
+    if (unsigned const s = H['s']; s > 0) prng.seed(s);
+    RPoly<double> const P(H, H['n'], H['p']);
+    double const        l = H['p'] ? 1 : 10;
     Coloring      C(H.title, cpx(-l, -l), cpx(l, l), 800, P);
     C.show();
     C.output(H.title);

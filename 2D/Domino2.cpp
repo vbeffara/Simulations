@@ -22,7 +22,7 @@ public:
 
     explicit operator Color() const {
         if (!active) return BLACK;
-        double hh = hues[pmod(z.x, W.size())][pmod(z.y, W[0].size())][d];
+        double const hh = hues[pmod(z.x, W.size())][pmod(z.y, W[0].size())][d];
         return HSV(hh, 1, contrast + (1 - contrast) * (weight() - minw) / (maxw - minw));
     }
 
@@ -52,13 +52,13 @@ public:
         if (!d1.active) return;
         z         = d1.z;
         auto   d  = d1.d;
-        coo    zz = z + dz[(d + 1) % 4];
+        coo const zz = z + dz[(d + 1) % 4];
         Domino d2 = atp(zz);
         if ((!d2.active) || (d2.z != zz) || (d2.d != d)) return;
-        double w1 = d1.weight() * d2.weight();
+        double const w1 = d1.weight() * d2.weight();
         d1        = Domino{z, (d + 1) % 4};
         d2        = Domino{z + dz[d], (d + 1) % 4};
-        double w2 = d1.weight() * d2.weight();
+        double const w2 = d1.weight() * d2.weight();
         if ((w2 >= w1) || prng.bernoulli(w2 / w1)) {
             putd(d1);
             putd(d2);
@@ -96,7 +96,7 @@ void three_by_two(double a) {
 }
 
 auto main(int argc, char **argv) -> int {
-    Hub H("Domino tiling (v2)", argc, argv, "n=100,a=.5");
+    Hub const H("Domino tiling (v2)", argc, argv, "n=100,a=.5");
     two_by_two(H['a']);
     hues = W;
     Console C;

@@ -6,7 +6,7 @@
 using namespace vb;
 
 auto main(int argc, char **argv) -> int {
-    Hub H("Test: circle packing", argc, argv, "s=4,v");
+    Hub const H("Test: circle packing", argc, argv, "s=4,v");
 
     Map m(H.title, 13);
     m << Edge(0, 1) << Edge(0, 3) << Edge(0, 5) << Edge(1, 2) << Edge(1, 4) << Edge(1, 6) << Edge(1, 3) << Edge(1, 0) << Edge(2, 7)
@@ -23,7 +23,7 @@ auto main(int argc, char **argv) -> int {
     m.show();
 
     Vector<double> x(3 * m.n);
-    double         r = 1.0 / sqrt(double(m.n));
+    double const   r = 1.0 / sqrt(double(m.n));
 
     for (int64_t i = 0; i < int(m.n); ++i) {
         x[3 * i]     = m.v[size_t(i)]->z.real() / (1 - r);

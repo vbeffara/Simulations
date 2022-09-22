@@ -55,7 +55,7 @@ public:
     void move() {
         auto z = prng.uniform_coo(size);
         if (at(z) != s_full) return;
-        coo s = prng.bernoulli(drift) ? coo{1, 0} : dz[prng.uniform_int(4U)];
+        coo const s = prng.bernoulli(drift) ? coo{1, 0} : dz[prng.uniform_int(4U)];
         if (tasym && (s == coo{-1, 0})) return;
         if (atp(coo(z) + s) != s_empty) return;
         put(z, s_empty);

@@ -5,8 +5,8 @@
 using namespace vb;
 
 auto main(int argc, char **argv) -> int {
-    Hub    H("Brownian motion", argc, argv, "n=500");
-    size_t n = H['n'];
+    Hub const    H("Brownian motion", argc, argv, "n=500");
+    size_t const n = H['n'];
 
     Image img(H.title, {2 * n, 2 * n});
 

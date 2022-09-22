@@ -15,7 +15,7 @@ auto M(cpx c) -> Color {
 }
 
 auto main(int argc, char **argv) -> int {
-    Hub H("Mandelbrot set", argc, argv, "n=800,t=1000");
+    Hub const H("Mandelbrot set", argc, argv, "n=800,t=1000");
     t = H['t'];
     Coloring C(H.title, cpx(-2.2, -1.5), cpx(1.2, 1.5), H['n'], M);
     C.show();

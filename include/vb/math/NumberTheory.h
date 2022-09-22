@@ -28,7 +28,7 @@ namespace vb {
 
             vector<mpz_int> V(d + 1, 0);
             for (unsigned j = 0; j < d + 1; ++j) {
-                mpz_int ai = o[j].get_data();
+                mpz_int const ai = o[j].get_data();
                 for (unsigned i = 0; i <= d; ++i) V[i] += ai * M[int(j)][int(i + 2)].get_data();
             }
 

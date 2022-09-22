@@ -17,7 +17,7 @@ TEST_CASE("vb::Value") {
 
 TEST_CASE("vb::CL_Parser") {
     std::vector<char *> argv{strdup("test_cl_parser"), strdup("-s"), strdup("3"), strdup("-u"), nullptr};
-    CL_Parser           CLP("Title", 4, argv.data(), "s=5,t=7,u,v");
+    CL_Parser const     CLP("Title", 4, argv.data(), "s=5,t=7,u,v");
     CHECK(int(CLP['t']) == 7);
     CHECK(int(CLP['s']) == 3);
     CHECK(CLP['u']);

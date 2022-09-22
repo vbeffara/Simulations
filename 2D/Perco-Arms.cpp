@@ -31,9 +31,9 @@ void add_one(Graph *gg, size_t i, size_t j) {
 }
 
 auto main(int argc, char **argv) -> int {
-    Hub    H("Percolation arm exponents", argc, argv, "n=100,t=1,p=.5");
+    Hub const    H("Percolation arm exponents", argc, argv, "n=100,t=1,p=.5");
     size_t n = H['n'], n_iter = H['t'];
-    double p = H['p'];
+    double const p = H['p'];
 
     Graph g(n * n + 1);
     for (size_t x = 0; x < n; ++x) {
@@ -53,7 +53,7 @@ auto main(int argc, char **argv) -> int {
     }
 
     // Prepare for quick edge access
-    property_map<Graph, edge_capacity_t>::type cap = get(edge_capacity, g);
+    property_map<Graph, edge_capacity_t>::type const cap = get(edge_capacity, g);
     Graph::edge_iterator                       e, e_final;
 
     for (tie(e, e_final) = edges(g); e != e_final; ++e) {

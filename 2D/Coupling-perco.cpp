@@ -157,7 +157,7 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub      H("Coupling percolation configurations", argc, argv, "r=20");
+    Hub const H("Coupling percolation configurations", argc, argv, "r=20");
     Coupling C(H, H['r']);
     C.run();
 }

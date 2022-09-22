@@ -54,7 +54,7 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    vb::Hub H("Random triangulation", argc, argv, "n=10,t=0");
+    vb::Hub const H("Random triangulation", argc, argv, "n=10,t=0");
     size_t  n = H['n'], t = H['t'];
     if (t == 0) t = 50 * n * n;
 

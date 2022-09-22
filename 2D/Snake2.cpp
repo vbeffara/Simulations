@@ -21,12 +21,12 @@ public:
     Snake(const Hub &H, size_t n, double l, bool hex_)
         : Bitmap(H.title, {4 * n + 1, 2 * n + 1}), lambda(l), path(1, {2 * int(n), 0}), hex(hex_) {
         for (size_t x = 0; x < size.x; ++x) put({x, 0U}, VERTEX);
-        if (double a = H['a']; a != 0) triangle(a);
+        if (double const a = H['a']; a != 0) triangle(a);
         if (!H['v']) show();
     }
 
     void triangle(double a) {
-        double ta = tan(a * M_PI / 180);
+        double const ta = tan(a * M_PI / 180);
         for (size_t y = 0; y < size.y; ++y) {
             auto yy = y + (y % 2);
             auto s  = 2 + int(double(yy) * ta);
@@ -63,7 +63,7 @@ public:
 
     auto allowed(coo z, size_t d) -> bool {
         if (hex && !edge(z, d)) return false;
-        coo nz = z + dz[d] * 2;
+        coo const nz = z + dz[d] * 2;
         return (at(ucoo(nz)) != VERTEX) && (nz.y >= 0) && !trapped(nz, d);
     }
 
@@ -71,17 +71,17 @@ public:
         while (true) {
             if (prng.bernoulli(1 / (1 + 4 * lambda))) {
                 if (path.size() > 1) {
-                    coo z = path.back();
+                    coo const z = path.back();
                     path.pop_back();
                     put(ucoo(z), EMPTY);
                     put(ucoo((z + path.back()) / 2), EMPTY);
                 }
                 continue;
             }
-            coo  z = path.back();
+            coo const z = path.back();
             auto d = prng.uniform_int(4U);
             if (!allowed(z, d)) continue;
-            coo nz = z + dz[d] * 2;
+            coo const nz = z + dz[d] * 2;
             put(ucoo(z + dz[d]), EDGE);
             put(ucoo(nz), VERTEX);
             if (border(nz)) break;

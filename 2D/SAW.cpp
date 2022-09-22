@@ -7,7 +7,7 @@ using namespace std;
 using namespace vb;
 
 auto main(int argc, char **argv) -> int {
-    Hub    H("Self-avoiding walk", argc, argv, "n=500,t=5000");
+    Hub const H("Self-avoiding walk", argc, argv, "n=500,t=5000");
     size_t n = H['n'], t = H['t'];
 
     OldPath     P(n, true);

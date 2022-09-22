@@ -49,7 +49,7 @@ auto operator<<(ostream &o, const Walker &W) -> ostream & {
 }
 
 auto main(int argc, char **argv) -> int {
-    Hub         H("3D prudent walker", argc, argv, "l=1000,n=1");
+    Hub const   H("3D prudent walker", argc, argv, "l=1000,n=1");
     size_t      l = H['l'], n = H['n'];
     vector<int> ends(l, 0);
 

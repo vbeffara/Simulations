@@ -6,7 +6,7 @@ using namespace vb;
 using namespace std;
 
 auto main(int argc, char **argv) -> int {
-    Hub H("Testing various MP choices", argc, argv);
+    Hub const H("Testing various MP choices", argc, argv);
 
     vector<real_t> xs;
     xs.emplace_back("0.9162918442410306144165008200767499077603397502333144975769802641182380808885019256331544308341889255");
@@ -23,8 +23,8 @@ auto main(int argc, char **argv) -> int {
         if (auto P = guess(real_t{x}, 80)) spdlog::info("    P(z) = {}", *P);
     }
 
-    real_t    r("0.1722882583776278670500267959231284336682007863854856624427574750255049273322927690638923632");
-    real_t    i("0.5302487364574217190358808797265653491226567421626168710631761419479819886565504921987031543");
+    real_t const r("0.1722882583776278670500267959231284336682007863854856624427574750255049273322927690638923632");
+    real_t const i("0.5302487364574217190358808797265653491226567421626168710631761419479819886565504921987031543");
     complex_t z{r, i};
     spdlog::info("x = {}", z);
     if (auto P = guess(z, 80)) spdlog::info("    P(z) = {}", *P);

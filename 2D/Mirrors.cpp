@@ -71,6 +71,6 @@ void Mirrors::main() {
 }
 
 auto main(int argc, char **argv) -> int {
-    Hub H("Mirror model", argc, argv, "n=200,p=.5,q=0,f=0");
+    Hub const H("Mirror model", argc, argv, "n=200,p=.5,q=0,f=0");
     Mirrors(H).main();
 }
