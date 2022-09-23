@@ -4,24 +4,20 @@ before_script:
   - apt-get update -qq
   - apt-get install -qq python3-pip cmake m4 g++ ninja-build git lcov ruby libgl1-mesa-dev libxcb-shm0 yasm
   - apt-get install -qq xvfb libglu1-mesa-dev xorg-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
-  - pip3 install -q conan codecov
+  - pip3 install -q codecov meson
   - gem install coveralls-lcov
 
 everything:
   stage: build
   script:
-    - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
-    - conan remote add vb https://api.bintray.com/conan/vbeffara/misc
-    - conan profile new default --detect
-    - conan profile update settings.compiler.libcxx=libstdc++11 default
+    - meson build
     - mkdir -p build/cov
-    - cmake -B build -G Ninja -DCOV=1
-    - cmake --build build
+    - ninja -C build
     - Xvfb :4 &
     - export DISPLAY=:4
-    - lcov -z -d build
+    # - lcov -z -d build
     - export LD_LIBRARY_PATH=./build/lib
     - ./build/catch2
-    - lcov -c -d build -d libvb -o build/cov/cov.info --no-external -q
-    - codecov -t $CODECOV_TOKEN
-    - coveralls-lcov -t $COVERALLS_TOKEN build/cov/cov.info
+    # - lcov -c -d build -d libvb -o build/cov/cov.info --no-external -q
+    # - codecov -t $CODECOV_TOKEN
+    # - coveralls-lcov -t $COVERALLS_TOKEN build/cov/cov.info

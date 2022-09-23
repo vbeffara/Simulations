@@ -1,3 +1,5 @@
+# TODO: code coverage
+
 project ('simulations', 'cpp', default_options : ['cpp_std=c++20'])
 
 fftw3 = dependency ('fftw3')
