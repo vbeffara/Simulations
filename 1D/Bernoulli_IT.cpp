@@ -1,5 +1,6 @@
 #include <boost/icl/interval_set.hpp>
 #include <spdlog/spdlog.h>
+#include <utility>
 #include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
@@ -10,7 +11,7 @@ using intv = iset::interval_type;
 
 class fun {
 public:
-    fun(const std::vector<double> &js, const std::vector<double> &ds) : jumps(js), shifts(ds){};
+    fun(std::vector<double> js, std::vector<double> ds) : jumps(std::move(js)), shifts(std::move(ds)){};
 
     [[nodiscard]] auto index(double x) const -> size_t { return (std::lower_bound(begin(jumps), end(jumps), x) - begin(jumps)) - 1; };
 
