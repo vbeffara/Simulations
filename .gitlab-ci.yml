@@ -1,4 +1,4 @@
-image: ubuntu:eoan
+image: ubuntu:latest
 
 before_script:
   - apt-get update -qq
