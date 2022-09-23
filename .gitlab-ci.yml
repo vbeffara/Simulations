@@ -2,12 +2,17 @@ image: ubuntu:latest
 
 before_script:
   - apt-get update -qq
-  - apt-get install -qq python3-pip cmake m4 g++ ninja-build git lcov ruby libgl1-mesa-dev libxcb-shm0 yasm catch2
+  - apt-get install -qq python3-pip cmake m4 g++ ninja-build git lcov ruby libgl1-mesa-dev libxcb-shm0 yasm
   - apt-get install -qq xvfb libglu1-mesa-dev xorg-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
   - apt-get install -qq libfftw3-dev libboost-all-dev libdocopt-dev libcairo2-dev libeigen3-dev libfplll-dev libmsgsl-dev
   - apt-get install -qq libpng-dev libmpfr-dev librange-v3-dev libspdlog-dev libtbb-dev libyaml-cpp-dev libfltk1.3-dev libmpc-dev
   - pip3 install -q codecov meson
   - gem install coveralls-lcov
+  - git clone https://github.com/catchorg/Catch2.git
+  - cd Catch2
+  - cmake -Bbuild -H. -DBUILD_TESTING=OFF
+  - sudo cmake --build build/ --target install
+  - cd ..
 
 everything:
   stage: build
