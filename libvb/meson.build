@@ -1,3 +1,5 @@
+# TODO: switch to std::ranges
+
 boost = dependency ('boost')
 cairo = dependency ('cairo')
 eigen = dependency ('eigen3')
