@@ -191,11 +191,11 @@ auto main(int argc, char **argv) -> int {
     if (H['c']) {
         std::set<pt> const P = o.connections();
         std::set<pt> E;
-        for (pt const i : P) {
+        for (const pt &i : P) {
             auto pp = o.leaf(i, nullptr);
             E.insert(pp.first);
             E.insert(pp.second);
         }
-        for (pt const i : E) { o.geodesique(i, &std::cerr); }
+        for (const pt &i : E) { o.geodesique(i, &std::cerr); }
     }
 }

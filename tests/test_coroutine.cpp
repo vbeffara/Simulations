@@ -1,10 +1,10 @@
+#include <ranges>
 #include <spdlog/spdlog.h>
 #include <vb/math/Permutation.h>
 #include <vb/util/Hub.h>
 
-using namespace std;
 using namespace vb;
-namespace rv = ::ranges::views;
+namespace rv = std::views;
 
 auto good(const Permutation &p) -> bool { return p[0] == 2; }
 auto sec(const Permutation &p) { return p[2]; }

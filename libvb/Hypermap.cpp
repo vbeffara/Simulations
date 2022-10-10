@@ -1,4 +1,3 @@
-#include <range/v3/algorithm/all_of.hpp>
 #include <vb/Hypermap.h>
 
 namespace vb {
@@ -308,7 +307,7 @@ namespace vb {
 
         for (size_t i = 0; i < n; ++i)
             if (V[i].adj.size() > 2) { r[i] = V[i].r; }
-        for (int t = 1;; ++t) {
+        while (true) {
             old_e     = e;
             old_r     = r;
             double se = 0;
@@ -318,8 +317,8 @@ namespace vb {
             for (size_t i = 0; i < n; ++i) {
                 if (old_e[i] == 0) continue;
                 double const x = (old_e[i] - e[i]) / old_e[i]; // if (x<0) x=0;
-                l[i]     = (1 - eps) * l[i] + eps * x;
-                ll[i]    = (1 - eps) * ll[i] + eps * x * x;
+                l[i]           = (1 - eps) * l[i] + eps * x;
+                ll[i]          = (1 - eps) * ll[i] + eps * x * x;
                 if (l[i] == 0) continue;
                 double const v = (ll[i] - l[i] * l[i]) / (ll[i]);
                 if (v > mv) mv = v;
@@ -362,7 +361,7 @@ namespace vb {
                 }
             if (!done) {
                 hs.push_back(h);
-                co_yield(h);
+                co_yield (h);
             }
         }
     }
