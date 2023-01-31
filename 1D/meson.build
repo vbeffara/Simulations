@@ -1,4 +1,5 @@
 executable ('Bernoulli_IT', 'Bernoulli_IT.cpp', dependencies : libvb)
+executable ('Bernoulli_IT_2', 'Bernoulli_IT_2.cpp', dependencies : libvb)
 executable ('Contact_1D', 'Contact_1D.cpp', dependencies : libvb)
 executable ('Cookie', 'Cookie.cpp', dependencies : libvb)
 executable ('Diploid', 'Diploid.cpp', dependencies : libvb)
