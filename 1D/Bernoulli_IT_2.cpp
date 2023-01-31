@@ -25,7 +25,7 @@ public:
         for (const auto &p : *this) { fmt::print("[{},{}] + {}\n", p.a, p.b, p.d); }
     }
 
-    function split(const piece &p) {
+    auto split(const piece &p) -> function {
         function g;
         for (auto q : *this) {
             double a = std::max(p.a, q.a - p.d), b = std::min(p.b, q.b - p.d);
@@ -35,7 +35,7 @@ public:
     }
 
     // Compose inside
-    function compose(function f1) {
+    auto compose(const function &f1) -> function {
         function g;
         for (const auto &p : f1) {
             auto pf2 = split(p);
@@ -44,7 +44,7 @@ public:
         return g;
     }
 
-    iset range() const {
+    [[nodiscard]] auto range() const -> iset {
         iset out;
         for (const auto &p : *this) out.insert(intv::right_open(p.a + p.d, p.b + p.d));
         return out;
@@ -55,13 +55,13 @@ public:
     }
 };
 
-double measure(const iset &I) {
+auto measure(const iset &I) -> double {
     double out = 0;
     for (const auto &i : I) out += upper(i) - lower(i);
     return out;
 }
 
-double hole(const iset &I) {
+auto hole(const iset &I) -> double {
     iset delta;
     delta.insert(intv::right_open(-1.0, 2.0));
     delta -= I;
@@ -81,12 +81,12 @@ double hole(const iset &I) {
     return std::max(hole_of_zero, biggest_hole);
 }
 
-int main(int argc, char **argv) {
-    vb::Hub H("Bernoullicity of [I,T]", argc, argv, "n=1000,i");
+auto main(int argc, char **argv) -> int {
+    vb::Hub const H("Bernoullicity of [I,T]", argc, argv, "n=1000,i");
 
     double                theta = .61803398874989484820;
-    function              f1{{{0.0, theta, 0.0}, {theta, 1.0, -theta}}};
-    function              f2{{{0.0, theta, 1 - theta}, {theta, 1.0, 0.0}}};
+    function const        f1{{{0.0, theta, 0.0}, {theta, 1.0, -theta}}};
+    function const        f2{{{0.0, theta, 1 - theta}, {theta, 1.0, 0.0}}};
     std::vector<function> ff{f1, f2};
 
     function f{{{0.0, 1.0, 0.0}}};
