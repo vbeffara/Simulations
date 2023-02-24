@@ -1,77 +1,105 @@
 #include <boost/icl/interval_set.hpp>
 #include <spdlog/spdlog.h>
-#include <utility>
 #include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
+#include <vector>
 
-using namespace vb;
-using namespace std;
 using iset = boost::icl::interval_set<double>;
 using intv = iset::interval_type;
 
-/* A function that is piecewise of the form $x \mapsto x + d$. The function is
-codes as a sequence `jumps` of points in the definition interval and a sequence
-`shifts` of reals: the meaning being that on the interval between `jumps[i]` and
-`jumps[i+1]`, the function is of the form `x + shifts[i]. */
+// This represents the map x \mapsto x + d on the interval [a,b]
+struct piece {
+    double a, b, d;
+};
 
-class fun {
+class function : public std::vector<piece> {
 public:
-    fun(std::vector<double> js, std::vector<double> ds) : jumps(std::move(js)), shifts(std::move(ds)){};
-
-    [[nodiscard]] auto index(double x) const -> size_t { return (std::lower_bound(begin(jumps), end(jumps), x) - begin(jumps)) - 1; };
-
-    [[nodiscard]] auto jump(size_t i) const -> double { return i < jumps.size() ? jumps[i] : 1.0; }
-
-    [[nodiscard]] auto shift(size_t i) const -> double { return i < shifts.size() ? shifts[i] : 0.0; }
-
-    void plot() const {
-        for (size_t i = 0; i < jumps.size(); ++i) {
-            fmt::print("{} {}\n", jump(i), jump(i) + shift(i));
-            fmt::print("{} {}\n\n", jump(i + 1), jump(i + 1) + shift(i));
-        }
+    void add(const piece &p) {
+        if ((!empty()) && (p.a == back().b) && (p.d == back().d))
+            back().b = p.b;
+        else
+            push_back(p);
     }
 
-    [[nodiscard]] auto range(size_t i) const -> intv { return intv::right_open(jump(i) + shift(i), jump(i + 1) + shift(i)); }
+    void print() const {
+        for (const auto &p : *this) { fmt::print("[{},{}] + {}\n", p.a, p.b, p.d); }
+    }
+
+    auto split(const piece &p) -> function {
+        function g;
+        for (auto q : *this) {
+            double a = std::max(p.a, q.a - p.d), b = std::min(p.b, q.b - p.d);
+            if (a < b) g.add({a, b, p.d + q.d});
+        };
+        return g;
+    }
+
+    // Compose inside
+    auto compose(const function &f1) -> function {
+        function g;
+        for (const auto &p : f1) {
+            auto pf2 = split(p);
+            for (const auto &q : pf2) g.add(q);
+        }
+        return g;
+    }
 
     [[nodiscard]] auto range() const -> iset {
         iset out;
-        for (size_t i = 0; i < jumps.size(); ++i) out.insert(range(i));
+        for (const auto &p : *this) out.insert(intv::right_open(p.a + p.d, p.b + p.d));
         return out;
     }
 
-    [[nodiscard]] auto compose(const fun &o) const -> fun {
-        std::vector<double> nj, ns;
-        for (size_t i = 0; i < jumps.size(); ++i) {
-            auto I = range(i);
-            auto j = o.index(I.lower());
-            nj.push_back(jump(i));
-            ns.push_back(shift(i) + o.shift(j));
-            for (size_t k = j + 1; o.jump(k) < I.upper(); ++k) {
-                nj.push_back(o.jump(k) - shift(i));
-                ns.push_back(shift(i) + o.shift(k));
-            }
-        }
-        return {nj, ns};
+    void plot() const {
+        for (const auto &p : *this) { fmt::print("{} {}\n{} {}\n\n", p.a, p.a + p.d, p.b, p.b + p.d); }
     }
-
-private:
-    std::vector<double> jumps, shifts;
 };
 
-auto run(double theta, size_t N) {
-    vector<fun> Fs = {fun({0.0, theta}, {0, -theta}), fun({0.0, theta}, {1 - theta, 0})};
-    fun         F({0.0}, {0.0});
-    for (size_t i = 0; i < N; ++i) {
-        // F        = F.compose(Fs[prng.uniform_int(Fs.size())]);
-        F        = Fs[prng.uniform_int(Fs.size())].compose(F);
-        auto   R = F.range();
-        double l = std::accumulate(begin(R), end(R), 0.0, [](double s, const intv &I) { return s + upper(I) - lower(I); });
-        // fmt::print("{} {} {}\n", i, l, upper(R) - lower(R));
+auto measure(const iset &I) -> double {
+    double out = 0;
+    for (const auto &i : I) out += upper(i) - lower(i);
+    return out;
+}
+
+auto hole(const iset &I) -> double {
+    iset delta;
+    delta.insert(intv::right_open(-1.0, 2.0));
+    delta -= I;
+
+    double hole_of_zero = 0, biggest_hole = 0;
+    for (const auto &i : delta) {
+        if (lower(i) < -.5) {
+            hole_of_zero += upper(i);
+            continue;
+        }
+        if (upper(i) > 1.5) {
+            hole_of_zero += 1 - lower(i);
+            continue;
+        }
+        biggest_hole = std::max(biggest_hole, upper(i) - lower(i));
     };
-    F.plot();
+    return std::max(hole_of_zero, biggest_hole);
 }
 
 auto main(int argc, char **argv) -> int {
-    Hub const H("Bernoullicity of [I,T]", argc, argv, "n=1,t=1000,s=.61803398874989484820,v,k=1");
-    run(H['s'], H['n']);
+    vb::Hub const H("Bernoullicity of [I,T]", argc, argv, "n=1000,i");
+
+    double                theta = .61803398874989484820;
+    function const        f1{{{0.0, theta, 0.0}, {theta, 1.0, -theta}}};
+    function const        f2{{{0.0, theta, 1 - theta}, {theta, 1.0, 0.0}}};
+    std::vector<function> ff{f1, f2};
+
+    function f{{{0.0, 1.0, 0.0}}};
+    double   avg = 1;
+    for (int i = 0; i < int(H['n']); ++i) {
+        if (bool(H['i']))
+            f = f.compose(ff[vb::prng.uniform_int(ff.size())]);
+        else
+            f = ff[vb::prng.uniform_int(ff.size())].compose(f);
+        auto R = f.range();
+        avg    = .999 * avg + .001 * (1 - hole(R));
+        fmt::print("{} {} {}\n", measure(R), 1 - hole(R), avg);
+    }
+    // for (const auto &p : f) fmt::print("{} {}\n", p.a + p.d, p.b + p.d);
+    // f.print();
 }

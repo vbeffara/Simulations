@@ -10,7 +10,10 @@ auto rands = ranges::views::generate([i = 0]() mutable { return rand() % 1000 + 
 
 auto rands2() -> ranges::experimental::generator<double> {
     int i = 0;
-    while (true) co_yield rand() % 1000 + (++i) / 1000.0;
+    while (true) {
+        ++i;
+        co_yield rand() % 1000 + i / 1000.0;
+    }
 }
 
 auto main() -> int {
