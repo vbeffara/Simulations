@@ -83,7 +83,7 @@ template <> struct fmt::formatter<vb::Map> {
     template <typename FormatContext> auto format(const vb::Map &m, FormatContext &ctx) {
         std::vector<std::string> edges;
         for (size_t i = 0; i < m.n; ++i) { edges.push_back(fmt::format("{} -> {}", i, fmt::join(m.v[i]->adj, " "))); }
-        format_to(ctx.out(), "{} vertices: {}", m.n, fmt::join(edges, ", "));
+        fmt::format_to(ctx.out(), "{} vertices: {}", m.n, fmt::join(edges, ", "));
         return ctx.out();
     }
 };

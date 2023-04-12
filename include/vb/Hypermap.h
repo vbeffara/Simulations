@@ -80,13 +80,13 @@ namespace YAML {
 template <> struct fmt::formatter<vb::Hypermap> {
     template <typename ParseContext> constexpr auto parse(ParseContext &ctx) { return ctx.begin(); }
     template <typename FormatContext> auto          format(const vb::Hypermap &H, FormatContext &ctx) {
-        format_to(ctx.out(), "Hypermap < {} black, {} white, {} half-edges, {} faces, genus {} >\n", H.sigma.cycles().size(),
-                  H.alpha.cycles().size(), H.sigma.size(), H.phi.cycles().size(), H.genus());
-        format_to(ctx.out(), "  sigma: {}\n", H.sigma);
-        format_to(ctx.out(), "  alpha: {}\n", H.alpha);
-        return format_to(ctx.out(), "    phi: {}", H.phi);
+        fmt::format_to(ctx.out(), "Hypermap < {} black, {} white, {} half-edges, {} faces, genus {} >\n", H.sigma.cycles().size(),
+                                H.alpha.cycles().size(), H.sigma.size(), H.phi.cycles().size(), H.genus());
+        fmt::format_to(ctx.out(), "  sigma: {}\n", H.sigma);
+        fmt::format_to(ctx.out(), "  alpha: {}\n", H.alpha);
+        return fmt::format_to(ctx.out(), "    phi: {}", H.phi);
         // return os;
 
-        // return format_to(ctx.out(), "{}", M);
+        // return fmt::format_to(ctx.out(), "{}", M);
     }
 };

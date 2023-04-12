@@ -57,7 +57,7 @@ template <typename T> struct fmt::formatter<vb::Polynomial<T>> {
                 monomials.push_back(s);
             }
         }
-        if (monomials.empty()) return format_to(ctx.out(), "{}", 0);
-        return format_to(ctx.out(), "{}", fmt::join(monomials, " + "));
+        if (monomials.empty()) return fmt::format_to(ctx.out(), "{}", 0);
+        return fmt::format_to(ctx.out(), "{}", fmt::join(monomials, " + "));
     }
 };

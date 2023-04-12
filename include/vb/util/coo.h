@@ -5,7 +5,7 @@
 
 namespace vb {
     template <typename T> struct coo_2d {
-        T                                        x, y;
+        T x, y;
         template <typename U> constexpr explicit operator coo_2d<U>() const { return {U(x), U(y)}; }
     };
 
@@ -40,7 +40,7 @@ namespace vb {
     using ucoo = coo_2d<size_t>;
 
     template <typename T> struct coo_3d {
-        T                                        x, y, z;
+        T x, y, z;
         template <typename U> constexpr explicit operator coo_3d<U>() const { return {U(x), U(y), U(z)}; }
 
         auto                       operator==(const coo_3d<T> &c) const -> bool { return (x == c.x) && (y == c.y) && (z == c.z); }
@@ -72,6 +72,6 @@ template <typename T> struct fmt::formatter<vb::coo_2d<T>> {
     template <typename ParseContext> constexpr auto parse(ParseContext &ctx) { return ctx.begin(); }
 
     template <typename FormatContext> auto format(const vb::coo_2d<T> &z, FormatContext &ctx) {
-        return format_to(ctx.out(), "({},{})", z.x, z.y);
+        return fmt::format_to(ctx.out(), "({},{})", z.x, z.y);
     }
 };

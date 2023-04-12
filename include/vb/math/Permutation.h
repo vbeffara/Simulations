@@ -42,7 +42,7 @@ template <> struct fmt::formatter<vb::Permutation> {
     template <typename FormatContext> auto format(const vb::Permutation &P, FormatContext &ctx) {
         std::vector<std::string> tmp;
         for (const auto &cc : P.cycles()) tmp.push_back(fmt::format("({})", fmt::join(cc, " ")));
-        return format_to(ctx.out(), "({})", fmt::join(tmp, " "));
+        return fmt::format_to(ctx.out(), "({})", fmt::join(tmp, " "));
     }
 };
 
@@ -52,6 +52,6 @@ template <> struct fmt::formatter<vb::Passport> {
     template <typename FormatContext> auto format(const vb::Passport &P, FormatContext &ctx) {
         std::vector<std::string> tmp;
         for (const auto &c : P) tmp.push_back(fmt::format("{}({})", c.first, c.second));
-        return format_to(ctx.out(), "{}", fmt::join(tmp, " "));
+        return fmt::format_to(ctx.out(), "{}", fmt::join(tmp, " "));
     }
 };
