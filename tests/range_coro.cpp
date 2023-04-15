@@ -2,8 +2,6 @@
 #include <range/v3/all.hpp>
 #include <range/v3/experimental/utility/generator.hpp>
 
-// TODO: When libc++ has `take_while`, switch to std::ranges
-
 auto good(double i) -> bool { return (int(i) % 100) != 0; }
 
 auto rands = ranges::views::generate([i = 0]() mutable { return rand() % 1000 + (++i) / 1000.0; });
