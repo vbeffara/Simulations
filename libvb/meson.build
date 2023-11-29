@@ -6,7 +6,6 @@ eigen = dependency ('eigen3')
 fplll = dependency ('fplll')
 gsl = dependency ('Microsoft.GSL', modules : ['Microsoft.GSL::GSL'])
 libpng = dependency ('libpng')
-mpfr = dependency ('mpfr')
 range = dependency ('range-v3')
 spdlog = dependency ('spdlog')
 tbb = dependency ('tbb')
@@ -28,7 +27,7 @@ libvb_src = ['Auto.cpp', 'CL_Parser.cpp', 'CLP.cpp', 'CoarseImage.cpp', 'Color.c
   'Picture.cpp', 'Pov.cpp', 'PRNG.cpp', 'ProgressBar.cpp', 'QuadTree.cpp', 'Shape.cpp', 'Sphere.cpp',
   'Spheroidal.cpp', 'Stream.cpp', 'Toroidal.cpp' ]
 
-libvb_dep = [boost, cairo, eigen, fltk, fplll, gsl, libpng, mpfr, range, spdlog, tbb, yamlcpp, boost_chrono, mpc]
+libvb_dep = [boost, cairo, eigen, fltk, fplll, gsl, libpng, range, spdlog, tbb, yamlcpp, boost_chrono, mpc]
 
 libvb_lib = shared_library ('vb', libvb_src, dependencies : libvb_dep, include_directories : '../include')
 
