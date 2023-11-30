@@ -145,7 +145,7 @@ struct Tiling {
         for (auto z : coo_range(state.size))
             if (state[z] != 0) {
                 coo const edge{1, ((z.x + z.y) % 2) != 0 ? 1 : -1};
-                auto ss = [=](ucoo z_) {
+                auto      ss = [=, this](ucoo z_) {
                     z_ += coo{offx, offy};
                     ucoo const zz = (z_ + coo{1, 1}) / 2;
                     coo const  sh = dz[(zz.y + ((((zz.x + 1) % 4) / 2) != 0 ? 5 : 3)) % 4];
@@ -211,7 +211,7 @@ struct Tiling {
         }
     }
 
-    const Hub &           H;
+    const Hub            &H;
     string                name;
     const Array<double>   TP;
     size_t                m, per, n;

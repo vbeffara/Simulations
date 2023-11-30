@@ -45,8 +45,8 @@ auto main(int argc, char **argv) -> int {
         public:
             auto operator()(size_t n) -> size_t {
                 if (n < 25) return fib(n);
-                auto res1 = async([=]() { return (*this)(n - 1); });
-                auto res2 = async([=]() { return (*this)(n - 2); });
+                auto res1 = async([=, this]() { return (*this)(n - 1); });
+                auto res2 = async([=, this]() { return (*this)(n - 2); });
                 return res1.get() + res2.get();
             }
         };
@@ -95,7 +95,7 @@ auto main(int argc, char **argv) -> int {
                     return;
                 }
                 auto l3  = (l1 + l2) / 2;
-                auto one = async([=] { run(l1, l3); }), two = async([=] { run(l3, l2); });
+                auto one = async([=, this] { run(l1, l3); }), two = async([=, this] { run(l3, l2); });
                 one.get();
                 two.get();
             }
@@ -118,7 +118,7 @@ auto main(int argc, char **argv) -> int {
                     return s;
                 }
                 auto l3  = (l1 + l2) / 2;
-                auto one = async([=] { return run(l1, l3); }), two = async([=] { return run(l3, l2); });
+                auto one = async([=, this] { return run(l1, l3); }), two = async([=, this] { return run(l3, l2); });
                 return one.get() + two.get();
             }
             auto sum(size_t l) -> double {
