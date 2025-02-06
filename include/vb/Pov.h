@@ -33,7 +33,7 @@ namespace vb {
 
     class Pov_Union : public bunch {
     public:
-        Pov_Union() : bunch("union {", "}"){};
+        Pov_Union() : bunch("union {", "}") {};
     };
 
     auto Box(tri a, tri b) -> std::string;
@@ -49,7 +49,7 @@ namespace vb {
 template <> struct fmt::formatter<vb::tri> {
     template <typename ParseContext> constexpr auto parse(ParseContext &ctx) { return ctx.begin(); }
 
-    template <typename FormatContext> auto format(const vb::tri &c, FormatContext &ctx) {
+    template <typename FormatContext> auto format(const vb::tri &c, FormatContext &ctx) const {
         return fmt::format_to(ctx.out(), "<{},{},{}>", c.x, c.y, c.z);
     }
 };
@@ -57,7 +57,7 @@ template <> struct fmt::formatter<vb::tri> {
 template <> struct fmt::formatter<vb::bunch> {
     template <typename ParseContext> constexpr auto parse(ParseContext &ctx) { return ctx.begin(); }
 
-    template <typename FormatContext> auto format(const vb::bunch &b, FormatContext &ctx) {
+    template <typename FormatContext> auto format(const vb::bunch &b, FormatContext &ctx) const {
         if (!b.before.empty()) fmt::format_to(ctx.out(), "{}", b.before + '\n');
         for (const auto &s : b) fmt::format_to(ctx.out(), "{}", s + '\n');
         if (!b.after.empty()) fmt::format_to(ctx.out(), "{}", b.after + '\n');

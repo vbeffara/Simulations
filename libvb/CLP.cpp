@@ -1,3 +1,4 @@
+#include <fmt/ranges.h>
 #include <gsl/gsl>
 #include <vb/util/CLP.h>
 #include <vb/util/misc.h>

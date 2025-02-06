@@ -3,16 +3,18 @@
         {
             "name": "Mac",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "/opt/homebrew/include/**",
+                "/opt/homebrew/Cellar/spdlog/1.15.1/include",
+                "/opt/homebrew/Cellar/boost/1.87.0/include"
             ],
+            "defines": [],
             "macFrameworkPath": [
-                "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks"
+                "/Library/Developer/CommandLineTools/SDKs/MacOSX15.sdk/System/Library/Frameworks"
             ],
-            "cStandard": "c11",
-            "cppStandard": "c++17",
-            "intelliSenseMode": "clang-x64",
-            "compileCommands": "${workspaceFolder}/compile_commands.json",
-            "configurationProvider": "vector-of-bool.cmake-tools"
+            "compilerPath": "/opt/homebrew/opt/llvm/bin/clang",
+            "cStandard": "c17",
+            "intelliSenseMode": "macos-clang-arm64"
         }
     ],
     "version": 4

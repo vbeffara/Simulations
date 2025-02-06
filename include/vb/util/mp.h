@@ -43,7 +43,7 @@ namespace Eigen {
 template <> struct fmt::formatter<vb::real_t> {
     template <typename ParseContext> constexpr auto parse(ParseContext &ctx) { return ctx.begin(); }
 
-    template <typename FormatContext> auto format(const vb::real_t &x, FormatContext &ctx) {
+    template <typename FormatContext> auto format(const vb::real_t &x, FormatContext &ctx) const {
         return fmt::format_to(ctx.out(), "{}", x.str(x.precision()));
     }
 };
@@ -51,7 +51,7 @@ template <> struct fmt::formatter<vb::real_t> {
 template <> struct fmt::formatter<vb::complex_t> {
     template <typename ParseContext> constexpr auto parse(ParseContext &ctx) { return ctx.begin(); }
 
-    template <typename FormatContext> auto format(const vb::complex_t &z, FormatContext &ctx) {
+    template <typename FormatContext> auto format(const vb::complex_t &z, FormatContext &ctx) const {
         if (imag(z) == 0) return fmt::format_to(ctx.out(), "{}", real(z));
         return fmt::format_to(ctx.out(), "({} + {} I)", real(z), imag(z));
     }

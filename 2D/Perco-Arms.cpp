@@ -3,6 +3,7 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/edmonds_karp_max_flow.hpp>
 #include <boost/graph/graph_utility.hpp>
+#include <fmt/ranges.h>
 #include <spdlog/spdlog.h>
 #include <vb/ProgressBar.h>
 #include <vb/util/Hub.h>
@@ -15,8 +16,8 @@ using namespace vb;
 using Traits          = adjacency_list_traits<listS, vecS, directedS>;
 using edge_descriptor = Traits::edge_descriptor;
 using Graph           = adjacency_list<
-    listS, vecS, directedS, no_property,
-    property<edge_capacity_t, int64_t, property<edge_residual_capacity_t, int64_t, property<edge_reverse_t, edge_descriptor>>>>;
+              listS, vecS, directedS, no_property,
+              property<edge_capacity_t, int64_t, property<edge_residual_capacity_t, int64_t, property<edge_reverse_t, edge_descriptor>>>>;
 
 void add_one(Graph *gg, size_t i, size_t j) {
     Graph          &g{*gg};
@@ -32,7 +33,7 @@ void add_one(Graph *gg, size_t i, size_t j) {
 
 auto main(int argc, char **argv) -> int {
     Hub const    H("Percolation arm exponents", argc, argv, "n=100,t=1,p=.5");
-    size_t n = H['n'], n_iter = H['t'];
+    size_t       n = H['n'], n_iter = H['t'];
     double const p = H['p'];
 
     Graph g(n * n + 1);
@@ -54,7 +55,7 @@ auto main(int argc, char **argv) -> int {
 
     // Prepare for quick edge access
     property_map<Graph, edge_capacity_t>::type const cap = get(edge_capacity, g);
-    Graph::edge_iterator                       e, e_final;
+    Graph::edge_iterator                             e, e_final;
 
     for (tie(e, e_final) = edges(g); e != e_final; ++e) {
         cap[*e]                       = 0;

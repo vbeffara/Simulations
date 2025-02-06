@@ -1,4 +1,5 @@
 #pragma once
+#include <fmt/ranges.h>
 #include <vb/Figure.h>
 #include <vb/math/LinearAlgebra.h>
 
@@ -9,7 +10,7 @@ namespace vb {
     class Vertex : public Circle {
     public:
         adj_list adj;
-        explicit Vertex(const cpx &z_ = cpx(0.0, 0.0), const double &r_ = 0.0) : Circle(z_, r_){};
+        explicit Vertex(const cpx &z_ = cpx(0.0, 0.0), const double &r_ = 0.0) : Circle(z_, r_) {};
     };
 
     class Map : public Picture {
@@ -80,7 +81,7 @@ namespace vb {
 template <> struct fmt::formatter<vb::Map> {
     template <typename ParseContext> constexpr auto parse(ParseContext &ctx) { return ctx.begin(); }
 
-    template <typename FormatContext> auto format(const vb::Map &m, FormatContext &ctx) {
+    template <typename FormatContext> auto format(const vb::Map &m, FormatContext &ctx) const {
         std::vector<std::string> edges;
         for (size_t i = 0; i < m.n; ++i) { edges.push_back(fmt::format("{} -> {}", i, fmt::join(m.v[i]->adj, " "))); }
         fmt::format_to(ctx.out(), "{} vertices: {}", m.n, fmt::join(edges, ", "));

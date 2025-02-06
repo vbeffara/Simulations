@@ -1,6 +1,7 @@
 #pragma once
 #include <boost/math/tools/polynomial.hpp>
 #include <fmt/ostream.h>
+#include <fmt/ranges.h>
 
 namespace vb {
     template <typename T> class Polynomial {
@@ -44,7 +45,7 @@ namespace vb {
 template <typename T> struct fmt::formatter<vb::Polynomial<T>> {
     template <typename ParseContext> constexpr auto parse(ParseContext &ctx) { return ctx.begin(); }
 
-    template <typename FormatContext> auto format(const vb::Polynomial<T> &P, FormatContext &ctx) {
+    template <typename FormatContext> auto format(const vb::Polynomial<T> &P, FormatContext &ctx) const {
         std::vector<std::string> monomials;
         for (auto i = P.degree(); i <= P.degree(); --i) {
             if (P[i] == T(0)) continue;
