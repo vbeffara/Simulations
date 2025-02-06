@@ -1,0 +1,14 @@
+{
+  "files.associations": {
+    "*.clt": "latex",
+    "*.plt": "latex",
+    "*.ins": "latex",
+    "*.clo": "latex-expl3",
+    "*.fd": "latex",
+    "*.lean": "lean4",
+    "*.cdrdoidates": "latex",
+    "*.dtx": "latex-expl3",
+    "utility": "cpp"
+  },
+  "editor.formatOnSave": true
+}
