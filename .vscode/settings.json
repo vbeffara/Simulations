@@ -8,7 +8,18 @@
     "*.lean": "lean4",
     "*.cdrdoidates": "latex",
     "*.dtx": "latex-expl3",
-    "utility": "cpp"
+    "utility": "cpp",
+    "vector": "cpp",
+    "__availability": "cpp",
+    "__locale": "cpp",
+    "locale": "cpp",
+    "ostream": "cpp",
+    "print": "cpp",
+    "version": "cpp",
+    "*.tcc": "cpp",
+    "format": "cpp",
+    "regex": "cpp",
+    "chrono": "cpp"
   },
   "editor.formatOnSave": true
 }
