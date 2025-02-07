@@ -9,17 +9,33 @@
 
 using namespace vb;
 
+// First define the structure of the triangular lattice to make the code below clearer.
+
 struct Pattern {
-  size_t n_sites, n_bonds, n_faces;
-  cpx    period;
+  size_t                                       n_sites, n_bonds, n_faces;
+  cpx                                          period;
+  std::vector<cpx>                             shifts;
+  std::vector<std::tuple<size_t, size_t, coo>> adj_faces;
+  std::vector<std::tuple<size_t, size_t, coo>> face_edges;
+
+  Pattern(size_t s, size_t b, size_t f) : n_sites(s), n_bonds(b), n_faces(f) {}
+
+  cpx pos(coo z) { return {z.x + period.real() * z.y, period.imag() * z.y}; }
 };
 
-Pattern TRI{1, 3, 2, cpx(1, sqrt(3) / 2)};
+Pattern Triangular() {
+  Pattern P(1, 3, 2); // Order of edges : E, N, NW
+  P.period     = {.5, sqrt(3) / 2};
+  P.shifts     = {0};
+  P.adj_faces  = {{0, 1, {0, 0}}, {0, 1, {0, -1}}, {0, 1, {-1, 0}}, {1, 0, {0, 0}}, {1, 0, {0, 1}}, {1, 0, {1, 0}}};
+  P.face_edges = {{0, 0, {0, 0}}, {0, 1, {0, 0}}, {0, 2, {1, 0}}, {1, 0, {0, 1}}, {1, 1, {1, 0}}, {1, 2, {1, 0}}};
+  return P;
+}
+
+// The data in one fundamental domain of the lattice.
 
 struct Site {
   std::vector<double> edge_labels, face_labels;
-  [[deprecated]] bool E{false}, N{false}, NW{false};
-  bool                T1{false}, T2{false};
 };
 
 cpx pos(coo z) { return {z.x + double(z.y) / 2, z.y * sqrt(3) / 2}; }
@@ -42,33 +58,32 @@ std::unique_ptr<Path> tri2(coo z, long long c) {
 }
 
 struct Perco {
+  Pattern             P;
   size_t              n;
   double              p;
   Array<Site>         sites;
   Array<long long>    c1, c2;
   std::vector<size_t> sizes;
 
-  Perco(Pattern P, size_t n, double p) : n(n), p(p), sites({n, n}), c1({n, n}, 0), c2({n, n}, 0) {
-    for (auto z : coo_range<size_t>({n, n})) {
-      for (size_t i = 0; i < P.n_bonds; ++i) sites[z].edge_labels.push_back(prng.uniform_real());
-    }
-    // Open each facet if the corresponding edges are open
+  // Initialize edge labels as iid uniforms, and face labels as the max of incident edge labels.
+  Perco(Pattern P, size_t n, double p) : P(P), n(n), p(p), sites({n, n}), c1({n, n}, 0), c2({n, n}, 0) {
     for (auto z : coo_range<long long>({int(n), int(n)})) {
-      if (sites.atp(z).edge_labels[0] < p && sites.atp(z).edge_labels[1] < p && sites.atp({z.x + 1, z.y}).edge_labels[2] < p)
-        sites.atp(z).T1 = true;
-      if (sites.atp({z.x + 1, z.y}).edge_labels[2] < p && sites.atp({z.x + 1, z.y}).edge_labels[1] < p &&
-          sites.atp({z.x, z.y + 1}).edge_labels[0] < p)
-        sites.atp(z).T2 = true;
+      for (size_t i = 0; i < P.n_bonds; ++i) sites.atp(z).edge_labels.push_back(prng.uniform_real());
+      for (size_t i = 0; i < P.n_faces; ++i) sites.atp(z).face_labels.push_back(0);
     }
+
+    for (auto z : coo_range<long long>({int(n), int(n)}))
+      for (auto [i, j, dz] : P.face_edges)
+        if (sites.atp(z + dz).edge_labels[j] > sites.atp(z).face_labels[i]) sites.atp(z).face_labels[i] = sites.atp(z + dz).edge_labels[j];
   }
 
   void show(double p) {
     Figure F{"Percolation"};
     for (auto z : coo_range<long long>({int(n), int(n)})) {
-      cpx pos{z.x + double(z.y) / 2, z.y * sqrt(3) / 2};
+      cpx pos = P.pos(z);
       F.add(std::make_unique<Circle>(pos, .1));
-      if (sites.atp(z).T1) F.add(tri1(z, c1.atp(z)));
-      if (sites.atp(z).T2) F.add(tri2(z, c2.atp(z)));
+      if (sites.atp(z).face_labels[0] < p) F.add(tri1(z, c1.atp(z)));
+      if (sites.atp(z).face_labels[1] < p) F.add(tri2(z, c2.atp(z)));
       if (sites.atp(z).edge_labels[0] < p) F.add(seg_E(z));
       if (sites.atp(z).edge_labels[1] < p) F.add(seg_N(z));
       if (sites.atp(z).edge_labels[2] < p) F.add(seg_NW(z));
@@ -81,9 +96,9 @@ struct Perco {
   // Count cluster sizes
   void count() {
     std::map<long long, size_t> count;
-    for (auto z : coo_range<size_t>({n, n})) {
-      if (sites[z].T1) ++count[c1[z]];
-      if (sites[z].T2) ++count[c2[z]];
+    for (auto z : coo_range<long long>({int(n), int(n)})) {
+      if (sites.atp(z).face_labels[0] < p) ++count[c1.atp(z)];
+      if (sites.atp(z).face_labels[1] < p) ++count[c2.atp(z)];
     }
 
     for (auto [c, n] : count) sizes.push_back(n);
@@ -92,16 +107,16 @@ struct Perco {
 
   void explore() {
     long long idx = 0;
-    for (auto z : coo_range<size_t>({n, n})) {
-      if (sites[z].T1) c1[z] = ++idx;
-      if (sites[z].T2) c2[z] = ++idx;
+    for (auto z : coo_range<long long>({int(n), int(n)})) {
+      if (sites.atp(z).face_labels[0] < p) c1.atp(z) = ++idx;
+      if (sites.atp(z).face_labels[1] < p) c2.atp(z) = ++idx;
     }
 
     bool done = false;
     while (!done) {
       done = true;
       for (auto z : coo_range<long long>({int(n), int(n)})) {
-        if (sites.atp(z).T1) {
+        if (sites.atp(z).face_labels[0] < p) {
           if (c2.atp(z) > c1.atp(z)) {
             c1.atp(z) = c2.atp(z);
             done      = false;
@@ -115,7 +130,7 @@ struct Perco {
             done      = false;
           }
         }
-        if (sites.atp(z).T2) {
+        if (sites.atp(z).face_labels[1] < p) {
           if (c1.atp(z) > c2.atp(z)) {
             c2.atp(z) = c1.atp(z);
             done      = false;
@@ -148,7 +163,7 @@ int main(int argc, char **argv) {
   clp.finalize();
 
   if (t == 1) {
-    Perco P(TRI, n, p);
+    Perco P(Triangular(), n, p);
     P.explore();
     spdlog::info("Largest cluster size: {}", P.biggest());
     P.show(p);
@@ -157,7 +172,7 @@ int main(int argc, char **argv) {
     for (size_t i = 0; i < t; ++i) {
       PB.set(i);
       double p = prng.uniform_real();
-      Perco  P(TRI, n, p);
+      Perco  P(Triangular(), n, p);
       P.explore();
       fmt::print("{} {} {}\n", p, P.biggest(), P.second_biggest());
     }
