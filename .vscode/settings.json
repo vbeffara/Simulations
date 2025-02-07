@@ -20,7 +20,9 @@
     "format": "cpp",
     "regex": "cpp",
     "chrono": "cpp",
-    "complex": "cpp"
+    "complex": "cpp",
+    "valarray": "cpp",
+    "cmath": "cpp"
   },
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
 }
