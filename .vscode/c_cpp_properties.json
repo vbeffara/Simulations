@@ -10,15 +10,17 @@
                 "/opt/homebrew/Cellar/fmt/11.1.3/include",
                 "/opt/homebrew/Cellar/cairo/1.18.2/include",
                 "/opt/homebrew/Cellar/fltk/1.4.1/include",
-                "/opt/homebrew/Cellar/range-v3/0.12.0/include"
+                "/opt/homebrew/Cellar/range-v3/0.12.0/include",
+                "/opt/homebrew/Cellar/wxwidgets/3.2.6/lib/wx/include/osx_cocoa-unicode-3.2"
             ],
             "defines": [],
             "macFrameworkPath": [
                 "/Library/Developer/CommandLineTools/SDKs/MacOSX15.sdk/System/Library/Frameworks"
             ],
-            "compilerPath": "/opt/homebrew/opt/llvm/bin/clang",
+            "compilerPath": "/opt/homebrew/opt/llvm/bin/clang++",
             "cStandard": "c17",
-            "intelliSenseMode": "macos-clang-arm64"
+            "intelliSenseMode": "macos-clang-arm64",
+            "cppStandard": "c++23"
         }
     ],
     "version": 4

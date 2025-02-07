@@ -19,7 +19,8 @@
     "*.tcc": "cpp",
     "format": "cpp",
     "regex": "cpp",
-    "chrono": "cpp"
+    "chrono": "cpp",
+    "complex": "cpp"
   },
   "editor.formatOnSave": true
 }
