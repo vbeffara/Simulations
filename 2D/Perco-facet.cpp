@@ -51,13 +51,11 @@ Pattern Triangular() {
   return P;
 }
 
-// The data in one fundamental domain of the lattice.
-
-struct Site {
-  std::vector<double> edge_labels, face_labels;
-};
-
 struct Perco {
+  struct Site {
+    std::vector<double> edge_labels, face_labels;
+  };
+
   Pattern             P;
   size_t              n;
   double              p;
@@ -128,6 +126,34 @@ struct Perco {
   size_t biggest() { return sizes.size() > 0 ? sizes[0] : 0; }
 
   size_t second_biggest() { return sizes.size() > 1 ? sizes[1] : 0; }
+
+  double compute_reaching_time() {
+    std::vector<Array<double>> reaching_time{Array<double>({n, n}, 1), Array<double>({n, n}, 1)};
+    for (size_t i = 0; i < n; ++i) reaching_time[0][{0, i}] = 0;
+
+    for (auto z : coo_range<long long>({int(n), int(n)})) {
+      reaching_time[0].atp(z) = (z.x == 0) ? 0 : 1;
+      reaching_time[1].atp(z) = (z.x == 0) ? 0 : 1;
+    }
+
+    bool done = false;
+    while (!done) {
+      done = true;
+      for (auto z : coo_range<long long>({int(n), int(n)})) {
+        for (auto [i, j, dz] : P.adj_faces) {
+          double candidate = std::max(reaching_time[j].atp(z + dz), sites.atp(z).face_labels[i]);
+          if (candidate < reaching_time[i].atp(z)) {
+            reaching_time[i].atp(z) = candidate;
+            done                    = false;
+          }
+        }
+      }
+    }
+
+    double ans = 1;
+    for (size_t i = 0; i < n; ++i) ans = std::min(ans, reaching_time[0][{n / 2, i}]);
+    return ans;
+  }
 };
 
 int main(int argc, char **argv) {
@@ -146,10 +172,8 @@ int main(int argc, char **argv) {
     ProgressBar PB(t);
     for (size_t i = 0; i < t; ++i) {
       PB.set(i);
-      double p = prng.uniform_real();
-      Perco  P(Triangular(), n, p);
-      P.explore();
-      fmt::print("{} {} {}\n", p, P.biggest(), P.second_biggest());
+      Perco P(Triangular(), n, 0);
+      fmt::print("{} {}\n", n, P.compute_reaching_time());
     }
   }
 }
