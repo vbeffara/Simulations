@@ -3,6 +3,7 @@
 #include <vb/Figure.h>
 #include <vb/ProgressBar.h>
 #include <vb/data/Array.h>
+#include <vb/data/Queue.h>
 #include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 #include <vb/util/coo.h>
@@ -55,6 +56,7 @@ struct Perco {
   struct Site {
     std::vector<double>    edge_labels, face_labels, reaching_time;
     std::vector<long long> c;
+    std::vector<bool>      visited;
   };
 
   Pattern             P;
@@ -71,6 +73,7 @@ struct Perco {
       for (size_t i = 0; i < P.n_faces; ++i) s.face_labels.push_back(0);
       for (size_t i = 0; i < P.n_faces; ++i) s.reaching_time.push_back(1);
       for (size_t i = 0; i < P.n_faces; ++i) s.c.push_back(0);
+      for (size_t i = 0; i < P.n_faces; ++i) s.visited.push_back(false);
     }
     for (auto z : coo_range<long long>({int(n), int(n)})) {
       Site &s = sites.atp(z);
@@ -133,28 +136,26 @@ struct Perco {
   size_t second_biggest() { return sizes.size() > 1 ? sizes[1] : 0; }
 
   double compute_reaching_time() {
-    std::vector<std::pair<coo, size_t>> stack;
-    for (size_t i = 0; i < n; ++i) {
-      sites[{0, i}].reaching_time[0] = 0;
-      stack.push_back({{0, int(i)}, 0});
-    }
+    Queue<std::pair<coo, size_t>> Q;
 
-    size_t i = 0;
-    while (i < stack.size()) {
-      auto [z, k] = stack[i++];
+    for (int i = 0; i < n; ++i) Q.push({{{0, i}, 0}, 0});
+
+    while (!Q.q.empty()) {
+      auto [zk, t] = Q.get();
+      auto [z, k]  = zk;
+      if (pmod(z.x, n) == n / 2) return t;
+      Site &s = sites.atp(z);
+      if (s.visited[k] == 1) continue;
+      s.visited[k]       = true;
+      s.reaching_time[k] = t;
       for (auto [i, j, dz] : P.adj_faces) {
         if (i != k) continue;
-        double candidate = std::max(sites.atp(z).reaching_time[i], sites.atp(z + dz).face_labels[j]);
-        if (candidate < sites.atp(z + dz).reaching_time[j]) {
-          sites.atp(z + dz).reaching_time[j] = candidate;
-          stack.push_back({z + dz, j});
-        }
+        Site &ns = sites.atp(z + dz);
+        if (ns.visited[j]) continue;
+        Q.push({{z + dz, j}, std::max(t, ns.face_labels[j])});
       }
     }
-
-    double ans = 1;
-    for (size_t i = 0; i < n; ++i) ans = std::min(ans, sites[{n / 2, i}].reaching_time[0]);
-    return ans;
+    return -1; // Should never happen
   }
 };
 
