@@ -56,11 +56,12 @@ Pattern Triangular() {
 
 struct Perco {
   struct Site {
-    std::vector<double>    edge_labels, face_labels;
+    std::vector<double>    site_labels, edge_labels, face_labels;
     std::vector<long long> c;
     std::vector<bool>      visited;
 
-    Site(const Pattern &P) : edge_labels(P.n_bonds, 0), face_labels(P.n_faces, 0), c(P.n_faces, 0), visited(P.n_faces, 0) {}
+    Site(const Pattern &P)
+        : site_labels(P.n_sites, 0), edge_labels(P.n_bonds, 0), face_labels(P.n_faces, 0), c(P.n_faces, 0), visited(P.n_faces, 0) {}
   };
 
   Pattern     P;
@@ -68,13 +69,16 @@ struct Perco {
   double      p;
   Array<Site> sites;
 
+  double &site_label(coo z, size_t k) { return sites.atp(z).site_labels[k]; }
   double &edge_label(coo z, size_t k) { return sites.atp(z).edge_labels[k]; }
   double &face_label(coo z, size_t k) { return sites.atp(z).face_labels[k]; }
 
   // Initialize edge labels as iid uniforms, and face labels as the max of incident edge labels.
   Perco(Pattern P, size_t n, double p = 0) : P(P), n(n), p(p), sites({n, n}, {P}) {
     for (auto z : coo_range<long long>({int(n), int(n)}))
-      for (size_t i = 0; i < P.n_bonds; ++i) edge_label(z, i) = prng.uniform_real();
+      for (size_t i = 0; i < P.n_sites; ++i) site_label(z, i) = prng.uniform_real();
+    for (auto z : coo_range<long long>({int(n), int(n)}))
+      for (auto [i, j, dz] : P.edge_sites) edge_label(z, i) = std::max(edge_label(z, i), site_label(z + dz, j));
     for (auto z : coo_range<long long>({int(n), int(n)})) {
       for (auto [i, j, dz] : P.face_edges) face_label(z, i) = std::max(face_label(z, i), edge_label(z + dz, j));
     }
@@ -157,8 +161,7 @@ int main(int argc, char **argv) {
     P.explore();
     P.show(p);
   } else {
-    for (size_t i = 0; i < t; ++i) {
-      for (size_t nn = 100; nn <= n; nn *= 2) { one_time(nn, i, t); }
-    }
+    for (size_t i = 0; i < t; ++i)
+      for (size_t nn = 100; nn <= n; nn *= 2) one_time(nn, i, t);
   }
 }
