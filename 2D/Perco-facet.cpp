@@ -53,34 +53,39 @@ Pattern Triangular() {
 
 struct Perco {
   struct Site {
-    std::vector<double> edge_labels, face_labels;
+    std::vector<double>    edge_labels, face_labels, reaching_time;
+    std::vector<long long> c;
   };
 
   Pattern             P;
   size_t              n;
   double              p;
   Array<Site>         sites;
-  Array<long long>    c[2];
   std::vector<size_t> sizes;
 
   // Initialize edge labels as iid uniforms, and face labels as the max of incident edge labels.
-  Perco(Pattern P, size_t n, double p) : P(P), n(n), p(p), sites({n, n}), c{{{n, n}, 0}, {{n, n}, 0}} {
+  Perco(Pattern P, size_t n, double p) : P(P), n(n), p(p), sites({n, n}) {
     for (auto z : coo_range<long long>({int(n), int(n)})) {
-      for (size_t i = 0; i < P.n_bonds; ++i) sites.atp(z).edge_labels.push_back(prng.uniform_real());
-      for (size_t i = 0; i < P.n_faces; ++i) sites.atp(z).face_labels.push_back(0);
+      Site &s = sites.atp(z);
+      for (size_t i = 0; i < P.n_bonds; ++i) s.edge_labels.push_back(prng.uniform_real());
+      for (size_t i = 0; i < P.n_faces; ++i) s.face_labels.push_back(0);
+      for (size_t i = 0; i < P.n_faces; ++i) s.reaching_time.push_back(1);
+      for (size_t i = 0; i < P.n_faces; ++i) s.c.push_back(0);
     }
-    for (auto z : coo_range<long long>({int(n), int(n)}))
-      for (auto [i, j, dz] : P.face_edges)
-        sites.atp(z).face_labels[i] = std::max(sites.atp(z).face_labels[i], sites.atp(z + dz).edge_labels[j]);
+    for (auto z : coo_range<long long>({int(n), int(n)})) {
+      Site &s = sites.atp(z);
+      for (auto [i, j, dz] : P.face_edges) s.face_labels[i] = std::max(s.face_labels[i], sites.atp(z + dz).edge_labels[j]);
+    }
   }
 
   void show(double p) {
     Figure F{"Facet Percolation"};
     for (auto z : coo_range<long long>({int(n), int(n)})) {
+      Site &s = sites.atp(z);
       for (size_t i = 0; i < P.n_faces; ++i)
-        if (sites.atp(z).face_labels[i] < p) F.add(P.draw_face(z, c[i].atp(z), i));
+        if (s.face_labels[i] < p) F.add(P.draw_face(z, s.c[i], i));
       for (size_t i = 0; i < P.n_bonds; ++i)
-        if (sites.atp(z).edge_labels[i] < p) F.add(P.draw_edge(z, i));
+        if (s.edge_labels[i] < p) F.add(P.draw_edge(z, i));
       F.add(std::make_unique<Circle>(P.pos(z), .1, Pen(BLACK, 1, BLACK, true)));
     }
     F.show();
@@ -92,8 +97,8 @@ struct Perco {
   void count() {
     std::map<long long, size_t> count;
     for (auto z : coo_range<long long>({int(n), int(n)})) {
-      if (sites.atp(z).face_labels[0] < p) ++count[c[0].atp(z)];
-      if (sites.atp(z).face_labels[1] < p) ++count[c[1].atp(z)];
+      if (sites.atp(z).face_labels[0] < p) ++count[sites.atp(z).c[0]];
+      if (sites.atp(z).face_labels[1] < p) ++count[sites.atp(z).c[1]];
     }
 
     for (auto [c, n] : count) sizes.push_back(n);
@@ -103,8 +108,8 @@ struct Perco {
   void explore() {
     long long idx = 0;
     for (auto z : coo_range<long long>({int(n), int(n)})) {
-      if (sites.atp(z).face_labels[0] < p) c[0].atp(z) = ++idx;
-      if (sites.atp(z).face_labels[1] < p) c[1].atp(z) = ++idx;
+      if (sites.atp(z).face_labels[0] < p) sites.atp(z).c[0] = ++idx;
+      if (sites.atp(z).face_labels[1] < p) sites.atp(z).c[1] = ++idx;
     }
 
     bool done = false;
@@ -112,9 +117,9 @@ struct Perco {
       done = true;
       for (auto z : coo_range<long long>({int(n), int(n)})) {
         for (auto [i, j, dz] : P.adj_faces) {
-          if (sites.atp(z).face_labels[i] < p && c[j].atp(z + dz) > c[i].atp(z)) {
-            c[i].atp(z) = c[j].atp(z + dz);
-            done        = false;
+          if (sites.atp(z).face_labels[i] < p && sites.atp(z + dz).c[j] > sites.atp(z).c[i]) {
+            sites.atp(z).c[i] = sites.atp(z + dz).c[j];
+            done              = false;
           }
         }
       }
@@ -128,30 +133,27 @@ struct Perco {
   size_t second_biggest() { return sizes.size() > 1 ? sizes[1] : 0; }
 
   double compute_reaching_time() {
-    std::vector<Array<double>> reaching_time{Array<double>({n, n}, 1), Array<double>({n, n}, 1)};
-    for (size_t i = 0; i < n; ++i) reaching_time[0][{0, i}] = 0;
-
-    for (auto z : coo_range<long long>({int(n), int(n)})) {
-      reaching_time[0].atp(z) = (z.x == 0) ? 0 : 1;
-      reaching_time[1].atp(z) = (z.x == 0) ? 0 : 1;
+    std::vector<std::pair<coo, size_t>> stack;
+    for (size_t i = 0; i < n; ++i) {
+      sites[{0, i}].reaching_time[0] = 0;
+      stack.push_back({{0, int(i)}, 0});
     }
 
-    bool done = false;
-    while (!done) {
-      done = true;
-      for (auto z : coo_range<long long>({int(n), int(n)})) {
-        for (auto [i, j, dz] : P.adj_faces) {
-          double candidate = std::max(reaching_time[j].atp(z + dz), sites.atp(z).face_labels[i]);
-          if (candidate < reaching_time[i].atp(z)) {
-            reaching_time[i].atp(z) = candidate;
-            done                    = false;
-          }
+    size_t i = 0;
+    while (i < stack.size()) {
+      auto [z, k] = stack[i++];
+      for (auto [i, j, dz] : P.adj_faces) {
+        if (i != k) continue;
+        double candidate = std::max(sites.atp(z).reaching_time[i], sites.atp(z + dz).face_labels[j]);
+        if (candidate < sites.atp(z + dz).reaching_time[j]) {
+          sites.atp(z + dz).reaching_time[j] = candidate;
+          stack.push_back({z + dz, j});
         }
       }
     }
 
     double ans = 1;
-    for (size_t i = 0; i < n; ++i) ans = std::min(ans, reaching_time[0][{n / 2, i}]);
+    for (size_t i = 0; i < n; ++i) ans = std::min(ans, sites[{n / 2, i}].reaching_time[0]);
     return ans;
   }
 };
@@ -159,11 +161,11 @@ struct Perco {
 int main(int argc, char **argv) {
   CLP  clp(argc, argv, "Facet percolation");
   auto n = clp.param("n", size_t(50), "Domain size");
-  auto p = clp.param("p", 0.5, "Percolation parameter (only used if t=1)");
-  auto t = clp.param("t", size_t(1), "Number of samples (for p_c estimation, ignores p)");
+  auto p = clp.param("p", 0.5, "Percolation parameter (only used if t=0)");
+  auto t = clp.param("t", size_t(0), "Number of samples (for p_c estimation, ignores p)");
   clp.finalize();
 
-  if (t == 1) {
+  if (t == 0) {
     Perco P(Triangular(), n, p);
     P.explore();
     spdlog::info("Largest cluster size: {}", P.biggest());
