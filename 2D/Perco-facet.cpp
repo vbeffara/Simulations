@@ -10,13 +10,15 @@
 
 using namespace vb;
 
+using Thing = std::pair<coo, size_t>; // Vertex or face or edge
+
 // First define the structure of the triangular lattice to make the code below clearer.
 
 struct Pattern {
   size_t                                       n_sites, n_bonds, n_faces;
   cpx                                          period;
   std::vector<cpx>                             shifts;
-  std::vector<std::tuple<size_t, size_t, coo>> adj_faces;
+  std::vector<std::vector<Thing>>              adj_faces;
   std::vector<std::tuple<size_t, size_t, coo>> face_edges;
   std::vector<std::tuple<size_t, size_t, coo>> face_sites;
   std::vector<std::tuple<size_t, size_t, coo>> edge_sites;
@@ -45,7 +47,7 @@ Pattern Triangular() {
   Pattern P(1, 3, 2); // Order of edges : E, N, NW
   P.period     = {.5, sqrt(3) / 2};
   P.shifts     = {0};
-  P.adj_faces  = {{0, 1, {0, 0}}, {0, 1, {0, -1}}, {0, 1, {-1, 0}}, {1, 0, {0, 0}}, {1, 0, {0, 1}}, {1, 0, {1, 0}}};
+  P.adj_faces  = {{{{0, 0}, 1}, {{0, -1}, 1}, {{-1, 0}, 1}}, {{{0, 0}, 0}, {{0, 1}, 0}, {{1, 0}, 0}}};
   P.face_edges = {{0, 0, {0, 0}}, {0, 1, {0, 0}}, {0, 2, {1, 0}}, {1, 0, {0, 1}}, {1, 1, {1, 0}}, {1, 2, {1, 0}}};
   P.face_sites = {{0, 0, {0, 0}}, {0, 0, {1, 0}}, {0, 0, {0, 1}}, {1, 0, {1, 0}}, {1, 0, {1, 1}}, {1, 0, {0, 1}}};
   P.edge_sites = {{0, 0, {0, 0}}, {0, 0, {1, 0}}, {1, 0, {0, 0}}, {1, 0, {0, 1}}, {2, 0, {0, 0}}, {2, 0, {-1, 1}}};
@@ -54,30 +56,27 @@ Pattern Triangular() {
 
 struct Perco {
   struct Site {
-    std::vector<double>    edge_labels, face_labels, reaching_time;
+    std::vector<double>    edge_labels, face_labels;
     std::vector<long long> c;
     std::vector<bool>      visited;
+
+    Site(const Pattern &P) : edge_labels(P.n_bonds, 0), face_labels(P.n_faces, 0), c(P.n_faces, 0), visited(P.n_faces, 0) {}
   };
 
-  Pattern             P;
-  size_t              n;
-  double              p;
-  Array<Site>         sites;
-  std::vector<size_t> sizes;
+  Pattern     P;
+  size_t      n;
+  double      p;
+  Array<Site> sites;
+
+  double &edge_label(coo z, size_t k) { return sites.atp(z).edge_labels[k]; }
+  double &face_label(coo z, size_t k) { return sites.atp(z).face_labels[k]; }
 
   // Initialize edge labels as iid uniforms, and face labels as the max of incident edge labels.
-  Perco(Pattern P, size_t n, double p) : P(P), n(n), p(p), sites({n, n}) {
+  Perco(Pattern P, size_t n, double p = 0) : P(P), n(n), p(p), sites({n, n}, {P}) {
+    for (auto z : coo_range<long long>({int(n), int(n)}))
+      for (size_t i = 0; i < P.n_bonds; ++i) edge_label(z, i) = prng.uniform_real();
     for (auto z : coo_range<long long>({int(n), int(n)})) {
-      Site &s = sites.atp(z);
-      for (size_t i = 0; i < P.n_bonds; ++i) s.edge_labels.push_back(prng.uniform_real());
-      for (size_t i = 0; i < P.n_faces; ++i) s.face_labels.push_back(0);
-      for (size_t i = 0; i < P.n_faces; ++i) s.reaching_time.push_back(1);
-      for (size_t i = 0; i < P.n_faces; ++i) s.c.push_back(0);
-      for (size_t i = 0; i < P.n_faces; ++i) s.visited.push_back(false);
-    }
-    for (auto z : coo_range<long long>({int(n), int(n)})) {
-      Site &s = sites.atp(z);
-      for (auto [i, j, dz] : P.face_edges) s.face_labels[i] = std::max(s.face_labels[i], sites.atp(z + dz).edge_labels[j]);
+      for (auto [i, j, dz] : P.face_edges) face_label(z, i) = std::max(face_label(z, i), edge_label(z + dz, j));
     }
   }
 
@@ -86,9 +85,9 @@ struct Perco {
     for (auto z : coo_range<long long>({int(n), int(n)})) {
       Site &s = sites.atp(z);
       for (size_t i = 0; i < P.n_faces; ++i)
-        if (s.face_labels[i] < p) F.add(P.draw_face(z, s.c[i], i));
+        if (face_label(z, i) < p) F.add(P.draw_face(z, s.c[i], i));
       for (size_t i = 0; i < P.n_bonds; ++i)
-        if (s.edge_labels[i] < p) F.add(P.draw_edge(z, i));
+        if (edge_label(z, i) < p) F.add(P.draw_edge(z, i));
       F.add(std::make_unique<Circle>(P.pos(z), .1, Pen(BLACK, 1, BLACK, true)));
     }
     F.show();
@@ -96,44 +95,27 @@ struct Perco {
     F.output_pdf("Facet percolation");
   }
 
-  // Count cluster sizes
-  void count() {
-    std::map<long long, size_t> count;
-    for (auto z : coo_range<long long>({int(n), int(n)})) {
-      if (sites.atp(z).face_labels[0] < p) ++count[sites.atp(z).c[0]];
-      if (sites.atp(z).face_labels[1] < p) ++count[sites.atp(z).c[1]];
-    }
-
-    for (auto [c, n] : count) sizes.push_back(n);
-    std::sort(sizes.begin(), sizes.end(), std::greater<size_t>());
-  }
-
   void explore() {
     long long idx = 0;
     for (auto z : coo_range<long long>({int(n), int(n)})) {
-      if (sites.atp(z).face_labels[0] < p) sites.atp(z).c[0] = ++idx;
-      if (sites.atp(z).face_labels[1] < p) sites.atp(z).c[1] = ++idx;
+      if (face_label(z, 0) < p) sites.atp(z).c[0] = ++idx;
+      if (face_label(z, 1) < p) sites.atp(z).c[1] = ++idx;
     }
 
     bool done = false;
     while (!done) {
       done = true;
       for (auto z : coo_range<long long>({int(n), int(n)})) {
-        for (auto [i, j, dz] : P.adj_faces) {
-          if (sites.atp(z).face_labels[i] < p && sites.atp(z + dz).c[j] > sites.atp(z).c[i]) {
-            sites.atp(z).c[i] = sites.atp(z + dz).c[j];
-            done              = false;
+        for (size_t i = 0; i < P.n_faces; ++i)
+          for (auto [dz, j] : P.adj_faces[i]) {
+            if (face_label(z, i) < p && sites.atp(z + dz).c[j] > sites.atp(z).c[i]) {
+              sites.atp(z).c[i] = sites.atp(z + dz).c[j];
+              done              = false;
+            }
           }
-        }
       }
     }
-
-    count();
   }
-
-  size_t biggest() { return sizes.size() > 0 ? sizes[0] : 0; }
-
-  size_t second_biggest() { return sizes.size() > 1 ? sizes[1] : 0; }
 
   double compute_reaching_time() {
     Queue<std::pair<coo, size_t>> Q;
@@ -146,22 +128,26 @@ struct Perco {
       if (pmod(z.x, n) == n / 2) return t;
       Site &s = sites.atp(z);
       if (s.visited[k] == 1) continue;
-      s.visited[k]       = true;
-      s.reaching_time[k] = t;
-      for (auto [i, j, dz] : P.adj_faces) {
-        if (i != k) continue;
+      s.visited[k] = true;
+      for (auto [dz, j] : P.adj_faces[k]) {
         Site &ns = sites.atp(z + dz);
-        if (ns.visited[j]) continue;
-        Q.push({{z + dz, j}, std::max(t, ns.face_labels[j])});
+        if (!ns.visited[j]) Q.push({{z + dz, j}, std::max(t, face_label(z + dz, j))});
       }
     }
     return -1; // Should never happen
   }
 };
 
+void one_time(size_t n, size_t t, size_t T) {
+  Perco P(Triangular(), n, 0);
+  auto  ans = P.compute_reaching_time();
+  fmt::print(std::cerr, "t = {}/{}, n = {} -> {}\n", t, T, n, ans);
+  fmt::print("{} {}\n", n, ans);
+}
+
 int main(int argc, char **argv) {
   CLP  clp(argc, argv, "Facet percolation");
-  auto n = clp.param("n", size_t(50), "Domain size");
+  auto n = clp.param("n", size_t(50), "Domain size (or max domain size for t>0)");
   auto p = clp.param("p", 0.5, "Percolation parameter (only used if t=0)");
   auto t = clp.param("t", size_t(0), "Number of samples (for p_c estimation, ignores p)");
   clp.finalize();
@@ -169,14 +155,10 @@ int main(int argc, char **argv) {
   if (t == 0) {
     Perco P(Triangular(), n, p);
     P.explore();
-    spdlog::info("Largest cluster size: {}", P.biggest());
     P.show(p);
   } else {
-    ProgressBar PB(t);
     for (size_t i = 0; i < t; ++i) {
-      PB.set(i);
-      Perco P(Triangular(), n, 0);
-      fmt::print("{} {}\n", n, P.compute_reaching_time());
+      for (size_t nn = 100; nn <= n; nn *= 2) { one_time(nn, i, t); }
     }
   }
 }
