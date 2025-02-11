@@ -10,34 +10,29 @@
 
 using namespace vb;
 
-using Thing = std::pair<coo, size_t>; // Vertex or face or edge
-
 // First define the structure of the triangular lattice to make the code below clearer.
 
 struct Pattern {
-  size_t                                       n_sites, n_bonds, n_faces;
-  cpx                                          period;
-  std::vector<cpx>                             shifts;
-  std::vector<std::vector<Thing>>              adj_faces;
-  std::vector<std::tuple<size_t, size_t, coo>> face_edges;
-  std::vector<std::tuple<size_t, size_t, coo>> face_sites;
-  std::vector<std::tuple<size_t, size_t, coo>> edge_sites;
+  using Thing = std::pair<coo, size_t>; // Vertex or face or edge
 
-  Pattern(size_t s, size_t b, size_t f) : n_sites(s), n_bonds(b), n_faces(f) {}
+  size_t                          n_sites, n_edges, n_faces;
+  cpx                             period;
+  std::vector<cpx>                shifts;
+  std::vector<std::vector<Thing>> face_to_face, face_to_edge, face_to_site, edge_to_site;
+
+  Pattern(size_t s, size_t b, size_t f) : n_sites(s), n_edges(b), n_faces(f) {}
 
   cpx pos(coo z) { return {z.x + period.real() * z.y, period.imag() * z.y}; }
 
   std::unique_ptr<Segment> draw_edge(coo z, size_t k) {
     std::vector<cpx> pts;
-    for (auto [i, j, dz] : edge_sites)
-      if (i == k) pts.push_back(pos(z + dz) + shifts[j]);
+    for (auto [dz, j] : edge_to_site[k]) pts.push_back(pos(z + dz) + shifts[j]);
     return std::make_unique<Segment>(pts[0], pts[1], Pen(BLACK, 1.5));
   }
 
   std::unique_ptr<Path> draw_face(coo z, long long c, size_t k) {
     Path ans({}, Pen(BLACK, 3.0, Indexed(c), true));
-    for (auto [i, j, dz] : face_sites)
-      if (i == k) ans.z.push_back(pos(z + dz) + shifts[j]);
+    for (auto [dz, j] : face_to_site[k]) ans.z.push_back(pos(z + dz) + shifts[j]);
     ans.z.push_back(ans.z[0]);
     return std::make_unique<Path>(ans);
   }
@@ -45,12 +40,12 @@ struct Pattern {
 
 Pattern Triangular() {
   Pattern P(1, 3, 2); // Order of edges : E, N, NW
-  P.period     = {.5, sqrt(3) / 2};
-  P.shifts     = {0};
-  P.adj_faces  = {{{{0, 0}, 1}, {{0, -1}, 1}, {{-1, 0}, 1}}, {{{0, 0}, 0}, {{0, 1}, 0}, {{1, 0}, 0}}};
-  P.face_edges = {{0, 0, {0, 0}}, {0, 1, {0, 0}}, {0, 2, {1, 0}}, {1, 0, {0, 1}}, {1, 1, {1, 0}}, {1, 2, {1, 0}}};
-  P.face_sites = {{0, 0, {0, 0}}, {0, 0, {1, 0}}, {0, 0, {0, 1}}, {1, 0, {1, 0}}, {1, 0, {1, 1}}, {1, 0, {0, 1}}};
-  P.edge_sites = {{0, 0, {0, 0}}, {0, 0, {1, 0}}, {1, 0, {0, 0}}, {1, 0, {0, 1}}, {2, 0, {0, 0}}, {2, 0, {-1, 1}}};
+  P.period       = {.5, sqrt(3) / 2};
+  P.shifts       = {0};
+  P.face_to_face = {{{{0, 0}, 1}, {{0, -1}, 1}, {{-1, 0}, 1}}, {{{0, 0}, 0}, {{0, 1}, 0}, {{1, 0}, 0}}};
+  P.face_to_edge = {{{{0, 0}, 0}, {{0, 0}, 1}, {{1, 0}, 2}}, {{{0, 1}, 0}, {{1, 0}, 1}, {{1, 0}, 2}}};
+  P.face_to_site = {{{{0, 0}, 0}, {{1, 0}, 0}, {{0, 1}, 0}}, {{{1, 0}, 0}, {{1, 1}, 0}, {{0, 1}, 0}}};
+  P.edge_to_site = {{{{0, 0}, 0}, {{1, 0}, 0}}, {{{0, 0}, 0}, {{0, 1}, 0}}, {{{0, 0}, 0}, {{-1, 1}, 0}}};
   return P;
 }
 
@@ -61,7 +56,7 @@ struct Perco {
     std::vector<bool>      visited;
 
     Site(const Pattern &P)
-        : site_labels(P.n_sites, 0), edge_labels(P.n_bonds, 0), face_labels(P.n_faces, 0), c(P.n_faces, 0), visited(P.n_faces, 0) {}
+        : site_labels(P.n_sites, 0), edge_labels(P.n_edges, 0), face_labels(P.n_faces, 0), c(P.n_faces, 0), visited(P.n_faces, 0) {}
   };
 
   Pattern     P;
@@ -78,9 +73,11 @@ struct Perco {
     for (auto z : coo_range<long long>({int(n), int(n)}))
       for (size_t i = 0; i < P.n_sites; ++i) site_label(z, i) = prng.uniform_real();
     for (auto z : coo_range<long long>({int(n), int(n)}))
-      for (auto [i, j, dz] : P.edge_sites) edge_label(z, i) = std::max(edge_label(z, i), site_label(z + dz, j));
+      for (size_t i = 0; i < P.n_edges; ++i)
+        for (auto [dz, j] : P.edge_to_site[i]) edge_label(z, i) = std::max(edge_label(z, i), site_label(z + dz, j));
     for (auto z : coo_range<long long>({int(n), int(n)})) {
-      for (auto [i, j, dz] : P.face_edges) face_label(z, i) = std::max(face_label(z, i), edge_label(z + dz, j));
+      for (size_t i = 0; i < P.n_faces; ++i)
+        for (auto [dz, j] : P.face_to_edge[i]) face_label(z, i) = std::max(face_label(z, i), edge_label(z + dz, j));
     }
   }
 
@@ -90,7 +87,7 @@ struct Perco {
       Site &s = sites.atp(z);
       for (size_t i = 0; i < P.n_faces; ++i)
         if (face_label(z, i) < p) F.add(P.draw_face(z, s.c[i], i));
-      for (size_t i = 0; i < P.n_bonds; ++i)
+      for (size_t i = 0; i < P.n_edges; ++i)
         if (edge_label(z, i) < p) F.add(P.draw_edge(z, i));
       F.add(std::make_unique<Circle>(P.pos(z), .1, Pen(BLACK, 1, BLACK, true)));
     }
@@ -111,7 +108,7 @@ struct Perco {
       done = true;
       for (auto z : coo_range<long long>({int(n), int(n)})) {
         for (size_t i = 0; i < P.n_faces; ++i)
-          for (auto [dz, j] : P.adj_faces[i]) {
+          for (auto [dz, j] : P.face_to_face[i]) {
             if (face_label(z, i) < p && sites.atp(z + dz).c[j] > sites.atp(z).c[i]) {
               sites.atp(z).c[i] = sites.atp(z + dz).c[j];
               done              = false;
@@ -133,7 +130,7 @@ struct Perco {
       Site &s = sites.atp(z);
       if (s.visited[k] == 1) continue;
       s.visited[k] = true;
-      for (auto [dz, j] : P.adj_faces[k]) {
+      for (auto [dz, j] : P.face_to_face[k]) {
         Site &ns = sites.atp(z + dz);
         if (!ns.visited[j]) Q.push({{z + dz, j}, std::max(t, face_label(z + dz, j))});
       }
