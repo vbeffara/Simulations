@@ -99,21 +99,23 @@ struct Perco {
   void explore() {
     long long idx = 0;
     for (auto z : coo_range<long long>({int(n), int(n)})) {
-      if (face_label(z, 0) < p) sites.atp(z).c[0] = ++idx;
-      if (face_label(z, 1) < p) sites.atp(z).c[1] = ++idx;
+      for (size_t i = 0; i < P.n_faces; ++i)
+        if (face_label(z, i) < p) sites.atp(z).c[i] = ++idx;
     }
 
     bool done = false;
     while (!done) {
       done = true;
       for (auto z : coo_range<long long>({int(n), int(n)})) {
-        for (size_t i = 0; i < P.n_faces; ++i)
+        for (size_t i = 0; i < P.n_faces; ++i) {
+          if (face_label(z, i) > p) continue;
           for (auto [dz, j] : P.face_to_face[i]) {
-            if (face_label(z, i) < p && sites.atp(z + dz).c[j] > sites.atp(z).c[i]) {
+            if (sites.atp(z + dz).c[j] > sites.atp(z).c[i]) {
               sites.atp(z).c[i] = sites.atp(z + dz).c[j];
               done              = false;
             }
           }
+        }
       }
     }
   }

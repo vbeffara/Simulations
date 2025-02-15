@@ -1,0 +1,44 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        cxx: [g++, clang++]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install meson pkg-config cmake libfftw3-dev libdocopt-dev libboost-all-dev
+          sudo apt-get install libcairo2-dev libeigen3-dev libfplll-dev libmsgsl-dev librang-v3-dev
+          sudo apt-get install libspdlog-dev libtbb-dev libyaml-cpp-dev libfltk1.3-dev libmpc-dev
+
+      - name: configure
+        env:
+          CXX: ${{ matrix.cxx }}
+        run: meson setup builddir
+
+      - name: make
+        run: ninja -C builddir
+
+      - name: tests
+        run: |
+          Xvfb :4 &
+          export DISPLAY=:4
+          build/catch2
