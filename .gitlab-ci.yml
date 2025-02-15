@@ -2,10 +2,10 @@ image: ubuntu:latest
 
 before_script:
   - apt-get update
-  - apt-get install meson pkg-config cmake libfftw3-dev libdocopt-dev libboost-all-dev
-  - apt-get install libcairo2-dev libeigen3-dev libfplll-dev libmsgsl-dev
-  - apt-get install libspdlog-dev libtbb-dev libyaml-cpp-dev libfltk1.3-dev libmpc-dev
-  - apt-get install clang
+  - apt-get install -qq meson pkg-config cmake libfftw3-dev libdocopt-dev libboost-all-dev
+  - apt-get install -qq libcairo2-dev libeigen3-dev libfplll-dev libmsgsl-dev
+  - apt-get install -qq libspdlog-dev libtbb-dev libyaml-cpp-dev libfltk1.3-dev libmpc-dev
+  - apt-get install -qq clang
 
 everything:
   stage: build
