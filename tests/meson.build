@@ -1,7 +1,6 @@
 executable ('clp', 'clp.cpp', dependencies : libvb)
 executable ('elliptic_functions', 'elliptic_functions.cpp', dependencies : libvb)
 executable ('mandelbrot', 'mandelbrot.cpp', dependencies : libvb)
-executable ('range_coro', 'range_coro.cpp', dependencies : libvb)
 executable ('std_range', 'std_range.cpp', dependencies : libvb)
 executable ('test_console', 'test_console.cpp', dependencies : libvb)
 executable ('test_coroutine', 'test_coroutine.cpp', dependencies : libvb)
