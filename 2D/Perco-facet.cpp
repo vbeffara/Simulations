@@ -68,18 +68,24 @@ struct Perco {
   double &edge_label(coo z, size_t k) { return sites.atp(z).edge_labels[k]; }
   double &face_label(coo z, size_t k) { return sites.atp(z).face_labels[k]; }
 
-  // Initialize edge labels as iid uniforms, and face labels as the max of incident edge labels.
-  Perco(Pattern P, size_t n, double p = 0) : P(P), n(n), p(p), sites({n, n}, {P}) {
+  void fill_from_sites() {
     for (auto z : coo_range<int64_t>({int(n), int(n)}))
       for (size_t i = 0; i < P.n_sites; ++i) site_label(z, i) = prng.uniform_real();
     for (auto z : coo_range<int64_t>({int(n), int(n)}))
-      for (size_t i = 0; i < P.n_edges; ++i)
+      for (size_t i = 0; i < P.n_edges; ++i) {
+        edge_label(z, i) = 0;
         for (auto [dz, j] : P.edge_to_site[i]) edge_label(z, i) = std::max(edge_label(z, i), site_label(z + dz, j));
+      }
     for (auto z : coo_range<int64_t>({int(n), int(n)})) {
-      for (size_t i = 0; i < P.n_faces; ++i)
+      for (size_t i = 0; i < P.n_faces; ++i) {
+        face_label(z, i) = 0;
         for (auto [dz, j] : P.face_to_edge[i]) face_label(z, i) = std::max(face_label(z, i), edge_label(z + dz, j));
+      }
     }
   }
+
+  // Initialize edge labels as iid uniforms, and face labels as the max of incident edge labels.
+  Perco(Pattern P, size_t n, double p = 0) : P(P), n(n), p(p), sites({n, n}, {P}) { fill_from_sites(); }
 
   void show(double p) {
     Figure F{"Facet Percolation"};
@@ -125,6 +131,10 @@ struct Perco {
 
     for (int i = 0; i < n; ++i) Q.push({{{0, i}, 0}, 0});
 
+    for (auto z : coo_range<int64_t>({int(n), int(n)})) {
+      for (size_t i = 0; i < P.n_faces; ++i) sites.atp(z).visited[i] = false;
+    }
+
     while (!Q.q.empty()) {
       auto [zk, t] = Q.get();
       auto [z, k]  = zk;
@@ -141,13 +151,6 @@ struct Perco {
   }
 };
 
-void one_time(size_t n, size_t t, size_t T) {
-  Perco P(Triangular(), n, 0);
-  auto  ans = P.compute_reaching_time();
-  fmt::print(std::cerr, "t = {}/{}, n = {} -> {}\n", t, T, n, ans);
-  fmt::print("{} {}\n", n, ans);
-}
-
 int main(int argc, char **argv) {
   CLP  clp(argc, argv, "Facet percolation");
   auto n = clp.param("n", size_t(50), "Domain size (or max domain size for t>0)");
@@ -160,7 +163,14 @@ int main(int argc, char **argv) {
     P.explore();
     P.show(p);
   } else {
-    for (size_t i = 0; i < t; ++i)
-      for (size_t nn = 100; nn <= n; nn *= 2) one_time(nn, i, t);
+    for (size_t nn = 100; nn <= n; nn *= 2) {
+      Perco P(Triangular(), nn, 0);
+      for (size_t i = 0; i < t; ++i) {
+        if (i > 0) P.fill_from_sites();
+        auto ans = P.compute_reaching_time();
+        fmt::print(std::cerr, "t = {}/{}, n = {} -> {}\n", i, t, nn, ans);
+        fmt::print("{} {}\n", nn, ans);
+      }
+    }
   }
 }
