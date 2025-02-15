@@ -39,7 +39,4 @@ jobs:
         run: ninja -C builddir
 
       - name: tests
-        run: |
-          Xvfb :4 &
-          export DISPLAY=:4
-          builddir/catch2/catch2
+        run: xvfb-run -a builddir/catch2/catch2
