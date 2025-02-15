@@ -1,5 +1,3 @@
-# TODO: switch to std::ranges
-
 boost = dependency ('boost')
 cairo = dependency ('cairo')
 eigen = dependency ('eigen3')
@@ -9,6 +7,7 @@ libpng = dependency ('libpng')
 spdlog = dependency ('spdlog')
 tbb = dependency ('tbb')
 yamlcpp = dependency ('yaml-cpp')
+GL = dependency('GL')
 
 fltk_config = find_program('fltk-config')
 fltk_cflags = run_command(fltk_config, '--cflags', check: true).stdout().strip()
@@ -26,7 +25,7 @@ libvb_src = ['Auto.cpp', 'CL_Parser.cpp', 'CLP.cpp', 'CoarseImage.cpp', 'Color.c
   'Picture.cpp', 'Pov.cpp', 'PRNG.cpp', 'ProgressBar.cpp', 'QuadTree.cpp', 'Shape.cpp', 'Sphere.cpp',
   'Spheroidal.cpp', 'Stream.cpp', 'Toroidal.cpp' ]
 
-libvb_dep = [boost, cairo, eigen, fltk, fplll, gsl, libpng, spdlog, tbb, yamlcpp, boost_chrono, mpc]
+libvb_dep = [boost, cairo, eigen, fltk, fplll, gsl, libpng, spdlog, tbb, yamlcpp, boost_chrono, mpc, GL]
 
 libvb_lib = shared_library ('vb', libvb_src, dependencies : libvb_dep, include_directories : '../include')
 
