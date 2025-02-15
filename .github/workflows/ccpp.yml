@@ -42,4 +42,4 @@ jobs:
         run: |
           Xvfb :4 &
           export DISPLAY=:4
-          build/catch2
+          builddir/catch2/catch2
