@@ -30,7 +30,7 @@ struct Pattern {
     return std::make_unique<Segment>(pts[0], pts[1], Pen(BLACK, 1.5));
   }
 
-  std::unique_ptr<Path> draw_face(coo z, long long c, size_t k) {
+  std::unique_ptr<Path> draw_face(coo z, int64_t c, size_t k) {
     Path ans({}, Pen(BLACK, 3.0, Indexed(c), true));
     for (auto [dz, j] : face_to_site[k]) ans.z.push_back(pos(z + dz) + shifts[j]);
     ans.z.push_back(ans.z[0]);
@@ -51,9 +51,9 @@ Pattern Triangular() {
 
 struct Perco {
   struct Site {
-    std::vector<double>    site_labels, edge_labels, face_labels;
-    std::vector<long long> c;
-    std::vector<bool>      visited;
+    std::vector<double>  site_labels, edge_labels, face_labels;
+    std::vector<int64_t> c;
+    std::vector<bool>    visited;
 
     Site(const Pattern &P)
         : site_labels(P.n_sites, 0), edge_labels(P.n_edges, 0), face_labels(P.n_faces, 0), c(P.n_faces, 0), visited(P.n_faces, 0) {}
@@ -70,12 +70,12 @@ struct Perco {
 
   // Initialize edge labels as iid uniforms, and face labels as the max of incident edge labels.
   Perco(Pattern P, size_t n, double p = 0) : P(P), n(n), p(p), sites({n, n}, {P}) {
-    for (auto z : coo_range<long long>({int(n), int(n)}))
+    for (auto z : coo_range<int64_t>({int(n), int(n)}))
       for (size_t i = 0; i < P.n_sites; ++i) site_label(z, i) = prng.uniform_real();
-    for (auto z : coo_range<long long>({int(n), int(n)}))
+    for (auto z : coo_range<int64_t>({int(n), int(n)}))
       for (size_t i = 0; i < P.n_edges; ++i)
         for (auto [dz, j] : P.edge_to_site[i]) edge_label(z, i) = std::max(edge_label(z, i), site_label(z + dz, j));
-    for (auto z : coo_range<long long>({int(n), int(n)})) {
+    for (auto z : coo_range<int64_t>({int(n), int(n)})) {
       for (size_t i = 0; i < P.n_faces; ++i)
         for (auto [dz, j] : P.face_to_edge[i]) face_label(z, i) = std::max(face_label(z, i), edge_label(z + dz, j));
     }
@@ -83,7 +83,7 @@ struct Perco {
 
   void show(double p) {
     Figure F{"Facet Percolation"};
-    for (auto z : coo_range<long long>({int(n), int(n)})) {
+    for (auto z : coo_range<int64_t>({int(n), int(n)})) {
       Site &s = sites.atp(z);
       for (size_t i = 0; i < P.n_faces; ++i)
         if (face_label(z, i) < p) F.add(P.draw_face(z, s.c[i], i));
@@ -97,8 +97,8 @@ struct Perco {
   }
 
   void explore() {
-    long long idx = 0;
-    for (auto z : coo_range<long long>({int(n), int(n)})) {
+    int64_t idx = 0;
+    for (auto z : coo_range<int64_t>({int(n), int(n)})) {
       for (size_t i = 0; i < P.n_faces; ++i)
         if (face_label(z, i) < p) sites.atp(z).c[i] = ++idx;
     }
@@ -106,7 +106,7 @@ struct Perco {
     bool done = false;
     while (!done) {
       done = true;
-      for (auto z : coo_range<long long>({int(n), int(n)})) {
+      for (auto z : coo_range<int64_t>({int(n), int(n)})) {
         for (size_t i = 0; i < P.n_faces; ++i) {
           if (face_label(z, i) > p) continue;
           for (auto [dz, j] : P.face_to_face[i]) {
