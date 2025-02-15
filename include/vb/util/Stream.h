@@ -1,6 +1,7 @@
 #pragma once
 #include <coroutine>
 #include <exception>
+#include <vector>
 
 namespace vb {
   template <typename T> struct Stream2 {
