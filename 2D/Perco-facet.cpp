@@ -11,10 +11,8 @@
 
 using namespace vb;
 
-// First define the structure of the triangular lattice to make the code below clearer.
-
 struct Pattern {
-  using Thing = std::pair<coo, size_t>; // Vertex or face or edge
+  using Thing = std::pair<coo, size_t>;
 
   size_t                          n_sites, n_edges, n_faces;
   cpx                             period;
@@ -71,20 +69,22 @@ struct Perco {
   void fill_from_sites() {
     for (auto z : coo_range<int64_t>({int(n), int(n)}))
       for (size_t i = 0; i < P.n_sites; ++i) site_label(z, i) = prng.uniform_real();
-    for (auto z : coo_range<int64_t>({int(n), int(n)}))
+    for (auto z : coo_range<int64_t>({int(n), int(n)})) {
       for (size_t i = 0; i < P.n_edges; ++i) {
-        edge_label(z, i) = 0;
-        for (auto [dz, j] : P.edge_to_site[i]) edge_label(z, i) = std::max(edge_label(z, i), site_label(z + dz, j));
+        double out = 0;
+        for (const auto &[dz, j] : P.edge_to_site[i]) out = std::max(out, site_label(z + dz, j));
+        edge_label(z, i) = out;
       }
+    }
     for (auto z : coo_range<int64_t>({int(n), int(n)})) {
       for (size_t i = 0; i < P.n_faces; ++i) {
-        face_label(z, i) = 0;
-        for (auto [dz, j] : P.face_to_edge[i]) face_label(z, i) = std::max(face_label(z, i), edge_label(z + dz, j));
+        double out = 0;
+        for (const auto &[dz, j] : P.face_to_edge[i]) out = std::max(out, edge_label(z + dz, j));
+        face_label(z, i) = out;
       }
     }
   }
 
-  // Initialize edge labels as iid uniforms, and face labels as the max of incident edge labels.
   Perco(Pattern P, size_t n) : P(P), n(n), sites({n, n}, {P}) { fill_from_sites(); }
 
   void show(double p) {
@@ -147,7 +147,7 @@ struct Perco {
         if (!ns.visited[j]) Q.push({{z + dz, j}, std::max(t, face_label(z + dz, j))});
       }
     }
-    return -1; // Should never happen
+    return -1;
   }
 };
 
@@ -165,13 +165,21 @@ int main(int argc, char **argv) {
     P.explore(p);
     P.show(p);
   } else {
-    for (size_t nn = 100; nn <= n; nn *= 2) {
-      tbb::parallel_for(size_t(0), t, [nn, t](size_t i) {
-        Perco P(Triangular(), nn);
-        auto  ans = P.compute_reaching_time();
-        fmt::print(std::cerr, "t = {}/{}, n = {} -> {}\n", i, t, nn, ans);
+    size_t shift = 0;
+    while ((100 << shift) <= n) ++shift;
+    thread_local Perco P(Triangular(), 0);
+    tbb::parallel_for(size_t(0), shift, [t](size_t i) {
+      tbb::parallel_for(size_t(0), t, [nn(size_t(100 << i)), t](size_t i) {
+        if (P.n != nn) {
+          P.P = Triangular();
+          P.n = nn;
+          P.sites.resize({nn, nn}, {P.P});
+        }
+        P.fill_from_sites();
+        auto ans = P.compute_reaching_time();
+        fmt::print(std::cerr, "t = {}/{}, n = {} -> {}\n", i + 1, t, nn, ans);
         fmt::print("{} {}\n", nn, ans);
       });
-    }
+    });
   }
 }
