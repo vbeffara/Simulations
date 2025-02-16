@@ -1,5 +1,6 @@
 #include <fmt/printf.h>
 #include <map>
+#include <tbb/parallel_for.h>
 #include <vb/Figure.h>
 #include <vb/ProgressBar.h>
 #include <vb/data/Array.h>
@@ -61,7 +62,6 @@ struct Perco {
 
   Pattern     P;
   size_t      n;
-  double      p;
   Array<Site> sites;
 
   double &site_label(coo z, size_t k) { return sites.atp(z).site_labels[k]; }
@@ -85,7 +85,7 @@ struct Perco {
   }
 
   // Initialize edge labels as iid uniforms, and face labels as the max of incident edge labels.
-  Perco(Pattern P, size_t n, double p = 0) : P(P), n(n), p(p), sites({n, n}, {P}) { fill_from_sites(); }
+  Perco(Pattern P, size_t n) : P(P), n(n), sites({n, n}, {P}) { fill_from_sites(); }
 
   void show(double p) {
     Figure F{"Facet Percolation"};
@@ -102,7 +102,7 @@ struct Perco {
     F.output_pdf("Facet percolation");
   }
 
-  void explore() {
+  void explore(double p) {
     int64_t idx = 0;
     for (auto z : coo_range<int64_t>({int(n), int(n)})) {
       for (size_t i = 0; i < P.n_faces; ++i)
@@ -151,6 +151,8 @@ struct Perco {
   }
 };
 
+size_t N = 0;
+
 int main(int argc, char **argv) {
   CLP  clp(argc, argv, "Facet percolation");
   auto n = clp.param("n", size_t(50), "Domain size (or max domain size for t>0)");
@@ -159,18 +161,17 @@ int main(int argc, char **argv) {
   clp.finalize();
 
   if (t == 0) {
-    Perco P(Triangular(), n, p);
-    P.explore();
+    Perco P(Triangular(), n);
+    P.explore(p);
     P.show(p);
   } else {
     for (size_t nn = 100; nn <= n; nn *= 2) {
-      Perco P(Triangular(), nn, 0);
-      for (size_t i = 0; i < t; ++i) {
-        if (i > 0) P.fill_from_sites();
-        auto ans = P.compute_reaching_time();
+      tbb::parallel_for(size_t(0), t, [nn, t](size_t i) {
+        Perco P(Triangular(), nn);
+        auto  ans = P.compute_reaching_time();
         fmt::print(std::cerr, "t = {}/{}, n = {} -> {}\n", i, t, nn, ans);
         fmt::print("{} {}\n", nn, ans);
-      }
+      });
     }
   }
 }
