@@ -42,5 +42,5 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 endif()
 
 target_link_libraries(vb PUBLIC
-  spdlog::spdlog Boost::chrono Eigen3::Eigen fplll PNG::PNG gmp::gmp mpfr::mpfr mpc
+  spdlog::spdlog Boost::chrono Eigen3::Eigen fplll PNG::PNG gmp::gmp mpfr::mpfr mpc::mpc
   cairo::cairo OpenGL::GL fltk::fltk yaml-cpp onetbb::onetbb Microsoft.GSL::GSL ${SCK})

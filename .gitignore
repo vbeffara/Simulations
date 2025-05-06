@@ -29,3 +29,4 @@ bla*
 compile_commands.json
 out*
 toto
+CMakeUserPresets.json
