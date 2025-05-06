@@ -1,9 +1,11 @@
 cmake_minimum_required(VERSION 4.0)
-project(libvb)
+project(libvb CXX)
 
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexperimental-library")
-# set(CMAKE_OSX_DEPLOYMENT_TARGET "10.10")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O3")
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexperimental-library")
+endif()
 
 find_program(CCACHE_FOUND ccache)
 if(CCACHE_FOUND)
@@ -24,15 +26,15 @@ find_package(yaml-cpp REQUIRED)
 find_package(TBB REQUIRED)
 find_package(fftw3 REQUIRED)
 find_package(docopt REQUIRED)
+find_package(Microsoft.GSL REQUIRED)
+find_package(gmp REQUIRED)
+find_package(mpfr REQUIRED)
+find_package(mpc REQUIRED)
+find_package(cairo REQUIRED)
 
-find_library(mpc mpc REQUIRED)
-
-pkg_search_module(cairo REQUIRED cairo)
 pkg_search_module(fplll REQUIRED fplll)
-pkg_search_module(gmp REQUIRED gmp)
-pkg_search_module(mpfr REQUIRED mpfr)
 
-include_directories(include)
+include_directories(include ${mpc_INCLUDE_DIRS} ${FLTK_INCLUDE_DIR})
 
 add_subdirectory(libvb)
 

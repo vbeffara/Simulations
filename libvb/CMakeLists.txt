@@ -34,7 +34,13 @@ add_library(vb SHARED
   mp.cpp
 )
 
-target_include_directories(vb PUBLIC ${PROJECT_SOURCE_DIR}/include ${fplll_INCLUDE_DIRS})
+target_include_directories(vb PUBLIC ${PROJECT_SOURCE_DIR}/include
+  ${fplll_INCLUDE_DIRS} ${mpfr_INCLUDE_DIRS})
 
-target_link_libraries(vb PUBLIC spdlog::spdlog Boost::chrono Eigen3::Eigen fplll PNG::PNG gmp mpfr mpc
-  cairo OpenGL::GL fltk fltk_gl yaml-cpp TBB)
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  SET(SCK "-framework ScreenCaptureKit")
+endif()
+
+target_link_libraries(vb PUBLIC
+  spdlog::spdlog Boost::chrono Eigen3::Eigen fplll PNG::PNG gmp::gmp mpfr::mpfr mpc
+  cairo::cairo OpenGL::GL fltk::fltk yaml-cpp onetbb::onetbb Microsoft.GSL::GSL ${SCK})

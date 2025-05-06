@@ -5,9 +5,10 @@
 
 # Simulations and stuff
 
-The directory `libvb/` contains a small (but steadily growing) library providing very easy display and PNG output for 2D simulations, plus a few convenience classes.  Up-to-date documentation on the library is mostly in my head right now but you can have a look at the web page mentioned above, and at the examples.  It depends on `gcc5` and a few outside libraries:
+The directory `libvb/` contains a small (but steadily growing) library providing very easy display and PNG output for 2D simulations, plus a few convenience classes. Up-to-date documentation on the library is mostly in my head right now but you can have a look at the web page mentioned above, and at the examples. It depends on `gcc5` and a few outside libraries:
+
 - `Cairo` for internally drawing objects
-- `FLTK`  for graphical display
+- `FLTK` for graphical display
 - `Boost` for various graph-related algorithms and random number generation
 
 The aim of this library is to provide an easy way for mathematicians (and maybe others) to display 2D graphics for their simulations and to produce PNG files for easy inclusion in a LaTeX document. The main design goal is that usage should be as simple as possible; as such, the library is not particularly efficient (no fancy OpenGL or even hardware acceleration) but the interface is straightforward. Among the useful features:
@@ -28,4 +29,13 @@ The aim of this library is to provide an easy way for mathematicians (and maybe 
 
 - vb::Map: a class to encode planar maps, implementing various algorithms as I need them (circle packing for instance).
 
-- vb::Minimizer: to minimize a function of potentially many variables, using one of a few available algorithms (Fletcher-Reeves, BFGS ... see the documentation for the whole list). 
+- vb::Minimizer: to minimize a function of potentially many variables, using one of a few available algorithms (Fletcher-Reeves, BFGS ... see the documentation for the whole list).
+
+## To build everything
+
+```bash
+rm -rf build
+conan install . --output-folder=build --build=missing
+(cd build ; cmake .. -G Ninja -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" -DCMAKE_BUILD_TYPE=Release)
+ninja -C build
+```
