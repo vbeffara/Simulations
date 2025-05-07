@@ -25,20 +25,20 @@ find_package(OpenGL COMPONENTS OpenGL REQUIRED)
 find_package(yaml-cpp REQUIRED)
 find_package(TBB REQUIRED)
 find_package(fftw3 REQUIRED)
-find_package(docopt REQUIRED)
+find_package(docopt COMPONENTS CXX REQUIRED)
 find_package(Microsoft.GSL REQUIRED)
 find_package(gmp REQUIRED)
 find_package(mpfr REQUIRED)
 find_package(mpc REQUIRED)
 find_package(cairo REQUIRED)
+find_package(Catch2 REQUIRED)
+find_package(fplll REQUIRED)
 
-pkg_search_module(fplll REQUIRED fplll)
-
-include_directories(include ${mpc_INCLUDE_DIRS} ${FLTK_INCLUDE_DIR})
+include_directories(include ${mpc_INCLUDE_DIRS} ${FLTK_INCLUDE_DIR} ${DOCOPT_INCLUDE_DIRS})
 
 add_subdirectory(libvb)
 
-link_libraries(vb spdlog::spdlog docopt)
+link_libraries(vb spdlog::spdlog docopt::docopt)
 
 add_subdirectory(1D)
 add_subdirectory(2D)
