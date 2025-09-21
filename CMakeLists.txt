@@ -38,7 +38,7 @@ include_directories(include ${mpc_INCLUDE_DIRS} ${FLTK_INCLUDE_DIR} ${DOCOPT_INC
 
 add_subdirectory(libvb)
 
-link_libraries(vb spdlog::spdlog docopt::docopt)
+link_libraries(vb spdlog::spdlog docopt_s)
 
 add_subdirectory(1D)
 add_subdirectory(2D)
