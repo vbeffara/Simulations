@@ -1,7 +1,4 @@
 .DS_Store
-.vscode/browse.db-shm
-.vscode/browse.db-wal
-.vscode/ipch
 *.db
 *.dot
 *.hi
@@ -14,6 +11,7 @@
 *.pov
 *.ref
 /.lock*
+/.vscode
 /.waf*
 /00_Results
 /build
@@ -26,7 +24,7 @@
 /warnings.*
 amc.*
 bla*
+CMakeUserPresets.json
 compile_commands.json
 out*
 toto
-CMakeUserPresets.json
