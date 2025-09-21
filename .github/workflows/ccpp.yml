@@ -34,6 +34,8 @@ jobs:
         env:
           CXX: ${{ matrix.cxx }}
         run: |
+          uv run conan profile detect
+          uv run conan create conan/fplll.py
           uv run conan install . --output-folder=build --build=missing
           (cd build ; cmake .. -G Ninja -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" -DCMAKE_BUILD_TYPE=Release)
 
