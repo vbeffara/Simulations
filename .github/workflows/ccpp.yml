@@ -41,6 +41,7 @@ jobs:
         env:
           CXX: ${{ matrix.cxx }}
         run: |
+          export CMAKE_POLICY_VERSION_MINIMUM=3.5
           uv run conan profile detect
           uv run conan create conan/fplll.py --build=missing
           uv run conan install . --output-folder=build --build=missing
