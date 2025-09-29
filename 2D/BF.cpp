@@ -4,38 +4,34 @@
 
 using namespace vb;
 
-struct val {
-  double v;
-         operator Color() const { return vb::Indexed(v > 0 ? 1 : 2); }
-};
+template <> auto vb::to_Color(double v) -> Color { return Indexed(v > 0 ? 1 : 2); }
 
-class BF : public Bitmap<val> {
-  public:
-  BF(const Hub &H) : Bitmap(H.title, ucoo(H['n'], H['n'])), tmp(size), e(H['e']) {
-    for (auto z : vb::coo_range(size)) { at(z).v = prng.gaussian(); }
+struct BF : public Bitmap<double> {
+  BF(std::string s, size_t n, double e) : Bitmap(s, ucoo(n, n)), tmp(size), ee(size) {
+    for (auto z : coo_range(size)) {
+      at(z) = prng.gaussian();
+      ee.put(z, ((z.x-n/2)*(z.x-n/2) + (z.y-n/2)*(z.y-n/2) < n*n/8 ? .5 : 1) * e);
+    }
   }
 
   void heat_step() {
-    for (auto z : vb::coo_range(size)) {
-      double ee = (z.y > size.y / 2) ? 2 * e : e;
-      tmp[z]    = at(z).v * (1 - 4 * ee);
-      for (int i = 0; i < 4; ++i) tmp[z] += ee * atp(coo(z.x, z.y) + dz[i]).v;
+    for (auto z : coo_range(size)) {
+      double e = ee.at(z);
+      tmp[z]    = at(z) * (1 - 4 * e);
+      for (int i = 0; i < 4; ++i) tmp[z] += e * atp((coo)z + dz[i]);
     }
-    for (auto z : vb::coo_range(size)) { at(z).v = tmp[z]; }
+    for (auto z : coo_range(size)) { put(z, tmp[z]); }
   }
 
-  vb::Array<double> tmp;
-  double            e;
+  Array<double> tmp, ee;
 };
 
 auto main(int argc, char **argv) -> int {
-  Hub const H("Inhomogeneous Bargman-Fock", argc, argv, "n=600,e=.1,t=10");
-  int       T = H['t'];
-  BF        B(H);
+  Hub const H("Inhomogeneous Bargman-Fock", argc, argv, "n=600,e=.001,t=5000");
+  BF        B(H.title, H['n'], H['e']);
   B.show();
-  for (int t = 0; t < T; ++t) {
+  for (int t = 0; t < int(H['t']); ++t) {
     B.heat_step();
-    B.step();
   }
   B.output_png(H.title);
 }

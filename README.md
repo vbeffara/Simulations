@@ -36,6 +36,6 @@ The aim of this library is to provide an easy way for mathematicians (and maybe 
 ```bash
 rm -rf build
 conan install . --output-folder=build --build=missing
-(cd build ; cmake .. -G Ninja -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" -DCMAKE_BUILD_TYPE=Release)
+(cd build ; cmake .. -G Ninja -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" -DCMAKE_BUILD_TYPE=Release  -DCMAKE_EXPORT_COMPILE_COMMANDS=True)
 ninja -C build
 ```
