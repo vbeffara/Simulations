@@ -34,6 +34,16 @@ find_package(cairo REQUIRED)
 find_package(Catch2 REQUIRED)
 find_package(fplll REQUIRED)
 
+if(FLTK_FOUND AND NOT TARGET fltk::fltk)
+  add_library(fltk::fltk INTERFACE IMPORTED)
+  set_target_properties(
+    fltk::fltk
+    PROPERTIES
+      INTERFACE_INCLUDE_DIRECTORIES "${FLTK_INCLUDE_DIR}"
+      INTERFACE_LINK_LIBRARIES "${FLTK_LIBRARIES}"
+  )
+endif()
+
 include_directories(include ${mpc_INCLUDE_DIRS} ${FLTK_INCLUDE_DIR} ${DOCOPT_INCLUDE_DIRS})
 
 add_subdirectory(libvb)
