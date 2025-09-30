@@ -7,11 +7,11 @@ using namespace vb;
 template <> auto vb::to_Color(double v) -> Color { return Indexed(v > 0 ? 1 : 2); }
 
 struct BF : public Bitmap<double> {
-  BF(std::string s, size_t n, double e) : Bitmap(s, ucoo(n, n)), tmp(size), ee(size) {
+  BF(std::string s, size_t n, double e, double b) : Bitmap(s, ucoo(n, n)), tmp(size), ee(size) {
     for (auto z : coo_range(size)) {
       at(z)  = prng.gaussian();
       tmp[z] = at(z);
-      ee.put(z, ((z.x - n / 2) * (z.x - n / 2) + (z.y - n / 2) * (z.y - n / 2) < n * n / 8 ? .5 : 1) * e);
+      ee.put(z, ((z.x - n / 2) * (z.x - n / 2) + (z.y - n / 2) * (z.y - n / 2) < n * n / 8 ? b : 1) * e);
     }
   }
 
@@ -29,8 +29,8 @@ struct BF : public Bitmap<double> {
 };
 
 auto main(int argc, char **argv) -> int {
-  Hub const H("Inhomogeneous Bargman-Fock", argc, argv, "n=600,e=.001,t=5000");
-  BF        B(H.title, H['n'], H['e']);
+  Hub const H("Inhomogeneous Bargman-Fock", argc, argv, "n=600,e=.001,t=5000,b=.5");
+  BF        B(H.title, H['n'], H['e'], H['b']);
   B.show();
   for (int t = 0; t < int(H['t']); ++t) { B.heat_step(); }
   B.output_png(H.title);
