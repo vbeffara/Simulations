@@ -64,4 +64,4 @@ add_executable(Voter Voter.cpp)
 add_executable(Wave Wave.cpp)
 add_executable(XY XY.cpp)
 
-target_link_libraries(Geodesic FFTW3::fftw3)
+target_link_libraries(Geodesic fftw::fftw)
