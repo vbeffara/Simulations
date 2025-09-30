@@ -1,4 +1,5 @@
 #pragma once
+#include <tbb/parallel_for.h>
 #include <vb/util/PRNG.h>
 
 namespace vb {
@@ -36,6 +37,12 @@ namespace vb {
 
         template <typename U> auto fits(const coo_2d<U> &z, size_t b = 0) const -> bool {
             return (z.x >= U(b)) && (z.y >= U(b)) && (z.x < U(size.x - b)) && (z.y < U(size.y - b));
+        }
+
+        template <typename F> void parallel_do (F &&f) {
+            tbb::parallel_for(0UL, size.y, [sx = size.x, &f](size_t y) {
+                for (size_t x = 0; x < sx; ++x) f(ucoo(x, y));
+            });
         }
 
         ucoo size;
