@@ -19,10 +19,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v6
+      - name: Install Conan
+        uses: conan-io/setup-conan@v1
+        with:
+          cache_packages: True
 
-      - name: Install dependencies
+      - name: Install Debian dependencies
         run: |
           sudo apt-get update
           sudo apt-get install \
@@ -35,11 +37,6 @@ jobs:
             libxcb-util-dev libxcb-util0-dev libglu1-mesa-dev
           uv python install
           uv sync
-
-      - name: Install Conan
-        uses: conan-io/setup-conan@v1
-        with:
-          cache_packages: True
 
       - name: Install Conan dependencies
         run: |
