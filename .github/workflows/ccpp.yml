@@ -16,7 +16,8 @@ jobs:
         cxx: [g++]
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Install uv
         uses: astral-sh/setup-uv@v6
@@ -35,14 +36,19 @@ jobs:
           uv python install
           uv sync
 
+      - name: Install Conan
+        uses: conan-io/setup-conan@v1
+
+      - name: Install Conan dependencies
+        run: |
+          conan create conan/fplll.py --build=missing
+          conan install . --build=missing --output-folder=build
+
       - name: configure
         env:
           CXX: ${{ matrix.cxx }}
           CMAKE_POLICY_VERSION_MINIMUM: 3.5
         run: |
-          uv run conan profile detect
-          uv run conan create conan/fplll.py --build=missing
-          uv run conan install . --output-folder=build --build=missing
           (cd build ; cmake .. -G Ninja -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" -DCMAKE_BUILD_TYPE=Release)
 
       - name: make
