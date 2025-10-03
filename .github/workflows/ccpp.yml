@@ -38,6 +38,7 @@ jobs:
 
       - name: Install Conan dependencies
         run: |
+          conan config install conan.conf
           conan create conan/fplll.py --build=missing
           conan install . --build=missing --output-folder=build
 
