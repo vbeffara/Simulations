@@ -9,8 +9,10 @@ using namespace vb;
 using namespace std;
 
 auto main(int argc, char **argv) -> int {
-    Hub const H("Hypermap of genus 1", argc, argv, "m=228,v,w,q,n=0,g=lat_csquare,p,f=0,s=0,a,b,r=0");
+    Hub const H("Hypermap of genus 1", argc, argv, "m=228,v,w,q,n=0,g=lat_csquare,p,f=0,s=0,a,b,r=0,N=100");
     auto M = HLib().at(H['g']);
+
+    unsigned const N = H['N']; default_precision(N);
 
     if (unsigned const n = H['n']; n != 0) M = H_genus1(n);
     if (unsigned const r = H['r']; r != 0) M = H_artem(r);
@@ -38,7 +40,7 @@ auto main(int argc, char **argv) -> int {
 
     if (H['q']) {
         Constellation1<real_t> Cq(C);
-        Cq.findn();
+        auto c = Cq.findn();
         cout << endl << Cq;
     }
 }

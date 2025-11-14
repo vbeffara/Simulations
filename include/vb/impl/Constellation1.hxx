@@ -279,6 +279,17 @@ namespace vb {
             auto P = guess(C.E.j(), eps);
             if (P) os << fmt::format("\t\troot of {}", *P) << '\n';
         }
+        os << "  j / 1728  = " << C.E.j() / 1728 << '\n';
+        {
+            auto P = guess(C.E.j() / 1728, eps);
+            if (P) os << fmt::format("\t\troot of {}", *P) << '\n';
+        }
+        auto j3 = cbrt(C.E.j() / 1728);
+        os << "(j/1728)^(1/3) = " << j3 << '\n';
+        {
+            auto P = guess(j3, eps);
+            if (P) os << fmt::format("\t\troot of {}", *P) << '\n';
+        }
         os << "invariant g2 = " << C.E.g2() << '\n';
         {
             auto P = guess(C.E.g2(), eps);
