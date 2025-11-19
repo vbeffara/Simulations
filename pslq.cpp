@@ -235,7 +235,7 @@ void print_vector(mpf_t *A, unsigned long n) {
 }
 
 /* input A[0..n-1][0..n-1] from file f (stdin if f=NULL) */
-void read_mpz_matrix(mpz_t **A, unsigned long n, char *f) {
+void read_mpz_matrix(mpz_t **A, unsigned long n, const char *f) {
   unsigned long i, j;
   FILE         *fp = stdin;
 
@@ -514,25 +514,20 @@ void swap_matrix_f(mpf_t **B, mpf_t **C, unsigned long n) {
   put the found relation in y[0..n-1]
   gam is the 'gamma' coefficient (see references [1,2])
   verbose is the verbosity level (default 0)
-  input_B is the file containing the input matrix B (NULL if no file)
   output_B is the file for the output matrix B (NULL if no file)
   report - log lines are given each 'report' iterations
  */
-void pslq(mpz_t *y, mpf_t *x0, unsigned long n, double gam, int verbose, char *input_A, char *input_B,
-          int report) {
+void pslq(mpz_t *y, mpf_t *x0, unsigned long n, double gam, int verbose, int report) {
   mpz_t **A, **B, tt, *Bp;
   mpf_t **H, *Hp, *s, *x;
   mpf_t   t, u, v, t0, t1, t2, t3;
   long    i, j, k, m, iter = 0, prec, prec0;
   mpf_t   gamma, pow_gamma, norm, maxnorm;
   size_t  size_B0 = 0, size_B = 0, size;
-  int     need_A;
-
-  need_A = input_A != NULL;
 
   prec = prec0 = mpf_get_prec(x0[0]);
 
-  if (need_A) A = init_mpz_matrix(n);
+  A = init_mpz_matrix(n);
   B = init_mpz_matrix(n);
   s = init_mpf_vector(n);
   x = init_mpf_vector(n); /* copy of x0 */
@@ -565,18 +560,10 @@ void pslq(mpz_t *y, mpf_t *x0, unsigned long n, double gam, int verbose, char *i
      - y = x0/t0, then y = B*y
   */
 
-  if (input_B != NULL) /* pre-multiply input x[] by B */
-  {
-    if (verbose >= 2) printf("Loading matrix from file %s\n", input_B);
-    read_mpz_matrix(B, n, input_B);
-    size_B0 = matrix_sizeinbase(B, n);
-    if (verbose >= 2) printf("size(B0)=%lu\n", size_B0);
-    mul_matrix_vector(x, B, x0, n);
-  } else
-    set_mpf_vector(x, x0, n);
+  set_mpf_vector(x, x0, n);
 
   /* step 1 */
-  if (need_A) set_identity(A, n);
+  set_identity(A, n);
   set_identity(B, n);
 
   /* step 2 */
@@ -606,22 +593,20 @@ void pslq(mpz_t *y, mpf_t *x0, unsigned long n, double gam, int verbose, char *i
   }
 
   /* step 4: Hermite reduce H, omit for a restart */
-  if (input_A == NULL) {
-    for (i = 1; i < n; i++) {
-      for (j = i - 1; j >= 0; j--) {
-        mpf_div(u, H[i][j], H[j][j]);
-        mpf_nint(t, u);
-        mpz_set_f(tt, t);
-        mpz_addmul(y[j], tt, y[i]);
-        for (k = 0; k <= j; k++) {
-          mpf_mul(u, t, H[j][k]);
-          mpf_sub(H[i][k], H[i][k], u);
-        }
-        for (k = 0; k < n; k++) {
-          if (need_A) mpz_submul(A[i][k], tt, A[j][k]);
-          mpz_addmul(B[j][k], tt, B[i][k]);
-          if ((size = mpz_sizeinbase(B[j][k], 2)) > size_B) size_B = size;
-        }
+  for (i = 1; i < n; i++) {
+    for (j = i - 1; j >= 0; j--) {
+      mpf_div(u, H[i][j], H[j][j]);
+      mpf_nint(t, u);
+      mpz_set_f(tt, t);
+      mpz_addmul(y[j], tt, y[i]);
+      for (k = 0; k <= j; k++) {
+        mpf_mul(u, t, H[j][k]);
+        mpf_sub(H[i][k], H[i][k], u);
+      }
+      for (k = 0; k < n; k++) {
+        mpz_submul(A[i][k], tt, A[j][k]);
+        mpz_addmul(B[j][k], tt, B[i][k]);
+        if ((size = mpz_sizeinbase(B[j][k], 2)) > size_B) size_B = size;
       }
     }
   }
@@ -647,11 +632,9 @@ void pslq(mpz_t *y, mpf_t *x0, unsigned long n, double gam, int verbose, char *i
     Hp       = H[m];
     H[m]     = H[m + 1];
     H[m + 1] = Hp;
-    if (need_A) {
-      Bp       = A[m];
-      A[m]     = A[m + 1];
-      A[m + 1] = Bp;
-    }
+    Bp       = A[m];
+    A[m]     = A[m + 1];
+    A[m + 1] = Bp;
     Bp       = B[m];
     B[m]     = B[m + 1];
     B[m + 1] = Bp;
@@ -698,7 +681,7 @@ void pslq(mpz_t *y, mpf_t *x0, unsigned long n, double gam, int verbose, char *i
             ttt = mpf_get_si(t);
             mpz_addmul_si(y[j], y[i], ttt);
             for (k = 0; k < n; k++) {
-              if (need_A) mpz_submul_si(A[i][k], A[j][k], ttt);
+              mpz_submul_si(A[i][k], A[j][k], ttt);
               mpz_addmul_si(B[j][k], B[i][k], ttt);
               if ((size = mpz_sizeinbase(B[j][k], 2)) > size_B) size_B = size;
             }
@@ -707,7 +690,7 @@ void pslq(mpz_t *y, mpf_t *x0, unsigned long n, double gam, int verbose, char *i
             mpz_set_f(tt, t);
             mpz_addmul(y[j], tt, y[i]);
             for (k = 0; k < n; k++) {
-              if (need_A) mpz_submul(A[i][k], tt, A[j][k]);
+              mpz_submul(A[i][k], tt, A[j][k]);
               mpz_addmul(B[j][k], tt, B[i][k]);
               if ((size = mpz_sizeinbase(B[j][k], 2)) > size_B) size_B = size;
             }
@@ -768,27 +751,6 @@ void pslq(mpz_t *y, mpf_t *x0, unsigned long n, double gam, int verbose, char *i
     mpf_out_str(stdout, 10, 3, u);
   }
 
-  if (input_B != NULL) /* we need to re-load the input matrix,
-                          and multiply it by the current one */
-  {
-    mpz_t **A, **C;
-
-    /* let x[1..n] the input, y[] the result after A, and z[] after B
-       we have y[j] = add(A[j][i]*x[i], i=1..n)
-       and z[k] = add(B[k][j]*y[j], j=1..n)
-                = add(B[k][j]*add(A[j][i]*x[i], i=1..n), j=1..n)
-                = add(C[k][i]*x[i], i=1..n)
-                where C[k][i] = add(B[k][j]*A[j][i], j=1..n) */
-
-    A = init_mpz_matrix(n);
-    C = init_mpz_matrix(n);
-    read_mpz_matrix(A, n, input_B);
-    mul_matrix_matrix(C, B, A, n);
-    swap_matrix_z(B, C, n);
-    clear_mpz_matrix(A, n);
-    clear_mpz_matrix(C, n);
-  }
-
   set_mpz_vector(y, B[j], n);
 
   mpf_clear(t0);
@@ -802,7 +764,7 @@ void pslq(mpz_t *y, mpf_t *x0, unsigned long n, double gam, int verbose, char *i
   clear_mpf_vector(s, n);
   clear_mpf_vector(x, n);
   clear_mpz_matrix(B, n);
-  if (need_A) clear_mpz_matrix(A, n);
+  clear_mpz_matrix(A, n);
   mpz_clear(tt);
   mpf_clear(gamma);
   mpf_clear(pow_gamma);
@@ -817,8 +779,7 @@ int main(int argc, char *argv[]) {
   double        gamma, tau;
   unsigned long prec    = 53;
   int           verbose = 0, report = 100;
-  char         *input_B = NULL, *output_poly = NULL;
-  char         *input_A = NULL;
+  char         *output_poly = NULL;
 
   printf("PSLQ %s [powered by GMP %s]\n", VERSION, gmp_version);
   fflush(stdout);
@@ -844,14 +805,6 @@ int main(int argc, char *argv[]) {
          1/rho^2+1/gamma^2 = 1/tau^2
        */
       gamma = 1.0 / sqrt(1.0 / (tau * tau) - 0.25);
-      argc -= 2;
-      argv += 2;
-    } else if (strcmp(argv[1], "-ia") == 0) {
-      input_A = argv[2];
-      argc -= 2;
-      argv += 2;
-    } else if (strcmp(argv[1], "-ib") == 0) {
-      input_B = argv[2];
       argc -= 2;
       argv += 2;
     } else if (strcmp(argv[1], "-op") == 0) {
@@ -884,7 +837,7 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  pslq(rel, x, n, gamma, verbose, input_A, input_B, report);
+  pslq(rel, x, n, gamma, verbose, report);
   print_relation(output_poly, rel, n);
   scalprod(s, x, rel, n);
   printf("scalprod=");
