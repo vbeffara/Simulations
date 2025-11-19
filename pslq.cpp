@@ -44,13 +44,13 @@
 
 #define VERSION "1.0"
 
+#include "gmp.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/resource.h>
 #include <sys/time.h>
-#include "gmp.h"
 
 /* #define DEBUG */
 
@@ -84,13 +84,6 @@
       mpf_neg(a, a);                                                                                                                       \
     }                                                                                                                                      \
   } while (0)
-
-int cputime() {
-  struct rusage rus;
-
-  getrusage(RUSAGE_SELF, &rus);
-  return rus.ru_utime.tv_sec * 1000 + rus.ru_utime.tv_usec / 1000;
-}
 
 mpf_t **init_mpf_matrix(unsigned long n) {
   mpf_t       **A;
@@ -132,45 +125,6 @@ mpz_t **init_mpz_matrix(unsigned long n) {
   return A;
 }
 
-void clear_mpf_matrix(mpf_t **A, unsigned long n) {
-  unsigned long i, j;
-
-  for (i = 0; i < n; i++) {
-    for (j = 0; j < n; j++) mpf_clear(A[i][j]);
-    free(A[i]);
-  }
-  free(A);
-}
-
-void clear_mpz_matrix(mpz_t **A, unsigned long n) {
-  unsigned long i, j;
-
-  for (i = 0; i < n; i++) {
-    for (j = 0; j < n; j++) mpz_clear(A[i][j]);
-    free(A[i]);
-  }
-  free(A);
-}
-
-/* print column j */
-void print_column(mpz_t **A, unsigned long n, unsigned long j) {
-  unsigned long i;
-  int           s, first = 1;
-
-  for (i = 0; i < n; i++) {
-    if ((s = mpz_sgn(A[i][j]))) {
-      if (!first && s > 0) printf("+");
-      mpz_out_str(stdout, 10, A[i][j]);
-      if (i > 1)
-        printf("*x^%lu", i);
-      else if (i == 1)
-        printf("*x");
-      first = 0;
-    }
-  }
-  printf("\n");
-}
-
 /* compute total numbers of bits in relation A[0..n-1] */
 size_t size_relation(mpz_t *A, unsigned long n) {
   size_t        s = 0;
@@ -181,18 +135,10 @@ size_t size_relation(mpz_t *A, unsigned long n) {
 }
 
 /* print relation A[0..n-1] */
-void print_relation(char *f, mpz_t *A, unsigned long n) {
+void print_relation(mpz_t *A, unsigned long n) {
   unsigned long i;
   int           s, first = 1;
   FILE         *fp = stdout;
-
-  if (f != NULL) {
-    fp = fopen(f, "w");
-    if (fp == NULL) {
-      fprintf(stderr, "Unable to open file %s\n", f);
-      exit(1);
-    }
-  }
 
   fprintf(fp, "p=");
   for (i = 0; i < n; i++) {
@@ -207,91 +153,6 @@ void print_relation(char *f, mpz_t *A, unsigned long n) {
     }
   }
   fprintf(fp, "\n");
-
-  if (f != NULL) fclose(fp);
-}
-
-void print_matrix(mpf_t **A, unsigned long n, unsigned long m) {
-  unsigned long i, j;
-
-  for (i = 0; i < n; i++) {
-    printf("%lu: ", i);
-    for (j = 0; j < m; j++) {
-      mpf_out_str(stdout, 10, 0, A[i][j]);
-      printf(" ");
-    }
-    printf("\n");
-  }
-}
-
-void print_vector(mpf_t *A, unsigned long n) {
-  unsigned long j;
-
-  for (j = 0; j < n; j++) {
-    mpf_out_str(stdout, 10, 0, A[j]);
-    printf(" ");
-  }
-  printf("\n");
-}
-
-/* input A[0..n-1][0..n-1] from file f (stdin if f=NULL) */
-void read_mpz_matrix(mpz_t **A, unsigned long n, const char *f) {
-  unsigned long i, j;
-  FILE         *fp = stdin;
-
-  if (f != NULL) {
-    fp = fopen(f, "r");
-    if (fp == NULL) {
-      fprintf(stderr, "Unable to open file %s\n", f);
-      exit(1);
-    }
-  }
-
-  for (i = 0; i < n; i++) {
-    for (j = 0; j < n; j++) {
-      mpz_inp_str(A[i][j], fp, 10);
-      if (j < n - 1) getc(fp); /* space */
-    }
-    getc(fp); /* '\n' */
-  }
-
-  if (f != NULL) fclose(fp);
-}
-
-size_t matrix_sizeinbase(mpz_t **A, unsigned long n) {
-  unsigned long i, j, maxs, s;
-
-  maxs = 0;
-  for (i = 0; i < n; i++)
-    for (j = 0; j < n; j++) {
-      s = mpz_sizeinbase(A[i][j], 2);
-      if (s > maxs) maxs = s;
-    }
-  return maxs;
-}
-
-/* output A[0..n-1][0..m-1] to file f (stdout if f=NULL) */
-void print_mpz_matrix(char *f, mpz_t **A, unsigned long n, unsigned long m) {
-  unsigned long i, j;
-  FILE         *fp = stdout;
-
-  if (f != NULL) {
-    fp = fopen(f, "w");
-    if (fp == NULL) {
-      fprintf(stderr, "Unable to open file %s\n", f);
-      exit(1);
-    }
-  }
-
-  for (i = 0; i < n; i++) {
-    for (j = 0; j < m; j++) {
-      mpz_out_str(fp, 10, A[i][j]);
-      if (j < m - 1) fprintf(fp, " ");
-    }
-    fprintf(fp, "\n");
-  }
-
-  if (f != NULL) fclose(fp);
 }
 
 void set_identity(mpz_t **A, unsigned long n) {
@@ -329,20 +190,6 @@ mpz_t *init_mpz_vector(unsigned long n) {
   v = (mpz_t *)malloc(n * sizeof(mpz_t));
   for (i = 0; i < n; i++) mpz_init(v[i]);
   return v;
-}
-
-void clear_mpf_vector(mpf_t *v, unsigned long n) {
-  unsigned long i;
-
-  for (i = 0; i < n; i++) mpf_clear(v[i]);
-  free(v);
-}
-
-void clear_mpz_vector(mpz_t *v, unsigned long n) {
-  unsigned long i;
-
-  for (i = 0; i < n; i++) mpz_clear(v[i]);
-  free(v);
 }
 
 /* t <- nearest_integer (u) */
@@ -752,24 +599,6 @@ void pslq(mpz_t *y, mpf_t *x0, unsigned long n, double gam, int verbose, int rep
   }
 
   set_mpz_vector(y, B[j], n);
-
-  mpf_clear(t0);
-  mpf_clear(t1);
-  mpf_clear(t2);
-  mpf_clear(t3);
-  mpf_clear(t);
-  mpf_clear(u);
-  mpf_clear(v);
-  clear_mpf_matrix(H, n);
-  clear_mpf_vector(s, n);
-  clear_mpf_vector(x, n);
-  clear_mpz_matrix(B, n);
-  clear_mpz_matrix(A, n);
-  mpz_clear(tt);
-  mpf_clear(gamma);
-  mpf_clear(pow_gamma);
-  mpf_clear(norm);
-  mpf_clear(maxnorm);
 }
 
 int main(int argc, char *argv[]) {
@@ -779,7 +608,6 @@ int main(int argc, char *argv[]) {
   double        gamma, tau;
   unsigned long prec    = 53;
   int           verbose = 0, report = 100;
-  char         *output_poly = NULL;
 
   printf("PSLQ %s [powered by GMP %s]\n", VERSION, gmp_version);
   fflush(stdout);
@@ -805,10 +633,6 @@ int main(int argc, char *argv[]) {
          1/rho^2+1/gamma^2 = 1/tau^2
        */
       gamma = 1.0 / sqrt(1.0 / (tau * tau) - 0.25);
-      argc -= 2;
-      argv += 2;
-    } else if (strcmp(argv[1], "-op") == 0) {
-      output_poly = argv[2];
       argc -= 2;
       argv += 2;
     } else if (strcmp(argv[1], "-v") == 0) {
@@ -838,15 +662,9 @@ int main(int argc, char *argv[]) {
   }
 
   pslq(rel, x, n, gamma, verbose, report);
-  print_relation(output_poly, rel, n);
+  print_relation(rel, n);
   scalprod(s, x, rel, n);
   printf("scalprod=");
   mpf_out_str(stdout, 10, 3, s);
   printf(" bitsize=%zu\n", size_relation(rel, n));
-
-  clear_mpf_vector(x, n);
-  clear_mpz_vector(rel, n);
-  mpf_clear(s);
-
-  return 0;
 }
