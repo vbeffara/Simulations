@@ -518,7 +518,7 @@ void swap_matrix_f(mpf_t **B, mpf_t **C, unsigned long n) {
   output_B is the file for the output matrix B (NULL if no file)
   report - log lines are given each 'report' iterations
  */
-void pslq(mpz_t *y, mpf_t *x0, unsigned long n, double gam, int verbose, char *input_A, char *output_A, char *input_B, char *output_B,
+void pslq(mpz_t *y, mpf_t *x0, unsigned long n, double gam, int verbose, char *input_A, char *input_B,
           int report) {
   mpz_t **A, **B, tt, *Bp;
   mpf_t **H, *Hp, *s, *x;
@@ -528,7 +528,7 @@ void pslq(mpz_t *y, mpf_t *x0, unsigned long n, double gam, int verbose, char *i
   size_t  size_B0 = 0, size_B = 0, size;
   int     need_A;
 
-  need_A = input_A != NULL || output_A != NULL;
+  need_A = input_A != NULL;
 
   prec = prec0 = mpf_get_prec(x0[0]);
 
@@ -791,16 +791,6 @@ void pslq(mpz_t *y, mpf_t *x0, unsigned long n, double gam, int verbose, char *i
 
   set_mpz_vector(y, B[j], n);
 
-  if (output_A != NULL) {
-    if (verbose >= 2) printf("Storing matrix A in file %s\n", output_A);
-    print_mpz_matrix(output_A, A, n, n);
-  }
-
-  if (output_B != NULL) {
-    if (verbose >= 2) printf("Storing matrix B in file %s\n", output_B);
-    print_mpz_matrix(output_B, B, n, n);
-  }
-
   mpf_clear(t0);
   mpf_clear(t1);
   mpf_clear(t2);
@@ -827,7 +817,7 @@ int main(int argc, char *argv[]) {
   double        gamma, tau;
   unsigned long prec    = 53;
   int           verbose = 0, report = 100;
-  char         *output_B = NULL, *input_B = NULL, *output_poly = NULL;
+  char         *input_B = NULL, *output_poly = NULL;
   char         *input_A = NULL;
 
   printf("PSLQ %s [powered by GMP %s]\n", VERSION, gmp_version);
@@ -864,14 +854,6 @@ int main(int argc, char *argv[]) {
       input_B = argv[2];
       argc -= 2;
       argv += 2;
-    } else if (strcmp(argv[1], "-oa") == 0) {
-      output_A = argv[2];
-      argc -= 2;
-      argv += 2;
-    } else if (strcmp(argv[1], "-ob") == 0) {
-      output_B = argv[2];
-      argc -= 2;
-      argv += 2;
     } else if (strcmp(argv[1], "-op") == 0) {
       output_poly = argv[2];
       argc -= 2;
@@ -902,7 +884,7 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  pslq(rel, x, n, gamma, verbose, input_A, output_A, input_B, output_B, report);
+  pslq(rel, x, n, gamma, verbose, input_A, input_B, report);
   print_relation(output_poly, rel, n);
   scalprod(s, x, rel, n);
   printf("scalprod=");
