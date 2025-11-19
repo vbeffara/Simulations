@@ -37,23 +37,19 @@
 
   Options:
   -p <prec>  set precision to <prec> bits (default 53)
-  -g <gam>   set gamma to <gam> (default 2.0)
-  -t <tau>   set tau to <tau> (1/tau^2 = 1/4 + 1/gamma^2)
   -v         verbose mode (prints iterations)
 */
 
 #define VERSION "1.0"
 
 #include "gmp.h"
+#include <algorithm>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/resource.h>
 #include <sys/time.h>
-#include <algorithm>
-
-/* #define DEBUG */
 
 #define mpz_addmul_si(a, b, c)                                                                                                             \
   do {                                                                                                                                     \
@@ -94,19 +90,6 @@ mpf_t **init_mpf_matrix(unsigned long n) {
   return A;
 }
 
-void mpf_set_prec_matrix(mpf_t **A, unsigned long n, unsigned long prec) {
-  unsigned long i, j;
-
-  for (i = 0; i < n; i++)
-    for (j = 0; j < n; j++) mpf_set_prec(A[i][j], prec);
-}
-
-void mpf_set_prec_vector(mpf_t *v, unsigned long n, unsigned long prec) {
-  unsigned long i;
-
-  for (i = 0; i < n; i++) mpf_set_prec(v[i], prec);
-}
-
 mpz_t **init_mpz_matrix(unsigned long n) {
   mpz_t       **A;
   unsigned long i, j;
@@ -117,15 +100,6 @@ mpz_t **init_mpz_matrix(unsigned long n) {
     for (j = 0; j < n; j++) mpz_init(A[i][j]);
   }
   return A;
-}
-
-/* compute total numbers of bits in relation A[0..n-1] */
-size_t size_relation(mpz_t *A, unsigned long n) {
-  size_t        s = 0;
-  unsigned long i;
-
-  for (i = 0; i < n; i++) s += mpz_sizeinbase(A[i], 2);
-  return s;
 }
 
 /* print relation A[0..n-1] */
@@ -483,7 +457,8 @@ void pslq(mpz_t *y, mpf_t *x0, unsigned long n, double gam, int verbose, int rep
     if (k + prec / 10 + 20 < prec) {
       prec = k + 10;
       if (verbose >= 2) printf("Reducing precision to %lu\n", prec);
-      mpf_set_prec_matrix(H, n, prec);
+      for (unsigned i = 0; i < n; i++)
+        for (unsigned j = 0; j < n; j++) mpf_set_prec(H[i][j], prec);
       mpf_set_prec(t0, prec);
       mpf_set_prec(t1, prec);
       mpf_set_prec(t2, prec);
@@ -513,36 +488,18 @@ int main(int argc, char *argv[]) {
   unsigned long n, i;
   mpf_t        *x, s; /* input vector */
   mpz_t        *rel;  /* found relation */
-  double        gamma, tau;
   unsigned long prec    = 53;
-  int           verbose = 0, report = 100;
+  const int     verbose = 3;
+  const int     report  = 100;
 
   printf("PSLQ %s [powered by GMP %s]\n", VERSION, gmp_version);
-  fflush(stdout);
-  gamma = 5200308914369309.0 / 4503599627370496.0; /* sqrt(4/3) rounded up */
+  const double gamma = 5200308914369309.0 / 4503599627370496.0; /* sqrt(4/3) rounded up */
 
   while (argc >= 2) {
     if (argc >= 3 && strcmp(argv[1], "-p") == 0) {
       prec = atoi(argv[2]);
       argc -= 2;
       argv += 2;
-    } else if (argc >= 3 && strcmp(argv[1], "-r") == 0) {
-      report = atof(argv[2]);
-      argc -= 2;
-      argv += 2;
-    } else if (argc >= 3 && strcmp(argv[1], "-g") == 0) {
-      gamma = atof(argv[2]);
-      argc -= 2;
-      argv += 2;
-    } else if (argc >= 3 && strcmp(argv[1], "-t") == 0) {
-      tau = atof(argv[2]);
-      gamma = 1.0 / sqrt(1.0 / (tau * tau) - 0.25);
-      argc -= 2;
-      argv += 2;
-    } else if (strcmp(argv[1], "-v") == 0) {
-      verbose++;
-      argc -= 1;
-      argv += 1;
     }
   }
 
@@ -570,5 +527,5 @@ int main(int argc, char *argv[]) {
   scalprod(s, x, rel, n);
   printf("scalprod=");
   mpf_out_str(stdout, 10, 3, s);
-  printf(" bitsize=%zu\n", size_relation(rel, n));
+  printf("\n");
 }
