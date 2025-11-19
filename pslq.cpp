@@ -51,16 +51,10 @@
 #include <string.h>
 #include <sys/resource.h>
 #include <sys/time.h>
+#include <algorithm>
 
 /* #define DEBUG */
 
-#define MIN(a, b) (((a) < (b)) ? (a) : (b))
-#define MAX(a, b) (((a) > (b)) ? (a) : (b))
-#define OUT(a)                                                                                                                             \
-  {                                                                                                                                        \
-    mpf_out_str(stdout, 10, 0, a);                                                                                                         \
-    printf("\n");                                                                                                                          \
-  }
 #define mpz_addmul_si(a, b, c)                                                                                                             \
   do {                                                                                                                                     \
     if (c >= 0)                                                                                                                            \
@@ -140,7 +134,7 @@ void print_relation(mpz_t *A, unsigned long n) {
   int           s, first = 1;
   FILE         *fp = stdout;
 
-  fprintf(fp, "p=");
+  fprintf(fp, "\np=");
   for (i = 0; i < n; i++) {
     if ((s = mpz_sgn(A[i]))) {
       if (!first && s > 0) fprintf(fp, "+");
@@ -175,12 +169,6 @@ void set_mpf_vector(mpf_t *v, mpf_t *w, unsigned long n) {
   unsigned long i;
 
   for (i = 0; i < n; i++) mpf_set(v[i], w[i]);
-}
-
-void set_mpz_vector(mpz_t *v, mpz_t *w, unsigned long n) {
-  unsigned long i;
-
-  for (i = 0; i < n; i++) mpz_set(v[i], w[i]);
 }
 
 mpz_t *init_mpz_vector(unsigned long n) {
@@ -274,86 +262,6 @@ void scalprod(mpf_t s, mpf_t *x, mpz_t *y, unsigned long n) {
     mpf_add(s, s, t);
   }
   mpf_clear(t);
-}
-
-/* y <- B * x : y[i] = add(B[i][j]*x[j]) */
-void mul_matrix_vector(mpf_t *y, mpz_t **B, mpf_t *x, unsigned long n) {
-  size_t        s, maxsize;
-  unsigned long i, j;
-  mpf_t         t, u;
-
-  /* compute the maximal number of bits of B[i][j] */
-  maxsize = 0;
-  for (i = 0; i < n; i++)
-    for (j = 0; j < n; j++) {
-      s = mpz_size(B[i][j]);
-      if (s > maxsize) maxsize = s;
-    }
-
-  mpf_init2(t, maxsize * mp_bits_per_limb);
-  mpf_init2(u, mpf_get_prec(x[0]));
-
-  for (i = 0; i < n; i++) /* set y[i] */
-  {
-    mpf_set_ui(y[i], 0);
-    for (j = 0; j < n; j++) {
-      mpf_set_z(t, B[i][j]);
-      mpf_mul(u, t, x[j]);
-      mpf_add(y[i], y[i], u);
-    }
-  }
-
-  mpf_clear(t);
-  mpf_clear(u);
-}
-
-/* C <- B * A */
-void mul_matrix_matrix(mpz_t **C, mpz_t **B, mpz_t **A, unsigned long n) {
-  unsigned long i, j, k;
-
-  for (k = 0; k < n; k++)
-    for (i = 0; i < n; i++) {
-      mpz_mul(C[k][i], B[k][0], A[0][i]);
-      for (j = 1; j < n; j++) mpz_addmul(C[k][i], B[k][j], A[j][i]);
-    }
-}
-
-/* C <- B * A where B is n x n, A is n x (n-1) */
-void mul_matz_matf(mpf_t **C, mpz_t **B, mpf_t **A, unsigned long n) {
-  unsigned long i, j, k, prec;
-  mpf_t         t, u;
-
-  prec = mpf_get_prec(A[0][0]);
-  mpf_init2(t, prec);
-  mpf_init2(u, prec);
-  for (i = 0; i < n; i++)
-    for (j = 0; j < n; j++) mpf_set_ui(C[i][j], 0);
-  for (i = 0; i < n; i++)
-    for (j = 0; j < n; j++) {
-      mpf_set_z(t, B[i][j]);
-      for (k = 0; k < n - 1; k++) {
-        mpf_mul(u, t, A[j][k]);
-        mpf_add(C[i][k], C[i][k], u);
-      }
-    }
-  mpf_clear(t);
-  mpf_clear(u);
-}
-
-/* B <-> C */
-void swap_matrix_z(mpz_t **B, mpz_t **C, unsigned long n) {
-  unsigned long i, j;
-
-  for (i = 0; i < n; i++)
-    for (j = 0; j < n; j++) mpz_swap(B[i][j], C[i][j]);
-}
-
-/* B <-> C */
-void swap_matrix_f(mpf_t **B, mpf_t **C, unsigned long n) {
-  unsigned long i, j;
-
-  for (i = 0; i < n; i++)
-    for (j = 0; j < n; j++) mpf_swap(B[i][j], C[i][j]);
 }
 
 /*
@@ -508,7 +416,7 @@ void pslq(mpz_t *y, mpf_t *x0, unsigned long n, double gam, int verbose, int rep
 
     /* step 4 */
     for (i = m + 1; i < n; i++) {
-      for (j = MIN(i - 1, m + 1); j >= 0; j--) {
+      for (j = std::min(i - 1, m + 1); j >= 0; j--) {
         mp_exp_t exp_hij, exp_hjj, prec_u;
         long     ttt;
         int      fits;
@@ -598,7 +506,7 @@ void pslq(mpz_t *y, mpf_t *x0, unsigned long n, double gam, int verbose, int rep
     mpf_out_str(stdout, 10, 3, u);
   }
 
-  set_mpz_vector(y, B[j], n);
+  for (unsigned long i = 0; i < n; i++) mpz_set(y[i], B[j][i]);
 }
 
 int main(int argc, char *argv[]) {
@@ -628,10 +536,6 @@ int main(int argc, char *argv[]) {
       argv += 2;
     } else if (argc >= 3 && strcmp(argv[1], "-t") == 0) {
       tau = atof(argv[2]);
-      /* tau = 1/sqrt(1/rho^2+1/gamma^2), with rho=2 for reals
-         tau^2 = 1/(1/rho^2+1/gamma^2)
-         1/rho^2+1/gamma^2 = 1/tau^2
-       */
       gamma = 1.0 / sqrt(1.0 / (tau * tau) - 0.25);
       argc -= 2;
       argv += 2;
