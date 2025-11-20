@@ -107,9 +107,10 @@ unsigned long maxabs_mpz_vector(std::vector<mpz_class> &v) {
 }
 
 /* u = max(|v[i]|) for i=0..n-1 */
-void maxabs_vector(mpf_class &u, std::vector<std::vector<mpf_class>> &v, unsigned long n) {
-  u = abs(v[0][0]);
-  for (int i = 1; i < n; i++) u = std::max(u, mpf_class(abs(v[i][i])));
+mpf_class maxabs_vector(std::vector<std::vector<mpf_class>> &v) {
+  mpf_class u = abs(v[0][0]);
+  for (int i = 1; i < v.size(); i++) u = std::max(u, mpf_class(abs(v[i][i])));
+  return u;
 }
 
 mp_exp_t mpf_get_exp(mpf_class &a) {
@@ -134,7 +135,7 @@ mpf_class scalprod(std::vector<mpf_class> &x, std::vector<mpz_class> &y) {
  */
 auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
   long   j, k, iter = 0;
-  size_t size_B0 = 0, size_B = 0, size;
+  size_t size_B0 = 0, size_B = 0;
 
   auto prec = mpf_get_prec(x0[0].get_mpf_t());
 
@@ -222,22 +223,20 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
       for (int j = std::min(i - 1, m + 1); j >= 0; j--) {
         /* we want to compute the nearest integer to H[i][j]/H[j][j],
            but for that we need only small precision */
-        long ttt;
         auto exp_hij = mpf_get_exp(H[i][j]);
         auto exp_hjj = mpf_get_exp(H[j][j]);
         if (exp_hij + 1 < exp_hjj) continue; // |H[i][j]| < |H[i][j]|/2
-        u = H[i][j] / H[j][j];
-        t = floor(u + .5);
+        mpf_class t = floor(H[i][j] / H[j][j] + .5);
         if (t != 0) {
-          auto fits = mpf_fits_slong_p(t.get_mpf_t());
-          if (fits) {
-            ttt = mpf_get_si(t.get_mpf_t());
+          if (mpf_fits_slong_p(t.get_mpf_t())) {
+            auto ttt = mpf_get_si(t.get_mpf_t());
             y[j] += ttt * y[i];
             for (k = 0; k < n; k++) {
               A[i][k] -= ttt * A[j][k];
               B[j][k] += ttt * B[i][k];
               size_B = std::max(size_B, mpz_sizeinbase(B[j][k].get_mpz_t(), 2));
             }
+            for (k = 0; k <= j; k++) H[i][k] -= ttt * H[j][k];
           } else {
             tt = t;
             y[j] += tt * y[i];
@@ -246,62 +245,33 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
               B[j][k] += tt * B[i][k];
               size_B = std::max(size_B, mpz_sizeinbase(B[j][k].get_mpz_t(), 2));
             }
-          }
-          for (k = 0; k <= j; k++) {
-            if (fits)
-              mpf_mul_si(v.get_mpf_t(), H[j][k].get_mpf_t(), ttt);
-            else
-              mpf_mul(v.get_mpf_t(), H[j][k].get_mpf_t(), t.get_mpf_t());
-            mpf_sub(H[i][k].get_mpf_t(), H[i][k].get_mpf_t(), v.get_mpf_t());
+            for (k = 0; k <= j; k++) H[i][k] -= t * H[j][k];
           }
         }
       }
     }
-    /* reset precision of u and t */
-    mpf_set_prec(u.get_mpf_t(), prec);
-    mpf_set_prec(t.get_mpf_t(), prec);
 
     /* step 5 */
     j = minabs_vector(y);
-    k = maxabs_mpz_vector(y);
+    auto k = maxabs_mpz_vector(y);
     k = mpz_sizeinbase(y[k].get_mpz_t(), 2);
     if (iter % 100 == 0) {
-      maxabs_vector(u, H, n - 1);
-      mpf_ui_div(u.get_mpf_t(), 1, u.get_mpf_t());
-      printf("iter=%lu M=", iter);
+      u = 1 / maxabs_vector(H);
+      std::cout << "iter=" << iter << " M=";
       mpf_out_str(stdout, 10, 3, u.get_mpf_t());
-      printf(" ymin=%lu", mpz_sizeinbase(y[j].get_mpz_t(), 2));
-      printf(" ymax=%lu", k);
-      printf("\n");
-      fflush(stdout);
-    }
-
-    /* reduce working precision? */
-    if (k + prec / 10 + 20 < prec) {
-      prec = k + 10;
-      printf("Reducing precision to %lu\n", prec);
-      for (unsigned i = 0; i < n; i++)
-        for (unsigned j = 0; j < n; j++) mpf_set_prec(H[i][j].get_mpf_t(), prec);
-      mpf_set_prec(t0.get_mpf_t(), prec);
-      mpf_set_prec(t1.get_mpf_t(), prec);
-      mpf_set_prec(t2.get_mpf_t(), prec);
-      mpf_set_prec(t3.get_mpf_t(), prec);
-      mpf_set_prec(u.get_mpf_t(), prec);
-      mpf_set_prec(v.get_mpf_t(), prec);
-      mpf_set_prec(t.get_mpf_t(), prec);
+      std::cout << " ymin=" << mpz_sizeinbase(y[j].get_mpz_t(), 2) << " ymax=" << k << std::endl;
     }
 
     /* when the norm of B is larger than that of y[], this means that
        neglected bits in the input x[] will give a non-zero contribution,
        so we can stop */
-    size = mpz_sizeinbase(y[j].get_mpz_t(), 2);
-  } while (size >= size_B0 + size_B);
+  } while (mpz_sizeinbase(y[j].get_mpz_t(), 2) >= size_B0 + size_B);
 
   if (iter % 100 != 0) {
-    maxabs_vector(u, H, n - 1);
-    mpf_ui_div(u.get_mpf_t(), 1, u.get_mpf_t());
-    printf("iter=%lu M=", iter);
+    u = 1 / maxabs_vector(H);
+    std::cout << "iter=" << iter << " M=";
     mpf_out_str(stdout, 10, 3, u.get_mpf_t());
+    std::cout << " ymin=" << mpz_sizeinbase(y[j].get_mpz_t(), 2) << " ymax=" << k << std::endl;
   }
 
   return B[j];
