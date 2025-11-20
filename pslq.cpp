@@ -224,7 +224,7 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
   const int report  = 100;
   mpz_t     tt, *Bp;
   mpf_t    *Hp;
-  mpf_t     t0, t1, t2, t3;
+  mpf_t     t1, t2, t3;
   long      i, j, k, m, iter = 0;
   mpf_t     gamma, pow_gamma, norm, maxnorm;
   size_t    size_B0 = 0, size_B = 0, size;
@@ -238,8 +238,7 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
   std::vector<mpf_class> s(n);
   std::vector<mpf_class> x = x0;
   auto                   H = init_mpf_matrix(n);
-  mpf_class t, u, v;
-  mpf_init(t0);
+  mpf_class t, u, v, t0;
   mpf_init(t1);
   mpf_init(t2);
   mpf_init(t3);
@@ -252,12 +251,12 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
   mpf_set_d(gamma, gam);
 
   /* compute the norm of x */
-  mpf_set_ui(t0, 0);
+  t0 = 0;
   for (k = 0; k < n; k++) {
     mpf_mul(t1, x0[k].get_mpf_t(), x0[k].get_mpf_t());
-    mpf_add(t0, t0, t1);
+    mpf_add(t0.get_mpf_t(), t0.get_mpf_t(), t1);
   }
-  mpf_sqrt(t0, t0);
+  mpf_sqrt(t0.get_mpf_t(), t0.get_mpf_t());
 
   /* if there are pre-computed matrices A and B:
      - x = B*x
@@ -271,7 +270,7 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
   /* step 2 */
   /* normalize y[] so that it has prec bits */
   for (k = 0; k < n; k++) {
-    mpf_div(t.get_mpf_t(), x[k].get_mpf_t(), t0); /* |t| < 1 */
+    mpf_div(t.get_mpf_t(), x[k].get_mpf_t(), t0.get_mpf_t()); /* |t| < 1 */
     mpf_mul_2exp(t.get_mpf_t(), t.get_mpf_t(), prec);
     mpz_set_f(y[k].get_mpz_t(), t.get_mpf_t());
   }
@@ -343,13 +342,13 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
 
     /* step 3 */
     if (m < n - 2) {
-      mpf_mul(t0, H[m][m], H[m][m]);
+      mpf_mul(t0.get_mpf_t(), H[m][m], H[m][m]);
       mpf_mul(t1, H[m][m + 1], H[m][m + 1]);
-      mpf_add(t0, t0, t1);
-      mpf_sqrt(t0, t0);
-      mpf_ui_div(t0, 1, t0); /* invert t0 to avoid two divisions */
-      mpf_mul(t1, H[m][m], t0);
-      mpf_mul(t2, H[m][m + 1], t0);
+      mpf_add(t0.get_mpf_t(), t0.get_mpf_t(), t1);
+      mpf_sqrt(t0.get_mpf_t(), t0.get_mpf_t());
+      mpf_ui_div(t0.get_mpf_t(), 1, t0.get_mpf_t()); /* invert t0 to avoid two divisions */
+      mpf_mul(t1, H[m][m], t0.get_mpf_t());
+      mpf_mul(t2, H[m][m + 1], t0.get_mpf_t());
       for (i = m; i < n; i++) {
         mpf_mul(u.get_mpf_t(), t1, H[i][m]);
         mpf_mul(v.get_mpf_t(), t2, H[i][m + 1]);
@@ -432,7 +431,7 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
       if (verbose >= 2) printf("Reducing precision to %lu\n", prec);
       for (unsigned i = 0; i < n; i++)
         for (unsigned j = 0; j < n; j++) mpf_set_prec(H[i][j], prec);
-      mpf_set_prec(t0, prec);
+      mpf_set_prec(t0.get_mpf_t(), prec);
       mpf_set_prec(t1, prec);
       mpf_set_prec(t2, prec);
       mpf_set_prec(t3, prec);
