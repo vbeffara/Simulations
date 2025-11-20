@@ -246,21 +246,25 @@ void scalprod(mpf_t s, mpf_t *x, mpz_t *y, unsigned long n) {
   output_B is the file for the output matrix B (NULL if no file)
   report - log lines are given each 'report' iterations
  */
-void pslq(mpz_t *y, mpf_t *x0, unsigned long n, double gam, int verbose, int report) {
-  mpz_t **A, **B, tt, *Bp;
-  mpf_t **H, *Hp, *s, *x;
-  mpf_t   t, u, v, t0, t1, t2, t3;
-  long    i, j, k, m, iter = 0, prec, prec0;
-  mpf_t   gamma, pow_gamma, norm, maxnorm;
-  size_t  size_B0 = 0, size_B = 0, size;
+mpz_t *pslq(mpf_t *x0, unsigned long n, double gam) {
+  const int verbose = 3;
+  const int report  = 100;
+  mpz_t     tt, *Bp;
+  mpf_t    *Hp;
+  mpf_t     t, u, v, t0, t1, t2, t3;
+  long      i, j, k, m, iter = 0;
+  mpf_t     gamma, pow_gamma, norm, maxnorm;
+  size_t    size_B0 = 0, size_B = 0, size;
 
-  prec = prec0 = mpf_get_prec(x0[0]);
+  auto prec0 = mpf_get_prec(x0[0]);
+  auto prec = prec0;
 
-  A = init_mpz_matrix(n);
-  B = init_mpz_matrix(n);
-  s = init_mpf_vector(n);
-  x = init_mpf_vector(n); /* copy of x0 */
-  H = init_mpf_matrix(n);
+  auto y = init_mpz_vector(n);
+  auto A = init_mpz_matrix(n);
+  auto B = init_mpz_matrix(n);
+  auto s = init_mpf_vector(n);
+  auto x = init_mpf_vector(n); /* copy of x0 */
+  auto H = init_mpf_matrix(n);
   mpf_init(t);
   mpf_init(u);
   mpf_init(v);
@@ -482,48 +486,37 @@ void pslq(mpz_t *y, mpf_t *x0, unsigned long n, double gam, int verbose, int rep
   }
 
   for (unsigned long i = 0; i < n; i++) mpz_set(y[i], B[j][i]);
+  return y;
 }
 
 int main(int argc, char *argv[]) {
-  unsigned long n, i;
-  mpf_t        *x, s; /* input vector */
-  mpz_t        *rel;  /* found relation */
-  unsigned long prec    = 53;
-  const int     verbose = 3;
-  const int     report  = 100;
-
   printf("PSLQ %s [powered by GMP %s]\n", VERSION, gmp_version);
-  const double gamma = 5200308914369309.0 / 4503599627370496.0; /* sqrt(4/3) rounded up */
 
-  while (argc >= 2) {
-    if (argc >= 3 && strcmp(argv[1], "-p") == 0) {
-      prec = atoi(argv[2]);
-      argc -= 2;
-      argv += 2;
-    }
-  }
-
-  if (verbose >= 2) printf("Using precision=%lu, gamma=%1.20e\n", prec, gamma);
-
+  unsigned long prec = 53;
+  if (argc >= 3 && strcmp(argv[1], "-p") == 0) { prec = atoi(argv[2]); }
   mpf_set_default_prec(prec);
 
+  const double gamma = 1.15470053837925168416; /* sqrt(4/3) rounded up */
+
+  printf("Using precision=%lu, gamma=%f\n", prec, gamma);
+
+  unsigned long n;
   scanf("%lu\n", &n);
 
-  x   = init_mpf_vector(n);
-  rel = init_mpz_vector(n);
-  mpf_init(s);
+  mpf_t *x = init_mpf_vector(n);
 
-  for (i = 0; i < n; i++) {
+  for (unsigned i = 0; i < n; i++) {
     mpf_inp_str(x[i], stdin, 10);
-    if (verbose >= 2) {
-      printf("x[%lu]=", i);
-      mpf_out_str(stdout, 10, 3, x[i]);
-      printf("\n");
-    }
+    printf("x[%u]=", i);
+    mpf_out_str(stdout, 10, 3, x[i]);
+    printf("\n");
   }
 
-  pslq(rel, x, n, gamma, verbose, report);
+  auto rel = pslq(x, n, gamma);
   print_relation(rel, n);
+
+  mpf_t s;
+  mpf_init(s);
   scalprod(s, x, rel, n);
   printf("scalprod=");
   mpf_out_str(stdout, 10, 3, s);
