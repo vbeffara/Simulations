@@ -224,7 +224,6 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
   const int report  = 100;
   mpz_t     tt, *Bp;
   mpf_t    *Hp;
-  mpf_t     t1, t2, t3;
   long      i, j, k, m, iter = 0;
   mpf_t     gamma, pow_gamma, norm, maxnorm;
   size_t    size_B0 = 0, size_B = 0, size;
@@ -238,10 +237,7 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
   std::vector<mpf_class> s(n);
   std::vector<mpf_class> x = x0;
   auto                   H = init_mpf_matrix(n);
-  mpf_class t, u, v, t0;
-  mpf_init(t1);
-  mpf_init(t2);
-  mpf_init(t3);
+  mpf_class t, u, v, t0, t1, t2, t3;
   mpz_init(tt);
   mpf_init2(gamma, 53);
   mpf_init2(pow_gamma, 53);
@@ -253,8 +249,8 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
   /* compute the norm of x */
   t0 = 0;
   for (k = 0; k < n; k++) {
-    mpf_mul(t1, x0[k].get_mpf_t(), x0[k].get_mpf_t());
-    mpf_add(t0.get_mpf_t(), t0.get_mpf_t(), t1);
+    mpf_mul(t1.get_mpf_t(), x0[k].get_mpf_t(), x0[k].get_mpf_t());
+    mpf_add(t0.get_mpf_t(), t0.get_mpf_t(), t1.get_mpf_t());
   }
   mpf_sqrt(t0.get_mpf_t(), t0.get_mpf_t());
 
@@ -343,19 +339,19 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
     /* step 3 */
     if (m < n - 2) {
       mpf_mul(t0.get_mpf_t(), H[m][m], H[m][m]);
-      mpf_mul(t1, H[m][m + 1], H[m][m + 1]);
-      mpf_add(t0.get_mpf_t(), t0.get_mpf_t(), t1);
+      mpf_mul(t1.get_mpf_t(), H[m][m + 1], H[m][m + 1]);
+      mpf_add(t0.get_mpf_t(), t0.get_mpf_t(), t1.get_mpf_t());
       mpf_sqrt(t0.get_mpf_t(), t0.get_mpf_t());
       mpf_ui_div(t0.get_mpf_t(), 1, t0.get_mpf_t()); /* invert t0 to avoid two divisions */
-      mpf_mul(t1, H[m][m], t0.get_mpf_t());
-      mpf_mul(t2, H[m][m + 1], t0.get_mpf_t());
+      mpf_mul(t1.get_mpf_t(), H[m][m], t0.get_mpf_t());
+      mpf_mul(t2.get_mpf_t(), H[m][m + 1], t0.get_mpf_t());
       for (i = m; i < n; i++) {
-        mpf_mul(u.get_mpf_t(), t1, H[i][m]);
-        mpf_mul(v.get_mpf_t(), t2, H[i][m + 1]);
-        mpf_add(t3, u.get_mpf_t(), v.get_mpf_t());
-        mpf_swap(t3, H[i][m]); /* avoids mpf_set */
-        mpf_mul(u.get_mpf_t(), t2, t3);
-        mpf_mul(v.get_mpf_t(), t1, H[i][m + 1]);
+        mpf_mul(u.get_mpf_t(), t1.get_mpf_t(), H[i][m]);
+        mpf_mul(v.get_mpf_t(), t2.get_mpf_t(), H[i][m + 1]);
+        mpf_add(t3.get_mpf_t(), u.get_mpf_t(), v.get_mpf_t());
+        mpf_swap(t3.get_mpf_t(), H[i][m]); /* avoids mpf_set */
+        mpf_mul(u.get_mpf_t(), t2.get_mpf_t(), t3.get_mpf_t());
+        mpf_mul(v.get_mpf_t(), t1.get_mpf_t(), H[i][m + 1]);
         mpf_sub(H[i][m + 1], v.get_mpf_t(), u.get_mpf_t());
       }
     }
@@ -432,9 +428,9 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
       for (unsigned i = 0; i < n; i++)
         for (unsigned j = 0; j < n; j++) mpf_set_prec(H[i][j], prec);
       mpf_set_prec(t0.get_mpf_t(), prec);
-      mpf_set_prec(t1, prec);
-      mpf_set_prec(t2, prec);
-      mpf_set_prec(t3, prec);
+      mpf_set_prec(t1.get_mpf_t(), prec);
+      mpf_set_prec(t2.get_mpf_t(), prec);
+      mpf_set_prec(t3.get_mpf_t(), prec);
       mpf_set_prec(u.get_mpf_t(), prec);
       mpf_set_prec(v.get_mpf_t(), prec);
       mpf_set_prec(t.get_mpf_t(), prec);
