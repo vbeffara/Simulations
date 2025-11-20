@@ -54,20 +54,6 @@
 #include <sys/time.h>
 #include <vector>
 
-#define mpz_addmul_si(a, b, c)                                                                                                             \
-  do {                                                                                                                                     \
-    if (c >= 0)                                                                                                                            \
-      mpz_addmul_ui(a, b, (unsigned long)c);                                                                                               \
-    else                                                                                                                                   \
-      mpz_submul_ui(a, b, (unsigned long)-c);                                                                                              \
-  } while (0)
-#define mpz_submul_si(a, b, c)                                                                                                             \
-  do {                                                                                                                                     \
-    if (c >= 0)                                                                                                                            \
-      mpz_submul_ui(a, b, (unsigned long)c);                                                                                               \
-    else                                                                                                                                   \
-      mpz_addmul_ui(a, b, (unsigned long)-c);                                                                                              \
-  } while (0)
 #define mpf_mul_si(a, b, c)                                                                                                                \
   do {                                                                                                                                     \
     if (c >= 0)                                                                                                                            \
@@ -236,35 +222,29 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
       for (int j = std::min(i - 1, m + 1); j >= 0; j--) {
         /* we want to compute the nearest integer to H[i][j]/H[j][j],
            but for that we need only small precision */
-        mp_exp_t prec_u;
-        long     ttt;
-        int      fits;
+        long ttt;
         auto exp_hij = mpf_get_exp(H[i][j]);
         auto exp_hjj = mpf_get_exp(H[j][j]);
-        if (exp_hij + 1 < exp_hjj) /* |H[i][j]| < 1/2*|H[j][j]| */
-          continue;
-        prec_u = exp_hij - exp_hjj + 10;
-        mpf_set_prec(u.get_mpf_t(), prec_u);
-        mpf_set_prec(t.get_mpf_t(), prec_u);
-        mpf_div(u.get_mpf_t(), H[i][j].get_mpf_t(), H[j][j].get_mpf_t());
+        if (exp_hij + 1 < exp_hjj) continue; // |H[i][j]| < |H[i][j]|/2
+        u = H[i][j] / H[j][j];
         t = floor(u + .5);
-        if (mpf_cmp_ui(t.get_mpf_t(), 0)) {
-          if ((fits = mpf_fits_slong_p(t.get_mpf_t()))) {
+        if (t != 0) {
+          auto fits = mpf_fits_slong_p(t.get_mpf_t());
+          if (fits) {
             ttt = mpf_get_si(t.get_mpf_t());
-            mpz_addmul_si(y[j].get_mpz_t(), y[i].get_mpz_t(), ttt);
+            y[j] += ttt * y[i];
             for (k = 0; k < n; k++) {
-              mpz_submul_si(A[i][k].get_mpz_t(), A[j][k].get_mpz_t(), ttt);
-              mpz_addmul_si(B[j][k].get_mpz_t(), B[i][k].get_mpz_t(), ttt);
-              if ((size = mpz_sizeinbase(B[j][k].get_mpz_t(), 2)) > size_B) size_B = size;
+              A[i][k] -= ttt * A[j][k];
+              B[j][k] += ttt * B[i][k];
+              size_B = std::max(size_B, mpz_sizeinbase(B[j][k].get_mpz_t(), 2));
             }
-          } else /* should happen rarely */
-          {
-            mpz_set_f(tt.get_mpz_t(), t.get_mpf_t());
-            mpz_addmul(y[j].get_mpz_t(), tt.get_mpz_t(), y[i].get_mpz_t());
+          } else {
+            tt = t;
+            y[j] += tt * y[i];
             for (k = 0; k < n; k++) {
-              mpz_submul(A[i][k].get_mpz_t(), tt.get_mpz_t(), A[j][k].get_mpz_t());
-              mpz_addmul(B[j][k].get_mpz_t(), tt.get_mpz_t(), B[i][k].get_mpz_t());
-              if ((size = mpz_sizeinbase(B[j][k].get_mpz_t(), 2)) > size_B) size_B = size;
+              A[i][k] -= tt * A[j][k];
+              B[j][k] += tt * B[i][k];
+              size_B = std::max(size_B, mpz_sizeinbase(B[j][k].get_mpz_t(), 2));
             }
           }
           for (k = 0; k <= j; k++) {
