@@ -105,17 +105,17 @@ mpz_t **init_mpz_matrix(unsigned long n) {
 }
 
 /* print relation A[0..n-1] */
-void print_relation(mpz_t *A, unsigned long n) {
+void print_relation(std::vector<mpz_class> &A, unsigned long n) {
   unsigned long i;
   int           s, first = 1;
   FILE         *fp = stdout;
 
   fprintf(fp, "\np=");
   for (i = 0; i < n; i++) {
-    if ((s = mpz_sgn(A[i]))) {
+    if ((s = mpz_sgn(A[i].get_mpz_t()))) {
       if (!first && s > 0) fprintf(fp, "+");
-      if (mpz_cmp_ui(A[i], 1)) {
-        mpz_out_str(fp, 10, A[i]);
+      if (mpz_cmp_ui(A[i].get_mpz_t(), 1)) {
+        mpz_out_str(fp, 10, A[i].get_mpz_t());
         fprintf(fp, "*");
       }
       fprintf(fp, "x^%lu", i);
@@ -132,7 +132,7 @@ void set_identity(mpz_t **A, unsigned long n) {
     for (j = 0; j < n; j++) mpz_set_ui(A[i][j], (i == j) ? 1 : 0);
 }
 
-mpz_t *init_mpz_vector(unsigned long n) {
+[[deprecated]] mpz_t *init_mpz_vector(unsigned long n) {
   mpz_t        *v;
   unsigned long i;
 
@@ -175,22 +175,22 @@ int mpf_cmpabs(mpf_t a, mpf_t b) {
 }
 
 /* return m such that |v[m]| is minimal */
-unsigned long minabs_vector(mpz_t *v, unsigned long n) {
+unsigned long minabs_vector(std::vector<mpz_class> &v, unsigned long n) {
   unsigned long i, m;
 
   m = 0;
   for (i = 1; i < n; i++)
-    if (mpz_cmpabs(v[i], v[m]) < 0) m = i;
+    if (mpz_cmpabs(v[i].get_mpz_t(), v[m].get_mpz_t()) < 0) m = i;
   return m;
 }
 
 /* return m such that |v[m]| is maximal */
-unsigned long maxabs_mpz_vector(mpz_t *v, unsigned long n) {
+unsigned long maxabs_mpz_vector(std::vector<mpz_class> &v, unsigned long n) {
   unsigned long i, m;
 
   m = 0;
   for (i = 1; i < n; i++)
-    if (mpz_cmpabs(v[i], v[m]) > 0) m = i;
+    if (mpz_cmpabs(v[i].get_mpz_t(), v[m].get_mpz_t()) > 0) m = i;
   return m;
 }
 
@@ -211,14 +211,14 @@ mp_exp_t mpf_get_exp(mpf_t a) {
 }
 
 /* s <- x[0]*y[0]+...+x[n-1]*y[n-1] */
-void scalprod(mpf_t s, std::vector<mpf_class> &x, mpz_t *y, unsigned long n) {
+void scalprod(mpf_t s, std::vector<mpf_class> &x, std::vector<mpz_class> &y, unsigned long n) {
   unsigned long i;
   mpf_t         t;
 
   mpf_init2(t, mpf_get_prec(x[0].get_mpf_t()));
   mpf_set_ui(s, 0);
   for (i = 0; i < n; i++) {
-    mpf_set_z(t, y[i]);
+    mpf_set_z(t, y[i].get_mpz_t());
     mpf_mul(t, x[i].get_mpf_t(), t);
     mpf_add(s, s, t);
   }
@@ -233,7 +233,7 @@ void scalprod(mpf_t s, std::vector<mpf_class> &x, mpz_t *y, unsigned long n) {
   output_B is the file for the output matrix B (NULL if no file)
   report - log lines are given each 'report' iterations
  */
-mpz_t *pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
+auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
   const int verbose = 3;
   const int report  = 100;
   mpz_t     tt, *Bp;
@@ -246,7 +246,7 @@ mpz_t *pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
   auto prec0 = mpf_get_prec(x0[0].get_mpf_t());
   auto prec  = prec0;
 
-  auto                   y = init_mpz_vector(n);
+  std::vector<mpz_class> y(n);
   auto                   A = init_mpz_matrix(n);
   auto                   B = init_mpz_matrix(n);
   std::vector<mpf_class> s(n);
@@ -289,7 +289,7 @@ mpz_t *pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
   for (k = 0; k < n; k++) {
     mpf_div(t, x[k].get_mpf_t(), t0); /* |t| < 1 */
     mpf_mul_2exp(t, t, prec);
-    mpz_set_f(y[k], t);
+    mpz_set_f(y[k].get_mpz_t(), t);
   }
 
   /* compute s[] from x0[] */
@@ -316,7 +316,7 @@ mpz_t *pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
       mpf_div(u, H[i][j], H[j][j]);
       mpf_nint(t, u);
       mpz_set_f(tt, t);
-      mpz_addmul(y[j], tt, y[i]);
+      mpz_addmul(y[j].get_mpz_t(), tt, y[i].get_mpz_t());
       for (k = 0; k <= j; k++) {
         mpf_mul(u, t, H[j][k]);
         mpf_sub(H[i][k], H[i][k], u);
@@ -346,7 +346,7 @@ mpz_t *pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
     }
 
     /* step 2 */
-    mpz_swap(y[m], y[m + 1]);
+    mpz_swap(y[m].get_mpz_t(), y[m + 1].get_mpz_t());
     Hp       = H[m];
     H[m]     = H[m + 1];
     H[m + 1] = Hp;
@@ -397,7 +397,7 @@ mpz_t *pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
         if (mpf_cmp_ui(t, 0)) {
           if ((fits = mpf_fits_slong_p(t))) {
             ttt = mpf_get_si(t);
-            mpz_addmul_si(y[j], y[i], ttt);
+            mpz_addmul_si(y[j].get_mpz_t(), y[i].get_mpz_t(), ttt);
             for (k = 0; k < n; k++) {
               mpz_submul_si(A[i][k], A[j][k], ttt);
               mpz_addmul_si(B[j][k], B[i][k], ttt);
@@ -406,7 +406,7 @@ mpz_t *pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
           } else /* should happen rarely */
           {
             mpz_set_f(tt, t);
-            mpz_addmul(y[j], tt, y[i]);
+            mpz_addmul(y[j].get_mpz_t(), tt, y[i].get_mpz_t());
             for (k = 0; k < n; k++) {
               mpz_submul(A[i][k], tt, A[j][k]);
               mpz_addmul(B[j][k], tt, B[i][k]);
@@ -430,13 +430,13 @@ mpz_t *pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
     /* step 5 */
     j = minabs_vector(y, n);
     k = maxabs_mpz_vector(y, n);
-    k = mpz_sizeinbase(y[k], 2);
+    k = mpz_sizeinbase(y[k].get_mpz_t(), 2);
     if (verbose && (iter % report == 0)) {
       maxabs_vector(u, H, n - 1);
       mpf_ui_div(u, 1, u);
       printf("iter=%lu M=", iter);
       mpf_out_str(stdout, 10, 3, u);
-      printf(" ymin=%lu", mpz_sizeinbase(y[j], 2));
+      printf(" ymin=%lu", mpz_sizeinbase(y[j].get_mpz_t(), 2));
       printf(" ymax=%lu", k);
       printf("\n");
       fflush(stdout);
@@ -460,7 +460,7 @@ mpz_t *pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
     /* when the norm of B is larger than that of y[], this means that
        neglected bits in the input x[] will give a non-zero contribution,
        so we can stop */
-    size = mpz_sizeinbase(y[j], 2);
+    size = mpz_sizeinbase(y[j].get_mpz_t(), 2);
   } while (size >= size_B0 + size_B);
 
   if (!verbose || (iter % report != 0)) {
@@ -470,7 +470,7 @@ mpz_t *pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
     mpf_out_str(stdout, 10, 3, u);
   }
 
-  for (unsigned long i = 0; i < n; i++) mpz_set(y[i], B[j][i]);
+  for (unsigned long i = 0; i < n; i++) mpz_set(y[i].get_mpz_t(), B[j][i]);
   return y;
 }
 
