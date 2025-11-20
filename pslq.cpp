@@ -117,11 +117,11 @@ auto identity(unsigned n) {
   return A;
 }
 
-/* t <- nearest_integer (u) */
-void mpf_nint(mpf_t t, mpf_t u) {
-  mpf_set_d(t, 0.5);
-  mpf_add(t, u, t);
-  mpf_floor(t, t);
+/* t <- nearest_integer (t) */
+auto mpf_nint(mpf_class &t) {
+  mpf_class u = t + 0.5;
+  mpf_floor(u.get_mpf_t(), u.get_mpf_t());
+  return u;
 }
 
 int mpf_cmpabs(mpf_t a, mpf_t b) {
@@ -209,48 +209,40 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
   mpz_class                           tt;
 
   mpf_class t0 = 0;
-  for (k = 0; k < n; k++) t0 += x0[k] * x0[k];
+  for (int k = 0; k < n; k++) t0 += x0[k] * x0[k];
   t0 = sqrt(t0);
 
   /* step 1 */
   auto A = identity(n), B = identity(n);
 
   /* step 2 */
-  /* normalize y[] so that it has prec bits */
-  for (k = 0; k < n; k++) {
-    t = x[k] / t0;
-    mpf_mul_2exp(t.get_mpf_t(), t.get_mpf_t(), prec);
-    y[k] = t;
-  }
+  for (int k = 0; k < n; k++) y[k] = x[k] * ((1_mpz << prec) / t0);
 
   /* compute s[] from x0[] */
-  for (k = n - 1; k >= 0; k--) {
+  for (int k = n - 1; k >= 0; k--) {
     s[k] = x0[k] * x0[k];
     if (k < n - 1) s[k] += s[k + 1];
   }
-  for (k = 0; k < n; k++) s[k] = sqrt(s[k]);
+  for (int k = 0; k < n; k++) s[k] = sqrt(s[k]);
 
   /* step 3 */
-  for (j = 0; j < n - 1; j++) {
+  for (int j = 0; j < n - 1; j++) {
     H[j][j] = s[j + 1] / s[j];
-    for (i = j + 1; i < n; i++) H[i][j] = -(x0[i] * x0[j]) / (s[j] * s[j + 1]);
+    for (int i = j + 1; i < n; i++) H[i][j] = -(x0[i] * x0[j]) / (s[j] * s[j + 1]);
   }
 
   /* step 4: Hermite reduce H, omit for a restart */
-  for (i = 1; i < n; i++) {
-    for (j = i - 1; j >= 0; j--) {
-      mpf_div(u.get_mpf_t(), H[i][j].get_mpf_t(), H[j][j].get_mpf_t());
-      mpf_nint(t.get_mpf_t(), u.get_mpf_t());
-      mpz_set_f(tt.get_mpz_t(), t.get_mpf_t());
-      mpz_addmul(y[j].get_mpz_t(), tt.get_mpz_t(), y[i].get_mpz_t());
-      for (k = 0; k <= j; k++) {
-        mpf_mul(u.get_mpf_t(), t.get_mpf_t(), H[j][k].get_mpf_t());
-        mpf_sub(H[i][k].get_mpf_t(), H[i][k].get_mpf_t(), u.get_mpf_t());
-      }
+  for (int i = 1; i < n; i++) {
+    for (int j = i - 1; j >= 0; j--) {
+      u  = H[i][j] / H[j][j];
+      t  = mpf_nint(u);
+      tt = t;
+      y[j] += t * y[i];
+      for (k = 0; k <= j; k++) H[i][k] -= t * H[j][k];
       for (k = 0; k < n; k++) {
-        mpz_submul(A[i][k].get_mpz_t(), tt.get_mpz_t(), A[j][k].get_mpz_t());
-        mpz_addmul(B[j][k].get_mpz_t(), tt.get_mpz_t(), B[i][k].get_mpz_t());
-        if ((size = mpz_sizeinbase(B[j][k].get_mpz_t(), 2)) > size_B) size_B = size;
+        A[i][k] -= t * A[j][k];
+        B[j][k] += t * B[i][k];
+        size_B = std::max (size_B, mpz_sizeinbase(B[j][k].get_mpz_t(), 2));
       }
     }
   }
@@ -313,7 +305,7 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
         mpf_set_prec(u.get_mpf_t(), prec_u);
         mpf_set_prec(t.get_mpf_t(), prec_u);
         mpf_div(u.get_mpf_t(), H[i][j].get_mpf_t(), H[j][j].get_mpf_t());
-        mpf_nint(t.get_mpf_t(), u.get_mpf_t());
+        t = mpf_nint(u);
         if (mpf_cmp_ui(t.get_mpf_t(), 0)) {
           if ((fits = mpf_fits_slong_p(t.get_mpf_t()))) {
             ttt = mpf_get_si(t.get_mpf_t());
