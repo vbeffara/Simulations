@@ -42,9 +42,9 @@
 
 #define VERSION "1.0"
 
+#include <algorithm>
 #include <gmp.h>
 #include <gmpxx.h>
-#include <algorithm>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -130,25 +130,6 @@ void set_identity(mpz_t **A, unsigned long n) {
 
   for (i = 0; i < n; i++)
     for (j = 0; j < n; j++) mpz_set_ui(A[i][j], (i == j) ? 1 : 0);
-}
-
-mpf_t *init_mpf_vector(unsigned long n) {
-  mpf_t        *v;
-  unsigned long i;
-
-  v = (mpf_t *)malloc(n * sizeof(mpf_t));
-  for (i = 0; i < n; i++) mpf_init(v[i]);
-  return v;
-}
-
-std::vector<mpf_class> init_mpf_std_vector(unsigned long n) {
-  return std::vector<mpf_class> (n);
-}
-
-void set_mpf_vector(mpf_t *v, std::vector<mpf_class> &w, unsigned long n) {
-  unsigned long i;
-
-  for (i = 0; i < n; i++) mpf_set(v[i], w[i].get_mpf_t());
 }
 
 mpz_t *init_mpz_vector(unsigned long n) {
@@ -263,14 +244,14 @@ mpz_t *pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
   size_t    size_B0 = 0, size_B = 0, size;
 
   auto prec0 = mpf_get_prec(x0[0].get_mpf_t());
-  auto prec = prec0;
+  auto prec  = prec0;
 
-  auto y = init_mpz_vector(n);
-  auto A = init_mpz_matrix(n);
-  auto B = init_mpz_matrix(n);
-  auto s = init_mpf_vector(n);
-  auto x = init_mpf_vector(n); /* copy of x0 */
-  auto H = init_mpf_matrix(n);
+  auto                   y = init_mpz_vector(n);
+  auto                   A = init_mpz_matrix(n);
+  auto                   B = init_mpz_matrix(n);
+  std::vector<mpf_class> s(n);
+  std::vector<mpf_class> x = x0;
+  auto                   H = init_mpf_matrix(n);
   mpf_init(t);
   mpf_init(u);
   mpf_init(v);
@@ -299,8 +280,6 @@ mpz_t *pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
      - y = x0/t0, then y = B*y
   */
 
-  set_mpf_vector(x, x0, n);
-
   /* step 1 */
   set_identity(A, n);
   set_identity(B, n);
@@ -308,23 +287,23 @@ mpz_t *pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
   /* step 2 */
   /* normalize y[] so that it has prec bits */
   for (k = 0; k < n; k++) {
-    mpf_div(t, x[k], t0); /* |t| < 1 */
+    mpf_div(t, x[k].get_mpf_t(), t0); /* |t| < 1 */
     mpf_mul_2exp(t, t, prec);
     mpz_set_f(y[k], t);
   }
 
   /* compute s[] from x0[] */
   for (k = n - 1; k >= 0; k--) {
-    mpf_mul(s[k], x0[k].get_mpf_t(), x0[k].get_mpf_t());
-    if (k < n - 1) mpf_add(s[k], s[k], s[k + 1]);
+    mpf_mul(s[k].get_mpf_t(), x0[k].get_mpf_t(), x0[k].get_mpf_t());
+    if (k < n - 1) mpf_add(s[k].get_mpf_t(), s[k].get_mpf_t(), s[k + 1].get_mpf_t());
   }
-  for (k = 0; k < n; k++) mpf_sqrt(s[k], s[k]);
+  for (k = 0; k < n; k++) mpf_sqrt(s[k].get_mpf_t(), s[k].get_mpf_t());
 
   /* step 3 */
   for (j = 0; j < n - 1; j++) {
-    mpf_div(H[j][j], s[j + 1], s[j]);
+    mpf_div(H[j][j], s[j + 1].get_mpf_t(), s[j].get_mpf_t());
     for (i = j + 1; i < n; i++) {
-      mpf_mul(H[i][j], s[j], s[j + 1]);
+      mpf_mul(H[i][j], s[j].get_mpf_t(), s[j + 1].get_mpf_t());
       mpf_div(H[i][j], x0[i].get_mpf_t(), H[i][j]);
       mpf_mul(H[i][j], H[i][j], x0[j].get_mpf_t());
       mpf_neg(H[i][j], H[i][j]);
@@ -509,7 +488,7 @@ int main(int argc, char *argv[]) {
   unsigned long n;
   scanf("%lu\n", &n);
 
-  auto x = init_mpf_std_vector(n);
+  std::vector<mpf_class> x(n);
 
   for (unsigned i = 0; i < n; i++) {
     mpf_t tmp;
