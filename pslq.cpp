@@ -45,6 +45,7 @@
 #include <algorithm>
 #include <gmp.h>
 #include <gmpxx.h>
+#include <iostream>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -84,10 +85,7 @@ mpf_t **init_mpf_matrix(unsigned long n) {
   A = (mpf_t **)malloc(n * sizeof(mpf_t *));
   for (i = 0; i < n; i++) {
     A[i] = (mpf_t *)malloc(n * sizeof(mpf_t));
-    for (j = 0; j < n; j++) {
-      mpf_init(A[i][j]);
-      mpf_set_ui(A[i][j], 0);
-    }
+    for (j = 0; j < n; j++) { mpf_init(A[i][j]); }
   }
   return A;
 }
@@ -181,12 +179,12 @@ unsigned long maxabs_mpz_vector(std::vector<mpz_class> &v, unsigned long n) {
 }
 
 /* u = max(|v[i]|) for i=0..n-1 */
-void maxabs_vector(mpf_t u, mpf_t **v, unsigned long n) {
+void maxabs_vector(mpf_t u, std::vector<std::vector<mpf_class>> &v, unsigned long n) {
   unsigned long i;
 
-  mpf_abs(u, v[0][0]);
+  mpf_abs(u, v[0][0].get_mpf_t());
   for (i = 1; i < n; i++)
-    if (mpf_cmpabs(v[i][i], u) > 0) mpf_abs(u, v[i][i]);
+    if (mpf_cmpabs(v[i][i].get_mpf_t(), u) > 0) mpf_abs(u, v[i][i].get_mpf_t());
 }
 
 mp_exp_t mpf_get_exp(mpf_t a) {
@@ -197,18 +195,12 @@ mp_exp_t mpf_get_exp(mpf_t a) {
 }
 
 /* s <- x[0]*y[0]+...+x[n-1]*y[n-1] */
-void scalprod(mpf_t s, std::vector<mpf_class> &x, std::vector<mpz_class> &y, unsigned long n) {
-  unsigned long i;
-  mpf_t         t;
-
-  mpf_init2(t, mpf_get_prec(x[0].get_mpf_t()));
-  mpf_set_ui(s, 0);
-  for (i = 0; i < n; i++) {
-    mpf_set_z(t, y[i].get_mpz_t());
-    mpf_mul(t, x[i].get_mpf_t(), t);
-    mpf_add(s, s, t);
+mpf_class scalprod(std::vector<mpf_class> &x, std::vector<mpz_class> &y) {
+  mpf_class s = 0;
+  for (unsigned i = 0; i < x.size(); i++) {
+    s += y[i] * x[i];
   }
-  mpf_clear(t);
+  return s;
 }
 
 /*
@@ -219,31 +211,26 @@ void scalprod(mpf_t s, std::vector<mpf_class> &x, std::vector<mpz_class> &y, uns
   report - log lines are given each 'report' iterations
  */
 auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
-  mpz_t *Bp;
-  mpf_t *Hp;
   long   i, j, k, m, iter = 0;
   mpf_t  gamma, pow_gamma, norm, maxnorm;
   size_t size_B0 = 0, size_B = 0, size;
 
-  auto prec0 = mpf_get_prec(x0[0].get_mpf_t());
-  auto prec  = prec0;
+  auto prec = mpf_get_prec(x0[0].get_mpf_t());
 
-  std::vector<mpz_class> y(n);
-  auto                   A = init_mpz_matrix(n);
-  auto                   B = init_mpz_matrix(n);
-  std::vector<mpf_class> s(n), x(x0);
-  auto                   H = init_mpf_matrix(n);
-  mpf_class              t, u, v, t0, t1, t2, t3;
-  mpz_class              tt;
+  std::vector<mpz_class>              y(n);
+  auto                                A = init_mpz_matrix(n);
+  auto                                B = init_mpz_matrix(n);
+  std::vector<mpf_class>              s(n), x(x0);
+  std::vector<std::vector<mpf_class>> H(n, std::vector<mpf_class>(n));
+  mpf_class                           t, u, v, t0(0), t1, t2, t3;
+  mpz_class                           tt;
   mpf_init2(gamma, 53);
   mpf_init2(pow_gamma, 53);
   mpf_init2(norm, 53);
   mpf_init2(maxnorm, 53);
-
   mpf_set_d(gamma, gam);
 
   /* compute the norm of x */
-  t0 = 0;
   for (k = 0; k < n; k++) {
     mpf_mul(t1.get_mpf_t(), x0[k].get_mpf_t(), x0[k].get_mpf_t());
     mpf_add(t0.get_mpf_t(), t0.get_mpf_t(), t1.get_mpf_t());
@@ -276,25 +263,25 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
 
   /* step 3 */
   for (j = 0; j < n - 1; j++) {
-    mpf_div(H[j][j], s[j + 1].get_mpf_t(), s[j].get_mpf_t());
+    mpf_div(H[j][j].get_mpf_t(), s[j + 1].get_mpf_t(), s[j].get_mpf_t());
     for (i = j + 1; i < n; i++) {
-      mpf_mul(H[i][j], s[j].get_mpf_t(), s[j + 1].get_mpf_t());
-      mpf_div(H[i][j], x0[i].get_mpf_t(), H[i][j]);
-      mpf_mul(H[i][j], H[i][j], x0[j].get_mpf_t());
-      mpf_neg(H[i][j], H[i][j]);
+      mpf_mul(H[i][j].get_mpf_t(), s[j].get_mpf_t(), s[j + 1].get_mpf_t());
+      mpf_div(H[i][j].get_mpf_t(), x0[i].get_mpf_t(), H[i][j].get_mpf_t());
+      mpf_mul(H[i][j].get_mpf_t(), H[i][j].get_mpf_t(), x0[j].get_mpf_t());
+      mpf_neg(H[i][j].get_mpf_t(), H[i][j].get_mpf_t());
     }
   }
 
   /* step 4: Hermite reduce H, omit for a restart */
   for (i = 1; i < n; i++) {
     for (j = i - 1; j >= 0; j--) {
-      mpf_div(u.get_mpf_t(), H[i][j], H[j][j]);
+      mpf_div(u.get_mpf_t(), H[i][j].get_mpf_t(), H[j][j].get_mpf_t());
       mpf_nint(t.get_mpf_t(), u.get_mpf_t());
       mpz_set_f(tt.get_mpz_t(), t.get_mpf_t());
       mpz_addmul(y[j].get_mpz_t(), tt.get_mpz_t(), y[i].get_mpz_t());
       for (k = 0; k <= j; k++) {
-        mpf_mul(u.get_mpf_t(), t.get_mpf_t(), H[j][k]);
-        mpf_sub(H[i][k], H[i][k], u.get_mpf_t());
+        mpf_mul(u.get_mpf_t(), t.get_mpf_t(), H[j][k].get_mpf_t());
+        mpf_sub(H[i][k].get_mpf_t(), H[i][k].get_mpf_t(), u.get_mpf_t());
       }
       for (k = 0; k < n; k++) {
         mpz_submul(A[i][k], tt.get_mpz_t(), A[j][k]);
@@ -308,12 +295,12 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
     iter++;
 
     /* step 1 */
-    mpf_abs(maxnorm, H[0][0]);
+    mpf_abs(maxnorm, H[0][0].get_mpf_t());
     m = 0;                    /* value of i such that gamma^i*|H[i][i]| is maximal */
     mpf_set_ui(pow_gamma, 1); /* pow_gamma = gamma^i */
     for (i = 1; i < n - 1; i++) {
       mpf_mul(pow_gamma, pow_gamma, gamma);
-      mpf_mul(norm, pow_gamma, H[i][i]);
+      mpf_mul(norm, pow_gamma, H[i][i].get_mpf_t());
       if (mpf_cmpabs(norm, maxnorm) > 0) {
         m = i;
         mpf_abs(maxnorm, norm);
@@ -322,33 +309,27 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
 
     /* step 2 */
     mpz_swap(y[m].get_mpz_t(), y[m + 1].get_mpz_t());
-    Hp       = H[m];
-    H[m]     = H[m + 1];
-    H[m + 1] = Hp;
-    Bp       = A[m];
-    A[m]     = A[m + 1];
-    A[m + 1] = Bp;
-    Bp       = B[m];
-    B[m]     = B[m + 1];
-    B[m + 1] = Bp;
+    std::swap(A[m], A[m+1]);
+    std::swap(B[m], B[m+1]);
+    std::swap(H[m], H[m+1]);
 
     /* step 3 */
     if (m < n - 2) {
-      mpf_mul(t0.get_mpf_t(), H[m][m], H[m][m]);
-      mpf_mul(t1.get_mpf_t(), H[m][m + 1], H[m][m + 1]);
+      mpf_mul(t0.get_mpf_t(), H[m][m].get_mpf_t(), H[m][m].get_mpf_t());
+      mpf_mul(t1.get_mpf_t(), H[m][m + 1].get_mpf_t(), H[m][m + 1].get_mpf_t());
       mpf_add(t0.get_mpf_t(), t0.get_mpf_t(), t1.get_mpf_t());
       mpf_sqrt(t0.get_mpf_t(), t0.get_mpf_t());
       mpf_ui_div(t0.get_mpf_t(), 1, t0.get_mpf_t()); /* invert t0 to avoid two divisions */
-      mpf_mul(t1.get_mpf_t(), H[m][m], t0.get_mpf_t());
-      mpf_mul(t2.get_mpf_t(), H[m][m + 1], t0.get_mpf_t());
+      mpf_mul(t1.get_mpf_t(), H[m][m].get_mpf_t(), t0.get_mpf_t());
+      mpf_mul(t2.get_mpf_t(), H[m][m + 1].get_mpf_t(), t0.get_mpf_t());
       for (i = m; i < n; i++) {
-        mpf_mul(u.get_mpf_t(), t1.get_mpf_t(), H[i][m]);
-        mpf_mul(v.get_mpf_t(), t2.get_mpf_t(), H[i][m + 1]);
+        mpf_mul(u.get_mpf_t(), t1.get_mpf_t(), H[i][m].get_mpf_t());
+        mpf_mul(v.get_mpf_t(), t2.get_mpf_t(), H[i][m + 1].get_mpf_t());
         mpf_add(t3.get_mpf_t(), u.get_mpf_t(), v.get_mpf_t());
-        mpf_swap(t3.get_mpf_t(), H[i][m]); /* avoids mpf_set */
+        mpf_swap(t3.get_mpf_t(), H[i][m].get_mpf_t()); /* avoids mpf_set */
         mpf_mul(u.get_mpf_t(), t2.get_mpf_t(), t3.get_mpf_t());
-        mpf_mul(v.get_mpf_t(), t1.get_mpf_t(), H[i][m + 1]);
-        mpf_sub(H[i][m + 1], v.get_mpf_t(), u.get_mpf_t());
+        mpf_mul(v.get_mpf_t(), t1.get_mpf_t(), H[i][m + 1].get_mpf_t());
+        mpf_sub(H[i][m + 1].get_mpf_t(), v.get_mpf_t(), u.get_mpf_t());
       }
     }
 
@@ -360,14 +341,14 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
         int      fits;
         /* we want to compute the nearest integer to H[i][j]/H[j][j],
            but for that we need only small precision */
-        exp_hij = mpf_get_exp(H[i][j]);
-        exp_hjj = mpf_get_exp(H[j][j]);
+        exp_hij = mpf_get_exp(H[i][j].get_mpf_t());
+        exp_hjj = mpf_get_exp(H[j][j].get_mpf_t());
         if (exp_hij + 1 < exp_hjj) /* |H[i][j]| < 1/2*|H[j][j]| */
           continue;
         prec_u = exp_hij - exp_hjj + 10;
         mpf_set_prec(u.get_mpf_t(), prec_u);
         mpf_set_prec(t.get_mpf_t(), prec_u);
-        mpf_div(u.get_mpf_t(), H[i][j], H[j][j]);
+        mpf_div(u.get_mpf_t(), H[i][j].get_mpf_t(), H[j][j].get_mpf_t());
         mpf_nint(t.get_mpf_t(), u.get_mpf_t());
         if (mpf_cmp_ui(t.get_mpf_t(), 0)) {
           if ((fits = mpf_fits_slong_p(t.get_mpf_t()))) {
@@ -390,10 +371,10 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
           }
           for (k = 0; k <= j; k++) {
             if (fits)
-              mpf_mul_si(v.get_mpf_t(), H[j][k], ttt);
+              mpf_mul_si(v.get_mpf_t(), H[j][k].get_mpf_t(), ttt);
             else
-              mpf_mul(v.get_mpf_t(), H[j][k], t.get_mpf_t());
-            mpf_sub(H[i][k], H[i][k], v.get_mpf_t());
+              mpf_mul(v.get_mpf_t(), H[j][k].get_mpf_t(), t.get_mpf_t());
+            mpf_sub(H[i][k].get_mpf_t(), H[i][k].get_mpf_t(), v.get_mpf_t());
           }
         }
       }
@@ -422,7 +403,7 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
       prec = k + 10;
       printf("Reducing precision to %lu\n", prec);
       for (unsigned i = 0; i < n; i++)
-        for (unsigned j = 0; j < n; j++) mpf_set_prec(H[i][j], prec);
+        for (unsigned j = 0; j < n; j++) mpf_set_prec(H[i][j].get_mpf_t(), prec);
       mpf_set_prec(t0.get_mpf_t(), prec);
       mpf_set_prec(t1.get_mpf_t(), prec);
       mpf_set_prec(t2.get_mpf_t(), prec);
@@ -466,10 +447,7 @@ int main(int argc, char *argv[]) {
   std::vector<mpf_class> x(n);
 
   for (unsigned i = 0; i < n; i++) {
-    mpf_t tmp;
-    mpf_init(tmp);
-    mpf_inp_str(tmp, stdin, 10);
-    x[i] = mpf_class(tmp);
+    mpf_inp_str(x[i].get_mpf_t(), stdin, 10);
     printf("x[%u]=", i);
     mpf_out_str(stdout, 10, 3, x[i].get_mpf_t());
     printf("\n");
@@ -478,10 +456,7 @@ int main(int argc, char *argv[]) {
   auto rel = pslq(x, n, gamma);
   print_relation(rel, n);
 
-  mpf_t s;
-  mpf_init(s);
-  scalprod(s, x, rel, n);
   printf("scalprod=");
-  mpf_out_str(stdout, 10, 3, s);
+  mpf_out_str(stdout, 10, 3, scalprod(x, rel).get_mpf_t());
   printf("\n");
 }
