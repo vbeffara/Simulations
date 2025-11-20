@@ -124,27 +124,27 @@ auto mpf_nint(mpf_class &t) {
   return u;
 }
 
-int mpf_cmpabs(mpf_t a, mpf_t b) {
+int mpf_cmpabs(mpf_class &a, mpf_class &b) {
   int res, sa, sb;
 
-  sa = mpf_sgn(a);
-  sb = mpf_sgn(b);
+  sa = mpf_sgn(a.get_mpf_t());
+  sb = mpf_sgn(b.get_mpf_t());
 
   if (sa >= 0 && sb >= 0)
-    res = mpf_cmp(a, b);
+    res = mpf_cmp(a.get_mpf_t(), b.get_mpf_t());
   else if (sa <= 0 && sb <= 0)
-    res = -mpf_cmp(a, b);
+    res = -mpf_cmp(a.get_mpf_t(), b.get_mpf_t());
   else /* signs differ */
   {
     if (sa < 0)
-      mpf_neg(a, a);
+      mpf_neg(a.get_mpf_t(), a.get_mpf_t());
     else
-      mpf_neg(b, b);
-    res = mpf_cmp(a, b);
+      mpf_neg(b.get_mpf_t(), b.get_mpf_t());
+    res = mpf_cmp(a.get_mpf_t(), b.get_mpf_t());
     if (sa < 0)
-      mpf_neg(a, a);
+      mpf_neg(a.get_mpf_t(), a.get_mpf_t());
     else
-      mpf_neg(b, b);
+      mpf_neg(b.get_mpf_t(), b.get_mpf_t());
   }
 
   return res;
@@ -167,12 +167,12 @@ unsigned long maxabs_mpz_vector(std::vector<mpz_class> &v, unsigned long n) {
 }
 
 /* u = max(|v[i]|) for i=0..n-1 */
-void maxabs_vector(mpf_t u, std::vector<std::vector<mpf_class>> &v, unsigned long n) {
+void maxabs_vector(mpf_class &u, std::vector<std::vector<mpf_class>> &v, unsigned long n) {
   unsigned long i;
 
-  mpf_abs(u, v[0][0].get_mpf_t());
+  u = abs(v[0][0]);
   for (i = 1; i < n; i++)
-    if (mpf_cmpabs(v[i][i].get_mpf_t(), u) > 0) mpf_abs(u, v[i][i].get_mpf_t());
+    if (mpf_cmpabs(v[i][i], u) > 0) u = abs(v[i][i]);
 }
 
 mp_exp_t mpf_get_exp(mpf_t a) {
@@ -197,7 +197,7 @@ mpf_class scalprod(std::vector<mpf_class> &x, std::vector<mpz_class> &y) {
   report - log lines are given each 'report' iterations
  */
 auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
-  long   i, j, k, m, iter = 0;
+  long   i, j, k, iter = 0;
   size_t size_B0 = 0, size_B = 0, size;
 
   auto prec = mpf_get_prec(x0[0].get_mpf_t());
@@ -205,7 +205,7 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
   std::vector<std::vector<mpf_class>> H(n, std::vector<mpf_class>(n));
   std::vector<mpf_class>              s(n), x(x0);
   std::vector<mpz_class>              y(n);
-  mpf_class                           t, u, v, t1, t2, t3, gamma(gam), norm, maxnorm;
+  mpf_class                           t, u, v, t1, t2, t3, gamma(gam), norm;
   mpz_class                           tt;
 
   mpf_class t0 = 0;
@@ -242,7 +242,7 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
       for (k = 0; k < n; k++) {
         A[i][k] -= t * A[j][k];
         B[j][k] += t * B[i][k];
-        size_B = std::max (size_B, mpz_sizeinbase(B[j][k].get_mpz_t(), 2));
+        size_B = std::max(size_B, mpz_sizeinbase(B[j][k].get_mpz_t(), 2));
       }
     }
   }
@@ -251,15 +251,16 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
     iter++;
 
     /* step 1 */
-    mpf_abs(maxnorm.get_mpf_t(), H[0][0].get_mpf_t());
-    m                   = 0; /* value of i such that gamma^i*|H[i][i]| is maximal */
+    mpf_class maxnorm   = abs(H[0][0]);
+    long      m         = 0; /* value of i such that gamma^i*|H[i][i]| is maximal */
     mpf_class pow_gamma = 1; /* pow_gamma = gamma^i */
-    for (i = 1; i < n - 1; i++) {
+
+    for (int i = 1; i < n - 1; i++) {
       pow_gamma *= gamma;
       norm = pow_gamma * H[i][i];
-      if (mpf_cmpabs(norm.get_mpf_t(), maxnorm.get_mpf_t()) > 0) {
+      if (mpf_cmpabs(norm, maxnorm) > 0) {
         m = i;
-        mpf_abs(maxnorm.get_mpf_t(), norm.get_mpf_t());
+        maxnorm = abs(norm);
       }
     }
 
@@ -344,7 +345,7 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
     k = maxabs_mpz_vector(y, n);
     k = mpz_sizeinbase(y[k].get_mpz_t(), 2);
     if (iter % 100 == 0) {
-      maxabs_vector(u.get_mpf_t(), H, n - 1);
+      maxabs_vector(u, H, n - 1);
       mpf_ui_div(u.get_mpf_t(), 1, u.get_mpf_t());
       printf("iter=%lu M=", iter);
       mpf_out_str(stdout, 10, 3, u.get_mpf_t());
@@ -376,7 +377,7 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
   } while (size >= size_B0 + size_B);
 
   if (iter % 100 != 0) {
-    maxabs_vector(u.get_mpf_t(), H, n - 1);
+    maxabs_vector(u, H, n - 1);
     mpf_ui_div(u.get_mpf_t(), 1, u.get_mpf_t());
     printf("iter=%lu M=", iter);
     mpf_out_str(stdout, 10, 3, u.get_mpf_t());
