@@ -224,7 +224,7 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
   const int report  = 100;
   mpz_t     tt, *Bp;
   mpf_t    *Hp;
-  mpf_t     t, u, v, t0, t1, t2, t3;
+  mpf_t     v, t0, t1, t2, t3;
   long      i, j, k, m, iter = 0;
   mpf_t     gamma, pow_gamma, norm, maxnorm;
   size_t    size_B0 = 0, size_B = 0, size;
@@ -238,8 +238,7 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
   std::vector<mpf_class> s(n);
   std::vector<mpf_class> x = x0;
   auto                   H = init_mpf_matrix(n);
-  mpf_init(t);
-  mpf_init(u);
+  mpf_class t, u;
   mpf_init(v);
   mpf_init(t0);
   mpf_init(t1);
@@ -273,9 +272,9 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
   /* step 2 */
   /* normalize y[] so that it has prec bits */
   for (k = 0; k < n; k++) {
-    mpf_div(t, x[k].get_mpf_t(), t0); /* |t| < 1 */
-    mpf_mul_2exp(t, t, prec);
-    mpz_set_f(y[k].get_mpz_t(), t);
+    mpf_div(t.get_mpf_t(), x[k].get_mpf_t(), t0); /* |t| < 1 */
+    mpf_mul_2exp(t.get_mpf_t(), t.get_mpf_t(), prec);
+    mpz_set_f(y[k].get_mpz_t(), t.get_mpf_t());
   }
 
   /* compute s[] from x0[] */
@@ -299,13 +298,13 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
   /* step 4: Hermite reduce H, omit for a restart */
   for (i = 1; i < n; i++) {
     for (j = i - 1; j >= 0; j--) {
-      mpf_div(u, H[i][j], H[j][j]);
-      mpf_nint(t, u);
-      mpz_set_f(tt, t);
+      mpf_div(u.get_mpf_t(), H[i][j], H[j][j]);
+      mpf_nint(t.get_mpf_t(), u.get_mpf_t());
+      mpz_set_f(tt, t.get_mpf_t());
       mpz_addmul(y[j].get_mpz_t(), tt, y[i].get_mpz_t());
       for (k = 0; k <= j; k++) {
-        mpf_mul(u, t, H[j][k]);
-        mpf_sub(H[i][k], H[i][k], u);
+        mpf_mul(u.get_mpf_t(), t.get_mpf_t(), H[j][k]);
+        mpf_sub(H[i][k], H[i][k], u.get_mpf_t());
       }
       for (k = 0; k < n; k++) {
         mpz_submul(A[i][k], tt, A[j][k]);
@@ -353,13 +352,13 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
       mpf_mul(t1, H[m][m], t0);
       mpf_mul(t2, H[m][m + 1], t0);
       for (i = m; i < n; i++) {
-        mpf_mul(u, t1, H[i][m]);
+        mpf_mul(u.get_mpf_t(), t1, H[i][m]);
         mpf_mul(v, t2, H[i][m + 1]);
-        mpf_add(t3, u, v);
+        mpf_add(t3, u.get_mpf_t(), v);
         mpf_swap(t3, H[i][m]); /* avoids mpf_set */
-        mpf_mul(u, t2, t3);
+        mpf_mul(u.get_mpf_t(), t2, t3);
         mpf_mul(v, t1, H[i][m + 1]);
-        mpf_sub(H[i][m + 1], v, u);
+        mpf_sub(H[i][m + 1], v, u.get_mpf_t());
       }
     }
 
@@ -376,13 +375,13 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
         if (exp_hij + 1 < exp_hjj) /* |H[i][j]| < 1/2*|H[j][j]| */
           continue;
         prec_u = exp_hij - exp_hjj + 10;
-        mpf_set_prec(u, prec_u);
-        mpf_set_prec(t, prec_u);
-        mpf_div(u, H[i][j], H[j][j]);
-        mpf_nint(t, u);
-        if (mpf_cmp_ui(t, 0)) {
-          if ((fits = mpf_fits_slong_p(t))) {
-            ttt = mpf_get_si(t);
+        mpf_set_prec(u.get_mpf_t(), prec_u);
+        mpf_set_prec(t.get_mpf_t(), prec_u);
+        mpf_div(u.get_mpf_t(), H[i][j], H[j][j]);
+        mpf_nint(t.get_mpf_t(), u.get_mpf_t());
+        if (mpf_cmp_ui(t.get_mpf_t(), 0)) {
+          if ((fits = mpf_fits_slong_p(t.get_mpf_t()))) {
+            ttt = mpf_get_si(t.get_mpf_t());
             mpz_addmul_si(y[j].get_mpz_t(), y[i].get_mpz_t(), ttt);
             for (k = 0; k < n; k++) {
               mpz_submul_si(A[i][k], A[j][k], ttt);
@@ -391,7 +390,7 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
             }
           } else /* should happen rarely */
           {
-            mpz_set_f(tt, t);
+            mpz_set_f(tt, t.get_mpf_t());
             mpz_addmul(y[j].get_mpz_t(), tt, y[i].get_mpz_t());
             for (k = 0; k < n; k++) {
               mpz_submul(A[i][k], tt, A[j][k]);
@@ -403,25 +402,25 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
             if (fits)
               mpf_mul_si(v, H[j][k], ttt);
             else
-              mpf_mul(v, H[j][k], t);
+              mpf_mul(v, H[j][k], t.get_mpf_t());
             mpf_sub(H[i][k], H[i][k], v);
           }
         }
       }
     }
     /* reset precision of u and t */
-    mpf_set_prec(u, prec);
-    mpf_set_prec(t, prec);
+    mpf_set_prec(u.get_mpf_t(), prec);
+    mpf_set_prec(t.get_mpf_t(), prec);
 
     /* step 5 */
     j = minabs_vector(y, n);
     k = maxabs_mpz_vector(y, n);
     k = mpz_sizeinbase(y[k].get_mpz_t(), 2);
     if (verbose && (iter % report == 0)) {
-      maxabs_vector(u, H, n - 1);
-      mpf_ui_div(u, 1, u);
+      maxabs_vector(u.get_mpf_t(), H, n - 1);
+      mpf_ui_div(u.get_mpf_t(), 1, u.get_mpf_t());
       printf("iter=%lu M=", iter);
-      mpf_out_str(stdout, 10, 3, u);
+      mpf_out_str(stdout, 10, 3, u.get_mpf_t());
       printf(" ymin=%lu", mpz_sizeinbase(y[j].get_mpz_t(), 2));
       printf(" ymax=%lu", k);
       printf("\n");
@@ -438,9 +437,9 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
       mpf_set_prec(t1, prec);
       mpf_set_prec(t2, prec);
       mpf_set_prec(t3, prec);
-      mpf_set_prec(u, prec);
+      mpf_set_prec(u.get_mpf_t(), prec);
       mpf_set_prec(v, prec);
-      mpf_set_prec(t, prec);
+      mpf_set_prec(t.get_mpf_t(), prec);
     }
 
     /* when the norm of B is larger than that of y[], this means that
@@ -450,10 +449,10 @@ auto pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
   } while (size >= size_B0 + size_B);
 
   if (!verbose || (iter % report != 0)) {
-    maxabs_vector(u, H, n - 1);
-    mpf_ui_div(u, 1, u);
+    maxabs_vector(u.get_mpf_t(), H, n - 1);
+    mpf_ui_div(u.get_mpf_t(), 1, u.get_mpf_t());
     printf("iter=%lu M=", iter);
-    mpf_out_str(stdout, 10, 3, u);
+    mpf_out_str(stdout, 10, 3, u.get_mpf_t());
   }
 
   for (unsigned long i = 0; i < n; i++) mpz_set(y[i].get_mpz_t(), B[j][i]);
