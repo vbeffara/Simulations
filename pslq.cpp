@@ -42,7 +42,8 @@
 
 #define VERSION "1.0"
 
-#include "gmp.h"
+#include <gmp.h>
+#include <gmpxx.h>
 #include <algorithm>
 #include <math.h>
 #include <stdio.h>
@@ -50,6 +51,7 @@
 #include <string.h>
 #include <sys/resource.h>
 #include <sys/time.h>
+#include <vector>
 
 #define mpz_addmul_si(a, b, c)                                                                                                             \
   do {                                                                                                                                     \
@@ -139,10 +141,14 @@ mpf_t *init_mpf_vector(unsigned long n) {
   return v;
 }
 
-void set_mpf_vector(mpf_t *v, mpf_t *w, unsigned long n) {
+std::vector<mpf_class> init_mpf_std_vector(unsigned long n) {
+  return std::vector<mpf_class> (n);
+}
+
+void set_mpf_vector(mpf_t *v, std::vector<mpf_class> &w, unsigned long n) {
   unsigned long i;
 
-  for (i = 0; i < n; i++) mpf_set(v[i], w[i]);
+  for (i = 0; i < n; i++) mpf_set(v[i], w[i].get_mpf_t());
 }
 
 mpz_t *init_mpz_vector(unsigned long n) {
@@ -224,15 +230,15 @@ mp_exp_t mpf_get_exp(mpf_t a) {
 }
 
 /* s <- x[0]*y[0]+...+x[n-1]*y[n-1] */
-void scalprod(mpf_t s, mpf_t *x, mpz_t *y, unsigned long n) {
+void scalprod(mpf_t s, std::vector<mpf_class> &x, mpz_t *y, unsigned long n) {
   unsigned long i;
   mpf_t         t;
 
-  mpf_init2(t, mpf_get_prec(x[0]));
+  mpf_init2(t, mpf_get_prec(x[0].get_mpf_t()));
   mpf_set_ui(s, 0);
   for (i = 0; i < n; i++) {
     mpf_set_z(t, y[i]);
-    mpf_mul(t, x[i], t);
+    mpf_mul(t, x[i].get_mpf_t(), t);
     mpf_add(s, s, t);
   }
   mpf_clear(t);
@@ -246,7 +252,7 @@ void scalprod(mpf_t s, mpf_t *x, mpz_t *y, unsigned long n) {
   output_B is the file for the output matrix B (NULL if no file)
   report - log lines are given each 'report' iterations
  */
-mpz_t *pslq(mpf_t *x0, unsigned long n, double gam) {
+mpz_t *pslq(std::vector<mpf_class> &x0, unsigned long n, double gam) {
   const int verbose = 3;
   const int report  = 100;
   mpz_t     tt, *Bp;
@@ -256,7 +262,7 @@ mpz_t *pslq(mpf_t *x0, unsigned long n, double gam) {
   mpf_t     gamma, pow_gamma, norm, maxnorm;
   size_t    size_B0 = 0, size_B = 0, size;
 
-  auto prec0 = mpf_get_prec(x0[0]);
+  auto prec0 = mpf_get_prec(x0[0].get_mpf_t());
   auto prec = prec0;
 
   auto y = init_mpz_vector(n);
@@ -283,7 +289,7 @@ mpz_t *pslq(mpf_t *x0, unsigned long n, double gam) {
   /* compute the norm of x */
   mpf_set_ui(t0, 0);
   for (k = 0; k < n; k++) {
-    mpf_mul(t1, x0[k], x0[k]);
+    mpf_mul(t1, x0[k].get_mpf_t(), x0[k].get_mpf_t());
     mpf_add(t0, t0, t1);
   }
   mpf_sqrt(t0, t0);
@@ -309,7 +315,7 @@ mpz_t *pslq(mpf_t *x0, unsigned long n, double gam) {
 
   /* compute s[] from x0[] */
   for (k = n - 1; k >= 0; k--) {
-    mpf_mul(s[k], x0[k], x0[k]);
+    mpf_mul(s[k], x0[k].get_mpf_t(), x0[k].get_mpf_t());
     if (k < n - 1) mpf_add(s[k], s[k], s[k + 1]);
   }
   for (k = 0; k < n; k++) mpf_sqrt(s[k], s[k]);
@@ -319,8 +325,8 @@ mpz_t *pslq(mpf_t *x0, unsigned long n, double gam) {
     mpf_div(H[j][j], s[j + 1], s[j]);
     for (i = j + 1; i < n; i++) {
       mpf_mul(H[i][j], s[j], s[j + 1]);
-      mpf_div(H[i][j], x0[i], H[i][j]);
-      mpf_mul(H[i][j], H[i][j], x0[j]);
+      mpf_div(H[i][j], x0[i].get_mpf_t(), H[i][j]);
+      mpf_mul(H[i][j], H[i][j], x0[j].get_mpf_t());
       mpf_neg(H[i][j], H[i][j]);
     }
   }
@@ -503,12 +509,15 @@ int main(int argc, char *argv[]) {
   unsigned long n;
   scanf("%lu\n", &n);
 
-  mpf_t *x = init_mpf_vector(n);
+  auto x = init_mpf_std_vector(n);
 
   for (unsigned i = 0; i < n; i++) {
-    mpf_inp_str(x[i], stdin, 10);
+    mpf_t tmp;
+    mpf_init(tmp);
+    mpf_inp_str(tmp, stdin, 10);
+    x[i] = mpf_class(tmp);
     printf("x[%u]=", i);
-    mpf_out_str(stdout, 10, 3, x[i]);
+    mpf_out_str(stdout, 10, 3, x[i].get_mpf_t());
     printf("\n");
   }
 
