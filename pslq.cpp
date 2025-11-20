@@ -108,21 +108,20 @@ mpz_t **init_mpz_matrix(unsigned long n) {
 void print_relation(std::vector<mpz_class> &A, unsigned long n) {
   unsigned long i;
   int           s, first = 1;
-  FILE         *fp = stdout;
 
-  fprintf(fp, "\np=");
+  printf("\np=");
   for (i = 0; i < n; i++) {
     if ((s = mpz_sgn(A[i].get_mpz_t()))) {
-      if (!first && s > 0) fprintf(fp, "+");
+      if (!first && s > 0) printf("+");
       if (mpz_cmp_ui(A[i].get_mpz_t(), 1)) {
-        mpz_out_str(fp, 10, A[i].get_mpz_t());
-        fprintf(fp, "*");
+        mpz_out_str(stdout, 10, A[i].get_mpz_t());
+        printf("*");
       }
-      fprintf(fp, "x^%lu", i);
+      printf("x^%lu", i);
       first = 0;
     }
   }
-  fprintf(fp, "\n");
+  printf("\n");
 }
 
 void set_identity(mpz_t **A, unsigned long n) {
@@ -130,15 +129,6 @@ void set_identity(mpz_t **A, unsigned long n) {
 
   for (i = 0; i < n; i++)
     for (j = 0; j < n; j++) mpz_set_ui(A[i][j], (i == j) ? 1 : 0);
-}
-
-[[deprecated]] mpz_t *init_mpz_vector(unsigned long n) {
-  mpz_t        *v;
-  unsigned long i;
-
-  v = (mpz_t *)malloc(n * sizeof(mpz_t));
-  for (i = 0; i < n; i++) mpz_init(v[i]);
-  return v;
 }
 
 /* t <- nearest_integer (u) */
@@ -176,20 +166,16 @@ int mpf_cmpabs(mpf_t a, mpf_t b) {
 
 /* return m such that |v[m]| is minimal */
 unsigned long minabs_vector(std::vector<mpz_class> &v, unsigned long n) {
-  unsigned long i, m;
-
-  m = 0;
-  for (i = 1; i < n; i++)
+  unsigned long m = 0;
+  for (unsigned i = 1; i < v.size(); i++)
     if (mpz_cmpabs(v[i].get_mpz_t(), v[m].get_mpz_t()) < 0) m = i;
   return m;
 }
 
 /* return m such that |v[m]| is maximal */
 unsigned long maxabs_mpz_vector(std::vector<mpz_class> &v, unsigned long n) {
-  unsigned long i, m;
-
-  m = 0;
-  for (i = 1; i < n; i++)
+  unsigned long m = 0;
+  for (unsigned i = 1; i < v.size(); i++)
     if (mpz_cmpabs(v[i].get_mpz_t(), v[m].get_mpz_t()) > 0) m = i;
   return m;
 }
