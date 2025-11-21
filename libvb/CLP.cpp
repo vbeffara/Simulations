@@ -39,6 +39,11 @@ namespace vb {
         return size_t(strtol(v.c_str(), nullptr, 10));
     }
 
+    auto CLP::param(const std::string &c, std::string t, const std::string &d) -> std::string {
+        auto v = get_param(c, "string", t, d);
+        return v;
+    }
+
     auto CLP::flag(const std::string &c, const std::string &d) -> bool {
         flags.push_back(fmt::format("                       │   {}  │ {}", c, d));
         auto i = std::find(begin(args), end(args), "-" + c);

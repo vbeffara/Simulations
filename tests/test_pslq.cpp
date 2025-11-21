@@ -200,14 +200,12 @@ auto main(int argc, char **argv) -> int {
   clp.finalize();
 
   mpf_set_default_prec(prec);
+  mpf_class zz(z);
 
-  int n;
-  std::cin >> n;
-
-  spdlog::info("Precision: {} bits, gamma = {}, dimension = {}", prec, gamma, n);
-  std::vector<mpf_class> x(n);
-  for (unsigned i = 0; i < n; i++) {
-    std::cin >> x[i];
+  spdlog::info("Precision: {} bits, gamma = {}, dimension = {}", prec, gamma, d+1);
+  std::vector<mpf_class> x(1,1);
+  for (unsigned i = 1; i <= d; i++) {
+    x.push_back (x.back() * zz);
     std::stringstream ss;
     ss << std::setprecision(10) << x[i];
     spdlog::info("x[{}] ≃ {}", i, ss.str());
