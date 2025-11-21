@@ -206,17 +206,17 @@ auto guess(mpf_class z, int d, double gamma = 1.16, bool verbose = false) {
 
 auto main(int argc, char **argv) -> int {
   vb::CLP clp(argc, argv, "Testing the PSLQ algorithm");
-  auto    prec    = clp.param("p", 53, "Precision in bits");
+  auto    prec    = clp.param("p", 0, "Precision in bits");
   auto    gamma   = clp.param("g", 1.16, "Gamma parameter");
   auto    d       = clp.param("d", 2, "Degree of polynomial");
-  auto    z       = clp.param("x", "1.6180339887498948482045868343656381177203091798057628621354486227052604628189024497072072041893911374",
+  auto    x       = clp.param("x", "1.6180339887498948482045868343656381177203091798057628621354486227052604628189024497072072041893911374",
                               "Input number x");
   auto    verbose = clp.flag("v", "Verbose output");
   clp.finalize();
 
-  mpf_set_default_prec(prec);
-  mpf_class zz(z);
+  mpf_set_default_prec(3.322 * x.size());
+  if (prec>0) mpf_set_default_prec(prec);
 
-  auto rel = guess(zz, d, gamma, verbose);
+  auto rel = guess(mpf_class(x), d, gamma, verbose);
   print_relation(rel);
 }
