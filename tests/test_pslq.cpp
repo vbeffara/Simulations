@@ -212,8 +212,6 @@ auto main(int argc, char **argv) -> int {
   auto    verbose = clp.flag("v", "Verbose output");
   clp.finalize();
 
-  // mpf_set_default_prec(3.322 * x.size());
-
   auto rel = guess(mpf_class(x, 3.322 * x.size()), d, gamma, verbose);
   print_relation(rel);
 }
