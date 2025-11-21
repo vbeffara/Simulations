@@ -193,7 +193,9 @@ auto main(int argc, char **argv) -> int {
   vb::CLP clp(argc, argv, "Testing the PSLQ algorithm");
   auto    prec    = clp.param("p", 53, "Precision in bits");
   auto    gamma   = clp.param("g", 1.16, "Gamma parameter");
-  auto    x = clp.param("x", "1.6180339887498948482045868343656381177203091798057628621354486227052604628189024497072072041893911374", "Input number x");
+  auto    d       = clp.param("d", 2, "Degree of polynomial");
+  auto    z       = clp.param("x", "1.6180339887498948482045868343656381177203091798057628621354486227052604628189024497072072041893911374",
+                              "Input number x");
   auto    verbose = clp.flag("v", "Verbose output");
   clp.finalize();
 
