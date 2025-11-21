@@ -77,10 +77,11 @@ auto PSLQ(const std::vector<mpf_class> &x, double gamma = 1.16, bool verbose = f
   long       j, k, iter = 0;
   size_t     size_B = 0;
   const auto prec   = x[0].get_prec();
+  mpf_set_default_prec(prec);
 
   // Normalize and truncate input
-  mpf_class t0 = 0;
-  for (int k = 0; k < n; k++) t0 += x[k] * x[k];
+  mpf_class t0 = x[0] * x[0];
+  for (int k = 1; k < n; k++) t0 += x[k] * x[k];
   t0 = sqrt(t0);
   std::vector<mpz_class> y(n);
   for (int k = 0; k < n; k++) y[k] = x[k] * ((1_mpz << prec) / t0);
@@ -193,7 +194,7 @@ auto guess(mpf_class z, int d, double gamma = 1.16, bool verbose = false) {
   auto prec = z.get_prec();
   spdlog::info("Precision: {} bits, gamma = {}, dimension = {}", prec, gamma, d + 1);
 
-  std::vector<mpf_class> x(1, 1);
+  std::vector<mpf_class> x(1, mpf_class(1, prec));
   for (unsigned i = 1; i <= d; i++) {
     x.push_back(x.back() * z);
     std::stringstream ss;
