@@ -69,7 +69,7 @@ mpf_class scalprod(const std::vector<mpf_class> &x, const std::vector<mpz_class>
   return s;
 }
 
-auto PSLQ(const std::vector<mpf_class> &x, double gamma) {
+auto PSLQ(const std::vector<mpf_class> &x, double gamma, bool verbose) {
   const int  n = x.size();
   long       j, k, iter = 0;
   size_t     size_B = 0;
@@ -171,7 +171,7 @@ auto PSLQ(const std::vector<mpf_class> &x, double gamma) {
 
     j = argmin_abs(y);
 
-    if (iter % 100 == 0) {
+    if (verbose) {
       auto              k    = argmax_abs(y);
       auto              ymax = nbits(y[k]);
       mpf_class         u    = 1 / max_abs_diag(H);
@@ -179,7 +179,7 @@ auto PSLQ(const std::vector<mpf_class> &x, double gamma) {
       u_str << std::setprecision(3) << u;
       std::stringstream scalprod_str;
       scalprod_str << scalprod(x, B[j]);
-      spdlog::trace("iter = {}\tM = {}\tymin = {}\tymax = {}\tdotprod = {}", iter, u_str.str(), nbits(y[j]), ymax, scalprod_str.str());
+      spdlog::info("iter = {}\tM = {}\tymin = {}\tymax = {}\tdotprod = {}", iter, u_str.str(), nbits(y[j]), ymax, scalprod_str.str());
     }
   } while (nbits(y[j]) >= size_B);
 
@@ -193,7 +193,6 @@ auto main(int argc, char **argv) -> int {
   auto    verbose = clp.flag("v", "Verbose output");
   clp.finalize();
 
-  if (verbose) spdlog::set_level(spdlog::level::trace);
   mpf_set_default_prec(prec);
 
   int n;
@@ -208,7 +207,7 @@ auto main(int argc, char **argv) -> int {
     spdlog::info("x[{}] ≃ {}", i, ss.str());
   }
 
-  auto              rel = PSLQ(x, gamma);
+  auto              rel = PSLQ(x, gamma, verbose);
   std::stringstream scalprod_str;
   scalprod_str << scalprod(x, rel);
   spdlog::info("Final dot product = {}", scalprod_str.str());
