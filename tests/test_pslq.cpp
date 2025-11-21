@@ -1,42 +1,16 @@
-/* Implementation of PSLQ in GMP.
-  Based on a file Copyright 2004 Paul Zimmermann, LORIA/INRIA Lorraine.
-
-  Usage: pslq [-p precbits(=53)] < file where file has the following format:
-
-  n - number of floating-point numbers
-  y[0]
-  ...
-  y[n-1]
-*/
+// Implementation of PSLQ in GMP.
+// Based on a file Copyright 2004 Paul Zimmermann, LORIA/INRIA Lorraine.
 
 #include <algorithm>
 #include <cmath>
 #include <gmpxx.h>
 #include <iomanip>
 #include <iostream>
+#include <vb/math/Polynomial.h>
+#include <vb/math/NumberTheory.h>
 #include <vb/util/CLP.h>
 #include <vb/util/mp.h>
 #include <vector>
-
-using vb::real_t;
-
-void print_relation(const std::vector<mpz_class> &A) {
-  int first = 1;
-  std::cout << "p[x] = ";
-  for (int i = A.size() - 1; i >= 0; --i) {
-    if (auto s = sgn(A[i]); s != 0) {
-      if (!first && s > 0) std::cout << " + ";
-      if (!first && s < 0) std::cout << " - ";
-      if (first && s < 0) std::cout << "- ";
-      std::ostringstream os;
-      os << abs(A[i]);
-      std::cout << os.str();
-      if (i > 0) { std::cout << " * x^" << i; }
-      first = 0;
-    }
-  }
-  std::cout << std::endl;
-}
 
 auto identity(unsigned n) {
   std::vector<std::vector<mpz_class>> A(n, std::vector<mpz_class>(n));
@@ -72,7 +46,7 @@ mpf_class scalprod(const std::vector<mpf_class> &x, const std::vector<mpz_class>
   return s;
 }
 
-auto PSLQ(const std::vector<mpf_class> &x, double gamma = 1.16, bool verbose = false) {
+auto PSLQ(const std::vector<mpf_class> &x, bool verbose = false, double gamma = 1.16) {
   const int  n = x.size();
   long       j, k, iter = 0;
   size_t     size_B = 0;
@@ -188,30 +162,46 @@ auto PSLQ(const std::vector<mpf_class> &x, double gamma = 1.16, bool verbose = f
   return B[j];
 }
 
-auto guess(mpf_class z, int d, double gamma = 1.16, bool verbose = false) {
+auto guess(mpf_class z, int d, bool verbose = false) {
   auto prec = z.get_prec();
-  spdlog::info("Precision: {} bits, gamma = {}, dimension = {}", prec, gamma, d + 1);
+  if (verbose) spdlog::info("Precision: {} bits, dimension = {}", prec, d + 1);
 
   std::vector<mpf_class> x(1, mpf_class(1, prec));
   for (unsigned i = 1; i <= d; i++) {
     x.push_back(x.back() * z);
-    std::stringstream ss;
-    ss << std::setprecision(10) << x[i];
-    spdlog::info("x[{}] ≃ {}", i, ss.str());
+    if (verbose) {
+      std::stringstream ss;
+      ss << std::setprecision(10) << x.back();
+      spdlog::info("x[{}] ≃ {}", i, ss.str());
+    }
   }
 
-  return PSLQ(x, gamma, verbose);
+  auto rel = PSLQ(x, verbose);
+  if (rel.back() < 0)
+    for (auto &x : rel) x = -x;
+  return rel;
+}
+
+vb::Polynomial<vb::mpz_int> guess(vb::real_t z, int d, bool verbose = false) {
+  mpf_class                zz(boost::multiprecision::mpf_float(z).backend().data(), 3.322*z.precision());
+  auto                     rel = guess(zz, d, verbose);
+  std::vector<vb::mpz_int> vec;
+  for (const auto &r : rel) vec.push_back(vb::mpz_int(r.get_mpz_t()));
+  return vb::Polynomial<vb::mpz_int>(vec);
 }
 
 auto main(int argc, char **argv) -> int {
   vb::CLP clp(argc, argv, "Testing the PSLQ algorithm");
-  auto    gamma   = clp.param("g", 1.16, "Gamma parameter");
   auto    d       = clp.param("d", 2, "Degree of polynomial");
   auto    x       = clp.param("x", "1.6180339887498948482045868343656381177203091798057628621354486227052604628189024497072072041893911374",
                               "Input number x");
   auto    verbose = clp.flag("v", "Verbose output");
   clp.finalize();
 
-  auto rel = guess(mpf_class(x, 3.322 * x.size()), d, gamma, verbose);
-  print_relation(rel);
+  vb::real_t z(x, x.size());
+  spdlog::info("x = {}", x);
+  auto P = guess(z, d, verbose);
+  spdlog::info("    P[z] = {}", P);
+  auto Q = vb::guess(z, z.precision());
+  if (Q) spdlog::info("    Q[z] = {}", *Q);
 }
