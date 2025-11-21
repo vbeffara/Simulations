@@ -15,7 +15,10 @@
 #include <iomanip>
 #include <iostream>
 #include <vb/util/CLP.h>
+#include <vb/util/mp.h>
 #include <vector>
+
+using vb::real_t;
 
 void print_relation(const std::vector<mpz_class> &A) {
   int first = 1;
@@ -69,7 +72,7 @@ mpf_class scalprod(const std::vector<mpf_class> &x, const std::vector<mpz_class>
   return s;
 }
 
-auto PSLQ(const std::vector<mpf_class> &x, double gamma, bool verbose) {
+auto PSLQ(const std::vector<mpf_class> &x, double gamma = 1.16, bool verbose = false) {
   const int  n = x.size();
   long       j, k, iter = 0;
   size_t     size_B = 0;
@@ -190,6 +193,7 @@ auto main(int argc, char **argv) -> int {
   vb::CLP clp(argc, argv, "Testing the PSLQ algorithm");
   auto    prec    = clp.param("p", 53, "Precision in bits");
   auto    gamma   = clp.param("g", 1.16, "Gamma parameter");
+  auto    x = clp.param("x", "1.6180339887498948482045868343656381177203091798057628621354486227052604628189024497072072041893911374", "Input number x");
   auto    verbose = clp.flag("v", "Verbose output");
   clp.finalize();
 
