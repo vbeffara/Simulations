@@ -1,81 +1,76 @@
 /* Implementation of PSLQ in GMP.
   Based on a file Copyright 2004 Paul Zimmermann, LORIA/INRIA Lorraine.
 
-  Usage: pslq [options] < file where file has the following format:
+  Usage: pslq [-p precbits(=53)] < file where file has the following format:
 
   n - number of floating-point numbers
   y[0]
   ...
   y[n-1]
-
-  Output:
-  a polynomial a[0]+a[1]*x+...+a[n-1]*x^(n-1) such that
-               a[0]*y[0]+a[1]*y[1]+...+a[n-1]*y[n-1] is a relation.
-
-  Options:
-  -p <prec>  set precision to <prec> bits (default 53)
 */
 
 #include <algorithm>
 #include <cmath>
 #include <gmpxx.h>
+#include <iomanip>
 #include <iostream>
+#include <vb/util/CLP.h>
 #include <vector>
 
-void print_relation(std::vector<mpz_class> &A) {
+void print_relation(const std::vector<mpz_class> &A) {
   int first = 1;
   std::cout << "p[x] = ";
   for (int i = A.size() - 1; i >= 0; --i) {
-    if (auto s = mpz_sgn(A[i].get_mpz_t()); s != 0) {
-      if (!first && s > 0) printf(" + ");
-      if (!first && s < 0) printf(" - ");
-      if (first && s < 0) printf("- ");
-      mpz_out_str(stdout, 10, mpz_class(abs(A[i])).get_mpz_t());
-      if (i > 0) { printf(" * x^%u", i); }
+    if (auto s = sgn(A[i]); s != 0) {
+      if (!first && s > 0) std::cout << " + ";
+      if (!first && s < 0) std::cout << " - ";
+      if (first && s < 0) std::cout << "- ";
+      std::ostringstream os;
+      os << abs(A[i]);
+      std::cout << os.str();
+      if (i > 0) { std::cout << " * x^" << i; }
       first = 0;
     }
   }
-  printf("\n");
+  std::cout << std::endl;
 }
 
 auto identity(unsigned n) {
   std::vector<std::vector<mpz_class>> A(n, std::vector<mpz_class>(n));
-  for (unsigned i = 0; i < A.size(); i++)
-    for (unsigned j = 0; j < A[i].size(); j++) A[i][j] = ((i == j) ? 1 : 0);
+  for (unsigned i = 0; i < A.size(); i++) A[i][i] = 1;
   return A;
 }
 
-/* return m such that |v[m]| is minimal */
-int minabs_vector(std::vector<mpz_class> &v) {
+int argmin_abs(const std::vector<mpz_class> &v) {
   int m = 0;
   for (unsigned i = 1; i < v.size(); i++)
     if (abs(v[i]) < abs(v[m])) m = i;
   return m;
 }
 
-/* return m such that |v[m]| is maximal */
-int maxabs_mpz_vector(std::vector<mpz_class> &v) {
+int argmax_abs(const std::vector<mpz_class> &v) {
   int m = 0;
   for (unsigned i = 1; i < v.size(); i++)
     if (abs(v[i]) > abs(v[m])) m = i;
   return m;
 }
 
-/* u = max(|v[i]|) for i=0..n-1 */
-mpf_class maxabs_vector(std::vector<std::vector<mpf_class>> &v) {
+auto nbits(const mpz_class &v) { return mpz_sizeinbase(v.get_mpz_t(), 2); }
+
+mpf_class max_abs_diag(const std::vector<std::vector<mpf_class>> &v) {
   mpf_class u = abs(v[0][0]);
   for (int i = 1; i < v.size(); i++) u = std::max(u, mpf_class(abs(v[i][i])));
   return u;
 }
 
 mpf_class scalprod(const std::vector<mpf_class> &x, const std::vector<mpz_class> &y) {
-  mpf_class s = 0;
-  for (unsigned i = 0; i < x.size(); i++) { s += y[i] * x[i]; }
+  mpf_class s = x[0] * y[0];
+  for (unsigned i = 1; i < x.size(); i++) { s += x[i] * y[i]; }
   return s;
 }
 
 auto PSLQ(const std::vector<mpf_class> &x, double gamma) {
-  const int n = x.size();
+  const int  n = x.size();
   long       j, k, iter = 0;
   size_t     size_B = 0;
   const auto prec   = x[0].get_prec();
@@ -112,7 +107,7 @@ auto PSLQ(const std::vector<mpf_class> &x, double gamma) {
       for (k = 0; k < n; k++) {
         A[i][k] -= t * A[j][k];
         B[j][k] += t * B[i][k];
-        size_B = std::max(size_B, mpz_sizeinbase(B[j][k].get_mpz_t(), 2));
+        size_B = std::max(size_B, nbits(B[j][k]));
       }
     }
   }
@@ -125,9 +120,9 @@ auto PSLQ(const std::vector<mpf_class> &x, double gamma) {
     int       m         = 0;
     for (int i = 1; i < n - 1; i++) {
       pow_gamma *= gamma;
-      if (mpf_class norm = pow_gamma * H[i][i]; abs(norm) > maxnorm) {
+      if (mpf_class norm = pow_gamma * abs(H[i][i]); norm > maxnorm) {
         m       = i;
-        maxnorm = abs(norm);
+        maxnorm = norm;
       }
     }
 
@@ -152,21 +147,21 @@ auto PSLQ(const std::vector<mpf_class> &x, double gamma) {
         if (abs(H[i][j]) < abs(H[j][j]) / 2) continue;
         if (mpf_class t = floor(H[i][j] / H[j][j] + .5); t != 0) {
           if (t.fits_slong_p()) {
-            auto ttt = t.get_si();
-            y[j] += ttt * y[i];
+            long tt = t.get_si();
+            y[j] += tt * y[i];
             for (k = 0; k < n; k++) {
-              A[i][k] -= ttt * A[j][k];
-              B[j][k] += ttt * B[i][k];
-              size_B = std::max(size_B, mpz_sizeinbase(B[j][k].get_mpz_t(), 2));
+              A[i][k] -= tt * A[j][k];
+              B[j][k] += tt * B[i][k];
+              size_B = std::max(size_B, nbits(B[j][k]));
             }
-            for (k = 0; k <= j; k++) H[i][k] -= ttt * H[j][k];
+            for (k = 0; k <= j; k++) H[i][k] -= tt * H[j][k];
           } else {
             mpf_class tt = floor(t);
             y[j] += tt * y[i];
             for (k = 0; k < n; k++) {
               A[i][k] -= tt * A[j][k];
               B[j][k] += tt * B[i][k];
-              size_B = std::max(size_B, mpz_sizeinbase(B[j][k].get_mpz_t(), 2));
+              size_B = std::max(size_B, nbits(B[j][k]));
             }
             for (k = 0; k <= j; k++) H[i][k] -= t * H[j][k];
           }
@@ -174,51 +169,48 @@ auto PSLQ(const std::vector<mpf_class> &x, double gamma) {
       }
     }
 
-    j = minabs_vector(y);
+    j = argmin_abs(y);
 
     if (iter % 100 == 0) {
-      auto      k    = maxabs_mpz_vector(y);
-      auto      ymax = mpz_sizeinbase(y[k].get_mpz_t(), 2);
-      mpf_class u    = 1 / maxabs_vector(H);
-      std::cout << "iter=" << iter << "\tM=";
-      mpf_out_str(stdout, 10, 3, u.get_mpf_t());
-      std::cout << "\tymin=" << mpz_sizeinbase(y[j].get_mpz_t(), 2) << "\tymax=" << ymax << "\tscalprod=";
-      mpf_out_str(stdout, 10, 3, scalprod(x, B[j]).get_mpf_t());
-      std::cout << std::endl;
+      auto              k    = argmax_abs(y);
+      auto              ymax = nbits(y[k]);
+      mpf_class         u    = 1 / max_abs_diag(H);
+      std::stringstream u_str;
+      u_str << std::setprecision(3) << u;
+      std::stringstream scalprod_str;
+      scalprod_str << scalprod(x, B[j]);
+      spdlog::trace("iter = {}\tM = {}\tymin = {}\tymax = {}\tdotprod = {}", iter, u_str.str(), nbits(y[j]), ymax, scalprod_str.str());
     }
-  } while (mpz_sizeinbase(y[j].get_mpz_t(), 2) >= size_B);
-
-  if (iter % 100 != 0) {
-    mpf_class u = 1 / maxabs_vector(H);
-    std::cout << "iter=" << iter << "\tM=";
-    mpf_out_str(stdout, 10, 3, u.get_mpf_t());
-    std::cout << "\tymin=" << mpz_sizeinbase(y[j].get_mpz_t(), 2) << "\tymax=" << k << "\tscalprod=";
-    mpf_out_str(stdout, 10, 3, scalprod(x, B[j]).get_mpf_t());
-    std::cout << std::endl;
-  }
+  } while (nbits(y[j]) >= size_B);
 
   return B[j];
 }
 
-int main(int argc, char *argv[]) {
-  int prec = 53;
-  if (argc >= 3 && strcmp(argv[1], "-p") == 0) { prec = atoi(argv[2]); }
+auto main(int argc, char **argv) -> int {
+  vb::CLP clp(argc, argv, "Testing the PSLQ algorithm");
+  auto    prec    = clp.param("p", 53, "Precision in bits");
+  auto    gamma   = clp.param("g", 1.16, "Gamma parameter");
+  auto    verbose = clp.flag("v", "Verbose output");
+  clp.finalize();
+
+  if (verbose) spdlog::set_level(spdlog::level::trace);
   mpf_set_default_prec(prec);
-  const double gamma = 1.15470053837925168416; /* sqrt(4/3) rounded up */
-  std::cout << "Using precision=" << prec << ", gamma=" << gamma << std::endl;
 
   int n;
-  scanf("%u\n", &n);
+  std::cin >> n;
 
+  spdlog::info("Precision: {} bits, gamma = {}, dimension = {}", prec, gamma, n);
   std::vector<mpf_class> x(n);
   for (unsigned i = 0; i < n; i++) {
-    mpf_inp_str(x[i].get_mpf_t(), stdin, 10);
-    printf("x[%u]=", i);
-    mpf_out_str(stdout, 10, 10, x[i].get_mpf_t());
-    printf("\n");
+    std::cin >> x[i];
+    std::stringstream ss;
+    ss << std::setprecision(10) << x[i];
+    spdlog::info("x[{}] ≃ {}", i, ss.str());
   }
 
-  auto rel = PSLQ(x, gamma);
-  std::cout << "---" << std::endl;
+  auto              rel = PSLQ(x, gamma);
+  std::stringstream scalprod_str;
+  scalprod_str << scalprod(x, rel);
+  spdlog::info("Final dot product = {}", scalprod_str.str());
   print_relation(rel);
 }

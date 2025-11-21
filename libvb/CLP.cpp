@@ -16,7 +16,7 @@ namespace vb {
     }
 
     auto CLP::get_param(const std::string &c, const std::string &type, std::string val, const std::string &dsc) -> std::string {
-        help.push_back(fmt::format("|  {}  | {:8} | {:>10} |  {}", c, type, val, dsc));
+        help.push_back(fmt::format("│  {}  │ {:8} │ {:>10} │ {}", c, type, val, dsc));
         if (auto i = std::find(begin(args), end(args), "-" + c); i != end(args)) {
             if (i + 1 == end(args)) {
                 spdlog::error("Missing value for argument {}, exiting.", c);
@@ -40,7 +40,7 @@ namespace vb {
     }
 
     auto CLP::flag(const std::string &c, const std::string &d) -> bool {
-        flags.push_back(fmt::format("                       |   {}  |  {}", c, d));
+        flags.push_back(fmt::format("                       │   {}  │ {}", c, d));
         auto i = std::find(begin(args), end(args), "-" + c);
         if (i == end(args)) return false;
         title += " " + c;
@@ -57,28 +57,23 @@ namespace vb {
         finalized = true;
 
         if (std::find(begin(args), end(args), "-h") != end(args)) {
-            spdlog::info("");
             spdlog::info("{}", desc);
 
             if (!flags.empty()) {
-                spdlog::info("");
-                spdlog::info("                       +------+");
-                spdlog::info("                       | flag |");
-                spdlog::info("                       +------+");
+                spdlog::info("                       ┌──────┐");
+                spdlog::info("                       │ flag │");
+                spdlog::info("                       ├──────┤");
                 for (const auto &s : flags) spdlog::info(s);
-                spdlog::info("                       +------+");
+                spdlog::info("                       └──────┘");
             }
             if (!help.empty()) {
-                spdlog::info("");
-                spdlog::info("+-----+----------+------------+");
-                spdlog::info("| arg | type     |    default |");
-                spdlog::info("+-----+----------+------------+");
+                spdlog::info("┌─────┬──────────┬────────────┐");
+                spdlog::info("│ arg │ type     │    default │");
+                spdlog::info("├─────┼──────────┼────────────┤");
                 for (const auto &s : help) spdlog::info(s);
-                spdlog::info("+-----+----------+------------+");
+                spdlog::info("└─────┴──────────┴────────────┘");
             }
-            spdlog::info("");
             spdlog::info("File title: {}", title);
-            spdlog::info("");
             exit(0);
         }
 
