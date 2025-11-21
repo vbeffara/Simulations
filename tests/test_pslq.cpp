@@ -77,7 +77,6 @@ auto PSLQ(const std::vector<mpf_class> &x, double gamma = 1.16, bool verbose = f
   long       j, k, iter = 0;
   size_t     size_B = 0;
   const auto prec   = x[0].get_prec();
-  mpf_set_default_prec(prec);
 
   // Normalize and truncate input
   mpf_class t0 = x[0] * x[0];
@@ -87,7 +86,7 @@ auto PSLQ(const std::vector<mpf_class> &x, double gamma = 1.16, bool verbose = f
   for (int k = 0; k < n; k++) y[k] = x[k] * ((1_mpz << prec) / t0);
 
   // compute s
-  std::vector<mpf_class> s(n);
+  std::vector<mpf_class> s(n, mpf_class(0, prec));
   for (int k = n - 1; k >= 0; k--) {
     s[k] = x[k] * x[k];
     if (k < n - 1) s[k] += s[k + 1];
@@ -95,7 +94,7 @@ auto PSLQ(const std::vector<mpf_class> &x, double gamma = 1.16, bool verbose = f
   for (int k = 0; k < n; k++) s[k] = sqrt(s[k]);
 
   // Initialize H
-  std::vector<std::vector<mpf_class>> H(n, std::vector<mpf_class>(n));
+  std::vector<std::vector<mpf_class>> H(n, std::vector<mpf_class>(n, mpf_class(0, prec)));
   for (int j = 0; j < n - 1; j++) {
     H[j][j] = s[j + 1] / s[j];
     for (int i = j + 1; i < n; i++) H[i][j] = -(x[i] * x[j]) / (s[j] * s[j + 1]);
@@ -119,9 +118,8 @@ auto PSLQ(const std::vector<mpf_class> &x, double gamma = 1.16, bool verbose = f
   do {
     iter++;
 
-    mpf_class maxnorm   = abs(H[0][0]);
-    mpf_class pow_gamma = 1; /* pow_gamma = gamma^i */
-    int       m         = 0;
+    mpf_class maxnorm = abs(H[0][0]), pow_gamma(1, prec);
+    int       m       = 0;
     for (int i = 1; i < n - 1; i++) {
       pow_gamma *= gamma;
       if (mpf_class norm = pow_gamma * abs(H[i][i]); norm > maxnorm) {
