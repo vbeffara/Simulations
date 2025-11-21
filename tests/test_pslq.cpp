@@ -189,6 +189,21 @@ auto PSLQ(const std::vector<mpf_class> &x, double gamma = 1.16, bool verbose = f
   return B[j];
 }
 
+auto guess(mpf_class z, int d, double gamma = 1.16, bool verbose = false) {
+  auto prec = z.get_prec();
+  spdlog::info("Precision: {} bits, gamma = {}, dimension = {}", prec, gamma, d + 1);
+
+  std::vector<mpf_class> x(1, 1);
+  for (unsigned i = 1; i <= d; i++) {
+    x.push_back(x.back() * z);
+    std::stringstream ss;
+    ss << std::setprecision(10) << x[i];
+    spdlog::info("x[{}] ≃ {}", i, ss.str());
+  }
+
+  return PSLQ(x, gamma, verbose);
+}
+
 auto main(int argc, char **argv) -> int {
   vb::CLP clp(argc, argv, "Testing the PSLQ algorithm");
   auto    prec    = clp.param("p", 53, "Precision in bits");
@@ -202,18 +217,6 @@ auto main(int argc, char **argv) -> int {
   mpf_set_default_prec(prec);
   mpf_class zz(z);
 
-  spdlog::info("Precision: {} bits, gamma = {}, dimension = {}", prec, gamma, d+1);
-  std::vector<mpf_class> x(1,1);
-  for (unsigned i = 1; i <= d; i++) {
-    x.push_back (x.back() * zz);
-    std::stringstream ss;
-    ss << std::setprecision(10) << x[i];
-    spdlog::info("x[{}] ≃ {}", i, ss.str());
-  }
-
-  auto              rel = PSLQ(x, gamma, verbose);
-  std::stringstream scalprod_str;
-  scalprod_str << scalprod(x, rel);
-  spdlog::info("Final dot product = {}", scalprod_str.str());
+  auto rel = guess(zz, d, gamma, verbose);
   print_relation(rel);
 }
