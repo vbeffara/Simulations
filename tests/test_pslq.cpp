@@ -6,8 +6,8 @@
 #include <gmpxx.h>
 #include <iomanip>
 #include <iostream>
-#include <vb/math/Polynomial.h>
 #include <vb/math/NumberTheory.h>
+#include <vb/math/Polynomial.h>
 #include <vb/util/CLP.h>
 #include <vb/util/mp.h>
 #include <vector>
@@ -183,11 +183,31 @@ auto guess(mpf_class z, int d, bool verbose = false) {
 }
 
 vb::Polynomial<vb::mpz_int> guess(vb::real_t z, int d, bool verbose = false) {
-  mpf_class                zz(boost::multiprecision::mpf_float(z).backend().data(), 3.322*z.precision());
+  mpf_class                zz(boost::multiprecision::mpf_float(z).backend().data(), 3.322 * z.precision());
   auto                     rel = guess(zz, d, verbose);
   std::vector<vb::mpz_int> vec;
   for (const auto &r : rel) vec.push_back(vb::mpz_int(r.get_mpz_t()));
   return vb::Polynomial<vb::mpz_int>(vec);
+}
+
+std::optional<vb::Polynomial<vb::mpz_int>> guess(vb::real_t z) {
+  auto nd = z.precision();
+  auto sz = vb::real_t(z, 2 * nd / 3);
+  for (int d = 1; d < nd / 10; ++d) {
+    auto P = guess(sz, d);
+    if (P.degree() == 0) continue;
+    auto PP = P.derivative();
+
+    vb::real_t zz = z, oz = z + 1, er = 2;
+    while (real(abs(zz - oz)) < real(er)) {
+      er = abs(zz - oz);
+      if (real(er) < pow(vb::real_t{10, z.precision()}, -5 * int(nd))) er = 0;
+      oz = zz;
+      zz -= P(zz) / PP(zz);
+    }
+    if (abs(zz - z) < pow(vb::real_t{10, z.precision()}, 5 - int(nd))) return P;
+  }
+  return {};
 }
 
 auto main(int argc, char **argv) -> int {
@@ -200,8 +220,6 @@ auto main(int argc, char **argv) -> int {
 
   vb::real_t z(x, x.size());
   spdlog::info("x = {}", x);
-  auto P = guess(z, d, verbose);
-  spdlog::info("    P[z] = {}", P);
-  auto Q = vb::guess(z, z.precision());
-  if (Q) spdlog::info("    Q[z] = {}", *Q);
+  if (auto P = guess(z); P) spdlog::info("PSLQ: R[z] = {}", *P);
+  if (auto P = vb::guess(z, z.precision()); P) spdlog::info("LLL:  Q[z] = {}", *P);
 }
