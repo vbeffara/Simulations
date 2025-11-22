@@ -200,7 +200,7 @@ vb::Polynomial<vb::mpz_int> guess(vb::real_t z, int d, bool verbose = false) {
 std::optional<vb::Polynomial<vb::mpz_int>> guess(vb::real_t z) {
   auto nd = z.precision();
   auto sz = vb::real_t(z, 2 * nd / 3);
-  for (int d = 1; d < nd / 20; ++d) {
+  for (int d = 1; d < nd / 10; ++d) {
     auto P = guess(sz, d);
     if (P.degree() == 0) continue;
     auto PP = P.derivative();
@@ -219,21 +219,27 @@ std::optional<vb::Polynomial<vb::mpz_int>> guess(vb::real_t z) {
 
 auto main(int argc, char **argv) -> int {
   vb::CLP clp(argc, argv, "Testing the PSLQ algorithm");
-  auto    x    = clp.param("x", "1.6180339887498948482045868343656381177203091798057628621354486227052604628189024497072072041893911374",
-                           "Input number x");
-  auto    prec = clp.param("p", 0, "Precision in bits");
+  auto    x = clp.param("x", "", "Input number x");
   clp.finalize();
 
-  if (prec == 0) prec = 3.3 * x.size();
+  std::vector<std::string> xs;
+  if (x == "") {
+    xs.emplace_back("0.9162918442410306144165008200767499077603397502333144975769802641182380808885019256331544308341889255");
+    xs.emplace_back("1.36602540378443864676372317075293618347140262690519031402790348972596650845440001854057309338");
+    xs.emplace_back("0.5877852522924731291687059546390727685976524376431459910722724807572784741623519575085040499");
+    xs.emplace_back("0.8090169943749474241022934171828190588601545899028814310677243113526302314094512248536036021");
+    xs.emplace_back("798303.3673469387755102040816326530612244897959183673469387755102040816326530612244897959183673469");
+    xs.emplace_back("1.12266701157648291040117446489401135452719640061624479423083713099312644668872851836902659616");
+    xs.emplace_back("0.63827397417446081629048447976042972714028217652392199657870122677085361940416547100605619666");
+    xs.emplace_back("646.57075744998934067917908899466389773483433056006707491873238242675958808933605915556193840685637786");
+  } else xs.emplace_back(x);
 
-  spdlog::info("std::string -> mpf_class -> PSLQ:");
-  mpf_class z1(x, prec);
-  auto      r1 = guess(z1, 2);
-  spdlog::info("  P[z] = {}", v2p(r1));
-
-  vb::real_t z(x, x.size());
-  spdlog::info("std::string -> vb::real -> mpf_class -> PSLQ:");
-  if (auto P = guess(z); P) spdlog::info("  P[z] = {}", *P);
-  spdlog::info("std::string -> vb::real -> FPLLL:");
-  if (auto P = vb::guess(z, z.precision()); P) spdlog::info("  P[z] = {}", *P);
+  for (const auto &x : xs) {
+    spdlog::info("x = {}", x);
+    vb::real_t z(x, x.size());
+    // spdlog::info("std::string -> vb::real -> mpf_class -> PSLQ:");
+    if (auto P = guess(z); P) spdlog::info("    P_PSLQ(z) = {}", *P);
+    // spdlog::info("std::string -> vb::real -> FPLLL:");
+    if (auto P = vb::guess(z, z.precision()); P) spdlog::info("    P_LLL(z) =  {}", *P);
+  }
 }
