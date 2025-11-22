@@ -182,18 +182,19 @@ auto guess(mpf_class z, int d, bool verbose = false) {
   return rel;
 }
 
-vb::Polynomial<vb::mpz_int> v2p (const std::vector<mpz_class> &rel) {
+vb::Polynomial<vb::mpz_int> v2p(const std::vector<mpz_class> &rel) {
   std::vector<vb::mpz_int> vec;
   for (const auto &r : rel) vec.push_back(vb::mpz_int(r.get_mpz_t()));
   return vb::Polynomial<vb::mpz_int>(vec);
 }
 
 vb::Polynomial<vb::mpz_int> guess(vb::real_t z, int d, bool verbose = false) {
-  mpf_class                zz(boost::multiprecision::mpf_float(z).backend().data(), 3 * z.precision());
-  auto                     rel = guess(zz, d, verbose);
-  std::vector<vb::mpz_int> vec;
-  for (const auto &r : rel) vec.push_back(vb::mpz_int(r.get_mpz_t()));
-  return vb::Polynomial<vb::mpz_int>(vec);
+  auto op = boost::multiprecision::mpf_float::default_precision();
+  boost::multiprecision::mpf_float::default_precision(z.precision());
+  boost::multiprecision::mpf_float z1(z);
+  mpf_class                        zz(boost::multiprecision::mpf_float(z).backend().data());
+  boost::multiprecision::mpf_float::default_precision(op);
+  return v2p(guess(zz, d, verbose));
 }
 
 std::optional<vb::Polynomial<vb::mpz_int>> guess(vb::real_t z) {
@@ -220,19 +221,19 @@ auto main(int argc, char **argv) -> int {
   vb::CLP clp(argc, argv, "Testing the PSLQ algorithm");
   auto    x    = clp.param("x", "1.6180339887498948482045868343656381177203091798057628621354486227052604628189024497072072041893911374",
                            "Input number x");
-  auto    prec = clp.param("p", 256, "Precision in bits");
+  auto    prec = clp.param("p", 0, "Precision in bits");
   clp.finalize();
 
-  spdlog::info("Input x = {}", x);
+  if (prec == 0) prec = 3.3 * x.size();
 
-  spdlog::info("Trying GMP PSLQ...");
+  spdlog::info("std::string -> mpf_class -> PSLQ:");
   mpf_class z1(x, prec);
-  auto r1 = guess(z1,2);
+  auto      r1 = guess(z1, 2);
   spdlog::info("  P[z] = {}", v2p(r1));
 
   vb::real_t z(x, x.size());
-  spdlog::info("Trying real_t PSLQ:");
+  spdlog::info("std::string -> vb::real -> mpf_class -> PSLQ:");
   if (auto P = guess(z); P) spdlog::info("  P[z] = {}", *P);
-  spdlog::info("Trying real_t LLL:");
+  spdlog::info("std::string -> vb::real -> FPLLL:");
   if (auto P = vb::guess(z, z.precision()); P) spdlog::info("  P[z] = {}", *P);
 }
