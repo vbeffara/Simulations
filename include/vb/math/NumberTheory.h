@@ -1,6 +1,5 @@
 #pragma once
 #include <fplll.h>
-#include <gmpxx.h>
 #include <optional>
 #include <vb/math/Polynomial.h>
 #include <vb/util/mp.h>

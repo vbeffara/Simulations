@@ -37,12 +37,12 @@ namespace vb {
     auto B = A;
     for (int i = 1; i < n; i++) {
       for (int j = i - 1; j >= 0; j--) {
-        vb::real_t t = floor(H[i][j] / H[j][j] + 0.5);
-        y[j] += t.convert_to<vb::mpz_int>() * y[i];
+        auto t = (H[i][j] / H[j][j] + 0.5).convert_to<vb::mpz_int>();
+        y[j] += t * y[i];
         for (k = 0; k <= j; k++) H[i][k] -= t * H[j][k];
         for (k = 0; k < n; k++) {
-          A[i][k] -= t.convert_to<vb::mpz_int>() * A[j][k];
-          B[j][k] += t.convert_to<vb::mpz_int>() * B[i][k];
+          A[i][k] -= t * A[j][k];
+          B[j][k] += t * B[i][k];
           size_B = std::max(size_B, nbits(B[j][k]));
         }
       }
@@ -78,7 +78,7 @@ namespace vb {
       for (int i = m + 1; i < n; i++) {
         for (int j = std::min(i - 1, m + 1); j >= 0; j--) {
           if (abs(H[i][j]) < abs(H[j][j]) / 2) continue;
-          if (vb::real_t t = floor(H[i][j] / H[j][j] + .5); t != 0) {
+          if (vb::mpz_int t = floor(H[i][j] / H[j][j] + .5).convert_to<vb::mpz_int>(); t != 0) {
             if (abs(t) < (1L << 62)) {
               long tt = t.convert_to<long>();
               y[j] += tt * y[i];
@@ -89,11 +89,10 @@ namespace vb {
               }
               for (k = 0; k <= j; k++) H[i][k] -= tt * H[j][k];
             } else {
-              vb::real_t tt = floor(t);
-              y[j] += tt.convert_to<vb::mpz_int>() * y[i];
+              y[j] += t.convert_to<vb::mpz_int>() * y[i];
               for (k = 0; k < n; k++) {
-                A[i][k] -= tt.convert_to<vb::mpz_int>() * A[j][k];
-                B[j][k] += tt.convert_to<vb::mpz_int>() * B[i][k];
+                A[i][k] -= t.convert_to<vb::mpz_int>() * A[j][k];
+                B[j][k] += t.convert_to<vb::mpz_int>() * B[i][k];
                 size_B = std::max(size_B, nbits(B[j][k]));
               }
               for (k = 0; k <= j; k++) H[i][k] -= t * H[j][k];
