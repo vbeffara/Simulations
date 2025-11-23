@@ -21,12 +21,11 @@ vb::Polynomial<vb::mpz_int> guess(mpf_class z, int d) {
 }
 
 vb::Polynomial<vb::mpz_int> guess(vb::real_t z, int d) {
-  auto op = boost::multiprecision::mpf_float::default_precision();
-  boost::multiprecision::mpf_float::default_precision(z.precision());
-  boost::multiprecision::mpf_float z1(z);
-  mpf_class                        zz(boost::multiprecision::mpf_float(z).backend().data());
-  boost::multiprecision::mpf_float::default_precision(op);
-  return guess(zz, d);
+  std::vector<vb::real_t> x(1, z / z);
+  for (unsigned i = 1; i <= d; i++) x.push_back(x.back() * z);
+  vb::Polynomial<vb::mpz_int> P(vb::PSLQ(x));
+  if (P[d] < 0) P *= -1;
+  return P;
 }
 
 std::optional<vb::Polynomial<vb::mpz_int>> guess(vb::real_t z) {
