@@ -24,6 +24,7 @@ add_library(vb SHARED
   Picture.cpp
   Pov.cpp
   ProgressBar.cpp
+  PSLQ.cpp
   QuadTree.cpp
   Shape.cpp
   Sphere.cpp
