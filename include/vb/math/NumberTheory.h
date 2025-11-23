@@ -9,10 +9,6 @@ using fplll::Z_NR;
 using fplll::ZZ_mat;
 
 namespace vb {
-  Polynomial<mpz_int> v2p(const std::vector<mpz_class> &rel);
-
-  std::vector<mpz_class> PSLQ(const std::vector<mpf_class> &x, double gamma = 1.16);
-
   std::vector<mpz_int> PSLQ(const std::vector<real_t> &x, double gamma = 1.16);
 
   template <typename T> auto guess(const T &x, unsigned nd) -> std::optional<Polynomial<mpz_int>> {

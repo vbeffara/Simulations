@@ -12,14 +12,6 @@
 #include <vb/util/mp.h>
 #include <vector>
 
-vb::Polynomial<vb::mpz_int> guess(mpf_class z, int d) {
-  std::vector<mpf_class> x(1, z / z);
-  for (unsigned i = 1; i <= d; i++) x.push_back(x.back() * z);
-  auto P = vb::v2p(vb::PSLQ(x));
-  if (P[d] < 0) P *= -1;
-  return P;
-}
-
 vb::Polynomial<vb::mpz_int> guess(vb::real_t z, int d) {
   std::vector<vb::real_t> x(1, z / z);
   for (unsigned i = 1; i <= d; i++) x.push_back(x.back() * z);
