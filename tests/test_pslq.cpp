@@ -8,7 +8,7 @@ auto main(int argc, char **argv) -> int {
   clp.finalize();
 
   if (x != "" && y != "") {
-    vb::real_t r(x, x.size()), i(y, y.size());
+    vb::real_t    r(x, x.size()), i(y, y.size());
     vb::complex_t z{r, i};
     spdlog::info("z = {}", z);
     if (auto P = vb::guess_PSLQ(z)) spdlog::info("    P_PSLQ(z) = {}", *P);
@@ -41,12 +41,11 @@ auto main(int argc, char **argv) -> int {
     if (auto P = vb::guess_LLL(z, z.precision()); P) spdlog::info("    P_LLL(z) =  {}", *P);
   }
 
-
-  std::string rs("0.1722882583776278670500267959231284336682007863854856624427574750255049273322927690638923632");
+  std::string      rs("0.1722882583776278670500267959231284336682007863854856624427574750255049273322927690638923632");
   vb::real_t const r(rs, rs.size());
-  std::string is("0.5302487364574217190358808797265653491226567421626168710631761419479819886565504921987031543");
+  std::string      is("0.5302487364574217190358808797265653491226567421626168710631761419479819886565504921987031543");
   vb::real_t const i(is, is.size());
-  vb::complex_t z{r,i};
+  vb::complex_t    z{r, i};
   spdlog::info("z = {}", z);
   if (auto P = vb::guess_PSLQ(z)) spdlog::info("    P_PSLQ(z) = {}", *P);
   if (auto P = vb::guess_LLL(z, z.real().precision()); P) spdlog::info("    P_LLL(z) =  {}", *P);

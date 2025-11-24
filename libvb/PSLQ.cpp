@@ -138,9 +138,9 @@ namespace vb {
   }
 
   std::optional<Polynomial<mpz_int>> guess_PSLQ(complex_t z) {
-    real_t one{1, z.real().precision()}, pi = 4 * atan(one);
     auto                nd = z.precision();
-    complex_t           sz = complex_t(z, 2 * nd / 3), p = sz / sz;
+    real_t              one{1, 2 * nd / 3}, pi = 4 * atan(one);
+    complex_t           sz = complex_t(z, 2 * nd / 3), p = one;
     std::vector<real_t> pows(1, one);
     for (int d = 1; d < nd / 10; ++d) {
       p *= sz;

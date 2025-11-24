@@ -270,14 +270,12 @@ namespace vb {
 
         os << "log(lambda)  = " << C.p[1] << '\n';
         os << "tau          = " << C.p[0] << '\n';
-        {
-            auto P = guess_LLL(C.p[0], eps);
-            if (P) os << fmt::format("\t\troot of {}", *P) << '\n';
-        }
         os << "invariant j  = " << C.E.j() << '\n';
         {
             auto P = guess_LLL(C.E.j(), eps);
-            if (P) os << fmt::format("\t\troot of {}", *P) << '\n';
+            if (P) os << fmt::format("\t\tRoot of {}", *P) << '\n';
+            auto Q = guess_PSLQ(C.E.j());
+            if (Q) os << fmt::format("\t\troot of {}", *Q) << '\n';
         }
         os << "  j / 1728  = " << C.E.j() / 1728 << '\n';
         {
