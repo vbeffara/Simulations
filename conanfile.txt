@@ -14,6 +14,10 @@ ms-gsl/4.2.0
 onetbb/2022.0.0
 spdlog/1.15.1
 yaml-cpp/0.8.0
+xkbcommon/1.6.0
+gtk/system
+egl/system
+dbus/1.15.8
 
 [generators]
 CMakeDeps
@@ -21,3 +25,4 @@ CMakeToolchain
 
 [options]
 pkg/fltk:shared=True
+gtk/system:version=3

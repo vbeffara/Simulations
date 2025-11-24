@@ -44,4 +44,5 @@ endif()
 
 target_link_libraries(vb PUBLIC
   spdlog::spdlog Boost::chrono Eigen3::Eigen fplll::fplll PNG::PNG gmp::gmp mpfr::mpfr mpc::mpc
-  cairo::cairo OpenGL::GL fltk::fltk yaml-cpp onetbb::onetbb Microsoft.GSL::GSL ${SCK})
+  cairo::cairo OpenGL::GL fltk::fltk yaml-cpp onetbb::onetbb Microsoft.GSL::GSL ${SCK}
+  xkbcommon::xkbcommon gtk::gtk egl::egl dbus-1)
