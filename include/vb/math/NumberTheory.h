@@ -10,7 +10,9 @@ using fplll::ZZ_mat;
 namespace vb {
   std::vector<mpz_int> PSLQ(const std::vector<real_t> &x, double gamma = 1.16);
 
-  template <typename T> auto guess(const T &x, unsigned nd) -> std::optional<Polynomial<mpz_int>> {
+  std::optional<Polynomial<mpz_int>> guess_PSLQ(real_t z);
+
+  template <typename T> auto guess_LLL(const T &x, unsigned nd) -> std::optional<Polynomial<mpz_int>> {
     real_t m{pow(real_t{10, x.precision()}, nd * 2 / 3)};
     for (unsigned d = 1; d <= nd / 10; ++d) {
       T             t{1, x.precision()};

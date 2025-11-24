@@ -12,5 +12,5 @@ TEST_CASE("vb::Constellation1") {
     Constellation1<double> const C(M);
     Constellation1<real_t> Cq(C);
     Cq.findn();
-    CHECK(fmt::format("{}", *(guess(Cq.E.j(), 80))) == "z^2 + -914416 z + 590816592");
+    CHECK(fmt::format("{}", *(guess_LLL(Cq.E.j(), 80))) == "z^2 + -914416 z + 590816592");
 }

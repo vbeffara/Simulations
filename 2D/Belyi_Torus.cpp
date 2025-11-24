@@ -86,15 +86,15 @@ auto main(int argc, char **argv) -> int {
         unsigned const         nd = unsigned(std::max(10, lc / 2 - 15));
         spdlog::info("     Modulus:         {}", CC.tau());
         if (nd > 30)
-            if (auto P = guess(CC.tau(), nd)) spdlog::info("        root of {}", *P);
+            if (auto P = guess_LLL(CC.tau(), nd)) spdlog::info("        root of {}", *P);
         spdlog::info("     Klein invariant: {}", CC.E.j());
         if (nd > 30)
-            if (auto P = guess(CC.E.j(), nd)) spdlog::info("        root of {}", *P);
+            if (auto P = guess_LLL(CC.E.j(), nd)) spdlog::info("        root of {}", *P);
         spdlog::info("     g2 coefficient:  {}", CC.E.g2());
         if (nd > 30)
-            if (auto P = guess(CC.E.g2(), nd)) spdlog::info("        root of {}", *P);
+            if (auto P = guess_LLL(CC.E.g2(), nd)) spdlog::info("        root of {}", *P);
         spdlog::info("     g3 coefficient:  {}", CC.E.g3());
         if (nd > 30)
-            if (auto P = guess(CC.E.g3(), nd)) spdlog::info("        root of {}", *P);
+            if (auto P = guess_LLL(CC.E.g3(), nd)) spdlog::info("        root of {}", *P);
     }
 }

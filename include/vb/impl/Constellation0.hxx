@@ -249,7 +249,7 @@ namespace vb {
            << "\n";
         for (auto &zd : C.b) {
             os << "| " << zd.d << "\t" << fmt::format(fmt::runtime("{:<30}"), zd.z);
-            if (auto P = guess(zd.z, nd)) os << "\troot of " << fmt::format("{}", *P);
+            if (auto P = guess_LLL(zd.z, nd)) os << "\troot of " << fmt::format("{}", *P);
             os << "\n";
         }
         os << "\n";
@@ -257,7 +257,7 @@ namespace vb {
            << "\n";
         for (auto &zd : C.w) {
             os << "| " << zd.d << "\t" << fmt::format(fmt::runtime("{:<30}"), zd.z);
-            if (auto P = guess(zd.z, nd)) os << "\troot of " << fmt::format("{}", *P);
+            if (auto P = guess_LLL(zd.z, nd)) os << "\troot of " << fmt::format("{}", *P);
             os << "\n";
         }
         os << "\n";
@@ -265,12 +265,12 @@ namespace vb {
            << "\n";
         for (auto &zd : C.f) {
             os << "| " << zd.d << "\t" << fmt::format(fmt::runtime("{:<30}"), zd.z);
-            if (auto P = guess(zd.z, nd)) os << "\troot of " << fmt::format("{}", *P);
+            if (auto P = guess_LLL(zd.z, nd)) os << "\troot of " << fmt::format("{}", *P);
             os << "\n";
         }
         os << "\n";
         os << (char *)(u8"λ     := ") << C.p[0] << "\n";                                                // TODO: this is wrong
-        if (auto L = guess(C.p[0], nd)) os << (char *)(u8"Λ[z_] := ") << fmt::format("{}", *L) << "\n"; // TODO: this is wrong
+        if (auto L = guess_LLL(C.p[0], nd)) os << (char *)(u8"Λ[z_] := ") << fmt::format("{}", *L) << "\n"; // TODO: this is wrong
         Polynomial<complex_t> P{1}, Q{1};
         for (auto zd : C.b) P.add_root(zd.z, zd.d);
         for (auto zd : C.f) Q.add_root(zd.z, zd.d);

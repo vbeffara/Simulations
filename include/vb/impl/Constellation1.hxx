@@ -271,27 +271,27 @@ namespace vb {
         os << "log(lambda)  = " << C.p[1] << '\n';
         os << "tau          = " << C.p[0] << '\n';
         {
-            auto P = guess(C.p[0], eps);
+            auto P = guess_LLL(C.p[0], eps);
             if (P) os << fmt::format("\t\troot of {}", *P) << '\n';
         }
         os << "invariant j  = " << C.E.j() << '\n';
         {
-            auto P = guess(C.E.j(), eps);
+            auto P = guess_LLL(C.E.j(), eps);
             if (P) os << fmt::format("\t\troot of {}", *P) << '\n';
         }
         os << "  j / 1728  = " << C.E.j() / 1728 << '\n';
         {
-            auto P = guess(C.E.j() / 1728, eps);
+            auto P = guess_LLL(C.E.j() / 1728, eps);
             if (P) os << fmt::format("\t\troot of {}", *P) << '\n';
         }
         os << "invariant g2 = " << C.E.g2() << '\n';
         {
-            auto P = guess(C.E.g2(), eps);
+            auto P = guess_LLL(C.E.g2(), eps);
             if (P) os << fmt::format("\t\troot of {}", *P) << '\n';
         }
         os << "invariant g3 = " << C.E.g3() << '\n';
         {
-            auto P = guess(C.E.g3(), eps);
+            auto P = guess_LLL(C.E.g3(), eps);
             if (P) os << fmt::format("\t\troot of {}", *P) << '\n';
         }
         os << '\n';
@@ -300,21 +300,21 @@ namespace vb {
         os << "Black vertices / zeros:\n";
         for (auto &zd : C.b) {
             os << "| " << zd.d << "\t" << zd.z << '\n';
-            auto P = guess(zd.z, eps);
+            auto P = guess_LLL(zd.z, eps);
             if (P) os << fmt::format("|\t\troot of {}", *P) << '\n';
         }
         os << '\n';
         os << "White vertices / ones:\n";
         for (auto &zd : C.w) {
             os << "| " << zd.d << "\t" << zd.z << '\n';
-            auto P = guess(zd.z, eps);
+            auto P = guess_LLL(zd.z, eps);
             if (P) os << fmt::format("|\t\troot of {}", *P) << '\n';
         }
         os << '\n';
         os << "Red vertices / poles:\n";
         for (auto &zd : C.f) {
             os << "| " << zd.d << "\t" << zd.z << '\n';
-            auto P = guess(zd.z, eps);
+            auto P = guess_LLL(zd.z, eps);
             if (P) os << fmt::format("|\t\troot of {}", *P) << '\n';
         }
         return os;
