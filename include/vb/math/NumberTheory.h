@@ -12,6 +12,8 @@ namespace vb {
 
   std::optional<Polynomial<mpz_int>> guess_PSLQ(real_t z);
 
+  std::optional<Polynomial<mpz_int>> guess_PSLQ(complex_t z);
+
   template <typename T> auto guess_LLL(const T &x, unsigned nd) -> std::optional<Polynomial<mpz_int>> {
     real_t m{pow(real_t{10, x.precision()}, nd * 2 / 3)};
     for (unsigned d = 1; d <= nd / 10; ++d) {

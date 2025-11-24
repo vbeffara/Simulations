@@ -53,7 +53,7 @@ namespace vb {
 
     do {
       real_t maxnorm = abs(H[0][0]), pow_gamma(1, prec);
-      int        m       = 0;
+      int    m       = 0;
       for (int i = 1; i < n - 1; i++) {
         pow_gamma *= gamma;
         if (real_t norm = pow_gamma * abs(H[i][i]); norm > maxnorm) {
@@ -113,8 +113,8 @@ namespace vb {
   }
 
   std::optional<Polynomial<mpz_int>> guess_PSLQ(real_t z) {
-    auto                    nd = z.precision();
-    auto                    sz = real_t(z, 2 * nd / 3);
+    auto                nd = z.precision();
+    auto                sz = real_t(z, 2 * nd / 3);
     std::vector<real_t> pows(1, sz / sz);
     for (int d = 1; d < nd / 10; ++d) {
       pows.push_back(pows.back() * sz);
@@ -123,6 +123,33 @@ namespace vb {
       auto PP = P.derivative();
 
       real_t zz = z, oz = z + 1, er = 2;
+      while (real(abs(zz - oz)) < real(er)) {
+        er = abs(zz - oz);
+        if (real(er) < pow(real_t{10, z.precision()}, -5 * int(nd))) er = 0;
+        oz = zz;
+        zz -= P(zz) / PP(zz);
+      }
+      if (abs(zz - z) < pow(real_t{10, z.precision()}, 10 - int(nd))) {
+        if (P[d] < 0) P *= -1;
+        return P;
+      }
+    }
+    return {};
+  }
+
+  std::optional<Polynomial<mpz_int>> guess_PSLQ(complex_t z) {
+    real_t one{1, z.real().precision()}, pi = 4 * atan(one);
+    auto                nd = z.precision();
+    complex_t           sz = complex_t(z, 2 * nd / 3), p = sz / sz;
+    std::vector<real_t> pows(1, one);
+    for (int d = 1; d < nd / 10; ++d) {
+      p *= sz;
+      pows.push_back(real(p) + pi * imag(p));
+      Polynomial<mpz_int> P(PSLQ(pows));
+      if (P.degree() == 0) continue;
+      auto PP = P.derivative();
+
+      complex_t zz = z, oz = z + 1, er = 2;
       while (real(abs(zz - oz)) < real(er)) {
         er = abs(zz - oz);
         if (real(er) < pow(real_t{10, z.precision()}, -5 * int(nd))) er = 0;
