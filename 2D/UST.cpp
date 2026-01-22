@@ -1,5 +1,5 @@
 #include <vb/Bitmap.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -24,7 +24,7 @@ public:
 
 class UST : public Bitmap<Point> {
 public:
-    explicit UST(const Hub &H, size_t n_) : Bitmap<Point>(H.title, {2 * n_ + 1, 2 * n_ + 1}), n(n_) {}
+    explicit UST(const std::string &title, size_t n_) : Bitmap<Point>(title, {2 * n_ + 1, 2 * n_ + 1}), n(n_) {}
 
     void path(ucoo z, Type tgt) {
         while (at(z).t != tgt) {
@@ -45,23 +45,25 @@ public:
         path(z0, SITE);
     }
 
-    void go(const Hub &H) {
+    void go(bool paint) {
         show();
         put({0, 2 * (n / 2)}, Point{SITE});
         for (size_t ii = n + 1; ii-- > 0;)
             for (size_t j = 0; j <= n; ++j) lerw({2 * ii, 2 * j});
-        if (H['p']) {
+        if (paint) {
             put({0, 2 * (n / 2)}, Point{EMPH});
             path({2 * n, 2 * (n / 4)}, EMPH);
         }
         pause();
-        output(H.title);
     }
 
     size_t n;
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub const H("Uniform spanning tree", argc, argv, "n=200,p");
-    UST(H, H['n']).go(H);
+    CLP clp(argc, argv, "Uniform spanning tree");
+    auto n = clp.param("n", size_t(200), "Grid extent");
+    auto p = clp.flag("p", "Paint a highlighted path");
+    clp.finalize();
+    UST(clp.title, n).go(p);
 }
