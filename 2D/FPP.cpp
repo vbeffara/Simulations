@@ -1,6 +1,6 @@
 #include <vb/CoarseImage.h>
 #include <vb/data/Queue.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -9,8 +9,8 @@ auto cost() -> double { return prng.exponential(); }
 
 class FPP : public CoarseImage {
   public:
-  FPP(const Hub &H, size_t n)
-      : CoarseImage(H.title, {n, n}, size_t(pow(double(n), .33))), trace(H['t']), invasion(H['i']), twostep(H['2']) {
+  FPP(const std::string &title, size_t n, bool trace_, bool invasion_, bool twostep_)
+      : CoarseImage(title, {n, n}, size_t(pow(double(n), .33))), trace(trace_), invasion(invasion_), twostep(twostep_) {
     pq.push({{n / 2, n / 2}, cost()});
     if (twostep) pq.push({{n / 2 + 1, n / 2}, cost()});
   };
@@ -56,9 +56,15 @@ class FPP : public CoarseImage {
 };
 
 auto main(int argc, char **argv) -> int {
-  Hub const H("First-passage percolation", argc, argv, "n=5000,i,2,t");
-  FPP       F(H, H['n']);
+  CLP  clp(argc, argv, "First-passage percolation");
+  auto n = clp.param("n", 5000UL, "grid size");
+  auto i = clp.flag("i", "invasion percolation mode");
+  auto twostep = clp.flag("2", "two-step mode");
+  auto t = clp.flag("t", "trace output");
+  clp.finalize();
+
+  FPP F(clp.title, n, t, i, twostep);
   F.show();
   F.run();
-  F.output(H.title);
+  F.output(clp.title);
 }

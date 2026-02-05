@@ -1,5 +1,5 @@
 #include <vb/Bitmap.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace std;
@@ -11,10 +11,11 @@ namespace vb {
 
 class ACP : public Bitmap<size_t> {
 public:
-    explicit ACP(const Hub &H) : Bitmap<size_t>(H.title, {size_t(H['n']), size_t(H['n'])}), kid(H['z']), maxage(H['m']) {
+    ACP(const string &title, size_t n, double d, double a, size_t z, size_t m, double b, double r)
+        : Bitmap<size_t>(title, {n, n}), kid(z), maxage(m) {
         put(size / 2, 1);
-        P = {H['d'], H['a']};
-        for (size_t ii = 0; ii < size_t(H['m']) - kid; ++ii) P.push_back(double(H['b']) + double(H['r']) * double(ii));
+        P = {d, a};
+        for (size_t ii = 0; ii < m - kid; ++ii) P.push_back(b + r * double(ii));
         double s = 0;
         for (double const u : P) s += u;
         for (double &u : P) u /= s;
@@ -37,8 +38,16 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub const H("Contact process with aging", argc, argv, "n=400,d=.01,a=.1,z=0,m=5,b=.2,r=.1");
-    ACP A(H);
+    CLP clp(argc, argv, "Contact process with aging");
+    auto n = clp.param("n", size_t(400), "Grid size");
+    auto d = clp.param("d", 0.01, "Death probability");
+    auto a = clp.param("a", 0.1, "Aging probability");
+    auto z = clp.param("z", size_t(0), "Kid threshold");
+    auto m = clp.param("m", size_t(5), "Max age");
+    auto b = clp.param("b", 0.2, "Birth base rate");
+    auto r = clp.param("r", 0.1, "Birth rate increment");
+    clp.finalize();
+    ACP A(clp.title, n, d, a, z, m, b, r);
     A.show();
     while (true) A.run();
 }

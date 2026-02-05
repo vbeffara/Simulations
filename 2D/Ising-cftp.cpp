@@ -1,5 +1,5 @@
 #include <vb/Bitmap.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -15,7 +15,7 @@ namespace vb {
 
 class IsingCFTP : public Bitmap<int> {
 public:
-    explicit IsingCFTP(const Hub &H) : Bitmap<int>(H.title, {H['n'], H['n']}), b(H['b']), s(H['s']), status(H.title, size) {
+    IsingCFTP(const string &title, size_t n, double b_, bool s_) : Bitmap<int>(title, {n, n}), b(b_), s(s_), status(title, size) {
         for (const auto &z : coo_range(size)) put(z, 1);
         snap();
         b *= log(1 + sqrt(double(2)));
@@ -102,8 +102,13 @@ public:
 };
 
 auto main(int argc, char *argv[]) -> int {
-    Hub const H("CFTP for the Ising model", argc, argv, "n=200,b=1,s");
-    IsingCFTP I(H);
+    CLP  clp(argc, argv, "CFTP for the Ising model");
+    auto n    = clp.param("n", size_t(200), "Grid size");
+    auto beta = clp.param("b", 1.0, "Inverse temperature");
+    auto snap = clp.flag("s", "Enable snapshots");
+    clp.finalize();
+
+    IsingCFTP I(clp.title, n, beta, snap);
     I.bc_dobrushin();
     I.show();
     I.status.show();

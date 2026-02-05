@@ -1,11 +1,12 @@
 #include <fftw3.h>
 #include <limits>
+#include <map>
 #include <queue>
 #include <spdlog/spdlog.h>
 #include <vb/Bitmap.h>
 #include <vb/ProgressBar.h>
 #include <vb/math/math.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -22,28 +23,28 @@ public:
 
 class QG : public Image {
 public:
-    explicit QG(const Hub &H)
-        : Image(H.title, {1U << unsigned(H['n']), 1U << unsigned(H['n'])}), I(size, Info({0, 0}, {0, 0}, 0, 0)), g(H['g']), n(H['n']) {
+    explicit QG(const string &title, int n_, double g_, const string &w, int z_param, double l, double a, bool c)
+        : Image(title, {1U << unsigned(n_), 1U << unsigned(n_)}), I(size, Info({0, 0}, {0, 0}, 0, 0)), g(g_), n(n_) {
         map<string, function<void()>> fields;
-        fields["boolean"]  = [&, this] { fill_boolean(H['z']); };
-        fields["dyadic"]   = [&, this] { fill_dyadic(H['z']); };
-        fields["free"]     = [&, this] { fill_free(H['z']); };
-        fields["gaussian"] = [&, this] { fill_radial([](double x) { return exp(-x * x); }, H['l']); };
-        fields["power"]    = [&, this] { fill_radial([&](double x) { return pow(1 + x * x, -double(H['a']) / 2); }, H['l']); };
+        fields["boolean"]  = [&, this] { fill_boolean(z_param); };
+        fields["dyadic"]   = [&, this] { fill_dyadic(z_param); };
+        fields["free"]     = [&, this] { fill_free(z_param); };
+        fields["gaussian"] = [&, this] { fill_radial([](double x) { return exp(-x * x); }, l); };
+        fields["power"]    = [&, this, a] { fill_radial([a](double x) { return pow(1 + x * x, -a / 2); }, l); };
         fields["white"]    = [&, this] { fill_white(); };
-        fields[H['w']]();
+        fields[w]();
 
         minf = maxf = I.at({0, 0}).f;
-        for (auto z : coo_range(I.size)) {
-            minf = min(minf, I.at(z).f);
-            maxf = max(maxf, I.at(z).f);
+        for (auto zz : coo_range(I.size)) {
+            minf = min(minf, I.at(zz).f);
+            maxf = max(maxf, I.at(zz).f);
         }
         spdlog::info("Renormalized field: min = {}, max = {}", minf / log(size.x), maxf / log(size.x));
 
-        for (auto z : coo_range(size)) {
-            put(z, Grey(uint8_t(255 * (I.at(z).f - minf) / (maxf - minf))));
-            if (H['c']) put(z, Indexed(int(at(z)) > 128 ? 1 : 2));
-            I.at(z) = Info(z, z, numeric_limits<double>::infinity(), exp(g * I.at(z).f));
+        for (auto zz : coo_range(size)) {
+            put(zz, Grey(uint8_t(255 * (I.at(zz).f - minf) / (maxf - minf))));
+            if (c) put(zz, Indexed(int(at(zz)) > 128 ? 1 : 2));
+            I.at(zz) = Info(zz, zz, numeric_limits<double>::infinity(), exp(g * I.at(zz).f));
         }
     };
 
@@ -186,24 +187,37 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub const H("Random 2D geometry", argc, argv, "w=free,n=9,z=0,g=1,s=0,b,i,q,c,l=10,a=1");
-    if (unsigned const s = H['s']) prng.seed(s);
-    unsigned n = H['n'], nn = 1U << n;
+    CLP  clp(argc, argv, "Random 2D geometry");
+    auto w = clp.param("w", "free"s, "field type (free|boolean|dyadic|gaussian|power|white)");
+    auto n = clp.param("n", 9, "log2 of grid size");
+    auto z = clp.param("z", 0, "field parameter");
+    auto g = clp.param("g", 1.0, "gamma parameter");
+    auto s = clp.param("s", size_t(0), "random seed");
+    auto b = clp.flag("b", "show ball");
+    auto i = clp.flag("i", "invisible mode");
+    auto q = clp.flag("q", "quick mode (skip dijkstra)");
+    auto c = clp.flag("c", "color mode");
+    auto l = clp.param("l", 10.0, "length scale");
+    auto a = clp.param("a", 1.0, "power exponent");
+    clp.finalize();
 
-    QG img(H);
-    if (!H['i']) img.show();
+    if (s != 0) prng.seed(s);
+    unsigned nn = 1U << n;
 
-    if (!H['q']) {
+    QG img(clp.title, n, g, w, z, l, a, c);
+    if (!i) img.show();
+
+    if (!q) {
         img.dijkstra();
-        if (H['b']) img.ball();
-        for (unsigned i = 0; i <= nn - 1; i += 1) {
-            img.trace({0, i});
-            img.trace({nn - 1, i});
-            img.trace({i, 0});
-            img.trace({i, nn - 1});
+        if (b) img.ball();
+        for (unsigned ii = 0; ii <= nn - 1; ii += 1) {
+            img.trace({0, ii});
+            img.trace({nn - 1, ii});
+            img.trace({ii, 0});
+            img.trace({ii, nn - 1});
         }
     }
 
-    if (!H['i']) { img.pause(); }
-    img.output(H.title);
+    if (!i) { img.pause(); }
+    img.output(clp.title);
 }

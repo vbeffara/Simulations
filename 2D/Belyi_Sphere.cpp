@@ -2,7 +2,7 @@
 #include <vb/Coloring.h>
 #include <vb/Constellation0.h>
 #include <vb/math/Permutation.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 
 using namespace vb;
 using namespace std;
@@ -40,31 +40,39 @@ auto triangulations(unsigned n) -> Stream2<Hypermap> {
 }
 
 auto main(int argc, char **argv) -> int {
-  Hub      H("Spheroidal enumeration", argc, argv, "s=3,m=228,d=2,g=0,v,o,b,q");
-  unsigned s = H['s'], g = 0, a = 6 * (s - 2), d = H['d'];
+  CLP clp(argc, argv, "Spheroidal enumeration");
+  auto s = clp.param("s", 3, "Number of vertices");
+  auto d = clp.param("d", 2, "Minimum degree");
+  auto v = clp.flag("v", "Visualize");
+  auto o = clp.flag("o", "Output image");
+  auto b = clp.flag("b", "Print Belyi map");
+  auto q = clp.flag("q", "Compute high precision");
+  clp.finalize();
+
+  unsigned g = 0, a = 6 * (unsigned(s) - 2);
 
   int nb = 0;
   for (const Hypermap &M : triangulations(a)) {
     if (M.genus() != g) continue;
     bool good = true;
     for (auto &c : M.sigma.cycles())
-      if (c.size() < d) good = false;
+      if (c.size() < unsigned(d)) good = false;
     if (!good) continue;
 
     spdlog::info("{}: {}", ++nb, M);
 
-    if (H['v'] || H['o'] || H['b'] || H['q']) {
-      H.title = fmt::format("Spheroidal enumeration (s={}, d={}, i={})", s, d, nb);
+    if (v || o || b || q) {
+      auto title = fmt::format("Spheroidal enumeration (s={}, d={}, i={})", s, d, nb);
       Constellation0<double> C{M};
       C.belyi();
-      if (H['b']) spdlog::info("{}", C);
-      if (H['v'] || H['o']) {
+      if (b) spdlog::info("{}", C);
+      if (v || o) {
         auto     bd = C.bounds();
-        Coloring CC(H.title, bd.first, bd.second, 800, [&](cpx z) { return Indexed((imag(C(z)) > 0) ? 1 : 2); });
+        Coloring CC(title, bd.first, bd.second, 800, [&](cpx z) { return Indexed((imag(C(z)) > 0) ? 1 : 2); });
         CC.scale(1.5);
         CC.show();
-        if (H['o'])
-          CC.output(H.title);
+        if (o)
+          CC.output(title);
         else {
           while (CC.visible()) {
             CC.update();
@@ -73,7 +81,7 @@ auto main(int argc, char **argv) -> int {
         };
         CC.hide();
       }
-      if (H['q']) {
+      if (q) {
         Constellation0<real_t> Cq(C);
         Cq.findn();
         Cq.belyi();

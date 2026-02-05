@@ -1,5 +1,5 @@
 #include <vb/Bitmap.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -29,9 +29,14 @@ struct BF : public Bitmap<double> {
 };
 
 auto main(int argc, char **argv) -> int {
-  Hub const H("Inhomogeneous Bargman-Fock", argc, argv, "n=600,e=.001,t=5000,b=.5");
-  BF        B(H.title, H['n'], H['e'], H['b']);
+  CLP clp(argc, argv, "Inhomogeneous Bargman-Fock");
+  auto n = clp.param("n", size_t(600), "Grid size");
+  auto e = clp.param("e", 0.001, "Diffusion rate");
+  auto t = clp.param("t", 5000, "Number of steps");
+  auto b = clp.param("b", 0.5, "Inner region factor");
+  clp.finalize();
+  BF B(clp.title, n, e, b);
   B.show();
-  for (int t = 0; t < int(H['t']); ++t) { B.heat_step(); }
-  B.output_png(H.title);
+  for (int i = 0; i < t; ++i) { B.heat_step(); }
+  B.output_png(clp.title);
 }

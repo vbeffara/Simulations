@@ -1,6 +1,6 @@
 #include <vb/Bitmap.h>
 #include <vb/Console.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -33,7 +33,7 @@ public:
 
 class Tiling : public Bitmap<Domino> {
 public:
-    explicit Tiling(const Hub &H, size_t n) : Bitmap<Domino>(H.title, {2 * n, 2 * n}) {
+    explicit Tiling(const string &title, size_t n) : Bitmap<Domino>(title, {2 * n, 2 * n}) {
         for (size_t ii = 0; ii < n; ++ii)
             for (size_t j = n - 1 - ii; j < n + ii; j += 2) {
                 putd(Domino{{int(ii), int(j)}, 1});
@@ -96,8 +96,12 @@ void three_by_two(double a) {
 }
 
 auto main(int argc, char **argv) -> int {
-    Hub const H("Domino tiling (v2)", argc, argv, "n=100,a=.5");
-    two_by_two(H['a']);
+    CLP  clp(argc, argv, "Domino tiling (v2)");
+    auto n = clp.param("n", 100UL, "grid size");
+    auto a = clp.param("a", 0.5, "weight parameter");
+    clp.finalize();
+
+    two_by_two(a);
     hues = W;
     Console C;
     C.manage(contrast, 0.0, 1.0, "contrast");
@@ -107,7 +111,7 @@ auto main(int argc, char **argv) -> int {
                 z = prng.uniform_real();
                 C.manage(z, 0.0, 1.0, nullptr);
             }
-    Tiling D(H, H['n']);
+    Tiling D(clp.title, n);
     C.show();
     D.show();
     D.run();

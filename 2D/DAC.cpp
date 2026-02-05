@@ -1,14 +1,16 @@
 #include <vb/Bitmap.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
 using namespace std;
 
 auto main(int argc, char **argv) -> int {
-    Hub const    H("Divide-and-color model", argc, argv, "n=300,p=.3,q=.4");
-    size_t const n = H['n'];
-    double p = H['p'], q = H['q'];
+    CLP clp(argc, argv, "Divide-and-color model");
+    auto n = clp.param("n", size_t(300), "Grid size");
+    auto p = clp.param("p", 0.3, "Edge probability");
+    auto q = clp.param("q", 0.4, "Color probability");
+    clp.finalize();
 
     // Connectivity (&1 -> to the right, &2 -> downwards)
     Array<uint8_t> connect({n, n});
@@ -43,7 +45,7 @@ auto main(int argc, char **argv) -> int {
     vector<uint8_t> color(size_t(n * n));
     for (auto &c : color) c = (prng.bernoulli(q) ? 255 : 0);
 
-    Image img(H.title, {n, n});
+    Image img(clp.title, {n, n});
     for (auto z : coo_range(img.size)) img.put(z, Grey(color[cluster[z]]));
     img.show();
     img.pause();

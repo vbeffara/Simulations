@@ -1,6 +1,6 @@
 #include <spdlog/spdlog.h>
 #include <vb/Bitmap.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -13,17 +13,17 @@ template <> auto vb::to_Color(double t) -> Color {
 
 class Sandpile : public Bitmap<double> {
 public:
-    Sandpile(const Hub &H, size_t n) : Bitmap(H.title, {n, n}) {
-        for (auto z : coo_range(size)) put(z, prng.gaussian(H['m'], H['s']));
+    Sandpile(const std::string &title, size_t n, double m, double s) : Bitmap(title, {n, n}) {
+        for (auto z : coo_range(size)) put(z, prng.gaussian(m, s));
     }
 
-    void swipe(const Hub &H) {
+    void swipe(bool r) {
         for (auto z : coo_range(size))
             if (double const excess = at(z); excess > 0) {
                 for (unsigned ii = 0; ii < 4; ++ii) atp(coo(z) + dz[ii]) += excess / 4;
                 at(z) = 0;
             }
-        if (H['r']) {
+        if (r) {
             double m = 0;
             for (auto z : coo_range(size))
                 if (double const mm = abs(at(z)); mm > m) m = mm;
@@ -35,8 +35,13 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub const H("Divisible sandpile", argc, argv, "n=500,m=.01,s=10,r");
-    Sandpile S(H, H['n']);
+    CLP clp(argc, argv, "Divisible sandpile");
+    auto n = clp.param("n", size_t(500), "Grid size");
+    auto m = clp.param("m", 0.01, "Mean of initial Gaussian");
+    auto s = clp.param("s", 10.0, "Std dev of initial Gaussian");
+    auto r = clp.flag("r", "Rescale after each step");
+    clp.finalize();
+    Sandpile S(clp.title, n, m, s);
     S.show();
-    while (true) { S.swipe(H); }
+    while (true) { S.swipe(r); }
 }

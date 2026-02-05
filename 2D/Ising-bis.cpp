@@ -1,6 +1,6 @@
 #include <vb/Bitmap.h>
 #include <vb/Figure.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -12,7 +12,7 @@ namespace vb {
 
 class Ising : public Bitmap<int> {
 public:
-    Ising(const Hub &H, size_t n, double beta, size_t con_) : Bitmap<int>(H.title, {n, n}), con(con_), p(2 * size_t(con) + 1) {
+    Ising(const string &title, size_t n, double beta, size_t con_) : Bitmap<int>(title, {n, n}), con(con_), p(2 * size_t(con) + 1) {
         for (auto z : coo_range(size)) put(z, prng.bernoulli(.5) ? 1 : -1);
         if (con == 6) {
             size_t const m = 2 * n / 3;
@@ -33,8 +33,8 @@ public:
         }
     }
 
-    void output_pdf(const Hub &H, const std::string &s = "") {
-        Figure      F{H.title};
+    void output_pdf(const std::string &title, const std::string &s = "") {
+        Figure      F{title};
         cpx         shift;
         vector<cpx> pattern;
         if (con == 6) {
@@ -74,10 +74,15 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub const H("2D Ising model", argc, argv, "n=50,b=.7,c=4");
-    Ising conf(H, H['n'], H['b'], H['c']);
+    CLP  clp(argc, argv, "2D Ising model");
+    auto n    = clp.param("n", size_t(50), "Grid size");
+    auto beta = clp.param("b", 0.7, "Inverse temperature");
+    auto con  = clp.param("c", size_t(4), "Connectivity");
+    clp.finalize();
+
+    Ising conf(clp.title, n, beta, con);
     conf.show();
     conf.run();
     conf.explore();
-    conf.output_pdf(H);
+    conf.output_pdf(clp.title);
 }

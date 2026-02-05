@@ -1,5 +1,5 @@
 #include <vb/Bitmap.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -7,7 +7,7 @@ using namespace std;
 
 class Configuration : public Image {
 public:
-    explicit Configuration(const Hub &H, size_t n) : Image(H.title, {n, n}), expl({n, n}), table(2 * n * n + 1) {}
+    Configuration(const string &title, size_t n) : Image(title, {n, n}), expl({n, n}), table(2 * n * n + 1) {}
 
     void compute_cpts(size_t r1) {
         int t = 0;
@@ -98,7 +98,7 @@ public:
 
 class Coupling : public Image {
 public:
-    Coupling(const Hub &H, size_t r) : Image(H.title, {2 * r, 2 * r}), r1(r / 4), r2(r / 2), r3(r), c1(H, 2 * r), c2(H, 2 * r) {
+    Coupling(const string &title, size_t r) : Image(title, {2 * r, 2 * r}), r1(r / 4), r2(r / 2), r3(r), c1(title, 2 * r), c2(title, 2 * r) {
         c1.pick(r1, r2, r3);
         for (const auto &z : coo_range(size)) c2[z] = c1[z];
         c1.show();
@@ -157,7 +157,9 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub const H("Coupling percolation configurations", argc, argv, "r=20");
-    Coupling C(H, H['r']);
+    CLP clp(argc, argv, "Coupling percolation configurations");
+    auto r = clp.param("r", size_t(20), "Radius");
+    clp.finalize();
+    Coupling C(clp.title, r);
     C.run();
 }

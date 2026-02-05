@@ -2,7 +2,7 @@
 #include <vb/CoarseImage.h>
 #include <vb/Console.h>
 #include <vb/QuadTree.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -52,9 +52,9 @@ auto uniform_circle(size_t r) -> coo {
 
 class DLA : public CoarseImage {
 public:
-    DLA(size_t n_, const Hub &H)
-        : CoarseImage(H.title, {n_, n_}), n(n_), c(H['c']), QT({0, 0}, {int64_t(n), int64_t(n)}, H['l']),
-          prec(harmonic_measures(H['p'])), mid{n / 2, n / 2} {}
+    DLA(const std::string &title, size_t n_, size_t c_, size_t l_, size_t p_)
+        : CoarseImage(title, {n_, n_}), n(n_), c(c_), QT({0, 0}, {int64_t(n), int64_t(n)}, l_),
+          prec(harmonic_measures(p_)), mid{n / 2, n / 2} {}
 
     void show() override {
         W.watch(QT.n, "Nb of particles");
@@ -121,12 +121,19 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub H("Lattice DLA", argc, argv, "n=2000,p=64,c=50,l=30,f,s=0");
-    if (auto s = size_t(H['s'])) prng.seed(s);
-    DLA dla(H['n'], H);
+    CLP clp(argc, argv, "Lattice DLA");
+    auto n = clp.param("n", size_t(2000), "Grid size");
+    auto p = clp.param("p", size_t(64), "Harmonic measure precision");
+    auto c = clp.param("c", size_t(50), "Jump threshold");
+    auto l = clp.param("l", size_t(30), "QuadTree leaf size");
+    auto f = clp.flag("f", "Output fine image");
+    auto s = clp.param("s", size_t(0), "Random seed (0=random)");
+    clp.finalize();
+    if (s) prng.seed(s);
+    DLA dla(clp.title, n, c, l, p);
     dla.show();
     dla.runDLA();
-    dla.output(H.title);
-    if (H['f']) dla.output_fine("dla.png");
-    H.output("Final particle number", "m", dla.QT.n);
+    dla.output(clp.title);
+    if (f) dla.output_fine("dla.png");
+    spdlog::info("Final particle number: m = {}", dla.QT.n);
 }

@@ -1,5 +1,5 @@
 #include <vb/Bitmap.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -54,8 +54,12 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub const H("Fully Connected Bond Percolation", argc, argv, "n=300,p=.5");
-    FCBM P(H.title, H['n'], H['p']);
+    CLP  clp(argc, argv, "Fully Connected Bond Percolation");
+    auto n = clp.param("n", 300UL, "grid size");
+    auto p = clp.param("p", 0.5, "probability");
+    clp.finalize();
+
+    FCBM P(clp.title, n, p);
     P.show();
     P.run();
 }
