@@ -1,6 +1,6 @@
 #include <boost/icl/interval_set.hpp>
 #include <spdlog/spdlog.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 #include <vector>
 
@@ -82,7 +82,10 @@ auto hole(const iset &I) -> double {
 }
 
 auto main(int argc, char **argv) -> int {
-    vb::Hub const H("Bernoullicity of [I,T]", argc, argv, "n=1000,i");
+    vb::CLP clp(argc, argv, "Bernoullicity of [I,T]");
+    auto    n     = clp.param("n", 1000, "Number of iterations");
+    auto    inner = clp.flag("i", "Inner composition mode");
+    clp.finalize();
 
     double                theta = .61803398874989484820;
     function const        f1{{{0.0, theta, 0.0}, {theta, 1.0, -theta}}};
@@ -91,8 +94,8 @@ auto main(int argc, char **argv) -> int {
 
     function f{{{0.0, 1.0, 0.0}}};
     double   avg = 1;
-    for (int i = 0; i < int(H['n']); ++i) {
-        if (bool(H['i']))
+    for (int i = 0; i < n; ++i) {
+        if (inner)
             f = f.compose(ff[vb::prng.uniform_int(ff.size())]);
         else
             f = ff[vb::prng.uniform_int(ff.size())].compose(f);

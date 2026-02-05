@@ -5,22 +5,23 @@
  */
 
 #include <cmath>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using std::cout;
 using std::endl;
 
 auto main(int argc, char **argv) -> int {
-    vb::Hub const H("Ladder", argc, argv, "t=20,d");
-    int const     t = H['t'];
-    bool const    d = H['d'];
+    vb::CLP clp(argc, argv, "Ladder");
+    auto    t     = clp.param("t", 20, "Number of steps");
+    auto    debug = clp.flag("d", "Debug mode");
+    clp.finalize();
 
     std::vector<int> env;
     int              X = 0;
 
     for (int i = 0; i < t; ++i) {
-        if (d) {
+        if (debug) {
             for (size_t j = 0; j < env.size(); ++j) {
                 if (X == int(j))
                     cout << "*";

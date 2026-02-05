@@ -1,5 +1,5 @@
 #include <vb/Bitmap.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 constexpr unsigned MAIN_BIT = 1U;
@@ -70,12 +70,13 @@ void Automaton::effect(double r) {
 }
 
 auto main(int argc, char **argv) -> int {
-    vb::Hub const H("1D cellular automaton", argc, argv, "n=500,e=.03,r=.05");
-    const size_t n = H['n'];
-    const double e = H['e'];
-    const double r = H['r'];
+    vb::CLP clp(argc, argv, "1D cellular automaton");
+    auto    n = clp.param("n", size_t(500), "System size");
+    auto    e = clp.param("e", 0.03, "Error rate");
+    auto    r = clp.param("r", 0.05, "Forget rate");
+    clp.finalize();
 
-    vb::Image img(H.title, {n, n});
+    vb::Image img(clp.title, {n, n});
     img.show();
 
     Automaton a(n);

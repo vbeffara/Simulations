@@ -1,13 +1,16 @@
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace std;
 using namespace vb;
 
 auto main(int argc, char **argv) -> int {
-    Hub const    H("Random field Ising model", argc, argv, "n=5,s=0");
-    size_t const n = H['n'];
-    prng.seed(size_t(H['s']));
+    CLP  clp(argc, argv, "Random field Ising model");
+    auto n = clp.param("n", size_t(5), "System size");
+    auto s = clp.param("s", size_t(0), "Random seed");
+    clp.finalize();
+
+    prng.seed(s);
 
     size_t nconfig = 1;
     for (size_t i = 0; i < n; ++i) nconfig *= 3;
