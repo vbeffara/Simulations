@@ -1,16 +1,19 @@
 #include <vb/Bitmap.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace std;
 using namespace vb;
 
 auto main(int argc, char **argv) -> int {
-    Hub const    H("Last-passage percolation", argc, argv, "n=500,r=.1,l=.01,d=0");
-    size_t const n = H['n'];
-    double r = H['r'], l = H['l'], d = H['d'];
+    CLP  clp(argc, argv, "Last-passage percolation");
+    auto n = clp.param("n", 500, "grid size");
+    auto r = clp.param("r", .1, "initial source density");
+    auto l = clp.param("l", .01, "lightning probability");
+    auto d = clp.param("d", 0.0, "diagonal probability");
+    clp.finalize();
 
-    Image img(H.title, {n, n});
+    Image img(clp.title, {size_t(n), size_t(n)});
     img.show();
 
     vector<int> field(n, 0);

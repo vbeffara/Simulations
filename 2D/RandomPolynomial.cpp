@@ -1,6 +1,7 @@
+#include <map>
 #include <vb/Coloring.h>
 #include <vb/math/math.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -16,14 +17,14 @@ template <typename T> auto sm3(size_t i, size_t j, size_t k) -> T {
 
 template <typename T> class RPoly {
 public:
-    RPoly(const Hub &H, size_t n_, bool(p_)) : n(n_), p(p_), A(n + 1) {
+    RPoly(size_t n_, bool p_, const string &gen) : n(n_), p(p_), A(n + 1) {
         map<string, function<double()>> generators;
         generators.emplace("gaussian", [] { return prng.gaussian(0, 1); });
         generators.emplace("bernoulli", [] { return prng.bernoulli(.5) ? 1 : -1; });
 
         for (size_t i = 0; i <= n; ++i)
             for (size_t j = 0; j <= n - i; ++j) {
-                T a(generators[H['g']]());
+                T a(generators[gen]());
                 T b = a * sm3<T>(i, j, n - i - j);
                 A[i].push_back(b);
             }
@@ -57,12 +58,18 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub const H("Random polynomial in 2 variables", argc, argv, "n=100,g=gaussian,s=0,p");
-    if (unsigned const s = H['s']; s > 0) prng.seed(s);
-    RPoly<double> const P(H, H['n'], H['p']);
-    double const        l = H['p'] ? 1 : 10;
-    Coloring      C(H.title, cpx(-l, -l), cpx(l, l), 800, P);
+    CLP clp(argc, argv, "Random polynomial in 2 variables");
+    auto n   = clp.param("n", 100, "Polynomial degree");
+    auto gen = clp.param("g", "gaussian"s, "Coefficient generator");
+    auto s   = clp.param("s", size_t(0), "Random seed (0 for default)");
+    auto p   = clp.flag("p", "Project to disk");
+    clp.finalize();
+
+    if (s > 0) prng.seed(s);
+    RPoly<double> const P(size_t(n), p, gen);
+    double const        l = p ? 1 : 10;
+    Coloring            C(clp.title, cpx(-l, -l), cpx(l, l), 800, P);
     C.show();
-    C.output(H.title);
+    C.output(clp.title);
     Fl::run();
 }

@@ -1,6 +1,6 @@
 #include <vb/Bitmap.h>
 #include <vb/Path.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -11,7 +11,7 @@ namespace vb {
 
 class LERW : private Bitmap<uint8_t> {
 public:
-    explicit LERW(const Hub &H) : Bitmap<uint8_t>(H.title, {2 * size_t(H['n']), 2 * size_t(H['n'])}) {
+    LERW(const std::string &title, size_t n) : Bitmap<uint8_t>(title, {2 * n, 2 * n}) {
         ucoo z = size / 2;
         while (fits(z)) {
             auto d = prng.uniform_int(uint8_t(4));
@@ -33,6 +33,9 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub const H("Loop-erased random walk", argc, argv, "n=500");
-    LERW(H).output(H.title);
+    CLP  clp(argc, argv, "Loop-erased random walk");
+    auto n = clp.param("n", 500, "half grid size");
+    clp.finalize();
+
+    LERW(clp.title, n).output(clp.title);
 }

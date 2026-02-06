@@ -1,6 +1,6 @@
 #include <queue>
 #include <vb/Bitmap.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -37,20 +37,21 @@ public:
 
 class Sagex : public Bitmap<unsigned> {
 public:
-    Sagex(const Hub &H, size_t w, size_t h) : Bitmap<unsigned>(H.title, {w, h}) {
+    Sagex(const string &title, size_t w, size_t h, double lambda, double pp, bool zz)
+        : Bitmap<unsigned>(title, {w, h}), vid(false) {
         for (size_t x = 0; x < w; ++x)
             for (size_t y = 0; y < h; ++y) {
-                if (prng.bernoulli(H['l'])) {
-                    Particle const p({x, y}, prng.bernoulli(H['p']) ? 1 : 2, H['z'], prng.exponential());
+                if (prng.bernoulli(lambda)) {
+                    Particle const p({x, y}, prng.bernoulli(pp) ? 1 : 2, zz, prng.exponential());
                     put({x, y}, p.state);
                     q.push(p);
                 }
             }
     }
 
-    void go(const Hub &H) {
+    void go() {
         show();
-        if (H['v']) snapshot_setup("Sagex", 1);
+        if (vid) snapshot_setup("Sagex", 1);
         while (true) {
             Particle p = q.top();
             q.pop();
@@ -66,9 +67,20 @@ public:
     }
 
     priority_queue<Particle> q;
+    bool                     vid;
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub const H("Sagex process", argc, argv, "n=400,w=0,l=.22,p=.5,v,z");
-    Sagex(H, int(H['w']) != 0 ? H['w'] : H['n'], H['n']).go(H);
+    CLP clp(argc, argv, "Sagex process");
+    auto n      = clp.param("n", 400, "Grid height");
+    auto w      = clp.param("w", 0, "Grid width (0 for same as height)");
+    auto lambda = clp.param("l", 0.22, "Particle density");
+    auto pp     = clp.param("p", 0.5, "Probability of state 1");
+    auto vid    = clp.flag("v", "Video output");
+    auto zz     = clp.flag("z", "Particle type flag");
+    clp.finalize();
+
+    Sagex S(clp.title, w != 0 ? size_t(w) : size_t(n), size_t(n), lambda, pp, zz);
+    S.vid = vid;
+    S.go();
 }

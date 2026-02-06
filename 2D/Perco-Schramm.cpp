@@ -5,7 +5,7 @@
  */
 
 #include <vb/Figure.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -13,11 +13,11 @@ using namespace std;
 
 class Perco_Schramm : public Figure {
 public:
-    explicit Perco_Schramm(const Hub &H)
-        : Figure(H.title), w(2 * size_t(H['n'])), h(size_t(H['l']) > 0 ? H['l'] : w - 1), mask(w * h, true) {
+    Perco_Schramm(const string &title, size_t n, size_t l, double p)
+        : Figure(title), w(2 * n), h(l > 0 ? l : w - 1), mask(w * h, true) {
         for (size_t ii = 0; ii < w / 2; ++ii) cols.push_back(true);
         for (size_t ii = 0; ii < w / 2; ++ii) cols.push_back(false);
-        for (size_t ii = 0; ii < (w - 1) * h; ++ii) cols.push_back(prng.bernoulli(H['p']));
+        for (size_t ii = 0; ii < (w - 1) * h; ++ii) cols.push_back(prng.bernoulli(p));
     }
 
     void tri_boundary() {
@@ -90,9 +90,15 @@ private:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub const     H("Percolation exploration process", argc, argv, "n=28,l=55,p=.5,t");
-    Perco_Schramm RS(H);
-    if (H['t'])
+    CLP clp(argc, argv, "Percolation exploration process");
+    auto n = clp.param("n", 28, "Half grid width");
+    auto l = clp.param("l", 55, "Grid height (0 for auto)");
+    auto p = clp.param("p", 0.5, "Percolation probability");
+    auto t = clp.flag("t", "Use triangular boundary");
+    clp.finalize();
+
+    Perco_Schramm RS(clp.title, size_t(n), size_t(l), p);
+    if (t)
         RS.tri_boundary();
     else
         RS.rect_boundary();
@@ -100,5 +106,5 @@ auto main(int argc, char **argv) -> int {
     RS.walk();
     RS.show();
     RS.pause();
-    RS.output(H.title);
+    RS.output(clp.title);
 }

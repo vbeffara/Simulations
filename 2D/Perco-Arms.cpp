@@ -6,7 +6,7 @@
 #include <fmt/ranges.h>
 #include <spdlog/spdlog.h>
 #include <vb/ProgressBar.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace boost;
@@ -32,9 +32,13 @@ void add_one(Graph *gg, size_t i, size_t j) {
 }
 
 auto main(int argc, char **argv) -> int {
-    Hub const    H("Percolation arm exponents", argc, argv, "n=100,t=1,p=.5");
-    size_t       n = H['n'], n_iter = H['t'];
-    double const p = H['p'];
+    CLP    clp(argc, argv, "Percolation arm exponents");
+    auto   n_param = clp.param("n", 100, "grid size");
+    auto   t_param = clp.param("t", 1, "number of iterations");
+    auto   p       = clp.param("p", .5, "percolation probability");
+    clp.finalize();
+
+    size_t       n = n_param, n_iter = t_param;
 
     Graph g(n * n + 1);
     for (size_t x = 0; x < n; ++x) {

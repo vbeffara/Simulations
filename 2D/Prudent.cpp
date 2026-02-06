@@ -1,13 +1,15 @@
 #include <spdlog/spdlog.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace std;
 using namespace vb;
 
 auto main(int argc, char **argv) -> int {
-    Hub H("Prudent random walk", argc, argv, "t=100000,n=10000");
-    int T = H['t'], N = H['n'];
+    CLP clp(argc, argv, "Prudent random walk");
+    auto T = clp.param("t", 100000, "Number of steps per walk");
+    auto N = clp.param("n", 10000, "Number of walks");
+    clp.finalize();
 
     int laststep = 0;
 
@@ -56,6 +58,6 @@ auto main(int argc, char **argv) -> int {
         sd2 += dev * dev;
     }
 
-    H.output("Average", "a", sd / N);
-    H.output("Variance", "v", sd2 / N);
+    spdlog::info("Average: {}", sd / N);
+    spdlog::info("Variance: {}", sd2 / N);
 }

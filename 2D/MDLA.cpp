@@ -1,5 +1,5 @@
 #include <vb/Bitmap.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -10,21 +10,23 @@ constexpr Color ALIVE = Color(0, 200, 0);
 constexpr Color DEAD  = Color(255, 0, 0);
 
 auto main(int argc, char **argv) -> int {
-    Hub const    H("Aggregation of exclusion walkers", argc, argv, "n=250,p=.5,g,a=1.0,t=0.0,s");
-    size_t const n = H['n']; // Half of board size
-    double const p = H['p']; // Initial particle density
-    bool const   g = H['g']; // Dynamic discovery of environment (ghosts)
-    double const t = H['t']; // Snapshot interval for movies
-    double const a = H['a']; // Contagion probability
+    CLP  clp(argc, argv, "Aggregation of exclusion walkers");
+    auto n = clp.param("n", 250, "half of board size");
+    auto p = clp.param("p", .5, "initial particle density");
+    auto g = clp.flag("g", "dynamic discovery of environment (ghosts)");
+    auto a = clp.param("a", 1.0, "contagion probability");
+    auto t = clp.param("t", 0.0, "snapshot interval for movies");
+    auto s = clp.flag("s", "silent mode");
+    clp.finalize();
 
-    Image img(H.title, {2 * n, 2 * n});
+    Image img(clp.title, {2 * size_t(n), 2 * size_t(n)});
 
     for (auto z : coo_range(img.size))
         if (g)
             img.put(z, AWAY);
         else
             img.put(z, prng.bernoulli(p) ? ALIVE : EMPTY);
-    img.put({n, n}, DEAD);
+    img.put({size_t(n), size_t(n)}, DEAD);
     img.show();
     if (t > 0) img.snapshot_setup("MDLA", t);
 

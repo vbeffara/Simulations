@@ -1,18 +1,19 @@
 #include <vb/CoarseImage.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
 using namespace std;
 
 auto main(int argc, char **argv) -> int {
-    Hub const    H("Randomized Polynuclear Growth", argc, argv, "n=500,e=0.01,f,c=0");
-    const size_t n = H['n'];
-    const double e = H['e'];
-    const bool   f = H['f'];
-    const double c = H['c'];
+    CLP clp(argc, argv, "Randomized Polynuclear Growth");
+    size_t n = clp.param("n", size_t(500), "Grid size");
+    auto   e = clp.param("e", 0.01, "Spontaneous growth rate");
+    auto   f = clp.flag("f", "Fixed boundary");
+    auto   c = clp.param("c", 0.0, "Center growth rate");
+    clp.finalize();
 
-    CoarseImage img(H.title, {n, n}, 10);
+    CoarseImage img(clp.title, {n, n}, 10);
     img.show();
 
     vector<size_t> height(n);
