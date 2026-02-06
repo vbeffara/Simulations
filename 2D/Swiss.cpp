@@ -1,5 +1,5 @@
 #include <vb/Bitmap.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 constexpr unsigned EAST  = 0;
@@ -26,7 +26,7 @@ public:
     size_t c;
     double p, q;
 
-    explicit World(const vb::Hub &H) : Bitmap<uint8_t>(H.title, {H['n'], H['n']}), c(H['c']), p(H['p']), q(H['q']) {
+    explicit World(const std::string &title, size_t n, size_t cc, double pp, double qq) : Bitmap<uint8_t>(title, {n, n}), c(cc), p(pp), q(qq) {
         auto mid = (size.x + size.y) / 2;
         for (const auto &z : coo_range(size)) {
             if (z.y > z.x) {
@@ -68,8 +68,14 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    vb::Hub const H("The Swiss Journalist", argc, argv, "n=600,c=0,p=.8,q=.35");
-    World   w(H);
+    vb::CLP clp(argc, argv, "The Swiss Journalist");
+    auto n = clp.param("n", size_t(600), "Grid size");
+    auto c = clp.param("c", size_t(0), "Center region size");
+    auto p = clp.param("p", 0.8, "Initial randomness probability");
+    auto q = clp.param("q", 0.35, "Random walk probability");
+    clp.finalize();
+
+    World w(clp.title, n, c, p, q);
     w.show();
     w.run();
 }

@@ -2,9 +2,10 @@
 #include <cmath>
 #include <fstream>
 #include <gsl/gsl>
+#include <map>
 #include <vb/Figure.h>
 #include <vb/data/Array.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -149,12 +150,12 @@ struct Tiling {
                     z_ += coo{offx, offy};
                     ucoo const zz = (z_ + coo{1, 1}) / 2;
                     coo const  sh = dz[(zz.y + ((((zz.x + 1) % 4) / 2) != 0 ? 5 : 3)) % 4];
-                    return cpx(double(z_.x), double(z_.y)) + 2 * double(H['r']) * cpx(double(sh.x), double(sh.y)) - cpx(offx, offy);
+                    return cpx(double(z_.x), double(z_.y)) + 2 * double(r_param) * cpx(double(sh.x), double(sh.y)) - cpx(offx, offy);
                 };
                 double const gr = a * TP.atp(coo(z) + coo{offx / 2, offy / 2}) + b;
                 F.add(make_unique<Segment>(ss(z * 2 - edge), ss(z * 2 + edge), Pen(Grey(uint8_t(255 * gr)), 130.0 / double(state.size.x))));
             }
-        if (H['v']) F.show();
+        if (v_flag) F.show();
         F.output(fname);
     }
 
@@ -181,13 +182,13 @@ struct Tiling {
         for (size_t i = 0; i < n; ++i) {
             delslide();
             create(pbs[i]);
-            if (H['v']) output_pdf(H.title, "snapshots/" + fmt::format("snapshot_{:04d}", i), n - i - 1);
+            if (v_flag) output_pdf(name, "snapshots/" + fmt::format("snapshot_{:04d}", i), n - i - 1);
         }
     }
 
-    void run(const Hub &HH) {
+    void run() {
         aztecgen();
-        output_pdf(HH.title, name);
+        output_pdf(name, name);
 
         auto     H1 = height();
         ofstream dat(name + ".dat");
@@ -197,8 +198,8 @@ struct Tiling {
         }
     }
 
-    Tiling(const Hub &H_, Array<double> TP_, size_t mm)
-        : H(H_), name(H.title), TP(std::move(TP_)), m(mm), per(lcm(TP.size.x, TP.size.y)), n(m * per / 2) {
+    Tiling(string name_, Array<double> TP_, size_t mm, double r, bool v)
+        : name(std::move(name_)), TP(std::move(TP_)), m(mm), per(lcm(TP.size.x, TP.size.y)), n(m * per / 2), r_param(r), v_flag(v) {
         probs();
         for (auto z : coo_range(TP.size)) {
             if (TP[z] == 0) continue;
@@ -211,24 +212,35 @@ struct Tiling {
         }
     }
 
-    const Hub            &H;
     string                name;
     const Array<double>   TP;
     size_t                m, per, n;
     double                pmin{1.0}, pmax{0.0}, a{0.0}, b{0.0};
+    double                r_param;
+    bool                  v_flag;
     vector<Array<double>> pbs;
     Array<uint8_t>        state{{0, 0}};
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub H("Domino shuffle", argc, argv, "m=50,a=1,b=.5,c=.3,s=0,r=0,w=two,v");
-    if (size_t const seed = H['s']; seed != 0) prng.seed(seed);
+    CLP clp(argc, argv, "Domino shuffle");
+    auto m = clp.param("m", size_t(50), "Domain size multiplier");
+    auto pa = clp.param("a", 1.0, "Parameter a for periodic weights");
+    auto pb = clp.param("b", 0.5, "Parameter b for periodic weights");
+    auto pc = clp.param("c", 0.3, "Parameter c for three-periodic weights");
+    auto s = clp.param("s", size_t(0), "Random seed");
+    auto r = clp.param("r", 0.0, "Rendering offset parameter");
+    auto w = clp.param("w", string("two"), "Weight type: unif, two, three, kenyon");
+    auto v = clp.flag("v", "Verbose/visual mode");
+    clp.finalize();
+
+    if (s != 0) prng.seed(s);
 
     std::map<string, function<Array<double>()>> TPs;
     TPs["unif"]   = [&] { return Array<double>({2, 2}, 1.0); };
-    TPs["two"]    = [&] { return twoperiodic(H['a'], H['b']); };
-    TPs["three"]  = [&] { return threeperiodic(H['a'], H['b'], H['c']); };
-    TPs["kenyon"] = [&] { return threebytwo(H['b']); };
+    TPs["two"]    = [&] { return twoperiodic(pa, pb); };
+    TPs["three"]  = [&] { return threeperiodic(pa, pb, pc); };
+    TPs["kenyon"] = [&] { return threebytwo(pb); };
 
-    Tiling{H, TPs[H['w']](), H['m']}.run(H);
+    Tiling{clp.title, TPs[w](), m, r, v}.run();
 }

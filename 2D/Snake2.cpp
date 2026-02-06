@@ -1,5 +1,6 @@
+#include <spdlog/spdlog.h>
 #include <vb/Bitmap.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -18,11 +19,11 @@ namespace vb {
 
 class Snake : public Bitmap<site> {
 public:
-    Snake(const Hub &H, size_t n, double l, bool hex_)
-        : Bitmap(H.title, {4 * n + 1, 2 * n + 1}), lambda(l), path(1, {2 * int(n), 0}), hex(hex_) {
+    Snake(const std::string &title, size_t n, double l, bool hex_, double angle, bool visible)
+        : Bitmap(title, {4 * n + 1, 2 * n + 1}), lambda(l), path(1, {2 * int(n), 0}), hex(hex_) {
         for (size_t x = 0; x < size.x; ++x) put({x, 0U}, VERTEX);
-        if (double const a = H['a']; a != 0) triangle(a);
-        if (!H['v']) show();
+        if (angle != 0) triangle(angle);
+        if (!visible) show();
     }
 
     void triangle(double a) {
@@ -95,14 +96,22 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub   H("Self-avoiding snake in the half plane", argc, argv, "n=200,l=1.0,v,p,x,a=0");
-    Snake S(H, H['n'], H['l'], H['x']);
+    CLP clp(argc, argv, "Self-avoiding snake in the half plane");
+    auto n = clp.param("n", size_t(200), "Grid size");
+    auto l = clp.param("l", 1.0, "Lambda parameter");
+    auto v = clp.flag("v", "Hide display");
+    auto p = clp.flag("p", "Pause at end");
+    auto x = clp.flag("x", "Hexagonal mode");
+    auto a = clp.param("a", 0.0, "Triangle angle");
+    clp.finalize();
+
+    Snake S(clp.title, n, l, x, a, v);
     S.run();
     S.fill({S.size.x / 2 + 1, 1}, RIGHT);
     S.fill({S.size.x / 2 - 1, 1}, LEFT);
     if (S.visible()) {
-        if (H['p']) S.pause();
-        S.output(H.title);
+        if (p) S.pause();
+        S.output(clp.title);
     }
-    H.output("Final value of x", "x", S.path.back().x);
+    spdlog::info("Final value of x: {}", S.path.back().x);
 }

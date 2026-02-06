@@ -1,7 +1,7 @@
 #include <cmath>
 #include <spdlog/spdlog.h>
 #include <vb/Sphere.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 auto f_to_c(double f) -> vb::Color {
@@ -31,8 +31,8 @@ auto spherical_harmonic(size_t n, size_t m, double theta, double phi) -> vb::cpx
 
 class Wave : public vb::Sphere {
 public:
-    Wave(const vb::Hub &H, size_t nn, size_t w)
-        : vb::Sphere(H.title, w, [this](double theta, double phi) { return f_to_c(v(theta, phi)); }), n(nn) {
+    Wave(const std::string &title, size_t nn, size_t w)
+        : vb::Sphere(title, w, [this](double theta, double phi) { return f_to_c(v(theta, phi)); }), n(nn) {
         detail = 2.0 / double(n);
         for (size_t m = 0; m <= n; ++m) {
             vb::cpx am{vb::prng.gaussian(), vb::prng.gaussian()};
@@ -56,8 +56,8 @@ public:
 
 class Bargman : public vb::Sphere {
 public:
-    Bargman(const vb::Hub &H, size_t nn, size_t w)
-        : vb::Sphere(H.title, w, [this](double x, double y, double z) { return f_to_c(v(x, y, z)); }), a(nn + 1), b(nn + 1), c(nn + 1),
+    Bargman(const std::string &title, size_t nn, size_t w, double epsilon)
+        : vb::Sphere(title, w, [this](double x, double y, double z) { return f_to_c(v(x, y, z)); }), a(nn + 1), b(nn + 1), c(nn + 1),
           sqsq(nn + 1), n(nn) {
         for (size_t ii = 0; ii <= n; ++ii) {
             for (size_t j = 0; j <= n - ii; ++j) { a[ii].push_back(vb::prng.gaussian()); }
@@ -74,7 +74,7 @@ public:
         for (size_t ii = 0; ii <= n; ++ii) {
             for (size_t j = 0; j <= n; ++j) { sqsq[ii].push_back(sqrt(double(ii)) / sqrt(double(j))); }
         }
-        eps *= double(H['e']);
+        eps *= epsilon;
     }
 
     auto vv(const std::vector<std::vector<double>> &aa, double x, double y, double z) -> double {
@@ -131,23 +131,31 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    vb::Hub const H("Random wave on the sphere", argc, argv, "n=50,p,s=0,t=wave,w=800,e=.001");
-    if (size_t const s = H['s']; s != 0) { vb::prng.seed(s); }
-    if (H['t'] == "wave") {
-        Wave F(H, H['n'], H['w']);
+    vb::CLP clp(argc, argv, "Random wave on the sphere");
+    auto n = clp.param("n", size_t(50), "Degree of harmonic");
+    auto p = clp.flag("p", "Pause at end");
+    auto s = clp.param("s", size_t(0), "Random seed");
+    auto t = clp.param("t", std::string("wave"), "Type: wave or barg");
+    auto w = clp.param("w", size_t(800), "Window size");
+    auto e = clp.param("e", 0.001, "Epsilon for Bargman");
+    clp.finalize();
+
+    if (s != 0) { vb::prng.seed(s); }
+    if (t == "wave") {
+        Wave F(clp.title, n, w);
         F.show();
-        if (H['p']) {
+        if (p) {
             F.pause();
         } else {
-            F.output(H.title);
+            F.output(clp.title);
         }
-    } else if (H['t'] == "barg") {
-        Bargman F(H, H['n'], H['w']);
+    } else if (t == "barg") {
+        Bargman F(clp.title, n, w, e);
         F.show();
-        if (H['p']) {
+        if (p) {
             F.pause();
         } else {
-            F.output(H.title);
+            F.output(clp.title);
         }
     } else {
         spdlog::error("Type should be 'wave' or 'barg', exiting...");

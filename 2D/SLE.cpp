@@ -1,6 +1,6 @@
 #include <vb/Bitmap.h>
 #include <vb/Coloring.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -41,13 +41,19 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub const H("Schramm-Loewner Evolution", argc, argv, "n=300,k=2.666666666667,r=0,a");
-    if (size_t const r = H['r']; r > 0) prng.seed(r);
+    CLP clp(argc, argv, "Schramm-Loewner Evolution");
+    auto n = clp.param("n", size_t(300), "Grid size");
+    auto k = clp.param("k", 2.666666666667, "Kappa parameter");
+    auto r = clp.param("r", size_t(0), "Random seed");
+    auto a = clp.flag("a", "Disable antialiasing");
+    clp.finalize();
 
-    Loewner  L(H['n'], H['k']);
+    if (r > 0) prng.seed(r);
+
+    Loewner  L(n, k);
     double const w = L.Max[0] - L.Min[0];
-    Coloring C(H.title, cpx(-w, 0), cpx(w, 4.0 * w / 3.0), H['n'], [&L](cpx z) { return L.compute(z); });
-    if (H['a']) C.antialias = false;
+    Coloring C(clp.title, cpx(-w, 0), cpx(w, 4.0 * w / 3.0), n, [&L](cpx z) { return L.compute(z); });
+    if (a) C.antialias = false;
     C.show();
-    C.output(H.title);
+    C.output(clp.title);
 }

@@ -1,11 +1,11 @@
 #include <spdlog/spdlog.h>
 #include <vb/Map.h>
 #include <vb/ProgressBar.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
+using vb::CLP;
 using vb::Edge;
-using vb::Hub;
 using vb::Map;
 
 class Triangulation : public Map {
@@ -54,11 +54,14 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    vb::Hub const H("Random triangulation", argc, argv, "n=10,t=0");
-    size_t  n = H['n'], t = H['t'];
+    vb::CLP clp(argc, argv, "Random triangulation");
+    auto n = clp.param("n", size_t(10), "Number of vertices");
+    auto t = clp.param("t", size_t(0), "Number of flips (0 = auto)");
+    clp.finalize();
+
     if (t == 0) t = 50 * n * n;
 
-    Triangulation T(H.title, H['n']);
+    Triangulation T(clp.title, n);
     T.inscribe(T.face(Edge(0, 1)));
 
     {
