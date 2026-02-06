@@ -1,7 +1,6 @@
 add_library(vb SHARED
   Auto.cpp
   CLP.cpp
-  CL_Parser.cpp
   CoarseImage.cpp
   Color.cpp
   Coloring.cpp
@@ -11,7 +10,6 @@ add_library(vb SHARED
   Cube.cpp
   Elliptic.cpp
   Figure.cpp
-  Hub.cpp
   Hypermap.cpp
   Hypermap_lib.cpp
   LinearAlgebra.cpp

@@ -1,14 +1,13 @@
 #pragma once
 #include <spdlog/spdlog.h>
-#include <vb/util/Hub.h>
 
 namespace vb {
     auto time() -> double;
 
-    template <typename F> void timing(Hub &H, const std::string &label, const F &f) {
+    template <typename F> void timing(const std::string &label, const F &f) {
         double const t      = time();
-        auto   result = f();
-        H.output(label, "", fmt::format("time = {:>7.3f} ans = {}", time() - t, result), false);
+        auto         result = f();
+        spdlog::info("{}: time = {:>7.3f} ans = {}", label, time() - t, result);
     }
 
     template <typename T> auto check(T x, T y) -> T {
