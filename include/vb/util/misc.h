@@ -1,8 +1,13 @@
 #pragma once
+#include <boost/chrono.hpp>
 #include <spdlog/spdlog.h>
 
 namespace vb {
-    auto time() -> double;
+    inline auto time() -> double {
+        static auto                           basetime = boost::chrono::process_real_cpu_clock::now();
+        boost::chrono::duration<double> const dur      = boost::chrono::process_real_cpu_clock::now() - basetime;
+        return dur.count();
+    }
 
     template <typename F> void timing(const std::string &label, const F &f) {
         double const t      = time();

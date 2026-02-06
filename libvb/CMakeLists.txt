@@ -27,9 +27,7 @@ add_library(vb SHARED
   Shape.cpp
   Sphere.cpp
   Spheroidal.cpp
-  Stream.cpp
   Toroidal.cpp
-  misc.cpp
   mp.cpp
 )
 
