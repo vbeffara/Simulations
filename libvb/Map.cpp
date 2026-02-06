@@ -12,25 +12,25 @@ namespace vb {
     // TODO: min_element
     auto Map::left() -> double {
         double l = 0.0;
-        for (size_t ii = 0; ii < n; ++ii) l = std::min(l, v[ii]->z.real());
+        for (const auto &vv : v) l = std::min(l, vv->z.real());
         return l;
     }
 
     auto Map::right() -> double {
         double l = 0.0;
-        for (size_t ii = 0; ii < n; ++ii) l = std::max(l, v[ii]->z.real());
+        for (const auto &vv : v) l = std::max(l, vv->z.real());
         return l;
     }
 
     auto Map::top() -> double {
         double l = 0.0;
-        for (size_t ii = 0; ii < n; ++ii) l = std::max(l, v[ii]->z.imag());
+        for (const auto &vv : v) l = std::max(l, vv->z.imag());
         return l;
     }
 
     auto Map::bottom() -> double {
         double l = 0.0;
-        for (size_t ii = 0; ii < n; ++ii) l = std::min(l, v[ii]->z.imag());
+        for (const auto &vv : v) l = std::min(l, vv->z.imag());
         return l;
     }
 
@@ -66,9 +66,7 @@ namespace vb {
 
     auto Map::find_edge(const Edge &e) const -> adj_list::iterator {
         if (e.first >= n) return v[0]->adj.end();
-        for (auto ii = v[e.first]->adj.begin(); ii != v[e.first]->adj.end(); ++ii) // TODO range for
-            if (*ii == e.second) return ii;
-        return v[0]->adj.end();
+        return std::find(v[e.first]->adj.begin(), v[e.first]->adj.end(), e.second);
     }
 
     auto Map::turn_left(const Edge &e) const -> Edge {
@@ -160,9 +158,7 @@ namespace vb {
     }
 
     auto Map::split_edges() -> std::vector<size_t> {
-        std::vector<int64_t> tmp;
-        tmp.reserve(n * n);
-        for (size_t ii = 0; ii < n * n; ++ii) tmp.push_back(-1);
+        std::vector<int64_t> tmp(n * n, -1);
 
         std::vector<size_t>   output;
         std::vector<adj_list> new_vertices;
@@ -232,7 +228,7 @@ namespace vb {
     }
 
     void Map::plot_vertices(Figure *F) {
-        for (size_t ii = 0; ii < n; ++ii) { F->add(std::make_unique<Dot>(v[ii]->z)); }
+        for (const auto &vv : v) { F->add(std::make_unique<Dot>(vv->z)); }
     }
 
     void Map::plot_edges(Figure *F) {
@@ -243,14 +239,14 @@ namespace vb {
     }
 
     void Map::plot_circles(Figure *F) {
-        for (size_t ii = 0; ii < n; ++ii) {
-            if (v[ii]->r > 0) F->add(std::make_unique<Circle>(v[ii]->z, v[ii]->r));
+        for (const auto &vv : v) {
+            if (vv->r > 0) F->add(std::make_unique<Circle>(vv->z, vv->r));
         }
     }
 
     auto Map::nb_aretes() -> size_t {
         size_t tmp = 0;
-        for (size_t ii = 0; ii < n; ++ii) tmp += v[ii]->adj.size();
+        for (const auto &vv : v) tmp += vv->adj.size();
         return (tmp / 2);
     }
 
