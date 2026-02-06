@@ -1,6 +1,8 @@
 #pragma once
 #include <boost/random.hpp>
+#include <fmt/format.h>
 #include <random>
+#include <sstream>
 #include <vb/util/coo.h>
 #include <vector>
 
@@ -34,4 +36,11 @@ public:
   extern thread_local PRNG prng;
 } // namespace vb
 
-template <> struct fmt::formatter<vb::PRNG> : ostream_formatter {}; // TODO: do this better
+template <> struct fmt::formatter<vb::PRNG> {
+    constexpr auto parse(format_parse_context &ctx) { return ctx.begin(); }
+    auto format(const vb::PRNG &p, format_context &ctx) const {
+        std::ostringstream oss;
+        oss << p;
+        return fmt::format_to(ctx.out(), "{}", oss.str());
+    }
+};
