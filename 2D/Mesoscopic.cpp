@@ -1,4 +1,3 @@
-#include <spdlog/spdlog.h>
 #include <vb/Elliptic.h>
 #include <vb/Hypermap_lib.h>
 #include <vb/Toroidal.h>

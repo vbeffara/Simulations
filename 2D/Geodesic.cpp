@@ -2,7 +2,6 @@
 #include <limits>
 #include <map>
 #include <queue>
-#include <spdlog/spdlog.h>
 #include <vb/Bitmap.h>
 #include <vb/ProgressBar.h>
 #include <vb/math/math.h>

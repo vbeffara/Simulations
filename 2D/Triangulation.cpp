@@ -1,4 +1,3 @@
-#include <spdlog/spdlog.h>
 #include <vb/Map.h>
 #include <vb/ProgressBar.h>
 #include <vb/util/CLP.h>

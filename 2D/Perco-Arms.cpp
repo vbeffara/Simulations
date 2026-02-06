@@ -4,7 +4,6 @@
 #include <boost/graph/edmonds_karp_max_flow.hpp>
 #include <boost/graph/graph_utility.hpp>
 #include <fmt/ranges.h>
-#include <spdlog/spdlog.h>
 #include <vb/ProgressBar.h>
 #include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>

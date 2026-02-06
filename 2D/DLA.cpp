@@ -1,4 +1,3 @@
-#include <spdlog/spdlog.h>
 #include <vb/CoarseImage.h>
 #include <vb/Console.h>
 #include <vb/QuadTree.h>

@@ -1,5 +1,4 @@
 #include <cmath>
-#include <spdlog/spdlog.h>
 #include <vb/Sphere.h>
 #include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>

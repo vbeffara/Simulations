@@ -1,4 +1,3 @@
-#include <spdlog/spdlog.h>
 #include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
