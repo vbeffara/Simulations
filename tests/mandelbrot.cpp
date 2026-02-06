@@ -1,5 +1,5 @@
 #include <vb/Coloring.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 
 using namespace vb;
 
@@ -15,9 +15,11 @@ auto M(cpx c) -> Color {
 }
 
 auto main(int argc, char **argv) -> int {
-    Hub const H("Mandelbrot set", argc, argv, "n=800,t=1000");
-    t = H['t'];
-    Coloring C(H.title, cpx(-2.2, -1.5), cpx(1.2, 1.5), H['n'], M);
+    CLP clp(argc, argv, "Mandelbrot set");
+    auto n = clp.param("n", 800, "Image size");
+    t = clp.param("t", 1000, "Max iterations");
+    clp.finalize();
+    Coloring C(clp.title, cpx(-2.2, -1.5), cpx(1.2, 1.5), n, M);
     C.show();
     return Fl::run();
 }

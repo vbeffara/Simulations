@@ -1,12 +1,13 @@
 #include <spdlog/spdlog.h>
 #include <vb/math/NumberTheory.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 
 using namespace vb;
 using namespace std;
 
 auto main(int argc, char **argv) -> int {
-    Hub const H("Testing various MP choices", argc, argv);
+    CLP clp(argc, argv, "Testing various MP choices");
+    clp.finalize();
 
     vector<real_t> xs;
     xs.emplace_back("0.9162918442410306144165008200767499077603397502333144975769802641182380808885019256331544308341889255");

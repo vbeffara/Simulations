@@ -3,12 +3,13 @@
 #include <memory>
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/spdlog.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 
 using namespace vb;
 
 auto main(int argc, char **argv) -> int {
-    Hub const H("Testing spdlog", argc, argv);
+    CLP clp(argc, argv, "Testing spdlog");
+    clp.finalize();
     spdlog::set_level(spdlog::level::trace);
 
     spdlog::critical("Support for int: {0:d};  hex: {0:x};  oct: {0:o}; bin: {0:b}", 42);
@@ -37,6 +38,6 @@ auto main(int argc, char **argv) -> int {
     spdlog::info("{:>30}", "right aligned");
     spdlog::info("{:^30}", "centered");
 
-    SPDLOG_TRACE(H.L, "Enabled only #ifdef SPDLOG_TRACE_ON: {}, {}", 1, 3.23);
-    SPDLOG_DEBUG(H.L, "Enabled only #ifdef SPDLOG_DEBUG_ON: {}, {}", 1, 3.23);
+    SPDLOG_TRACE(spdlog::default_logger(), "Enabled only #ifdef SPDLOG_TRACE_ON: {}, {}", 1, 3.23);
+    SPDLOG_DEBUG(spdlog::default_logger(), "Enabled only #ifdef SPDLOG_DEBUG_ON: {}, {}", 1, 3.23);
 }

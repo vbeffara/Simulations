@@ -1,6 +1,6 @@
 #include <vb/ProgressBar.h>
 #include <vb/data/TriMatrix.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -49,8 +49,10 @@ auto operator<<(ostream &o, const Walker &W) -> ostream & {
 }
 
 auto main(int argc, char **argv) -> int {
-    Hub const   H("3D prudent walker", argc, argv, "l=1000,n=1");
-    size_t      l = H['l'], n = H['n'];
+    CLP clp(argc, argv, "3D prudent walker");
+    auto l = clp.param("l", 1000, "Walk length");
+    auto n = clp.param("n", 1, "Number of walks");
+    clp.finalize();
     vector<int> ends(l, 0);
 
     {

@@ -1,6 +1,6 @@
 #include <spdlog/spdlog.h>
 #include <vb/math/Permutation.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/Stream.h>
 
 using namespace vb;
@@ -17,8 +17,10 @@ auto main(int argc, char **argv) -> int {
     spdlog::info("i: {}", i);
   }
 
-  Hub const H("Streams and permutations", argc, argv, "n=10");
-  for (size_t k = 1; k <= size_t(H['n']); ++k) {
+  CLP clp(argc, argv, "Streams and permutations");
+  auto n = clp.param("n", size_t(10), "Max permutation size");
+  clp.finalize();
+  for (size_t k = 1; k <= n; ++k) {
     size_t perm_count = 0, part_count = 0;
     for (auto &&p : permutations(k)) ++perm_count;
     for (auto &&p : partitions(k)) ++part_count;
