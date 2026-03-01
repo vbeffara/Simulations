@@ -14,7 +14,7 @@ class CairoConan(ConanFile):
     url = "https://github.com/fplll/fplll"
     description = "Lattice algorithms using floating-point arithmetic"
     settings = "os", "compiler", "build_type", "arch"
-    requires = "mpfr/4.2.0"
+    requires = "mpfr/4.2.2"
     package_type = "library"
     generators = "AutotoolsDeps"
     options = {
