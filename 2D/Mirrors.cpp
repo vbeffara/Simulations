@@ -1,5 +1,5 @@
 #include <vb/Bitmap.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -33,7 +33,7 @@ namespace vb {
 
 class Mirrors : public Bitmap<uint8_t> {
 public:
-    explicit Mirrors(const Hub &H) : Bitmap<uint8_t>(H.title, {H['n'], H['n']}), p(H['p']), q(H['q']), f(H['f']) {}
+    Mirrors(const string &title, size_t n_, double p_, double q_, double f_) : Bitmap<uint8_t>(title, {n_, n_}), p(p_), q(q_), f(f_) {}
     void   main();
     double p, q, f;
 };
@@ -71,6 +71,12 @@ void Mirrors::main() {
 }
 
 auto main(int argc, char **argv) -> int {
-    Hub const H("Mirror model", argc, argv, "n=200,p=.5,q=0,f=0");
-    Mirrors(H).main();
+    CLP  clp(argc, argv, "Mirror model");
+    auto n = clp.param("n", 200, "grid size");
+    auto p = clp.param("p", .5, "NE mirror probability");
+    auto q = clp.param("q", 0.0, "empty cell probability");
+    auto f = clp.param("f", 0.0, "flip probability");
+    clp.finalize();
+
+    Mirrors(clp.title, n, p, q, f).main();
 }

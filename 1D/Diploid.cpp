@@ -1,12 +1,14 @@
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 class Diploid {
 public:
-    int    K;
-    double f, d, delta, GC, eta;
+    double K, f, d, delta, GC, eta;
 
-    explicit Diploid(const vb::Hub &H) : K(H['K']), f(H['f']), d(H['d']), delta(H['D']), GC(H['c']), eta(H['e']) {
+    Diploid(vb::CLP &clp)
+        : K(clp.param("K", 10000.0, "K parameter")), f(clp.param("f", 6.0, "f parameter")), d(clp.param("d", 0.7, "d parameter")),
+          delta(clp.param("D", 0.1, "Delta parameter")), GC(clp.param("c", 1.0, "Competition parameter")),
+          eta(clp.param("e", 0.02, "Eta parameter")) {
         double DaA = d, DAA = d, Daa = d + delta, DaB = d - delta, DAB = d - delta, DBB = d - delta;
         DR = {Daa, DaA, DAA, DaB, DAB, DBB};
         B  = {0, 0, 0, 0, 0, 0};
@@ -16,7 +18,11 @@ public:
         Comp = {{c0, c1, c2, 0, 0, 0},   {c1, c0, c1, c1, c2, c3}, {c2, c1, c0, c2, c1, c2},
                 {0, c1, c2, c0, c1, c2}, {0, c2, c1, c1, c0, c1},  {0, c3, c2, c2, c1, c0}};
 
-        nu = {int(K * double(H['x'])), int(K * double(H['y'])), int(K * double(H['z'])), 0, int(K * double(H['Z'])), 0};
+        auto x = clp.param("x", 0.0001, "Initial x");
+        auto y = clp.param("y", 0.01, "Initial y");
+        auto z = clp.param("z", 5.3, "Initial z");
+        auto Z = clp.param("Z", 0.0001, "Initial Z");
+        nu     = {int(K * x), int(K * y), int(K * z), 0, int(K * Z), 0};
     }
 
     void compute_B() {
@@ -74,14 +80,16 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    vb::Hub const H("Diploid model", argc, argv, "s=0,i=10000000,K=10000,f=6,d=.7,D=.1,c=1,e=.02,x=.0001,y=.01,z=5.3,Z=.0001,t=1000");
+    vb::CLP clp(argc, argv, "Diploid model");
+    auto    s          = clp.param("s", size_t(0), "Random seed");
+    auto    iterations = clp.param("i", 10000000, "Iterations");
+    Diploid D(clp);
+    auto    period = clp.param("t", 1000, "Output period");
+    clp.finalize();
 
-    if (size_t const seed = H['s']) vb::prng.seed(seed);
+    if (s) vb::prng.seed(s);
 
-    Diploid D(H);
-
-    double t          = 0;
-    int    iterations = H['i'], period = H['t'];
+    double t = 0;
     for (int k = 0; k < iterations; ++k) {
         t += D.NewNu();
         if ((period > 0) && (k % period == 0)) {

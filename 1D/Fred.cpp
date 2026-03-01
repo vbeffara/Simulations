@@ -1,6 +1,6 @@
 #include <fstream>
 #include <vb/ProgressBar.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 struct state {
@@ -35,10 +35,15 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    vb::Hub const H("Deterministic Fourier law", argc, argv, "a=2,b=.2394879347,n=500,m=1000,t=100");
-    size_t  nn = H['n'], nn2 = nn / 2, mm = H['m'], tt = H['t'];
-    state::a = H['a'];
-    state::b = H['b'];
+    vb::CLP clp(argc, argv, "Deterministic Fourier law");
+    state::a = clp.param("a", 2.0, "A parameter");
+    state::b = clp.param("b", 0.2394879347, "B parameter");
+    auto nn  = clp.param("n", size_t(500), "System size");
+    auto mm  = clp.param("m", size_t(1000), "Number of samples");
+    auto tt  = clp.param("t", size_t(100), "Time steps");
+    clp.finalize();
+
+    size_t              nn2 = nn / 2;
     std::vector<double> profile(nn, 0), boltzmann(mm, 0), var(tt, 0);
 
     vb::ProgressBar PB(mm);
@@ -65,7 +70,7 @@ auto main(int argc, char **argv) -> int {
         for (auto u : var) of << u << std::endl;
     }
     {
-        auto   nclass = size_t(sqrt(double(H['m'])));
+        auto   nclass = size_t(sqrt(double(mm)));
         double bmin = 0, bmax = 0;
         for (auto b : boltzmann) {
             bmin = std::min(bmin, b);

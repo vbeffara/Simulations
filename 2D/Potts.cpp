@@ -1,5 +1,6 @@
+#include <map>
 #include <vb/Bitmap.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -15,7 +16,7 @@ namespace vb {
 
 class Potts : public Bitmap<unsigned> {
 public:
-    Potts(const Hub &H, size_t n, unsigned q_, double beta_) : Bitmap<unsigned>(H.title, {n, n}), q(q_), beta(beta_) {
+    Potts(const string &title, size_t n, unsigned q_, double beta_, const string &bc) : Bitmap<unsigned>(title, {n, n}), q(q_), beta(beta_) {
         bcs["perio"] = [] {};
         bcs["free"]  = [this] {
             b = 1;
@@ -138,7 +139,7 @@ public:
         for (size_t ii = 0; ii < size.x; ++ii)
             for (size_t j = 0; j < size.y; ++j) put({ii, j}, prng.uniform_int(q));
         beta *= log(1 + sqrt(double(q)));
-        bcs[H['c']]();
+        bcs[bc]();
         show();
     }
 
@@ -161,7 +162,13 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub const H("Potts model", argc, argv, "n=500,q=3,b=1,c=free");
-    Potts P(H, H['n'], H['q'], H['b']);
+    CLP clp(argc, argv, "Potts model");
+    auto n  = clp.param("n", 500, "Grid size");
+    auto q  = clp.param("q", 3, "Number of states");
+    auto b  = clp.param("b", 1.0, "Inverse temperature factor");
+    auto bc = clp.param("c", "free"s, "Boundary condition");
+    clp.finalize();
+
+    Potts P(clp.title, size_t(n), unsigned(q), b, bc);
     while (true) P.up();
 }

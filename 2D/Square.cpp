@@ -1,6 +1,6 @@
 #include <set>
 #include <vb/data/Array.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using cooo = std::pair<int, double>;
@@ -176,8 +176,12 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    vb::Hub const    H("Random lamination", argc, argv, "n=20,c");
-    Lamination const o(H['n']);
+    vb::CLP clp(argc, argv, "Random lamination");
+    auto n = clp.param("n", size_t(20), "Grid size");
+    auto c = clp.flag("c", "Show connections");
+    clp.finalize();
+
+    Lamination const o(n);
 
     for (size_t i = 0; i < o.size.x; ++i) {
         for (size_t j = 0; j < o.size.y; ++j) {
@@ -188,7 +192,7 @@ auto main(int argc, char **argv) -> int {
         }
     }
 
-    if (H['c']) {
+    if (c) {
         std::set<pt> const P = o.connections();
         std::set<pt> E;
         for (const pt &i : P) {

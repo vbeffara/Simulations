@@ -1,11 +1,12 @@
 #include <vb/Console.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
 
 auto main(int argc, char **argv) -> int {
-    Hub const H("Testing Console", argc, argv);
+    CLP clp(argc, argv, "Testing Console");
+    clp.finalize();
     double x = 1.1;
 
     Console W;

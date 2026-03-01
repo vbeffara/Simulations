@@ -1,14 +1,18 @@
 #pragma once
+#include <boost/chrono.hpp>
 #include <spdlog/spdlog.h>
-#include <vb/util/Hub.h>
 
 namespace vb {
-    auto time() -> double;
+    inline auto time() -> double {
+        static auto                           basetime = boost::chrono::process_real_cpu_clock::now();
+        boost::chrono::duration<double> const dur      = boost::chrono::process_real_cpu_clock::now() - basetime;
+        return dur.count();
+    }
 
-    template <typename F> void timing(Hub &H, const std::string &label, const F &f) {
+    template <typename F> void timing(const std::string &label, const F &f) {
         double const t      = time();
-        auto   result = f();
-        H.output(label, "", fmt::format("time = {:>7.3f} ans = {}", time() - t, result), false);
+        auto         result = f();
+        spdlog::info("{}: time = {:>7.3f} ans = {}", label, time() - t, result);
     }
 
     template <typename T> auto check(T x, T y) -> T {

@@ -1,6 +1,6 @@
 #include <spdlog/spdlog.h>
 #include <vb/math/LinearAlgebra.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/mp.h>
 
 using namespace vb;
@@ -22,7 +22,8 @@ template <typename T> void test(string s) {
 }
 
 auto main(int argc, char **argv) -> int {
-    Hub const H("Testing linear algebra", argc, argv);
+    CLP clp(argc, argv, "Testing linear algebra");
+    clp.finalize();
     test<double>("double   ");
     test<cpx>("cpx      ");
     test<real_t>("real_t   ");

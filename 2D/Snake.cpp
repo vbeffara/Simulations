@@ -1,12 +1,12 @@
 #include <vb/CoarseImage.h>
 #include <vb/Path.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 class Snake : public vb::CoarseImage {
 public:
-    explicit Snake(const vb::Hub &H, size_t n)
-        : vb::CoarseImage(H.title, {2 * n, 2 * n}, size_t(pow(double(n), .333))), z(1, vb::coo(vb::ucoo{n, n})) {
+    explicit Snake(const std::string &title, size_t n)
+        : vb::CoarseImage(title, {2 * n, 2 * n}, size_t(pow(double(n), .333))), z(1, vb::coo(vb::ucoo{n, n})) {
         put({n, n}, true);
     }
 
@@ -49,10 +49,14 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    vb::Hub const H("Self-avoiding snake", argc, argv, "n=1000,a=.38");
-    double  a = H['a'], e = 1.0 / (1.0 + 4 * a);
+    vb::CLP clp(argc, argv, "Self-avoiding snake");
+    auto n = clp.param("n", size_t(1000), "Grid size");
+    auto a = clp.param("a", 0.38, "Shrink probability parameter");
+    clp.finalize();
 
-    Snake S(H, H['n']);
+    double e = 1.0 / (1.0 + 4 * a);
+
+    Snake S(clp.title, n);
     S.show();
 
     while (S.alive()) {
@@ -62,6 +66,6 @@ auto main(int argc, char **argv) -> int {
             S.step(vb::dz[vb::prng.uniform_int(4U)]);
         }
     }
-    S.output(H.title);
+    S.output(clp.title);
     return 0;
 }

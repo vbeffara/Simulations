@@ -1,6 +1,6 @@
 #include <vb/Bitmap.h>
 #include <vb/ProgressBar.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace std;
@@ -41,7 +41,7 @@ namespace vb {
 
 class Snake : public Bitmap<int> {
 public:
-    Snake(const Hub &H, size_t n_) : Bitmap<int>(H.title, {6 * n_, 6 * n_}), n(n_) {
+    Snake(const string &title, size_t n_) : Bitmap<int>(title, {6 * n_, 6 * n_}), n(n_) {
         p.push_back({3 * n, 3 * n});
         put(p.back(), 1);
         show();
@@ -57,15 +57,18 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub const H("Random walk hull", argc, argv, "n=50,i,v");
-    size_t n = H['n'], l = n * n * n * n;
-    bool   inf = H['i'], vid = H['v'];
+    CLP clp(argc, argv, "Random walk hull");
+    auto n   = clp.param("n", 50, "Grid parameter");
+    auto inf = clp.flag("i", "Infinite mode");
+    auto vid = clp.flag("v", "Video output");
+    clp.finalize();
 
-    Snake S(H, n);
+    size_t l = size_t(n) * size_t(n) * size_t(n) * size_t(n);
+    Snake  S(clp.title, size_t(n));
 
     if (inf) {
         if (vid) S.snapshot_setup("RWSH", 1.0);
-        while (size_t(norm(S.p.back() - coo{3 * int(n), 3 * int(n)})) < (3 * n - 1) * (3 * n - 1)) {
+        while (size_t(norm(S.p.back() - coo{3 * int(n), 3 * int(n)})) < (3 * size_t(n) - 1) * (3 * size_t(n) - 1)) {
             if ((S.p.size() == 1) || (prng.bernoulli(.5)))
                 S.grow(prng.uniform_int(4U));
             else

@@ -12,7 +12,6 @@ continuous-time Glauber process with uniform updates.)";
 
 #include <docopt/docopt.h>
 #include <vb/Bitmap.h>
-#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 namespace vb {

@@ -1,14 +1,17 @@
 #include <spdlog/spdlog.h>
 #include <vb/Map.h>
 #include <vb/Minimizer.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 
 using namespace vb;
 
 auto main(int argc, char **argv) -> int {
-    Hub const H("Test: circle packing", argc, argv, "s=4,v");
+    CLP clp(argc, argv, "Test: circle packing");
+    auto s = clp.param("s", 4, "Barycentric steps");
+    auto v = clp.flag("v", "Verbose output");
+    clp.finalize();
 
-    Map m(H.title, 13);
+    Map m(clp.title, 13);
     m << Edge(0, 1) << Edge(0, 3) << Edge(0, 5) << Edge(1, 2) << Edge(1, 4) << Edge(1, 6) << Edge(1, 3) << Edge(1, 0) << Edge(2, 7)
       << Edge(2, 4) << Edge(2, 1) << Edge(3, 0) << Edge(3, 1) << Edge(3, 6) << Edge(3, 5) << Edge(4, 1) << Edge(4, 2) << Edge(4, 7)
       << Edge(4, 6) << Edge(5, 0) << Edge(5, 3) << Edge(5, 6) << Edge(5, 8) << Edge(5, 10) << Edge(6, 1) << Edge(6, 4) << Edge(6, 7)
@@ -17,7 +20,7 @@ auto main(int argc, char **argv) -> int {
       << Edge(10, 5) << Edge(10, 8) << Edge(10, 11) << Edge(11, 10) << Edge(11, 8) << Edge(11, 6) << Edge(11, 9) << Edge(11, 12)
       << Edge(12, 11) << Edge(12, 9) << Edge(12, 7);
 
-    for (int i = 0; i < int(H['s']); ++i) m.barycentric();
+    for (int i = 0; i < s; ++i) m.barycentric();
     m.inscribe(m.face(Edge(1, m.v[1]->adj.back())));
     m.balance();
     m.show();
@@ -32,7 +35,7 @@ auto main(int argc, char **argv) -> int {
     }
 
     Minimizer<double> MM(3 * m.n, [&m](const Vector<double> &xx, Vector<double> *g) { return m.fg_circle_disk(xx, g); });
-    if (H['v']) {
+    if (v) {
         MM.cb = [](const Vector<double> & /*unused*/, double fx) { spdlog::trace("Current : {}", fx); };
         spdlog::set_level(spdlog::level::trace);
     }
@@ -48,10 +51,10 @@ auto main(int argc, char **argv) -> int {
         m.v[i]->r = x[3 * int(i) + 2];
     }
 
-    Figure f{H.title};
+    Figure f{clp.title};
     m.plot_circles(&f);
     f.add(std::make_unique<Circle>(cpx(0.0, 0.0), 1.0));
     f.show();
     f.pause();
-    f.output(H.title);
+    f.output(clp.title);
 }

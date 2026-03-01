@@ -1,6 +1,7 @@
 #include <vb/Bitmap.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
+#include <map>
 
 using std::vector, vb::prng, vb::BLACK, vb::WHITE, vb::coo;
 
@@ -86,22 +87,21 @@ auto init_ok_connect6() -> vector<bool> {
 
 class Glass : public vb::Image {
 public:
-    Glass(const vb::Hub &H, size_t n) : vb::Image(H.title, {n, n}) {
+    Glass(const std::string &title, size_t n, const std::string &c) : vb::Image(title, {n, n}) {
         std::map<std::string, std::function<vector<bool>()>> init;
         init.emplace("none", init_ok_none);
         init.emplace("glass", init_ok_glass);
         init.emplace("connect4", init_ok_connect4);
         init.emplace("connect6", init_ok_connect6);
-        ok = init[H['c']]();
+        ok = init[c]();
 
         fill({0, 0}, BLACK);
         for (size_t ii = 0; ii < n; ii++) put({ii, n / 2}, WHITE);
         show();
     };
 
-    void run(const vb::Hub &H) {
+    void run(double p) {
         auto   n = size.x;
-        double const p = H['p'];
 
         for (size_t ii = 0; ii < 2000 * n * n; ii++) {
             // TODO: uniform_coo
@@ -135,7 +135,12 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    vb::Hub const H("Glassy Glauber dynamics for percolation", argc, argv, "n=300,p=.5,c=none");
-    Glass   img(H, H['n']);
-    img.run(H);
+    vb::CLP clp(argc, argv, "Glassy Glauber dynamics for percolation");
+    auto n = clp.param("n", size_t(300), "grid size");
+    auto p = clp.param("p", 0.5, "probability");
+    auto c = clp.param("c", std::string("none"), "constraint type (none|glass|connect4|connect6)");
+    clp.finalize();
+
+    Glass img(clp.title, n, c);
+    img.run(p);
 }

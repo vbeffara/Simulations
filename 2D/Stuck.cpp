@@ -1,7 +1,6 @@
 #include <vb/Bitmap.h>
 #include <vb/Console.h>
 #include <vb/util/CLP.h>
-#include <vb/util/Hub.h>
 #include <vb/util/PRNG.h>
 
 using namespace std;
@@ -26,8 +25,8 @@ int Stat::min = 0, Stat::max = 1;
 
 class Stuck : public Bitmap<Stat> {
 public:
-    explicit Stuck(double a, double b, bool cc, size_t n, bool oo, const Hub &HH)
-        : Bitmap<Stat>(HH.title, {2 * n, 2 * n}), alpha(a), beta(b), H(HH), c(cc), o(oo) {
+    explicit Stuck(const std::string &title, double a, double b, bool cc, size_t n, bool oo)
+        : Bitmap<Stat>(title, {2 * n, 2 * n}), alpha(a), beta(b), c(cc), o(oo) {
         for (const auto &zz : coo_range(size / 2)) at(zz * 2) = Stat{-1};
         z = coo(size / 2);
         C.manage(alpha, 0.142, 0.35, "alpha");
@@ -98,7 +97,6 @@ public:
 
     double     alpha, beta;
     coo        z = {0, 0};
-    const Hub &H;
     bool       c, o;
     Console    C;
 };
@@ -113,8 +111,7 @@ auto main(int argc, char **argv) -> int {
     auto o = clp.flag("o", "Output point coordinates to the console");
     clp.finalize();
 
-    Hub const H("Stuck walk on the square lattice", argc, argv, "");
-    Stuck S(a, b, c, n, o, H);
+    Stuck S(clp.title, a, b, c, n, o);
     S.show();
     if (v > 0) S.snapshot_setup("Stuck", v);
     S.run();

@@ -1,18 +1,19 @@
 #include <vb/ProgressBar.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using std::cout;
 using std::endl;
 using std::max;
-using vb::Hub;
 using vb::prng;
 
 auto main(int argc, char **argv) -> int {
-    Hub const    H("PingPong process", argc, argv, "n=1000,a=1,b=.5,f");
-    size_t const n = H['n'];
-    double a = H['a'], b = H['b'];
-    bool const   fast = H['f'];
+    vb::CLP clp(argc, argv, "PingPong process");
+    auto    n    = clp.param("n", size_t(1000), "Target distance");
+    auto    a    = clp.param("a", 1.0, "A parameter");
+    auto    b    = clp.param("b", 0.5, "B parameter");
+    auto    fast = clp.flag("f", "Fast mode");
+    clp.finalize();
 
     int             x = 0, xmin = -1, xmax = 1;
     vb::ProgressBar PB(n, fast ? 1 : 3);

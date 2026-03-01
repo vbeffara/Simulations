@@ -1,3 +1,4 @@
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 #include <vb/util/misc.h>
 
@@ -5,11 +6,12 @@ using namespace vb;
 using namespace std;
 
 auto main(int argc, char **argv) -> int {
-    Hub H("Testing PRNG methods", argc, argv, "n=100000000");
-    int const n = H['n'];
+    CLP clp(argc, argv, "Testing PRNG methods");
+    int const n = clp.param("n", 100000000, "Number of iterations");
+    clp.finalize();
 
     string const state = prng.state();
-    timing(H, "vb::PRNG::gaussian", [n] {
+    timing("vb::PRNG::gaussian", [n] {
         double s = 0;
         for (int i = 0; i < n; ++i) {
             double const o = prng.gaussian();
@@ -18,7 +20,7 @@ auto main(int argc, char **argv) -> int {
         return s / n;
     });
 
-    timing(H, "boost::gaussian_distribution", [n] {
+    timing("boost::gaussian_distribution", [n] {
         boost::normal_distribution<> dist(0, 1);
         boost::mt19937_64            boostengine;
         double                       s = 0;
@@ -29,7 +31,7 @@ auto main(int argc, char **argv) -> int {
         return s / n;
     });
 
-    timing(H, "many boost::gaussian_distributions", [n] {
+    timing("many boost::gaussian_distributions", [n] {
         double s = 0;
         for (int i = 0; i < n; ++i) {
             double const o = (boost::normal_distribution<>(0, 1))(prng);
@@ -38,7 +40,7 @@ auto main(int argc, char **argv) -> int {
         return s / n;
     });
 
-    timing(H, "C++11 style", [n] {
+    timing("C++11 style", [n] {
         std::normal_distribution<> dist2(0, 1);
         std::mt19937_64            engine;
         double                     s = 0;
@@ -50,7 +52,7 @@ auto main(int argc, char **argv) -> int {
     });
 
     prng.state(state);
-    timing(H, "Stored state, first version", [n] {
+    timing("Stored state, first version", [n] {
         double s = 0;
         for (int i = 0; i < n; ++i) {
             double const o = prng.gaussian();

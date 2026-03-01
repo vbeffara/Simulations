@@ -1,10 +1,11 @@
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 auto main(int argc, char **argv) -> int {
-    vb::Hub const H("Cookie random walk", argc, argv, "t=20,p=.67");
-    size_t const  t = H['t'];
-    double const  p = H['p'];
+    vb::CLP clp(argc, argv, "Cookie random walk");
+    auto    t = clp.param("t", size_t(20), "Number of steps");
+    auto    p = clp.param("p", 0.67, "Cookie probability");
+    clp.finalize();
 
     std::vector<int> env;
     int64_t          X = 0;

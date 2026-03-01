@@ -1,5 +1,5 @@
 #include <vb/Bitmap.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 #include <vb/util/misc.h>
 
@@ -29,15 +29,15 @@ public:
 
 class SF : public Bitmap<Point> {
 public:
-    SF(const Hub &H, size_t n_, double a_)
-        : Bitmap<Point>(H.title, {2 * n_, 2 * n_ + 1}), n(n_), a(a_), root({2 * n - 1, 2 * (n / 2)}), start({1, 2 * (n / 4)}) {
+    SF(const string &title, size_t n_, double a_, bool s_, bool v_)
+        : Bitmap<Point>(title, {2 * n_, 2 * n_ + 1}), n(n_), a(a_), s(s_), v(v_), root({2 * n - 1, 2 * (n / 2)}), start({1, 2 * (n / 4)}) {
         ps = {a * a, a * a, 1, 1};
         for (auto &p : ps) p /= 2 * (1 + a * a);
     }
 
-    void stage(const Hub &H) {
-        if (H['s']) snapshot();
-        if (H['v']) pause();
+    void stage() {
+        if (s) snapshot();
+        if (v) pause();
     }
 
     void path(ucoo z, Type t = EMPH) {
@@ -87,17 +87,17 @@ public:
         }
     }
 
-    void special(const Hub &H) {
+    void special() {
         coo const delta{coo(root) - coo(start)};
         double lambda = double(delta.y) / double(delta.x), L = lambda * lambda;
         double tca = a + 1 / a, Delta = 1 + L * L + L * (tca * tca - 2);
         double u = (tca - sqrt(Delta)) / (1 - L), mu = copysign(acosh(u), delta.x);
-        double v = (-tca * L + sqrt(Delta)) / (1 - L), nu = copysign(acosh(v), delta.y);
+        double vv = (-tca * L + sqrt(Delta)) / (1 - L), nu = copysign(acosh(vv), delta.y);
 
         vector<double> cps{exp(mu), exp(nu), exp(-mu), exp(-nu)};
-        double         s = 0;
-        for (auto p : cps) s += p;
-        for (auto &p : cps) p /= s;
+        double         ss = 0;
+        for (auto p : cps) ss += p;
+        for (auto &p : cps) p /= ss;
 
         int nw = 0;
         coo z  = coo(start);
@@ -110,41 +110,47 @@ public:
             if ((z.x <= int(start.x)) || (!fits(z))) { z = coo(start); }
             if (z.x == int(root.x)) {
                 nw++;
-                if (nw == 1) stage(H);
+                if (nw == 1) stage();
                 z = coo(start);
             }
         }
-        stage(H);
+        stage();
         path(start, SITE);
     }
 
-    void go(const Hub &H) {
+    void go(const string &title) {
         put(root, Point{SITE});
-        if (H['v']) show();
+        if (v) show();
         if (a < 1)
-            special(H);
+            special();
         else
             lerw(coo(start), false);
-        stage(H);
+        stage();
         for (size_t ii = 0; ii < n; ++ii) {
             for (size_t j = 0; j <= n; ++j) lerw({2 * int(ii) + 1, 2 * int(j)}, true);
         }
-        stage(H);
+        stage();
         put(root, Point{EMPH});
         path(start);
-        stage(H);
+        stage();
         dual();
-        stage(H);
-        output(H.title);
+        stage();
+        output(title);
     }
 
     size_t         n;
     double         a;
+    bool           s, v;
     vector<double> ps;
     ucoo           root, start;
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub const H("Spanning forest with 2-periodic weights", argc, argv, "n=400,a=.2,v,s");
-    SF(H, H['n'], H['a']).go(H);
+    CLP clp(argc, argv, "Spanning forest with 2-periodic weights");
+    auto n = clp.param("n", 400, "Grid size");
+    auto a = clp.param("a", 0.2, "Weight parameter");
+    auto v = clp.flag("v", "Pause at each stage");
+    auto s = clp.flag("s", "Snapshot at each stage");
+    clp.finalize();
+    SF(clp.title, n, a, s, v).go(clp.title);
 }

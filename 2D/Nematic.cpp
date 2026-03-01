@@ -1,6 +1,6 @@
 #include <vb/Bitmap.h>
 #include <vb/Console.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -14,7 +14,7 @@ namespace vb {
 
 class Nematic : public vb::Bitmap<size_t> {
 public:
-    Nematic(const Hub &H, size_t n, size_t m, size_t k_, double b_) : Bitmap<size_t>(H.title, {n, m}), k(k_), b(b_), P(std::max(n, m), 0){};
+    Nematic(const std::string &title, size_t n, size_t m, size_t k_, double b_) : Bitmap<size_t>(title, {n, m}), k(k_), b(b_), P(std::max(n, m), 0){};
 
     void prec() {
         ok = std::min(k, std::min(size.x, size.y));
@@ -76,15 +76,15 @@ public:
         step();
     }
 
-    void go(const Hub &H) {
+    void go(bool v, int steps, bool l) {
         Console C;
         C.watch(order, "order");
         C.manage(b, -5.0, 10.0, "beta");
         C.manage(k, size_t(1), size_t(100), "k");
         show();
         C.show();
-        if (H['v']) snapshot_setup("movie", 10);
-        for (int t = int(H['t']) - 1; t != 0; --t) {
+        if (v) snapshot_setup("movie", 10);
+        for (int t = steps - 1; t != 0; --t) {
             if ((k != ok) || (b != ob)) prec();
             for (size_t ii = 0; ii < size.y; ++ii) redo({0, int64_t(ii)}, 1);
             for (size_t ii = 0; ii < size.x; ++ii) redo({int64_t(ii), 0}, 2);
@@ -95,7 +95,7 @@ public:
             for (auto z : coo_range(size))
                 if (at(z) == 2) ++nv;
             order = nh + nv > 0 ? double(nh - nv) / double(nh + nv) : 0;
-            if (((t % 100) == 0) && H['l']) std::cout << order << std::endl;
+            if (((t % 100) == 0) && l) std::cout << order << std::endl;
         }
     };
 
@@ -105,6 +105,16 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub const H("Nematic system on the square lattice", argc, argv, "n=500,m=0,k=7,b=2,v,l,t=0");
-    Nematic(H, H['n'], int(H['m']) != 0 ? H['m'] : H['n'], H['k'], H['b']).go(H);
+    CLP  clp(argc, argv, "Nematic system on the square lattice");
+    auto n = clp.param("n", 500, "grid width");
+    auto m = clp.param("m", 0, "grid height (0 = same as width)");
+    auto k = clp.param("k", 7, "segment length");
+    auto b = clp.param("b", 2.0, "inverse temperature beta");
+    auto v = clp.flag("v", "enable video snapshots");
+    auto l = clp.flag("l", "log order parameter");
+    auto t = clp.param("t", 0, "number of steps");
+    clp.finalize();
+
+    size_t height = (m != 0 ? size_t(m) : size_t(n));
+    Nematic(clp.title, n, height, k, b).go(v, t, l);
 }

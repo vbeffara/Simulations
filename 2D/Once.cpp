@@ -1,23 +1,25 @@
 #include <vb/CoarseImage.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
 
 auto main(int argc, char **argv) -> int {
-    Hub const    H("Once-reinforced random walk", argc, argv, "n=1000,a=2");
-    size_t const n = H['n'];
-    double a = H['a'];
-    a        = 1 / (1 + a);
-    auto L   = size_t(pow(double(n), .33));
+    CLP  clp(argc, argv, "Once-reinforced random walk");
+    auto n = clp.param("n", 1000, "grid size");
+    auto a = clp.param("a", 2.0, "reinforcement strength");
+    clp.finalize();
 
-    CoarseImage img(H.title, {n, n}, L);
+    double aa = 1 / (1 + a);
+    auto   L  = size_t(pow(double(n), .33));
+
+    CoarseImage img(clp.title, {size_t(n), size_t(n)}, L);
     img.show();
 
-    for (ucoo z{n / 2, n / 2};;) {
+    for (ucoo z{size_t(n) / 2, size_t(n) / 2};;) {
         img.put(z, true);
         auto nz = z + dz[prng.uniform_int(4U)];
         if (!img.fits(nz)) break;
-        if (img.at(nz) || prng.bernoulli(a)) z = nz;
+        if (img.at(nz) || prng.bernoulli(aa)) z = nz;
     }
 }

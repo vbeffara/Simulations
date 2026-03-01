@@ -12,7 +12,7 @@
 #include <list>
 #include <vb/Console.h>
 #include <vb/Figure.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using vb::cpx;
@@ -39,12 +39,15 @@ public:
     std::vector<point>         traj;
     std::list<point>           env;
     std::list<point>::iterator cur;
-    vb::Hub                    H;
     vb::Figure                 F;
     vb::Pen                    P;
     vb::Console                W;
+    double                     pente;
+    size_t                     nb, inter;
+    bool                       plot, renew;
 
-    Rancher(int argc, char **argv) : H("Rancher process", argc, argv, "p=.1,n=1000,i=1,o,r"), F(H.title) {}
+    Rancher(const std::string &title, double pente_, size_t nb_, size_t inter_, bool plot_, bool renew_)
+        : F(title), pente(pente_), nb(nb_), inter(inter_), plot(plot_), renew(renew_) {}
 
     [[nodiscard]] auto rand_point() const -> point {
         point p = *cur, pp = *boost::prior(cur), ppp = *boost::next(cur);
@@ -116,10 +119,6 @@ public:
     }
 
     void main() {
-        double const pente = H['p'];
-        size_t nb = H['n'], inter = H['i'];
-        bool   plot = H['o'], renew = H['r'];
-
         size_t i = 0;
 
         W.watch(i, "Path length");
@@ -177,4 +176,14 @@ public:
     }
 };
 
-auto main(int argc, char **argv) -> int { Rancher(argc, argv).main(); }
+auto main(int argc, char **argv) -> int {
+    vb::CLP clp(argc, argv, "Rancher process");
+    auto pente = clp.param("p", 0.1, "Tangent of half initial angle");
+    auto nb    = clp.param("n", size_t(1000), "Number of steps");
+    auto inter = clp.param("i", size_t(1), "Envelope display interval");
+    auto plot  = clp.flag("o", "Output plot");
+    auto renew = clp.flag("r", "Track renewals");
+    clp.finalize();
+
+    Rancher(clp.title, pente, nb, inter, plot, renew).main();
+}

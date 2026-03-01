@@ -1,24 +1,25 @@
 #include <vb/Bitmap.h>
 #include <vb/ProgressBar.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 
 using namespace vb;
 
 auto main(int argc, char **argv) -> int {
     const std::vector<Color> C{RED, GREEN, BLUE, YELLOW};
 
-    Hub const    H("Rotor-Router Model", argc, argv, "n=500");
-    size_t const n = H['n'];
+    CLP clp(argc, argv, "Rotor-Router Model");
+    auto n = clp.param("n", 500, "Grid size");
+    clp.finalize();
 
-    Image img(H.title, {n, n});
+    Image img(clp.title, {size_t(n), size_t(n)});
     img.show();
 
-    ucoo z{n / 2, n / 2};
+    ucoo z{size_t(n) / 2, size_t(n) / 2};
     while (img.fits(coo(z), 1)) {
         Color const c = img.at(z);
         if (c == BLACK) {
             img.put(z, C[0]);
-            z = {n / 2, n / 2};
+            z = {size_t(n) / 2, size_t(n) / 2};
         } else
             for (unsigned i = 0; i < 4; ++i)
                 if (c == C[i]) {
@@ -27,5 +28,5 @@ auto main(int argc, char **argv) -> int {
                 }
     }
 
-    img.output_png(H.title);
+    img.output_png(clp.title);
 }

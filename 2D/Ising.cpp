@@ -1,5 +1,5 @@
 #include <vb/Bitmap.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -7,7 +7,7 @@ using namespace std;
 
 class Ising : public Image {
 public:
-    Ising(const Hub &H, size_t nn, double bb, double rr, bool cc) : Image(H.title, {nn, nn}), n(nn), c(cc), beta(bb) {
+    Ising(const string &title, size_t nn, double bb, double rr, bool cc) : Image(title, {nn, nn}), n(nn), c(cc), beta(bb) {
         if (rr != 0.0) {
             for (auto z : coo_range(size)) put(z, prng.bernoulli(rr) ? BLACK : WHITE);
         } else {
@@ -63,10 +63,19 @@ public:
 };
 
 auto main(int argc, char *argv[]) -> int {
-    Hub const H("Ising model", argc, argv, "b=.88137359,n=300,t=0,c,r=0,k,v");
-    Ising I(H, H['n'], H['b'], H['r'], H['c']);
+    CLP  clp(argc, argv, "Ising model");
+    auto n = clp.param("n", 300, "grid size");
+    auto b = clp.param("b", .88137359, "inverse temperature beta");
+    auto t = clp.param("t", 0, "number of steps");
+    auto r = clp.param("r", 0.0, "random initial density");
+    auto c = clp.flag("c", "Dobrushin boundary conditions");
+    auto k = clp.flag("k", "Kawasaki dynamics");
+    auto v = clp.flag("v", "enable video snapshots");
+    clp.finalize();
+
+    Ising I(clp.title, n, b, r, c);
     I.show();
-    if (H['v']) I.snapshot_setup("Ising", 10);
-    I.run(H['t'], H['k']);
-    I.output(H.title);
+    if (v) I.snapshot_setup("Ising", 10);
+    I.run(t, k);
+    I.output(clp.title);
 }

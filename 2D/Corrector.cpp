@@ -1,5 +1,5 @@
 #include <vb/Map.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -9,12 +9,13 @@ int center   = 6;
 int infinity = 13;
 
 auto main(int argc, char **argv) -> int {
-    Hub const    H("Corrector", argc, argv, "n=10,p=.9,b");
-    size_t const n     = H['n'];
-    double const p     = H['p'];
-    bool const   batch = H['b'];
+    CLP clp(argc, argv, "Corrector");
+    auto n     = clp.param("n", size_t(10), "Grid size");
+    auto p     = clp.param("p", 0.9, "Edge probability");
+    auto batch = clp.flag("b", "Batch mode");
+    clp.finalize();
 
-    Map             m(H.title, n * n);
+    Map             m(clp.title, n * n);
     vector<uint8_t> adj(n * n, 0);
 
     for (size_t i = 0; i < n; ++i) {

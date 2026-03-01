@@ -1,9 +1,9 @@
 #include <vb/Coloring.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using vb::cpx;
-using vb::Hub;
+using vb::CLP;
 using vb::prng;
 
 auto f(double x) -> double { return exp(-1 / x); }
@@ -25,8 +25,8 @@ public:
         double a, c, s, p;
     };
 
-    Wave(const vb::Hub &HH, size_t n, int k, double l_, double ww_, double e_)
-        : Coloring(HH.title, cpx(-double(n), -double(n)), cpx(double(n), double(n)), n, [&](cpx z) { return c(z); }), H(HH) {
+    Wave(const std::string &title, size_t n, int k, double l_, double ww_, double e_, double tilt_)
+        : Coloring(title, cpx(-double(n), -double(n)), cpx(double(n), double(n)), n, [&](cpx z) { return c(z); }), tilt(tilt_) {
         for (int ii = 0; ii < k; ++ii) {
             double const delta     = (2 * prng.uniform_real() - 1) * (1 + e_);
             double const amplitude = bump(delta, e_) * prng.gaussian();
@@ -36,7 +36,7 @@ public:
     }
 
     auto v(cpx z) -> double {
-        double out = double(H['t']) * real(z);
+        double out = tilt * real(z);
         for (auto mm : m) { out += mm(z); }
         return out;
     }
@@ -44,14 +44,23 @@ public:
     auto c(cpx z) -> vb::Color { return vb::Indexed(v(z) > 0 ? 1 : 2); }
 
     std::vector<Mode> m;
-    const vb::Hub &   H;
+    double            tilt;
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub const H("Random planar waves", argc, argv, "n=600,k=1000,l=.2,w=0,e=0,s=0,t=0");
-    if (size_t const s = H['s']) { prng.seed(s); }
-    Wave W(H, H['n'], H['k'], H['l'], H['w'], H['e']);
+    CLP clp(argc, argv, "Random planar waves");
+    auto n = clp.param("n", size_t(600), "Grid size");
+    auto k = clp.param("k", 1000, "Number of modes");
+    auto l = clp.param("l", 0.2, "Wavelength");
+    auto w = clp.param("w", 0.0, "Width parameter");
+    auto e = clp.param("e", 0.0, "Epsilon parameter");
+    auto s = clp.param("s", size_t(0), "Random seed");
+    auto t = clp.param("t", 0.0, "Tilt parameter");
+    clp.finalize();
+
+    if (s) { prng.seed(s); }
+    Wave W(clp.title, n, k, l, w, e, t);
     W.show();
-    W.output(H.title);
+    W.output(clp.title);
     Fl::run();
 }

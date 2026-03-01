@@ -1,7 +1,6 @@
 add_library(vb SHARED
   Auto.cpp
   CLP.cpp
-  CL_Parser.cpp
   CoarseImage.cpp
   Color.cpp
   Coloring.cpp
@@ -11,7 +10,6 @@ add_library(vb SHARED
   Cube.cpp
   Elliptic.cpp
   Figure.cpp
-  Hub.cpp
   Hypermap.cpp
   Hypermap_lib.cpp
   LinearAlgebra.cpp
@@ -29,11 +27,11 @@ add_library(vb SHARED
   Shape.cpp
   Sphere.cpp
   Spheroidal.cpp
-  Stream.cpp
   Toroidal.cpp
-  misc.cpp
   mp.cpp
 )
+
+target_precompile_headers(vb PUBLIC ${PROJECT_SOURCE_DIR}/include/vb/pch.h)
 
 target_include_directories(vb PUBLIC ${PROJECT_SOURCE_DIR}/include
   ${fplll_INCLUDE_DIRS} ${mpfr_INCLUDE_DIRS})

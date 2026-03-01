@@ -1,16 +1,16 @@
 #include <vb/Bitmap.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
 
 auto main(int argc, char **argv) -> int {
-    Hub const H("Discrete-time contact process on the hexagonal lattice", argc, argv, "p=.44,n=400");
+    CLP clp(argc, argv, "Discrete-time contact process on the hexagonal lattice");
+    auto p = clp.param("p", 0.44, "Infection probability");
+    auto n = clp.param("n", size_t(400), "Grid size");
+    clp.finalize();
 
-    double const p = H['p'];
-    size_t const n = H['n'];
-
-    Image img(H.title, {n, n});
+    Image img(clp.title, {n, n});
 
     for (size_t x = 0; x < n; ++x)
         for (size_t y = 0; y < n / 2; ++y) img.put({x, y}, WHITE);

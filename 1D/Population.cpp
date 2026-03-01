@@ -1,7 +1,7 @@
 #include <vb/Console.h>
 #include <vb/Figure.h>
 #include <vb/ProgressBar.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using std::cout;
@@ -69,10 +69,16 @@ auto NewNu(vector<double> *nup, double K, double p, size_t size) -> double {
 
 auto main(int argc, char **argv) -> int {
     // n impair ! the function rescaling maps {1, ..., size} to {-3, ..., 3}; 7+(2^k*)6 is optimal rescaling
-    vb::Hub const H("Population dynamics", argc, argv, "s=4,K=100,p=.05,n=7,i=1000000");
-    prng.seed(size_t(H['s']));
-    double K = H['K'], p = H['p'];
-    size_t size = H['n'], shift = (size + 1) / 2, iterations = H['i'];
+    vb::CLP clp(argc, argv, "Population dynamics");
+    auto    s          = clp.param("s", size_t(4), "Random seed");
+    auto    K          = clp.param("K", 100.0, "K parameter");
+    auto    p          = clp.param("p", 0.05, "p parameter");
+    auto    size       = clp.param("n", size_t(7), "System size (odd)");
+    auto    iterations = clp.param("i", size_t(1000000), "Iterations");
+    clp.finalize();
+
+    prng.seed(s);
+    size_t shift = (size + 1) / 2;
 
     vector<double> nu(size + 1, 0);
     nu[shift] = 3;
@@ -85,12 +91,12 @@ auto main(int argc, char **argv) -> int {
     W.manage(Ac, .2, .4, "Ac");
     W.show();
 
-    vb::Figure F(H.title);
+    vb::Figure F(clp.title);
     F.ortho = false;
     F.add(std::make_unique<Path>(pos));
     F.show();
 
-    vb::Figure G(H.title);
+    vb::Figure G(clp.title);
     G.ortho = false;
     vector<vector<cpx>> graph(size + 1);
 

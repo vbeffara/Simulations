@@ -1,5 +1,5 @@
 #include <vb/Bitmap.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 #include <vb/util/misc.h>
 
@@ -11,12 +11,12 @@ gsl::span<Color>     C{CC};
 
 class TASEP : public vector<int> {
 public:
-    explicit TASEP(const Hub &H) : vector<int>(size_t(H['n']), 0), p(size(), 1) {
-        for (int &e : *this) {
-            e = prng.bernoulli(H['r']) ? 2 : 0;
-            if (prng.bernoulli(H['d']) && (e == 2)) e = 1;
+    TASEP(size_t n, double r, double d, double e) : vector<int>(n, 0), p(n, 1) {
+        for (int &elem : *this) {
+            elem = prng.bernoulli(r) ? 2 : 0;
+            if (prng.bernoulli(d) && (elem == 2)) elem = 1;
         }
-        for (double &q : p) q = prng.uniform_real(H['e'], 1.0);
+        for (double &q : p) q = prng.uniform_real(e, 1.0);
     }
     void step() {
         auto i = prng.uniform_int(size());
@@ -28,10 +28,15 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub const H("TASEP", argc, argv, "n=1280,r=.4,e=0,d=0");
+    CLP  clp(argc, argv, "TASEP");
+    auto n = clp.param("n", size_t(1280), "System size");
+    auto r = clp.param("r", 0.4, "Initial occupation probability");
+    auto e = clp.param("e", 0.0, "Disorder parameter");
+    auto d = clp.param("d", 0.0, "Defect parameter");
+    clp.finalize();
 
-    TASEP T(H);
-    Image I(H.title, {T.size(), 700});
+    TASEP T(n, r, d, e);
+    Image I(clp.title, {T.size(), 700});
     I.show();
     for (size_t t = 0, u = 0;; ++t, ++u) {
         for (size_t j = 0; j < u; ++j)

@@ -1,7 +1,7 @@
 #include <vb/Console.h>
 #include <vb/Figure.h>
 #include <vb/data/Array.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 
 using namespace vb;
 using namespace std;
@@ -14,11 +14,11 @@ class TGraph : public Figure, Array<loc> {
 public:
     using Array::size;
 
-    TGraph(const Hub &H, size_t n, cpx A_, double t) : Figure(H.title), Array<loc>({n, n}), A(A_), theta(t) {
+    TGraph(const string &title, size_t n, cpx A_, double t, bool loop_mode) : Figure(title), Array<loc>({n, n}), A(A_), theta(t), do_loop(loop_mode) {
         compute();
         plot();
         show();
-        output(H.title);
+        output(title);
     };
 
     [[nodiscard]] auto phiwb(int mw, int nw, int mb, int nb) const -> cpx {
@@ -87,12 +87,20 @@ public:
 
     cpx    A, B = 0, C = 1, alpha = 1, beta = 1, gamma = 1, lambda;
     double theta, a = 1, b = 1, c = 1, pa = 1, pb = 1, pc = 1;
+    bool   do_loop;
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub const H("T-graph for the triangular lattice", argc, argv, "n=20,l,x=.4,y=.6,t");
-    TGraph TG(H, H['n'], cpx{H['x'], H['y']}, H['t']);
-    if (H['l'])
+    CLP clp(argc, argv, "T-graph for the triangular lattice");
+    auto n = clp.param("n", size_t(20), "Grid size");
+    auto l = clp.flag("l", "Loop mode");
+    auto x = clp.param("x", 0.4, "Point A x coordinate");
+    auto y = clp.param("y", 0.6, "Point A y coordinate");
+    auto t = clp.param("t", 0.0, "Initial theta");
+    clp.finalize();
+
+    TGraph TG(clp.title, n, cpx{x, y}, t, l);
+    if (l)
         TG.loop();
     else
         TG.interact();

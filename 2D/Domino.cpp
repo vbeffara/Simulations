@@ -1,7 +1,7 @@
 #include <gsl/gsl>
 #include <vb/Bitmap.h>
 #include <vb/Console.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
@@ -30,9 +30,9 @@ public:
         at(c + dz[at(c).d]).type = 0;
     }
 
-    explicit Tiling(const Hub &H) : Bitmap<Half>(H.title, {H['n'], H['n']}), r(H['r']), rr{r, r * r, 1, r} {
+    explicit Tiling(const string &title, size_t n, const string &o, size_t b, double r_) : Bitmap<Half>(title, {n, n}), r(r_), rr{r, r * r, 1, r} {
         for (const auto &z : coo_range(size)) at(z) = Half(2 * (z.x % 2), uint8_t(1 + ((z.x + z.y) % 2) + 2 * (z.x % 2)));
-        if (H['o'] == "aztec") {
+        if (o == "aztec") {
             for (size_t ii = 0; ii < size.y / 2; ++ii) {
                 for (size_t j = 0; j < size.x / 2 - ii - 1; ++j) {
                     at({ii, j}).type                           = 0;
@@ -45,7 +45,7 @@ public:
                     putd({ii + size.x / 2, j}, uint8_t(1 + 2 * ((ii + j + size.x / 2) % 2)));
                 }
             }
-        } else if (H['o'] == "hill") {
+        } else if (o == "hill") {
             for (size_t y = 0; y < size.y / 2; ++y)
                 for (size_t x = y; x < size.x - y; x += 2) {
                     putd({x, y}, 0);
@@ -56,7 +56,7 @@ public:
                     putd({x, y}, 1);
                     putd({size.x - 1 - x, y}, 1);
                 }
-        } else if (H['o'] == "hole") {
+        } else if (o == "hole") {
             for (size_t y = 0; y < size.y / 2; ++y)
                 for (size_t x = y; x < size.x - y - 1; x += 2) {
                     putd({x, y}, 0);
@@ -86,7 +86,6 @@ public:
         } else {
             for (size_t x = 0; x < size.x; x += 2)
                 for (size_t y = 0; y < size.y; ++y) putd({x, y}, 0);
-            size_t const b = H['b'];
             if (b > 0) {
                 for (auto x = size.x / 2 - b; x < size.x / 2 + b; ++x) putd({x, size.y / 2}, (2 + at({x, size.y / 2}).d) % 4U);
                 at({size.x / 2 - b, size.y / 2}).type = 0;
@@ -114,16 +113,23 @@ public:
 };
 
 auto main(int argc, char **argv) -> int {
-    Hub const H("Domino tiling", argc, argv, "n=200,o=aztec|hill|hole|flat,b=0,f=0,r=1");
-    Tiling  T(H);
+    CLP  clp(argc, argv, "Domino tiling");
+    auto n = clp.param("n", 200UL, "grid size");
+    auto o = clp.param("o", "aztec"s, "initial configuration (aztec|hill|hole|flat)");
+    auto b = clp.param("b", 0UL, "boundary size");
+    auto f = clp.param("f", 0.0, "freeze time factor");
+    auto r = clp.param("r", 1.0, "flip ratio");
+    clp.finalize();
+
+    Tiling  T(clp.title, n, o, b, r);
     Console C;
     C.manage(T.r, 0.0, 1.0, "r");
     C.show();
     T.show();
     T.pause();
-    auto f = int64_t(double(T.size.x * T.size.y) * double(H['f']));
+    auto ff = int64_t(double(T.size.x * T.size.y) * f);
     for (int64_t t = 1;; ++t) {
         T.flip(coo(prng.uniform_coo(T.size)));
-        if (t == f) T.freeze(T.size / 2);
+        if (t == ff) T.freeze(T.size / 2);
     }
 }

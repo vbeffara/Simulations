@@ -1,14 +1,13 @@
 #include "catch2/catch_test_macros.hpp"
 #include <cstring>
 #include <vb/Constellation0.h>
+#include <vb/Hypermap_lib.h>
 
 using namespace vb;
 
 TEST_CASE("vb::Constellation0") {
-    INFO("Setting up Hub and HLib");
-    std::vector<char *> argv{strdup("test_constellation0"), nullptr};
-    Hub const           H("Testing Constellation0", 1, argv.data(), "s=3,m=228,d=2,g=0,v,o,b,q");
-    auto                M = HLib().at("m_dodecahedron");
+    INFO("Setting up HLib");
+    auto M = HLib().at("m_dodecahedron");
 
     INFO("Creating Constellation0<double>");
     Constellation0<double> const C(M);

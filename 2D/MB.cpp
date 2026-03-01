@@ -1,20 +1,21 @@
 #include <vb/Bitmap.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
 
 auto main(int argc, char **argv) -> int {
-    Hub const    H("Brownian motion", argc, argv, "n=500");
-    size_t const n = H['n'];
+    CLP  clp(argc, argv, "Brownian motion");
+    auto n = clp.param("n", 500, "half grid size");
+    clp.finalize();
 
-    Image img(H.title, {2 * n, 2 * n});
+    Image img(clp.title, {2 * size_t(n), 2 * size_t(n)});
 
     for (auto z : coo_range(img.size)) img.put(z, WHITE);
-    ucoo z{n, n};
-    while (img.fits(z)) {
-        img.put(z, BLACK);
-        z += dz[prng() % 4];
+    ucoo zz{size_t(n), size_t(n)};
+    while (img.fits(zz)) {
+        img.put(zz, BLACK);
+        zz += dz[prng() % 4];
     }
-    img.output(H.title);
+    img.output(clp.title);
 }

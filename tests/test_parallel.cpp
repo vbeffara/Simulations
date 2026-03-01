@@ -5,6 +5,7 @@
 #include <tbb/parallel_for.h>
 #include <tbb/parallel_reduce.h>
 #include <tbb/task_group.h>
+#include <vb/util/CLP.h>
 #include <vb/util/misc.h>
 
 #if __has_include(<execution>)
@@ -36,12 +37,14 @@ auto cost(double x) -> double {
 }
 
 auto main(int argc, char **argv) -> int {
-  Hub    H("Test of various parallel frameworks", argc, argv, "n=41,l=4000000");
-  size_t n = H['n'], l = H['l'];
+  CLP    clp(argc, argv, "Test of various parallel frameworks");
+  size_t n = clp.param("n", size_t(41), "Fibonacci number");
+  size_t l = clp.param("l", size_t(4000000), "Array length");
+  clp.finalize();
 
-  timing(H, "Fibonacci  | Single (recursive)", [=] { return fib(n); });
+  timing("Fibonacci  | Single (recursive)", [=] { return fib(n); });
 
-  timing(H, "Fibonacci  | Async (recursive)", [=] {
+  timing("Fibonacci  | Async (recursive)", [=] {
     class fib_async {
   public:
       auto operator()(size_t n) -> size_t {
@@ -54,9 +57,9 @@ auto main(int argc, char **argv) -> int {
     return fib_async()(n);
   });
 
-  timing(H, "Fibonacci  | TBB task group", [=] { return tbb_fib(n); });
+  timing("Fibonacci  | TBB task group", [=] { return tbb_fib(n); });
 
-  timing(H, "Map+reduce | Single (fill then sum)", [=] {
+  timing("Map+reduce | Single (fill then sum)", [=] {
     vector<double> X(l);
     for (size_t i = 0; i < l; ++i) X[i] = cost(double(i));
     double s = 0;
@@ -64,13 +67,13 @@ auto main(int argc, char **argv) -> int {
     return s - floor(s);
   });
 
-  timing(H, "Map+reduce | Single (direct sum)", [=] {
+  timing("Map+reduce | Single (direct sum)", [=] {
     double s = 0;
     for (size_t i = 0; i < l; ++i) s += cost(double(i));
     return s - floor(s);
   });
 
-  timing(H, "Map+reduce | Single (STL algorithms: transform + accumulate)", [=] {
+  timing("Map+reduce | Single (STL algorithms: transform + accumulate)", [=] {
     vector<double> X(l);
     std::iota(X.begin(), X.end(), 0);
     std::transform(X.begin(), X.end(), X.begin(), cost);
@@ -78,14 +81,14 @@ auto main(int argc, char **argv) -> int {
     return s - floor(s);
   });
 
-  timing(H, "Map+reduce | Single (STL algorithms: transform_reduce)", [=] {
+  timing("Map+reduce | Single (STL algorithms: transform_reduce)", [=] {
     vector<double> X(l);
     std::iota(X.begin(), X.end(), 0);
     double const s = std::transform_reduce(begin(X), end(X), 0.0, std::plus<double>(), cost);
     return s - floor(s);
   });
 
-  timing(H, "Map+reduce | Async (std::async, split fill + sum)", [=] {
+  timing("Map+reduce | Async (std::async, split fill + sum)", [=] {
     class mr {
   public:
       vector<double> X;
@@ -109,7 +112,7 @@ auto main(int argc, char **argv) -> int {
     return mr(l).sum();
   });
 
-  timing(H, "Map+reduce | Async (std::async, split direct sum)", [=] {
+  timing("Map+reduce | Async (std::async, split direct sum)", [=] {
     class mr {
   public:
       auto run(size_t l1, size_t l2) -> double {
@@ -130,7 +133,7 @@ auto main(int argc, char **argv) -> int {
     return mr().sum(l);
   });
 
-  timing(H, "Map+reduce | TBB parallel_for filling (single for sum)", [=] {
+  timing("Map+reduce | TBB parallel_for filling (single for sum)", [=] {
     vector<double> X(l);
     tbb::parallel_for(0UL, l, [&](size_t i) { X[i] = cost(double(i)); });
     double s = 0;
@@ -138,7 +141,7 @@ auto main(int argc, char **argv) -> int {
     return s - floor(s);
   });
 
-  timing(H, "Map+reduce | TBB parallel_reduce", [=] {
+  timing("Map+reduce | TBB parallel_reduce", [=] {
     struct sum_cost {
       sum_cost() = default;
       sum_cost(const sum_cost & /* unused */, tbb::split /* unused */) {}

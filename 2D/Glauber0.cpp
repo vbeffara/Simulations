@@ -1,12 +1,12 @@
 #include <vb/Bitmap.h>
-#include <vb/util/Hub.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 using namespace vb;
 
 class Glauber : public Image {
 public:
-    Glauber(const Hub &H, size_t n_) : Image(H.title, {n_, n_}), n(n_){};
+    Glauber(const std::string &title, size_t n_) : Image(title, {n_, n_}), n(n_){};
     void fill(double p);
     void step(ucoo z);
 
@@ -37,10 +37,12 @@ void Glauber::step(ucoo z) {
 }
 
 auto main(int argc, char **argv) -> int {
-    Hub const    H("Glauber dynamics at zero temperature", argc, argv, "n=500,p=.51");
-    double const p = H['p'];
+    CLP  clp(argc, argv, "Glauber dynamics at zero temperature");
+    auto n = clp.param("n", 500UL, "grid size");
+    auto p = clp.param("p", 0.51, "initial probability");
+    clp.finalize();
 
-    Glauber G(H, H['n']);
+    Glauber G(clp.title, n);
     G.fill(p);
     G.show();
 
