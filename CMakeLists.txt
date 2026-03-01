@@ -25,7 +25,6 @@ find_package(OpenGL COMPONENTS OpenGL REQUIRED)
 find_package(yaml-cpp REQUIRED)
 find_package(TBB REQUIRED)
 find_package(FFTW3 REQUIRED)
-find_package(docopt COMPONENTS CXX REQUIRED)
 find_package(Microsoft.GSL REQUIRED)
 find_package(gmp REQUIRED)
 find_package(mpfr REQUIRED)
@@ -44,11 +43,11 @@ if(FLTK_FOUND AND NOT TARGET fltk::fltk)
   )
 endif()
 
-include_directories(include ${mpc_INCLUDE_DIRS} ${FLTK_INCLUDE_DIR} ${DOCOPT_INCLUDE_DIRS})
+include_directories(include ${mpc_INCLUDE_DIRS} ${FLTK_INCLUDE_DIR})
 
 add_subdirectory(libvb)
 
-link_libraries(vb spdlog::spdlog docopt_s)
+link_libraries(vb spdlog::spdlog)
 
 add_subdirectory(1D)
 add_subdirectory(2D)

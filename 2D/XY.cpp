@@ -1,17 +1,5 @@
-static const auto usage = R"(The XY model on Z^2
-
-Usage: XY [options]
-
-Options:
-  -n <size>   Size of the simulation [default: 500]
-  -b <beta>   Inverse temperature [default: 1.0]
-  -h, --help  Print usage help and exit
-  
-The boundary conditions are periodic, and for now the dynamics is just a
-continuous-time Glauber process with uniform updates.)";
-
-#include <docopt/docopt.h>
 #include <vb/Bitmap.h>
+#include <vb/util/CLP.h>
 #include <vb/util/PRNG.h>
 
 namespace vb {
@@ -37,9 +25,10 @@ namespace vb {
 } // namespace vb
 
 auto main(int argc, char **argv) -> int {
-    auto args = docopt::docopt(usage, {&argv[1], &argv[argc]}, true);
-    auto n    = std::stoul(args["-n"].asString());
-    auto b    = std::stod(args["-b"].asString());
+    auto clp = vb::CLP("The XY model in Z^2", argc, argv);
+    auto n    = clp.param("n", size_t(500), "Size of the simulation");
+    auto b    = clp.param("b", 1.0, "Inverse temperature");
+    clp.finalize();
     auto xy   = vb::XY(n, b);
     xy.show();
     while (true) xy.up();
