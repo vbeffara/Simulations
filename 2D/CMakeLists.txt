@@ -63,6 +63,7 @@ add_executable(Triangulation Triangulation.cpp)
 add_executable(UST UST.cpp)
 add_executable(Voter Voter.cpp)
 add_executable(Wave Wave.cpp)
+add_executable(Wave2 Wave2.cpp)
 add_executable(XY XY.cpp)
 
 target_link_libraries(Geodesic fftw::fftw)
