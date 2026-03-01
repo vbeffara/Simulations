@@ -19,7 +19,7 @@ include(FindFLTK)
 
 find_package(spdlog REQUIRED)
 find_package(Boost COMPONENTS chrono REQUIRED)
-find_package(Eigen3 3.3 REQUIRED NO_MODULE)
+find_package(Eigen3 REQUIRED NO_MODULE)
 find_package(FLTK COMPONENTS gl REQUIRED)
 find_package(OpenGL COMPONENTS OpenGL REQUIRED)
 find_package(yaml-cpp REQUIRED)
