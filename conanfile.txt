@@ -18,6 +18,7 @@ yaml-cpp/0.8.0
 [generators]
 CMakeDeps
 CMakeToolchain
+VirtualRunEnv
 
 [options]
 pkg/fltk:shared=True
