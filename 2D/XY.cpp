@@ -25,7 +25,7 @@ namespace vb {
 } // namespace vb
 
 auto main(int argc, char **argv) -> int {
-    auto clp = vb::CLP("The XY model in Z^2", argc, argv);
+    auto clp = vb::CLP(argc, argv, "The XY model in Z^2");
     auto n    = clp.param("n", size_t(500), "Size of the simulation");
     auto b    = clp.param("b", 1.0, "Inverse temperature");
     clp.finalize();
