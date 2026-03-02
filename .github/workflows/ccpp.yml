@@ -55,4 +55,4 @@ jobs:
       - name: tests
         run: |
           source build/conanrun.sh
-          xvfb-run -a build/catch2/catch2
+          cd build/catch2 && xvfb-run -a ./catch2
