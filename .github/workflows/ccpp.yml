@@ -53,4 +53,6 @@ jobs:
         run: ninja -C build
 
       - name: tests
-        run: xvfb-run -a build/catch2/catch2
+        run: |
+          source build/conanrun.sh
+          xvfb-run -a build/catch2/catch2
