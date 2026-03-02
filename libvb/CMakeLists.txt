@@ -31,7 +31,7 @@ add_library(vb SHARED
   mp.cpp
 )
 
-target_precompile_headers(vb PUBLIC ${PROJECT_SOURCE_DIR}/include/vb/pch.h)
+target_precompile_headers(vb PRIVATE ${PROJECT_SOURCE_DIR}/include/vb/pch.h)
 
 target_include_directories(vb PUBLIC ${PROJECT_SOURCE_DIR}/include
   ${fplll_INCLUDE_DIRS} ${mpfr_INCLUDE_DIRS})
