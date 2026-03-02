@@ -16,13 +16,13 @@ class Perco : public Image {
     vector<bool> isprime(n * n, true);
     isprime[0] = false;
     isprime[1] = false;
-    for (int i = 2; i < isprime.size(); ++i) {
+    for (size_t i = 2; i < isprime.size(); ++i) {
       if (!(isprime[i])) continue;
-      for (int j = 2; i * j < isprime.size(); ++j) isprime[i * j] = false;
+      for (size_t j = 2; i * j < isprime.size(); ++j) isprime[i * j] = false;
     }
 
     // Simulation
-    for (int p = p0; p < isprime.size(); ++p) {
+    for (size_t p = p0; p < isprime.size(); ++p) {
       if (!(all || isprime[p])) continue;
       size_t rp = a * log(p);
       int    x = prng.uniform_int(p), y = prng.uniform_int(p);

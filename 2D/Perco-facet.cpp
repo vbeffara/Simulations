@@ -129,7 +129,7 @@ struct Perco {
   double compute_reaching_time() {
     Queue<std::pair<coo, size_t>> Q;
 
-    for (int i = 0; i < n; ++i) Q.push({{{0, i}, 0}, 0});
+    for (size_t i = 0; i < n; ++i) Q.push({{{0, int64_t(i)}, 0}, 0});
 
     for (auto z : coo_range<int64_t>({int(n), int(n)})) {
       for (size_t i = 0; i < P.n_faces; ++i) sites.atp(z).visited[i] = false;
