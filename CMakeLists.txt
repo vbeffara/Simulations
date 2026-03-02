@@ -47,6 +47,16 @@ include_directories(include ${mpc_INCLUDE_DIRS} ${FLTK_INCLUDE_DIR})
 
 add_subdirectory(libvb)
 
+add_library(pch OBJECT ${CMAKE_CURRENT_SOURCE_DIR}/a.cpp)  # a.cpp is an empty placeholder required by OBJECT libraries
+target_precompile_headers(pch PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/vb/pch.h)
+target_link_libraries(pch PRIVATE spdlog::spdlog Boost::chrono Microsoft.GSL::GSL)
+
+# All executables share the single compiled PCH from the pch OBJECT library
+function(add_executable name)
+  _add_executable(${name} ${ARGN})
+  target_precompile_headers(${name} REUSE_FROM pch)
+endfunction()
+
 link_libraries(vb spdlog::spdlog)
 
 add_subdirectory(1D)
