@@ -7,7 +7,7 @@ using namespace vb;
 
 auto main(int argc, char **argv) -> int {
     CLP  clp(argc, argv, "Last-passage percolation");
-    auto n = clp.param("n", 500, "grid size");
+    auto n = clp.param("n", size_t(500), "grid size");
     auto r = clp.param("r", .1, "initial source density");
     auto l = clp.param("l", .01, "lightning probability");
     auto d = clp.param("d", 0.0, "diagonal probability");

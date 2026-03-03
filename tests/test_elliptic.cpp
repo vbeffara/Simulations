@@ -26,6 +26,7 @@ auto main(int argc, char **argv) -> int {
     unsigned const W = clp.param("W", size_t(800), "Window size");
     double const S = clp.param("S", 2.0, "Scale factor");
     clp.finalize();
+    (void)m; (void)w_flag; (void)p_flag; (void)a_flag; (void)b_flag;
 
     auto M = HLib().at(g);
 

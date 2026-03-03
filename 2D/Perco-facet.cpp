@@ -166,7 +166,7 @@ int main(int argc, char **argv) {
     P.show(p);
   } else {
     size_t shift = 0;
-    while ((100 << shift) <= n) ++shift;
+    while ((size_t(100) << shift) <= n) ++shift;
     thread_local Perco P(Triangular(), 0);
     tbb::parallel_for(size_t(0), shift, [t](size_t i) {
       tbb::parallel_for(size_t(0), t, [nn(size_t(100 << i)), t](size_t i) {

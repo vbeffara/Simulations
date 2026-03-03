@@ -21,6 +21,7 @@ auto main(int argc, char **argv) -> int {
     auto D = clp.param("D", size_t(0), "Maximum cycle size");
     auto o = clp.flag("o", "Output image");
     clp.finalize();
+    (void)m; (void)p_flag; (void)a_flag;
 
     auto M = HLib().at(g);
     if (u != 0) M = H_genus0(u);

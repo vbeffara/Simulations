@@ -50,8 +50,8 @@ auto operator<<(ostream &o, const Walker &W) -> ostream & {
 
 auto main(int argc, char **argv) -> int {
     CLP clp(argc, argv, "3D prudent walker");
-    auto l = clp.param("l", 1000, "Walk length");
-    auto n = clp.param("n", 1, "Number of walks");
+    auto l = clp.param("l", size_t(1000), "Walk length");
+    auto n = clp.param("n", size_t(1), "Number of walks");
     clp.finalize();
     vector<int> ends(l, 0);
 

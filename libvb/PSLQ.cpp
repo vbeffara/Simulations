@@ -116,7 +116,7 @@ namespace vb {
     auto                nd = z.precision();
     auto                sz = real_t(z, 2 * nd / 3);
     std::vector<real_t> pows(1, sz / sz);
-    for (int d = 1; d < nd / 10; ++d) {
+    for (unsigned d = 1; d < nd / 10; ++d) {
       pows.push_back(pows.back() * sz);
       Polynomial<mpz_int> P(PSLQ(pows));
       if (P.degree() == 0) continue;
@@ -142,7 +142,7 @@ namespace vb {
     real_t              one{1, 2 * nd / 3}, pi = 4 * atan(one);
     complex_t           sz = complex_t(z, 2 * nd / 3), p = one;
     std::vector<real_t> pows(1, one);
-    for (int d = 1; d < nd / 10; ++d) {
+    for (unsigned d = 1; d < nd / 10; ++d) {
       p *= sz;
       pows.push_back(real(p) + pi * imag(p));
       Polynomial<mpz_int> P(PSLQ(pows));

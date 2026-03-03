@@ -13,6 +13,7 @@ auto main(int argc, char **argv) -> int {
   CLP clp(argc, argv, "Testing coroutines");
   auto n = clp.param("n", 5, "Permutation size");
   clp.finalize();
+  (void)n;
   //   for (const auto &p : permutations(n) | rv::filter(good) | rv::transform(sec) | rv::take(8)) spdlog::info("{}", p);
   spdlog::error("This test is disabled");
 }

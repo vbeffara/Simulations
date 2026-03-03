@@ -11,22 +11,22 @@ constexpr Color DEAD  = Color(255, 0, 0);
 
 auto main(int argc, char **argv) -> int {
     CLP  clp(argc, argv, "Aggregation of exclusion walkers");
-    auto n = clp.param("n", 250, "half of board size");
+    auto n = clp.param("n", size_t(250), "half of board size");
     auto p = clp.param("p", .5, "initial particle density");
     auto g = clp.flag("g", "dynamic discovery of environment (ghosts)");
     auto a = clp.param("a", 1.0, "contagion probability");
     auto t = clp.param("t", 0.0, "snapshot interval for movies");
-    auto s = clp.flag("s", "silent mode");
+    clp.flag("s", "silent mode");
     clp.finalize();
 
-    Image img(clp.title, {2 * size_t(n), 2 * size_t(n)});
+    Image img(clp.title, {2 * n, 2 * n});
 
     for (auto z : coo_range(img.size))
         if (g)
             img.put(z, AWAY);
         else
             img.put(z, prng.bernoulli(p) ? ALIVE : EMPTY);
-    img.put({size_t(n), size_t(n)}, DEAD);
+    img.put({n, n}, DEAD);
     img.show();
     if (t > 0) img.snapshot_setup("MDLA", t);
 
